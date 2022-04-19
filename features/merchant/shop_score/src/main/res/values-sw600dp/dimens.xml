@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingDefaultResource">
+    <dimen name="progress_bar_width_tablet_mode">120dp</dimen>
+    <dimen name="img_reactivated_comeback_width">180dp</dimen>
+</resources>

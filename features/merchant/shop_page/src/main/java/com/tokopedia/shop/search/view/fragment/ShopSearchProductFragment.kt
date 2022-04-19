@@ -7,38 +7,47 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.*
+import android.util.Log
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
-import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
+import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
-import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_REF
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
@@ -47,32 +56,43 @@ import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResu
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResultDataModel
 import com.tokopedia.shop.search.view.viewmodel.ShopSearchProductViewModel
 import com.tokopedia.shop.search.widget.ShopSearchProductDividerItemDecoration
-import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_search_product.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.concurrent.schedule
 
-class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
+class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, ShopSearchProductAdapterTypeFactory>() {
 
     companion object {
-        private const val REQUEST_CODE_SORT = 103
-        private const val KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID = "keyShopInfoCacheManagerSavedInstanceStateId"
+        private const val KEY_SHOP_ID = "SHOP_ID"
+        private const val KEY_SHOP_NAME = "SHOP_NAME"
+        private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
+        private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        val SEARCH_SUBMIT_RESULT_REDIRECTION = "SEARCH_SUBMIT_RESULT_REDIRECTION"
+        val ETALASE_CLICK_RESULT_REDIRECTION = "ETALASE_CLICK_RESULT_REDIRECTION"
+        private val DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300)
 
         fun createInstance(
+                shopId: String,
+                shopName: String,
+                isOfficial: Boolean,
+                isGoldMerchant: Boolean,
                 keyword: String,
-                shopInfoCacheManagerId: String,
                 shopAttribution: String,
                 shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
-                bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
+                bundleData.putString(KEY_SHOP_ID, shopId)
+                bundleData.putString(KEY_SHOP_NAME, shopName)
+                bundleData.putBoolean(KEY_IS_OFFICIAL, isOfficial)
+                bundleData.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
                 bundleData.putString(KEY_SHOP_REF, shopRef)
@@ -81,13 +101,16 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
 
         fun createInstance(
+                shopId: String,
+                shopName: String,
+                isOfficial: Boolean,
+                isGoldMerchant: Boolean,
                 keyword: String,
-                shopInfoCacheManagerId: String,
                 shopAttribution: String,
                 sortId: String,
                 shopRef: String
         ): Fragment {
-            return createInstance(keyword,shopInfoCacheManagerId,shopAttribution,shopRef).apply {
+            return createInstance(shopId, shopName, isOfficial, isGoldMerchant, keyword, shopAttribution, shopRef).apply {
                 val bundleData = arguments
                 bundleData?.apply {
                     putString(KEY_SORT_ID, sortId)
@@ -105,44 +128,47 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val shopId: String
-        get() = shopInfo?.shopCore?.shopID ?: ""
-    private val isOfficial: Boolean
-        get() = shopInfo?.goldOS?.isOfficial == 1
-    private val isGold: Boolean
-        get() = shopInfo?.goldOS?.isGold == 1
+    private var shopId: String = ""
+    private var shopName: String = ""
+    private var isOfficial: Boolean = false
+    private var isGold: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
 
     private lateinit var viewModel: ShopSearchProductViewModel
+    private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
 
     private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
-            shopInfo?.shopCore?.shopID?.let { viewModel.isMyShop(it) } ?: false
+            viewModel.isMyShop(shopId)
         } else false
 
+    private val userId: String
+        get() = if (::viewModel.isInitialized) {
+            viewModel.userId
+        } else {
+            ""
+        }
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
-
-    private var shopInfoCacheManagerId: String = ""
     private var shopAttribution: String = ""
-
-    private var shopInfo: ShopInfo? = null
-
     private var searchQuery = ""
-    private var sortValue: String? = ""
     private var shopRef: String = ""
-
     private var viewFragment: View? = null
+
+    private var productListData: MutableList<ShopSearchProductDataModel> = arrayListOf()
+    private var textCancel: Typography? = null
+    private var editTextSearchProduct: EditText? = null
+    private var imageViewClearButton: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         initViewModel()
-        getArgumentsData(savedInstanceState)
-        getShopInfoFromCacheManager()
+        getArgumentsData()
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     override fun onCreateView(
@@ -156,7 +182,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewFragment = view
-            initViewNew(view)
+        initViewNew(view)
         observeShopSearchProductResult()
     }
 
@@ -169,18 +195,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     override fun onDestroy() {
         viewModel.shopSearchProductResult.removeObservers(this)
-        searchInputView.setListener(null)
         super.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        shopInfo?.run {
-            outState.putString(
-                    KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID,
-                    saveShopInfoModelToCacheManager(this)
-            )
-        }
-        super.onSaveInstanceState(outState)
     }
 
     override fun loadData(page: Int) {}
@@ -191,10 +206,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
-            ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                redirectToSearchResultPage()
-            }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
                 shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
@@ -205,8 +216,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
-                redirectToShopProductListPage()
+                redirectToShopProductListPage(ETALASE_CLICK_RESULT_REDIRECTION)
             }
         }
         activity?.finish()
@@ -217,50 +227,34 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     override fun initInjector() {
-        DaggerShopSearchProductComponent
-                .builder()
-                .shopSearchProductModule(ShopSearchProductModule())
-                .shopComponent(getComponent(ShopComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopSearchProductComponent
+                    .builder()
+                    .shopSearchProductModule(ShopSearchProductModule())
+                    .shopComponent(getComponent(ShopComponent::class.java))
+                    .build()
+                    .inject(this)
+        }
     }
 
-    override fun onSearchSubmitted(keyword: String) {
+    fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            shopPageTrackingShopSearchProduct.typeSearch(isMyShop, keyword, customDimensionShopPage)
-            redirectToShopProductListPage()
+            redirectToShopProductListPage(SEARCH_SUBMIT_RESULT_REDIRECTION)
             activity?.finish()
         }
     }
 
-    override fun onSearchTextChanged(text: String) {
+    fun onSearchTextChanged(text: String) {
         searchQuery = text
         searchProduct()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_SORT -> {
-                val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
-                sortValue?.let {
-                    shopPageTrackingShopSearchProduct.sortProduct(sortName, isMyShop, customDimensionShopPage)
-                    this.sortValue = sortValue
-                    searchQuery = editTextSearchProduct.text.toString()
-                    redirectToShopProductListPage()
-                    activity?.finish()
-                }
-            }
-        }
     }
 
     private fun searchProduct() {
         adapter.clearAllElements()
         if (searchQuery.isNotEmpty()) {
             populateFixedSearchResult()
-            viewModel.getSearchShopProduct(shopInfo?.shopCore?.shopID.orEmpty(), searchQuery)
+            viewModel.getSearchShopProduct(shopId, searchQuery)
         }
     }
 
@@ -270,46 +264,51 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     this,
                     ErrorHandler.getErrorMessage(this.context, throwable),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.retry),
+                    getString(com.tokopedia.merchantvoucher.R.string.retry),
                     onClickListener
             )
         }
     }
 
-    private fun redirectToShopProductListPage() {
-        shopInfo?.run {
-            val intent = ShopProductListActivity.createIntent(
-                    context,
-                    shopCore.shopID,
-                    searchQuery,
-                    "",
-                    shopAttribution,
-                    sortValue,
-                    shopRef
-            )
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            startActivity(intent)
-        }
+    private fun redirectToShopProductListPage(sourceOfRedirection: String) {
+        val intent = ShopProductListResultActivity.createIntentWithSourceRedirection(
+                context,
+                shopId,
+                searchQuery,
+                "",
+                shopAttribution,
+                shopRef,
+                sourceOfRedirection
+        )
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
     }
 
     private fun redirectToProductDetailPage(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
-    private fun redirectToSearchResultPage() {
-        RouteManager.route(
-                context,
-                "$DISCOVERY_SEARCH?q=$searchQuery"
-        )
-    }
-
     private fun observeShopSearchProductResult() {
-        viewModel.shopSearchProductResult.observe(this, Observer {
+        viewModel.shopSearchProductResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     populateDynamicSearchResult(it.data)
                 }
                 is Fail -> {
+                    val throwable = it.throwable
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeShopSearchProductResult.name,
+                                liveDataName = ShopSearchProductViewModel::shopSearchProductResult.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
+                        )
+                    }
                     showToasterRequestError(it.throwable, View.OnClickListener {
                         searchProduct()
                     })
@@ -325,22 +324,17 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         val listData = mutableListOf<ShopSearchProductDataModel>().apply {
             add(ShopSearchProductFixedResultDataModel(
                     searchQuery,
-                    getString(R.string.shop_search_product_in_this_shop_etalase),
+                    getString(R.string.shop_search_product_in_shop_name, shopName),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
-            ))
-            add(ShopSearchProductFixedResultDataModel(
-                    searchQuery,
-                    getString(R.string.shop_search_product_in_tokopedia),
-                    ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP
             ))
         }
         renderList(listData, false)
     }
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
-        val listData: MutableList<ShopSearchProductDataModel> = arrayListOf()
+        productListData.clear()
         universeSearchResponse.universeSearch.data.firstOrNull()?.items?.forEach {
-            listData.add(ShopSearchProductDynamicResultDataModel(
+            productListData.add(ShopSearchProductDynamicResultDataModel(
                     it.imageUri,
                     it.keyword,
                     it.affiliateUsername,
@@ -350,25 +344,27 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     ShopSearchProductDataModel.Type.TYPE_PDP
             ))
         }
-        renderList(listData, false)
+        renderList(productListData, false)
     }
 
     private fun initViewNew(view: View) {
-        showSortButton()
-        with(getRecyclerView(view) as VerticalRecyclerView) {
+        textCancel = viewBinding?.textCancel
+        editTextSearchProduct = viewBinding?.editTextSearchProduct
+        imageViewClearButton = viewBinding?.imageViewClearButton
+        hideClearButton()
+        (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()
             addItemDecoration(ShopSearchProductDividerItemDecoration(
-                    view.context.resources.getDrawable(R.drawable.bg_line_separator_thin)
+                    view.context.resources.getDrawable(R.drawable.shop_page_bg_line_separator_thin)
             ))
         }
-        searchInputView.visibility = View.GONE
-        textCancel.setOnClickListener {
+        textCancel?.setOnClickListener {
             onClickCancel()
         }
-        with(editTextSearchProduct) {
+        editTextSearchProduct?.apply {
             hint = getString(
                     R.string.shop_product_search_hint_2,
-                    MethodChecker.fromHtml(shopInfo?.shopCore?.name.orEmpty()).toString()
+                    MethodChecker.fromHtml(shopName).toString()
             )
             addTextChangedListener(getSearchTextWatcher())
             setOnEditorActionListener(getSearchEditorActionListener())
@@ -377,11 +373,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             setText(searchQuery)
             setSelection(searchQuery.length)
         }
-        shopPageMainSortIcon.setOnClickListener {
-            onClickSort()
-        }
-        image_view_clear_button.setOnClickListener {
-            editTextSearchProduct.text.clear()
+        imageViewClearButton?.setOnClickListener {
+            editTextSearchProduct?.text?.clear()
         }
     }
 
@@ -400,7 +393,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             override fun onTextChanged(text: CharSequence, start: Int, before: Int, count: Int) {
                 timer?.cancel()
                 if (TextUtils.isEmpty(text.toString())) {
-                    showSortButton()
+                    hideClearButton()
                 } else {
                     showClearButton()
                 }
@@ -408,26 +401,26 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
             private fun runTimer(text: String) {
                 timer = Timer()
-                timer?.schedule(delayTextChanged) {
+                timer?.schedule(DEFAULT_DELAY_TEXT_CHANGED) {
                     updateListener(text)
                 }
             }
 
             private fun updateListener(text: String) {
                 val myRunnable = Runnable { onSearchTextChanged(text) }
-                Handler(context?.mainLooper).post(myRunnable)
+                context?.mainLooper?.let {
+                    Handler(it).post(myRunnable)
+                }
             }
         }
     }
 
     private fun showClearButton() {
-        shopPageMainSortIcon.hide()
-        image_view_clear_button.show()
+        imageViewClearButton?.show()
     }
 
-    private fun showSortButton() {
-        shopPageMainSortIcon.show()
-        image_view_clear_button.hide()
+    private fun hideClearButton() {
+        imageViewClearButton?.hide()
     }
 
     private fun getSearchEditorActionListener(): TextView.OnEditorActionListener {
@@ -457,31 +450,14 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
     }
 
-    private fun getShopInfoFromCacheManager() {
-        shopInfo = context?.run {
-            SaveInstanceCacheManager(this, shopInfoCacheManagerId).run {
-                get(ShopInfo.TAG, ShopInfo::class.java)
-            }
-        }
-        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
-    }
-
-    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
-        return context?.run {
-            val cacheManager = SaveInstanceCacheManager(this, true)
-            cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7))
-            cacheManager.id
-        }
-    }
-
-    private fun getArgumentsData(savedInstanceState: Bundle?) {
+    private fun getArgumentsData() {
         arguments?.run {
-            shopInfoCacheManagerId = savedInstanceState?.run {
-                getString(KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID).orEmpty()
-            } ?: getString(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
+            shopId = getString(KEY_SHOP_ID).orEmpty()
+            shopName = getString(KEY_SHOP_NAME).orEmpty()
+            isOfficial = getBoolean(KEY_IS_OFFICIAL, false)
+            isGold = getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
-            sortValue = getString(KEY_SORT_ID).orEmpty()
             shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
     }
@@ -491,17 +467,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 .get(ShopSearchProductViewModel::class.java)
     }
 
-    private fun onClickSort() {
-        shopPageTrackingShopSearchProduct.clickSort(isMyShop, customDimensionShopPage)
-        redirectToShopProductSortPage()
-    }
-
-    private fun redirectToShopProductSortPage() {
-        val intent = ShopProductSortActivity.createIntent(activity, sortValue)
-        startActivityForResult(intent, REQUEST_CODE_SORT)
-    }
-
     private fun onClickCancel() {
         activity?.finish()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 }

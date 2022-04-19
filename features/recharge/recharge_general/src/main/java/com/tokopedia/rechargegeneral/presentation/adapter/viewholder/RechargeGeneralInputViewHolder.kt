@@ -6,18 +6,18 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
-import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment.Companion.INPUT_TYPE_FAVORITE_NUMBER
 import java.util.regex.Pattern
 
-class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
+class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListener, val isAddSBM: Boolean = false) : AbstractViewHolder<RechargeGeneralProductInput>(view) {
 
     override fun bind(enquiryData: RechargeGeneralProductInput) {
         val inputView = itemView as TopupBillsInputFieldWidget
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
-        inputView.setHint("")
         inputView.setInputType(enquiryData.style)
-        inputView.isCustomInput = enquiryData.isFavoriteNumber
+        if (!isAddSBM) {
+            inputView.isCustomInput = enquiryData.isFavoriteNumber
+        }
         // Add delay to reduce tracking events
         inputView.setDelayTextChanged(1000)
 
@@ -38,7 +38,11 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
 
             // Setup favorite number input
             override fun onCustomInputClick() {
-                listener.onCustomInputClick(inputView, enquiryData)
+                listener.onCustomInputClick(inputView, enquiryData, position = position)
+            }
+
+            override fun onTextChangeInput() {
+                listener.onTextChangeInput()
             }
         }
         if (enquiryData.help.isNotEmpty()) {
@@ -50,7 +54,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         }
 
         // Set item data
-        if (enquiryData.value.isNotEmpty()) {
+        if (enquiryData.value.isNotEmpty() && !isAddSBM) {
             inputView.setInputText(enquiryData.value, false)
             listener.onFinishInput(enquiryData.name, enquiryData.value, adapterPosition)
         }

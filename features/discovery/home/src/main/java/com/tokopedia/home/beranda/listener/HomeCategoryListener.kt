@@ -1,15 +1,17 @@
 package com.tokopedia.home.beranda.listener
 
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.HashMap
+import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -61,9 +63,9 @@ interface HomeCategoryListener {
 
     fun onDynamicChannelClicked(applink: String)
 
-    fun onRefreshTokoPointButtonClicked()
+    fun onRetryMembership()
 
-    fun onRefreshTokoCashButtonClicked()
+    fun onRetryWalletApp()
 
     fun onLegoBannerClicked(actionLink: String, trackingAttribution: String)
 
@@ -83,10 +85,6 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
-    fun launchPermissionChecker()
-
-    fun onCloseGeolocationView()
-
     fun sendEETracking(data: HashMap<String, Any>)
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
@@ -95,19 +93,45 @@ interface HomeCategoryListener {
 
     fun getWindowWidth(): Int
 
-    fun refreshHomeData()
+    fun refreshHomeData(forceRefresh: Boolean = false)
 
     fun isShowSeeAllCard(): Boolean
 
     fun getTabBusinessWidget(position: Int)
 
-    fun getBusinessUnit(tabId: Int, position: Int)
+    fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
-    fun getPlayChannel(position: Int)
+    fun removeViewHolderAtPosition(position: Int)
 
-    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
+    fun onDynamicChannelRetryClicked()
 
-    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
+    fun getTopAdsBannerNextPage(): String
 
-    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
+    fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int)
+
+    fun getUserIdFromViewModel(): String
+
+    fun recommendationListOnCloseBuyAgain(id : String, position: Int)
+
+    fun getOneClickCheckoutHomeComponent(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int)
+
+    fun declineRechargeRecommendationItem(requestParams: Map<String, String>)
+
+    fun declineSalamItem(requestParams: Map<String, Int>)
+
+    fun getRechargeBUWidget(source: WidgetSource)
+
+    fun onChooseAddressUpdated()
+
+    fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
+
+    fun onChooseAddressServerDown()
+
+    fun needToRotateTokopoints(): Boolean
+
+    fun setRotateTokopointsDone(boolean: Boolean)
+
+    fun onTokonowViewCaptured(view: View?, parentPosition: Int)
+
+    fun dismissTokonowCoachmark(parentPosition: Int)
 }

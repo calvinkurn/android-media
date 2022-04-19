@@ -31,6 +31,12 @@ query productRecommendationWidget($pageName: String, $pageNumber: Int, $xDevice:
             slashedPriceInt
             slashedPrice
             discountPercentage
+            labelgroup {
+                position
+                title
+                type
+                url
+            }
             shop {
               id
               name

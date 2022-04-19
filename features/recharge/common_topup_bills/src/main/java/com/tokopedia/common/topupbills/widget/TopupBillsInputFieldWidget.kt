@@ -13,10 +13,10 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_topup_bills_input_field.view.*
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
@@ -25,22 +25,22 @@ import org.jetbrains.annotations.NotNull
  * Created by resakemal on 20/08/19.
  */
 open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context: Context,
-                                                           attrs: AttributeSet? = null,
-                                                           defStyleAttr: Int = 0,
-                                                           var actionListener: ActionListener? = null)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+                                                                attrs: AttributeSet? = null,
+                                                                defStyleAttr: Int = 0,
+                                                                var actionListener: ActionListener? = null)
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     var isCustomInput = false
-    set(value) {
-        field = value
-        toggleDropdownIcon(value)
-    }
+        set(value) {
+            field = value
+            toggleDropdownIcon(value)
+        }
 
     var infoListener: InfoListener? = null
-    set(value) {
-        field = value
-        if (value != null) input_info.show() else input_info.hide()
-    }
+        set(value) {
+            field = value
+            if (value != null) input_info.show() else input_info.hide()
+        }
 
     private var finishInputJob: Job? = null
     private var delayTextChanged: Long = DEFAULT_DELAY_TEXT_CHANGED_MILLIS
@@ -56,7 +56,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                 styledAttributes.recycle()
             }
         }
-      
+
         ac_input.clearFocus()
 
         btn_clear_input.setOnClickListener {
@@ -74,14 +74,17 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
             }
             false
         }
-        ac_input.setKeyImeChangeListener { _, event ->
-            if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-                actionListener?.onFinishInput(getInputText())
-                ac_input.clearFocus()
+        ac_input.keyImeChangeListener = object : TopupBillsBackEditText.KeyImeChange {
+            override fun onKeyIme(keyCode: Int, event: KeyEvent) {
+                if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                    actionListener?.onFinishInput(getInputText())
+                    ac_input.clearFocus()
+                }
             }
         }
+
         ac_input.setOnTouchListener { view, motionEvent ->
-            if(motionEvent.action == MotionEvent.ACTION_UP) {
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
                 if (isCustomInput) {
                     actionListener?.onCustomInputClick()
                     return@setOnTouchListener true
@@ -109,6 +112,10 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     fun setLabel(label: String) {
         input_label.text = label
+    }
+
+    fun getLabel(): String {
+        return input_label.text.toString()
     }
 
     fun setHint(hint: String) {
@@ -165,6 +172,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                         inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
                     }
                     btn_clear_input.visibility = View.VISIBLE
+                    actionListener?.onTextChangeInput()
                 }
             }
         }
@@ -176,7 +184,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     fun setInputType(type: String) {
         ac_input.inputType = when (type) {
-            INPUT_NUMERIC ->  InputType.TYPE_CLASS_NUMBER
+            INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
             INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
             INPUT_TELCO -> InputType.TYPE_CLASS_PHONE
             else -> InputType.TYPE_CLASS_NUMBER
@@ -185,7 +193,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     fun resetState() {
         isCustomInput = false
-        ac_input.setText("")
         hideErrorMessage()
     }
 
@@ -196,6 +203,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
 
     interface ActionListener {
         fun onFinishInput(input: String)
+        fun onTextChangeInput()
         fun onCustomInputClick()
     }
 

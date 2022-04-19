@@ -1,27 +1,30 @@
 package com.tokopedia.shop.feed.view.adapter.holder
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.EmptyFeedShopBinding
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import kotlinx.android.synthetic.main.empty_feed_shop.view.*
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by yfsx on 17/05/19.
  */
 class EmptyFeedShopViewHolder(v: View,
                               private val mainView: FeedShopContract.View)
-    : AbstractViewHolder<EmptyFeedShopViewModel>(v) {
+    : AbstractViewHolder<EmptyFeedShopUiModel>(v) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.empty_feed_shop
     }
 
-    override fun bind(element: EmptyFeedShopViewModel?) {
-        itemView.btn_post.setOnClickListener{mainView.onEmptyFeedButtonClicked()}
+    private val viewBinding : EmptyFeedShopBinding? by viewBinding()
+    private val btnPost: View? = viewBinding?.btnPost
+
+    override fun bind(element: EmptyFeedShopUiModel?) {
+        btnPost?.setOnClickListener { mainView.onEmptyFeedButtonClicked() }
     }
 }

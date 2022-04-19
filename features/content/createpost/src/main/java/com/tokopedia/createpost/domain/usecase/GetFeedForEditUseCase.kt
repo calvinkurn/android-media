@@ -1,8 +1,8 @@
 package com.tokopedia.createpost.domain.usecase
 
-import com.tokopedia.createpost.domain.entity.FeedDetail
-import com.tokopedia.createpost.view.viewmodel.MediaModel
-import com.tokopedia.createpost.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.domain.entity.FeedDetail
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel

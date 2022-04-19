@@ -7,9 +7,9 @@ import androidx.core.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
-import com.tokopedia.pushnotif.Constant;
+import com.tokopedia.pushnotif.data.constant.Constant;
 import com.tokopedia.pushnotif.R;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 
 /**
  * @author ricoharisin .d
@@ -21,7 +21,9 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
     }
 
     @Override
-    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
+    public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
         builder.setContentTitle(TextUtils.isEmpty(applinkNotificationModel.getTitle()) ? context.getResources().getString(R.string.title_general_push_notification) : applinkNotificationModel.getTitle());
         builder.setContentText(applinkNotificationModel.getDesc());

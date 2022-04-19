@@ -2,13 +2,13 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.view.*
-import androidx.core.content.ContextCompat
+import android.os.Bundle
+import android.view.MotionEvent
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
@@ -30,14 +30,26 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
             intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_NAME, showcaseName)
             return intent
         }
+
         const val DEFAULT_SHOWCASE_ID = "0"
+
+        @LayoutRes
+        val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+
+        @IdRes
+        val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
     private var isActionEdit: Boolean = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
 
-    override fun getNewFragment(): Fragment? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setBackgroundColor()
+    }
+
+    override fun getNewFragment(): Fragment {
         intent?.extras?.let {
             isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
             showcaseId = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
@@ -47,23 +59,11 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_showcase_add
+        return ACTIVITY_LAYOUT
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
-    }
-
-    override fun setupStatusBar(){
-        val window: Window = window
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
+        return PARENT_VIEW_ACTIVITY
     }
 
     override fun onBackPressed() {
@@ -82,6 +82,12 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
             currentFocus?.clearFocus()
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun setBackgroundColor() {
+        window.decorView.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+        )
     }
 
 }

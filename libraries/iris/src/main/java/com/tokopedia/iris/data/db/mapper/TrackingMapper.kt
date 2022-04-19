@@ -10,6 +10,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import java.lang.Exception
 
 /**
  * Created by meta on 23/11/18.
@@ -28,7 +31,7 @@ class TrackingMapper {
         row.put(DEVICE_ID, deviceId)
         row.put(USER_ID, userId)
         row.put(EVENT_DATA, event)
-        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
+        row.put(APP_VERSION, "$ANDROID_DASH${GlobalConfig.VERSION_NAME}")
 
         data.put(row)
 
@@ -67,7 +70,7 @@ class TrackingMapper {
                     if (event.length() > 0) {
                         row.put(EVENT_DATA, event)
                         data.put(row)
-                        outputTracking.addAll(tracking.subList(0, i+1))
+                        outputTracking.addAll(tracking.subList(0, i + 1))
                     }
                     event = JSONArray()
                     done = true
@@ -101,7 +104,13 @@ class TrackingMapper {
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
                 item.put("event", keyEvent)
-                item.put("hits_time", Calendar.getInstance().timeInMillis)
+                val hits_time = Calendar.getInstance().timeInMillis
+                item.put("hits_time",hits_time)
+                try{
+                    val _ignore = hits_time.toString().toLong()
+                }catch (e: Exception){
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "hitsTimeInvalid", "value" to hits_time.toString(), "exception" to e.toString()))
+                }
                 item
             } catch (e: JSONException) {
                 JSONObject()

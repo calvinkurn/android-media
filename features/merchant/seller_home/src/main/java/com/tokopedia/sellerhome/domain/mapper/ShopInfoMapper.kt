@@ -13,15 +13,8 @@ class ShopInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(info: Info?): ShopInfoUiModel {
         if (null == info) return ShopInfoUiModel()
         return ShopInfoUiModel(
-                dateShopCreated = info.dateShopCreated,
-                shopAvatar = info.shopAvatar,
-                shopCover = info.shopCover,
-                shopDomain = info.shopDomain,
-                shopId = info.shopId,
-                shopLocation = info.shopLocation,
                 shopName = info.shopName,
-                shopScore = info.shopScore,
-                totalActiveProduct = info.totalActiveProduct
+                shopAvatar = info.shopAvatar
         )
     }
 }

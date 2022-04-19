@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -120,18 +121,23 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
                 snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
-                snackbar.setActionTextColor(Color.WHITE)
+                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 snackbar.show()
             }
         }
-        btnUseVoucher.hide()
+        if (merchantVoucherViewModel?.isPublic == false) {
+            btnContainer?.show()
+            btnUseVoucher?.show()
+        } else {
+            btnUseVoucher.hide()
+        }
     }
 
     private fun copyVoucherCodeToClipboard() {
         val voucherCode = merchantVoucherViewModel?.voucherCode
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(voucherCode, voucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {

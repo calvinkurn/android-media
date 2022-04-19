@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tool="http://schemas.android.com/tools"
     android:id="@+id/push_noti_background"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_72">
+    android:layout_height="72dp">
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -28,17 +29,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/dp_3"
                 android:gravity="center_vertical"
-                android:text="Tokopedia"
+                android:text="@string/cm_app_title_name"
+                android:singleLine="true"
                 android:textColor="@color/medium_green_70"
                 android:textSize="@dimen/sp_12" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:background="@color/transparent"
                 android:src="@drawable/cm_notification_icon_dot" />
 
@@ -46,12 +48,12 @@
                 android:id="@+id/push_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:paddingRight="@dimen/dp_7"
-                android:textAppearance="@style/TextAppearance.Compat.Notification.Time"
-                android:textColor="@color/cm_grey_255"
+                android:textColor="@color/Unify_N700_44"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textSize="@dimen/sp_12"
                 tool:text="11:11 am" />
+
          </LinearLayout>
 
         <TextView
@@ -62,8 +64,8 @@
             android:layout_marginTop="@dimen/dp_7"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="Title"
-            android:textColor="@color/cm_title_black_255"
+            tool:text="Title"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_13" />
 
         <TextView
@@ -71,18 +73,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/push_title"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textColor="@color/cm_light_grey_255"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_13" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/push_image"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_weight="0.44">
 
@@ -93,5 +96,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:visibility="visible" />
+
     </RelativeLayout>
+
 </LinearLayout>

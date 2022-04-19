@@ -39,8 +39,16 @@ public class KycUserProjectInfoPojo {
         private boolean isAllowToRegister;
 
         @Expose
+        @SerializedName("Reason")
+        private ArrayList<String> reasonList;
+
+        @Expose
         @SerializedName("TypeList")
         private ArrayList<TypeList> typeLists;
+
+        @Expose
+        @SerializedName("IsSelfie")
+        private Boolean isSelfie;
 
         public Integer getStatus() {
             return status;
@@ -74,12 +82,26 @@ public class KycUserProjectInfoPojo {
             isAllowToRegister = allowToRegister;
         }
 
+        public List<String> getReasonList() {
+            return reasonList;
+        }
+
+        public void setReasonList(ArrayList<String> reasonList) {
+            this.reasonList = reasonList;
+        }
+
         public List<TypeList> getTypeLists() {
             return typeLists;
         }
 
         public void setTypeLists(ArrayList<TypeList> typeLists) {
             this.typeLists = typeLists;
+        }
+
+        public boolean isSelfie() { return isSelfie; }
+
+        public void setSelfie(Boolean selfie) {
+            isSelfie = selfie;
         }
     }
 

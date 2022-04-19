@@ -26,7 +26,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_status"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3"
                     tools:textSize="@dimen/hotel_12dp" />
 
@@ -34,9 +36,10 @@
                     android:id="@+id/transaction_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:typographyType="heading_4"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status_hint"
+                    app:typographyType="heading_4"
                     tools:text="Transaksi Berhasil"
                     tools:textSize="@dimen/sp_17"
                     tools:textStyle="bold" />
@@ -46,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    android:background="@color/hotel_grey_300"
+                    android:background="@color/Unify_N100"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -62,12 +65,12 @@
                     android:paddingEnd="@dimen/layout_lvl3"
                     android:paddingRight="@dimen/layout_lvl3"
                     android:paddingBottom="@dimen/hotel_10dp"
+                    android:textColor="@color/Unify_N700_68"
                     android:visibility="gone"
-                    android:textColor="@color/Neutral_N700_68"
-                    app:typographyType="body_3"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_seperator"
+                    app:typographyType="body_3"
                     tools:text="Dana Pembayaran akan dikembalikan ke Saldo Tokopedia/OVO/Limit Kartu Kredit"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transaction_detail_title_recycler_view"
@@ -81,7 +84,7 @@
                 android:id="@+id/transaction_seperator_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -94,13 +97,14 @@
                     android:id="@+id/invoice_number"
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/layout_lvl2"
-                    app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/invoice_see_button"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="body_3"
                     tools:text="IVR/20170713/XVII/VII/16205811"
-                    tools:textColor="@color/Neutral_N700_96"
+                    tools:textColor="@color/Unify_N700_96"
                     tools:textSize="@dimen/sp_12" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -109,12 +113,12 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/hotel_6dp"
                     android:text="@string/hotel_order_detail_see_invoice_text"
-                    android:textColor="@color/Green_G500"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
+                    android:textColor="@color/Unify_G500"
                     app:layout_constraintBottom_toBottomOf="@+id/invoice_number"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/invoice_number"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
 
@@ -141,13 +145,15 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
-                android:textColor="@color/Green_G500"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintEnd_toStartOf="@+id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:layout_editor_absoluteY="16dp"
-                tools:textSize="@dimen/sp_14"
+                tools:textSize="14sp"
                 tools:textStyle="bold" />
 
             <ImageView
@@ -156,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/hotel_6dp"
                 android:text="@string/hotel_order_detail_see_invoice_text"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/see_evoucher_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/see_evoucher_text"

@@ -1,13 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.buyerorder">
 
     <application>
-        <activity android:name=".detail.view.activity.SeeInvoiceActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".detail.view.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -18,51 +22,40 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".detail.view.activity.RequestCancelActivity"
-            android:label="@string/title_activity_people_reason"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
-
-        <activity android:name=".detail.view.activity.OrderListwebViewActivity"
-            android:screenOrientation="portrait"
+            android:name=".detail.view.activity.OrderListwebViewActivity"
             android:configChanges="uiMode"
-            android:theme="@style/Theme.White"/>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".detail.view.activity.OrderListDetailActivity"
             android:label="@string/title_order_detail"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-
-        <activity
-            android:name=".list.view.activity.OrderListActivity"
-            android:label="@string/title_order_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" >
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".recharge.presentation.activity.RechargeOrderDetailActivity"
+            android:label="@string/title_order_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_transaction"
-                    android:path="@string/path_order_list"
+                    android:host="@string/host_digital"
+                    android:path="@string/path_order"
                     android:scheme="@string/internal_scheme" />
+                <data
+                    android:host="@string/host_order"
+                    android:path=""
+                    android:scheme="@string/internal_scheme"
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".list.view.activity.SellerOrderListActivity"
-            android:label="@string/title_order_list"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Toolbar.White" />
-
     </application>
-
 </manifest>

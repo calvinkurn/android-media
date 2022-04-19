@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "profile": {
+        "user_id": "1234567",
+        "full_name": "Muhammad Furqan",
+        "first_name": "Muhammad",
+        "email": "dummyemail@gmail.com",
+        "bday": "1995-11-11T00:00:00Z",
+        "gender": "1",
+        "phone": "6281234567890",
+        "phone_masked": "XXXX-XXXX-6583",
+        "phone_verified": true,
+        "profile_picture": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/1/25/5987896/5987896_f90a616e-471b-47e7-b435-303a130ea997.jpg",
+        "created_password": true,
+        "isLoggedIn": true
+      },
+      "shopBasicData": {
+        "result": {
+          "shopID": "",
+          "name": "",
+          "domain": "",
+          "level": 0,
+          "logo": ""
+        }
+      }
+    }
+  }
+]

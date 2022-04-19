@@ -10,20 +10,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/topChatSellerMigrationTicker"
+        <LinearLayout
+            android:id="@+id/layout_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_ban_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:tickerType="error"
+                app:titleText="@string/title_topchat_chat_banned_seller"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
+            android:id="@+id/cf_chat_list"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
             android:visibility="gone"
-            app:tickerType="announcement"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_ticker"
+            tools:layout_height="70dp"
+            tools:visibility="visible" />
+
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintTop_toBottomOf="@id/topChatSellerMigrationTicker"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cf_chat_list">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
@@ -44,7 +67,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:visibility="gone"
-        app:backgroundTint="@color/Yellow_Y400"
+        app:backgroundTint="@color/Unify_Y400"
         app:fabCustomSize="@dimen/dp_topchat_56"
         app:layout_anchorGravity="bottom|center"
         app:maxImageSize="33dp"

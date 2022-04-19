@@ -10,74 +10,83 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 object ApplinkConstInternalSellerapp {
 
-    @JvmField
-    val HOST_SELLERAPP = "sellerapp"
+    const val HOST_SELLERAPP = "sellerapp"
 
-    @JvmField
-    val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
-    @JvmField
-    val EXTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_SELLERAPP}"
+    const val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
+
+    const val EXTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_SELLERAPP}"
 
     //SellerHomeActivity
-    @JvmField
-    val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
+    const val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
-    @JvmField
-    val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
+    //InitialSearchActivity
+    const val SELLER_SEARCH = "$INTERNAL_SELLERAPP/seller-search"
 
-    @JvmField
-    val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
+    const val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
 
-    @JvmField
-    val SELLER_HOME_SOM_ALL = "$INTERNAL_SELLERAPP/sellerhome-som-allorder"
+    const val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
 
-    @JvmField
-    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_SELLERAPP/sellerhome-som-neworder"
+    const val SELLER_HOME_SOM_ALL = "$INTERNAL_SELLERAPP/sellerhome-som-allorder"
 
-    @JvmField
-    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_SELLERAPP/sellerhome-som-readytoship"
+    const val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_SELLERAPP/sellerhome-som-neworder"
 
-    @JvmField
-    val SELLER_HOME_SOM_SHIPPED = "$INTERNAL_SELLERAPP/sellerhome-som-inshipping"
+    const val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_SELLERAPP/sellerhome-som-readytoship"
 
-    @JvmField
-    val SELLER_HOME_SOM_DONE = "$INTERNAL_SELLERAPP/sellerhome-som-done"
+    const val SELLER_HOME_SOM_SHIPPED = "$INTERNAL_SELLERAPP/sellerhome-som-inshipping"
 
-    @JvmField
-    val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
+    const val SELLER_HOME_SOM_DONE = "$INTERNAL_SELLERAPP/sellerhome-som-done"
+
+    const val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
+
+    const val SELLER_HOME_SOM_CANCELLATION_REQUEST = "$INTERNAL_SELLERAPP/sellerhome-som-cancellation-request"
 
     //SellerOnboardingActivity
-    @JvmField
-    val WELCOME = "$INTERNAL_SELLERAPP/welcome"
+    const val WELCOME = "$INTERNAL_SELLERAPP/welcome"
 
     //CentralizedPromoActivity
-    @JvmField
-    val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
-    @JvmField
-    val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
+    const val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+
+    //FirstVoucherActivity
+    const val CENTRALIZED_PROMO_FIRST_TIME = "$INTERNAL_SELLERAPP/first-time-centralized-promo"
 
     //MenuSettingActivity
-    @JvmField
-    val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
+    const val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
     //SellerSeamlessLoginFragment
-    @JvmField
-    val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
-
+    const val SEAMLESS_CHOOSE_ACCOUNT = "$INTERNAL_SELLERAPP/login-seamless-choose-account"
 
     //CreateMerchantVoucherStepsActivity
-    @JvmField
-    val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+    const val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+    const val CREATE_VOUCHER_PRODUCT = "$INTERNAL_SELLERAPP/create-voucher-product/{product_id}/"
 
     //VoucherListActivity
-    @JvmField
-    val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
-    @JvmField
-    val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
-    @JvmField
-    val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+    const val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
+    const val VOUCHER_ACTIVE = "$INTERNAL_SELLERAPP/voucher-list/active"
+    const val VOUCHER_HISTORY = "$INTERNAL_SELLERAPP/voucher-list/history"
+    const val VOUCHER_PRODUCT_LIST = "$INTERNAL_SELLERAPP/voucher-product-list/{mode}/"
 
-    @JvmStatic
-    val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+    //VoucherDetailActivity
+    const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
+    const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
+
+    // CampaignListActivity
+    const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
+
+    //SellerMenuActivity
+    const val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
+
+    // SellerSettingsActivity
+    const val SELLER_SETTINGS = "$INTERNAL_SELLERAPP/seller-settings"
+
+    //AdminRoleAuthorizeActivity
+    const val ADMIN_AUTHORIZE = "$INTERNAL_SELLERAPP/admin-authorize/{feature}/"
+
+    //SellerFeedbackActivity
+    const val SELLER_FEEDBACK = "$INTERNAL_SELLERAPP/seller-feedback"
+
+    const val REVIEW_REMINDER = "$INTERNAL_SELLERAPP/review-reminder"
+
+    //AdminRestrictionActivity
+    const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
 }

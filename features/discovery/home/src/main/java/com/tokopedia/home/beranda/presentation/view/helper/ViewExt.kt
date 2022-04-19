@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.home.beranda.presentation.view.listener.SafeClickListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,4 +21,16 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
         onSafeClick(it)
     }
     setOnClickListener(safeClickListener)
+}
+
+fun String.isHexColor(): Boolean {
+    return HexValidator.validate(this)
+}
+
+fun View.getPositionWidgetVertical(): Int {
+    val originalPosition = intArrayOf(0,0)
+    this.getLocationInWindow(originalPosition)
+    return if (originalPosition.size > 1)
+        originalPosition[1]
+    else 0
 }

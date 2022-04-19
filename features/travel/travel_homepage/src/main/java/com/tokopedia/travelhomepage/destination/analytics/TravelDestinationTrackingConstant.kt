@@ -40,6 +40,7 @@ object TravelDestinationTrackingEventNameConstant {
     const val PROMO_CLICK = "promoClick"
     const val PRODUCT_CLICK = "productClick"
     const val PRODUCT_VIEW = "productView"
+    const val CLICK_HOMEPAGE = "clickHomepage"
 }
 
 object TravelHomepageTrackingEEConstant {

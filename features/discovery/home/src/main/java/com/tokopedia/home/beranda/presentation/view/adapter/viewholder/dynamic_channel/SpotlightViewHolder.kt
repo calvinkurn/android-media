@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
@@ -27,8 +26,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
+import com.tokopedia.home_component.util.toDpFloat
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
 import java.util.ArrayList
@@ -40,8 +42,8 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
     init {
         adapter = SpotlightAdapter(listener)
         recyclerView = itemView.findViewById(R.id.list)
-        val edgeMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-        val spacingBetween = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        val edgeMargin = 16f.toDpInt()
+        val spacingBetween = 8f.toDpInt()
         recyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(itemView.context,
@@ -95,7 +97,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
              * prevent spotlight title increase text size
              * when user font size preference is large
              */
-            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16).toFloat())
+            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, 16f.toDpFloat())
             title.text = model.title
 
             /**
@@ -128,7 +130,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
             longDescription.setSpan(StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             description.text = longDescription
 
-            ImageHandler.loadImageFitCenter(context, background, model.backgroundImageUrl)
+            background.loadImage(model.backgroundImageUrl)
 
             container.setOnClickListener { view ->
                 eventClickSpotlight(model, position)

@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,20 +26,25 @@ import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.oms.R;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
 public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
-    private static String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
-    private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
-    private static String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
-    private static String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
-    private static String SUCCESS_CALLBACK = "tokopedia://order/";
+    private static final String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
+    private static final String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
+    private static final String DELETE_CC_SUCESS_CALLBACK = "tokopedia://action_delete_cc_success";
+    private static final String DELETE_CC_FAIL_CALLBACK = "tokopedia://action_delete_cc_fail";
+    private static final String SUCCESS_CALLBACK = "tokopedia://order/";
 
     private static final String EXTRA_KEY_POST_PARAMS = "EXTRA_KEY_POST_PARAMS";
     private static final String EXTRA_KEY_URL = "URL";
@@ -48,6 +55,9 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    private static final int REQUEST_CODE_LIVENESS = 1235;
+    public static final String CUST_OVERLAY_URL = "imgurl";
+    private static final String CUST_HEADER = "header_text";
 
     private WebView mWebView;
     private ProgressBar mProgress;
@@ -73,6 +83,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSecureWindowFlag();
         mPostParams = getIntent().getStringExtra(EXTRA_KEY_POST_PARAMS);
         mURl = getIntent().getStringExtra(EXTRA_KEY_URL);
         isPostRequest = getIntent().getBooleanExtra(EXTRA_IS_POST_REQUEST, false);
@@ -87,6 +98,18 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
     }
 
+    private void setSecureWindowFlag() {
+        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread(() -> {
+                Window window = getWindow();
+                if (window != null) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            });
+        }
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -97,11 +120,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     }
 
     private void initUI() {
-        mWebView = (WebView) findViewById(R.id.webview);
-        mProgress = (ProgressBar) findViewById(R.id.progressbar);
+        mWebView = findViewById(R.id.webview);
+        mProgress = findViewById(R.id.progressbar);
 
         //setup toolbar
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mToolbar.setTitle(title);
             setSupportActionBar(mToolbar);
@@ -146,7 +169,11 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             public synchronized void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 Timber.d("ScroogeActivity :: Error occured while loading url " + failingUrl);
-                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description);
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", failingUrl);
+                messageMap.put("error_code", String.valueOf(errorCode));
+                messageMap.put("desc", description);
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", messageMap);
                 Intent responseIntent = new Intent();
                 responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);
@@ -175,7 +202,17 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Uri uri = Uri.parse(url);
                 Intent responseIntent = new Intent();
+                String queryParam = null;
+                String headerText = null;
+
+                try {
+                    queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+                    headerText = uri.getQueryParameter(CUST_HEADER);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 boolean returnVal = true;
                 if (url.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
@@ -202,12 +239,15 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 } else if (url.contains(HCI_CAMERA_KTP)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else if (url.contains(HCI_CAMERA_SELFIE)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText);
+                    return true;
+                } else if (url.startsWith(ApplinkConst.KYC_FORM_NO_PARAM)) {
+                    gotoAlaCarteKyc(uri);
                     return true;
                 } else {
                     returnVal = false;
@@ -225,11 +265,22 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         }
     }
 
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+
+        Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            mWebView.loadUrl(kycRedirectionUrl);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath);
@@ -256,5 +307,14 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
+        Intent intent = RouteManager.getIntent(ScroogeActivity.this, appLink);
+        if (overlayUrl != null)
+            intent.putExtra(CUST_OVERLAY_URL, overlayUrl);
+        if (headerText != null)
+            intent.putExtra(CUST_HEADER, headerText);
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
     }
 }

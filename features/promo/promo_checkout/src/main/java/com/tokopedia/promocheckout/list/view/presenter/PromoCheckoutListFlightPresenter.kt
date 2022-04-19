@@ -15,7 +15,7 @@ import rx.Subscriber
 class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCheckVoucherUseCase,
                                        val checkVoucherMapper: FlightCheckVoucherMapper) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListFlightContract.Presenter {
 
-    override fun checkPromoCode(cartID: String, promoCode: String) {
+    override fun checkPromoCode(cartID: String, promoCode: String, hexColor: String) {
         view.showProgressLoading()
 
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, cartID), object : Subscriber<GraphqlResponse>() {
@@ -28,6 +28,7 @@ class PromoCheckoutListFlightPresenter(private val checkVoucherUseCase: FlightCh
                     throw MessageErrorException(errorMessage.title)
                 } else {
                     val checkVoucherData = objects.getData<FlightCheckVoucher.Response>(FlightCheckVoucher.Response::class.java).response
+                    checkVoucherData.messageColor = hexColor
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData))
                 }
             }

@@ -6,8 +6,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -21,6 +22,8 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         inflateFragment()
     }
 
@@ -34,7 +37,7 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getLayoutRes() = R.layout.activity_shop_info
 
-    override fun getComponent(): ShopComponent = ShopComponentInstance.getComponent(application)
+    override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
     override fun getNewFragment(): Fragment? = createShopInfoFragment()
 
@@ -48,6 +51,14 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
         val shopData = intent.getParcelableExtra<ShopInfoData?>(EXTRA_SHOP_INFO)
 
         return ShopInfoFragment.createInstance(shopId, shopData)
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     companion object {

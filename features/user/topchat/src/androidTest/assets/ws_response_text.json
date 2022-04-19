@@ -1,0 +1,26 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 66961,
+    "from": "Try",
+    "from_uid": 12299592,
+    "from_user_name": "Try",
+    "from_role": "User",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/12299592/user_thumbnail/desktop",
+    "is_opposite": false,
+    "to_uid": 12299592,
+    "message": {
+      "censored_reply": "Hi seller",
+      "original_reply": "Hi seller",
+      "timestamp": "2021-02-13T14:58:37.695376298+07:00",
+      "timestamp_fmt": "13 February 2021, 14:58 WIB",
+      "timestamp_unix": 1613203117695,
+      "timestamp_unix_nano": 1613203117695376000
+    },
+    "start_time": "2021-02-13T07:58:37.284Z",
+    "show_rating": false,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": "inbox"
+  }
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "rechargeInquiry": {
+        "status": "DONE",
+        "retrySec": null,
+        "attributes": {
+          "UserID": "17211378",
+          "ProductID": "559",
+          "ClientNumber": "081288888888",
+          "Title": "Detail Pembayaran",
+          "Price": "Rp800.000.000",
+          "PricePlain": 800000000,
+          "mainInfo": [
+            {
+              "label": "Nomor Telepon",
+              "value": "081288888888"
+            },
+            {
+              "label": "Nama",
+              "value": "Tokope*** Use*"
+            },
+            {
+              "label": "Total Bayar",
+              "value": "Rp800.000.000"
+            }
+          ]
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "data": {
+    "id": "suggestion",
+    "name": "SUGGESTION",
+    "items": [
+      {
+        "template": "list_double_line_without_image",
+        "type": "local",
+        "applink": "tokopedia://people/5853939",
+        "url": "/people/5853939",
+        "title": "sneakers",
+        "subtitle": "di Waktu Indonesia Belanja",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        }
+      },
+      {
+        "template": "list_double_line_without_image",
+        "type": "global",
+        "applink": "tokopedia://people/5853939",
+        "url": "/people/5853939",
+        "title": "sneakers",
+        "subtitle": "di Tokopedia",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        }
+      }
+    ]
+  },
+  "top_shops": []
+}

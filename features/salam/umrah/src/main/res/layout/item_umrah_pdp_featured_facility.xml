@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:layout_height="@dimen/dp_72"
-    android:layout_width="@dimen/dp_72"
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_height="@dimen/dimen_dp_72"
+    android:layout_width="@dimen/dimen_dp_72"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/umrah_bg_pdp_facility"
@@ -12,10 +12,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_12"
-        app:srcCompat="@color/light_blue_300"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:srcCompat="@color/Blue_B300"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -29,9 +29,9 @@
         app:typographyType="small"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700_68"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         tools:text="Makanan ajfoef"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"/>
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

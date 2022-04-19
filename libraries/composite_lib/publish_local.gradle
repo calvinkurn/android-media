@@ -2,16 +2,27 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if(project.plugins.findPlugin("android-library")) {
+        from android.sourceSets.main.java.srcDirs
+    } else {
+        from sourceSets.main.java.srcDirs
+    }
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
             groupId project.groupId
             artifactId project.artifactId
             version project.versionName
-            if(project.plugins.findPlugin("android-library"))
+            if(project.plugins.findPlugin("android-library")) {
                 artifact("$buildDir/outputs/aar/"+project.artifactName+".aar")
-            else
+            } else{
                 artifact("$buildDir/libs/"+project.artifactName+".jar")
+            }
+            artifact sourcesJar
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 

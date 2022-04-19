@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.analytic
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -10,11 +11,14 @@ import javax.inject.Inject
  */
 
 
-class ChatListAnalytic @Inject constructor() {
+class ChatListAnalytic @Inject constructor(
+        private val userSession: UserSessionInterface
+) {
     interface Event {
         companion object {
             const val CLICK_INBOX_CHAT = "clickInboxChat"
             const val CLICK_CHAT_DETAIL = "clickChatDetail"
+            const val VIEW_CHAT_DETAIL_IRIS = "viewChatDetailIris"
         }
     }
 
@@ -36,6 +40,8 @@ class ChatListAnalytic @Inject constructor() {
             const val ACTION_CLICK_ON_MARK_MESSAGE = "click on mark message"
             const val ACTION_CLICK_BROADCAST_WIZARD = "click on broadcast wizard"
             const val DELETE_CHAT = "click on delete chat"
+            const val VIEW_CTA_TOPADS = "view cta iklan promosi"
+            const val CLICK_CTA_TOPADS = "click coba iklan promosi"
         }
     }
 
@@ -110,6 +116,30 @@ class ChatListAnalytic @Inject constructor() {
                         Category.CATEGORY_CHAT_DETAIL,
                         Action.DELETE_CHAT,
                         ""
+                )
+        )
+    }
+
+    // #TA1
+    fun eventViewCtaTopAds() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.VIEW_CHAT_DETAIL_IRIS,
+                        Category.CATEGORY_CHAT_DETAIL,
+                        Action.VIEW_CTA_TOPADS,
+                        userSession.shopId
+                )
+        )
+    }
+
+    // #TA2
+    fun eventClickCtaTopAds() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        Event.CLICK_CHAT_DETAIL,
+                        Category.CATEGORY_CHAT_DETAIL,
+                        Action.CLICK_CTA_TOPADS,
+                        userSession.shopId
                 )
         )
     }

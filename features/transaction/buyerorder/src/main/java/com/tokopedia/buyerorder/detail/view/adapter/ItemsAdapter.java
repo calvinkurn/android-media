@@ -1,8 +1,8 @@
 package com.tokopedia.buyerorder.detail.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -11,28 +11,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
-import com.tokopedia.buyerorder.common.view.DoubleTextView;
+import com.tokopedia.buyerorder.common.util.BuyerUtils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
+import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
+import com.tokopedia.media.loader.ExtensionKt;
+import com.tokopedia.unifycomponents.LoaderUnify;
+import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
+import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -46,9 +55,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_REFRESH = "refresh";
     public static final String KEY_TEXT = "text";
+    public static final String KEY_VOUCHER_CODE = "vouchercodes";
     public static final String KEY_REDIRECT = "redirect";
+    public static final String KEY_REDIRECT_EXTERNAL = "redirectexternal";
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
+    public static final String KEY_POPUP = "popup";
     public static final String KEY_RETRY = "Cek Ulang";
     public static final int DEALS_CATEGORY_ID = 35;
     private static final int EVENTS_CATEGORY_ID_1 = 32;
@@ -62,24 +74,30 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_EVENTS = 3;
     private static final int ITEM_DEFAULT = 4;
     private static final int ITEM_INSURANCE = 5;
-    private String Insurance_File_Name = "E-policy Asuransi";
+    public static final int ITEM_DEALS_OMP = 6;
     OrderListDetailPresenter presenter;
     public static String categoryDeals = "deal";
+    public static String categoryDealsOMP = "Food & Voucher";
     public static String categoryEvents = "event";
+    private static final String CATEGORY_PRODUCT = "Kategori Produk";
     SetEventDetails setEventDetails;
     private int position;
     private String orderId;
     private PermissionCheckerHelper permissionCheckerHelper;
     public static final int TEXT_SIZE_LARGE = 14;
     private int totalTicketCount;
+    private OrderDetails orderDetails;
+    private String upstream = "";
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails, String upstream) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
         this.setEventDetails = setEventDetails;
         this.orderId = orderId;
+        this.orderDetails = orderDetails;
+        this.upstream = upstream;
     }
 
     @Override
@@ -106,6 +124,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_deals_short, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_DEALS_OMP:
+                v = inflater.inflate(R.layout.voucher_item_card_deals, parent, false);
+                holder = new DealsOMPViewHolder(setEventDetails, ItemsAdapter.this, v, presenter, ItemsAdapter.this);
+                break;
             case ITEM_EVENTS:
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
@@ -130,7 +152,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.position = position;
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).setIndex(position);
-            ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+            ((ItemViewHolder) holder).bindData(orderDetails,itemsList.get(position), holder.getItemViewType());
+        } else if (holder instanceof DealsOMPViewHolder) {
+            ((DealsOMPViewHolder) holder).bind(orderDetails,itemsList.get(position), position);
         } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
@@ -139,12 +163,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategory().equalsIgnoreCase(categoryDealsOMP) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
+            else if (upstream != null && upstream.equalsIgnoreCase("ORDERINTERNAL"))
+                return ITEM_DEALS_OMP;
             else
                 return ITEM_DEALS;
-        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2
+                || itemsList.get(position).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
             return ITEM_EVENTS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_INSURANCE) {
             return ITEM_INSURANCE;
@@ -167,14 +194,23 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return view -> presenter.onClick(uri);
+    private void onClickActionButton(final String uri, Boolean isDownloadable, String downloadFileName) {
+        if (BuyerUtils.isUridownloadable(uri, isDownloadable)) {
+            setEventDetails.askPermission(uri, isDownloadable, downloadFileName);
+        } else {
+            if (context != null) {
+                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri);
+            }
+        }
+        presenter.pdfUri = uri;
     }
 
     @Override
     public void tapActionClicked(TextView view, ActionButton actionButton, Items item, int count, int pos) {
         if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-            presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, pos, true);
+            if (context != null) {
+                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, pos, true);
+            }
         } else {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
@@ -193,9 +229,52 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
                 setEventDetails.openShowQRFragment(actionButton, item);
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT_EXTERNAL)){
+                RouteManager.route(context, actionButton.getBody().getAppURL());
             }
         }
 
+    }
+
+    public Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
+        Typography tapActionTextView = new Typography(context);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+        tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
+        tapActionTextView.setLayoutParams(params);
+        tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        tapActionTextView.setText(actionButton.getLabel());
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        if (!actionButton.getActionColor().getBackground().equals("")) {
+            shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
+        } else {
+            shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
+        }
+        if (!actionButton.getActionColor().getBorder().equals("")) {
+            shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
+        }
+        tapActionTextView.setBackground(shape);
+        if (!actionButton.getActionColor().getTextColor().equals("")) {
+            tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
+        } else {
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        }
+
+
+        if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+            float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
+            shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+        } else {
+
+            shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
+        }
+
+        tapActionTextView.setBackground(shape);
+
+        return tapActionTextView;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -207,7 +286,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView validDate;
         private TextView productQuantity;
         private TextView productPrice;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private LinearLayout tapActionLayoutDeals, tapActionLayoutEvents;
         private LinearLayout statusDetail;
         private LinearLayout voucherCodeLayout;
@@ -266,9 +345,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Map.Entry<String, String> entry = it.next();
                 DoubleTextView doubleTextView = new DoubleTextView(context, LinearLayout.HORIZONTAL);
                 doubleTextView.setTopText(entry.getKey());
-                doubleTextView.setTopTextColor(context.getResources().getColor(R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 doubleTextView.setBottomText(entry.getValue());
-                doubleTextView.setBottomTextColor(context.getResources().getColor(R.color.black_70_new));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
                 statusDetail.addView(doubleTextView);
@@ -276,7 +355,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         }
 
-        void bindData(final Items item, int itemType) {
+        @SuppressLint("SetTextI18n")
+        void bindData(OrderDetails orderDetails, final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
 
@@ -285,11 +365,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
+                if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), R.color.grey_1100, R.color.grey_1100);
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getEntityImage(), properties -> null);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -297,12 +377,26 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
                 }
+
+                if(itemType == ITEM_EVENTS){
+                    if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
+                    } else {
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
+                    }
+                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
+                        dealsDetails.setText(item.getTitle());
+                    } else {
+                        dealsDetails.setText(metaDataInfo.getProductName());
+                    }
+                }
+
                 if (itemType == ITEM_INSURANCE) {
 
                     if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
-                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), R.color.grey_1100, R.color.grey_1100);
+                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -314,7 +408,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.insurance_detail_label));
                     productQuantity.setText(metaDataInfo.getProductQuantity());
                     productPrice.setText(metaDataInfo.getProductPrice());
-                    String productCategory = presenter.getProductCategory();
+
+                    String productCategory = "";
+                    if (orderDetails.getTitle() != null) {
+                        for (Title title : orderDetails.getTitle()) {
+                            if (title.getLabel().equalsIgnoreCase(CATEGORY_PRODUCT)) {
+                                productCategory = title.getValue();
+                            }
+                        }
+                    }
+
                     Map<String, String> map = new LinkedHashMap<>();
                     map.put(context.getResources().getString(R.string.product_category), productCategory);
                     map.put(context.getResources().getString(R.string.insurance_type), metaDataInfo.getInsuranceType());
@@ -327,7 +430,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 }
                 if (itemType == ITEM_DEALS) {
-                    presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
+                    setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                    setEventDetails.sendOpenScreenDeals(false);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
@@ -335,6 +439,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
+                    setEventDetails.setDealsBanner(item);
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
@@ -349,43 +454,44 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (itemType == ITEM_EVENTS) {
-                    presenter.sendThankYouEvent(metaDataInfo, ITEM_EVENTS);
+                    setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_EVENTS, orderDetails);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
-                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
-                        eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationName())) {
+                        eventCity.setText(metaDataInfo.getLocationName());
                     }
-                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
-                        eventAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationDesc())) {
+                        eventAddress.setText(metaDataInfo.getLocationDesc());
                     }
 
-                    if (metaDataInfo.getIsHiburan() == 1) {
-                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                    if (metaDataInfo.isHiburan() == 1) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.text_valid_till));
-                            tanggalEvents.setText(metaDataInfo.getEndDate());
+                            tanggalEvents.setText(metaDataInfo.getEndTime());
                         }
-                    } else if (metaDataInfo.getIsHiburan() == 0) {
-                        if (!TextUtils.isEmpty(metaDataInfo.getEndDate()) && !TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                    } else if (metaDataInfo.isHiburan() == 0) {
+                        if (!TextUtils.isEmpty(metaDataInfo.getEndTime()) && !TextUtils.isEmpty(metaDataInfo.getStartTime())) {
                             tanggalEventsTitle.setVisibility(View.VISIBLE);
                             tanggalEventsTitle.setText(context.getResources().getString(R.string.tanggal_events));
-                            tanggalEvents.setText(metaDataInfo.getStartDate() + " - " + metaDataInfo.getEndDate());
+                            tanggalEvents.setText(metaDataInfo.getStartTime() + " - " + metaDataInfo.getEndTime());
                         }
                     }
 
                     if (!TextUtils.isEmpty(item.getCategory())) {
-                        validDate.setText(" ".concat(metaDataInfo.getEntityPackages().get(0).getDisplayName()));
+                        validDate.setText(" ".concat(metaDataInfo.getName()));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
-                    if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
-                        setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
+                    if (ItemsAdapter.this.orderDetails.getActionButtons() != null && ItemsAdapter.this.orderDetails.getActionButtons().size() > 0) {
+                        setEventDetails.setActionButtonEvent(item, ItemsAdapter.this.orderDetails.getActionButtons().get(0), ItemsAdapter.this.orderDetails);
                     }
+                    setEventDetails.setPassengerEvent(item);
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
                     customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            RouteManager.route(context, ApplinkOMSConstant.INTERNAL_EVENTS + metaDataInfo1.getSeoUrl());
+                            RouteManager.route(context, metaDataInfo1.getProductAppUrl());
                         }
                     });
                 }
@@ -403,7 +509,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayoutDeals.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    if (context != null) {
+                        presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    }
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     if (!TextUtils.isEmpty(item.getTrackingNumber())) {
                         String[] voucherCodes = item.getTrackingNumber().split(",");
@@ -432,7 +540,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         ActionButton actionButton = item.getTapActions().get(i);
                         if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             RedeemVoucherView redeemVoucherView;
-                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false, size - 1 == i);
                             tapActionLayoutDeals.addView(redeemVoucherView);
                         } else {
                             String[] voucherCodes = actionButton.getHeaderObject().getVoucherCodes().split(",");
@@ -445,92 +553,93 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
             } else if (itemType == ITEM_EVENTS) {
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    tapActionLayoutEvents.setVisibility(View.GONE);
-                    customTicketView.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                        String[] voucherCodes = item.getTrackingNumber().split(",");
-                        if (voucherCodes.length > 0) {
-                            if (metaDataInfo.getTotalTicketCount() > 0) {
-                                brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
-                            } else {
-                                brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
-                            }
-                            voucherCodeLayout.setVisibility(View.VISIBLE);
-                            for (int i = 0; i < voucherCodes.length; i++) {
-                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                bookingCodeView.setBackground(null);
-                                voucherCodeLayout.addView(bookingCodeView);
-                            }
-                        }
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        customTicketView.setVisibility(View.GONE);
-                        tapActionLayoutEvents.setVisibility(View.GONE);
-                    }
-                }
-                if (item.isTapActionsLoaded()) {
+                if(!item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.setVisibility(View.VISIBLE);
                     tapActionLayoutEvents.removeAllViews();
-                    totalTicketCount = metaDataInfo.getTotalTicketCount();
-                    int size = item.getTapActions().size();
+                    totalTicketCount = metaDataInfo.getQuantity();
+                    int size = item.getActionButtons().size();
                     tapActionLayoutEvents.removeAllViews();
+                    if(size==0) setETiket(totalTicketCount);
                     for (int i = 0; i < size; i++) {
-                        ActionButton actionButton = item.getTapActions().get(i);
-                        TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                        ActionButton actionButton = item.getActionButtons().get(i);
+                        Typography tapActionTextView = renderActionButtons(i, actionButton, item);
                         if (actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this);
+                            RedeemVoucherView redeemVoucherView = new RedeemVoucherView(context, i, actionButton, item, actionButton.getBody(), presenter, getIndex(), ItemsAdapter.this, setEventDetails, false, size - 1 == i);
                             tapActionLayoutEvents.addView(redeemVoucherView);
+                        } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                            if (!actionButton.getBody().getBody().isEmpty()) {
+                                String[] voucherCodes = actionButton.getBody().getBody().split(",");
+                                if (voucherCodes.length > 0) {
+                                    voucherCodeLayout.setVisibility(View.VISIBLE);
+                                    for (int j = 0; j < voucherCodes.length; j++) {
+                                        BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                        bookingCodeView.setBackground(null);
+                                        voucherCodeLayout.addView(bookingCodeView);
+                                    }
+                                }
+                            }
                         } else {
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
-                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
+                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getQuantity());
                             }
                             tapActionLayoutEvents.addView(tapActionTextView);
                         }
                         setEventInfo(actionButton, totalTicketCount);
                     }
                 }
-            }
+             }
         }
 
         private void setEventInfo(ActionButton actionButton, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT) || actionButton.getControl().equalsIgnoreCase(KEY_REFRESH)) {
-                if (totalTicketCount > 0) {
-                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
-                } else {
-                    brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
-                }
-            } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                setETiket(totalTicketCount);
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_POPUP)) {
                 if (totalTicketCount > 0) {
                     brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
                 } else {
                     brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
                 }
+            } else if(actionButton.getControl().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_booking_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
+                }
             }
         }
 
-        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
+        private void setETiket(int totalTicketCount){
+            if (totalTicketCount > 0) {
+                brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
+            } else {
+                brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
+            }
+        }
+
+        public void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null) {
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     } else if (isDownloadable(actionButton)) {
-                        presenter.setDownloadableFlag(true);
-                        presenter.setDownloadableFileName("Tokopedia E-Ticket");
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), true, context.getResources().getString(com.tokopedia.buyerorder.R.string.oms_order_detail_ticket_title));
+                        });
                     } else {
-                        presenter.setDownloadableFlag(false);
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
+                        });
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                view.setOnClickListener(v -> {
+                    setEventDetails.openShowQRFragment(actionButton, item);
+                });
+            } else if (actionButton.getControl().equalsIgnoreCase(KEY_POPUP)) {
                 view.setOnClickListener(v -> {
                     setEventDetails.openShowQRFragment(actionButton, item);
                 });
@@ -543,47 +652,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         && actionButton.getHeaderObject().getContentType().equalsIgnoreCase(CONTENT_TYPE);
             }
             return false;
-        }
-
-        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-            TextView tapActionTextView = new TextView(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
-            tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(Color.WHITE);
-            tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            tapActionTextView.setText(actionButton.getLabel());
-            GradientDrawable shape = new GradientDrawable();
-            shape.setShape(GradientDrawable.RECTANGLE);
-            if (!actionButton.getActionColor().getBackground().equals("")) {
-                shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
-            } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
-            }
-            if (!actionButton.getActionColor().getBorder().equals("")) {
-                shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
-            }
-            tapActionTextView.setBackground(shape);
-            if (!actionButton.getActionColor().getTextColor().equals("")) {
-                tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
-            } else {
-                tapActionTextView.setTextColor(Color.WHITE);
-            }
-
-
-            if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
-                shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
-
-            } else {
-
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
-            }
-
-            tapActionTextView.setBackground(shape);
-
-            return tapActionTextView;
         }
 
         /*
@@ -612,12 +680,27 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void setInsuranceDetail();
 
+        void setPassengerEvent(Items item);
+
+        void setActionButtonEvent(Items item,ActionButton actionButton, OrderDetails orderDetails);
+
+        void setDealsBanner(Items item);
+
+        void askPermission(String uri, Boolean isDownloadable, String downloadFileName);
+
+        void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType, OrderDetails orderDetails);
+
+        void sendOpenScreenDeals(Boolean isOMP);
+
+        void showRetryButtonToaster(String msg);
+
+
     }
 
     private class DefaultViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private TextView validDate;
-        private ProgressBar progressBar;
+        private LoaderUnify progressBar;
         private CustomTicketView customTicketView1;
         private CustomTicketView customTicketView2;
         private View llValid;
@@ -663,7 +746,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
             if (metaDataInfo != null) {
-                presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
+                setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                setEventDetails.sendOpenScreenDeals(false);
                 setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
                 if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                     validDate.setText(" ".concat(metaDataInfo.getEndDate()));
@@ -711,10 +795,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else {
                     llTanggalEvent.setVisibility(View.GONE);
                 }
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded() && context != null) {
                     progressBar.setVisibility(View.VISIBLE);
                     tapActionLayout.setVisibility(View.GONE);
-                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                    presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 }
                 if (!hasViews) {
                     customTicketView1.setVisibility(View.GONE);
@@ -734,9 +818,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         int size = item.getTapActions().size();
                         for (int i = 0; i < size; i++) {
                             ActionButton actionButton = item.getTapActions().get(i);
-                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
-                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            Typography tapActionTextView = renderActionButtons(i, actionButton, item);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
                                 setActionButtonClick(tapActionTextView, actionButton);
                             }
@@ -756,7 +840,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     for (int i = 0; i < size; i++) {
                         ActionButton actionButton = item.getActionButtons().get(i);
 
-                        TextView actionTextView = renderActionButtons(i, actionButton, item);
+                        Typography actionTextView = renderActionButtons(i, actionButton, item);
                         if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
                             if (item.isActionButtonLoaded()) {
                                 setActionButtonClick(null, actionButton);
@@ -764,8 +848,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 actionTextView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
-                                            presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON) && context != null) {
+                                            presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
                                         } else {
                                             setActionButtonClick(actionTextView, actionButton);
                                         }
@@ -786,18 +870,20 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                        view.setOnClickListener(v -> {
+                            onClickActionButton(actionButton.getBody().getAppURL(), false, "");
+                        });
                 }
             }
         }
 
-        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
-            TextView tapActionTextView = new TextView(context);
+        private Typography renderActionButtons(int position, ActionButton actionButton, Items item) {
+            Typography tapActionTextView = new Typography(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
-            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            params.setMargins(0, (int) context.getResources().getDimension(com.tokopedia.resources.common.R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16), (int) context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16));
             tapActionTextView.setLayoutParams(params);
-            tapActionTextView.setTextColor(Color.WHITE);
+            tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
@@ -805,7 +891,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
-                shape.setColor(context.getResources().getColor(R.color.green_nob));
+                shape.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
             if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
@@ -814,17 +900,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
-                tapActionTextView.setTextColor(Color.WHITE);
+                tapActionTextView.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             }
 
 
             if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
-                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                float radius = context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4);
                 shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
 
             } else {
 
-                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+                shape.setCornerRadius(context.getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4));
             }
 
             tapActionTextView.setBackground(shape);

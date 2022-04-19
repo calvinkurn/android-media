@@ -8,15 +8,14 @@ public interface SearchConstant {
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
-    String SEARCH_RESULT_TRACE = "search_result_trace";
-    String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
-    String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
-    String SEARCH_RESULT_PLT_RENDER_METRICS = "search_result_plt_render_metrics";
+    String SEARCH_RESULT_PAGE = "search result page";
 
     String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
@@ -31,6 +30,9 @@ public interface SearchConstant {
     interface DefaultViewType {
         int SMALL_GRID = 1;
         int LIST = 2;
+        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
+        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
+        String VIEW_TYPE_NAME_LIST = "list";
     }
 
     interface Wishlist {
@@ -46,10 +48,10 @@ public interface SearchConstant {
         String KEY_PARAMS = "params";
         String KEY_SOURCE = "source";
         String KEY_HEADLINE_PARAMS = "headline_params";
-    }
-
-    interface RemoteConfigKey {
-        String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
+        String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
+        String KEY_PAGE_SOURCE = "page_source";
+        String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+        String SOURCE_QUICK_FILTER = "quick_filter";
     }
 
     interface BaseUrl {
@@ -76,15 +78,31 @@ public interface SearchConstant {
     interface SearchProduct {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
-        String PARAMETER_ROWS = "8";
+        String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
+        String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
+        String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
+        String SEARCH_PRODUCT_PARAMS = "params";
+        String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
+        String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
+        String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
+        String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+        String SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET = "skip_last_filter";
+    }
+
+    interface HeadlineAds {
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
+        int HEADLINE_ITEM_VALUE_FIRST_PAGE = 2;
+        int HEADLINE_ITEM_VALUE_LOAD_MORE = 1;
+        int HEADLINE_PRODUCT_COUNT = 3;
+        String INFINITESEARCH = "infinitesearch";
     }
 
     interface SearchShop {
         String SEARCH_SHOP_FIRST_PAGE_USE_CASE = "search_shop_first_page_use_case";
         String SEARCH_SHOP_LOAD_MORE_USE_CASE = "search_shop_load_more_use_case";
+        String GET_SHOP_COUNT_USE_CASE = "get_shop_count_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
@@ -101,19 +119,9 @@ public interface SearchConstant {
         int KEY_SHOP_STATUS_INACTIVE = 4;
     }
 
-    interface SearchCatalog {
-        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
-    }
-
-    interface SearchProfile {
-        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
-    }
-
     interface SearchTabPosition {
         int TAB_FIRST_POSITION = 0;
         int TAB_SECOND_POSITION = 1;
-        int TAB_THIRD_POSITION = 2;
-        int TAB_FORTH_POSITION = 3;
     }
 
     interface Cart {
@@ -125,8 +133,6 @@ public interface SearchConstant {
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
-        String CATALOG = "catalog";
-        String PROFILE = "profile";
     }
 
     interface FreeOngkir {
@@ -138,16 +144,72 @@ public interface SearchConstant {
         String QUERY = "SIMILAR_SEARCH_QUERY";
     }
 
-    interface Advertising {
-        String ADVERTISING_ID = "ADVERTISINGID";
-        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
-        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
-        String APP_CLIENT_ID = "appClientId";
-    }
-
     interface ABTestRemoteConfigKey {
         String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
         String AB_TEST_VARIANT_FULL_STAR = "Full Star";
         String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
+        String AB_TEST_SHOP_RATING = "Hierarchical Rating Toko";
+        String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
+        String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
+    }
+
+    interface ProductCardLabel {
+        String LABEL_FULFILLMENT = "fulfillment";
+        String LABEL_INTEGRITY = "integrity";
+        String LABEL_INTEGRITY_TYPE = "textDarkGrey";
+        String TEXT_DARK_ORANGE = "textDarkOrange";
+        String TEXT_DARK_RED = "textDarkRed";
+        String TEXT_LIGHT_GREY = "textLightGrey";
+    }
+
+    interface OnBoarding {
+        String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
+        String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+    }
+
+    interface InspirationCarousel {
+        String LAYOUT_INSPIRATION_CAROUSEL_LIST = "list";
+        String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
+        String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_VIDEO = "video";
+        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
+        String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
+    }
+
+    interface TopAdsComponent {
+        String TOP_ADS = "search_product_top_ads";
+        String ORGANIC_ADS = "search_product_organic_ads";
+        String BROAD_MATCH_ADS = "search_product_broad_match_ads";
+    }
+
+    interface InspirationCard {
+        String TYPE_ANNOTATION = "annotation";
+        String TYPE_CATEGORY = "category";
+        String TYPE_GUIDED = "guided";
+        String TYPE_CURATED = "curated";
+        String TYPE_RELATED = "related";
+        String TYPE_SIZE_PERSO = "size_perso";
+    }
+
+    interface CustomDimension {
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
+    }
+
+    interface SaveLastFilter {
+        String LAST_FILTER = "last_filter";
+        String ACTION = "action";
+        String PARAM = "param";
+        String CATEGORY_ID_L2 = "category_id_l2";
+        String ACTION_CREATE = "create";
+        String ACTION_UPDATE = "update";
+        String ACTION_DELETE = "delete";
+        String INPUT_PARAMS = "input_params";
+        String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
     }
 }

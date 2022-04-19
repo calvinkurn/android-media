@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
@@ -12,14 +13,11 @@ class TalkCreateNewCommentUseCase @Inject constructor(graphqlRepository: Graphql
         const val PARAM_TEXT = "text"
         const val PARAM_TALK_ID = "talk_id"
         const val PARAM_PRODUCT_IDS = "product_ids"
-
-        private val query by lazy {
-            val text = "\$text"
-            val talkId = "\$talk_id"
-            val productIds = "\$product_ids"
+        private const val TALK_CREATE_NEW_COMMENT_MUTATION_CLASS_NAME = "TalkCreateNewComment"
+        private const val query =
             """
-                mutation talkCreateNewComment($text: String, $talkId: Int, $productIds: String) {
-                  talkCreateNewComment(text:$text, talk_id:$talkId, product_ids:$productIds) {
+                mutation talkCreateNewComment(${'$'}text: String, ${'$'}talk_id: Int, ${'$'}product_ids: String) {
+                  talkCreateNewComment(text:${'$'}text, talk_id:${'$'}talk_id, product_ids:${'$'}product_ids) {
                     status
                     messageError
                     data {
@@ -29,12 +27,16 @@ class TalkCreateNewCommentUseCase @Inject constructor(graphqlRepository: Graphql
                     messageErrorOriginal
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_CREATE_NEW_COMMENT_MUTATION_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkCreateNewComment.GQL_QUERY)
         setTypeClass(TalkCreateNewCommentResponseWrapper::class.java)
     }
 

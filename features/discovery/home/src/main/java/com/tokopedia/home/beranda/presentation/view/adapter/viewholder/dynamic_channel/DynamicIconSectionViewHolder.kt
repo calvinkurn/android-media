@@ -10,7 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -34,7 +34,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 
 class DynamicIconSectionViewHolder(val view: View,
-                                   val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionDataModel>(view) {
+                                   val listener: HomeCategoryListener?) : AbstractViewHolder<DynamicIconSectionDataModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START, true) }
@@ -55,7 +55,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(CarouselDecoration(
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16),
+                    16f.toDpInt(),
                     width,
                     5,
                     itemView.context.resources.getDimensionPixelOffset(
@@ -85,7 +85,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
     private class DynamicIconAdapter(
             private val context: Context,
-            private val listener: HomeCategoryListener) : RecyclerView.Adapter<DynamicIconViewHolder>() {
+            private val listener: HomeCategoryListener?) : RecyclerView.Adapter<DynamicIconViewHolder>() {
 
         var sectionViewModel = DynamicIconSectionDataModel()
 
@@ -102,18 +102,19 @@ class DynamicIconSectionViewHolder(val view: View,
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
-                override fun successLoad() {
-                    holder.shimmeringIcon.hide()
-                }
-
-                override fun failedLoad() {
-                    holder.shimmeringIcon.show()
-                }
+            val iconWidth = 150
+            val iconHeight = 150
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, iconWidth, iconHeight, FPM_USE_CASE_ICON, {
+                holder.shimmeringIcon.hide()
+            }, onFailed = {
+                holder.shimmeringIcon.show()
             })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
-                listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
+                val link = DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position])
+                link?.let {
+                    listener?.onSectionItemClicked(it)
+                }
             }
 
             if(!sectionViewModel.isCache) {
@@ -126,7 +127,7 @@ class DynamicIconSectionViewHolder(val view: View,
         }
 
         private fun eventClickDynamicIcon(context: Context, homeIconItem: DynamicHomeIcon.DynamicIcon, position: Int) {
-            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context, homeIconItem, position);
+            HomePageTracking.eventEnhancedClickDynamicIconHomePage(homeIconItem, position);
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.name, position + 1, homeIconItem.applinks)
@@ -151,7 +152,7 @@ class DynamicIconSectionViewHolder(val view: View,
     }
 
     class OnIconImpressedListener(private val homeIcon: DynamicHomeIcon.DynamicIcon,
-                                  private val listener: HomeCategoryListener,
+                                  private val listener: HomeCategoryListener?,
                                   private val position: Int) : ViewHintListener {
 
         override fun onViewHint() {

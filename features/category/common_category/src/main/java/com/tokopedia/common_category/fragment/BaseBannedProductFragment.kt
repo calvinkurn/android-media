@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_category.R
 import com.tokopedia.common_category.di.BaseCategoryNavComponent
 import com.tokopedia.common_category.di.DaggerBaseCategoryNavComponent
-import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.viewmodel.BannedProdNavViewModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,14 +24,16 @@ import javax.inject.Inject
 private const val KEY_ADVERTISING_ID = "KEY_ADVERTISINGID"
 private const val ADVERTISING_ID = "ADVERTISINGID"
 private const val QUERY_APP_CLIENT_ID = "?appClientId="
+private const val IS_BANNED = 1
 
 abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
-    protected var categoryName: String = ""
     private var listenerBanned: OnBannedFragmentInteractionListener? = null
     private lateinit var categoryNavComponent: BaseCategoryNavComponent
+    protected var bannedData: BannedData? = null
 
     @Inject
     lateinit var baseViewModelFactory: ViewModelProvider.Factory
+
     private lateinit var bannedProdNavViewModel: BannedProdNavViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,22 +50,6 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
         categoryNavComponent.inject(this)
     }
 
-    private fun observeBannedProduct() {
-        bannedProdNavViewModel.getBannedProductLiveData().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    addBannedProductScreen()
-                    showBannedProductScreen(it.data)
-                }
-
-                is Fail -> {
-                    addFragmentView()
-                    initFragmentView()
-                }
-            }
-        })
-    }
-
     protected abstract fun addFragmentView()
 
     protected abstract fun initFragmentView()
@@ -78,11 +64,21 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeBannedProduct()
+        checkIfBanned()
         observeSeamlessLogin()
     }
 
-    protected fun showBannedProductScreen(bannedProductData: Data) {
+    private fun checkIfBanned() {
+        if (bannedData != null && bannedData?.isBanned == IS_BANNED) {
+            addBannedProductScreen()
+            showBannedProductScreen(bannedData!!)
+        } else {
+            addFragmentView()
+            initFragmentView()
+        }
+    }
+
+    protected fun showBannedProductScreen(bannedProductData: BannedData) {
         bannedProductData.let {
             if (bannedProductData.displayButton) {
                 category_btn_banned_navigation.show()
@@ -106,8 +102,6 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
     private fun initBannedProductViewModel() {
         val viewModelProvider = ViewModelProviders.of(this, baseViewModelFactory)
         bannedProdNavViewModel = viewModelProvider.get(BannedProdNavViewModel::class.java)
-        lifecycle.addObserver(bannedProdNavViewModel)
-        bannedProdNavViewModel.categoryName = getDepartMentId()
     }
 
     private fun observeSeamlessLogin() {
@@ -134,7 +128,7 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
         txt_sub_header.text = getString(R.string.category_try_again)
     }
 
-    private fun onButtonPressed(bannedProduct: Data) {
+    private fun onButtonPressed(bannedProduct: BannedData) {
         listenerBanned?.onButtonClicked(bannedProduct)
     }
 
@@ -157,7 +151,7 @@ abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
     }
 
     interface OnBannedFragmentInteractionListener {
-        fun onButtonClicked(bannedProduct: Data)
+        fun onButtonClicked(bannedProduct: BannedData)
         fun onBannedFragmentAttached()
     }
 }

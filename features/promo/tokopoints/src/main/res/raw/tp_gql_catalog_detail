@@ -1,5 +1,5 @@
-query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int) {
-  detail: hachikoCatalogDetail(slug: $slug, catalog_id: $catalog_id) {
+query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int , $apiVersion :String) {
+  detail: hachikoCatalogDetail(slug: $slug, catalog_id: $catalog_id , apiVersion: $apiVersion ) {
     id
     catalog_type
     expired
@@ -27,6 +27,10 @@ query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int) {
     how_to_use
     tnc
     cta
+    minimumUsageLabel
+    minimumUsage
     upper_text_desc
+    activePeriod
+    activePeriodDate
   }
 }

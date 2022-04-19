@@ -15,19 +15,11 @@ import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewMo
  */
 class AnalyticsDebuggerViewHolder(itemView: View) : AbstractViewHolder<AnalyticsDebuggerViewModel>(itemView) {
 
-    private val eventName: TextView
-    private val eventCategory: TextView
-    private val data: TextView
-    private val timestamp: TextView
+    private val eventName: TextView = itemView.findViewById(R.id.text_event_name)
+    private val eventCategory: TextView = itemView.findViewById(R.id.text_event_category)
+    private val data: TextView = itemView.findViewById(R.id.text_data_excerpt)
+    private val timestamp: TextView = itemView.findViewById(R.id.text_timestamp)
 
-
-    init {
-
-        eventName = itemView.findViewById(R.id.text_event_name)
-        eventCategory = itemView.findViewById(R.id.text_event_category)
-        data = itemView.findViewById(R.id.text_data_excerpt)
-        timestamp = itemView.findViewById(R.id.text_timestamp)
-    }
 
     override fun bind(element: AnalyticsDebuggerViewModel) {
         val name = element.name

@@ -98,7 +98,9 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                KeyboardHandler.hideSoftKeyboard(getActivity());
+                if(getActivity() != null){
+                    KeyboardHandler.hideSoftKeyboard(getActivity());
+                }
             }
         });
 
@@ -130,7 +132,9 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
                     outlets.add(outlet);
                 }
             }
-            adapter.notifyDataSetChanged();
+            if(adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
             if (outlets.size() == 0) {
                 noContentLayout.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
@@ -142,7 +146,9 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
             if(fragmentCallbacks.getOutlets() != null) {
                 outlets.addAll(fragmentCallbacks.getOutlets());
             }
-            adapter.notifyDataSetChanged();
+            if(adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }

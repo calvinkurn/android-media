@@ -10,7 +10,6 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [OfficialStoreCategoryViewModelModule::class])
-@OfficialStoreCategoryScope
 class OfficialStoreCategoryModule {
 
     @OfficialStoreCategoryScope

@@ -12,6 +12,10 @@ data class AutoTopUpStatus(
         @Expose
         val statusDesc: String = "",
 
+        @SerializedName("extra_credit_percent")
+        @Expose
+        val statusBonus :Double = 1.0,
+
         @SerializedName("tkpd_product_id")
         @Expose
         val id: Int = -1,

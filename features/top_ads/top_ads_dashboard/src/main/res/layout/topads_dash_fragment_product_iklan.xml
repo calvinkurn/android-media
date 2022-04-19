@@ -2,14 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:translationY="@dimen/dp_20"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:translationY="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +27,7 @@
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include
@@ -35,6 +36,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/progressView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loaderImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_horizontal"
+                    app:loader_type="circular" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/loader_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/topads_dash_reload_title"
+                    app:typographyType="heading_4" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    app:typographyType="body_3" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnReload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/topads_dash_reload_btn"
+                    app:unifyButtonSize="small" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -59,7 +104,7 @@
                 android:id="@+id/app_bar_layout_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:elevation="@dimen/dp_4"
+                app:elevation="4dp"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -82,24 +127,34 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <include
-                            android:id="@+id/autoads_status"
+                            android:id="@+id/autoadsOnboarding"
                             layout="@layout/topads_dash_auto_ads_onboarding_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dp_8"
+                            android:layout_margin="8dp"
                             android:visibility="visible"
                             app:layout_constraintBottom_toTopOf="@id/graph_layout"
                             app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
+                        <include
+                            android:id="@+id/autoadsDeactivationProgress"
+                            layout="@layout/topads_dash_auto_deactivate_status_progress_widget"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toTopOf="@id/graph_layout"
+                            app:layout_constraintTop_toBottomOf="@id/hari_ini" />
 
-                        <com.tokopedia.topads.auto.view.widget.AutoAdsWidget
+
+                        <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
                             android:id="@+id/autoads_edit_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_8"
-                            android:layout_marginTop="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_8"
-                            android:layout_marginBottom="@dimen/dp_12"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginBottom="12dp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@+id/graph_layout"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -110,12 +165,12 @@
                             android:id="@+id/graph_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_4"
-                            android:layout_marginBottom="@dimen/dp_12"
-                            android:layout_marginStart="@dimen/dp_8"
-                            android:layout_marginEnd="@dimen/dp_8"
-                            android:padding="@dimen/dp_8"
-                            app:layout_constraintTop_toBottomOf="@id/autoads_status">
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="12dp"
+                            android:padding="8dp"
+                            app:layout_constraintTop_toBottomOf="@id/autoadsOnboarding">
 
                             <LinearLayout
                                 android:id="@+id/topads_dashboard_content"
@@ -132,18 +187,11 @@
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                <com.google.android.material.tabs.TabLayout
+                <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/tab_layout"
-                    style="?tabTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    app:elevation="@dimen/dp_4"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:tabIndicatorColor="@color/topads_common_tab_green"
-                    app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/Green_G500"
-                    app:tabTextColor="@color/font_black_disabled_38" />
+                    app:tabGravity="fill" />
 
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

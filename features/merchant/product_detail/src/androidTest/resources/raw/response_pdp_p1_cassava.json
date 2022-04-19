@@ -1,0 +1,714 @@
+[
+  {
+    "data": {
+      "pdpGetLayout": {
+        "basicInfo": {
+          "blacklistMessage": {
+            "button": "",
+            "description": "",
+            "title": "",
+            "url": ""
+          },
+          "catalogID": "0",
+          "category": {
+            "breadcrumbURL": "https://www.tokopedia.com/p/elektronik/elektronik-kantor/mesin-jilid",
+            "detail": [
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/elektronik",
+                "id": "60",
+                "isAdult": false,
+                "name": "Elektronik"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/elektronik/elektronik-kantor",
+                "id": "3886",
+                "isAdult": false,
+                "name": "Elektronik Kantor"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/p/elektronik/elektronik-kantor/mesin-jilid",
+                "id": "3983",
+                "isAdult": false,
+                "name": "Mesin Jilid"
+              }
+            ],
+            "id": "3983",
+            "isAdult": false,
+            "lastUpdateCategory": "12/07/2021 19:06:17",
+            "name": "Mesin Jilid",
+            "title": "Mesin Jilid"
+          },
+          "isBlacklisted": false,
+          "isLeasing": false,
+          "isTokoNow": false,
+          "maxOrder": 0,
+          "menu": {
+            "id": "0",
+            "name": "",
+            "url": ""
+          },
+          "minOrder": 1,
+          "needPrescription": false,
+          "productID": "1994427767",
+          "shopID": "10241240",
+          "shopName": "qa-zxccv01",
+          "sku": "",
+          "stats": {
+            "countReview": "0",
+            "countTalk": "1",
+            "rating": 0
+          },
+          "status": "ACTIVE",
+          "totalStockFmt": "40.000",
+          "txStats": {
+            "countSold": "0",
+            "itemSoldPaymentVerified": "0",
+            "paymentVerified": "0",
+            "transactionReject": "0",
+            "transactionSuccess": "0"
+          },
+          "url": "https://www.tokopedia.com/qa-zxccv01/product-test-android-donot-delete-or-edit",
+          "weight": 222,
+          "weightUnit": "GRAM"
+        },
+        "components": [
+          {
+            "data": [
+              {}
+            ],
+            "name": "product_snapshot",
+            "type": "product_snapshot"
+          },
+          {
+            "data": [
+              {
+                "media": [
+                  {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/7/12/08a6f2a9-bd38-4cd7-9657-0b0a53da83c3.jpg",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/08a6f2a9-bd38-4cd7-9657-0b0a53da83c3.jpg",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/08a6f2a9-bd38-4cd7-9657-0b0a53da83c3.jpg",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": ""
+                  },
+                  {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": ""
+                  }
+                ],
+                "videos": []
+              }
+            ],
+            "name": "product_media",
+            "type": "product_media"
+          },
+          {
+            "data": [],
+            "name": "ticker_info",
+            "type": "ticker_info"
+          },
+          {
+            "data": [],
+            "name": "upcoming_deals",
+            "type": "teaser"
+          },
+          {
+            "data": [
+              {
+                "campaign": {
+                  "appLinks": "",
+                  "background": "",
+                  "campaignID": "0",
+                  "campaignIdentifier": 0,
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "discountedPrice": 0,
+                  "endDate": "",
+                  "endDateUnix": "0",
+                  "hideGimmick": false,
+                  "isActive": false,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 0,
+                  "paymentInfoWording": "",
+                  "percentageAmount": 0,
+                  "startDate": "",
+                  "stock": 0,
+                  "stockSoldPercentage": 0,
+                  "threshold": 0
+                },
+                "isCOD": false,
+                "isCashback": {
+                  "percentage": 0
+                },
+                "isOS": false,
+                "isPowerMerchant": false,
+                "isTradeIn": false,
+                "isWishlist": false,
+                "name": "MOCK MOCK MOCK",
+                "preorder": {
+                  "duration": 0,
+                  "isActive": false,
+                  "preorderInDays": 0
+                },
+                "price": {
+                  "value": 1000
+                },
+                "stock": {
+                  "stockWording": "",
+                  "useStock": true,
+                  "value": "0"
+                },
+                "thematicCampaign": {
+                  "additionalInfo": "",
+                  "background": "",
+                  "campaignName": "",
+                  "icon": ""
+                },
+                "variant": {
+                  "isVariant": true,
+                  "parentID": "1994427767"
+                },
+                "wholesale": []
+              }
+            ],
+            "name": "product_content",
+            "type": "product_content"
+          },
+          {
+            "data": [],
+            "name": "social_proof_mini",
+            "type": "social_proof_mini"
+          },
+          {
+            "data": [],
+            "name": "mvc",
+            "type": "mvc"
+          },
+          {
+            "data": [
+              {
+                "children": [
+                  {
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
+                    "optionID": [
+                      128374176,
+                      128374178
+                    ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg"
+                    },
+                    "price": 1000,
+                    "priceFmt": "Rp 0",
+                    "productID": "1994427768",
+                    "productName": "product test android donot delete or edit - Putih, S",
+                    "productURL": "https://www.tokopedia.com/qa-zxccv01/product-test-android-donot-delete-or-edit-putih-s",
+                    "sku": "",
+                    "stock": {
+                      "isBuyable": true,
+                      "maximumOrder": "10000",
+                      "minimumOrder": "1",
+                      "stock": "10000",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
+                    },
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
+                    }
+                  },
+                  {
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
+                    "optionID": [
+                      128374176,
+                      128374179
+                    ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/c72ec1d2-822c-4cbc-bbe4-1078ce7c2fca.jpg",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/c72ec1d2-822c-4cbc-bbe4-1078ce7c2fca.jpg"
+                    },
+                    "price": 1000,
+                    "priceFmt": "Rp 0",
+                    "productID": "1994427769",
+                    "productName": "product test android donot delete or edit - Putih, M",
+                    "productURL": "https://www.tokopedia.com/qa-zxccv01/product-test-android-donot-delete-or-edit-putih-m",
+                    "sku": "",
+                    "stock": {
+                      "isBuyable": true,
+                      "maximumOrder": "10000",
+                      "minimumOrder": "1",
+                      "stock": "10000",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
+                    },
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
+                    }
+                  },
+                  {
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
+                    "optionID": [
+                      128374177,
+                      128374178
+                    ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg"
+                    },
+                    "price": 1000,
+                    "priceFmt": "Rp 0",
+                    "productID": "1994427770",
+                    "productName": "product test android donot delete or edit - Hitam, S",
+                    "productURL": "https://www.tokopedia.com/qa-zxccv01/product-test-android-donot-delete-or-edit-hitam-s",
+                    "sku": "",
+                    "stock": {
+                      "isBuyable": true,
+                      "maximumOrder": "10000",
+                      "minimumOrder": "1",
+                      "stock": "10000",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
+                    },
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
+                    }
+                  },
+                  {
+                    "campaignInfo": {
+                      "appLinks": "",
+                      "background": "",
+                      "campaignID": "0",
+                      "campaignIdentifier": 0,
+                      "campaignType": "0",
+                      "campaignTypeName": "",
+                      "discountPercentage": 0,
+                      "discountPrice": 0,
+                      "endDateUnix": "0",
+                      "hideGimmick": false,
+                      "isActive": false,
+                      "isAppsOnly": false,
+                      "isCheckImei": false,
+                      "isUsingOvo": false,
+                      "minOrder": 0,
+                      "originalPrice": 0,
+                      "startDate": "",
+                      "stock": 0,
+                      "stockSoldPercentage": 0
+                    },
+                    "isCOD": false,
+                    "isWishlist": false,
+                    "optionID": [
+                      128374177,
+                      128374179
+                    ],
+                    "picture": {
+                      "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/54476147-300a-484e-8e80-f4feeb85966a.jpg",
+                      "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/12/54476147-300a-484e-8e80-f4feeb85966a.jpg"
+                    },
+                    "price": 1000,
+                    "priceFmt": "Rp 0",
+                    "productID": "1994427771",
+                    "productName": "product test android donot delete or edit - Hitam, M",
+                    "productURL": "https://www.tokopedia.com/qa-zxccv01/product-test-android-donot-delete-or-edit-hitam-m",
+                    "sku": "",
+                    "stock": {
+                      "isBuyable": true,
+                      "maximumOrder": "10000",
+                      "minimumOrder": "1",
+                      "stock": "10000",
+                      "stockWording": "",
+                      "stockWordingHTML": ""
+                    },
+                    "thematicCampaign": {
+                      "additionalInfo": "",
+                      "background": "",
+                      "campaignName": "",
+                      "icon": ""
+                    }
+                  }
+                ],
+                "defaultChild": "1994427768",
+                "errorCode": 0,
+                "parentID": "1994427767",
+                "sizeChart": "https://ecs7.tokopedia.net/img/VqbcmM/2021/7/12/ee4e7439-1c4a-48d8-8500-9bf0280b7702.jpg",
+                "variants": [
+                  {
+                    "identifier": "colour",
+                    "name": "warna",
+                    "option": [
+                      {
+                        "hex": "#ffffff",
+                        "picture": {
+                          "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg",
+                          "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/4a4b7d04-76dd-4940-b29c-a14e8434e3ee.jpg"
+                        },
+                        "productVariantOptionID": "128374176",
+                        "value": "Putih",
+                        "variantUnitValueID": "1"
+                      },
+                      {
+                        "hex": "#000000",
+                        "picture": {
+                          "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg",
+                          "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/12/7844873b-2e50-417f-8e45-030d52923e7c.jpg"
+                        },
+                        "productVariantOptionID": "128374177",
+                        "value": "Hitam",
+                        "variantUnitValueID": "2"
+                      }
+                    ],
+                    "productVariantID": "37068973",
+                    "variantID": "1"
+                  },
+                  {
+                    "identifier": "size",
+                    "name": "ukuran",
+                    "option": [
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "128374178",
+                        "value": "S",
+                        "variantUnitValueID": "455"
+                      },
+                      {
+                        "hex": "",
+                        "picture": {
+                          "url": "",
+                          "url100": ""
+                        },
+                        "productVariantOptionID": "128374179",
+                        "value": "M",
+                        "variantUnitValueID": "456"
+                      }
+                    ],
+                    "productVariantID": "37068974",
+                    "variantID": "29"
+                  }
+                ]
+              }
+            ],
+            "name": "variant_options",
+            "type": "variant"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "shop_credibility",
+            "type": "shop_credibility"
+          },
+          {
+            "data": [],
+            "name": "shipment",
+            "type": "shipment"
+          },
+          {
+            "data": [],
+            "name": "palugada",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "cod",
+            "type": "custom_info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "isApplink": true,
+                "title": "Beli dengan Tukar Tambah"
+              }
+            ],
+            "name": "tradein",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Harga Grosir"
+              }
+            ],
+            "name": "wholesale",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "tokopedia://fintech/paylater?category=Mesin+Jilid&price=1000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2Fqa-zxccv01%2Fproduct-test-android-donot-delete-or-edit&userID=132674846",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "isApplink": true,
+                "title": "Paylater & Cicilan"
+              }
+            ],
+            "name": "installment_paylater",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "isApplink": false,
+                "title": "Proteksi Gadget"
+              }
+            ],
+            "name": "protection",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "isApplink": false,
+                "title": "Order Prioritas"
+              }
+            ],
+            "name": "order_prio",
+            "type": "info"
+          },
+          {
+            "data": [],
+            "name": "obat_keras",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [
+              {
+                "content": [
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "Baru",
+                    "title": "Kondisi"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": false,
+                    "subtitle": "222 Gram",
+                    "title": "Berat"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "1 Buah",
+                    "title": "Min. Pemesanan"
+                  },
+                  {
+                    "applink": "tokopedia://category/3983",
+                    "isAnnotation": false,
+                    "showAtFront": false,
+                    "subtitle": "Mesin Jilid",
+                    "title": "Kategori"
+                  },
+                  {
+                    "applink": "tokopedia://shop/10241240/etalase/0",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "Semua Etalase",
+                    "title": "Etalase"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "",
+                    "title": "Deskripsi"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": true,
+                    "showAtFront": false,
+                    "subtitle": "Gammara Leather",
+                    "title": "Merek"
+                  }
+                ]
+              }
+            ],
+            "name": "product_detail",
+            "type": "product_detail"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_1",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "review",
+            "type": "review"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_2",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "discussion_faq",
+            "type": "discussion_faq"
+          },
+          {
+            "data": [],
+            "name": "report",
+            "type": "report"
+          },
+          {
+            "data": [],
+            "name": "tdn_topads",
+            "type": "banner_ads"
+          },
+          {
+            "data": [],
+            "name": "pdp_3",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_4",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_7",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_5",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_6",
+            "type": "product_list"
+          }
+        ],
+        "name": "Default Layout",
+        "pdpSession": "{\"sid\":10241240,\"sd\":\"qa-zxccv01\",\"ci\":3983,\"pid\":1994427767,\"cp\":{},\"pr\":1000,\"mo\":1,\"pn\":\"product test android donot delete or edit\",\"cn\":\"new\",\"w\":0.222,\"sf\":{\"iga\":false,\"itn\":false},\"v\":1,\"vd\":{\"1994427768\":{\"cp\":{},\"s\":10000,\"ib\":true,\"whid\":10301916},\"1994427769\":{\"cp\":{},\"s\":10000,\"ib\":true,\"whid\":10301916},\"1994427770\":{\"cp\":{},\"s\":10000,\"ib\":true,\"whid\":10301916},\"1994427771\":{\"cp\":{},\"s\":10000,\"ib\":true,\"whid\":10301916}},\"pi\":1994427767,\"ps\":\"ACTIVE\",\"ipr\":true}"
+      }
+    }
+  }
+]

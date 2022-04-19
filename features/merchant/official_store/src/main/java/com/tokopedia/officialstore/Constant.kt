@@ -12,16 +12,6 @@ object GQLQueryConstant {
 }
 
 object DynamicChannelIdentifiers {
-    val LAYOUT_UNKNOWN = "unknown"
-    val LAYOUT_BANNER_CAROUSEL = "banner_carousel"
-    val LAYOUT_BANNER_ = "banner_organic"
-    val LAYOUT_ORGANIC = "organic"
-    val LAYOUT_HOME_WIDGET = "home_widget"
-    val LAYOUT_SPRINT_LEGO = "sprint_lego"
-    val LAYOUT_LEGO_3_IMAGE = "lego_3_image"
-    val LAYOUT_6_IMAGE = "6_image"
-    val LAYOUT_MIX_LEFT = "left_carousel"
-    val LAYOUT_MIX_TOP = "top_carousel"
 
     val CTA_MODE_MAIN = "main"
     val CTA_MODE_TRANSACTION = "transaction"
@@ -47,4 +37,10 @@ object ApplinkConstant {
     const val OFFICIAL_SEARCHBAR = "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?official=true&navsource=os"
 
     val OFFICIAL_PROMO_NATIVE = "${ApplinkConst.PROMO_LIST}?categoryID=8&menuID=363"
+}
+
+object TopAdsHeadlineConstant{
+    const val PAGE = "homepage_os"
+    const val SEEN_ADS = 0
+
 }

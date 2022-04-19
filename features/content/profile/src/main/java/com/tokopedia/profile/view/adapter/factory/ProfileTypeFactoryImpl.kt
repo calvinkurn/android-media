@@ -18,12 +18,21 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
@@ -51,6 +60,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
                              private val onOtherProfilePostItemClick: ((applink: String, position: Int, datum: FeedPostRelated.Datum) -> Unit),
                              private val highlightListener: HighlightAdapter.HighlightListener,
+                             private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener,
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, DynamicFeedTypeFactory {
@@ -75,8 +85,16 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(topadsShopViewModel: TopadsShopViewModel): Int {
+    override fun type(topadsShopUiModel: TopadsShopUiModel): Int {
         return TopadsShopViewHolder.LAYOUT
+    }
+
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT
+    }
+
+    override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int {
+        return TopAdsHeadlineV2ViewHolder.LAYOUT
     }
 
     override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
@@ -97,6 +115,22 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
         return HighlightViewHolder.LAYOUT
+    }
+
+    override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
+        return TopAdsBannerViewHolder.LAYOUT
+    }
+
+    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
+    }
+
+    override fun type(shimmerUiModel: ShimmerUiModel): Int {
+        return 0
+    }
+
+    override fun type(dynamicPostUiModel: DynamicPostUiModel): Int {
+        return 0
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -123,6 +157,17 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 BannerViewHolder(parent, bannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             TopadsShopViewHolder.LAYOUT ->
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsHeadlineViewHolder.LAYOUT ->
+                TopAdsHeadlineViewHolder(parent, userSession) as AbstractViewHolder<Visitable<*>>
+            TopAdsHeadlineV2ViewHolder.LAYOUT ->
+                TopAdsHeadlineV2ViewHolder(
+                    parent,
+                    userSession,
+                    dynamicPostListener = dynamicPostListener,
+                    videoViewListener = videoViewListener,
+                    gridItemListener = gridItemListener,
+                    imagePostListener = imagePostListener
+                ) as AbstractViewHolder<Visitable<*>>
             EmptyAffiliateViewHolder.LAYOUT ->
                 EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
             NoPostCardViewHolder.LAYOUT ->
@@ -133,6 +178,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             HighlightViewHolder.LAYOUT ->
                 HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            TopAdsBannerViewHolder.LAYOUT ->
+                TopAdsBannerViewHolder(parent, topAdsBannerListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

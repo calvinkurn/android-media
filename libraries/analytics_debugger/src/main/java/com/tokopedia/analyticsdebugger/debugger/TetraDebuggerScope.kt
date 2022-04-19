@@ -26,7 +26,7 @@ class TetraDebuggerScope(private val context: Context) : CoroutineScope, TetraDe
         launchCatchError(coroutineContext, {
             val service = TetraService(context).makeRetrofitService()
             val request = TetraService.parse(mapper.parseInitRequest())
-            val response = service.init(request).await()
+            val response = service.init(request)
             val parseResponse = mapper.parseInitResponse(response.body())
             dataSource.putStatus(parseResponse)
         }, {
@@ -39,7 +39,7 @@ class TetraDebuggerScope(private val context: Context) : CoroutineScope, TetraDe
             if (dataSource.isWhitelisted()) {
                 val service = TetraService(context).makeRetrofitService()
                 val request = TetraService.parse(mapper.parseDebugRequest(dataSource.getUserId(), data))
-                val response = service.send(request).await()
+                val response = service.send(request)
                 mapper.parseDebugResponse(response.body())
             }
         }, {
@@ -54,6 +54,13 @@ class TetraDebuggerScope(private val context: Context) : CoroutineScope, TetraDe
     override fun cancel() {
         if (!job.isCancelled) {
             job.cancel()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(context: Context): TetraDebugger {
+            return TetraDebuggerScope(context)
         }
     }
 }

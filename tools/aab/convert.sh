@@ -5,10 +5,15 @@
 BUNDLETOOL=./tools/aab/bundletool.jar
 
 if [ ! -f $BUNDLETOOL ]; then
-    echo "Please download and put bundletool.jar in this folder"
-    echo "https://github.com/google/bundletool/releases"
-    echo "Download bundletool-all-[LAST-VERSION].jar file, rename it to bundletool.jar"
-    exit 1
+    { # try
+        bundletool version
+    } || { # catch
+        echo "Option 1: Please download and put bundletool.jar in this folder"
+        echo "https://github.com/google/bundletool/releases"
+        echo "Download bundletool-all-[LAST-VERSION].jar file, rename it to bundletool.jar"
+        echo "Option 2: install bundletool using homebrew: brew install bundletool"
+        exit 1
+    }
 fi
 
 if [ -z "$1" ]; then
@@ -31,8 +36,11 @@ OUTPUT_APK="$OUTPUT_NAME.apk"
 OUTPUT_ZIP="$OUTPUT_NAME.zip"
 OUTPUT_FOLDER="./$OUTPUT_NAME"
 
-java -jar $BUNDLETOOL build-apks --bundle=$INPUT --output="$OUTPUT_APKS" --mode=universal
-
+{ # try
+    java -jar $BUNDLETOOL build-apks --bundle=$INPUT --output="$OUTPUT_APKS" --mode=universal
+} || { # catch
+    bundletool build-apks --bundle=$INPUT --output="$OUTPUT_APKS" --mode=universal
+}
 mv "$OUTPUT_APKS" "$OUTPUT_ZIP"
 
 mkdir "$OUTPUT_FOLDER"

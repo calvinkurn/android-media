@@ -3,18 +3,20 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
-import com.tokopedia.product.detail.view.adapter.ProductGeneralItemAdapter
+import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
+import com.tokopedia.product.detail.databinding.ItemProtectionPartnerInfoDetailBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 
 class ProductGeneralInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductGeneralInfoDataModel>(view) {
 
@@ -22,63 +24,63 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         val LAYOUT = R.layout.item_dynamic_general_info
     }
 
+    private val binding = ItemDynamicGeneralInfoBinding.bind(view)
+
     override fun bind(element: ProductGeneralInfoDataModel) {
-        if (element.data.first().subtitle.isEmpty()) {
-            showLoading()
+        renderView(element.subtitle)
+
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
+
+        val pdpGeneralInfoDescDetail = binding.pdpGeneralInfoDescDetail
+
+        if (element.additionalDesc.isEmpty() && element.additionalIcon.isEmpty()) {
+            pdpGeneralInfoDescDetail.root.hide()
         } else {
-            hideLoading()
+            pdpGeneralInfoDescDetail.root.show()
         }
 
-        element.data.run {
-            if (element.data.firstOrNull()?.subtitle?.isEmpty() == true) {
-                view.info_separator.gone()
-                view.general_info_container.layoutParams.height = 0
-            } else {
-                view.info_separator.show()
-                view.general_info_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
+        binding.pdpInfoTitle.text = MethodChecker.fromHtml(element.title)
+        binding.pdpInfoTitle.show()
+        binding.pdpInfoDesc.text = MethodChecker.fromHtml(element.subtitle)
 
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-
-            view.rv_general_info.adapter = ProductGeneralItemAdapter(this, element.name, listener, element.type, element.name, adapterPosition)
-
-            if (element.isApplink) {
-                view.pdp_arrow_right.show()
-            } else {
-                view.pdp_arrow_right.hide()
-            }
+        val pdpAdditionalInfoDesc = pdpGeneralInfoDescDetail.pdpAdditionalInfoDesc
+        pdpAdditionalInfoDesc.shouldShowWithAction(element.additionalDesc.isNotEmpty()) {
+            pdpAdditionalInfoDesc.text = element.additionalDesc
         }
 
-        view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
         view.setOnClickListener {
-            listener.onInfoClicked(element.name, getComponentTrackData(element))
+            listener.onInfoClicked(element.applink, element.name, getComponentTrackData(element))
+        }
+        renderIcon(element, pdpGeneralInfoDescDetail)
+    }
+
+    private fun renderIcon(
+        element: ProductGeneralInfoDataModel,
+        pdpGeneralInfoDescDetail: ItemProtectionPartnerInfoDetailBinding
+    ) = with(binding) {
+        pdpArrowRight.showWithCondition(element.isApplink)
+
+        pdpIcon.shouldShowWithAction(element.parentIcon.isNotEmpty()) {
+            pdpIcon.loadIcon(element.parentIcon)
         }
 
-        if (element.parentIcon.isNotEmpty()) {
-            view.pdp_icon.show()
-            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
+        val icPdpAdditionalInfo = pdpGeneralInfoDescDetail.icPdpAdditionalInfo
+        icPdpAdditionalInfo.shouldShowWithAction(element.additionalIcon.isNotEmpty()) {
+            icPdpAdditionalInfo.loadIcon(element.additionalIcon)
+        }
+    }
+
+    private fun renderView(subtitle: String) = with(binding) {
+        if (subtitle.isEmpty()) {
+            infoSeparator.gone()
+            generalInfoContainer.layoutParams.height = 0
         } else {
-            view.pdp_icon.hide()
+            infoSeparator.show()
+            generalInfoContainer.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
-
-    private fun hideLoading() = with(view) {
-        rv_general_info.show()
-        pdp_info_title.show()
-        titleShimmering.hide()
-        descShimmering.hide()
-    }
-
-    private fun showLoading() = with(view) {
-        pdp_arrow_right.hide()
-        pdp_info_title.hide()
-        rv_general_info.hide()
-        titleShimmering.show()
-        descShimmering.show()
-    }
-
 
     private fun getComponentTrackData(element: ProductGeneralInfoDataModel?) = ComponentTrackDataModel(element?.type
             ?: "",

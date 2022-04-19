@@ -1,0 +1,616 @@
+{
+  "shipment_address_form": {
+    "status": "OK",
+    "error_message": [],
+    "data": {
+      "errors": [],
+      "error_code": 0,
+      "kero_token": "Tokopedia+Kero:qzC+IZQJF69rRixekAiGFv+NZWA=",
+      "kero_discom_token": "Tokopedia+Kero:0fkUkCv0TDb7/8+qbwDYRY8hEMY=",
+      "kero_unix_time": 1606113032,
+      "is_robinhood": 1,
+      "is_hide_courier_name": false,
+      "is_blackbox": 0,
+      "is_show_onboarding": false,
+      "is_ineligible_promo_dialog_enabled": true,
+      "disabled_features": [],
+      "donation_checkbox_status": false,
+      "open_prerequisite_site": false,
+      "eligible_new_shipping_experience": true,
+      "ab_test_button": {
+        "enable": false
+      },
+      "group_address": [
+        {
+          "errors": [],
+          "user_address": {
+            "address_id": 40031643,
+            "address_name": "Alamat Kantor a",
+            "address": "Mailing Room PT Tokopedia, Tokopedia Tower Lantai 29, Jl. Prof. Dr. Satrio Kav 11, Kelurahan Karet Semanggi",
+            "postal_code": "12940",
+            "phone": "628561533911",
+            "receiver_name": "Irfan Khoirul - Mobile Engineer Android",
+            "status": 2,
+            "country": "Indonesia",
+            "province_id": 13,
+            "province_name": "DKI Jakarta",
+            "city_id": 175,
+            "city_name": "Jakarta Selatan",
+            "district_id": 2270,
+            "district_name": "Setiabudi",
+            "address_2": "-6.22138492899301,106.82065308094023",
+            "latitude": "-6.22138492899301",
+            "longitude": "106.82065308094023",
+            "corner_id": 0,
+            "is_corner": false
+          },
+          "group_shop": [
+            {
+              "errors": [],
+              "shipping_id": 0,
+              "sp_id": 0,
+              "is_insurance": false,
+              "is_fulfillment_service": false,
+              "cart_string": "2283942-0-1844361-40031643",
+              "has_promo_list": false,
+              "shipment_information": {
+                "shop_location": "Kota Bandung",
+                "estimation": "",
+                "free_shipping": {
+                  "eligible": false,
+                  "badge_url": ""
+                },
+                "preorder": {
+                  "is_preorder": false,
+                  "duration": ""
+                }
+              },
+              "save_state_flag": false,
+              "promo_codes": [],
+              "vehicle_leasing": {
+                "booking_fee": 0,
+                "is_leasing_product": false
+              },
+              "shop": {
+                "shop_id": 2283942,
+                "user_id": 20711650,
+                "shop_name": "POINT99 COMPUTER",
+                "shop_image": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/1/26/2283942/2283942_32a4c550-bdff-4177-a8cc-f5b503d8e885.jpg",
+                "shop_url": "https://www.tokopedia.com/point99",
+                "shop_status": 1,
+                "is_gold": 1,
+                "is_gold_badge": true,
+                "is_official": 0,
+                "is_free_returns": 0,
+                "address_id": 2191,
+                "postal_code": "40111",
+                "latitude": "-6.907706",
+                "longitude": "107.608829",
+                "district_id": 2191,
+                "district_name": "",
+                "origin": 0,
+                "address_street": "",
+                "province_id": 0,
+                "city_id": 165,
+                "city_name": "Kota Bandung",
+                "gold_merchant": {
+                  "is_gold": 1,
+                  "is_gold_badge": true,
+                  "gold_merchant_logo_url": "https://ecs7.tokopedia.net/img/newtkpd/powermerchant/ic-powermerchant-130px.png"
+                },
+                "official_store": {
+                  "is_official": 0,
+                  "os_logo_url": ""
+                },
+                "shop_alert_message": ""
+              },
+              "shop_shipments": [
+                {
+                  "ship_id": 1,
+                  "ship_name": "JNE",
+                  "ship_code": "jne",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 1,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 2,
+                      "ship_prod_name": "OKE",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 6,
+                      "ship_prod_name": "YES",
+                      "ship_group_name": "nextday",
+                      "ship_group_id": 1003,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 22,
+                      "ship_prod_name": "JNE Trucking",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 2,
+                  "ship_name": "TIKI",
+                  "ship_code": "tiki",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-tiki.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 3,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 4,
+                  "ship_name": "Pos Indonesia",
+                  "ship_code": "pos",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-pos.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 10,
+                      "ship_prod_name": "Pos Kilat Khusus",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 6,
+                  "ship_name": "Wahana",
+                  "ship_code": "wahana",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-wahana.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 8,
+                      "ship_prod_name": "Service Normal",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 10,
+                  "ship_name": "Gojek",
+                  "ship_code": "gojek",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+                  "is_dropship_enabled": 0,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 28,
+                      "ship_prod_name": "Instant Courier",
+                      "ship_group_name": "instant",
+                      "ship_group_id": 1000,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 11,
+                  "ship_name": "SiCepat",
+                  "ship_code": "sicepat",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 18,
+                      "ship_prod_name": "Regular Package",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 33,
+                      "ship_prod_name": "BEST",
+                      "ship_group_name": "nextday",
+                      "ship_group_id": 1003,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 43,
+                      "ship_prod_name": "GOKIL",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 44,
+                      "ship_prod_name": "Regular Package",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 51,
+                      "ship_prod_name": "HALU",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 13,
+                  "ship_name": "GrabExpress",
+                  "ship_code": "grab",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+                  "is_dropship_enabled": 0,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 37,
+                      "ship_prod_name": "Instant",
+                      "ship_group_name": "instant",
+                      "ship_group_id": 1000,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 14,
+                  "ship_name": "J&T",
+                  "ship_code": "jnt",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 27,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 16,
+                  "ship_name": "REX",
+                  "ship_code": "rex",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-rex.png",
+                  "is_dropship_enabled": 0,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 32,
+                      "ship_prod_name": "REX-10",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 23,
+                  "ship_name": "AnterAja",
+                  "ship_code": "anteraja",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 45,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    },
+                    {
+                      "ship_prod_id": 46,
+                      "ship_prod_name": "Next Day",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                },
+                {
+                  "ship_id": 24,
+                  "ship_name": "Lion Parcel",
+                  "ship_code": "lion",
+                  "ship_logo": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+                  "is_dropship_enabled": 1,
+                  "ship_prods": [
+                    {
+                      "ship_prod_id": 47,
+                      "ship_prod_name": "Reguler",
+                      "ship_group_name": "regular",
+                      "ship_group_id": 1004,
+                      "additional_fee": 0,
+                      "minimum_weight": 0
+                    }
+                  ]
+                }
+              ],
+              "dropshipper": {
+                "name": "",
+                "telp_no": ""
+              },
+              "products": [
+                {
+                  "errors": [],
+                  "cart_id": "2066147017",
+                  "product_id": 1271231575,
+                  "product_name": "Corsair 4000D AIRFLOW Tempered Glass Mid-Tower ATX Case",
+                  "product_price_fmt": "Rp1.379.000",
+                  "product_price": 1379000,
+                  "product_original_price": 0,
+                  "product_wholesale_price": 1379000,
+                  "product_wholesale_price_fmt": "Rp1.379.000",
+                  "product_weight_fmt": "14000gr",
+                  "product_weight": 14000,
+                  "product_condition": 1,
+                  "product_url": "https://www.tokopedia.com/point99/corsair-4000d-airflow-tempered-glass-mid-tower-atx-case",
+                  "product_returnable": 0,
+                  "product_is_free_returns": 0,
+                  "product_is_preorder": 0,
+                  "product_cashback": "",
+                  "product_min_order": 1,
+                  "product_invenage_value": 25,
+                  "product_switch_invenage": 1,
+                  "product_price_currency": 1,
+                  "product_image_src_200_square": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/21/7f42d394-ce16-4558-80c6-27c5391f070c.jpg",
+                  "product_notes": "",
+                  "product_quantity": 1,
+                  "product_menu_id": 11272553,
+                  "product_finsurance": 0,
+                  "product_fcancel_partial": 0,
+                  "product_cat_id": 307,
+                  "product_catalog_id": 0,
+                  "product_category": "Komputer & Laptop / Komponen Komputer / Casing Komputer",
+                  "product_shipment": [],
+                  "product_shipment_mapping": [],
+                  "purchase_protection_plan_data": {
+                    "protection_available": true,
+                    "protection_type_id": 1,
+                    "protection_price_per_product": 1000,
+                    "protection_price": 1000,
+                    "protection_title": "Protection Title",
+                    "protection_subtitle": "Protection Subtitle",
+                    "protection_link_text": "",
+                    "protection_link_url": "",
+                    "protection_opt_in": false,
+                    "protection_checkbox_disabled": false
+                  },
+                  "free_returns": {
+                    "free_returns_logo": ""
+                  },
+                  "product_tracker_data": {
+                    "attribution": "none/other",
+                    "tracker_list_name": "none/other"
+                  },
+                  "product_preorder": {
+                    "duration_text": "",
+                    "duration_day": "0"
+                  },
+                  "trade_in_info": {
+                    "is_valid_trade_in": false,
+                    "new_device_price": 0,
+                    "new_device_price_fmt": "",
+                    "old_device_price": 0,
+                    "old_device_price_fmt": "",
+                    "drop_off_enable": false,
+                    "device_model": "",
+                    "diagnostic_id": 0
+                  },
+                  "free_shipping": {
+                    "eligible": false,
+                    "badge_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  },
+                  "product_ticker": {
+                    "show_ticker": false,
+                    "message": ""
+                  },
+                  "variant_description_detail": {
+                    "variant_name": [],
+                    "variant_description": ""
+                  },
+                  "product_alert_message": "",
+                  "product_information": [],
+                  "campaign_id": 0
+                }
+              ],
+              "warehouse": {
+                "warehouse_id": 1844361,
+                "city_name": "Kota Bandung"
+              }
+            }
+          ]
+        }
+      ],
+      "donation": {
+        "Title": "Donasi Rp 5.000 untuk APD Tenaga Medis",
+        "Nominal": 5000,
+        "Description": "Bantu garda terdepan COVID-19, jaga kesehatan para nakes melalui donasi pengadaan APD & Vitamin melalui partner BenihBaik."
+      },
+      "cod": {
+        "is_cod": false,
+        "counter_cod": -1
+      },
+      "message": {
+        "message_info": "",
+        "message_link": "",
+        "message_logo": ""
+      },
+      "egold_attributes": {
+        "eligible": false,
+        "is_tiering": false,
+        "range": {
+          "min": 0,
+          "max": 0
+        },
+        "message": {
+          "title_text": "",
+          "sub_text": "",
+          "ticker_text": "",
+          "tooltip_text": ""
+        },
+        "tier_data": []
+      },
+      "tickers": [
+        {
+          "id" : 0,
+          "message" : "Ticker BBO Description",
+          "page" : "checkout",
+          "title" : "Ticker BBO Title"
+        }
+      ],
+      "campaign_timer": {
+        "description": "",
+        "show_timer": false,
+        "expired_timer_message": {
+          "Button": "",
+          "description": "",
+          "title": ""
+        },
+        "timer_detail": {
+          "deduct_time": "",
+          "expire_duration": 0,
+          "expired_time": "",
+          "server_time": ""
+        }
+      },
+      "addresses": {
+        "active": "",
+        "disable_tabs": [],
+        "data": []
+      },
+      "disabled_features_detail": {
+        "disabled_multi_address_message": ""
+      },
+      "promo": {
+        "error_default": {
+          "title": "promo tidak dapat digunakan",
+          "description": "silahkan coba beberapa saat lagi"
+        },
+        "last_apply": {
+          "code": "200000",
+          "data": {
+            "codes": [
+              "OVOCT598GS17JJ781XM"
+            ],
+            "promo_code_id": 0,
+            "cashback_advocate_referral_amount": 0,
+            "cashback_wallet_amount": 68950,
+            "discount_amount": 0,
+            "title_description": "Cashback Tokopedia hingga Rp350.000",
+            "is_tokopedia_gerai": false,
+            "global_success": true,
+            "gateway_id": "412316860416",
+            "is_coupon": 1,
+            "success": true,
+            "invoice_description": "",
+            "voucher_orders": [],
+            "clashing_info_detail": {
+              "is_clashed_promos": false,
+              "clash_reason": "",
+              "clash_message": ""
+            },
+            "tracking_details": [
+              {
+                "product_id": 1271231575,
+                "promo_codes_tracking": "OVOCT",
+                "promo_details_tracking": "G:1:68950:grey"
+              }
+            ],
+            "message": {
+              "color": "#e0e0e0",
+              "state": "grey",
+              "text": "Kamu berpotensi dapat cashback sebesar Rp68.950 setelah pesanan selesai"
+            },
+            "additional_info": {
+              "sp_ids": [],
+              "usage_summaries": [
+                {
+                  "description": "Cashback OVO Points",
+                  "type": "cashback",
+                  "amount_str": "68.950",
+                  "amount": 68950
+                }
+              ],
+              "message_info": {
+                "message": "Kamu bisa hemat Rp68.950",
+                "detail": "1 promo dipakai"
+              },
+              "error_detail": {
+                "message": "Ada perubahan pada promo yang kamu pakai."
+              },
+              "empty_cart_info": {
+                "image_url": "",
+                "detail": "",
+                "message": ""
+              },
+              "promo_sp_ids": []
+            },
+            "benefit_summary_info": {
+              "final_benefit_amount_str": "Rp68.950",
+              "final_benefit_amount": 68950,
+              "final_benefit_text": "Total benefit anda: ",
+              "summaries": [
+                {
+                  "amount": 68950,
+                  "section_name": "Cashback",
+                  "description": "Total cashback: ",
+                  "section_description": "",
+                  "type": "cashback",
+                  "amount_str": "Rp68.950",
+                  "details": [
+                    {
+                      "amount": 68950,
+                      "section_name": "",
+                      "description": "Total Cashback OVO Points ",
+                      "type": "ovo_points",
+                      "amount_str": "Rp68.950",
+                      "points": 68950,
+                      "points_str": ""
+                    }
+                  ]
+                }
+              ]
+            },
+            "ticker_info": {
+              "unique_id": "",
+              "status_code": 0,
+              "message": ""
+            }
+          }
+        }
+      }
+    }
+  }
+}

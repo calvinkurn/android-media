@@ -2,28 +2,54 @@ package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
-import kotlinx.android.synthetic.main.item_product_manage_menu.view.*
+import com.tokopedia.product.manage.databinding.ItemProductManageMenuBinding
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.utils.view.binding.viewBinding
+import java.util.Date
 
 class ProductMenuViewHolder(
     itemView: View,
     private val listener: ProductMenuListener
-): AbstractViewHolder<ProductMenuViewModel>(itemView) {
+): AbstractViewHolder<ProductMenuUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_product_manage_menu
     }
 
-    override fun bind(menu: ProductMenuViewModel) {
-        itemView.textMenu.text = itemView.context.getString(menu.title)
-        itemView.textMenu.setCompoundDrawablesWithIntrinsicBounds(menu.icon, 0, 0, 0)
-        itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+    private val binding by viewBinding<ItemProductManageMenuBinding>()
+
+    override fun bind(menu: ProductMenuUiModel) {
+        binding?.run {
+            textMenu.text = itemView.context?.getString(menu.title).orEmpty()
+            if (getString(menu.title) == getString(R.string.product_manage_create_broadcast_chat)) {
+                itemView.context?.let {
+                    icuPmlMoreMenu.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_bc_chat))
+                }
+            } else {
+                icuPmlMoreMenu.setImage(menu.icon)
+            }
+            labelProductManageMenuNew.showIfNew(menu.newTagEndMillis)
+            itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
+        }
+    }
+
+    private fun Label.showIfNew(newTagEndMillis: Long?) {
+        val shouldShowLabel =
+            newTagEndMillis?.let {
+                val todayMillis = Date().time
+                todayMillis < it
+            }.orFalse()
+        showWithCondition(shouldShowLabel)
     }
 
     interface ProductMenuListener {
-        fun onClickOptionMenu(menu: ProductMenuViewModel)
+        fun onClickOptionMenu(menu: ProductMenuUiModel)
     }
 }

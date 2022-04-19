@@ -12,8 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSearchResultProduct"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="4"/>
@@ -25,7 +25,6 @@
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultProduct"
         app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +37,6 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivSearchResultProduct"

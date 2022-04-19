@@ -1,6 +1,7 @@
 package com.tokopedia.common.travel.domain
 
 import com.tokopedia.common.travel.constant.TravelType
+import com.tokopedia.common.travel.data.TravelBannerGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
                                                            private val graphqlUseCase: GraphqlUseCase) {
 
-    suspend fun execute(query: String, product: TravelType, isFromCloud: Boolean)
+    suspend fun execute(product: TravelType, isFromCloud: Boolean)
             : Result<TravelCollectiveBannerModel> {
 
         if (isFromCloud) multiRequestGraphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -33,7 +34,8 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
 
         return try {
             val params = mapOf(PARAM_BANNER_PRODUCT_KEY to getProductString(product))
-            val graphqlRequest = GraphqlRequest(query, TravelCollectiveBannerModel.Response::class.java, params)
+            val graphqlRequest = GraphqlRequest(TravelBannerGQLQuery.QUERY_COLLECTIVE_BANNER,
+                    TravelCollectiveBannerModel.Response::class.java, params)
             multiRequestGraphqlUseCase.addRequest(graphqlRequest)
             val travelCollectiveBannerModel = multiRequestGraphqlUseCase.executeOnBackground().getSuccessData<TravelCollectiveBannerModel.Response>().response
 
@@ -64,6 +66,8 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
             TravelType.HOTEL -> PARAM_PRODUCT_HOTEL
             TravelType.SUB_HOMEPAGE -> PARAM_PRODUCT_SUB_HOMEPAGE
             TravelType.ALL -> PARAM_PRODUCT_ALL
+            TravelType.FLIGHT_VIDEO_BANNER -> PARAM_PRODUCT_FLIGHT_VIDEO_BANNER
+            TravelType.HOTEL_VIDEO_BANNER -> PARAM_PRODUCT_HOTEL_VIDEO_BANNER
             else -> PARAM_PRODUCT_ALL
         }
     }
@@ -78,7 +82,10 @@ class GetTravelCollectiveBannerUseCase @Inject constructor(private val multiRequ
         const val PARAM_PRODUCT_FLIGHT = "FLIGHT"
         const val PARAM_PRODUCT_HOTEL = "HOTEL"
         const val PARAM_PRODUCT_SUB_HOMEPAGE = "SUBHOMEPAGE"
+        const val PARAM_PRODUCT_FLIGHT_VIDEO_BANNER = "FLIGHTPROMOTIONAL"
+        const val PARAM_PRODUCT_HOTEL_VIDEO_BANNER = "HOTELPROMOTIONAL"
         const val PARAM_PRODUCT_ALL = "ALL"
+
     }
 
 }

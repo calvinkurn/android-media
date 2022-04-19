@@ -11,16 +11,17 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.utils.date.*
 import kotlinx.android.synthetic.main.layout_flight_search_view.view.*
 import java.util.*
 
@@ -38,6 +39,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private lateinit var departureDate: Date
     private lateinit var returnDate: Date
+    private var isAvailableToday: Boolean = false
 
     init {
         View.inflate(context, R.layout.layout_flight_search_view, this)
@@ -65,24 +67,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         setClassView(getClassById(flightDashboardCache.classCache))
 
         renderTripView()
-
-        if (flightDashboardCache.departureDate.isNotEmpty() &&
-                !FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
-                        .before(generateDefaultDepartureDate())) {
-            setDepartureDate(FlightDateUtil.stringToDate(
-                    FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate))
-        } else {
-            setDepartureDate(generateDefaultDepartureDate())
-        }
-
-        if (flightDashboardCache.returnDate.isNotEmpty() &&
-                !FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate)
-                        .before(generateDefaultReturnDate(departureDate))) {
-            setReturnDate(FlightDateUtil.stringToDate(
-                    FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
-        } else {
-            setReturnDate(generateDefaultReturnDate(departureDate))
-        }
     }
 
     fun setRoundTrip(isRoundTrip: Boolean) {
@@ -103,14 +87,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     fun setDepartureDate(departureDate: Date) {
         this.departureDate = departureDate
-        flightSearchData.departureDate = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT)
-        tvFlightDepartureDate.text = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+        flightSearchData.departureDate = departureDate.toString(DateUtil.YYYY_MM_DD)
+        tvFlightDepartureDate.text = departureDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
         // check return date
-        val oneYear = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 1),
-                Calendar.DATE,
-                -1)
+        val oneYear = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, 1)
+                .addTimeToSpesificDate(Calendar.DATE, -1)
         if (::returnDate.isInitialized &&
                 returnDate.after(departureDate) &&
                 returnDate.before(oneYear)) {
@@ -122,12 +105,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     fun setReturnDate(returnDate: Date) {
         this.returnDate = returnDate
-        flightSearchData.returnDate = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT)
-        tvFlightReturnDate.text = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+        flightSearchData.returnDate = returnDate.toString(DateUtil.YYYY_MM_DD)
+        tvFlightReturnDate.text = returnDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
     }
 
     fun setPassengerView(passengerModel: FlightPassengerModel) {
-        flightSearchData.flightPassengerViewModel = passengerModel
+        flightSearchData.flightPassengerModel = passengerModel
         tvFlightPassenger.text = buildPassengerTextFormatted(
                 passengerModel.adult,
                 passengerModel.children,
@@ -159,6 +142,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
+
         switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked ->
             listener?.onRoundTripSwitchChanged(isChecked)
             toggleOneWay(isChecked)
@@ -169,38 +153,42 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightDestinationLabel.setOnClickListener { listener?.onDestinationAirportClicked() }
         tvFlightDestinationAirport.setOnClickListener { listener?.onDestinationAirportClicked() }
         tvFlightDepartureDateLabel.setOnClickListener {
-            val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
-                    flightSearchData.departureAirport.cityAirports.size > 0)
-                flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
-            val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
-                    flightSearchData.arrivalAirport.cityAirports.size > 0)
-                flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
-
-            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onDepartureDateClicked(departureAndArrivalAirports.first, departureAndArrivalAirports.second,
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightDepartureDate.setOnClickListener {
-            val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
-                    flightSearchData.departureAirport.cityAirports.size > 0)
-                flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
-            val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
-                    flightSearchData.arrivalAirport.cityAirports.size > 0)
-                flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
-
-            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onDepartureDateClicked(departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second,
                     flightSearchData.flightClass.id, departureDate, returnDate, isRoundTrip())
         }
         tvFlightReturnDateLabel.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onReturnDateClicked(departureDate, returnDate, departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second, flightSearchData.flightClass.id)
         }
         tvFlightReturnDate.setOnClickListener {
-            listener?.onReturnDateClicked(departureDate, returnDate)
+            val departureAndArrivalAirports = getDepartureAndArrivalAirports()
+            listener?.onReturnDateClicked(departureDate, returnDate,
+                    departureAndArrivalAirports.first,
+                    departureAndArrivalAirports.second, flightSearchData.flightClass.id)
         }
-        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
-        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
+        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
+        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
         tvFlightClassLabel.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         tvFlightClass.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         btnFlightSearch.setOnClickListener { onSaveSearch() }
+    }
+
+    private fun getDepartureAndArrivalAirports(): Pair<String, String> {
+        val departureAirport = if (flightSearchData.departureAirport.cityAirports != null &&
+                flightSearchData.departureAirport.cityAirports.size > 0)
+            flightSearchData.departureAirport.cityCode else flightSearchData.departureAirport.airportCode
+        val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null &&
+                flightSearchData.arrivalAirport.cityAirports.size > 0)
+            flightSearchData.arrivalAirport.cityCode else flightSearchData.arrivalAirport.airportCode
+        return Pair(departureAirport, arrivalAirport)
     }
 
     private fun setOriginAirport(departureAirportId: String,
@@ -246,7 +234,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setPassengerView(adult: Int = 1, children: Int = 0, infant: Int = 0) {
-        flightSearchData.flightPassengerViewModel = FlightPassengerModel(adult, children, infant)
+        flightSearchData.flightPassengerModel = FlightPassengerModel(adult, children, infant)
         tvFlightPassenger.text = buildPassengerTextFormatted(adult, children, infant)
     }
 
@@ -295,6 +283,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun buildPassengerTextFormatted(adult: Int, children: Int, infant: Int): String {
         var passengerFmt = ""
         if (adult > 0) {
+            SplitCompat.installActivity(context)
             passengerFmt = adult.toString() + " " + context.getString(R.string.flight_dashboard_adult_passenger)
             if (children > 0) {
                 passengerFmt += ", " + children + " " + context.getString(R.string.flight_dashboard_adult_children)
@@ -309,19 +298,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun getClassById(classId: Int): FlightClassModel {
         return when (classId) {
-            1 -> FlightClassModel().apply {
-                id = 1
-                title = "Ekonomi"
-            }
-            2 -> FlightClassModel().apply {
-                id = 2
-                title = "Bisnis"
-            }
-            3 -> FlightClassModel().apply {
-                id = 3
-                title = "Utama"
-            }
-            else -> FlightClassModel()
+            CLASS_ECONOMY -> FlightClassModel(CLASS_ECONOMY, "Ekonomi")
+            CLASS_BUSINESS -> FlightClassModel(CLASS_BUSINESS, "Bisnis")
+            CLASS_VIP -> FlightClassModel(CLASS_VIP, "Utama")
+            else -> FlightClassModel(0, "")
         }
     }
 
@@ -355,21 +335,44 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         separatorReturnDate.hide()
     }
 
-    private fun generateDefaultDepartureDate(): Date =
-            FlightDateUtil.removeTime(FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY))
+    fun setDate(isTodayAllowed: Boolean){
+        this.isAvailableToday = isTodayAllowed
+
+        if (flightDashboardCache.departureDate.isNotEmpty() &&
+            !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
+            setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setDepartureDate(generateDefaultDepartureDate())
+        }
+
+        if (flightDashboardCache.returnDate.isNotEmpty() &&
+            !flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultReturnDate(departureDate))) {
+            setReturnDate(flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setReturnDate(generateDefaultReturnDate(departureDate))
+        }
+    }
+
+    private fun generateDefaultDepartureDate(): Date {
+        return if(isAvailableToday){
+            DateUtil.getCurrentDate().removeTime()
+        }else{
+            DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY).removeTime()
+        }
+    }
 
     private fun generateDefaultReturnDate(departureDate: Date): Date =
-            FlightDateUtil.removeTime(FlightDateUtil.addDate(departureDate, 1))
+            departureDate.addTimeToSpesificDate(Calendar.DATE, 1).removeTime()
 
     private fun makeBold(text: SpannableStringBuilder): SpannableStringBuilder {
         if (text.isEmpty()) return text
 
         text.setSpan(StyleSpan(Typeface.BOLD),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        text.setSpan(RelativeSizeSpan(1.25f),
+        text.setSpan(RelativeSizeSpan(RELATIVE_SPAN_SIZE),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         text.setSpan(
-                ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
                 0, text.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return text
@@ -383,6 +386,11 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         val shake = AnimationUtils.loadAnimation(context, R.anim.flight_rotate)
         imgFlightReverseAirport.startAnimation(shake)
+
+        listener?.onReverseAirportClicked(
+                flightSearchData.departureAirport,
+                flightSearchData.arrivalAirport
+        )
     }
 
     private fun onSaveSearch() {
@@ -409,9 +417,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         flightDashboardCache.putDepartureDate(flightSearchData.departureDate)
         if (isRoundTrip()) flightDashboardCache.putReturnDate(flightSearchData.returnDate)
         flightDashboardCache.putPassengerCount(
-                flightSearchData.flightPassengerViewModel.adult,
-                flightSearchData.flightPassengerViewModel.children,
-                flightSearchData.flightPassengerViewModel.infant
+                flightSearchData.flightPassengerModel.adult,
+                flightSearchData.flightPassengerModel.children,
+                flightSearchData.flightPassengerModel.infant
         )
         flightDashboardCache.putClassCache(flightSearchData.flightClass.id)
     }
@@ -434,10 +442,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onRoundTripSwitchChanged(isRoundTrip: Boolean)
         fun onDepartureAirportClicked()
         fun onDestinationAirportClicked()
+        fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel)
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
-        fun onReturnDateClicked(departureDate: Date, returnDate: Date)
+        fun onReturnDateClicked(departureDate: Date, returnDate: Date, departureAirport: String,
+                                arrivalAirport: String, flightClassId: Int)
+
         fun onPassengerClicked(passengerModel: FlightPassengerModel?)
         fun onClassClicked(flightClassId: Int = -1)
         fun onSaveSearch(flightSearchData: FlightSearchPassDataModel)
@@ -445,6 +456,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     companion object {
         const val DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY = 2
+
+        private const val CLASS_ECONOMY = 1
+        private const val CLASS_BUSINESS = 2
+        private const val CLASS_VIP = 3
+
+        private const val RELATIVE_SPAN_SIZE = 1.25f
     }
 
 }

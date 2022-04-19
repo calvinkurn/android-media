@@ -11,6 +11,7 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxActivityComponent
 import com.tokopedia.gamification.giftbox.presentation.fragments.GiftBoxDailyFragment
 import com.tokopedia.user.session.UserSession
+import timber.log.Timber
 import javax.inject.Inject
 
 open class BaseGiftBoxActivity : BaseActivity() {
@@ -26,8 +27,16 @@ open class BaseGiftBoxActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(getLayout())
-        fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
+
+        //Intermittent crash ex is layout file not found
+        try {
+            setContentView(getLayout())
+            fm = findViewById(com.tokopedia.gamification.R.id.fmGiftRoot)
+        } catch (th: Throwable) {
+            Timber.e(th)
+            finish()
+            return
+        }
 
         val component = DaggerGiftBoxActivityComponent.builder()
                 .activityContextModule(ActivityContextModule(this))
@@ -39,12 +48,22 @@ open class BaseGiftBoxActivity : BaseActivity() {
         }
     }
 
+    override fun onStart() {
+        try {
+            super.onStart()
+        }catch (ex:Exception){
+            //Binary XML file line #20: Error inflating class com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
+            Timber.e(ex)
+            finish()
+        }
+
+    }
+
     fun showGiftBoxFragment() {
         supportFragmentManager
                 .beginTransaction()
                 .add(fm.id, getDestinationFragment())
                 .commit()
-
     }
 
     fun checkLoggedIn() {

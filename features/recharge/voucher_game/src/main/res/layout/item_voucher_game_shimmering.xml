@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="12dp">
+    android:layout_marginBottom="@dimen/unify_space_12">
 
     <include layout="@layout/item_voucher_game_shimmering_operator_row" />
 

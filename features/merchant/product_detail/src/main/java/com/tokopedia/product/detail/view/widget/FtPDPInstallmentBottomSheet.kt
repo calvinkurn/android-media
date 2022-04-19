@@ -16,7 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.bottomsheet.BottomSheetViewPager
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter
 import com.tokopedia.product.detail.view.fragment.FtPdpInstallmentCalculationFragment
 import com.tokopedia.product.detail.view.util.FtInstallmentListItem
@@ -36,8 +36,8 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     internal var ftInstallmentItemList: MutableList<FtInstallmentListItem> = ArrayList()
 
     private var installmentDataId: String = ""
-    private var installmentData: FinancingDataResponse = FinancingDataResponse()
-    private var productPrice: Float = 0f
+    private var installmentData: FtInstallmentCalculationDataResponse = FtInstallmentCalculationDataResponse()
+    private var productPrice: Double = 0.0
     private var isOfficialStore: Boolean = false
 
     private fun getBaseLayoutResourceId(): Int {
@@ -72,13 +72,13 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
     }
 
     protected fun configView(parentView: View) {
-        val textViewTitle = parentView.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        val textViewTitle = parentView.findViewById<TextView>(R.id.pdp_installment_tv_title)
         textViewTitle.text = title()
 
-        val layoutTitle = parentView.findViewById<View>(com.tokopedia.design.R.id.layout_title)
+        val layoutTitle = parentView.findViewById<View>(R.id.pdp_installment_layout_title)
         layoutTitle.setOnClickListener { v -> onCloseButtonClick() }
 
-        val closeButton = parentView.findViewById<View>(com.tokopedia.design.R.id.btn_close)
+        val closeButton = parentView.findViewById<View>(R.id.pdp_installment_btn_close)
         closeButton.setOnClickListener {
             dismiss()
         }
@@ -114,7 +114,7 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
             if (bottomSheetBehavior != null)
                 bottomSheetBehavior?.peekHeight = height
             params.height = screenHeight
-        } catch (illegalEx: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
         } catch (ignored: Exception) {
         }
 
@@ -131,20 +131,20 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
 
     private fun getNonCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
-                installmentData.ftInstallmentCalculation.data.nonCreditCardInstallmentData)
+                installmentData.data.tncDataList, isOfficialStore,
+                installmentData.data.nonCreditCardInstallmentData)
     }
 
     private fun getCreditInstallmentFragment(): Fragment? {
         return FtPdpInstallmentCalculationFragment.createInstance(context, productPrice,
-                installmentData.ftInstallmentCalculation.data.tncDataList, isOfficialStore,
-                installmentData.ftInstallmentCalculation.data.creditCardInstallmentData)
+                installmentData.data.tncDataList, isOfficialStore,
+                installmentData.data.creditCardInstallmentData)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
         bottomSheetDialog.setOnShowListener { dialog ->
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             if (bottomSheet != null) {
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 behavior.skipCollapsed = true
@@ -158,12 +158,12 @@ class FtPDPInstallmentBottomSheet : BottomSheetDialogFragment() {
         arguments?.let {
             installmentDataId = it.getString(KEY_PDP_FINANCING_DATA) ?: ""
 
-            val cacheManager = SaveInstanceCacheManager(context!!, installmentDataId)
+            val cacheManager = SaveInstanceCacheManager(requireContext(), installmentDataId)
             installmentData = cacheManager.get(
-                    FinancingDataResponse::class.java.simpleName,
-                    FinancingDataResponse::class.java
-            ) ?: FinancingDataResponse()
-            productPrice = it.getFloat(KEY_PDP_PRODUCT_PRICE)
+                    FtInstallmentCalculationDataResponse::class.java.simpleName,
+                    FtInstallmentCalculationDataResponse::class.java
+            ) ?: FtInstallmentCalculationDataResponse()
+            productPrice = it.getDouble(KEY_PDP_PRODUCT_PRICE)
             isOfficialStore = it.getBoolean(KEY_PDP_IS_OFFICIAL)
         }
     }

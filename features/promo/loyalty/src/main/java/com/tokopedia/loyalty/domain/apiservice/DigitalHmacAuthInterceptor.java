@@ -30,8 +30,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
-        String errorBody = response.body().string();
-        response.body().close();
+        String errorBody = response.peekBody(BYTE_COUNT).string();
         Log.d(TAG, "Error body response : " + errorBody);
         if (!errorBody.isEmpty()) {
             TkpdDigitalResponse.DigitalErrorResponse digitalErrorResponse =

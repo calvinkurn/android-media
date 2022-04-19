@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="digital_recommendation_card_width">154dp</dimen>
+    <dimen name="digital_recommendation_card_height">136dp</dimen>
+
+    <!-- red tag-->
+    <dimen name="digital_recommendation_red_tag_width">3dp</dimen>
+    <dimen name="digital_recommendation_red_tag_bottom">126dp</dimen>
+    <dimen name="digital_recommendation_red_tag_right">151dp</dimen>
+</resources>

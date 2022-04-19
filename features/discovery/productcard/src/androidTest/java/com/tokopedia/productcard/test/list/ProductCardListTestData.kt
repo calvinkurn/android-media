@@ -7,16 +7,18 @@ import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.productCardModelMatcherData
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.test.utils.*
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
-import com.tokopedia.productcard.test.utils.isNotDisplayed
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
+import com.tokopedia.productcard.test.utils.withDrawable
 import org.hamcrest.Matcher
 
 internal val productCardListTestData = productCardModelMatcherData + mutableListOf<ProductCardModelMatcher>().also {
     it.add(testAddToCartAndRemoveFromWishlist())
     it.add(testDeleteProductButton())
+    it.add(testSimilarProductButton())
 }
 
 private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
@@ -32,7 +34,7 @@ private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
@@ -55,8 +57,12 @@ private fun testAddToCartAndRemoveFromWishlist(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.buttonAddToCart] = isDisplayed()
@@ -73,7 +79,7 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
             productName = "Delete product Button with Two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasDeleteProductButton = true
     )
@@ -82,10 +88,34 @@ private fun testDeleteProductButton(): ProductCardModelMatcher {
         it[R.id.imageProduct] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageRatingString] = isDisplayed()
-        it[R.id.textViewRatingString] = isDisplayedWithText(productCardModel.ratingString)
+        it[R.id.linearLayoutImageRating] = isDisplayed()
+        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
+        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.buttonDeleteProduct] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSimilarProductButton(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Similar Product Button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp8.999.000",
+        shopLocation = "DKI Jakarta",
+        hasSimilarProductButton = false
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

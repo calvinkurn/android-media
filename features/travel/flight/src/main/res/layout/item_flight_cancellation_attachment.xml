@@ -4,43 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_8"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/padding_4"
-    android:paddingTop="@dimen/padding_4">
+    android:paddingTop="@dimen/padding_4"
+    android:paddingBottom="@dimen/padding_4">
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/flight_dp_60"
+        android:layout_height="@dimen/flight_dp_60"
         android:background="@drawable/bg_flight_gray_rounded_dashed"
-        android:padding="@dimen/dp_1">
+        android:padding="@dimen/flight_dp_1">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_attachment"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/flight_ic_upload_photo" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_view_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/black_70"
+            android:background="@color/Unify_N700_68"
             android:gravity="center_horizontal"
             android:text="@string/flight_cancellation_reason_view_image_label"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:visibility="gone"
+            app:typographyType="body_3"
             tools:visibility="visible" />
 
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/image_container"
         android:layout_toRightOf="@+id/image_container"
@@ -50,23 +51,26 @@
         android:paddingLeft="@dimen/padding_16"
         android:paddingRight="@dimen/padding_16">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_passenger_name"
-            style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
             tools:text="Nama Penumpang" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_filename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ellipsize="end"
             android:lines="1"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
+            app:typographyType="body_2"
             tools:text="3341aaaa3asdfa123asdf13143413.JPG"
             tools:visibility="visible" />
 
@@ -81,8 +85,9 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/TextView.Micro.Green"
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_G500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

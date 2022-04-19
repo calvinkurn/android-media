@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -43,10 +44,9 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getLayoutType(channel)) {
-            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
-            TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
+            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(channel.header.name, channel.id)
+            TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(channel.header.name, channel.id)
             else -> HomePageTracking.eventClickSeeAllDynamicChannel(
-                    context,
                     DynamicLinkHelper.getActionLink(channel.header),
                     channel.id)
         }
@@ -62,7 +62,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                10f.toDpInt(),
                 true))
 
         recyclerView.layoutManager = GridLayoutManager(
@@ -116,12 +116,12 @@ class ProductOrganicChannelViewHolder(sprintView: View,
                     var attr = ""
                     when(sprintType){
                         TYPE_SPRINT_LEGO -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                            HomePageTracking.eventEnhancedClickSprintSaleProduct(
                                     channels.getEnhanceClickSprintSaleLegoHomePage(position))
                             attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
                         }
                         TYPE_ORGANIC -> {
-                            HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                            HomePageTracking.eventEnhancedClickSprintSaleProduct(
                                     channels.getEnhanceClickSprintSaleLegoHomePage(position))
                             attr = channels.getHomeAttribution(position + 1, channels.grids[position].id)
                         }

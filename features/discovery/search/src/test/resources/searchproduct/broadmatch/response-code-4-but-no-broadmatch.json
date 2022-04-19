@@ -1,38 +1,39 @@
 {
-  "searchProduct": {
-    "query": "baju kaos anak balapan",
-    "source": "search",
-    "isFilter": false,
-    "response_code": 4,
-    "keyword_process": "4",
-    "count": 0,
-    "count_text": "0",
-    "additional_params": "",
-    "isQuerySafe": true,
-    "autocomplete_applink": "tokopedia://search-autocomplete?navsource=home&q=baju%20kaos%20anak%20balapan",
-    "errorMessage": "",
-    "lite_url": "",
-    "default_view": 1,
-    "redirection": {
-      "redirect_applink": ""
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 4,
+      "keywordProcess": "4",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
     },
-    "ticker": {
-      "text": "",
-      "query": ""
-    },
-    "suggestion": {
-      "currentKeyword": "",
-      "suggestion": "",
-      "suggestionCount": 0,
-      "instead": "",
-      "insteadCount": 0,
-      "text": "<strong>\"baju kaos anak balapan\"</strong> nggak ditemukan. Mau cek rekomendasi kami?",
-      "query": "q=baju kaos anak balapan&rf=true"
-    },
-    "related": {
-      "related_keyword": "",
-      "other_related": []
-    },
-    "products": []
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=baju%20kaos%20anak%20balapan",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "<strong>\"baju kaos anak balapan\"</strong> nggak ditemukan. Mau cek rekomendasi kami?",
+        "query": "q=baju kaos anak balapan&rf=true"
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": []
+    }
   }
 }

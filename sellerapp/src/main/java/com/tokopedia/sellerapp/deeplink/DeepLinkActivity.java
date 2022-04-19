@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenter;
@@ -96,7 +95,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
-            presenter.processDeepLinkAction(uriData);
+            presenter.processDeepLinkAction(this, uriData);
         }
     }
 

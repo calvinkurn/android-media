@@ -68,7 +68,7 @@ class GetPostStatisticUseCase @Inject constructor(
     //endregion
 
     override suspend fun executeOnBackground(): FeedGetStatsPosts {
-        val response = graphqlRepository.getReseponse(
+        val response = graphqlRepository.response(
                 listOf(
                         GraphqlRequest(query, GetPostStatisticResponse::class.java, params)
                 ),

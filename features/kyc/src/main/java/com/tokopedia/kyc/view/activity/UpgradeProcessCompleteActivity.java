@@ -1,13 +1,11 @@
 package com.tokopedia.kyc.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -29,32 +27,23 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     private String message;
     private KYCComponent KYCComponent = null;
 
-    @DeepLink(Constants.AppLinks.OVOUPGRADE_STATUS)
-    public static Intent getCallingUpgradeProcessComplete(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, UpgradeProcessCompleteActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
     @Override
     protected Fragment getNewFragment() {
         showHideActionbar(false);
-        if(getIntent().getExtras() != null) {
-            status = getIntent().getExtras().getString(Constants.Keys.STATUS);
-            message = getIntent().getExtras().getString(Constants.Keys.MESSAGE);
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            status = uri.getQueryParameter(Constants.Keys.STATUS);
+            message = uri.getQueryParameter(Constants.Keys.MESSAGE);
         }
         BaseDaggerFragment baseDaggerFragment = null;
-        if(TextUtils.isEmpty(status)){
+        if (TextUtils.isEmpty(status)) {
             finish();
-        }
-        else if(status.equalsIgnoreCase(Constants.Status.INPROGRESS)){
+            return null;
+        } else if (status.equalsIgnoreCase(Constants.Status.INPROGRESS)) {
             baseDaggerFragment = FragmentFollowupCustomerCare.newInstance();
-        }
-        else if(status.equalsIgnoreCase(Constants.Status.SUCCESSFUL)){
+        } else if (status.equalsIgnoreCase(Constants.Status.SUCCESSFUL)) {
             baseDaggerFragment = FragmentVerificationSuccess.newInstance();
-        }
-        else if(status.equalsIgnoreCase(Constants.Status.FAILED)){
+        } else if (status.equalsIgnoreCase(Constants.Status.FAILED)) {
             baseDaggerFragment = FragmentVerificationFailure.newInstance();
         }
         Bundle bundle = new Bundle();
@@ -87,14 +76,14 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
     }
 
     @Override
-    public void showHideActionbar(boolean show){
-        if(show) getSupportActionBar().show();
+    public void showHideActionbar(boolean show) {
+        if (show) getSupportActionBar().show();
         else getSupportActionBar().hide();
     }
 
     private void initInjector() {
         KYCComponent = DaggerKYCComponent.builder().baseAppComponent(
-                ((BaseMainApplication)getApplicationContext()).getBaseAppComponent()).build();
+                ((BaseMainApplication) getApplicationContext()).getBaseAppComponent()).build();
     }
 
     @Override

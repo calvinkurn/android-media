@@ -1,0 +1,63 @@
+[
+  {
+    "data": {
+      "productRecommendationProductDetail": {
+        "data": [
+          {
+            "tID": "w9zLIC3GQnq9zfGPpoAyIFRZb38\u003d",
+            "source": "custom",
+            "title": "Rekomendasi Untuk Anda",
+            "foreignTitle": "Recommendation For You",
+            "widgetUrl": "https://ace.tokopedia.com/r3/v2/track/widget?event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003d\u0026pid\u003d547113763\u0026tid\u003dw9zLIC3GQnq9zfGPpoAyIFRZb38\u003d\u0026uid\u003d17211378\u0026unique_id\u003d\u0026utime\u003d1610955659\u0026widget\u003dr3_pdp\u0026xdevice\u003dandroid-3.90",
+            "recommendation": [
+              {
+                "status": 1,
+                "id": 547113763,
+                "name": "Pemanas Koyo Otot Sendi Kaki Betis Lutut Kram Pegal Balsem Magnetik",
+                "categoryBreadcrumbs": "Kesehatan/Tulang Otot \u0026 Sendi/Koyo",
+                "url": "https://www.tokopedia.com/lbagstore/pemanas-koyo-otot-sendi-kaki-betis-lutut-kram-pegal-balsem-magnetik",
+                "appUrl": "tokopedia://product/547113763",
+                "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2518\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003d\u0026pid\u003d547113763\u0026pos\u003d1\u0026recommendation\u003d\u0026rectype\u003d\u0026redirect\u003dhttps://www.tokopedia.com/lbagstore/pemanas-koyo-otot-sendi-kaki-betis-lutut-kram-pegal-balsem-magnetik?catid2518\u003d%26ref\u003d_pa0_po1%26src\u003dr3\u0026tid\u003d\u0026uid\u003d17211378\u0026unique_id\u003d\u0026utime\u003d1610955659\u0026widget\u003dr3_pdp\u0026xdevice\u003dandroid-3.90",
+                "wishlistUrl": "",
+                "trackerImageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/8/30/458544/458544_3224d0ab-dab2-43dc-8a7b-d074e136f266_800_800",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/8/30/458544/458544_3224d0ab-dab2-43dc-8a7b-d074e136f266_800_800",
+                "price": "Rp 23.000",
+                "priceInt": 23000,
+                "slashedPrice": "",
+                "slashedPriceInt": 0,
+                "discountPercentage": 0,
+                "shop": {
+                  "id": 112468,
+                  "name": "",
+                  "url": "https://www.tokopedia.com/",
+                  "appUrl": "tokopedia://shop/112468",
+                  "isGold": false,
+                  "location": "",
+                  "city": "",
+                  "reputation": "https://inbox.tokopedia.com/reputation/v1/badge/shop/112468",
+                  "clover": "https://clover.tokopedia.com/badges/merchant/v1?shop_id\u003d112468",
+                  "shopImage": ""
+                },
+                "departmentId": 2518,
+                "labels": [],
+                "badges": [],
+                "wholesalePrice": [],
+                "rating": 0,
+                "countReview": 537,
+                "countReviewFloat": 0,
+                "recommendationType": "",
+                "stock": 3,
+                "minOrder": 1,
+                "isTopads": false,
+                "isWishlist": false,
+                "productKey": "pemanas-koyo-otot-sendi-kaki-betis-lutut-kram-pegal-balsem-magnetik",
+                "shopDomain": "lbagstore",
+                "urlPath": "/lbagstore/pemanas-koyo-otot-sendi-kaki-betis-lutut-kram-pegal-balsem-magnetik"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,5 @@
+package com.tokopedia.product.detail.data.util
+
+sealed class DynamicProductDetailSwipeTrackingState
+object DynamicProductDetailAlreadyHit: DynamicProductDetailSwipeTrackingState()
+object DynamicProductDetailAlreadySwipe : DynamicProductDetailSwipeTrackingState()

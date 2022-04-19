@@ -8,26 +8,34 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 import com.tokopedia.product.addedit.optionpicker.model.OptionModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipDividerItemDecoration
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
+import com.tokopedia.unifycomponents.SearchBarUnify
+import java.util.*
 
 class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private var selectedPosition: Int = -1
     private var listener: ((selectedText: String, selectedPosition: Int) -> Unit)? = null
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
+    private var isSearchable: Boolean = false
     private var listAdapter: BaseListAdapter<OptionModel, OptionTypeFactory>? = null
+    private var tempSearchData: List<OptionModel> = mutableListOf()
+    private var searchBarData: SearchBarUnify? = null
 
     init {
         val optionTypeFactory = OptionTypeFactory()
         optionTypeFactory.setOnItemClickListener(this)
         listAdapter = BaseListAdapter(optionTypeFactory)
+        isKeyboardOverlap = false
         setCloseClickListener {
             dismiss()
         }
@@ -48,6 +56,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         changeCloseButtonSize()
         removeContainerPadding()
         addMarginCloseButton()
+        if (isSearchable) setupSearch()
     }
 
     private fun changeCloseButtonSize() {
@@ -57,31 +66,47 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
             bottomSheetClose.apply {
                 setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
                 layoutParams.apply {
-                    width = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
-                    height = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                    width = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
+                    height = context.resources.getDimension(com.tokopedia.product.addedit.R.dimen.tooltip_close_size).toInt()
                 }
             }
         }
     }
 
     private fun removeContainerPadding() {
-        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
-        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding)
+        val paddingTop = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_padding_top)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
     private fun addMarginCloseButton() {
         val topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        val horizontalMargin = resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
         }
     }
 
+    private fun setupSearch() {
+        val locale = Locale.getDefault()
+        searchBarData?.visible()
+        searchBarData?.searchBarPlaceholder = getString(R.string.label_specification_search) +
+                " " + bottomSheetTitle.text.toString().lowercase(locale)
+        searchBarData?.searchBarTextField?.afterTextChanged { text ->
+            val filteredElements = tempSearchData.filter {
+                it.text.startsWith(text, ignoreCase = true)
+            }
+            listAdapter?.setElements(filteredElements)
+        }
+        isFullpage = true
+    }
+
     private fun initChildLayout() {
         contentView = View.inflate(context, R.layout.bottom_sheet_list, null)
-        contentView?.rvList?.apply {
+        searchBarData = contentView?.findViewById(R.id.searchBarData)
+        val rvList: RecyclerView? = contentView?.findViewById(R.id.rvList)
+        rvList?.apply {
             setHasFixedSize(true)
             adapter = listAdapter
             if (isDividerVisible) {
@@ -103,6 +128,8 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
         data.forEachIndexed { index, it ->
             listAdapter?.addElement(OptionModel(it, index == selectedPosition))
         }
+        tempSearchData = listAdapter?.data.orEmpty()
+
     }
 
     fun setSelectedPosition(selectedPosition: Int){
@@ -119,5 +146,9 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
 
     fun setDividerVisible(visible: Boolean) {
         isDividerVisible = visible
+    }
+
+    fun setSearchable(searchable: Boolean) {
+        isSearchable = searchable
     }
 }

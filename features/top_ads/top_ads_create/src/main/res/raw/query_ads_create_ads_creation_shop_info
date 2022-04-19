@@ -1,7 +1,0 @@
-query getAdCreationOption($shop_id:Int!){
-  TopAdsShopInfoData(shop_id:$shop_id) {
-    category
-    category_desc
-  }
-}
-

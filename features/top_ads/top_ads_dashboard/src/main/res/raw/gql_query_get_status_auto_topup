@@ -1,5 +1,5 @@
-query topAdsAutoTopup($shopId: String!) {
-    topAdsAutoTopup(shop_id: $shopId){
+query topAdsAutoTopupV2($shopId: String!) {
+    topAdsAutoTopupV2(shop_id: $shopId){
         data{
             status
             status_desc

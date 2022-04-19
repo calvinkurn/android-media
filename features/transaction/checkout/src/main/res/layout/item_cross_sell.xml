@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:foreground="?selectableItemBackground"
+    android:paddingStart="9dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_cross_sell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="6dp"
+        app:layout_flexShrink="0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cross_sell_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Bayar Rp 1, dapat pulsa 5.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cross_sell_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@id/tv_cross_sell_title"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Langsung masuk ke 081234567890" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/img_cross_sell_info"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:paddingStart="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            app:icon_name="INFORMATION"
+            app:layout_flexShrink="0"
+            app:layout_constraintStart_toEndOf="@id/tv_cross_sell_desc"
+            app:layout_constraintTop_toTopOf="@id/tv_cross_sell_desc"
+            app:layout_constraintBottom_toBottomOf="@id/tv_cross_sell_desc"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.flexbox.FlexboxLayout>

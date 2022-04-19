@@ -1,0 +1,72 @@
+{
+  "readme": "Play Broadcaster - Interactive Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"viewSellerBroadcastIris",
+      "eventCategory":"seller broadcast",
+      "eventAction":"impression on engagement button",
+      "eventLabel":"\\d+ - (vod|live)",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click engagement button",
+      "eventLabel":"\\d+ - (vod|live)",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click terapkan & mulai button",
+      "eventLabel":"\\d+ - (vod|live) - \\d+ - .+ - \\d+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"viewSellerBroadcastIris",
+      "eventCategory":"seller broadcast",
+      "eventAction":"impression on winner list",
+      "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click winner list",
+      "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventCategory":"seller broadcast",
+      "eventAction":"click chat in bottom sheet",
+      "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId": ".*",
+      "shopId": ".*"
+    }
+  ]
+}

@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12"
-    android:background="@color/white_65"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12"
+    android:background="@color/Neutral_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/umrah_checkout_order_title"
-        android:lineHeight="@dimen/dp_18"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:textColor="@color/Neutral_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -29,8 +29,8 @@
         android:id="@+id/tg_umrah_checkout_order_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:lineHeight="@dimen/dp_18"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:text="@string/umrah_checkout_order_desctiption"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -47,8 +47,8 @@
         android:id="@+id/container_widget_umrah_checkout_rect"
         android:background="@drawable/umrah_bg_order_checkout"
         android:visibility="visible"
-        android:layout_width="0dp"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -59,27 +59,27 @@
             android:id="@+id/tg_umrah_checkout_order_customer_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:textColor="@color/g_500"
+            android:layout_marginBottom="@dimen/dimen_dp_1"
+            android:textColor="@color/Green_G500"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="heading_5"
             app:typographyWeight="bold"
             tools:text="Muhammad Salah"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginStart="@dimen/dp_12" />
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginStart="@dimen/unify_space_12" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:visibility="gone"
             android:id="@+id/iv_umrah_checkout_order_customer"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_width="@dimen/spacing_lvl4"
+            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_customer_title"
             app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_checkout_order_customer_title"
-            android:src="@color/light_blue_300"/>
+            android:src="@color/Blue_B300"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_checkout_order_customer_email"
@@ -105,20 +105,20 @@
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_height="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_order_customer_email"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_umrah_checkout_order_customer_action"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
             app:srcCompat="@drawable/umrah_ic_pencil"
             />
 
@@ -129,9 +129,9 @@
         android:id="@+id/tg_umrah_checkout_order_list_title_pilgrims"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/umrah_checkout_order_list_title_pilgrims"
-        android:lineHeight="@dimen/dp_18"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:textColor="@color/Neutral_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -145,8 +145,8 @@
         android:id="@+id/tg_umrah_checkout_order_description_pilgrims"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:lineHeight="@dimen/dp_18"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:lineHeight="@dimen/dimen_dp_18"
         android:text="@string/umrah_checkout_order_description_pilgrims"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -154,7 +154,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700"
-        android:textColorLink="@color/green_500"
+        android:textColorLink="@color/Green_G500"
         />
 
     <androidx.recyclerview.widget.RecyclerView

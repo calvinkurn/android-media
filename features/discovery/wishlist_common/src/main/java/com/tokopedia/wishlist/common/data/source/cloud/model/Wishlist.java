@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.common.data.source.cloud.model;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,7 +25,8 @@ public class Wishlist implements Parcelable {
     @SerializedName("image_url")
     String ImageUrl;
     @SerializedName("raw_price")
-    int Price;
+    @SuppressLint("Invalid Data Type")
+    String Price;
     @SerializedName("condition")
     String Condition;
     @SerializedName("available")
@@ -32,11 +34,10 @@ public class Wishlist implements Parcelable {
     @SerializedName("status")
     String Status;
     @SerializedName("price")
+    @SuppressLint("Invalid Data Type")
     String PriceFmt;
     @SerializedName("minimum_order")
     int MinimumOrder;
-    @SerializedName("wholesale_price")
-    List<WholesalePrice> Wholesale = new ArrayList<>();
     @SerializedName("shop")
     Shop Shop;
     @SerializedName("preorder")
@@ -56,6 +57,12 @@ public class Wishlist implements Parcelable {
     @SerializedName("category_breadcrumb")
     @Expose
     public String categoryBreadcrumb = "";
+    @SerializedName("free_ongkir")
+    @Expose
+    public FreeOngkir freeOngkir;
+    @SerializedName("free_ongkir_extra")
+    @Expose
+    public FreeOngkir freeOngkirExtra;
 
     public List<Label> getLabels() {
         return labels;
@@ -106,11 +113,11 @@ public class Wishlist implements Parcelable {
         ImageUrl = imageUrl;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return Price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         Price = price;
     }
 
@@ -136,14 +143,6 @@ public class Wishlist implements Parcelable {
 
     public void setStatus(String status) {
         Status = status;
-    }
-
-    public List<WholesalePrice> getWholesale() {
-        return Wholesale;
-    }
-
-    public void setWholesale(List<WholesalePrice> wholesale) {
-        Wholesale = wholesale;
     }
 
     public Shop getShop() {
@@ -202,6 +201,10 @@ public class Wishlist implements Parcelable {
         this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
+    public FreeOngkir getFreeOngkir() {
+        return freeOngkir;
+    }
+
     public Wishlist() {
     }
 
@@ -210,14 +213,13 @@ public class Wishlist implements Parcelable {
         Name = in.readString();
         Url = in.readString();
         ImageUrl = in.readString();
-        Price = in.readInt();
+        Price = in.readString();
         Condition = in.readString();
         byte tmpIsAvailable = in.readByte();
         isAvailable = tmpIsAvailable == 0 ? null : tmpIsAvailable == 1;
         Status = in.readString();
         PriceFmt = in.readString();
         MinimumOrder = in.readInt();
-        Wholesale = in.createTypedArrayList(WholesalePrice.CREATOR);
         Shop = in.readParcelable(com.tokopedia.wishlist.common.data.source.cloud.model.Shop.class.getClassLoader());
         byte tmpIsPreOrder = in.readByte();
         isPreOrder = tmpIsPreOrder == 0 ? null : tmpIsPreOrder == 1;
@@ -226,6 +228,8 @@ public class Wishlist implements Parcelable {
         rating = in.readInt();
         reviewCount = in.readInt();
         categoryBreadcrumb = in.readString();
+        freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
+        freeOngkirExtra = in.readParcelable(FreeOngkir.class.getClassLoader());
     }
 
     @Override
@@ -234,13 +238,12 @@ public class Wishlist implements Parcelable {
         dest.writeString(Name);
         dest.writeString(Url);
         dest.writeString(ImageUrl);
-        dest.writeInt(Price);
+        dest.writeString(Price);
         dest.writeString(Condition);
         dest.writeByte((byte) (isAvailable == null ? 0 : isAvailable ? 1 : 2));
         dest.writeString(Status);
         dest.writeString(PriceFmt);
         dest.writeInt(MinimumOrder);
-        dest.writeTypedList(Wholesale);
         dest.writeParcelable(Shop, flags);
         dest.writeByte((byte) (isPreOrder == null ? 0 : isPreOrder ? 1 : 2));
         dest.writeTypedList(badges);
@@ -248,6 +251,8 @@ public class Wishlist implements Parcelable {
         dest.writeInt(rating);
         dest.writeInt(reviewCount);
         dest.writeString(categoryBreadcrumb);
+        dest.writeParcelable(freeOngkir, flags);
+        dest.writeParcelable(freeOngkirExtra, flags);
     }
 
     @Override

@@ -10,5 +10,9 @@ data class BymeProfileHeader(
 
         @SerializedName("error")
         @Expose
-        val profileHeaderError: ProfileHeaderError = ProfileHeaderError()
+        val profileHeaderError: ProfileHeaderError = ProfileHeaderError(),
+
+        @SerializedName("config")
+        @Expose
+        val profileConfig: ProfileConfig = ProfileConfig()
 )

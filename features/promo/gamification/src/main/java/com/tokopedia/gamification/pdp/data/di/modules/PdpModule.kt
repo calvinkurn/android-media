@@ -20,11 +20,11 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun getGamingRecommendationProductUseCase(@Named(GqlQueryModule.RECOMMENDATION_QUERY) qeury: String,
+    fun getGamingRecommendationProductUseCase(context: Context,
                                               graphqlUseCase: GraphqlUseCase,
                                               userSession: UserSessionInterface,
                                               mapper: Mapper): GamingRecommendationProductUseCase {
-        return GamingRecommendationProductUseCase(qeury, graphqlUseCase, userSession, mapper)
+        return GamingRecommendationProductUseCase(context, graphqlUseCase, userSession, mapper)
     }
 
     @GamificationPdpScope

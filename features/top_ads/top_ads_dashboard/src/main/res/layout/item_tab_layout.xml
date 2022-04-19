@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:viewBindingIgnore="true"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_4"
     app:cardBackgroundColor="@color/cardview_light_background"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="8dp"
     app:cardElevation="@dimen/dp_3"
     app:cardPreventCornerOverlap="false">
 
@@ -15,12 +15,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/dp_80"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_12"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:paddingRight="12dp"
+        android:paddingEnd="12dp"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -40,4 +40,4 @@
             app:typographyType="heading_5"/>
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

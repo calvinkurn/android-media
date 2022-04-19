@@ -1,16 +1,24 @@
 package com.tokopedia.sellerorder.detail
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.domain.*
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
+import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
+import com.tokopedia.sellerorder.detail.data.model.SetDelivered
+import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
+import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
+import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
+import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -19,47 +27,48 @@ import org.junit.runners.JUnit4
  * Created by fwidjaja on 2020-05-11.
  */
 
+@ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
-class SomDetailViewModelTest {
+class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    private val dispatcher = SomTestDispatcherProvider()
-    private lateinit var somDetailViewModel: SomDetailViewModel
-    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
-    private var listMsg = listOf<String>()
+    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Details.Product>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
     lateinit var somGetOrderDetailUseCase: SomGetOrderDetailUseCase
 
     @RelaxedMockK
-    lateinit var somAcceptOrderUseCase: SomAcceptOrderUseCase
-
-    @RelaxedMockK
     lateinit var somReasonRejectUseCase: SomReasonRejectUseCase
-
-    @RelaxedMockK
-    lateinit var somRejectOrderUseCase: SomRejectOrderUseCase
-
-    @RelaxedMockK
-    lateinit var somEditRefNumUseCase: SomEditRefNumUseCase
 
     @RelaxedMockK
     lateinit var somSetDeliveredUseCase: SomSetDeliveredUseCase
 
+    @RelaxedMockK
+    lateinit var authorizeSomDetailAccessUseCase: AuthorizeAccessUseCase
+
+    @RelaxedMockK
+    lateinit var authorizeChatReplyAccessUseCase: AuthorizeAccessUseCase
+
     @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
-                somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
-                somEditRefNumUseCase, somSetDeliveredUseCase)
+    override fun setUp() {
+        super.setUp()
+        viewModel = SomDetailViewModel(
+            somAcceptOrderUseCase,
+            somRejectOrderUseCase,
+            somEditRefNumUseCase,
+            somRejectCancelOrderUseCase,
+            somValidateOrderUseCase,
+            userSessionInterface,
+            coroutineTestRule.dispatchers,
+            somGetOrderDetailUseCase,
+            somReasonRejectUseCase,
+            somSetDeliveredUseCase,
+            authorizeSomDetailAccessUseCase,
+            authorizeChatReplyAccessUseCase
+        )
 
-        val product1 = SomDetailOrder.Data.GetSomDetail.Products(123)
+        val product1 = SomDetailOrder.Data.GetSomDetail.Details.Product("123")
         listProducts = arrayListOf(product1).toMutableList()
-
-        listMsg = arrayListOf("msg1")
 
         val reasonReject1 = SomReasonRejectData.Data.SomRejectReason(1)
         listReasonReject = arrayListOf(reasonReject1).toMutableList()
@@ -67,271 +76,279 @@ class SomDetailViewModelTest {
 
     // order_detail
     @Test
-    fun getOrderDetail_shouldReturnSuccess() {
+    fun getOrderDetail_shouldCancelOldProcess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(123))
+            somGetOrderDetailUseCase.execute(any())
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        viewModel.loadDetailOrder("")
+        viewModel.loadDetailOrder("")
 
         //then
-        assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.orderId == 123)
+        assert(viewModel.orderDetailResult.value is Success)
+        assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
     }
 
     @Test
-    fun getOrderDetail_shouldReturnFail() {
+    fun getOrderDetail_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
+            somGetOrderDetailUseCase.execute(any())
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail("123")))
+
+        //when
+        viewModel.loadDetailOrder("")
+
+        //then
+        assert(viewModel.orderDetailResult.value is Success)
+        assert((viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == "123")
+    }
+
+    @Test
+    fun getOrderDetail_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+        //given
+        coEvery {
+            somGetOrderDetailUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        viewModel.loadDetailOrder("")
 
         //then
-        assert(somDetailViewModel.orderDetailResult.value is Fail)
+        assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
-    fun getOrderDetail_shouldNotReturnEmpty() {
+    fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somGetOrderDetailUseCase.execute(any(), any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
+            somGetOrderDetailUseCase.execute(any())
+        } throws Throwable()
 
         //when
-        somDetailViewModel.loadDetailOrder("", "")
+        viewModel.loadDetailOrder("")
 
         //then
-        assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.listProduct.isNotEmpty())
-    }
-
-    // accept_order
-    @Test
-    fun acceptOrder_shouldReturnSuccess() {
-        //given
-        coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
-        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(success = 1)))
-
-        //when
-        somDetailViewModel.acceptOrder("", "", "")
-
-        //then
-        assert(somDetailViewModel.acceptOrderResult.value is Success)
-        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.success == 1)
+        assert(viewModel.orderDetailResult.value is Fail)
     }
 
     @Test
-    fun acceptOrder_shouldReturnFail() {
+    fun getOrderDetail_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
-        } returns Fail(Throwable())
+            somGetOrderDetailUseCase.execute(any())
+        } returns Success(
+            GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.Data.GetSomDetail(details = SomDetailOrder.Data.GetSomDetail.Details(nonBundle = listProducts))
+            )
+        )
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        viewModel.loadDetailOrder("")
 
         //then
-        assert(somDetailViewModel.acceptOrderResult.value is Fail)
-    }
-
-    @Test
-    fun acceptOrder_msgShouldNotReturnEmpty() {
-        //given
-        coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
-        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(listMessage = listMsg)))
-
-        //when
-        somDetailViewModel.acceptOrder("", "", "")
-
-        //then
-        assert(somDetailViewModel.acceptOrderResult.value is Success)
-        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.listMessage.isNotEmpty())
+        assert(viewModel.orderDetailResult.value is Success)
+        assert(
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()?.isNotEmpty()
+                ?: false
+        )
     }
 
     // reason_reject
     @Test
-    fun getReasonReject_shouldReturnSuccess() {
+    fun getReasonReject_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
         //when
-        somDetailViewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
-        assert(somDetailViewModel.rejectReasonResult.value is Success)
-        assert((somDetailViewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.first().reasonCode == 1)
+        assert(viewModel.rejectReasonResult.value is Success)
+        assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.first().reasonCode == 1)
     }
 
     @Test
-    fun getReasonReject_shouldReturnFail() {
+    fun getReasonReject_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
-        assert(somDetailViewModel.rejectReasonResult.value is Fail)
+        assert(viewModel.rejectReasonResult.value is Fail)
     }
 
     @Test
-    fun getReasonReject_msgShouldNotReturnEmpty() {
+    fun getReasonReject_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somReasonRejectUseCase.execute(any(), any())
+            somReasonRejectUseCase.execute(any())
+        } throws Throwable()
+
+        //when
+        viewModel.getRejectReasons()
+
+        //then
+        assert(viewModel.rejectReasonResult.value is Fail)
+    }
+
+    @Test
+    fun getReasonReject_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+        //given
+        coEvery {
+            somReasonRejectUseCase.execute(any())
         } returns Success(SomReasonRejectData.Data(listSomRejectReason = listReasonReject))
 
         //when
-        somDetailViewModel.getRejectReasons("")
+        viewModel.getRejectReasons()
 
         //then
-        assert(somDetailViewModel.rejectReasonResult.value is Success)
-        assert((somDetailViewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.isNotEmpty())
-    }
-
-    // reject_order
-    @Test
-    fun rejectOrder_shouldReturnSuccess() {
-        //given
-        coEvery {
-            somRejectOrderUseCase.execute(any(), any())
-        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(success = 1)))
-
-        //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
-
-        //then
-        assert(somDetailViewModel.rejectOrderResult.value is Success)
-        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.success == 1)
-    }
-
-    @Test
-    fun rejectOrder_shouldReturnFail() {
-        //given
-        coEvery {
-            somRejectOrderUseCase.execute(any(), any())
-        } returns Fail(Throwable())
-
-        //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
-
-        //then
-        assert(somDetailViewModel.rejectOrderResult.value is Fail)
-    }
-
-    @Test
-    fun rejectOrder_msgShouldNotReturnEmpty() {
-        //given
-        coEvery {
-            somRejectOrderUseCase.execute(any(), any())
-        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(message = listMsg)))
-
-        //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
-
-        //then
-        assert(somDetailViewModel.rejectOrderResult.value is Success)
-        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.message.isNotEmpty())
-    }
-
-    // edit_awb
-    @Test
-    fun editAwb_shouldReturnSuccess() {
-        //given
-        coEvery {
-            somEditRefNumUseCase.execute(any())
-        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
-
-        //when
-        somDetailViewModel.editAwb("")
-
-        //then
-        assert(somDetailViewModel.editRefNumResult.value is Success)
-        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
-    }
-
-    @Test
-    fun editAwb_shouldReturnFail() {
-        //given
-        coEvery {
-            somEditRefNumUseCase.execute(any())
-        } returns Fail(Throwable())
-
-        //when
-        somDetailViewModel.editAwb("")
-
-        //then
-        assert(somDetailViewModel.editRefNumResult.value is Fail)
-    }
-
-    @Test
-    fun editAwb_msgShouldNotReturnEmpty() {
-        //given
-        coEvery {
-            somEditRefNumUseCase.execute(any())
-        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
-
-        //when
-        somDetailViewModel.editAwb("")
-
-        //then
-        assert(somDetailViewModel.editRefNumResult.value is Success)
-        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
+        assert(viewModel.rejectReasonResult.value is Success)
+        assert((viewModel.rejectReasonResult.value as Success<SomReasonRejectData.Data>).data.listSomRejectReason.isNotEmpty())
     }
 
     // set_delivered
     @Test
-    fun setDelivered_shouldReturnSuccess() {
+    fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
 
         //when
-        somDetailViewModel.setDelivered("","","")
+        viewModel.setDelivered("", "")
 
         //then
-        assert(somDetailViewModel.setDelivered.value is Success)
-        assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.success == 1)
+        assert(viewModel.setDelivered.value is Success)
+        assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.success == 1)
     }
 
     @Test
-    fun setDelivered_shouldReturnFail() {
+    fun setDelivered_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.setDelivered("","","")
+        viewModel.setDelivered("", "")
 
         //then
-        assert(somDetailViewModel.setDelivered.value is Fail)
+        assert(viewModel.setDelivered.value is Fail)
     }
 
     @Test
-    fun setDelivered_msgShouldNotReturnEmpty() {
+    fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
+        } throws Throwable()
+
+        //when
+        viewModel.setDelivered("", "")
+
+        //then
+        assert(viewModel.setDelivered.value is Fail)
+    }
+
+    @Test
+    fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+        //given
+        coEvery {
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
 
         //when
-        somDetailViewModel.setDelivered("","","")
+        viewModel.setDelivered("", "")
 
         //then
-        assert(somDetailViewModel.setDelivered.value is Success)
-        assert((somDetailViewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
+        assert(viewModel.setDelivered.value is Success)
+        assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
     }
+
+    @Test
+    fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        assertDetailChatEligibilityEquals(true to true)
+    }
+
+    @Test
+    fun checkAdminAccess_ifShopAdmin_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val isSomDetailRole = true
+        val isReplyChatRole = true
+        onAuthorizeSomDetailAccessSuccess_thenReturn(isSomDetailRole)
+        onAuthorizeReplyChatAccessSuccess_thenReturn(isReplyChatRole)
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        assertDetailChatEligibilityEquals(isSomDetailRole to isReplyChatRole)
+    }
+
+    @Test
+    fun checkAdminAccess_ifShopAdmin_shouldFail() = coroutineTestRule.runBlockingTest {
+        onAuthorizeReplyChatAccessFail_thenThrow(ResponseErrorException())
+        coEvery {
+            userSessionInterface.isShopOwner
+        } returns false
+        coEvery {
+            userSessionInterface.isShopAdmin
+        } returns true
+
+        viewModel.getAdminPermission()
+
+        assert(viewModel.somDetailChatEligibility.value is Fail)
+    }
+
+    private fun onAuthorizeSomDetailAccessSuccess_thenReturn(isEligible: Boolean) =
+        coroutineTestRule.runBlockingTest {
+            coEvery {
+                authorizeSomDetailAccessUseCase.execute(any())
+            } returns isEligible
+        }
+
+    private fun onAuthorizeReplyChatAccessSuccess_thenReturn(isEligible: Boolean) =
+        coroutineTestRule.runBlockingTest {
+            coEvery {
+                authorizeChatReplyAccessUseCase.execute(any())
+            } returns isEligible
+        }
+
+    private fun onAuthorizeSomDetailAccessFail_thenThrow(throwable: Throwable) =
+        coroutineTestRule.runBlockingTest {
+            coEvery {
+                authorizeSomDetailAccessUseCase.execute(any())
+            } throws throwable
+        }
+
+    private fun onAuthorizeReplyChatAccessFail_thenThrow(throwable: Throwable) =
+        coroutineTestRule.runBlockingTest {
+            coEvery {
+                authorizeChatReplyAccessUseCase.execute(any())
+            } throws throwable
+        }
+
+    private fun assertDetailChatEligibilityEquals(pairs: Pair<Boolean, Boolean>) =
+        coroutineTestRule.runBlockingTest {
+            Assert.assertEquals(pairs, (viewModel.somDetailChatEligibility.value as? Success)?.data)
+        }
 }
+

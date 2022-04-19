@@ -1,7 +1,11 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.content.res.Resources;
+import android.util.Log;
 
+import com.google.gson.JsonSyntaxException;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -59,6 +63,14 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "json");
+                    messageMap.put("err", Log.getStackTraceString(e));
+                    messageMap.put("req", PromoCodePresenter.class.getCanonicalName());
+                    ServerLogger.log(Priority.P2, "LOYALTY_PARSE_ERROR", messageMap);
+                }
+
                 if (isViewAttached()) {
                     if (e instanceof UnknownHostException) {
                         // No internet connection

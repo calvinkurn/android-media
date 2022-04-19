@@ -4,24 +4,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.GetTemplateResultModel
+import com.tokopedia.topchat.chattemplate.view.uimodel.TemplateChatUiModel
 import retrofit2.Response
-import rx.functions.Func1
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Inject
 
-/**
- * @author : Steven 03/01/19
- */
-class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataResponse<TemplateData>>, GetTemplateUiModel> {
+class GetTemplateChatRoomMapper  @Inject constructor() {
 
-    override fun call(response: Response<DataResponse<TemplateData>>): GetTemplateUiModel {
+    fun map(response: Response<DataResponse<TemplateData>>): GetTemplateResultModel {
         val body = response.body()
         if(body != null) {
             if (body.header == null ||
-                    (body.header != null && body.header.messages.isEmpty()) ||
-                    (body.header != null && body.header.messages[0].isBlank())) {
+                (body.header != null && body.header.messages.isEmpty()) ||
+                (body.header != null && body.header.messages[0].isBlank())) {
                 val pojo: TemplateData = body.data
                 return convertToDomain(pojo)
             } else {
@@ -32,14 +28,14 @@ class GetTemplateChatRoomMapper @Inject constructor() : Func1<Response<DataRespo
         }
     }
 
-    private fun convertToDomain(data: TemplateData): GetTemplateUiModel {
-        val model = GetTemplateUiModel()
+    private fun convertToDomain(data: TemplateData): GetTemplateResultModel {
+        val model = GetTemplateResultModel()
         val list = ArrayList<Visitable<*>>()
-        if (data.templates != null) {
-            for (i in 0 until data.templates.size) {
-                if (data.templates[i] != "_") {
-                    val templateChatModel = TemplateChatModel()
-                    templateChatModel.message = data.templates[i]
+        data.templates.let {
+            for (i in it.indices) {
+                if (it[i] != "_") {
+                    val templateChatModel = TemplateChatUiModel()
+                    templateChatModel.message = it[i]
                     list.add(templateChatModel)
                 }
             }

@@ -6,8 +6,11 @@ import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSe
 
 interface OnInputListener {
     fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean = false)
+    fun onTextChangeInput()
     fun onCustomInputClick(field: TopupBillsInputFieldWidget,
                            enquiryData: RechargeGeneralProductInput? = null,
-                           productData: List<RechargeGeneralProductSelectData>? = null)
+                           productData: List<RechargeGeneralProductSelectData>? = null,
+                           position: Int = 0
+    )
     fun onInfoClick(text: String)
 }

@@ -5,26 +5,24 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.network.constant.ErrorNetMessage
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.util.EXTRA_INPUT_TYPE
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.INPUT_TYPE_COUPON
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.util.mapToVariantPromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -34,8 +32,6 @@ import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailExc
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
@@ -59,7 +55,11 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
     }
 
@@ -142,10 +142,12 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             textTitlePromo?.text = it.title
             hideTimerView()
             if ((it.usage.activeCountDown > 0 &&
-                            it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.activeCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setActiveTimerUsage(it.usage.activeCountDown.toLong())
             } else if ((it.usage.expiredCountDown > 0 &&
-                            it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                        it.usage.expiredCountDown < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)
+            ) {
                 setExpiryTimerUsage(it.usage.expiredCountDown.toLong())
             }
             view?.textPeriod?.text = it.usage.usageStr
@@ -186,7 +188,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun enableViews() {
-        imageMinTrans?.setImageResource(R.drawable.ic_voucher_promo_green)
+        imageMinTrans?.setImageResource(com.tokopedia.promocheckout.common.R.drawable.ic_voucher_promo_green)
         imagePeriod?.setImageResource(R.drawable.ic_period_promo_green)
         buttonUse?.isEnabled = true
     }
@@ -234,9 +236,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException) {
-            message = e.message
+            message = e.message.toString()
         }
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, message) { onClickUse() }
+            .showRetrySnackbar()
     }
 
     override fun onErrorCheckPromoStacking(e: Throwable) {
@@ -246,42 +249,8 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
         }
         var message = ErrorHandler.getErrorMessage(activity, e)
-        if (e is CheckPromoCodeException || e is MessageErrorException) {
-            message = e.message
-        }
-        if (message.equals(resources.getString(R.string.promo_phone_verification_message)) || message.equals(R.string.promo_phone_verification_message_v2)) {
-            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
-
-            if (variant.isNotEmpty() && variant == AB_TESTING_CTA_VARIANT_A) {
-                buttonUse.setOnClickListener {
-                    openPhoneVerificationBottomSheet()
-                }
-            }
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(activity, message)
-            setDisabledButtonUse()
-        }
-    }
-
-    private fun openPhoneVerificationBottomSheet() {
-        val view = LayoutInflater.from(context).inflate(R.layout.promo_phoneverification_bottomsheet, null, false)
-        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setCustomContentView(view, "", false)
-        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
-        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
-        btnVerifikasi.setOnClickListener {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
-            promoCheckoutAnalytics.clickVerifikasai()
-            closeableBottomSheetDialog.cancel()
-        }
-
-        btnCancel.setOnClickListener {
-            closeableBottomSheetDialog.cancel()
-            promoCheckoutAnalytics.clickCancelVerifikasi()
-        }
-
-        closeableBottomSheetDialog.show()
+        NetworkErrorHelper.showRedCloseSnackbar(activity, message)
+        setDisabledButtonUse()
     }
 
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
@@ -297,17 +266,19 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
         val intent = Intent()
         val variant = "global"
-        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
+        val typePromo =
+            if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(
-                typePromo = typePromo,
-                promoCode = data.codes[0],
-                description = data.message.text,
-                title = data.titleDescription,
-                counterLabel = "",
-                amount = data.cashbackWalletAmount,
-                state = data.message.state.mapToStatePromoStackingCheckout(),
-                variant = variant.mapToVariantPromoStackingCheckout(),
-                trackingDetailUiModels = data.trackingDetailUiModel)
+            typePromo = typePromo,
+            promoCode = data.codes[0],
+            description = data.message.text,
+            title = data.titleDescription,
+            counterLabel = "",
+            amount = data.cashbackWalletAmount,
+            state = data.message.state.mapToStatePromoStackingCheckout(),
+            variant = variant.mapToVariantPromoStackingCheckout(),
+            trackingDetailUiModels = data.trackingDetailUiModel
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_COUPON)
         activity?.setResult(Activity.RESULT_OK, intent)
@@ -322,7 +293,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         isUse = false
         validateButton()
         val intent = Intent()
-        val promoStackingData = PromoStackingData(PromoStackingData.TYPE_COUPON, state = TickerPromoStackingCheckoutView.State.EMPTY)
+        val promoStackingData = PromoStackingData(
+            PromoStackingData.TYPE_COUPON,
+            state = TickerPromoStackingCheckoutView.State.EMPTY
+        )
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -350,7 +324,10 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     private fun getFormattedHtml(content: String?): String {
-        return getString(R.string.promo_label_html_tnc_promo, content)
+        return String.format(
+            getString(R.string.promo_label_html_tnc_promo),
+            content
+        )
     }
 
     override fun onErroGetDetail(e: Throwable) {
@@ -399,8 +376,6 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     companion object {
-        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
-        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
         val REQUEST_CODE_VERIFICATION_PHONE = 301
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"

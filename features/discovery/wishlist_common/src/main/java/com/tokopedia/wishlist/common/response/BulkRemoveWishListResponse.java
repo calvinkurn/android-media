@@ -7,7 +7,7 @@ import java.util.List;
 
 public class BulkRemoveWishListResponse {
 
-    @SerializedName("wishlist_bulk_remove")
+    @SerializedName("wishlist_bulk_remove_v2")
     @Expose
     private WishlistRemove wishlist_remove;
 

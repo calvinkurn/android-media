@@ -1,10 +1,6 @@
 package com.tokopedia.iris
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import com.google.gson.Gson
 import com.tokopedia.iris.data.TrackingRepository
@@ -12,8 +8,9 @@ import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.util.*
-import com.tokopedia.iris.worker.IrisBroadcastReceiver
-import com.tokopedia.iris.worker.IrisService
+import com.tokopedia.iris.worker.IrisWorker
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -22,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -38,10 +34,16 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private val gson = Gson()
     private lateinit var remoteConfig: RemoteConfig
 
-    override val coroutineContext: CoroutineContext = Dispatchers.IO +
-        CoroutineExceptionHandler { _, ex ->
-            Timber.e("P1#IRIS#CoroutineExceptionIrisAnalytics %s", ex.toString())
+    override val coroutineContext: CoroutineContext by lazy {
+               getCoroutineContextIO()
+    }
+
+    fun getCoroutineContextIO():CoroutineContext {
+        return  Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
+            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString()))
         }
+    }
+
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -51,13 +53,17 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
 
         override fun onComplete(remoteConfig: RemoteConfig?) {
-            val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)
+            setConfiguration(remoteConfig)
+        }
+    }
+
+    fun setConfiguration(remoteConfig: RemoteConfig?) {
+        val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)
                 ?: true
-            val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
+        val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
                 ?: ""
 
-            setService(irisConfig, irisEnable)
-        }
+        setService(irisConfig, irisEnable)
     }
 
     override fun initialize() {
@@ -70,12 +76,13 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     override fun setService(config: String, isEnabled: Boolean) {
         try {
             cache.setEnabled(isEnabled)
-            if (cache.isEnabled()) {
-                val configuration = ConfigurationMapper().parse(config)
-                if (configuration != null) {
-                    this.configuration = configuration
-                }
+            val confParse = ConfigurationMapper().parse(config)
+            if (confParse != null) {
+                this.configuration = confParse
+            } else {
+                this.configuration = Configuration()
             }
+            this.configuration?.isEnabled = isEnabled
         } catch (ignored: Exception) {
         }
     }
@@ -96,7 +103,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(map)
                 } catch (e: Exception) {
-                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
                 }
             }
         }
@@ -108,74 +115,65 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(Utils.bundleToMap(bundle))
                 } catch (e: Exception) {
-                    Timber.e("P1#IRIS#saveEvent %s", e.toString())
+                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
                 }
             }
         }
     }
 
-    suspend fun saveEventSuspend(map: Map<String, Any>){
+    suspend fun saveEventSuspend(map: Map<String, Any>) {
         val trackingRepository = TrackingRepository(context)
 
         val eventName = map["event"] as? String
-        val eventCategory = map["eventCategory"] as? String
-        val eventAction = map["eventAction"] as? String
 
         // convert map to json then save as string
         val event = gson.toJson(map)
         val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-        trackingRepository.saveEvent(resultEvent.toString(), session, eventName, eventCategory, eventAction)
-        setAlarm(true, force = false)
+        if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)) {
+            sendEvent(map)
+        } else {
+            trackingRepository.saveEvent(resultEvent.toString(), session)
+            setAlarm(true, force = false)
+        }
     }
 
-
-    @Deprecated(message = "function should not be called directly", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
+    @Deprecated(message = "function should not be called directly outside IrisAnalytics", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
                 val trackingRepository = TrackingRepository(context)
-                trackingRepository.sendSingleEvent(gson.toJson(map), session)
+                trackingRepository.sendSingleEvent(gson.toJson(map), session, map["event"] as? String)
             }
         }
     }
 
-    override fun setUserId(userId: String) {
-        session.setUserId(userId)
-    }
-
-    override fun setDeviceId(deviceId: String) {
-        session.setDeviceId(deviceId)
-    }
-
+    /**
+     * force = true means run the service now and activate the alarm if any
+     */
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
-        if (!force && isTurnOn == isAlarmOn) {
-            return
+        if (configuration == null) {
+            if(!::remoteConfig.isInitialized) {
+                remoteConfig = FirebaseRemoteConfigImpl(context)
+            }
+            setConfiguration(remoteConfig)
         }
-        val pendingIntent: PendingIntent?
-        pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            val intent = Intent(context, IrisService::class.java)
-            intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
-            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else {
-            val intent = Intent(context, IrisBroadcastReceiver::class.java)
-            intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
-            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-
-        pendingIntent?.let {
-            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val conf = configuration ?: return
+        launch(coroutineContext) {
             if (isTurnOn) {
-                alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(),
-                    TimeUnit.MINUTES.toMillis(this.configuration?.intervals
-                        ?: DEFAULT_SERVICE_TIME), pendingIntent)
+                IrisWorker.scheduleWorker(context, conf, force)
             } else {
-                alarm.cancel(pendingIntent)
+                IrisWorker.cancel(context)
             }
         }
-        isAlarmOn = isTurnOn
+    }
+
+    override fun getSessionId(): String {
+        return session.getSessionId()
     }
 
     companion object {
+
+        const val KEY_REMOTE_CONFIG_SEND_REALTIME = "android_customerapp_iris_realtime"
 
         private val lock = Any()
 
@@ -197,5 +195,6 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 iris = null
             }
         }
+
     }
 }

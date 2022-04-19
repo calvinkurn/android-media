@@ -7,7 +7,7 @@ data class ChatBundleSticker(
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
         @SerializedName("list")
-        val list: List<Sticker> = listOf(),
+        var list: List<Sticker> = listOf(),
         @SerializedName("maxUUID")
         val maxUUID: String = ""
 )

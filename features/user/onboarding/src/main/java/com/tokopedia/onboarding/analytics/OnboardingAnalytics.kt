@@ -1,6 +1,8 @@
 package com.tokopedia.onboarding.analytics
 
 import android.os.Build
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import timber.log.Timber
 
@@ -13,14 +15,13 @@ class OnboardingAnalytics {
 
     fun trackScreen(position: Int) {
         val screenName = String.format(SCREEN_ONBOARDING, position.toString())
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT
-                + " | " + Build.MANUFACTURER + " | " + Build.BRAND + " | " + Build.DEVICE
-                + " | " + Build.PRODUCT + " | " + Build.MODEL + " | " + Build.TAGS)
+        val screenNameMessage = "$screenName | ${Build.FINGERPRINT} | ${Build.MANUFACTURER} | ${Build.BRAND} | ${Build.DEVICE} | ${Build.PRODUCT} | ${Build.MODEL} | ${Build.TAGS}"
+        ServerLogger.log(Priority.P2, "FINGERPRINT", mapOf("screenName" to screenNameMessage))
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
     fun trackDynamicOnboardingPage(isEnable: Boolean, time: Long, message: String) {
-        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#isEnable=$isEnable;loadTime=$time;message=$message")
+        ServerLogger.log(Priority.P2, "DYNAMIC_OBOARDING_PAGE", mapOf("isEnable" to "$isEnable", "loadTime" to "$time", "message" to message))
     }
 
     fun trackMoengage() {

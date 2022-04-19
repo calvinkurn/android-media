@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawSmallCommonState"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingTop="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl0"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <TextView
+        android:id="@+id/tvSawSmallOrderCommonTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/unify_font_16"
+        android:textStyle="bold"
+        tools:text="Masuk ke Tokopedia" />
+
+    <ImageButton
+        android:id="@+id/btnSawSmallOrderRefreshCommon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/tvSawSmallOrderCommonDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSawSmallOrderCommonTitle"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_toStartOf="@+id/imgSawSmallOrderCommon"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/spacing_lvl1"
+        android:maxLines="3"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700"
+        android:textSize="@dimen/unify_font_12"
+        tools:text="Cek semua pesanan yang kamu terima disini" />
+
+    <TextView
+        android:id="@+id/tvSawSmallOrderCommonCta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSawSmallOrderCommonDescription"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_toStartOf="@+id/imgSawSmallOrderCommon"
+        android:maxLines="2"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/unify_font_12"
+        android:textStyle="bold"
+        tools:text="Cek Sekarang" />
+
+    <ImageView
+        android:id="@+id/imgSawSmallOrderCommon"
+        android:layout_width="@dimen/saw_dimen_124dp"
+        android:layout_height="@dimen/saw_dimen_90dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        tools:src="@tools:sample/avatars" />
+</RelativeLayout>

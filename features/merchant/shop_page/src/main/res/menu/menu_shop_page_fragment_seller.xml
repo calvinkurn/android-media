@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_action_share_seller_view"
+        android:title="@string/shop_menu_action_share"
+        android:icon="@drawable/ic_shop_share_dark"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_action_search"
         android:title="@string/text_search"
         android:icon="@drawable/ic_shop_page_search_menu"

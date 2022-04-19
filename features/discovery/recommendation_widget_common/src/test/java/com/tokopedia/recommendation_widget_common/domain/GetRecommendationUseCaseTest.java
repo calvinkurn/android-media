@@ -16,6 +16,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class GetRecommendationUseCaseTest {
@@ -34,28 +37,34 @@ public class GetRecommendationUseCaseTest {
     @Before
     public void initData() {
         getRecommendationUseCase = new GetRecommendationUseCase(
+                context,
                 "",
                 graphqlUseCase,
                 userSessionInterface
         );
     }
 
+    private List<String> dummyProductId = new ArrayList<String>() {{
+        add("1234");
+    }};
+
     @Test
     public void getRecomParams_useUserSessionId_whenSetUserIdParams() {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
-                GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        int requestParamsId = requestParams.getInt(GetRecommendationUseCase.Companion.getUSER_ID(),
+        int requestParamsId = requestParams.getInt(GetRecommendationUseCase.USER_ID,
                 dummyPageNumber);
-        Assert.assertEquals((long)requestParamsId, (long)Integer.valueOf(dummyUserId));
+        Assert.assertEquals((long) requestParamsId, (long) Integer.valueOf(dummyUserId));
     }
 
     @Test
@@ -63,15 +72,16 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 99;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
-                GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.Companion.getPAGE_NUMBER(),
+        int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.PAGE_NUMBER,
                 0);
 
         Assert.assertEquals(requestParamsPageNumber, dummyPageNumber);
@@ -83,15 +93,16 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
+        String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
 
         Assert.assertEquals(requestXSource, dummyXSource);
@@ -103,19 +114,20 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
+        String requestXSource = requestParams.getString(GetRecommendationUseCase.X_SOURCE,
                 "");
 
         Assert.assertEquals(requestXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE());
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE);
     }
 
     @Test
@@ -124,19 +136,20 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        String requestXDevice = requestParams.getString(GetRecommendationUseCase.Companion.getX_DEVICE(),
+        String requestXDevice = requestParams.getString(GetRecommendationUseCase.X_DEVICE,
                 "");
 
         Assert.assertEquals(requestXDevice,
-                GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_DEVICE());
+                GetRecommendationUseCase.DEFAULT_VALUE_X_DEVICE);
     }
 
     @Test
@@ -145,15 +158,16 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
-                GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
+                GetRecommendationUseCase.DEFAULT_VALUE_X_SOURCE,
                 dummyPageName,
-                any(),
-                any()
+                dummyProductId,
+                ""
         );
-        String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
+        String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");
 
         Assert.assertEquals(requestPageName, dummyPageName);
@@ -165,18 +179,19 @@ public class GetRecommendationUseCaseTest {
         int dummyPageNumber = 0;
         String dummyUserId = "12345";
         when(userSessionInterface.getUserId()).thenReturn(dummyUserId);
+        when(userSessionInterface.isLoggedIn()).thenReturn(true);
 
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyPageName,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                any(),
-                any()
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME,
+                dummyProductId,
+                ""
         );
-        String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
+        String requestPageName = requestParams.getString(GetRecommendationUseCase.PAGE_NAME,
                 "");
 
         Assert.assertEquals(requestPageName,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME());
+                GetRecommendationUseCase.DEFAULT_PAGE_NAME);
     }
 }

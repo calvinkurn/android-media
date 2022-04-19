@@ -2,12 +2,16 @@ package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.util.Log
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -19,7 +23,6 @@ import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
-import com.tokopedia.iris.util.IrisSession
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
 
@@ -39,38 +42,34 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
-        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString())
+        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString()) ?: defaultValue.toString()
         if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) &&  !cacheValue.isEmpty()) {
             return cacheValue.equals("true", ignoreCase = true)
         }
         return defaultValue
     }
 
-
-    override fun getByteArray(key: String?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
-    override fun getByteArray(key: String?, defaultValue: ByteArray?): ByteArray {
-        throw RuntimeException("Method is not implemented yet")
-    }
-
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getDouble(key: String?, defaultValue: Double): Double {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?): Long {
         throw RuntimeException("Method is not implemented yet")
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override fun getLong(key: String?, defaultValue: Long): Long {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -80,7 +79,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getString(key: String?, defaultValue: String): String {
-        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)
+        //override customer app ab config features
+        if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
+            when (key) {
+                NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT -> return NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
+            }
+        }
+        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue
         }
@@ -94,9 +99,28 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
     }
 
+    fun deleteKeyLocally(key:String){
+        editor?.let {
+            it.remove(key)
+            it.commit()
+        }
+    }
+
     fun fetchByType(listener: RemoteConfig.Listener?) {
         editor.clear().commit()
         fetch(listener)
+    }
+
+    fun getRevisionValue() = sharedPreferences.getInt(REVISION, 0)
+
+    fun getFilteredKeyByKeyName(keyName: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all){
+                val valueClassType = value?.let { it::class.java }
+                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                    add(key)
+            }
+        }
     }
 
     override fun fetch(listener: RemoteConfig.Listener?) {
@@ -110,6 +134,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (userSession.isLoggedIn) {
             payloads[ID] = userSession.userId
         } else {
+            if(handleDeviceIdless()) {return}
             payloads[ID] = userSession.deviceId
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
@@ -141,6 +166,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     override fun onError(e: Throwable?) { }
 
                 }}
+    }
+
+    private fun handleDeviceIdless() :Boolean {
+        if(userSession.deviceId == null){
+            return true
+        }
+        return false
     }
 
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutFeatureVariants {
@@ -186,6 +218,9 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
+
+        private const val CONSUMER_PRO_APPLICATION = 3;
+        private const val CONSUMER_PRO_APPLICATION_PACKAGE = "com.tokopedia.intl"
     }
 
 }

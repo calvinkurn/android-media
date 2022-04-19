@@ -7,26 +7,29 @@ import com.google.gson.annotations.SerializedName
  * Created by mzennis on 2019-12-10.
  */
 data class TotalLikeContent(
-        @SerializedName("error")
-        val error: String = "",
-        @SerializedName("data")
-        val data: Data? = null
+        @SerializedName("reportData")
+        val data: List<Data> = emptyList()
 ) {
     data class Data(
-            @SerializedName("like")
-            val like: Like = Like()
+            @SerializedName("channel")
+            val channel: Channel = Channel()
     )
 
-    data class Like(
-            @SerializedName("fmt")
+    data class Channel(
+            @SerializedName("metrics")
+            val metrics: Metric = Metric()
+    )
+
+    data class Metric(
+            @SerializedName("totalLikeFmt")
             val fmt: String = "",
 
-            @SerializedName("value")
-            val value: Int = 0
+            @SerializedName("totalLike")
+            val value: String = ""
     )
 
     data class Response(
-            @SerializedName("feedGetLikeContent")
+            @SerializedName("broadcasterReportSummariesBulk")
             val totalLikeContent: TotalLikeContent = TotalLikeContent()
     )
 }

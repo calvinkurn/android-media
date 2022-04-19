@@ -1,0 +1,17 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "userId": ".+",
+      "businessUnit": ".+",
+      "currentSite": ".+",
+      "event": "clickShopPage",
+      "eventAction": "click tab",
+      "sessionIris": ".+",
+      "eventLabel":"click - (Product|Feed|Review|Home) Tab"
+    }
+  ]
+}

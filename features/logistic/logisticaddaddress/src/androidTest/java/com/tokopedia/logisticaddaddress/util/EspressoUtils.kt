@@ -1,11 +1,11 @@
 package com.tokopedia.logisticaddaddress.util
 
-import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.logisticaddaddress.R
+import androidx.annotation.IdRes
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -50,14 +50,14 @@ object EspressoUtils {
         }
     }
 
-    fun holderWithText(text: String): Matcher<RecyclerView.ViewHolder> {
+    fun holderWithText(text: String, @IdRes itemId: Int): Matcher<RecyclerView.ViewHolder> {
         return object : TypeSafeMatcher<RecyclerView.ViewHolder>() {
             override fun describeTo(description: Description?) {
                 description?.appendText("Searching for $text")
             }
 
             override fun matchesSafely(item: RecyclerView.ViewHolder?): Boolean {
-                return item?.itemView?.findViewById<TextView>(R.id.address_name)?.text.toString() == text
+                return item?.itemView?.findViewById<TextView>(itemId)?.text.toString() == text
             }
         }
     }

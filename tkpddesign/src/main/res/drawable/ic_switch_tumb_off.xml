@@ -2,19 +2,12 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <solid android:color="@color/white" />
-            <stroke android:color="@color/white_two"
-                android:width="0.5dp"/>
-            <size android:height="@dimen/dp_6"
-                android:width="@dimen/dp_6"/>
+            <solid android:color="@color/Unify_N0"/>
+            <stroke android:color="@color/Unify_N100" android:width="0.5dp"/>
+            <size android:height="6dp" android:width="6dp"/>
         </shape>
     </item>
-    <item
-        android:top="@dimen/dp_10"
-        android:bottom="@dimen/dp_10"
-        android:left="@dimen/dp_10"
-        android:right="@dimen/dp_10">
-        <bitmap android:src="@drawable/ic_action_x"
-            android:tint="#bdbdbd"/>
+    <item android:top="10dp" android:bottom="10dp" android:left="10dp" android:right="10dp">
+        <bitmap android:src="@drawable/ic_action_x" android:tint="@color/Unify_N150"/>
     </item>
 </layer-list>

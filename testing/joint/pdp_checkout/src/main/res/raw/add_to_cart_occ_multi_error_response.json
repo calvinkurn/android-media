@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "add_to_cart_occ_multi": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "message": [
+            "Yaah, barang ini sudah nggak tersedia. Move on ke barang lainnya, yuk!"
+          ],
+          "success": 0,
+          "out_of_service": {
+            "id": 0,
+            "code": "",
+            "image": "",
+            "title": "",
+            "description": "",
+            "buttons": []
+          },
+          "toaster_action": {
+            "text": "",
+            "show_cta": false
+          },
+          "carts": []
+        }
+      }
+    }
+  }
+]

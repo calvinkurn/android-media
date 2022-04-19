@@ -1,9 +1,11 @@
 package com.tokopedia.home.beranda.domain.model.banner
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class BannerSlidesModel(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Int = -1,
         @SerializedName("galaxy_attribution")
@@ -30,6 +32,8 @@ data class BannerSlidesModel(
         val topadsViewUrl: String = "",
         @SerializedName("type")
         var type: String = "",
+        @SerializedName("category_id")
+        var categoryId: String = "",
         @SerializedName("campaignCode")
         val campaignCode: String = "",
         var position: Int = -1

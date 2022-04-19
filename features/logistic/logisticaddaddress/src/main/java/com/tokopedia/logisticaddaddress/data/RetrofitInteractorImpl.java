@@ -1,21 +1,13 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationPresenter;
 import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -43,10 +35,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);
         compositeSubscription.add(mapsRepository.getLatLng(paramaters)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CoordinateViewModel>() {
+                .subscribe(new Subscriber<CoordinateUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -59,7 +50,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
 
                     @Override
-                    public void onNext(CoordinateViewModel model) {
+                    public void onNext(CoordinateUiModel model) {
                         listener.onSuccess(model);
                     }
                 }));
@@ -71,10 +62,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);
         compositeSubscription.add(mapsRepository.getLatLngFromGeocode(paramaters)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CoordinateViewModel>() {
+                .subscribe(new Subscriber<CoordinateUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -87,7 +77,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
 
                     @Override
-                    public void onNext(CoordinateViewModel model) {
+                    public void onNext(CoordinateUiModel model) {
                         listener.onSuccess(model);
                     }
                 }));

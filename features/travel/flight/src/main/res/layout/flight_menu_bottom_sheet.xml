@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_flight_menu_order_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/flight_title_transaction_list"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <View
+        android:id="@+id/v_first_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/flight_dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_flight_menu_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/flight_title_promo"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <View
+        android:id="@+id/v_second_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/flight_dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_flight_menu_help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl3"
+        android:paddingBottom="@dimen/layout_lvl3"
+        android:text="@string/flight_title_help"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+</LinearLayout>

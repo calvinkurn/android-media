@@ -3,8 +3,7 @@ package com.tokopedia.product.manage.feature.cashback.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE
@@ -28,7 +27,7 @@ class ProductManageSetCashbackViewModel @Inject constructor(
     fun setCashback(productId: String, productName: String, cashback: Int) {
         launchCatchError(block = {
             val result = withContext(dispatcher.io) {
-                setCashbackUseCase.setParams(productId.toIntOrZero(), cashback, false)
+                setCashbackUseCase.setParams(productId, cashback, false)
                 setCashbackUseCase.executeOnBackground()
             }
             when(result.goldSetProductCashback.header.errorCode) {

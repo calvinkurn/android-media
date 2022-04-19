@@ -1,0 +1,110 @@
+package com.tokopedia.kol.feature.comment.view.activity
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
+import com.tokopedia.kol.feature.comment.di.KolCommentModule
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import javax.inject.Inject
+
+/**
+ * Deeplink format:
+ * tokopedia-android-internal://content/comment-new/{post_id}
+ */
+
+class KolCommentNewActivity : BaseSimpleActivity() {
+    private var kolId: Int = 0
+    private var fromApplink = false
+    var postId: String? = ""
+
+    @Inject
+    internal lateinit var feedAnalytics: FeedAnalyticTracker
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        getDataFromIntent()
+        super.onCreate(savedInstanceState)
+    }
+
+    private fun initInjector() {
+        DaggerKolCommentComponent.builder()
+            .kolComponent(KolComponentInstance.getKolComponent(application))
+            .kolCommentModule(KolCommentModule(null, null))
+            .build()
+            .inject(this)
+    }
+
+    override fun getNewFragment(): Fragment? {
+        val bundle = Bundle()
+        postId = intent.data?.lastPathSegment
+        if (!postId.isNullOrEmpty()) {
+            bundle.putInt(KolCommentActivity.ARGS_ID, postId.toIntOrZero())
+        }
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+
+        //because all extras are retrieved as String from deeplink
+        val rowPosition = bundle[ARGS_POSITION]
+        if (rowPosition is String) bundle.putInt(ARGS_POSITION, rowPosition.toInt())
+
+        val colPosition = bundle[ARGS_POSITION_COLUMN]
+        if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toInt())
+        return KolCommentNewFragment.createInstance(bundle)
+    }
+
+    private fun getDataFromIntent() {
+        intent.data?.let {
+            kolId = it.lastPathSegment?.toIntOrNull() ?: 0
+            it.getQueryParameter(KolCommentActivity.ARGS_FROM_APPLINK)?.let { isAppLink ->
+                fromApplink = isAppLink == "true"
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        feedAnalytics.clickBackButtonCommentPage(
+            postId ?: "0",
+            intent.getStringExtra(ARGS_AUTHOR_TYPE) ?: "",
+            intent.getBooleanExtra(ARGS_VIDEO, false),
+            intent.getBooleanExtra(IS_POST_FOLLOWED, true),
+            intent.getStringExtra(POST_TYPE) ?: ""
+        )
+        super.onBackPressed()
+    }
+
+    companion object {
+        private const val ARGS_POSITION = "ARGS_POSITION"
+        const val ARGS_ID = "ARGS_ID"
+        private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
+        const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
+        const val ARGS_VIDEO = "ARGS_VIDEO"
+        const val POST_TYPE = "POST_TYPE"
+        const val IS_POST_FOLLOWED = "IS_FOLLOWED"
+
+
+        @JvmStatic
+        fun getCallingIntent(context: Context, id: Int, rowNumber: Int, authorId: String?, isFollowed: Boolean? = true, postType: String?): Intent {
+            val intent = Intent(context, KolCommentNewActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(ARGS_ID, id)
+            bundle.putInt(ARGS_POSITION, rowNumber)
+            bundle.putBoolean(ARGS_VIDEO, true)
+            bundle.putString(ARGS_AUTHOR_TYPE, authorId)
+            bundle.putString(POST_TYPE, postType)
+            if (isFollowed != null)
+                bundle.putBoolean(IS_POST_FOLLOWED, isFollowed)
+            else
+                bundle.putBoolean(IS_POST_FOLLOWED, true)
+
+            intent.putExtras(bundle)
+            return intent
+        }
+    }
+}

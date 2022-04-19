@@ -1,13 +1,16 @@
 package com.tokopedia.kategori.di
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.kategori.usecase.AllCategoryQueryUseCase
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kategori.Constants
+import com.tokopedia.kategori.R
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
-@CategoryNavigationScope
 @Module
 class CategoryUseCaseModule {
 
@@ -19,15 +22,14 @@ class CategoryUseCaseModule {
 
     @CategoryNavigationScope
     @Provides
-    fun provideRxGQLUseCase(): GraphqlUseCase {
-        return GraphqlUseCase()
+    fun provideResources(context: Context): Resources {
+        return context.resources
     }
 
     @CategoryNavigationScope
     @Provides
-    fun getAllCategoryUseCase(context: Context, graphqlUseCase: GraphqlUseCase): AllCategoryQueryUseCase {
-        return AllCategoryQueryUseCase(context, graphqlUseCase)
+    fun provideRxGQLUseCase(): GraphqlUseCase {
+        return GraphqlUseCase()
     }
-
 
 }

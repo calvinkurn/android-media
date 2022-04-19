@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
+import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,7 +16,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@FeedPlusScope
 abstract class ViewModelModule {
 
     @FeedPlusScope
@@ -31,5 +31,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FeedDetailViewModel::class)
     internal abstract fun feedDetailViewModel(viewModel: FeedDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayFeedVideoTabViewModel::class)
+    internal abstract fun playFeedVideoTabViewModel(viewModel: PlayFeedVideoTabViewModel): ViewModel
+
 
 }

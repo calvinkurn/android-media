@@ -1,12 +1,16 @@
 package com.tokopedia.navigation.domain;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.data.mapper.NotificationRequestMapper;
-import com.tokopedia.navigation.listener.CartListener;
+import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -23,15 +27,15 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
 
     private final GraphqlUseCase graphqlUseCase;
     private final NotificationRequestMapper mapper;
-    private CartListener cartListener;
+    private Context context;
 
     @Inject
-    public GetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase,
-                                        NotificationRequestMapper mapper,
-                                        CartListener cartListener) {
+    public GetDrawerNotificationUseCase(@ApplicationContext Context context,
+                                        GraphqlUseCase graphqlUseCase,
+                                        NotificationRequestMapper mapper) {
         this.graphqlUseCase = graphqlUseCase;
         this.mapper = mapper;
-        this.cartListener = cartListener;
+        this.context = context;
     }
 
     @Override
@@ -53,10 +57,22 @@ public class GetDrawerNotificationUseCase extends UseCase<NotificationEntity> {
     private Action1<NotificationEntity> saveCartCount() {
         return notificationEntity -> {
             try {
-                cartListener.setCartCount(Integer.parseInt(notificationEntity.getNotifications().getTotalCart()));
+                setCartCount(Integer.parseInt(notificationEntity.getNotifications().getTotalCart()));
             } catch (NumberFormatException e) {
-                cartListener.setCartCount(0);
+                setCartCount(0);
             }
         };
     }
+
+    public void setCartCount(int count) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
+        localCacheHandler.applyEditor();
+    }
+
+    public int getCartCount(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
+    }
+
 }

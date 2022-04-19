@@ -18,6 +18,11 @@ public class LinkerData implements Parcelable {
     public static final String HOTLIST_TYPE = "Hotlist";
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
+    public static final String HOTEL_TYPE = "Hotel";
+    public static final String ENTERTAINMENT_TYPE = "Entertainment";
+    public static final String USER_PROFILE_SOCIAL = "User Profile Social";
+    public static final String NOW_TYPE = "Now";
+    public static final String WEBVIEW_TYPE = "Webview";
 
     public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
@@ -27,6 +32,11 @@ public class LinkerData implements Parcelable {
     public static final String FEED_TYPE = "feed";
     public static final String GROUPCHAT_TYPE = "tokopedia_play";
     public static final String INDI_CHALLENGE_TYPE = "tokopedia_challenge";
+    public static final String PLAY_BROADCASTER = "play_broadcaster";
+    public static final String PLAY_VIEWER = "play_viewer";
+    public static final String MERCHANT_VOUCHER = "merchant_voucher";
+    public static final String LABEL_PRODUCT_SHARE = "Product Share";
+    public static final String LABEL_SPACE_SHARE = "%20Share";
 
     private String type = "";
     private String typeUrl = "";
@@ -57,6 +67,21 @@ public class LinkerData implements Parcelable {
     private String journeyId;
     private String invoiceId;
     private String paymentId;
+    private boolean throwOnError;
+    private String content;
+    private String contentType;
+    private String level1Name;
+    private String level1Id;
+    private String level2Name;
+    private String level2Id;
+    private String level3Name;
+    private String level3Id;
+    private String sku;
+    private String contentId;
+    private String feature;
+    private String channel;
+    private String campaign;
+    private boolean isAffiliate;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -98,6 +123,21 @@ public class LinkerData implements Parcelable {
         journeyId = in.readString();
         invoiceId = in.readString();
         paymentId = in.readString();
+        throwOnError = in.readByte() != 0;
+        content = in.readString();
+        contentType = in.readString();
+        level1Name = in.readString();
+        level1Id = in.readString();
+        level2Name = in.readString();
+        level2Id = in.readString();
+        level3Name = in.readString();
+        level3Id = in.readString();
+        sku = in.readString();
+        contentId = in.readString();
+        feature = in.readString();
+        channel = in.readString();
+        campaign = in.readString();
+        isAffiliate = in.readByte() != 0;
     }
 
     @Override
@@ -130,6 +170,21 @@ public class LinkerData implements Parcelable {
         dest.writeString(journeyId);
         dest.writeString(invoiceId);
         dest.writeString(paymentId);
+        dest.writeByte((byte) (throwOnError ? 1 : 0));
+        dest.writeString(content);
+        dest.writeString(contentType);
+        dest.writeString(level1Name);
+        dest.writeString(level1Id);
+        dest.writeString(level2Name);
+        dest.writeString(level2Id);
+        dest.writeString(level3Name);
+        dest.writeString(level3Id);
+        dest.writeString(sku);
+        dest.writeString(contentId);
+        dest.writeString(feature);
+        dest.writeString(channel);
+        dest.writeString(campaign);
+        dest.writeByte((byte) (isAffiliate ? 1 : 0));
     }
 
     @Override
@@ -245,13 +300,21 @@ public class LinkerData implements Parcelable {
 
         String renderedUrl;
         if (!getType().equalsIgnoreCase(RIDE_TYPE)) {
+            String utmSource = ARG_UTM_SOURCE;
+            String utmMedium = ARG_UTM_MEDIUM;
+            if(!TextUtils.isEmpty(getFeature())){
+                utmMedium = getFeature();
+            }
+            if(!TextUtils.isEmpty(getChannel())){
+                utmSource = getChannel();
+            }
             if (getUri().contains("?")) {
                 Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                        getUri(), utmSource, utmMedium, campaign));
                 renderedUrl = uri.toString();
             } else {
                 Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                        getUri(), ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                        getUri(), utmSource, utmMedium, campaign));
                 renderedUrl = uri.toString();
             }
         } else {
@@ -260,11 +323,47 @@ public class LinkerData implements Parcelable {
         return renderedUrl;
     }
 
+    public String renderShareUri(String url) {
+        if (url == null) {
+            return "";
+        }
+        String campaign = getCampaignName();
+
+        String renderedUrl;
+
+        String utmSource = ARG_UTM_SOURCE;
+        String utmMedium = ARG_UTM_MEDIUM;
+
+        if(!TextUtils.isEmpty(getFeature())){
+            utmMedium = getFeature();
+        }
+        if(!TextUtils.isEmpty(getChannel())){
+            utmSource = getChannel();
+        }
+
+        if (url.contains("?")) {
+            Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                    url, utmSource, utmMedium, campaign));
+            renderedUrl = uri.toString();
+        } else {
+            Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                    url, utmSource, utmMedium, campaign));
+            renderedUrl = uri.toString();
+        }
+
+        return renderedUrl;
+    }
+
     public String getCampaignName() {
-        String campaign = "Product Share";
-        if (getType() != null)
-            campaign = getType() + "%20Share";
-        return campaign;
+        if(TextUtils.isEmpty(getCampaign())) {
+            String campaign = LABEL_PRODUCT_SHARE;
+            if (getType() != null)
+                campaign = getType() + LABEL_SPACE_SHARE;
+            return campaign;
+        }
+        else{
+            return getCampaign();
+        }
     }
 
     public String getOriginalTextContent() {
@@ -429,6 +528,127 @@ public class LinkerData implements Parcelable {
         this.paymentId = paymentId;
     }
 
+
+    public boolean isThrowOnError() {
+        return throwOnError;
+    }
+
+    public void setThrowOnError(boolean throwOnError) {
+        this.throwOnError = throwOnError;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getLevel1Name() {
+        return level1Name;
+    }
+
+    public void setLevel1Name(String level1Name) {
+        this.level1Name = level1Name;
+    }
+
+    public String getLevel1Id() {
+        return level1Id;
+    }
+
+    public void setLevel1Id(String level1Id) {
+        this.level1Id = level1Id;
+    }
+
+    public String getLevel2Name() {
+        return level2Name;
+    }
+
+    public void setLevel2Name(String level2Name) {
+        this.level2Name = level2Name;
+    }
+
+    public String getLevel2Id() {
+        return level2Id;
+    }
+
+    public void setLevel2Id(String level2Id) {
+        this.level2Id = level2Id;
+    }
+
+    public String getLevel3Name() {
+        return level3Name;
+    }
+
+    public void setLevel3Name(String level3Name) {
+        this.level3Name = level3Name;
+    }
+
+    public String getLevel3Id() {
+        return level3Id;
+    }
+
+    public void setLevel3Id(String level3Id) {
+        this.level3Id = level3Id;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
+    public String getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(String campaign) {
+        this.campaign = campaign;
+    }
+
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -459,6 +679,21 @@ public class LinkerData implements Parcelable {
         private String journeyId;
         private String invoiceId;
         private String paymentId;
+        private boolean throwOnError;
+        private String content;
+        private String contentType;
+        private String level1Name;
+        private String level1Id;
+        private String level2Name;
+        private String level2Id;
+        private String level3Name;
+        private String level3Id;
+        private String sku;
+        private String contentId;
+        private String feature;
+        private String channel;
+        private String campaign;
+        private boolean isAffiliate;
 
         private Builder() {
         }
@@ -611,6 +846,81 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setThrowOnError(boolean throwOnError){
+            this.throwOnError = throwOnError;
+            return this;
+        }
+
+        public Builder setContent(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder setContentType(String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public Builder setLevel1Name(String level1Name) {
+            this.level1Name = level1Name;
+            return this;
+        }
+
+        public Builder setLevel1Id(String level1Id) {
+            this.level1Id = level1Id;
+            return this;
+        }
+
+        public Builder setLevel2Name(String level2Name) {
+            this.level2Name = level2Name;
+            return this;
+        }
+
+        public Builder setLevel2Id(String level2Id) {
+            this.level2Id = level2Id;
+            return this;
+        }
+
+        public Builder setLevel3Name(String level3Name) {
+            this.level3Name = level3Name;
+            return this;
+        }
+
+        public Builder setLevel3Id(String level3Id) {
+            this.level3Id = level3Id;
+            return this;
+        }
+
+        public Builder setSku(String sku) {
+            this.sku = sku;
+            return this;
+        }
+
+        public Builder setContentId(String contentId) {
+            this.contentId = contentId;
+            return this;
+        }
+
+        public Builder setFeature(String feature) {
+            this.feature = feature;
+            return this;
+        }
+
+        public Builder setChannel(String channel) {
+            this.channel = channel;
+            return this;
+        }
+
+        public Builder setCampaign(String campaign) {
+            this.campaign = campaign;
+            return this;
+        }
+
+        public Builder setAffiliate(Boolean isAffiliate){
+            this.isAffiliate = isAffiliate;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -640,11 +950,26 @@ public class LinkerData implements Parcelable {
             linkerData.setCatLvl1(catLvl1);
             linkerData.setUserId(userId);
             linkerData.setQuantity(quantity);
-            linkerData.setQuantity(productCategory);
-            linkerData.setQuantity(productName);
-            linkerData.setQuantity(journeyId);
-            linkerData.setQuantity(invoiceId);
-            linkerData.setQuantity(paymentId);
+            linkerData.setProductCategory(productCategory);
+            linkerData.setProductName(productName);
+            linkerData.setJourneyId(journeyId);
+            linkerData.setInvoiceId(invoiceId);
+            linkerData.setPaymentId(paymentId);
+            linkerData.setThrowOnError(throwOnError);
+            linkerData.setContent(content);
+            linkerData.setContentType(contentType);
+            linkerData.setLevel1Name(level1Name);
+            linkerData.setLevel1Id(level1Id);
+            linkerData.setLevel2Name(level2Name);
+            linkerData.setLevel2Id(level2Id);
+            linkerData.setLevel3Name(level3Name);
+            linkerData.setLevel3Id(level3Id);
+            linkerData.setSku(sku);
+            linkerData.setContentId(contentId);
+            linkerData.setFeature(feature);
+            linkerData.setChannel(channel);
+            linkerData.setCampaign(campaign);
+            linkerData.setAffiliate(isAffiliate);
             return linkerData;
         }
 

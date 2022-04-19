@@ -1,9 +1,10 @@
 package com.tokopedia.common_category.model.productModel
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Shop(
 
         @SerializedName("goldmerchant")
@@ -38,45 +39,4 @@ data class Shop(
 
         @SerializedName("isOfficial")
         val isOfficial: Boolean = false
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-        parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as Boolean,
-        parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as Int,
-        parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as Boolean)
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(goldmerchant)
-        parcel.writeString(city)
-        parcel.writeString(name)
-        parcel.writeString(clover)
-        parcel.writeValue(isPowerBadge)
-        parcel.writeString(reputation)
-        parcel.writeValue(official)
-        parcel.writeString(location)
-        parcel.writeValue(id)
-        parcel.writeString(url)
-        parcel.writeValue(isOfficial)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Shop> {
-        override fun createFromParcel(parcel: Parcel): Shop {
-            return Shop(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Shop?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

@@ -1,6 +1,5 @@
 package com.tokopedia.exploreCategory.ui.activity
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
@@ -8,7 +7,6 @@ import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
 import com.tokopedia.exploreCategory.ECConstants.Companion.DEFAULT_SCREEN
 import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TITLE
 import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TAB
@@ -17,8 +15,6 @@ import com.tokopedia.exploreCategory.ECConstants.Companion.LAYANAN_SCREEN
 import com.tokopedia.exploreCategory.ECConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.exploreCategory.ui.fragment.ECServiceFragment
 import com.tokopedia.exploreCategory.viewmodel.ECHomeViewModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
 
@@ -42,15 +38,6 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
     }
 
     private fun handleIntentFromDeeplink() {
-        val remoteConfig = FirebaseRemoteConfigImpl(this)
-        if (!remoteConfig.getBoolean(RemoteConfigKey.APP_SEMUA_CATEGORY_ENABLE, true)) {
-            val bundle = Bundle()
-            bundle.putAll(intent.extras)
-            val intent = Intent(this, DigitalBrowseHomeActivity::class.java)
-            intent.putExtras(bundle)
-            startActivity(intent)
-            finish()
-        }
         val data = intent.data
 
         if (data?.getQueryParameter(EXTRA_TITLE) == null) {
@@ -71,13 +58,13 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
             else -> "1"
         }
 
-        if (TYPE_LAYANAN == type.toInt()) {
+        if (TYPE_LAYANAN == type?.toInt()) {
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 val tab = when {
-                    intent.getStringExtra(EXTRA_TAB).isNotEmpty() -> intent.getStringExtra(EXTRA_TAB)
-                    else -> "1"
+                    (intent.getStringExtra(EXTRA_TAB)?.isNotEmpty() == true) -> intent.getStringExtra(EXTRA_TAB)?.toInt() ?: 1
+                    else -> 1
                 }
-                ECServiceFragment.getFragmentInstance(tab.toInt())
+                ECServiceFragment.getFragmentInstance(tab)
             } else {
                 ECServiceFragment.fragmentInstance
             }
@@ -98,7 +85,7 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
     }
 
     override fun getScreenName(): String =
-            if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE) != null && (intent.getStringExtra(EXTRA_TYPE)).toInt() == TYPE_LAYANAN) {
+            if (intent.hasExtra(EXTRA_TYPE) && intent.getStringExtra(EXTRA_TYPE) != null && (intent.getStringExtra(EXTRA_TYPE)?: "1").toInt() == TYPE_LAYANAN) {
                 LAYANAN_SCREEN
             } else {
                 DEFAULT_SCREEN

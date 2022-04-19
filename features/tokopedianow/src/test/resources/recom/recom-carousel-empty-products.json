@@ -1,0 +1,33 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "k3taxWnh0AB_GI6wsi5ecpCFHPw=",
+        "source": "custom",
+        "title": "Rekomendasi Untuk Anda",
+        "subtitle": "",
+        "foreignTitle": "Recommendation For You",
+        "widgetUrl": "",
+        "pageName": "account",
+        "seeMoreAppLink": "",
+        "layoutType": "horizontal-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          }
+        },
+        "recommendation": []
+      }
+    ]
+}
+}

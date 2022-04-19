@@ -1,12 +1,15 @@
 package com.tokopedia.product.util.processor
 
 
-import com.tokopedia.analytic.annotation.*
+import com.tokopedia.analytic.annotation.CustomChecker
+import com.tokopedia.analytic.annotation.ErrorHandler
+import com.tokopedia.analytic.annotation.Key
+import com.tokopedia.analytic.annotation.Level
+import com.tokopedia.analytic.annotation.Logger
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
-import com.tokopedia.checkers.ProductDetailViewsChecker
-import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
+import com.tokopedia.firebase.analytic.rules.ProductDetailRules
 import com.tokopedia.util.GTMErrorHandlerImpl
 import com.tokopedia.util.logger.GTMLoggerImpl
 
@@ -14,11 +17,11 @@ const val KEY_SESSION_IRIS = "sessionIris"
 
 @ErrorHandler(GTMErrorHandlerImpl::class)
 @Logger(GTMLoggerImpl::class)
-@AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailViewsRules::class)
+@AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailRules::class)
 data class ProductDetailViews(
         @Key(com.tokopedia.analytic_constant.Param.ITEM_LIST)
         val itemList: String,
-        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct_"])
+        @CustomChecker(ProductDetailViewsChecker::class, Level.ERROR, functionName = ["isOnlyOneProduct"])
         @Key("items")
         val items: List<Product>,
         @Key("key")
@@ -50,7 +53,7 @@ data class ProductDetailViews(
         @Key("productImageUrl")
         val productImageUrl: String,
         @Key("isOfficialStore")
-        val officialStore: Int,
+        val officialStore: String,
         @Key("productPriceFormatted")
         val productPriceFormatted: String,
         @Key(ProductTrackingConstant.Tracking.KEY_PRODUCT_ID)
@@ -59,6 +62,16 @@ data class ProductDetailViews(
         val layout: String,
         @Key(ProductTrackingConstant.Tracking.KEY_COMPONENT)
         val component: String,
+        @Key("productPrice")
+        val productPrice: String,
+        @Key("productName")
+        val productName: String,
+        @Key("productGroupName")
+        val productGroupName: String,
+        @Key("productGroupId")
+        val productGroupId: String,
+        @Key("category")
+        val category: String,
         @Key(KEY_SESSION_IRIS)
         val sessionIris: String,
         @DefaultValueString("")
@@ -75,10 +88,41 @@ data class ProductDetailViews(
         @Key("eventAction")
         val eventAction: String?,
         @DefaultValueString("")
+        @Key("eventLabel")
+        val eventLabel: String?,
+        @DefaultValueString("")
         @Key("businessUnit")
         val businessUnit: String?,
         @DefaultValueString("")
         @Key("screenName")
-        val screenName: String?
-
+        val screenName: String?,
+        @DefaultValueString("")
+        @Key("variant")
+        val variant: String?,
+        @DefaultValueString("")
+        @Key("campaignCode")
+        val campaignCode: String?,
+        @DefaultValueString("")
+        @Key("productStatus")
+        val productStatus: String?,
+        @DefaultValueString("")
+        @Key("stockAmount")
+        val stockAmount: String?,
+        @DefaultValueString("")
+        @Key("attribution")
+        val attribution: String?,
+        @DefaultValueString("")
+        @Key("warehouseId")
+        val warehouseId: String?
 )
+
+object ProductDetailViewsChecker {
+        fun onlyViewItem(event: String?) =
+                event?.toLowerCase()?.contains("view_item") ?: false
+
+        fun isOnlyOneProduct(items: List<Product>) = items.size == 1
+
+        fun checkMap(map: Map<String, String>) = map.isNotEmpty()
+
+        fun isIndexNotZero(index: Long) = !(index > 0)
+}

@@ -5,11 +5,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.data.pojo.SellerSection
-import com.tokopedia.settingnotif.usersetting.util.componentTextColor
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 
 class SellerSectionViewHolder(

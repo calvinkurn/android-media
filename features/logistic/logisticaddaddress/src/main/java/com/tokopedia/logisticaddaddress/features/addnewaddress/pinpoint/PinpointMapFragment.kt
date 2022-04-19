@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -26,10 +28,17 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
+import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointMapBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
@@ -41,15 +50,11 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.logisticdata.util.toCompositeSubs
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
-import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
+import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -73,7 +78,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private var token: Token? = null
     private var isPolygon: Boolean = false
-    private var districtId: Int? = null
+    private var districtId: Long? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean = false
     private var isMismatch: Boolean = false
@@ -82,9 +87,20 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean = false
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
     private var continueWithLocation: Boolean? = false
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
+    private var isCircuitBreaker: Boolean = false
+    private var isGpsEnable: Boolean = true
+    private var warehouseDataModel: Warehouse? = null
+    private var isEditWarehouse: Boolean = false
+    private var isReqLocation: Boolean = false
+
+    private var binding by autoClearedNullable<FragmentPinpointMapBinding> {
+        // Set map view on destroy before binding is null
+        it.mapView.onDestroy()
+    }
 
     private var composite = CompositeSubscription()
 
@@ -106,7 +122,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -126,10 +141,19 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     putBoolean(EXTRA_IS_CHANGES_REQUESTED, extra.getBoolean(EXTRA_IS_CHANGES_REQUESTED))
                     putBoolean(EXTRA_IS_FULL_FLOW, extra.getBoolean(EXTRA_IS_FULL_FLOW, true))
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true))
+                    putBoolean(EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false))
+                    putParcelable(EXTRA_WAREHOUSE_DATA, extra.getParcelable(EXTRA_WAREHOUSE_DATA))
+                    putBoolean(EXTRA_IS_EDIT_WAREHOUSE, extra.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
+
+        private const val ADDRESS_KONSLET = "tokopedia_konslet.png"
+        private const val ADDRESS_OUT_OF_INDONESIA = "tokopedia_out_of_indonesia.png"
+        private const val ADDRESS_INVALID = "ic_invalid_location.png"
+        private const val ZOOM_LEVEL = 16f
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,70 +172,89 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             districtId = saveAddressDataModel?.districtId
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+            isCircuitBreaker = it.getBoolean(EXTRA_IS_CIRCUIT_BREAKER, false)
+            warehouseDataModel = it.getParcelable(EXTRA_WAREHOUSE_DATA)
+            isEditWarehouse = it.getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_pinpoint_map, container, false)
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        binding = FragmentPinpointMapBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
 
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
         presenter.autoFill(currentLat, currentLong, zoom)
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
-        map_view?.onCreate(savedInstanceState)
-        map_view?.getMapAsync(this)
+        binding?.mapView?.run {
+            onCreate(savedInstanceState)
+            getMapAsync(this@PinpointMapFragment)
+        }
     }
 
     private fun prepareLayout() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet_getdistrict)
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.GONE
-        whole_loading_container?.visibility = View.VISIBLE
-        if (!isMismatch) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
+        binding?.bottomSheetGetDistrict?.run {
+            bottomSheetBehavior = BottomSheetBehavior.from(this.bottomSheetGetDistrict)
+            getdistrictContainer.visibility = View.GONE
+            invalidContainer.visibility = View.GONE
+            wholeLoadingContainer.visibility = View.VISIBLE
+            if (!isMismatch) etDetailAddress.setText(saveAddressDataModel?.editDetailAddress)
+            if (isEditWarehouse) {
+                detailAddressLayout.visibility = View.GONE
+            } else {
+                detailAddressLayout.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun setViewListener() {
-        back_button?.setOnClickListener {
-            // hide keyboard
-            val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
-            (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
+        binding?.run {
+            backButton.setOnClickListener {
+                // hide keyboard
+                val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+                (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.rootView?.windowToken, 0)
 
-            map_view?.onPause()
-            AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(isFullFlow, isLogisticLabel)
-            activity?.finish()
-        }
-
-        ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
-        }
-
-        et_detail_address?.run {
-            setOnClickListener {
-                getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
-                getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
+                AddNewAddressAnalytics.eventClickBackArrowOnPinPoint(isFullFlow, isLogisticLabel)
+                activity?.finish()
             }
 
-            setOnTouchListener { view, event ->
-                view.parent.requestDisallowInterceptTouchEvent(true)
-                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                    view.parent.requestDisallowInterceptTouchEvent(false)
+            bottomSheetGetDistrict.icSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
+
+            bottomSheetGetDistrict.etDetailAddress.run {
+                setOnClickListener {
+                    bottomSheetGetDistrict.getdistrictContainer.requestFocusFromTouch()
+                    bottomSheetGetDistrict.etDetailAddress.requestFocusFromTouch()
                 }
-                return@setOnTouchListener false
+
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+            }
+
+            icCurrentLocation.setOnClickListener {
+                AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
+                doUseCurrentLocation(isFullFlow)
             }
         }
 
-        ic_current_location?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
-            doUseCurrentLocation(isFullFlow)
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -222,29 +265,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
         activity?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                permissionCheckerHelper?.checkPermissions(it, getPermissions(),
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                googleMap?.isMyLocationEnabled = true
-                            }
-
-                        },
-                        it.getString(R.string.rationale_need_location))
+                requestLocation()
             } else {
                 googleMap?.isMyLocationEnabled = true
             }
         }
         activity?.let { MapsInitializer.initialize(activity) }
 
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         if (this.isPolygon) {
             districtId?.let { districtId ->
@@ -273,9 +301,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     override fun showLoading() {
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.GONE
-        whole_loading_container?.visibility = View.VISIBLE
+        binding?.bottomSheetGetDistrict?.run {
+            getdistrictContainer.visibility = View.GONE
+            invalidContainer.visibility = View.GONE
+            wholeLoadingContainer.visibility = View.VISIBLE
+        }
     }
 
     private fun getAutofill() {
@@ -292,12 +322,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun showAutoComplete(lat: Double, long: Double) {
         if (isShowingAutocomplete) {
+            SimpleIdlingResource.increment()
             handler.postDelayed({
+                SimpleIdlingResource.decrement()
                 showAutocompleteGeocodeBottomSheet(lat, long, "")
             }, 500)
         }
 
-        var zoomLevel = 16f
         if (lat == 0.0 && long == 0.0) {
             currentLat = DEFAULT_LAT
             currentLong = DEFAULT_LONG
@@ -305,58 +336,86 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             currentLat = lat
             currentLong = long
         }
-        moveMap(getLatLng(currentLat, currentLong), zoomLevel)
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
     }
 
-    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
                 .zoom(zoomLevel)
                 .build()
 
-        googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
     override fun onResume() {
         super.onResume()
-        map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
-            presenter.requestLocation(requireActivity())
-        }
+        binding?.mapView?.onResume()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            ic_current_location.setImageResource(R.drawable.ic_gps_enable)
+            binding?.icCurrentLocation?.setImageResource(R.drawable.ic_gps_enable)
         } else {
-            ic_current_location.setImageResource(R.drawable.ic_gps_disable)
+            isGpsEnable = false
+            binding?.icCurrentLocation?.setImageResource(R.drawable.ic_gps_disable)
+        }
+        getLastLocationClient()
+    }
+
+    private fun getLastLocationClient() {
+        if (!isGpsEnable && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            SimpleIdlingResource.increment()
+            Handler().postDelayed({
+                SimpleIdlingResource.decrement()
+                showAutoCompleteBottomSheet("")
+            }, 200)
+        } else {
+            fusedLocationClient?.lastLocation
+                    ?.addOnSuccessListener {
+                        if (it != null) {
+                            if (!isEditWarehouse) showAutoComplete(it.latitude, it.longitude)
+                            else showAutoComplete(currentLat, currentLong)
+                        } else {
+                            showAutoComplete(DEFAULT_LAT, DEFAULT_LONG)
+                        }
+                    }
         }
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {
+        isReqLocation = true
         if (AddNewAddressUtils.isGpsEnabled(context)) {
-            activity?.let { presenter.requestLocation(it) }
+            requestLocation()
         } else {
             showLocationInfoBottomSheet(isFullFlow)
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding?.mapView?.onStart()
+    }
+
     override fun onPause() {
         super.onPause()
-        map_view?.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        map_view?.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        map_view?.onDestroy()
+        binding?.mapView?.onPause()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        map_view?.onLowMemory()
+        binding?.mapView?.onLowMemory()
     }
+
+    override fun onStop() {
+        super.onStop()
+        binding?.mapView?.onStop()
+    }
+
+    override fun onDestroyView() {
+        binding?.mapView?.onDestroy()
+        composite.unsubscribe()
+        presenter.detachView()
+        super.onDestroyView()
+    }
+
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
         val autocompleteGeocodeBottomSheetFragment =
@@ -373,28 +432,30 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
-        if (!isFullFlow) {
-            if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0) {
-                currentLat = getDistrictDataUiModel.latitude.toDouble()
-                currentLong = getDistrictDataUiModel.longitude.toDouble()
-                moveMap(getLatLng(currentLat, currentLong))
-                showNotFoundLocation()
-            } else {
-                doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
-            }
-        } else doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
+        if (getDistrictDataUiModel.errorCode == CIRCUIT_BREAKER_ON_CODE) {
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel, isCircuitBreaker = true)
+        } else {
+            if (!isFullFlow) {
+                if (getDistrictDataUiModel.postalCode.isEmpty() || getDistrictDataUiModel.districtId == 0L) {
+                    currentLat = getDistrictDataUiModel.latitude.toDouble()
+                    currentLong = getDistrictDataUiModel.longitude.toDouble()
+                    moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                    showNotFoundLocation()
+                } else {
+                    doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
+                }
+            } else doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
+        }
     }
 
     private fun doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
-        invalid_container?.visibility = View.GONE
+        showDistrictBottomSheet()
 
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.VISIBLE
         continueWithLocation = true
         val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes)
         presenter.setAddress(savedModel)
@@ -407,7 +468,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
     override fun onSuccessAutofill(autofillDataUiModel: Data) {
         if (!isFullFlow) {
-            if (autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
+            if (autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0L) {
                 showNotFoundLocation()
             } else {
                 doAfterSuccessAutofill(autofillDataUiModel)
@@ -416,18 +477,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun showNotFoundLocation() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
-        tv_address_getdistrict?.visibility = View.GONE
-
-        invalid_title?.text = getString(R.string.not_found_location)
-        invalid_desc?.text = getString(R.string.not_found_location_desc)
-        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
-        invalid_button?.visibility = View.GONE
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        showInvalidBottomSheet()
+        binding?.bottomSheetGetDistrict?.run {
+            tvAddressGetdistrict.visibility = View.GONE
+            invalidTitle.text = getString(R.string.not_found_location)
+            invalidDesc.text = getString(R.string.not_found_location_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_KONSLET)
+            invalidButton.visibility = View.GONE
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
@@ -442,9 +501,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun updateAfterOnSuccessAutofill(autofillDataUiModel: Data) {
-        invalid_container?.visibility = View.GONE
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.VISIBLE
+        showDistrictBottomSheet()
 
         if (this.isPolygon) {
             if (autofillDataUiModel.districtId != districtId) {
@@ -467,73 +524,74 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     override fun showOutOfReachDialog() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
+        showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.out_of_indonesia_title)
-        invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
-        invalid_img?.loadRemoteImageDrawable("tokopedia_out_of_indonesia.png")
-        invalid_button?.visibility = View.GONE
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        binding?.bottomSheetGetDistrict?.run {
+            invalidTitle.text = getString(R.string.out_of_indonesia_title)
+            invalidDesc.text = getString(R.string.out_of_indonesia_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_OUT_OF_INDONESIA)
+            invalidButton.visibility = View.GONE
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
     override fun showUndetectedDialog() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
+        showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.undetected_title)
-        invalid_desc?.text = getString(R.string.undetected_desc)
-        invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
-        invalid_button?.visibility = View.GONE
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        binding?.bottomSheetGetDistrict?.run {
+            invalidTitle.text = getString(R.string.undetected_title)
+            invalidDesc.text = getString(R.string.undetected_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_KONSLET)
+            invalidButton.visibility = View.GONE
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
     override fun showLocationNotFoundCTA() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
+        showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.invalid_title)
-        invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.setImageResource(R.drawable.ic_invalid_location)
-        invalid_button?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isLogisticLabel = isLogisticLabel, isFullFlow = isFullFlow)
+        binding?.bottomSheetGetDistrict?.run {
+            invalidTitle.text = getString(R.string.invalid_title)
+            invalidDesc.text = getString(R.string.invalid_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
+            invalidButton.visibility = View.VISIBLE
+            invalidButton.setOnClickListener {
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false,
+                        isUnnamedRoad = false, isZipCodeNull = false,
+                        isLogisticLabel = isLogisticLabel, isFullFlow = isFullFlow,
+                        isCircuitBreaker = false)
             }
-        }
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
     }
 
+    override fun goToAddNewAddressNegative() {
+        goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel, isCircuitBreaker = true)
+    }
+
     private fun showDialogForUnnamedRoad() {
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.GONE
-        invalid_container?.visibility = View.VISIBLE
+        showInvalidBottomSheet()
 
-        invalid_title?.text = getString(R.string.invalid_title)
-        invalid_desc?.text = getString(R.string.invalid_desc)
-        invalid_img?.setImageResource(R.drawable.ic_invalid_location)
-        invalid_button?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener {
+        binding?.bottomSheetGetDistrict?.run {
+            invalidTitle.text = getString(R.string.invalid_title)
+            invalidDesc.text = getString(R.string.invalid_desc)
+            invalidImg.loadRemoteImageDrawable(ADDRESS_INVALID)
+            invalidButton.visibility = View.VISIBLE
+            invalidButton.setOnClickListener {
                 AddNewAddressAnalytics.eventClickButtonUnnamedRoad(isFullFlow, isLogisticLabel)
-                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel)
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false,
+                        isUnnamedRoad = true, isZipCodeNull = false, isFullFlow = isFullFlow,
+                        isLogisticLabel = isLogisticLabel, isCircuitBreaker = false)
             }
-        }
-
-        invalid_ic_search_btn?.setOnClickListener {
-            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            invalidIcSearchBtn.setOnClickListener {
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+            }
         }
 
         AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(isFullFlow, isLogisticLabel)
@@ -553,64 +611,84 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun setDefaultResultGetDistrict(saveAddressDataModel: SaveAddressDataModel) {
-        invalid_container?.visibility = View.GONE
-        whole_loading_container?.visibility = View.GONE
-        getdistrict_container?.visibility = View.VISIBLE
+        showDistrictBottomSheet()
 
-        ic_search_btn?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickMagnifier(isFullFlow, isLogisticLabel)
-            showAutoCompleteBottomSheet("")
-        }
-
-        et_detail_address?.apply {
-            setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldDetailAlamat(isFullFlow, isLogisticLabel)
+        binding?.bottomSheetGetDistrict?.run {
+            icSearchBtn.setOnClickListener {
+                AddNewAddressAnalytics.eventClickMagnifier(isFullFlow, isLogisticLabel)
+                showAutoCompleteBottomSheet("")
             }
-            setupClearButtonWithAction()
-            addTextChangedListener(setDetailAlamatWatcher())
-        }
 
-        tv_title_getdistrict?.apply {
-            text = saveAddressDataModel.title
-            setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
-                showAutoCompleteBottomSheet(saveAddressDataModel.title)
-            }
-        }
-
-        tv_address_getdistrict?.apply {
-            visibility = View.VISIBLE
-            text = saveAddressDataModel.formattedAddress
-            setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow,isLogisticLabel)
-                showAutoCompleteBottomSheet(saveAddressDataModel.title)
-            }
-        }
-
-        btn_choose_location?.setOnClickListener {
-            continueWithLocation?.let {
-                if (it) {
-                    if (isFullFlow) {
-                        doLoadAddEdit()
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
-                    } else {
-                        setResultPinpoint()
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
-                    }
-                } else {
-                    view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
+            etDetailAddress.apply {
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickFieldDetailAlamat(isFullFlow, isLogisticLabel)
                 }
+                setupClearButtonWithAction()
+                addTextChangedListener(setDetailAlamatWatcher())
+            }
+
+            tvTitleGetdistrict.apply {
+                text = saveAddressDataModel.title
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
+            }
+
+            tvAddressGetdistrict.apply {
+                visibility = View.VISIBLE
+                text = saveAddressDataModel.formattedAddress
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickFieldCariLokasi(isFullFlow, isLogisticLabel)
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title)
+                }
+            }
+            btnChooseLocation.setOnClickListener {
+                continueWithLocation?.let {
+                    if (it) {
+                        if (isFullFlow) {
+                            doLoadAddEdit()
+                            AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
+                        } else {
+                            setResultPinpoint()
+                            AddNewAddressAnalytics.eventClickButtonPilihLokasi(isFullFlow, isLogisticLabel)
+                        }
+                    } else {
+                        view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun setResultPinpoint() {
+        saveAddressDataModel?.editDetailAddress = binding?.bottomSheetGetDistrict?.etDetailAddress?.text?.toString() ?: ""
+        if (isEditWarehouse && saveAddressDataModel?.districtId != warehouseDataModel?.districtId) {
+            view?.let { Toaster.build(it, getString(R.string.toaster_not_avail_shop_loc), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
+        } else {
+            activity?.run {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
+                })
+                finish()
             }
         }
     }
 
-    private fun setResultPinpoint() {
-        saveAddressDataModel?.editDetailAddress = et_detail_address?.text.toString()
-        activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_ADDRESS_MODEL, saveAddressDataModel)
-            })
-            finish()
+    private fun showDistrictBottomSheet() {
+        binding?.bottomSheetGetDistrict?.run {
+            invalidContainer.visibility = View.GONE
+            wholeLoadingContainer.visibility = View.GONE
+            getdistrictContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showInvalidBottomSheet() {
+        binding?.bottomSheetGetDistrict?.run {
+            invalidContainer.visibility = View.VISIBLE
+            wholeLoadingContainer.visibility = View.GONE
+            getdistrictContainer.visibility = View.GONE
         }
     }
 
@@ -620,24 +698,24 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     }
 
     private fun doLoadAddEdit() {
-        saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
+        saveAddressDataModel?.editDetailAddress = binding?.bottomSheetGetDistrict?.etDetailAddress?.text?.toString() ?: ""
         if (this.isPolygon) {
             isMismatchSolved = true
         }
 
         val addressModel = presenter.getSaveAddressDataModel()
-        if (addressModel.districtId == 0 && addressModel.postalCode.isEmpty()) {
+        if (addressModel.districtId == 0L && addressModel.postalCode.isEmpty()) {
             showFailedDialog()
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(isFullFlow, isLogisticLabel)
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(isFullFlow, isLogisticLabel)
         } else if (addressModel.postalCode.isEmpty()) {
-            goToAddEditActivity(true, isMismatchSolved, false, true, isFullFlow, isLogisticLabel)
+            goToAddEditActivity(true, isMismatchSolved, false, true, isFullFlow, isLogisticLabel, false)
         } else {
             if (isChangesRequested) {
                 finishBackToAddEdit(false, isMismatchSolved)
             } else {
-                goToAddEditActivity(false, isMismatchSolved, false, false, isFullFlow, isLogisticLabel)
+                goToAddEditActivity(false, isMismatchSolved, false, false, isFullFlow, isLogisticLabel, false)
             }
 
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(isFullFlow, isLogisticLabel)
@@ -652,13 +730,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = false, isZipCodeNull = false, isFullFlow = isFullFlow, isLogisticLabel = isLogisticLabel, isCircuitBreaker = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification(isFullFlow, isLogisticLabel)
     }
 
-    private fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean, isFullFlow: Boolean, isLogisticLabel: Boolean) {
+    private fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean, isFullFlow: Boolean, isLogisticLabel: Boolean, isCircuitBreaker: Boolean) {
         val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
@@ -672,6 +750,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             putExtra(EXTRA_IS_NULL_ZIPCODE, isZipCodeNull)
             putExtra(EXTRA_IS_FULL_FLOW, isFullFlow)
             putExtra(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+            putExtra(EXTRA_IS_CIRCUIT_BREAKER, isCircuitBreaker)
             startActivityForResult(this, FINISH_FLAG)
         }
     }
@@ -692,11 +771,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         if (requestCode == FINISH_FLAG && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(EXTRA_ADDRESS_NEW)) {
-                    val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                    val newAddress = data.getParcelableExtra(EXTRA_ADDRESS_NEW) ?: SaveAddressDataModel()
                     finishActivity(newAddress)
                 } else if (data.hasExtra(EXTRA_DETAIL_ADDRESS_LATEST)) {
                     val latestDetailAddress = data.getStringExtra(EXTRA_DETAIL_ADDRESS_LATEST)
-                    et_detail_address.setText(latestDetailAddress)
+                    binding?.bottomSheetGetDistrict?.etDetailAddress?.setText(latestDetailAddress)
                 }
             }
         }
@@ -751,10 +830,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
         })
 
-        setOnTouchListener(View.OnTouchListener { _, event ->
+        setOnTouchListener(View.OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 if (event.rawX >= (this.right - this.compoundPaddingRight)) {
-                    this.setText("")
+                    setText("")
+                    v.performClick()
                     return@OnTouchListener true
                 }
             }
@@ -777,22 +857,49 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    val countCharLeft = 60 - s.toString().length
-                    when (countCharLeft) {
+                    when (val countCharLeft = 60 - s.toString().length) {
                         60 -> {
-                            tv_detail_address_counter.text = "0/60"
+                            binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "0/60"
                         }
                         else -> {
-                            tv_detail_address_counter.text = "$countCharLeft/60"
+                            binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "$countCharLeft/60"
                         }
                     }
                 } else {
-                    tv_detail_address_counter.text = "60/60"
+                    binding?.bottomSheetGetDistrict?.tvDetailAddressCounter?.text = "60/60"
                 }
             }
 
             override fun afterTextChanged(text: Editable) {
             }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestLocation() {
+        activity?.let {
+            permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            fusedLocationClient?.lastLocation?.addOnFailureListener { showAutoComplete(DEFAULT_LAT, DEFAULT_LONG) }
+                            permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                        }
+
+                        override fun onPermissionGranted() {
+                            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                                if (data != null) {
+                                    if (isEditWarehouse && !isReqLocation) moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
+                                    else moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
+                                }
+                            }
+                            googleMap?.isMyLocationEnabled = true
+                        }
+
+                    }, it.getString(R.string.rationale_need_location))
         }
     }
 
@@ -802,9 +909,4 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        presenter.detachView()
-        composite.unsubscribe()
-    }
 }

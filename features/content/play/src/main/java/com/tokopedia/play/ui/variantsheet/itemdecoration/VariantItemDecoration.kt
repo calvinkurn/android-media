@@ -21,7 +21,7 @@ class VariantItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val startOffset = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, R.color.play_variant_placeholder_divider)
+        color = MethodChecker.getColor(context, R.color.play_dms_variant_sheet_divider)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -42,8 +42,7 @@ class VariantItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
             val child = parent.getChildAt(index)
 
             if (index != 0) {
-                val viewHolder = parent.getChildViewHolder(child)
-                when (viewHolder) {
+                when (parent.getChildViewHolder(child)) {
                     is VariantPlaceholderViewHolder -> {
                         c.drawRect(
                                 Rect(startOffset, child.top, parent.width, child.top - dividerHeight),

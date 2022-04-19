@@ -16,8 +16,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            app:elevation="@dimen/dp_4"
-            android:elevation="@dimen/dp_4"
+            app:elevation="4dp"
+            android:elevation="4dp"
             android:theme="?toolbarTheme"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
@@ -26,7 +26,7 @@
             app:titleTextAppearance="?titleTextAppearance" />
 
         <FrameLayout
-            android:id="@+id/parent_view"
+            android:id="@+id/activity_review_gallery_parent_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

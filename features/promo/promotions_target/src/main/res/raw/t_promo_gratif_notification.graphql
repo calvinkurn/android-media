@@ -1,0 +1,47 @@
+query GetNotification($notificationID: Int!, $notificationEntryType: Int!, $paymentID: Int!) {
+  getNotification(notificationID: $notificationID, notificationEntryType: $notificationEntryType, paymentID: $paymentID) {
+     notificationID
+    promoCode
+    eventID
+    notificationStatus
+    wordingActive {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle2Id
+    }
+    wordingSeen {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle2Id
+    }
+    wordingExpired {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle2Id
+    }
+    wordingUsed {
+      titleId
+      titleEn
+      subtitle1Id
+      subtitle2Id
+    }
+    button {
+      text
+      url
+      appLink
+      isShown
+      type
+    }
+    hachikoButton {
+      type
+    }
+    resultStatus {
+      code
+      message
+      reason
+    }   
+  }
+}

@@ -29,7 +29,7 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
-        val promoData = PromoData(data.isCoupon, textInputCoupon.text.toString(),
+        val promoData = PromoData(data.isCoupon, textInputCoupon.textFieldInput.text.toString(),
                 data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
 

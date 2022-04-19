@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import javax.inject.Inject
 
 class GeolocationMapper @Inject constructor() {

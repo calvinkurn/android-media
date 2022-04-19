@@ -36,6 +36,10 @@ class NumberListAdapter(private val callback: OnClientNumberClickListener, var c
         this.clientNumbers = clientNumbers
     }
 
+    fun getNumbers(): List<TopupBillsFavNumberItem> {
+        return this.clientNumbers
+    }
+
     interface OnClientNumberClickListener {
         fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem)
     }

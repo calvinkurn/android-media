@@ -1,0 +1,29 @@
+{
+  "data": {
+    "order_extension_request_info": {
+      "data": {
+        "text": "Pengajuan yang diterima pembeli dapat tambahan waktu 2x24 jam hari kerja hingga",
+        "new_deadline": "Senin, 13 Sep 2021 pukul 14:55 WIB",
+        "reason": [
+          {
+            "reason_title": "Kendala Operasional",
+            "reason_code": 1,
+            "must_comment": false
+          },
+          {
+            "reason_title": "Kendala Produksi",
+            "reason_code": 2,
+            "must_comment": false
+          },
+          {
+            "reason_title": "Lainnya",
+            "reason_code": 3,
+            "must_comment": true
+          }
+        ],
+        "message": "",
+        "message_code": 1
+      }
+    }
+  }
+}

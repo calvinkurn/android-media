@@ -3,18 +3,13 @@ package com.tokopedia.core.analytics;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.track.TrackApp;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +20,12 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    private static final String PARAM_1 = "af_param_1";
+    // consider replacing this with getGtm().sendCampaignV4V5 instead.
+    @Deprecated
     public static void eventCampaign(Context context, Campaign campaign) {
+        if (!isValidCampaign(campaign.getCampaign())) return;
+
         // V5
         TrackApp.getInstance().getGTM().sendCampaign(campaign.getCampaign());
 
@@ -37,30 +37,9 @@ public class TrackingUtils{
     public static void activityBasedAFEvent(Context context, String tag) {
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(AppScreen.IDENTIFIER_HOME_ACTIVITY)) {
-            afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(context));
+            afValue.put(PARAM_1, CommonUtils.getUniqueDeviceID(context));
         }
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
-    }
-
-    public static String extractFirstSegment(Context context,String inputString, String separator) {
-        String firstSegment = "";
-        if (!TextUtils.isEmpty(inputString)) {
-            String token[] = inputString.split(separator);
-            if (token.length > 1) {
-                firstSegment = token[0];
-            } else {
-                firstSegment = separator;
-            }
-        }
-
-        return firstSegment;
-    }
-
-    public static String normalizePhoneNumber(String phoneNum) {
-        if (!TextUtils.isEmpty(phoneNum))
-            return phoneNum.replaceFirst("^0(?!$)", "62");
-        else
-            return "";
     }
 
     public static void sendMoEngageClickMainCategoryIcon(Context context, String categoryName) {
@@ -75,18 +54,6 @@ public class TrackingUtils{
                 AppEventTracking.MOENGAGE.CHANNEL, channel
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
-    }
-
-    public static void fragmentBasedAFEvent(Context context,String tag) {
-        Map<String, Object> afValue = new HashMap<>();
-        if (tag.equals(AppScreen.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT)
-                || tag.equals(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.REGSITRATION_METHOD, "register_normal");
-        } else if (tag.equals(AppScreen.IDENTIFIER_CATEGORY_FRAGMENT)) {
-            afValue.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_HOME_MAIN);
-        }
-
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFFragmentEvent(tag), afValue);
     }
 
     public static void eventError(Context context,String className, String errorMessage) {
@@ -116,5 +83,27 @@ public class TrackingUtils{
 
     public static String getAfUniqueId(Context context) {
         return TrackApp.getInstance().getAppsFlyer().getUniqueId();
+    }
+
+    public static boolean isValidCampaign(Map<String, Object> maps) {
+        boolean isValid = false;
+
+        if(maps != null){
+            String gclid = maps.get(AppEventTracking.GTM.UTM_GCLID) != null ? maps.get(AppEventTracking.GTM.UTM_GCLID).toString() : "";
+            if(maps.containsKey(AppEventTracking.GTM.UTM_GCLID) && !TextUtils.isEmpty(gclid)){
+                isValid = true;
+            }else{
+                String utmSource = maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ? maps.get(AppEventTracking.GTM.UTM_SOURCE).toString() : "";
+                String utmMedium = maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ? maps.get(AppEventTracking.GTM.UTM_MEDIUM).toString() : "";
+
+                isValid = !TextUtils.isEmpty(utmSource) && !TextUtils.isEmpty(utmMedium);
+            }
+
+            if(!isValid){
+                Log.d("TrackingUtils", "Invalid Campaign Data = "+maps.toString());
+            }
+        }
+
+        return isValid;
     }
 }

@@ -1,0 +1,209 @@
+{
+  "data": {
+    "id": "suggestion",
+    "name": "SUGGESTION",
+    "items": [
+      {
+        "template": "list_single_line",
+        "type": "curated",
+        "applink": "tokopedia://shop/2400899",
+        "url": "/samsung",
+        "title": "Samsung Mobile Indonesia",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "https://ecs7.tokopedia.net/img/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_single_line",
+        "type": "keyword",
+        "applink": "tokopedia://search?q=samsung&source=universe&st=product",
+        "url": "/search?q=samsung&source=universe&st=product",
+        "title": "samsung",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic_to_top_big.png",
+        "image_url": "https://ecs7.tokopedia.net/img/autocomplete/search-icon-3x.png",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "header",
+        "type": "",
+        "applink": "",
+        "url": "",
+        "title": "Toko",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_double_line",
+        "type": "shop",
+        "applink": "tokopedia://shop/2400899?source=universe&st=product",
+        "url": "/samsung?source=universe&st=product",
+        "title": "Samsung Mobile Indonesia",
+        "subtitle": "Jakarta",
+        "icon_title": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+        "icon_subtitle": "https://ecs7.tokopedia.net/img/autocomplete/location.png",
+        "shortcut_image": "",
+        "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+        "url_tracker": "https://ace.tokopedia.com/tracker/v1?id=2400899&user_id=0&device=&unique_id=d41d8cd98f00b204e9800998ecf8427e&type=shop",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_double_line",
+        "type": "shop",
+        "applink": "tokopedia://shop/2386090?source=universe&st=product",
+        "url": "/samsung-digital?source=universe&st=product",
+        "title": "Samsung Electronic",
+        "subtitle": "Jakarta",
+        "icon_title": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+        "icon_subtitle": "https://ecs7.tokopedia.net/img/autocomplete/location.png",
+        "shortcut_image": "",
+        "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/8/18/2386090/2386090_26490abf-220e-40dc-a4fd-ffbea6cde12b.jpg",
+        "url_tracker": "https://ace.tokopedia.com/tracker/v1?id=2386090&user_id=0&device=&unique_id=d41d8cd98f00b204e9800998ecf8427e&type=shop",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "header",
+        "type": "",
+        "applink": "",
+        "url": "",
+        "title": "Barang di Waktu Indonesia Belanja",
+        "subtitle": "",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_product_line",
+        "type": "product",
+        "applink": "tokopedia://product/20100686",
+        "url": "/bgsport/bola-sepak-3",
+        "title": "Sneakers Redknot Koketo York Denim",
+        "subtitle": "Rp126.000",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/1/625127637/625127637_1d6bddb3-5e33-47b7-9723-f365603182c0_720_720.jpg",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "20",
+        "original_price": "Rp1.000.000"
+      },
+      {
+        "template": "list_product_line",
+        "type": "product",
+        "applink": "tokopedia://product/20100686",
+        "url": "/bgsport/bola-sepak-3",
+        "title": "Sneakers Air Jordan 1 MID CHICAGO",
+        "subtitle": "Rp2.547.000",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2019/10/20/298794/298794_0bd710bf-ffe0-4db5-8987-cbaf4a5e2fb4_1067_1067.jpg",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_double_line_without_image",
+        "type": "local",
+        "applink": "tokopedia://search?q=asus&source=universe&st=product&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
+        "url": "/search?q=asus&source=universe&st=product&navsource=campaign&srp_page_id=160&srp_page_title=Waktu%20Indonesia%20Belanja",
+        "title": "Cari \"asus\"",
+        "subtitle": "di Waktu Indonesia Belanja",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      },
+      {
+        "template": "list_double_line_without_image",
+        "type": "global",
+        "applink": "tokopedia://search?q=asus&source=universe&st=product",
+        "url": "/search?q=asus&source=universe&st=product",
+        "title": "Cari \"asus\"",
+        "subtitle": "di Tokopedia",
+        "icon_title": "",
+        "icon_subtitle": "",
+        "shortcut_image": "",
+        "image_url": "",
+        "url_tracker": "",
+        "label": "",
+        "label_type": "",
+        "tracking": {
+          "code": ""
+        },
+        "discount_percentage": "",
+        "original_price": ""
+      }
+    ]
+  },
+  "top_shops": []
+}

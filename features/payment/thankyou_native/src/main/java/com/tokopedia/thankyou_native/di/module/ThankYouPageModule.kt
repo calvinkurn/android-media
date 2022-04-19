@@ -7,9 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import com.tokopedia.thankyou_native.presentation.adapter.DetailedInvoiceAdapter
-import com.tokopedia.thankyou_native.presentation.adapter.InvoiceTypeFactory
+import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -55,5 +57,10 @@ class ThankYouPageModule {
     fun provideDetailInvoiceAdapter(invoiceTypeFactory: InvoiceTypeFactory): DetailedInvoiceAdapter {
         return DetailedInvoiceAdapter(arrayListOf(), invoiceTypeFactory)
     }
+
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase =
+        TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+
 
 }

@@ -1,0 +1,9 @@
+{
+  "readme": "open product description page",
+  "mode": "subset",
+  "query": [
+    {
+      "screenName" : "/addproductpage - description"
+    }
+  ]
+}

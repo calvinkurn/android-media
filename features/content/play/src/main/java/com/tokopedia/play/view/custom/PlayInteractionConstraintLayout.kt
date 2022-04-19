@@ -10,7 +10,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
  */
 class PlayInteractionConstraintLayout : ConstraintLayout {
 
-    private val INVISIBLE_ALPHA = 0f
+    private companion object {
+        const val INVISIBLE_ALPHA = 0f
+    }
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)

@@ -3,37 +3,35 @@ package com.tokopedia.talk.feature.reading.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
+import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
 import com.tokopedia.talk.feature.reading.data.model.ViewState
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
-import com.tokopedia.talk.feature.reading.data.model.SortOption
-import com.tokopedia.talk.feature.reading.data.model.TalkLastAction
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
-import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TalkReadingViewModel @Inject constructor(
         private val getDiscussionAggregateUseCase: GetDiscussionAggregateUseCase,
         private val getDiscussionDataUseCase: GetDiscussionDataUseCase,
-        userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+        private val userSession: UserSessionInterface,
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     companion object {
         private const val REQUEST_DELAY = 1000L
     }
-
-    val isUserLoggedIn: Boolean = userSession.isLoggedIn
-    val userId: String = userSession.userId
 
     private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
     val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>
@@ -60,11 +58,17 @@ class TalkReadingViewModel @Inject constructor(
     fun getDiscussionAggregate(productId: String, shopId: String) {
         setLoading(isRefresh = true)
         launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
+            val response = async {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
                 getDiscussionAggregateUseCase.executeOnBackground()
             }
-            _discussionAggregate.postValue(Success(response))
+            val discussionList = async {
+                getDiscussionDataUseCase.setParams(productId, shopId, TalkReadingFragment.DEFAULT_INITIAL_PAGE, TalkReadingFragment.DEFAULT_DISCUSSION_DATA_LIMIT, "", "")
+                getDiscussionDataUseCase.executeOnBackground()
+            }
+            _discussionAggregate.postValue(Success(response.await()))
+            _discussionData.postValue(Success(discussionList.await()))
+            setSuccessFromBackground(discussionList.await().discussionData.totalQuestion == 0, TalkReadingFragment.DEFAULT_INITIAL_PAGE)
         }) {
             _discussionAggregate.postValue(Fail(it))
             setError(0)
@@ -74,13 +78,11 @@ class TalkReadingViewModel @Inject constructor(
     fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String, withDelay: Boolean = false, isRefresh: Boolean = false) {
         setLoading(isRefresh)
         launchCatchError(block = {
-            val response = withContext(dispatcher.io) {
-                if(withDelay) { delay(REQUEST_DELAY) }
-                getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
-                getDiscussionDataUseCase.executeOnBackground()
-            }
+            if(withDelay) { delay(REQUEST_DELAY) }
+            getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
+            val response = getDiscussionDataUseCase.executeOnBackground()
             _discussionData.postValue(Success(response))
-            setSuccess(response.discussionData.totalQuestion == 0, page)
+            setSuccessFromBackground(response.discussionData.totalQuestion == 0, page)
         }) {
             _discussionData.postValue(Fail(it))
             setError(page)
@@ -106,11 +108,13 @@ class TalkReadingViewModel @Inject constructor(
 
     fun unselectAllCategories() {
         val filterCategories = _filterCategories.value?.toMutableList()
-        val updatedCategories = mutableListOf<TalkReadingCategory>()
-        filterCategories?.forEachIndexed { index, talkReadingCategory ->
-            updatedCategories.add(index, talkReadingCategory.copy(isSelected = false))
+        filterCategories?.let { list ->
+            val updatedCategories = mutableListOf<TalkReadingCategory>()
+            list.forEachIndexed { index, talkReadingCategory ->
+                updatedCategories.add(index, talkReadingCategory.copy(isSelected = false))
+            }
+            _filterCategories.value = updatedCategories
         }
-        _filterCategories.value = updatedCategories
     }
 
     fun updateSortOptions(sortOptions: List<SortOption>) {
@@ -119,18 +123,22 @@ class TalkReadingViewModel @Inject constructor(
 
     fun updateSelectedSort(sortOption: SortOption) {
         val sortOptions = _sortOptions.value?.toMutableList()
-        sortOptions?.forEach {
-            it.isSelected = it.id == sortOption.id
+        sortOptions?.let { list ->
+            list.forEach {
+                it.isSelected = it.id == sortOption.id
+            }
+            _sortOptions.value = list
         }
-        _sortOptions.value = sortOptions
     }
 
     fun resetSortOptions() {
         val sortOptions = _sortOptions.value?.toMutableList()
-        sortOptions?.forEach {
-            it.isSelected = it.id == SortOption.SortId.INFORMATIVENESS
+        sortOptions?.let { list ->
+            list.forEach {
+                it.isSelected = it.id == SortOption.SortId.TIME
+            }
+            _sortOptions.value = sortOptions
         }
-        _sortOptions.value = sortOptions
     }
 
     fun updateLastAction(lastAction: TalkLastAction) {
@@ -142,11 +150,23 @@ class TalkReadingViewModel @Inject constructor(
     }
 
     private fun setError(page: Int) {
-        _viewState.value = ViewState.Error(page)
+        _viewState.postValue(ViewState.Error(page))
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 
     fun setSuccess(isEmpty: Boolean, page: Int) {
         _viewState.value = ViewState.Success(isEmpty, page)
+    }
+
+    fun getUserId(): String {
+        return userSession.userId
+    }
+
+    private fun setSuccessFromBackground(isEmpty: Boolean, page: Int) {
+        _viewState.postValue(ViewState.Success(isEmpty, page))
     }
 
 }

@@ -1,9 +1,8 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
@@ -11,6 +10,8 @@ import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.custom.KolCommentCardView;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.unifycomponents.ProgressBarUnify;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,13 +23,13 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.kol_comment_header;
+    public static final int LAYOUT = com.tokopedia.kol.R.layout.kol_comment_header;
 
     private final KolComment.View viewListener;
 
     private KolCommentCardView commentView;
-    private TextView loadMore;
-    private ProgressBar progressBar;
+    private Typography loadMore;
+    private ProgressBarUnify progressBar;
 
     private KolCommentCardView.Listener commentViewListener = new KolCommentCardView.Listener() {
         @Override

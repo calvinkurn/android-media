@@ -11,35 +11,42 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.FirebaseApp;
+import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
+import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.tkpd.BuildConfig;
-import com.tokopedia.tkpd.network.DataSource;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Response;
@@ -52,17 +59,22 @@ import timber.log.Timber;
 public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
-        ApplinkRouter {
+        ApplinkRouter,
+        TkpdCoreRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
     public void onCreate() {
 
         setVersionCode();
+        initFileDirConfig();
+
+        TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.PACKAGE_APPLICATION = getApplicationInfo().packageName;
@@ -73,18 +85,18 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
-        // for staging-only
-//        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
-//        TokopediaUrl.Companion.deleteInstance();
-//        TokopediaUrl.Companion.init(this);
-
         upgradeSecurityProvider();
 
-        GraphqlClient.init(this);
+        GraphqlClient.init(this, getAuthenticator());
+        GraphqlClient.setContextData(getApplicationContext());
+
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
+
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        // apps flyer is dummy
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
@@ -92,14 +104,28 @@ public class MyApplication extends BaseMainApplication
         PersistentCacheManager.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
         FpmLogger.init(this);
+
+        com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+
         super.onCreate();
-        initCacheApi();
+
+        ResourceDownloadManager
+                .Companion.getManager()
+                .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
+                .initialize(this, R.raw.dummy_description);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+
+        IrisAnalytics.Companion.getInstance(this).initialize();
+        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        FirebaseApp.initializeApp(this);
     }
 
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(this), new RefreshTokenGql());
+    }
 
     private void upgradeSecurityProvider() {
         try {
@@ -124,83 +150,29 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-    public static class GTMAnalytics extends DummyAnalytics {
+    @Override
+    public void logRefreshTokenException(String error, String type, String path, String accessToken) {
 
-        public GTMAnalytics(Context context) {
-            super(context);
-        }
     }
 
-    public static class AppsflyerAnalytics extends DummyAnalytics {
-
-        public AppsflyerAnalytics(Context context) {
-            super(context);
-        }
+    @Override
+    public IAppNotificationReceiver getAppNotificationReceiver() {
+        return null;
     }
 
-    public static class MoengageAnalytics extends DummyAnalytics {
+    @Override
+    public void onAppsFlyerInit() {
 
-        public MoengageAnalytics(Context context) {
-            super(context);
-        }
     }
 
-    public static abstract class DummyAnalytics extends ContextAnalytics {
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
 
-        public DummyAnalytics(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void sendGeneralEvent(Map<String, Object> value) {
-
-        }
-
-        @Override
-        public void sendGeneralEvent(String event, String category, String action, String label) {
-
-        }
-
-        @Override
-        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
-
-        }
-
-        @Override
-        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
-
-        }
-
-        @Override
-        public void sendEvent(String eventName, Map<String, Object> eventValue) {
-
-        }
     }
 
-    private void initCacheApi() {
-        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
-                getWhiteList(), String.valueOf(System.currentTimeMillis())));
-    }
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
 
-    public static List<CacheApiWhiteListDomain> getWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        cacheApiWhiteList.addAll(getShopWhiteList());
-        return cacheApiWhiteList;
-    }
-
-    public static final List<CacheApiWhiteListDomain> getShopWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
-        return cacheApiWhiteList;
     }
 
     @Override
@@ -219,13 +191,18 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken, boolean isRequestDenied) {
+
+    }
+
+    @Override
+    public void sendRefreshTokenAnalytics(String errorMessage) {
 
     }
 
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
+    public void showForceLogoutTokenDialog(String path) {
 
     }
 
@@ -306,10 +283,9 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public CacheManager getGlobalCacheManager() {
+    public CacheManager getPersistentCacheManager() {
         return null;
     }
-
 
     @Override
     public void logInvalidGrant(Response response) {
@@ -326,21 +302,10 @@ public class MyApplication extends BaseMainApplication
 
     }
 
-//    @Override
-//    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-//
-//    }
-
-
-//    @Override
-//    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-//
-//    }
-
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return DataSource.generateFingerprintModel();
+        return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
     @Override
@@ -390,12 +355,6 @@ public class MyApplication extends BaseMainApplication
         return null;
     }
 
-    @Deprecated
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return null;
-    }
-
     private void setVersionCode() {
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
@@ -405,6 +364,62 @@ public class MyApplication extends BaseMainApplication
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
             com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+        }
+    }
+
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
+    }
+
+    public static class AppsflyerAnalytics extends DummyAnalytics {
+
+        public AppsflyerAnalytics(Context context) {
+            super(context);
+        }
+    }
+
+    public static abstract class DummyAnalytics extends ContextAnalytics {
+
+        public DummyAnalytics(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void sendGeneralEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendGeneralEvent(String event, String category, String action, String label) {
+
+        }
+
+        @Override
+        public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, Map<String, String> customDimension) {
+
+        }
+
+        @Override
+        public void sendScreenAuthenticated(String screenName, String shopID, String shopType, String pageType, String productId) {
+
+        }
+
+        @Override
+        public void sendEvent(String eventName, Map<String, Object> eventValue) {
+
         }
     }
 }

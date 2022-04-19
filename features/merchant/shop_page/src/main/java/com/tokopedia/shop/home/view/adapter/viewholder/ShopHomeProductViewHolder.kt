@@ -6,19 +6,13 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeProductCardSmallGridBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-
-import java.text.NumberFormat
-import java.text.ParseException
-import java.util.ArrayList
+import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -26,44 +20,48 @@ import java.util.ArrayList
 
 open class ShopHomeProductViewHolder(
         itemView: View,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener?
-) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
-    lateinit var productCard: ProductCardGridView
-    protected var shopHomeProductViewModel: ShopHomeProductViewModel? = null
+        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
+        private val isShowTripleDot: Boolean
+) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
+    private val viewBinding: ItemShopHomeProductCardSmallGridBinding? by viewBinding()
+    private var productCard: ProductCardGridView? = null
+    protected var shopHomeProductViewModel: ShopHomeProductUiModel? = null
 
     init {
-        findViews(itemView)
+        findViews()
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_card
+        val LAYOUT = R.layout.item_shop_home_product_card_small_grid
     }
 
-    private fun findViews(view: View) {
-        productCard = view.findViewById(R.id.product_card)
+    private fun findViews() {
+        productCard = viewBinding?.productCard
     }
 
-    override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
+    override fun bind(shopHomeProductViewModel: ShopHomeProductUiModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
-        productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
-                false,
-                shopHomeProductViewModel
+        productCard?.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
+                isHasAddToCartButton = false,
+                hasThreeDots = isShowTripleDot,
+                shopHomeProductViewModel = shopHomeProductViewModel,
+                isWideContent = false
         ))
         setListener()
     }
 
     protected open fun setListener() {
-        productCard.setOnClickListener {
-            shopPageHomeProductClickListener?.onAllProductItemClicked(
+        productCard?.setOnClickListener {
+            shopHomeEndlessProductListener?.onAllProductItemClicked(
                     adapterPosition,
                     shopHomeProductViewModel
             )
         }
         shopHomeProductViewModel?.let {
-            productCard.setImageProductViewHintListener(it, object : ViewHintListener {
+            productCard?.setImageProductViewHintListener(it, object : ViewHintListener {
                 override fun onViewHint() {
-                    shopPageHomeProductClickListener?.onAllProductItemImpression(
+                    shopHomeEndlessProductListener?.onAllProductItemImpression(
                             adapterPosition,
                             shopHomeProductViewModel
                     )
@@ -71,9 +69,9 @@ open class ShopHomeProductViewHolder(
             })
         }
 
-        productCard.setThreeDotsOnClickListener {
+        productCard?.setThreeDotsOnClickListener {
             shopHomeProductViewModel?.let {
-                shopPageHomeProductClickListener?.onThreeDotsAllProductClicked(it)
+                shopHomeEndlessProductListener?.onThreeDotsAllProductClicked(it)
             }
         }
     }

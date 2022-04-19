@@ -27,7 +27,7 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideCancelPromoUseCase(@PromoCheckoutQualifier listInterceptor : ArrayList<Interceptor>, @ApplicationContext context: Context): CancelPromoUseCase {
+    fun provideCancelPromoUseCase(@PromoCheckoutQualifier listInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context): CancelPromoUseCase {
         return CancelPromoUseCase(listInterceptor, context)
     }
 
@@ -58,14 +58,14 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideCheckVoucherFlightUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
-        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    fun provideCheckVoucherFlightUseCase(): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideCancelVoucherDigitalUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
-        return FlightCancelVoucherUseCase(context, GraphqlUseCase())
+    fun provideCancelVoucherDigitalUseCase(): FlightCancelVoucherUseCase {
+        return FlightCancelVoucherUseCase(GraphqlUseCase())
     }
 
     @PromoCheckoutQualifier
@@ -77,10 +77,10 @@ class PromoCheckoutModule {
     @PromoCheckoutQualifier
     @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, @PromoCheckoutQualifier networkRouter: NetworkRouter,
-                                   @PromoCheckoutQualifier userSession: UserSession) : ArrayList<Interceptor>{
-        val  listInterceptor =  ArrayList<Interceptor>()
+                                   @PromoCheckoutQualifier userSession: UserSession): ArrayList<Interceptor> {
+        val listInterceptor = ArrayList<Interceptor>()
         listInterceptor.add(TkpdAuthInterceptor(context, networkRouter, userSession))
-        if(GlobalConfig.DEBUG){
+        if (GlobalConfig.DEBUG) {
             listInterceptor.add(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         }
         return listInterceptor
@@ -88,12 +88,12 @@ class PromoCheckoutModule {
 
     @PromoCheckoutQualifier
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context) : NetworkRouter{
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context) : UserSession {
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
         val userSession = UserSession(context)
         return userSession
     }

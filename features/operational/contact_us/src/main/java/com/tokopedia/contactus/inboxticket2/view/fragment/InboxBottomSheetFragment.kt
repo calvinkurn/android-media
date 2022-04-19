@@ -31,11 +31,13 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
                               savedInstanceState: Bundle?): View? {
         val contentView = inflater.inflate(layoutID, container, false)
         title = contentView.findViewById(R.id.tv_bottom_sheet_title)
-        title?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, com.tokopedia.inbox.R.drawable.ic_close_x_black), null, null, null)
+        title?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.contact_us_ic_close), null, null, null)
         dialog?.setOnShowListener { dialog: DialogInterface ->
             val d = dialog as BottomSheetDialog
             val bottomSheetInternal = d.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED)
+            bottomSheetInternal?.let {
+                BottomSheetBehavior.from(it).setState(BottomSheetBehavior.STATE_EXPANDED)
+            }
         }
         title?.setOnClickListener { closeBottomSheet() }
         return contentView
@@ -43,12 +45,12 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun closeBottomSheet() {
         if (activity is InboxDetailActivity) {
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(context, "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickReason,
                     "Closing Reason Pop Up")
         } else {
-            ContactUsTracking.sendGTMInboxTicket("",
+            ContactUsTracking.sendGTMInboxTicket(context, "",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickFilter,
                     "Closing Status Pop Up")
@@ -62,9 +64,6 @@ abstract class InboxBottomSheetFragment : BottomSheetDialogFragment() {
             val fragment: InboxBottomSheetFragment = when (resID) {
                 R.layout.layout_bottom_sheet_fragment -> {
                     BottomSheetListFragment()
-                }
-                R.layout.layout_bad_csat -> {
-                    BottomSheetButtonsFragment()
                 }
                 else -> {
                     return null

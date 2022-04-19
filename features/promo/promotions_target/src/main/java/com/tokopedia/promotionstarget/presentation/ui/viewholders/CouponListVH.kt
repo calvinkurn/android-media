@@ -7,7 +7,7 @@ import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetail
 import com.tokopedia.promotionstarget.presentation.loadImageGlide
 
-class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
         fun getLayout() = R.layout.t_promo_item_coupons
@@ -21,13 +21,18 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.layoutParams = lp
     }
 
-    private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
-    private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
-    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
+    protected val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
+    protected val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
+    protected val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
 
     fun setData(data: GetCouponDetail) {
         tvTitle.text = data.minimumUsageLabel
         tvSubTitle.text = data.minimumUsage
+        if (tvSubTitle.text.isNullOrEmpty()) {
+            tvSubTitle.visibility = View.GONE
+        } else {
+            tvSubTitle.visibility = View.VISIBLE
+        }
         imageView.loadImageGlide(data.imageUrl)
     }
 }

@@ -8,8 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
-import androidx.lifecycle.Observer
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -21,16 +22,22 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.analytics.TalkTrackingConstants
-import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
-import com.tokopedia.talk.common.constants.TalkConstants.READING_SOURCE
+import com.tokopedia.talk.databinding.FragmentTalkReadingBinding
 import com.tokopedia.talk.feature.reading.analytics.TalkReadingTracking
+import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_CREATE_NEW_QUESTION
+import com.tokopedia.talk.feature.reading.analytics.TalkReadingTrackingConstants.EVENT_ACTION_SEND_QUESTION_AT_EMPTY_TALK
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.*
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
@@ -44,15 +51,11 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
-import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_talk_reading.*
-import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
-import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
@@ -63,19 +66,20 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     companion object {
         const val TOASTER_CTA_WIDTH = 300
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
-        const val DEFAULT_INITIAL_PAGE = 0
-        const val DONT_LOAD_INITAL_DATA = false
+        const val DEFAULT_INITIAL_PAGE = 1
         const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
         const val TALK_WRITE_ACTIVITY_REQUEST_CODE = 203
         const val LOGIN_ACTIVITY_REQUEST_CODE = 204
         const val TALK_READING_EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_reading_empty_state.png"
 
         @JvmStatic
-        fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
+        fun createNewInstance(productId: String, shopId: String, isVariantSelected: Boolean, availableVariants: String): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
                 arguments?.putString(PARAM_PRODUCT_ID, productId)
                 arguments?.putString(PARAM_SHOP_ID, shopId)
+                arguments?.putBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected)
+                arguments?.putString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
             }
     }
 
@@ -84,18 +88,32 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var isVariantSelected: Boolean = false
+    private var availableVariants: String = ""
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+
+    private var talkReadingFragmentBinding by autoClearedNullable<FragmentTalkReadingBinding>()
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
         return TalkReadingAdapterTypeFactory(this)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return talkReadingRecyclerView
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        talkReadingFragmentBinding?.talkReadingRecyclerView?.adapter = adapter
+        return talkReadingFragmentBinding?.talkReadingRecyclerView
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_talk_reading, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        talkReadingFragmentBinding = FragmentTalkReadingBinding.inflate(inflater, container, false)
+        return talkReadingFragmentBinding?.root
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
+        return TalkReadingAdapter(adapterTypeFactory)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,12 +125,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         observeSortOptions()
         observeDiscussionData()
         observeFilterCategories()
-        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
+        initToolbar()
     }
 
     override fun getScreenName(): String {
-        return TalkTrackingConstants.TALK_SEND_SCREEN_SCREEN_NAME
+        return TalkTrackingConstants.SCREEN_NAME_TALK
     }
 
     override fun initInjector() {
@@ -137,12 +155,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {
-        TalkReadingTracking.eventClickSort(sortOption.id.name.toLowerCase(), viewModel.userId, productId)
+        TalkReadingTracking.eventClickSort(sortOption.displayName, viewModel.getUserId(), productId)
         viewModel.updateSelectedSort(sortOption)
-    }
-
-    override fun callInitialLoadAutomatically(): Boolean {
-        return DONT_LOAD_INITAL_DATA
     }
 
     override fun onSwipeRefresh() {
@@ -155,35 +169,33 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onCategorySelected(categoryName: String, chipType: String) {
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
         if(isSelected) {
-            TalkReadingTracking.eventClickFilter(categoryName, viewModel.userId, productId)
+            TalkReadingTracking.eventClickFilter(categoryName, viewModel.getUserId(), productId)
         }
         selectUnselectCategory(categoryName, isSelected)
     }
 
     override fun onCategoriesCleared() {
-        unselectCategories()
         resetSortOptions()
+        unselectCategories()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return readingSwipeToRefresh
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
-        return TalkReadingAdapter(adapterTypeFactory)
+        return talkReadingFragmentBinding?.readingSwipeToRefresh
     }
 
     override fun onThreadClicked(questionID: String) {
-        if(viewModel.isUserLoggedIn) {
+        TalkReadingTracking.eventClickThread(
+                getSelectedCategoryDisplayName(),
+                viewModel.getUserId(),
+                productId,
+                questionID
+        )
+        if(viewModel.isUserLoggedIn()) {
             goToReplyActivity(questionID)
             return
         }
         updateLastAction(TalkGoToReply(questionID))
         goToLoginActivity()
-    }
-
-    override fun onUserDetailsClicked(userId: String) {
-        goToProfileActivity(userId)
     }
 
     override fun onLinkClicked(link: String): Boolean {
@@ -200,21 +212,36 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
-            TALK_REPLY_ACTIVITY_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
-                data?.let {
-                    onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
+            TALK_REPLY_ACTIVITY_REQUEST_CODE -> when (resultCode) {
+                Activity.RESULT_FIRST_USER -> {
+                    data?.let {
+                        onSuccessDeleteQuestion(it.getStringExtra(QUESTION_ID) ?: "")
+                    }
+                }
+                Activity.RESULT_OK -> {
+                    resetSortOptions()
+                    unselectCategories()
+                    (viewModel.discussionAggregate.value as? Success)?.let {
+                        talkReadingFragmentBinding?.talkReadingHeader?.clearAllSort(
+                                TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                                        it.data.discussionAggregateResponse,
+                                        { showBottomSheet() },
+                                        this
+                                ), this
+                        ) { showBottomSheet() }
+                    }
                 }
             }
             TALK_WRITE_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateQuestion()
             }
-            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && viewModel.isUserLoggedIn) {
+            LOGIN_ACTIVITY_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 when (viewModel.talkLastAction) {
                     is TalkGoToReply -> {
                         goToReplyActivity((viewModel.talkLastAction as TalkGoToReply).questionId)
                     }
                     is TalkGoToWrite -> {
-                        goToWriteActivity()
+                        goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
                     }
                 }
             }
@@ -241,12 +268,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        talkReadingRecyclerView.post {
-            talkPerformanceMonitoringListener?.let {
-                it.stopRenderPerformanceMonitoring()
-                it.stopPerformanceMonitoring()
+        talkReadingFragmentBinding?.talkReadingRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                talkReadingFragmentBinding?.talkReadingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
-        }
+        })
     }
 
     override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
@@ -259,23 +287,23 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun loadInitialData() {
         isLoadingInitialData = true
-        getDiscussionData(isRefresh = true)
+        getHeaderData()
     }
 
     override fun onStart() {
         super.onStart()
         activity?.run {
-            TalkReadingTracking.sendScreen(screenName)
+            TalkReadingTracking.sendScreen(screenName, productId, viewModel.isUserLoggedIn(), viewModel.getUserId())
         }
     }
 
     private fun showPageEmpty() {
-        reading_image_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
-        addFloatingActionButton.hide()
-        pageEmpty.show()
-        readingEmptyAskButton.setOnClickListener {
-            if(viewModel.isUserLoggedIn) {
-                goToWriteActivity()
+        talkReadingFragmentBinding?.pageEmpty?.readingEmptyError?.loadImage(TALK_READING_EMPTY_IMAGE_URL)
+        talkReadingFragmentBinding?.addFloatingActionButton?.hide()
+        talkReadingFragmentBinding?.pageEmpty?.root?.show()
+        talkReadingFragmentBinding?.pageEmpty?.readingEmptyAskButton?.setOnClickListener {
+            if(viewModel.isUserLoggedIn()) {
+                goToWriteActivity(EVENT_ACTION_SEND_QUESTION_AT_EMPTY_TALK)
             } else {
                 updateLastAction(TalkGoToWrite)
                 goToLoginActivity()
@@ -284,26 +312,25 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showPageError() {
-        addFloatingActionButton.hide()
-        pageError.show()
-        pageError.readingConnectionErrorRetryButton.setOnClickListener {
-            getHeaderData()
-        }
-        pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
-            RouteManager.route(context, GENERAL_SETTING)
+        talkReadingFragmentBinding?.addFloatingActionButton?.hide()
+        talkReadingFragmentBinding?.pageError?.root?.show()
+        talkReadingFragmentBinding?.pageError?.readingImageError?.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        talkReadingFragmentBinding?.pageError?.talkConnectionErrorRetryButton?.setOnClickListener {
+            loadInitialData()
         }
     }
 
     private fun hidePageError() {
-        pageError.hide()
+        talkReadingFragmentBinding?.pageError?.root?.hide()
     }
 
     private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel, showBottomSheet: () -> Unit) {
-        talkReadingHeader.bind(talkReadingHeaderModel, this, showBottomSheet)
+        talkReadingFragmentBinding?.talkReadingHeader?.bind(talkReadingHeaderModel, this, showBottomSheet)
     }
 
     private fun observeProductHeader() {
-        viewModel.discussionAggregate.observe(this,  Observer {
+        viewModel.discussionAggregate.observe(viewLifecycleOwner,
+            {
             when (it) {
                 is Success -> {
                     bindHeader(
@@ -312,22 +339,21 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                                     { showBottomSheet() },
                                     this
                             )) { showBottomSheet() }
-                    initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     initSortOptions()
+                    initFilterCategories(TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingCategories(it.data))
                     showContainer()
-                    if(!isLoadingInitialData) {
-                        loadInitialData()
-                    }
                 }
             }
+
         })
     }
 
     private fun observeDiscussionData() {
-        viewModel.discussionData.observe(this, Observer {
+        viewModel.discussionData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     it.data.discussionData.let { data ->
+                        TalkReadingTracking.eventLoadData((viewModel.viewState.value as? ViewState.Success)?.page.toString(), it.data.discussionData.question.size.toString(), viewModel.getUserId(), productId)
                         if (data.question.isNotEmpty()) {
                             stopNetworkRequestPerformanceMonitoring()
                             startRenderPerformanceMonitoring()
@@ -340,7 +366,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeSortOptions() {
-        viewModel.sortOptions.observe(this, Observer { sortOptions ->
+        viewModel.sortOptions.observe(viewLifecycleOwner, { sortOptions ->
             updateSortHeader(sortOptions.first { it.isSelected })
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
@@ -351,7 +377,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeFilterCategories() {
-        viewModel.filterCategories.observe(this, Observer {
+        viewModel.filterCategories.observe(viewLifecycleOwner, {
             if(!isLoadingInitialData) {
                 isLoadingInitialData = true
                 adapter.clearAllElements()
@@ -361,16 +387,16 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun observeViewState() {
-        viewModel.viewState.observe(this, Observer {
+        viewModel.viewState.observe(viewLifecycleOwner, {
             when(it) {
                 is ViewState.Loading -> {
                     if(it.isRefreshing) {
                         clearAllData()
-                        pageLoading.show()
+                        talkReadingFragmentBinding?.pageLoading?.root?.show()
                     } else {
                         showLoading()
                     }
-                    pageEmpty.hide()
+                    talkReadingFragmentBinding?.pageEmpty?.root?.hide()
                     hidePageError()
                 }
                 is ViewState.Error -> {
@@ -381,20 +407,20 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                         showPageError()
                     }
                     hideLoading()
-                    pageEmpty.hide()
-                    pageLoading.hide()
+                    talkReadingFragmentBinding?.pageEmpty?.root?.hide()
+                    talkReadingFragmentBinding?.pageLoading?.root?.hide()
                 }
                 is ViewState.Success -> {
                     if(it.isEmpty && it.page == DEFAULT_INITIAL_PAGE) {
                         isLoadingInitialData = false
                         showPageEmpty()
-                        talkReadingRecyclerView.hide()
+                        talkReadingFragmentBinding?.talkReadingRecyclerView?.hide()
                     } else {
-                        talkReadingRecyclerView.show()
-                        pageEmpty.hide()
-                        addFloatingActionButton.show()
+                        talkReadingFragmentBinding?.talkReadingRecyclerView?.show()
+                        talkReadingFragmentBinding?.pageEmpty?.root?.hide()
+                        talkReadingFragmentBinding?.addFloatingActionButton?.show()
                     }
-                    pageLoading.hide()
+                    talkReadingFragmentBinding?.pageLoading?.root?.hide()
                     hideLoading()
                     hidePageError()
                 }
@@ -415,7 +441,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun initSortOptions() {
-        viewModel.updateSortOptions(listOf(SortOption.SortByInformativeness(), SortOption.SortByTime(), SortOption.SortByLike()))
+        viewModel.updateSortOptions(listOf(SortOption.SortByTime(), SortOption.SortByInformativeness()))
     }
 
     private fun getHeaderData() {
@@ -424,7 +450,17 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun onSuccessCreateQuestion() {
         showSuccessToaster(getString(R.string.reading_create_question_toaster_success))
-        viewModel.updateSelectedSort(SortOption.SortByTime())
+        resetSortOptions()
+        unselectCategories()
+        (viewModel.discussionAggregate.value as? Success)?.let {
+            talkReadingFragmentBinding?.talkReadingHeader?.clearAllSort(
+                    TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                            it.data.discussionAggregateResponse,
+                            { showBottomSheet() },
+                            this
+                    ), this
+            ) { showBottomSheet() }
+        }
     }
 
     private fun onSuccessDeleteQuestion(questionID: String) {
@@ -445,17 +481,17 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showErrorToaster() {
         Toaster.toasterCustomCtaWidth = TOASTER_CTA_WIDTH
-        view?.let { Toaster.make(talkReadingContainer, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener {
-            loadData(currentPage)
-        }) }
+        view?.let {
+            Toaster.build(talkReadingFragmentBinding?.talkReadingContainer ?: it, getString(R.string.reading_connection_error_toaster_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry)
+            ) { loadData(currentPage) }. show() }
     }
 
     private fun updateSortHeader(sortOption: SortOption) {
-        talkReadingHeader.updateSelectedSort(TalkReadingMapper.mapSelectedSortToSortFilterItem(sortOption))
+        talkReadingFragmentBinding?.talkReadingHeader?.updateSelectedSort(TalkReadingMapper.mapSelectedSortToSortFilterItem(sortOption))
     }
 
     private fun showContainer() {
-        talkReadingContainer.show()
+        talkReadingFragmentBinding?.talkReadingContainer?.show()
         initFab()
     }
 
@@ -463,12 +499,21 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         arguments?.let {
             productId = it.getString(PARAM_PRODUCT_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
+            isVariantSelected = it.getBoolean(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED)
+            availableVariants = it.getString(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, "0")
         }
     }
 
-    private fun goToWriteActivity() {
-        val intent = context?.let { AddTalkActivity.createIntent(it, productId, READING_SOURCE) }
-        startActivityForResult(intent, TALK_WRITE_ACTIVITY_REQUEST_CODE)
+    private fun goToWriteActivity(eventAction: String) {
+        TalkReadingTracking.eventClickWrite(viewModel.getUserId(), productId, eventAction, isVariantSelected, availableVariants)
+        val intent = RouteManager.getIntent(context, Uri.parse(
+                ApplinkConstInternalGlobal.ADD_TALK)
+                .buildUpon()
+                .appendQueryParameter(PARAM_PRODUCT_ID, productId)
+                .appendQueryParameter(TalkConstants.PARAM_APPLINK_IS_VARIANT_SELECTED, isVariantSelected.toString())
+                .appendQueryParameter(TalkConstants.PARAM_APPLINK_AVAILABLE_VARIANT, availableVariants)
+                .build().toString())
+        startActivity(intent)
     }
 
     private fun goToReplyActivity(questionID: String) {
@@ -476,16 +521,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 context,
                 Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionID))
                         .buildUpon()
-                        .appendQueryParameter(PARAM_PRODUCT_ID, productId)
                         .appendQueryParameter(PARAM_SHOP_ID, shopId)
                         .build().toString()
         )
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
-    }
-
-    private fun goToProfileActivity(userId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
-        startActivity(intent)
     }
 
     private fun goToLoginActivity() {
@@ -495,12 +534,15 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE, withDelay: Boolean = false, isRefresh: Boolean = false) {
         val selectedSort = TalkReadingMapper.mapSelectedSortToString(viewModel.sortOptions.value?.first { it.isSelected })
-        val selectedCategories = viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
+        val selectedCategories = getSelectedCategories()
         viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, selectedCategories, withDelay, isRefresh)
     }
 
     private fun renderDiscussionData(discussionData: List<TalkReadingUiModel>, hasNextPage: Boolean) {
         renderList(discussionData, hasNextPage)
+        if(!hasNextPage) {
+            (adapter as? TalkReadingAdapter)?.addEmptySpace()
+        }
     }
 
     private fun selectUnselectCategory(categoryName: String, isSelected: Boolean) {
@@ -516,9 +558,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun initFab() {
-        addFloatingActionButton.setOnClickListener {
-            if(viewModel.isUserLoggedIn) {
-                goToWriteActivity()
+        talkReadingFragmentBinding?.addFloatingActionButton?.setOnClickListener {
+            if(viewModel.isUserLoggedIn()) {
+                goToWriteActivity(EVENT_ACTION_CREATE_NEW_QUESTION)
             } else {
                 updateLastAction(TalkGoToWrite)
                 goToLoginActivity()
@@ -527,11 +569,31 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun unselectCategories() {
+        isLoadingInitialData = false
         viewModel.unselectAllCategories()
     }
 
     private fun resetSortOptions() {
+        isLoadingInitialData = true
         viewModel.resetSortOptions()
+    }
+
+    private fun getSelectedCategories(): String {
+        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString { it.categoryName } ?: ""
+    }
+
+    private fun getSelectedCategoryDisplayName(): String {
+        return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                supportActionBar?.hide()
+                setSupportActionBar(talkReadingFragmentBinding?.headerTalkReading)
+                talkReadingFragmentBinding?.headerTalkReading?.title = getString(R.string.title_talk_discuss)
+            }
+        }
     }
 
 }

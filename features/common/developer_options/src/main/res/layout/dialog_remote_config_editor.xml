@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/spacing_lvl4">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edited_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:gravity="center"
         android:textColor="#273238"
-        android:textSize="@dimen/fontSize_lvl4" />
+        android:textSize="@dimen/fontSize_lvl4"
+        tools:text="aaa"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/new_config_value"
@@ -41,6 +42,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/remote_config_edit_btn_save"
+            android:textColor="@color/Neutral_N0"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/delete_key_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        android:background="@color/Red_R500"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remote_config_delete_btn_key"
             android:textColor="@color/Neutral_N0"
             android:textSize="@dimen/fontSize_lvl4"
             android:layout_gravity="center"

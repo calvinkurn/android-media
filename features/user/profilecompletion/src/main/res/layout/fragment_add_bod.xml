@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/parent_container">
 
     <LinearLayout
         android:id="@+id/mainView"
@@ -18,16 +19,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/page_description"
-            android:textColor="@color/color_subtitle_setting_profile" />
+            android:textColor="@color/Unify_NN600" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/chooseDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:cursorVisible="false"
             android:layout_marginTop="@dimen/spacing_lvl6"
-            app:text_field_append_drawable_icon_1="@drawable/ic_down_date"
-            app:text_field_label="@string/hint_bod_setting_profile"/>
+            app:unify_text_field_append_drawable_icon_2="@drawable/ic_down_date"
+            app:unify_text_field_label="@string/hint_bod_setting_profile"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSave"
@@ -37,7 +38,7 @@
             android:gravity="center"
             android:text="@string/button_save"
             android:textAllCaps="false"
-            android:textColor="@color/color_white" />
+            android:textColor="@color/Unify_N0" />
     </LinearLayout>
 
     <ProgressBar

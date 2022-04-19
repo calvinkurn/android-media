@@ -1,0 +1,13 @@
+[
+  {
+    "data": {
+      "OTPValidate": {
+        "success": true,
+        "message": "Validasi kode verifikasi sukses",
+        "errorMessage": "",
+        "validateToken": "283hf9238hf98",
+        "cookieList": []
+      }
+    }
+  }
+]

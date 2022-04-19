@@ -17,9 +17,6 @@
     <string name="liveness_failed_reason_bad_network_title" translatable="false">Koneksi internetmu terganggu!</string>
     <string name="liveness_failed_reason_bad_network">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
 
-    <string name="liveness_failed_reason_general_title" translatable="false">Ada gangguan di rumah Toped</string>
-    <string name="liveness_failed_reason_general">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
-
     <string name="liveness_failed_face_detection_title"> Verifikasi wajah gagal</string>
     <string name="liveness_failed_reason_prerecord">Verifikasi wajah tidak dapat mendeteksi video rekaman. Biar proses ini berhasil, scan wajahmu secara langsung, ya.</string>
     <string name="liveness_failed_reason_blurry">Gambar terlihat gelap. Saran kami, coba di tempat terang, biar scan wajah berhasil.</string>

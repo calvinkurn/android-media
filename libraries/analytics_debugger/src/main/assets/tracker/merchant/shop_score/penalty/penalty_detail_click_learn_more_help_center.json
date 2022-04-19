@@ -1,0 +1,26 @@
+{
+  "readme": "Shop Penalty Detail - click learn more",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": ".*",
+      "userId": ".*",
+      "event": "viewShopScoreIris",
+      "eventAction": "impression - hubungi pusat bantuan",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller"
+    },
+    {
+      "eventCategory": ".*",
+      "userId": ".*",
+      "event": "clickShopScore",
+      "eventAction": "click - hubungi pusat bantuan",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller"
+    }
+  ]
+}

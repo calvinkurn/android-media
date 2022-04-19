@@ -1,7 +1,0 @@
-query changeInactivePhoneQuery($phone: String!, $email: String!, $userId: Int!, $fileUploaded: String!) {
-    changeInactivePhone(phone: $phone, userId: $userId, email: $email, fileUploaded: $fileUploaded) {
-        is_success
-        error
-        __typename
-    }
-}

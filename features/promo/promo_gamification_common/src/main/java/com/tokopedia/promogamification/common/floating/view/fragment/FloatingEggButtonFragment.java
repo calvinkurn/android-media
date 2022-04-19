@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,11 +29,9 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
@@ -52,10 +51,14 @@ import com.tokopedia.promogamification.common.floating.listener.OnDragTouchListe
 import com.tokopedia.promogamification.common.floating.view.contract.FloatingEggContract;
 import com.tokopedia.promogamification.common.floating.view.presenter.FloatingEggPresenter;
 import com.tokopedia.track.TrackApp;
-
 import javax.inject.Inject;
-
+import dagger.Lazy;
+import timber.log.Timber;
 import static android.content.Context.MODE_PRIVATE;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by hendry on 28/03/18.
@@ -65,11 +68,18 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
+    private static final String PID = "pid";
+    private static final String TIME_DAY = "timeDay";
+    private static final String TIME_MINUTE = "timeMinute";
+    private static final String ISRIGHT = "isright";
     public static final String COORD_EGG_PREF = "_egg.pref";
+    public static final String PID_EGG_PREF = "_eggVisibility.pref";
+    private static final String FORMAT = "dd-MM-yyyy";
     public static final float SCALE_ON_DOWN = 0.95f;
     public static final float SCALE_NORMAL = 1f;
     public static final int SHORT_ANIMATION_DURATION = 300;
     public static final int LONG_ANIMATION_DURATION = 600;
+    public static final long LONG_THIRTY_MINUTE = 1800000;
 
     private View vgRoot;
     private View vgFloatingEgg;
@@ -87,7 +97,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private Runnable visibilityRunnableToShow;
 
     @Inject
-    public FloatingEggPresenter floatingEggPresenter;
+    public Lazy<FloatingEggPresenter> floatingEggPresenter;
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
@@ -100,6 +110,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     String sumTokenString;
     long timeRemainingSeconds;
     boolean isShowTime = false;
+    int screenHeight = 0;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -116,7 +127,17 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
+
+        prepareScreenHeight();
         return view;
+    }
+
+    private void prepareScreenHeight(){
+        try {
+            screenHeight = vgFloatingEgg.getContext().getResources().getDisplayMetrics().heightPixels;
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void hideShowClickListener() {
@@ -147,6 +168,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRight.setDuration(SHORT_ANIMATION_DURATION);
         rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
         rotateRight.start();
+        saveTimePreference();
         saveCoordPreference((int) newX, (int) vgFloatingEgg.getY());
     }
 
@@ -309,7 +331,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private void initEggCoordinate() {
         if (isDraggable && hasCoordPreference()) {
             int coordPref[] = getCoordPreference();
-            setCoordFloatingEgg(coordPref[0], coordPref[1]);
+            boolean isRight  = getSharedPrefVisibility().getBoolean(ISRIGHT,false);
+            if (checkEggVisibility()) {
+                setCoordFloatingEgg(coordPref[0], coordPref[1]);
+            } else {
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
+                if (isRight) {
+                    layoutParams.gravity = Gravity.END;
+                } else {
+                    layoutParams.gravity = Gravity.START;
+                }
+                int finalY = getBoundedY(coordPref[1]);
+                layoutParams.setMargins(0, finalY, 0, 0);
+            }
         } else {
             isRight = true;
             if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
@@ -327,9 +361,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    private void setCoordFloatingEgg(int x, int y) {
+    private void setCoordFloatingEgg(final int x,final int y) {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
-        layoutParams.setMargins(x, y, 0, 0);
+        int finalY = getBoundedY(y);
+        layoutParams.setMargins(x, finalY, 0, 0);
     }
 
     private boolean hasCoordPreference() {
@@ -341,13 +376,33 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         SharedPreferences sharedPreferences = getSharedPref();
         int xEgg = sharedPreferences.getInt(COORD_X, -1);
         int yEgg = sharedPreferences.getInt(COORD_Y, -1);
-        return new int[]{xEgg, yEgg};
+
+        int yTranslate = getBoundedY(yEgg);
+        return new int[]{xEgg, yTranslate};
     }
 
-    private void saveCoordPreference(int x, int y) {
+    private void saveCoordPreference(final int x,final  int y) {
+        int yTranslate = getBoundedY(y);
         SharedPreferences.Editor editor = getSharedPref().edit();
         editor.putInt(COORD_X, x);
-        editor.putInt(COORD_Y, y);
+        editor.putInt(COORD_Y, yTranslate);
+        editor.apply();
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private void saveTimePreference() {
+        Date date = new Date(System.currentTimeMillis());
+        String prefDate= new SimpleDateFormat("dd-MM-yyyy").format(date);
+        SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
+        editor.putString(TIME_DAY, prefDate);
+        editor.putLong(TIME_MINUTE, date.getTime());
+        editor.apply();
+    }
+
+    private void savePidPreference() {
+        int id = android.os.Process.myPid();
+        SharedPreferences.Editor editor = getSharedPrefVisibility().edit();
+        editor.putInt(PID, id);
         editor.apply();
     }
 
@@ -357,10 +412,20 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 , MODE_PRIVATE);
     }
 
+    private SharedPreferences getSharedPrefVisibility() {
+        return getContext().getSharedPreferences(
+                getActivity().getClass().getSimpleName() + PID_EGG_PREF
+                , MODE_PRIVATE);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        loadEggData();
+        loadEggData(false);
+        if ((vgFloatingEgg.getX() > rootWidth - vgFloatingEgg.getWidth() || vgFloatingEgg.getX() < 0)
+            && (isThirtyMinutedPassed() || !isSameDay())){
+            hideShowClickListener();
+        }
     }
 
     @Override
@@ -368,7 +433,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         super.onPause();
         stopCountdownTimer();
         if (floatingEggPresenter != null) {
-            floatingEggPresenter.detachView();
+            floatingEggPresenter.get().detachView();
         }
         removeShowAnimationCallback();
     }
@@ -380,10 +445,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    public void loadEggData() {
+    public void loadEggData(Boolean isPageRefresh) {
         removeShowAnimationCallback();
-        floatingEggPresenter.attachView(this);
-        floatingEggPresenter.getGetTokenTokopoints();
+        floatingEggPresenter.get().attachView(this);
+        floatingEggPresenter.get().getGetTokenTokopoints();
+        if (isPageRefresh && (vgFloatingEgg.getX() > rootWidth - vgFloatingEgg.getWidth() || vgFloatingEgg.getX() < 0)) {
+            hideShowClickListener();
+        }
     }
 
     @Override
@@ -459,10 +527,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         }
 
-
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!TextUtils.isEmpty(imageUrl) && !(requireActivity()).isFinishing()) {
+            try {
             if (imageUrl.endsWith(".gif")) {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asGif()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -477,7 +545,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                             }
                         });
             } else {
-                Glide.with(getContext())
+                Glide.with(requireActivity())
                         .asBitmap()
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -493,6 +561,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
                             }
                         });
+            }
+            } catch (Exception e) {
+                Timber.e(e);
             }
         }
     }
@@ -522,7 +593,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft.setVisibility(View.VISIBLE);
         minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
 
-        if (TextUtils.isEmpty(sumTokenString)) {
+        if (sumTokenString == null || TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
             tvFloatingCounter.setText(sumTokenString);
@@ -558,7 +629,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 ms--;
                 if (ms <= 0) {
                     vgFloatingEgg.setVisibility(View.GONE);
-                    loadEggData();
+                    loadEggData(false);
                 } else {
                     setUIFloatingTimer(ms);
                 }
@@ -648,6 +719,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
             saveCoordPreference(target, yEgg);
         }
+        getSharedPrefVisibility().edit().putBoolean(ISRIGHT, isRight).apply();
     }
 
     private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX) {
@@ -697,8 +769,52 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         return vgFloatingEgg;
     }
 
-    public void moveEgg(int yEgg) {
-        vgFloatingEgg.setY(yEgg);
+    public void moveEgg(final int yEgg) {
+        int yTranslate = getBoundedY(yEgg);
+        vgFloatingEgg.setY(yTranslate);
         animateToLeftOrRightBound();
+    }
+
+    private int getBoundedY(final int y) {
+        int finalY = Math.max(0, y);
+        if (screenHeight > 0)
+            finalY = Math.min(finalY, screenHeight);
+        return finalY;
+    }
+
+    private boolean checkEggVisibility() {
+        int id = android.os.Process.myPid();
+        SharedPreferences sharedPreferences = getSharedPrefVisibility();
+        int savedPid = sharedPreferences.getInt(PID, -1);
+        return id == savedPid;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private boolean isSameDay(){
+        Calendar calOld = Calendar.getInstance();
+        Calendar calNew = Calendar.getInstance();
+        try {
+            calOld.setTime(new SimpleDateFormat(FORMAT).parse((getSharedPrefVisibility().getString(TIME_DAY,""))));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calNew.setTime(new Date());
+        return calOld.get(Calendar.DAY_OF_YEAR) == calNew.get(Calendar.DAY_OF_YEAR) &&
+                calOld.get(Calendar.YEAR) == calNew.get(Calendar.YEAR);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private boolean isThirtyMinutedPassed(){
+        SharedPreferences sharedPreferences = getSharedPrefVisibility();
+        Date date = new Date(System.currentTimeMillis());
+        long savedTime = sharedPreferences.getLong(TIME_MINUTE, -1L);
+        long currentTime = date.getTime();
+        return currentTime - savedTime >= LONG_THIRTY_MINUTE;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        savePidPreference();
     }
 }

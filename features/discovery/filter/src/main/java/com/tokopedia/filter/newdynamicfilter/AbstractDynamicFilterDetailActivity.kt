@@ -15,20 +15,20 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.design.search.EmptySearchResultView
+import com.tokopedia.filter.widget.EmptySearchResultView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 
-import java.util.ArrayList
-
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> : BaseActivity(), DynamicFilterDetailView {
 
@@ -84,15 +84,16 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
 
     protected open fun retrieveOptionListData(): Observable<Boolean> {
         return Observable.create { subscriber ->
-            optionList = intent.getParcelableArrayListExtra(EXTRA_OPTION_LIST)
+            val option :ArrayList<Option>? = intent.getParcelableArrayListExtra(EXTRA_OPTION_LIST)
+            optionList = option?.toList() ?: emptyList()
             subscriber.onNext(true)
         }
     }
 
     private fun fetchDataFromIntent() {
         isSearchable = intent.getBooleanExtra(EXTRA_IS_SEARCHABLE, false)
-        searchHint = intent.getStringExtra(EXTRA_SEARCH_HINT)
-        pageTitle = intent.getStringExtra(EXTRA_PAGE_TITLE)
+        searchHint = intent.getStringExtra(EXTRA_SEARCH_HINT) ?: ""
+        pageTitle = intent.getStringExtra(EXTRA_PAGE_TITLE) ?: ""
         isUsingTracking = intent.getBooleanExtra(EXTRA_IS_USING_TRACKING, false)
         trackingData = intent.getParcelableExtra(EXTRA_TRACKING_DATA)
     }
@@ -250,12 +251,12 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
         }
 
         override fun performFiltering(constraint: CharSequence): FilterResults {
-            val filterSeq = constraint.toString().toLowerCase()
+            val filterSeq = constraint.toString().toLowerCase(Locale.getDefault())
             val result = FilterResults()
             if (!TextUtils.isEmpty(filterSeq)) {
                 val filter = arrayListOf<Option>()
                 for (option in sourceData) {
-                    if (option.name.toLowerCase().contains(filterSeq)) {
+                    if (option.name.toLowerCase(Locale.getDefault()).contains(filterSeq)) {
                         filter.add(option)
                     }
                 }

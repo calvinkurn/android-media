@@ -1,67 +1,33 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.util.Log
-import androidx.fragment.app.FragmentActivity
-import androidx.core.content.ContextCompat
 import android.view.View
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
-
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
-import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
-import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+
 
 /**
  * @author by nisie on 5/8/18.
  */
 class QuickReplyViewHolder(itemView: View,
-                           private val chatLinkHandlerListener: ChatLinkHandlerListener)
-    : BaseChatViewHolder<QuickReplyListViewModel>(itemView) {
+                           private val chatLinkHandlerListener: ChatLinkHandlerListener,
+                           chatbotAdapterListener: ChatbotAdapterListener)
+    : BaseChatBotViewHolder<QuickReplyListViewModel>(itemView,chatbotAdapterListener) {
 
-    private val message: TextView
-    private val mesageBottom: TextView
-    private val mesageLayout: RelativeLayout
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
-    init {
-        message = itemView.findViewById<View>(R.id.message) as TextView
-        mesageBottom = itemView.findViewById<View>(R.id.bottom_view) as TextView
-        mesageLayout = itemView.findViewById<View>(R.id.message_layout) as RelativeLayout
+    override fun bind(viewModel: QuickReplyListViewModel) {
+        super.bind(viewModel)
+        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
     }
 
-    override fun bind(element: QuickReplyListViewModel) {
-        super.bind(element)
-        setMessage(element)
-        setClickableUrl()
-    }
-
-    private fun setMessage(element: QuickReplyListViewModel) {
-        if (!element.message.isEmpty()) {
-            message.text = MethodChecker.fromHtml(element.message)
-            message.post {
-                if (message.lineCount >= ChatBotMessageViewHolder.MESSAGE_LINE_COUNT) {
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble_with_stroke))
-                    mesageBottom.visibility = View.VISIBLE
-                    mesageBottom.setOnClickListener {
-                        ReadMoreBottomSheet.createInstance(element.message).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")
-                    }
-
-                } else {
-                    mesageBottom.visibility = View.GONE
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
-                }
-            }
-
-        }
-    }
-
-    private fun setClickableUrl() {
-        message.movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
-    }
+    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getSenderAvatarId(): Int = R.id.senderAvatar
+    override fun getSenderNameId(): Int = R.id.senderName
+    override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
         val LAYOUT = R.layout.quick_reply_chat_layout

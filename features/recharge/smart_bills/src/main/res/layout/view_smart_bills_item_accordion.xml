@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/smart_bills_view_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:background="@color/Unify_N50"
+        />
+
+    <com.tokopedia.accordion.AccordionUnify
+        android:id="@+id/accordion_smart_bills"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:background="@color/Unify_N0" />
+
+</LinearLayout>

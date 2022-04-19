@@ -8,7 +8,7 @@ data class MembershipProgram(
         val cardID: Int = 0,
 
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("quests")
         val membershipQuests: List<MembershipQuests> = listOf(),

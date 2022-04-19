@@ -1,0 +1,179 @@
+package com.tokopedia.additional_check.view
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.additional_check.R
+import com.tokopedia.additional_check.common.ADD_PHONE_NUMBER_PAGE
+import com.tokopedia.additional_check.common.ADD_PIN_PAGE
+import com.tokopedia.additional_check.common.ActivePageListener
+import com.tokopedia.additional_check.data.TwoFactorResult
+import com.tokopedia.additional_check.databinding.FragmentTwoFactorBinding
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
+import com.tokopedia.additional_check.internal.TwoFactorTracker
+import com.tokopedia.additional_check.view.activity.TwoFactorActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+
+/**
+ * Created by Yoris Prayogo on 10/07/20.
+ * Copyright (c) 2020 PT. Tokopedia All rights reserved.
+ */
+
+class TwoFactorFragment: BaseDaggerFragment() {
+
+    private var activePageListener: ActivePageListener? = null
+    private val ADD_PHONE_REQ_CODE = 1
+    private val ADD_PIN_REQ_CODE = 2
+
+    private val twoFactorTracker = TwoFactorTracker()
+    private var validateToken: String = ""
+
+    var model: TwoFactorResult? = TwoFactorResult()
+
+    override fun getScreenName(): String = "twoFactorFragment"
+    override fun initInjector() {}
+
+    private var _binding: FragmentTwoFactorBinding? = null
+
+    private val binding get() = _binding!!
+
+
+    fun setActiveListener(mActivePageListener: ActivePageListener){
+        this.activePageListener = mActivePageListener
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        model = arguments?.getParcelable(RESULT_POJO_KEY)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentTwoFactorBinding.inflate(inflater, container, false)
+        notifyActivity()
+        renderViewByType()
+        return binding.root
+    }
+
+    private fun notifyActivity(){
+        activity?.run {
+            if(this is TwoFactorActivity){
+                onFragmentCreated()
+            }
+        }
+    }
+
+    private fun renderViewByType(){
+        when(model?.popupType){
+            POPUP_TYPE_PIN -> renderPinView()
+            POPUP_TYPE_PHONE or POPUP_TYPE_BOTH -> renderPhoneView()
+        }
+    }
+
+    private fun renderPinView(){
+        context?.run {
+            activePageListener?.currentPage(ADD_PIN_PAGE)
+            twoFactorTracker.viewPageOnboardingAddPin()
+            binding.titleTwoFactor.text = getString(R.string.add_pin_heading)
+            binding.bodyTwoFactor.text = getString(R.string.add_pin_body)
+            binding.btnTwoFactor.text = getString(R.string.add_pin_button_title)
+            binding.imgViewTwoFactor.run {
+                ImageHandler.LoadImage(this, PIN_ONBOARDING_IMG)
+            }
+            binding.btnTwoFactor.setOnClickListener {
+                twoFactorTracker.clickButtonPageAddPin()
+                goToAddPin(validateToken)
+            }
+        }
+    }
+
+    private fun renderPhoneView(){
+        context?.run {
+            activePageListener?.currentPage(ADD_PHONE_NUMBER_PAGE)
+
+            binding.titleTwoFactor.text = getString(R.string.add_phone_heading)
+            binding.bodyTwoFactor.text = getString(R.string.add_phone_body)
+            binding.btnTwoFactor.text = getString(R.string.add_phone_button_title)
+            binding.imgViewTwoFactor.run {
+                ImageHandler.LoadImage(this, PHONE_ONBOARDING_IMG)
+            }
+            binding.btnTwoFactor.setOnClickListener {
+                twoFactorTracker.clickButtonPageAddPhoneNumber()
+                goToAddPhone()
+            }
+        }
+    }
+
+    private fun renderSuccessPin(){
+        context?.run {
+            binding.titleTwoFactor.text = getString(R.string.add_pin_success_heading)
+            binding.bodyTwoFactor.text = getString(R.string.add_pin_success_body)
+            binding.btnTwoFactor.text = getString(R.string.add_pin_success_button_title)
+            binding.imgViewTwoFactor.run {
+                ImageHandler.LoadImage(this, PIN_SUCCESS_IMG)
+            }
+            binding.btnTwoFactor.setOnClickListener { activity?.finish() }
+        }
+    }
+
+    private fun goToAddPin(validateToken: String){
+        context?.run {
+            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PIN_FROM_2FA)
+            i.putExtras(Bundle().apply {
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            })
+            startActivityForResult(i, ADD_PIN_REQ_CODE)
+        }
+    }
+
+    private fun goToAddPhone(){
+        context?.run {
+            val i = RouteManager.getIntent(this, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(i, ADD_PHONE_REQ_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            ADD_PIN_REQ_CODE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    renderSuccessPin()
+                }
+            }
+            ADD_PHONE_REQ_CODE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    validateToken = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
+                    goToAddPin(validateToken)
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    companion object {
+        const val RESULT_POJO_KEY = "modelKey"
+
+        private const val PIN_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_two_factor.png"
+        private const val PHONE_ONBOARDING_IMG = "https://ecs7.tokopedia.net/android/user/image_phone_two_factor.png"
+        private const val PIN_SUCCESS_IMG = "https://ecs7.tokopedia.net/android/user/image_pin_success_two_factor.png"
+
+        fun newInstance(bundle: Bundle?): Fragment{
+            return TwoFactorFragment().apply {
+                arguments = bundle
+            }
+        }
+    }
+}

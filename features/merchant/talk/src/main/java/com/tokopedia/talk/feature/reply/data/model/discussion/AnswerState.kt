@@ -21,5 +21,11 @@ data class AnswerState(
         val allowReport: Boolean = false,
         @SerializedName("allowDelete")
         @Expose
-        val allowDelete: Boolean = false
+        val allowDelete: Boolean = false,
+        @SerializedName("isYours")
+        @Expose
+        val isYours: Boolean = false,
+        @SerializedName("isAutoReplied")
+        @Expose
+        val isAutoReplied: Boolean = false
 )

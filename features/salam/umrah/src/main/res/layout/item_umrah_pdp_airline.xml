@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_umrah_pdp_airline_container"
-    android:layout_width="@dimen/dp_250"
+    android:layout_width="@dimen/dimen_dp_250"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,14 +15,14 @@
         <View
             android:id="@+id/v_umrah_pdp_flight_header_bg"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="@dimen/spacing_lvl6"
             android:background="@color/Green_G100"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_pdp_flight_header_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/Green_G500"
@@ -36,11 +36,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_umrah_pdp_flight_plane_logo"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/v_umrah_pdp_flight_header_bg"
             app:srcCompat="@color/light_blue_300" />
@@ -49,8 +49,8 @@
             android:id="@+id/tg_umrah_pdp_flight_plane_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/iv_umrah_pdp_flight_plane_logo"
             app:layout_constraintLeft_toRightOf="@+id/iv_umrah_pdp_flight_plane_logo"
@@ -61,11 +61,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_pdp_flight_departure"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:maxLines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -77,9 +77,9 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/v_umrah_pdp_flight_separator_left"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginStart="@dimen/dp_3"
-            android:layout_marginLeft="@dimen/dp_3"
+            android:layout_height="@dimen/spacing_lvl1"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_flight_departure"
             app:layout_constraintLeft_toRightOf="@+id/tg_umrah_pdp_flight_departure"
             app:layout_constraintTop_toTopOf="@+id/tg_umrah_pdp_flight_departure"
@@ -87,8 +87,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/v_umrah_pdp_flight_ic_plane"
-            android:layout_width="@dimen/dp_15"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toBottomOf="@+id/v_umrah_pdp_flight_separator_left"
             app:layout_constraintLeft_toRightOf="@+id/v_umrah_pdp_flight_separator_left"
             app:layout_constraintRight_toLeftOf="@+id/v_umrah_pdp_flight_separator_right"
@@ -98,9 +98,9 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/v_umrah_pdp_flight_separator_right"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginEnd="@dimen/dp_3"
-            android:layout_marginRight="@dimen/dp_3"
+            android:layout_height="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
             android:scaleX="-1"
             app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_flight_arrival"
             app:layout_constraintRight_toLeftOf="@+id/tg_umrah_pdp_flight_arrival"
@@ -109,11 +109,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_umrah_pdp_flight_arrival"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginRight="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
             android:maxLines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"

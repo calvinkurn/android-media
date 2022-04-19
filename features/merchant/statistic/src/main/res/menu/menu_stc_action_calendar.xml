@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/actionStcSelectDate"
+        android:title="@string/stc_select_date"
+        app:actionLayout="@layout/layout_stc_calendar_menu"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/actionStcOtherMenu"
+        android:title="@string/stc_other_menu"
+        app:actionLayout="@layout/layout_stc_more_menu"
+        app:showAsAction="always" />
+</menu>

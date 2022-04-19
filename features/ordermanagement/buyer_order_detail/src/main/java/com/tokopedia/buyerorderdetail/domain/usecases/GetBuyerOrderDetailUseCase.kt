@@ -1,0 +1,314 @@
+package com.tokopedia.buyerorderdetail.domain.usecases
+
+import com.tokopedia.buyerorderdetail.domain.mapper.GetBuyerOrderDetailMapper
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
+
+class GetBuyerOrderDetailUseCase @Inject constructor(
+        private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>,
+        private val mapper: GetBuyerOrderDetailMapper
+) {
+
+    init {
+        useCase.setTypeClass(GetBuyerOrderDetailResponse.Data::class.java)
+        useCase.setGraphqlQuery(QUERY)
+    }
+
+    suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
+        useCase.setRequestParams(createRequestParam(params))
+        return mapper.mapDomainModelToUiModel(useCase.executeOnBackground().buyerOrderDetail)
+    }
+
+    private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
+        return RequestParams.create().apply {
+            putObject(PARAM_INPUT, params)
+        }.parameters
+    }
+
+    companion object {
+        private const val PARAM_INPUT = "input"
+
+        private val QUERY = """
+            query MPBOMDetail(${'$'}input: BomDetailV2Request!) {
+              mp_bom_detail(input: ${'$'}input) {
+                order_id
+                invoice
+                invoice_url
+                payment_date
+                cashback_info
+                ads_page_name
+                order_status {
+                  id
+                  status_name
+                  indicator_color
+                }
+                ticker_info {
+                  text
+                  type
+                  action_text
+                  action_key
+                  action_url
+                }
+                preorder {
+                  is_preorder
+                  label
+                  value
+                }
+                deadline {
+                  label
+                  value
+                  color
+                }
+                shop {
+                  shop_id
+                  shop_name
+                  shop_type
+                  badge_url
+                }
+                shipment {
+                  shipping_name
+                  shipping_product_name
+                  shipping_display_name
+                  shipping_ref_num
+                  eta
+                  eta_is_updated
+                  user_updated_info
+                  receiver {
+                    name
+                    phone
+                    street
+                    postal
+                    district
+                    city
+                    province
+                  }
+                  driver {
+                    name
+                    phone
+                    photo_url
+                    license_number
+                  }
+                  shipping_info {
+                    text
+                    type
+                    action_key
+                    action_url
+                    action_text
+                  }
+                }
+                payment {
+                  payment_method {
+                    label
+                    value
+                  }
+                  payment_details {
+                    label
+                    value
+                  }
+                  payment_amount {
+                    label
+                    value
+                  }
+                }
+                button {
+                  key
+                  display_name
+                  type
+                  variant
+                  url
+                  popup {
+                    title
+                    body
+                    action_button {
+                      key
+                      display_name
+                      color
+                      type
+                      uri_type
+                      uri
+                    }
+                  }
+                }
+                dot_menus {
+                  key
+                  display_name
+                  url
+                  popup {
+                    title
+                    body
+                    action_button {
+                      key
+                      display_name
+                      color
+                      type
+                      uri_type
+                      uri
+                    }
+                  }
+                }
+                meta {
+                  is_bo
+                  bo_image_url
+                }
+                dropship {
+                  name
+                  phone_number
+                }
+                logistic_section_info {
+                  index
+                  id
+                  image_link
+                  title
+                  subtitle
+                  action {
+                    name
+                    link
+                  }
+                }
+                details {
+                  total_products
+                  bundle_icon
+                  addon_icon
+                  addon_label
+                  bundles {
+                    bundle_id
+                    bundle_variant_id
+                    bundle_name
+                    bundle_price
+                    bundle_quantity
+                    bundle_subtotal_price
+                    order_detail {
+                      order_detail_id
+                      product_id
+                      product_name
+                      product_url
+                      thumbnail
+                      price
+                      price_text
+                      quantity
+                      total_price
+                      total_price_text
+                      notes
+                      category_id
+                      category
+                      button {
+                        key
+                        display_name
+                        type
+                        variant
+                        url
+                        popup {
+                          title
+                          body
+                          action_button {
+                            key
+                            display_name
+                            color
+                            type
+                            uri
+                          }
+                        }
+                      }
+                    }
+                  }
+                  non_bundles {
+                    order_detail_id
+                    product_id
+                    product_name
+                    product_url
+                    thumbnail
+                    price
+                    price_text
+                    quantity
+                    total_price
+                    total_price_text
+                    notes
+                    category_id
+                    category
+                    button {
+                      key
+                      display_name
+                      type
+                      variant
+                      url
+                      popup {
+                        title
+                        body
+                        action_button {
+                          key
+                          display_name
+                          color
+                          type
+                          uri
+                        }
+                      }
+                    }
+                    addon_summary {
+                      addons {
+                        order_id
+                        id
+                        level
+                        name
+                        price_str
+                        subtotal_price
+                        subtotal_price_str
+                        quantity
+                        type
+                        image_url
+                        metadata {
+                          add_on_note {
+                            from
+                            to
+                            notes
+                            short_notes
+                          }
+                        }
+                        create_time
+                      }
+                      total
+                      total_price
+                      total_price_str
+                      total_quantity
+                    }
+                  }
+                }
+                addon_info {
+                  label
+                  icon_url
+                  order_level {
+                    addons {
+                      order_id
+                      id
+                      level
+                      name
+                      price
+                      price_str
+                      subtotal_price
+                      subtotal_price_str
+                      quantity
+                      type
+                      image_url
+                      metadata {
+                        add_on_note {
+                          from
+                          to
+                          notes
+                          short_notes
+                        }
+                      }
+                    }
+                    total
+                    total_price
+                    total_price_str
+                    total_quantity
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+    }
+}

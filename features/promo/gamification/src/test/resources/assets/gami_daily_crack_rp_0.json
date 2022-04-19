@@ -1,0 +1,48 @@
+[
+  {
+    "data": {
+      "gamiCrack": {
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "success"
+          ],
+          "reason": ""
+        },
+        "imageUrl": "https://ecs7.tokopedia.net/img/blog/promo/2019/12/KAI-65k_Catalog-Detail-Banner-Lite-640x213.jpg",
+        "benefitText": [
+          "Yay, kamu dapat hadiah",
+          "You won rp 0 reward"
+        ],
+        "benefits": [
+          {
+            "displayType" : "image",
+            "text": "benefit text",
+            "color": "#ffffff",
+            "benefitType": "coupon_rp0",
+            "imageURL": "",
+            "dummyCode": "",
+            "referenceID": "",
+            "isAutoApply": false,
+            "autoApplyMsg": "",
+            "isBigPrize": false
+          }
+        ],
+        "actionButton": [
+          {
+            "text": "Cek Toko",
+            "url": "",
+            "applink": "",
+            "type": "redirect",
+            "backgroundColor": "green"
+          }
+        ],
+        "recommendation": {
+          "isShow": true,
+          "shopID": "",
+          "pageName": "giftbox_page"
+        }
+      }
+    }
+  }
+]

@@ -8,8 +8,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
 
 /**
  * Created by fwidjaja on 2019-05-07.
@@ -21,6 +21,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
     private var isLogisticLabel: Boolean = true
 
     companion object {
+
+        private const val EXTRA_REF = "EXTRA_REF"
+
         @JvmStatic
         fun newInstance(context: Context, lat: Double?, long: Double?, isShowAutoComplete: Boolean, token: Token?, isPolygon: Boolean,
                         isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
@@ -43,6 +46,9 @@ class PinpointMapActivity : BaseSimpleActivity() {
         intent?.extras?.let {
             isFullFLow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+            it.getString(EXTRA_REF)?.let { from ->
+                AddNewAddressAnalytics.sendScreenName(from)
+            }
         }
     }
 
@@ -51,6 +57,8 @@ class PinpointMapActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_pinpoint_map
+
+    override fun getParentViewResourceID(): Int = R.id.pinpoint_parent
 
     override fun getNewFragment(): PinpointMapFragment? {
         var bundle = Bundle()

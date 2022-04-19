@@ -3,11 +3,12 @@
     <string name="error_response_message">Invalid error please try again</string>
     <string name="title_promote">Promoted</string>
     <string name="title_promote_by">Dipromosikan</string>
-    <string name="favoritkan">Favoritkan</string>
-    <string name="favorite">Favorit</string>
-    <string name="favorit">Favorit</string>
+    <string name="topads_favoritkan">Favoritkan</string>
+    <string name="topads_favorite">Favorit</string>
+    <string name="topads_favorit">Favorit</string>
     <string name="topads_follow">Follow</string>
     <string name="topads_following">Following</string>
+    <string name="topads_followed">Followed</string>
     <string name="topads_visit_shop">Visit Shop</string>
     <string name="promote_0">TopAds</string>
     <string name="promote_1">Tingkatkan penjualan</string>
@@ -31,4 +32,9 @@
     <string name="msg_error_remove_wishlist">Error menghapus wishlist</string>
     <string name="cek_sekarang">Cek Sekarang</string>
     <string name="see_more_txt">Lihat Produk Lainnya</string>
+    <string name="topads_ads_text">Ad •&#160;</string>
+    <string name="topads_sdk_shop_more_content_description">Shop More Image</string>
+    <string name="topads_sdk_shop_banner_content_description">Shop Banner Image</string>
+    <string name="topads_sdk_layout_5_title">Toko pilihan untukmu</string>
+    <string name="topads_sdk_layout_6_title">Toko pilihan untukmu</string>
 </resources>

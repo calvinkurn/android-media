@@ -1,25 +1,43 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsClickUrl
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.topAdsImpressionUrl
-import io.mockk.confirmVerified
-import io.mockk.every
-import io.mockk.verify
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.result.complete
+import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.shouldBe
+import io.mockk.*
 import org.junit.Test
+import rx.Subscriber
+
+private const val searchProductWithTopAdsResponseJSON = "searchproduct/with-topads.json"
 
 internal class SearchProductHandleProductImpressionTest: ProductListPresenterTestFixtures() {
 
+    private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val className = "SearchClassName"
+    private val capturedProductItemViewModel = slot<ProductItemDataView>()
+    private var suggestedRelatedKeyword = ""
+    private val suggestedRelatedKeywordSlot = slot<String>()
+
     @Test
     fun `Handle onProductImpressed with null ProductItemViewModel (degenerate cases)`() {
-        `When handle product impressed`(null, -1)
+        val firstProductPosition = -1
+        `Configure should show coachmark`(false)
+        `When handle product impressed`(null, firstProductPosition)
 
         `Then verify view not doing anything`()
     }
 
-    private fun `When handle product impressed`(productItemViewModel: ProductItemViewModel?, position: Int) {
-        productListPresenter.onProductImpressed(productItemViewModel, position)
+    private fun `Configure should show coachmark`(
+            shouldShow: Boolean
+    ) {
+        every { searchCoachMarkLocalCache.shouldShowBoeCoachmark() } answers { shouldShow }
+    }
+
+    private fun `When handle product impressed`(productItemDataView: ProductItemDataView?, adapterPosition: Int) {
+        productListPresenter.onProductImpressed(productItemDataView, adapterPosition)
     }
 
     private fun `Then verify view not doing anything`() {
@@ -27,93 +45,176 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
     }
 
     @Test
-    fun `Handle onProductImpressed for Top Ads Product`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Hp Samsung"
-            it.price = "Rp100.000"
-            it.categoryID = 13
-            it.isTopAds = true
-            it.topadsImpressionUrl = topAdsImpressionUrl
-            it.topadsClickUrl = topAdsClickUrl
-        }
+    fun `Handle onProductImpressed for Top Ads Product without showing BOE CoachMark`() {
+        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
 
-        val position = 0
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
+        val firstProductPosition = 0
 
-        `When handle product impressed`(productItemViewModel, position)
+        `When handle product impressed`(productItemViewModel, firstProductPosition)
 
-        `Then verify interaction for Top Ads product impression`(productItemViewModel, position)
+        `Then verify interaction for Top Ads product impression with no coachmark shown`(productItemViewModel)
     }
 
-    private fun `Then verify interaction for Top Ads product impression`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Given View already load data`(responseJSON: String, shouldShowCoachmark: Boolean = false) {
+        val searchProductModel = responseJSON.jsonToObject<SearchProductModel>()
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Configure should show coachmark`(shouldShowCoachmark)
+        `Given className from view`()
+        `Given view already load data`()
+    }
+
+    private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
+        every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+        }
+    }
+
+    private fun `Given className from view`() {
+        every { productListView.className } returns className
+    }
+
+    private fun `Given view already load data`() {
+        every { productListView.setProductList(capture(visitableListSlot)) } just runs
+
+        productListPresenter.loadData(mapOf())
+    }
+
+    private fun findProductItemFromVisitableList(isTopAds: Boolean = false, isOrganicAds: Boolean = false): ProductItemDataView {
+        val visitableList = visitableListSlot.captured
+
+        return visitableList.find { it is ProductItemDataView && it.isTopAds == isTopAds && it.isOrganicAds == isOrganicAds } as ProductItemDataView
+    }
+
+    private fun `Then verify interaction for Top Ads product impression with no coachmark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendTopAdsTrackingUrl(productItemViewModel.topadsImpressionUrl)
-            productListView.sendTopAdsGTMTrackingProductImpression(productItemViewModel, position)
+            productListView.className
+
+            topAdsUrlHitter.hitImpressionUrl(
+                    className,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
+                    SearchConstant.TopAdsComponent.TOP_ADS
+            )
+
+            productListView.sendTopAdsGTMTrackingProductImpression(productItemDataView)
         }
 
-        confirmVerified(productListView)
+        verify(exactly = 0) {
+            productListView.showOnBoarding(any())
+        }
     }
 
     @Test
-    fun `Handle onProductImpressed for non Top Ads Product when Tracking View Port Enabled`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Hp Samsung"
-            it.price = "Rp100.000"
-            it.categoryID = 13
-            it.isTopAds = false
-        }
+    fun `Handle onProductImpressed for organic Product without showing BOE CoachMark`() {
+        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
 
-        `When handle product impressed`(productItemViewModel, 0)
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
+        val firstProductPosition = 0
 
-        `Then verify enableTrackingViewPort is True`()
-        `Then verify interaction for product impression`(productItemViewModel)
+        `When handle product impressed`(productItemViewModel, firstProductPosition)
+
+        `Then verify interaction for product impression with no coach mark shown`(productItemViewModel)
+        `Then verify relatedKeyword`()
     }
 
-    private fun `Then verify enableTrackingViewPort is True`() {
-        assert(productListPresenter.isTrackingViewPortEnabled)
-    }
-
-    private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel) {
+    private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel)
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
         }
 
-        confirmVerified(productListView)
+        verify(exactly = 0) {
+            productListView.showOnBoarding(any())
+        }
+    }
+
+    private fun `Then verify relatedKeyword`() {
+        suggestedRelatedKeyword shouldBe suggestedRelatedKeywordSlot.captured
     }
 
     @Test
-    fun `Handle onProductImpressed for non Top Ads Product when Tracking View Port Disabled`() {
-        val productItemViewModel = ProductItemViewModel().also {
-            it.productID = "12345"
-            it.productName = "Hp Samsung"
-            it.price = "Rp100.000"
-            it.categoryID = 13
-            it.isTopAds = false
+    fun `Handle onProductImpressed for organic ads product without showing BOE CoachMark`() {
+        `Given View already load data`(searchProductWithTopAdsResponseJSON, false)
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = true)
+        val firstProductPosition = 0
+
+        `When handle product impressed`(productItemViewModel, firstProductPosition)
+
+        `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemViewModel)
+        `Then verify relatedKeyword`()
+    }
+
+    private fun `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
+        verify {
+            productListView.className
+
+            topAdsUrlHitter.hitImpressionUrl(
+                    className,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
+            )
+
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
         }
 
-        `Given tracking by view port is disabled`()
-        setUp()
-
-        `When handle product impressed for disabled tracking view port`(productItemViewModel, 0)
-
-        `Then verify enableTrackingViewPort is False`()
-        `Then verify interaction for product impression is not called`(productItemViewModel)
+        verify(exactly = 0) {
+            productListView.showOnBoarding(any())
+        }
     }
 
-    private fun `Given tracking by view port is disabled`() {
-        every { remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { false }
+    @Test
+    fun `Handle onProductImpressed for Top Ads Product and show BOE CoachMark`() {
+        `Given View already load data`(searchProductWithTopAdsResponseJSON, true)
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItemViewModel, firstProductPosition)
+
+        `Then verify interaction for Top Ads product impression with coachmark shown`(productItemViewModel, firstProductPosition)
     }
 
-    private fun `When handle product impressed for disabled tracking view port`(productItemViewModel: ProductItemViewModel?, position: Int) {
-        productListPresenter.onProductImpressed(productItemViewModel, position)
+    private fun `Then verify interaction for Top Ads product impression with coachmark shown`(productItemDataView: ProductItemDataView, position: Int) {
+        verify {
+            productListView.className
+
+            topAdsUrlHitter.hitImpressionUrl(
+                    className,
+                    productItemDataView.topadsImpressionUrl,
+                    productItemDataView.productID,
+                    productItemDataView.productName,
+                    productItemDataView.imageUrl,
+                    SearchConstant.TopAdsComponent.TOP_ADS
+            )
+
+            productListView.sendTopAdsGTMTrackingProductImpression(capture(capturedProductItemViewModel))
+            productListView.showOnBoarding(position)
+        }
     }
 
-    private fun `Then verify enableTrackingViewPort is False`() {
-        assert(!productListPresenter.isTrackingViewPortEnabled)
+    @Test
+    fun `Handle onProductImpressed for organic Product and show BOE CoachMark`() {
+        `Given View already load data`(searchProductCommonResponseJSON, true)
+
+        val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
+        val firstProductPosition = 1
+
+        `When handle product impressed`(productItemViewModel, firstProductPosition)
+
+        `Then verify interaction for product impression with coach mark shown`(productItemViewModel, firstProductPosition)
+        `Then verify relatedKeyword`()
     }
 
-    private fun `Then verify interaction for product impression is not called`(productItemViewModel: ProductItemViewModel) {
-        confirmVerified(productListView)
+    private fun `Then verify interaction for product impression with coach mark shown`(productItemDataView: ProductItemDataView, position: Int) {
+        verify {
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
+            productListView.showOnBoarding(position)
+        }
     }
 }

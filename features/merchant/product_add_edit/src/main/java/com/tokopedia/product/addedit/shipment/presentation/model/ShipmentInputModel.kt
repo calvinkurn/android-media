@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.shipment.presentation.model
 import android.os.Parcelable
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.DEFAULT_WEIGHT_UNIT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.DEFAULT_WEIGHT_VALUE
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -11,8 +10,14 @@ import kotlinx.android.parcel.Parcelize
  */
 
 @Parcelize
-data class ShipmentInputModel (
-        var weight: Int = DEFAULT_WEIGHT_VALUE,
-        var weightUnit: Int = DEFAULT_WEIGHT_UNIT,
-        var isMustInsurance: Boolean = false
+data class ShipmentInputModel(
+    var weight: Int = DEFAULT_WEIGHT_VALUE,
+    var weightUnit: Int = DEFAULT_WEIGHT_UNIT,
+    var isMustInsurance: Boolean = true,
+    var cplModel: CPLModel = CPLModel()
+) : Parcelable
+
+@Parcelize
+data class CPLModel(
+    var shipmentServicesIds: ArrayList<Long>? = arrayListOf()
 ) : Parcelable

@@ -1,0 +1,20 @@
+{
+  "readme": "Homescreen Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "/",
+      "event": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "theme": ".*",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "home & browse"
+    }
+  ]
+}

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginTop="16dp"
     android:orientation="horizontal"
     tools:ignore="UseCompoundDrawables">
 
@@ -12,7 +12,7 @@
         android:id="@+id/radio"
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         app:srcCompat="@drawable/ic_radiobutton_normal"
         tools:ignore="ContentDescription" />
 
@@ -20,11 +20,11 @@
         android:id="@+id/reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:fontFamily="sans-serif"
         android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="normal"
         tools:text="Mengandung SARA, kekerasan, diskriminasi, vulgar, ancaman dan pelanggaran nilai/norma sosial" />
 </LinearLayout>

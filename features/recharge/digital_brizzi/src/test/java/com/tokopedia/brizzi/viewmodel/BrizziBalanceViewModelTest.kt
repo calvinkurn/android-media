@@ -2,9 +2,6 @@ package com.tokopedia.brizzi.viewmodel
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.data.*
-import com.tokopedia.emoney.util.NFCUtils
-import com.tokopedia.emoney.view.mapper.BrizziCardObjectMapper
 import com.tokopedia.common_electronic_money.data.AttributesEmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
@@ -28,6 +25,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.internal.runners.statements.Fail
 import java.lang.reflect.Type
 
 class BrizziBalanceViewModelTest {
@@ -61,7 +59,7 @@ class BrizziBalanceViewModelTest {
         result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { brizzi.Init(any(),any()) } returns mockk()
         every { brizzi.setUserName(any()) } returns mockk()
         every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnFailure(BrizziException(BrizziBalanceViewModel.BRIZZI_TOKEN_EXPIRED, "")) }
@@ -81,7 +79,7 @@ class BrizziBalanceViewModelTest {
         result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { brizzi.Init(any(),any()) } returns mockk()
         every { brizzi.setUserName(any()) } returns mockk()
         every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnFailure(BrizziException(BrizziBalanceViewModel.BRIZZI_CARD_NOT_FOUND, "")) }
@@ -101,7 +99,7 @@ class BrizziBalanceViewModelTest {
         result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         every { brizzi.Init(any(),any()) } returns mockk()
         every { brizzi.setUserName(any()) } returns mockk()
         every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnFailure(BrizziException("100", "")) }
@@ -111,7 +109,27 @@ class BrizziBalanceViewModelTest {
 
         //then
         assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, brizziBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (brizziBalanceViewModel.errorCardMessage.value as Throwable).message)
+    }
+
+    @Test
+    fun processTagIntent_GetBalance_CardReadFailedMessageNull() {
+        //given
+        val result = HashMap<Type, Any>()
+        result[BrizziTokenResponse::class.java] = BrizziTokenResponse(BrizziToken(token = "abcd"))
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        every { brizzi.Init(any(),any()) } returns mockk()
+        every { brizzi.setUserName(any()) } returns mockk()
+        every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnFailure(BrizziException()) }
+
+        //when
+        brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
+
+        //then
+        assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
+        assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (brizziBalanceViewModel.errorCardMessage.value as Throwable).message)
     }
 
     @Test
@@ -124,14 +142,14 @@ class BrizziBalanceViewModelTest {
         errors[BrizziTokenResponse::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
 
         //then
-        assertNotNull(brizziBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN, brizziBalanceViewModel.errorCardMessage.value)
+        assertNotNull(brizziBalanceViewModel.errorCommonBrizzi.value)
+        assertEquals(errorGql.message, (brizziBalanceViewModel.errorCommonBrizzi.value as Throwable).message)
     }
 
     @Test
@@ -153,7 +171,7 @@ class BrizziBalanceViewModelTest {
         every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnSuccess(BrizziCardObject()) }
         every { brizziCardObjectMapper.mapperBrizzi(any(), any()) } returns balanceInquiry
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success)
 
         //when
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
@@ -191,7 +209,7 @@ class BrizziBalanceViewModelTest {
         every { brizzi.getBalanceInquiry(any(), any()) } answers { secondArg<Callback>().OnSuccess(BrizziCardObject()) }
         every { brizziCardObjectMapper.mapperBrizzi(any(), any()) } returns balanceInquiry
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseErrorLog1)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseErrorLog1)
 
         //when
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
@@ -227,7 +245,7 @@ class BrizziBalanceViewModelTest {
         every { brizziCardObjectMapper.mapperBrizzi(any(), any()) } returns balanceInquiry
         every { brizzi.doUpdateBalance(intent, any(), any()) } answers { thirdArg<Callback>().OnFailure(BrizziException(BrizziBalanceViewModel.BRIZZI_TOKEN_EXPIRED, "")) }
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success)
 
         //when
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
@@ -268,7 +286,7 @@ class BrizziBalanceViewModelTest {
         every { brizzi.doUpdateBalance(intent, any(), any()) } answers { thirdArg<Callback>().OnSuccess(BrizziCardObject()) }
         every { brizziCardObjectMapper.mapperBrizzi(any(), any()) } returnsMany listOf(balanceInquiryBeforeUpdate, balanceInquiryAfterUpdate)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success, gqlResponseLog2Success)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseRefreshTokenSuccess, gqlResponseLog1Success, gqlResponseLog2Success)
 
         //when
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)

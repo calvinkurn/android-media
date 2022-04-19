@@ -1,122 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_16"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_checkout_pilgrims_contact_title_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="@string/umrah_checkout_pilgrims_title_label"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/umrah_checkout_pilgrims_title_label"
-        android:layout_marginTop="@dimen/dp_24"
-        app:typographyType="body_3"
-        />
+        app:typographyType="body_3" />
 
     <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
         android:id="@+id/rv_umrah_checkout_pilgrims_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_pilgrims_contact_title_label"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_pilgrims_contact_title_label" />
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.UmrahAutoComplete
+        android:id="@+id/ac_umrah_autocomplete_first_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/unify_space_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_umrah_checkout_pilgrims_title"
         />
 
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/til_umrah_checkout_pilgrims_contact_first_name"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        app:text_field_label_static="true"
+        android:id="@+id/tf_umrah_checkout_pilgrims_contact_last_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_24"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLength="25"
+        android:paddingTop="@dimen/unify_space_12"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:singleLine="true"
         app:layout_constraintLeft_toLeftOf="parent"
-        style="@style/HintTextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/rv_umrah_checkout_pilgrims_title"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/ac_umrah_autocomplete_first_name"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/umrah_checkout_bottom_sheet_pilgrims_label_name_last"
+        app:text_field_placeholder="@string/umrah_checkout_bottom_sheet_pilgrims_label_name_last_label"
+        />
 
-        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
-            android:id="@+id/ac_umrah_checkout_pilgrims_contact_first_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/umrah_checkout_bottom_sheet_pilgrims_label_name_first_label"
-            android:imeActionLabel="@string/label_next"
-            android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ "
-            android:imeOptions="actionNext"
-            android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
-            android:importantForAutofill="no"
-            android:singleLine="true"
-            android:maxLength="25"
-            android:textColor="@color/font_black_primary_70" />
 
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/til_umrah_checkout_pilgrims_contact_last_name"
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        app:text_field_label_static="true"
+        android:id="@+id/tf_umrah_checkout_pilgrims_contact_date_birth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:inputType="textPersonName"
+        android:paddingTop="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:paddingTop="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_24"
-        style="@style/HintTextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/til_umrah_checkout_pilgrims_contact_first_name"
-        >
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/ac_umrah_checkout_pilgrims_contact_last_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:singleLine="true"
-            android:maxLength="25"
-            android:digits="0123456789qwertzuiopasdfghjklyxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ "
-            android:imeOptions="actionDone"
-            android:hint="@string/umrah_checkout_bottom_sheet_pilgrims_label_name_last_label" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-    <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/til_umrah_checkout_pilgrims_contact_date_birth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:paddingTop="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_24"
-        style="@style/HintTextInputLayout"
-        app:layout_constraintTop_toBottomOf="@+id/til_umrah_checkout_pilgrims_contact_last_name"
-        >
-
-        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-            android:id="@+id/ac_umrah_checkout_pilgrims_contact_date_birth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/umrah_checkout_bottom_sheet_pilgrims_label_date_birth" />
-
-    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tf_umrah_checkout_pilgrims_contact_last_name"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/umrah_checkout_bottom_sheet_pilgrims_label_date_birth"
+        app:text_field_placeholder="@string/umrah_checkout_bottom_sheet_pilgrims_label_date_birth"
+        />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginTop="@dimen/dp_18"
         android:id="@+id/btn_umrah_checkout_pilgrims"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/til_umrah_checkout_pilgrims_contact_date_birth"
+        android:layout_marginTop="@dimen/dimen_dp_18"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:text="@string/umrah_checkout_bottom_sheet_button"
-        tools:targetApi="m"
-        tools:ignore="UnusedAttribute" />
-
+        app:layout_constraintTop_toBottomOf="@+id/tf_umrah_checkout_pilgrims_contact_date_birth"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

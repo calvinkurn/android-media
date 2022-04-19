@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.travel.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 
 /**
@@ -41,7 +42,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         chip_recycler_view.layoutManager = layoutManager
     }
 
-    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = com.tokopedia.design.R.color.snackbar_border_normal, initialSelectedItemPos: Int? = null) {
+    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300, initialSelectedItemPos: Int? = null) {
         if (listener != null) {
             adapter = FilterChipAdapter(strings, listener, this, selectedTextColor)
             if (initialSelectedItemPos != null) adapter.initialPositionSelected = initialSelectedItemPos
@@ -52,7 +53,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
     fun getFirstSelectedItem(): String {
         for (i in 0 until adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
-                if (this?.chips?.isSelected == true) return this.chips.text.toString()
+                if (this?.chips?.isSelected == true) return this.chips.chipText.toString()
             }
         }
         return ""
@@ -62,18 +63,18 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         for (i in 0 until adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = false
-                this?.setTextColor(com.tokopedia.design.R.color.black_56)
+                this?.chips?.chipType = ChipsUnify.TYPE_NORMAL
             }
         }
     }
 
     fun selectOnlyOneChip(boolean: Boolean) {
         //call this only after setItem
-        adapter?.selectOnlyOneChip = boolean
+        adapter.selectOnlyOneChip = boolean
     }
 
     fun canDiselectAfterSelect(boolean: Boolean) {
-        adapter?.canDiselectAfterSelect = boolean
+        adapter.canDiselectAfterSelect = boolean
     }
 
     fun selectChipByPosition(position: Int) {

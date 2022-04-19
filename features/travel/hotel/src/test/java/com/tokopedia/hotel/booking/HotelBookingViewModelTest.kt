@@ -1,19 +1,23 @@
 package com.tokopedia.hotel.booking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -36,7 +40,7 @@ class HotelBookingViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = TravelTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var hotelBookingViewModel: HotelBookingViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -47,10 +51,13 @@ class HotelBookingViewModelTest {
     @RelaxedMockK
     lateinit var upsertContactListUseCase: UpsertContactListUseCase
 
+    private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase, dispatcher)
+        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase,
+                travelTickerCoroutineUseCase, dispatcher)
     }
 
     @Test
@@ -95,7 +102,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -104,6 +111,7 @@ class HotelBookingViewModelTest {
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Success)
         assert((hotelBookingViewModel.hotelCartResult.value as Success<HotelCart.Response>).data.response.cartID == "123")
+        assert((hotelBookingViewModel.promoData.value?.promoCode == cart.response.appliedVoucher.code))
     }
 
     @Test
@@ -114,7 +122,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelCart.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -133,7 +141,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -152,7 +160,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelCheckoutResponse.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
@@ -170,7 +178,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -185,10 +193,113 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(FlightCancelVoucher::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
         hotelBookingViewModel.onCancelAppliedVoucher("")
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isSuccess_shouldReturnData() {
+        //given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf<Type, Any>(TokopointsSumCoupon.Response::class.java to TokopointsSumCoupon.Response(TokopointsSumCoupon(sumCouponUnitOpt = "33 Kupon"))),
+                mapOf<Type, List<GraphqlError>>(),
+                false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).equals("33 Kupon"))
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isFail_shouldNotUpdateData() {
+        //given
+        val graphqlFailResponse = GraphqlResponse(
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(TokopointsSumCoupon.Response::class.java to listOf(GraphqlError())),
+                false)
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } returns graphqlFailResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())
+    }
+
+    @Test
+    fun getTickerData_shouldData() {
+        //given
+        val title = "Title ABC"
+        val message = "this is a message"
+        val response = TravelTickerModel(title = title, message = message, url = "", type = 0, status = 0,
+                endTime = "", startTime = "", instances = 0, page = "", isPeriod = true)
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Success(response)
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Success)
+        assert((actual as Success).data.title == title)
+        assert(actual.data.message == message)
+    }
+
+    @Test
+    fun getTickerData_shouldReturnFail() {
+        //given
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Fail)
+    }
+
+    @Test
+    fun applyPromoData_onPromoApply(){
+        //given
+        var promoData = PromoData()
+        promoData.apply {
+            promoCode = "TOPED"
+            description = "Potensi Cashback senilai Rp. 10.000"
+            amount = 1000
+        }
+
+        //when
+        hotelBookingViewModel.applyPromoData(promoData)
+
+        //then
+        assert(hotelBookingViewModel.promoData.value?.promoCode == promoData.promoCode)
+        assert(hotelBookingViewModel.promoData.value?.description == promoData.description)
+        assert(hotelBookingViewModel.promoData.value?.amount == promoData.amount)
+    }
+
+    @Test
+    fun applyPromoData_onReset(){
+        //given
+        var promoData = PromoData()
+
+        //when
+        hotelBookingViewModel.applyPromoData(promoData)
+
+        //then
+        assert(hotelBookingViewModel.promoData.value?.promoCode == "")
     }
 }

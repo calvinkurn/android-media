@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/imgSirFeedback"
+                android:layout_width="@dimen/sah_dimen_280dp"
+                android:layout_height="@dimen/sah_dimen_210dp"
+                android:layout_marginTop="@dimen/layout_lvl3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSirFeedbackTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:text="@string/sir_feedback_title"
+                android:textAlignment="center"
+                android:textColor="@color/light_N700_96"
+                app:typographyType="heading_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvSirFeedbackMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:text="@string/sir_feedback_message"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifycomponents.TextAreaUnify
+                android:id="@+id/tauSirFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                app:text_area_label="@string/sir_feedback_placeholder"
+                tools:layout_height="@dimen/layout_lvl8" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnSirSubmitFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl4"
+                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:enabled="false"
+                android:text="@string/sir_send_feedback"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnSirCloseFeedback"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_name="CLOSE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</RelativeLayout>

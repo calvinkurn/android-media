@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <bool name="gami_is_tablet">true</bool>
+   <dimen name="gami_rv_coupons_height">193dp</dimen>
+   <dimen name="gami_rv_coupons_height_daily">143dp</dimen>
+   <dimen name="gami_rv_coupons_width">390dp</dimen>
+   <dimen name="gami_cl_transaction_height">68dp</dimen>
+   <dimen name="gami_reward_summary_box_w">132dp</dimen>
+   <dimen name="gami_reward_summary_box_h">102dp</dimen>
+   <dimen name="gami_reward_summary_margin_top">24dp</dimen>
+   <integer name="gami_bottom_sheet_span_count">3</integer>
+   <dimen name="gami_space_between_reminde_btn_cek_tp_btn">24dp</dimen>
+   <dimen name="gami_green_gradient_btn_top_padding">18dp</dimen>
+   <dimen name="gami_green_gradient_btn_side_padding">37dp</dimen>
+   <integer name="gami_green_gradient_btn_typography">2</integer>
+   <dimen name="gami_bell_end_margin">8dp</dimen>
+   <dimen name="gami_direct_view_title_start_margin">17dp</dimen>
+   <dimen name="gami_direct_view_image_w">104dp</dimen>
+   <dimen name="gami_direct_view_padding">24dp</dimen>
+   <dimen name="gami_direct_view_tvMessage_top_margin">12dp</dimen>
+   <integer name="gami_direct_view_tvMessage_typography">7</integer>
+   <dimen name="gami_direct_view_cta_top_margin">24dp</dimen>
+   <dimen name="gami_direct_view_bottom_margin">105dp</dimen>
+   <dimen name="gami_ll_reward_message_top_margin">100dp</dimen>
+</resources>

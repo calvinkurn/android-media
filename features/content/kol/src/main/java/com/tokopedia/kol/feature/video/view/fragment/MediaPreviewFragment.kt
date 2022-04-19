@@ -1,19 +1,19 @@
 package com.tokopedia.kol.feature.video.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
@@ -32,13 +32,13 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
+import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -203,13 +203,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
                 tag_count.visible()
                 tag_picture.gone()
-                val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.min() ?: 0
+                val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.minOrNull() ?: 0
 
                 tag_rating.shouldShowWithAction(minRate > 0){
                     tag_rating.rating = minRate.toFloat()
                 }
 
-                val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }.min() ?: 0
+                val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }
+                    .minOrNull() ?: 0
                 tag_title.text = getString(R.string.kol_template_start_price,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
 
@@ -271,7 +272,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     }
                 }
 
-                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.design.R.dimen.dp_8))
+                tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
                 tag_picture.visible()
                 buttonTagAction?.visible()
             }
@@ -342,7 +343,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
             label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
                 else getString(com.tokopedia.feedcomponent.R.string.kol_action_like)
             val color = context?.let { ContextCompat.getColor(it,
-                    if (footer.isLiked) R.color.Green_G500 else com.tokopedia.design.R.color.white ) }
+                    if (footer.isLiked) R.color.kol_green_g500 else com.tokopedia.unifyprinciples.R.color.Unify_N0 ) }
             color?.let {
                 icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
                 label_like.setTextColor(it)

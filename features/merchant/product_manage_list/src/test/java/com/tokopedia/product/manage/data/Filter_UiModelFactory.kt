@@ -6,11 +6,11 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 
-fun getSortDataModel(): FilterDataUiModel {
-    return FilterDataUiModel("312", "Some Sort", "DESC", false)
+fun getSortDataModel(id: String = "312", isSelected: Boolean = false, sort: String = "DESC"): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Sort", sort, isSelected)
 }
 
-fun getSortFilterViewModel(sortDataModel: FilterDataUiModel = getSortDataModel()): FilterUiModel {
+fun getSortFilterViewModel(sortDataModel: FilterDataUiModel = getSortDataModel(), isChipsShown: Boolean = false): FilterUiModel {
     return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
             mutableListOf(
                     sortDataModel,
@@ -19,14 +19,14 @@ fun getSortFilterViewModel(sortDataModel: FilterDataUiModel = getSortDataModel()
                     FilterDataUiModel("708", "Some Other Sort", "ASC", false),
                     FilterDataUiModel("709", "Some Other Sort", "ASC", false),
                     FilterDataUiModel("710", "Some Other Sort", "ASC", false)
-            ), false)
+            ), isChipsShown)
 }
 
-fun getEtalaseDataModel(): FilterDataUiModel {
-    return FilterDataUiModel("342", "Some Etalase", "", false)
+fun getEtalaseDataModel(id: String = "342", isSelected: Boolean = false, sort: String = ""): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Etalase", sort, isSelected)
 }
 
-fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDataModel()): FilterUiModel {
+fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDataModel(), isChipsShown: Boolean = false): FilterUiModel {
     return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
             mutableListOf(
                     etalaseDataModel,
@@ -35,11 +35,11 @@ fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDa
                     FilterDataUiModel("125", "Some Other Etalase", "", false),
                     FilterDataUiModel("126", "Some Other Etalase", "", false),
                     FilterDataUiModel("127", "Some Other Etalase", "", false)
-            ), false)
+            ), isChipsShown)
 }
 
-fun getCategoryDataModel(): FilterDataUiModel {
-    return FilterDataUiModel("293", "Some Category", "", false)
+fun getCategoryDataModel(id: String = "293", isSelected: Boolean = false): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Category", "", isSelected)
 }
 
 fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategoryDataModel()): FilterUiModel {
@@ -50,12 +50,14 @@ fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategor
                     FilterDataUiModel("453", "Some Other Category", "", false),
                     FilterDataUiModel("454", "Some Other Category", "", false),
                     FilterDataUiModel("455", "Some Other Category", "", false),
-                    FilterDataUiModel("456", "Some Other Category", "", false)
+                    FilterDataUiModel("456", "Some Other Category", "", false),
+                    FilterDataUiModel("457", "Some Other Category", "", false),
+                    FilterDataUiModel("458", "Some Other Category", "", false)
             ), false)
 }
 
-fun getOtherFilterDataModel(): FilterDataUiModel {
-    return FilterDataUiModel("4183", "Some Other Filter", "", false)
+fun getOtherFilterDataModel(id: String = "4183", isSelected: Boolean = false): FilterDataUiModel {
+    return FilterDataUiModel(id, "Some Other Filter", "", isSelected)
 }
 
 fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel = getOtherFilterDataModel()): FilterUiModel {
@@ -66,7 +68,9 @@ fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel = getO
                     FilterDataUiModel("612", "Some Other Filter", "", false),
                     FilterDataUiModel("613", "Some Other Filter", "", false),
                     FilterDataUiModel("614", "Some Other Filter", "", false),
-                    FilterDataUiModel("615", "Some Other Filter", "", false)
+                    FilterDataUiModel("615", "Some Other Filter", "", false),
+                    FilterDataUiModel("616", "Some Other Filter", "", false),
+                    FilterDataUiModel("617", "Some Other Filter", "", false)
             ), false)
 }
 

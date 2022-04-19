@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icShcMlgLegendLine"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="1dp"
+        app:unify_image_corner_radius="0"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@drawable/ic_shc_legend_dash_line" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcMlgLegendName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="body_3"
+        tools:text="Periode sebelumnya" />
+</LinearLayout>

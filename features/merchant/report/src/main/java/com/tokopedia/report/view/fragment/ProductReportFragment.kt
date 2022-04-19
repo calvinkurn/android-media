@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
+import com.tokopedia.report.databinding.FragmentProductReportBinding
 import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
@@ -23,7 +23,7 @@ import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_product_report.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 
@@ -32,6 +32,8 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
     private lateinit var smoothScroller: RecyclerView.SmoothScroller
     private var productId = "-1"
     private val tracking by lazy { MerchantReportTracking() }
+
+    private var binding by autoCleared<FragmentProductReportBinding>()
 
     override fun scrollToTop() {}
 
@@ -69,7 +71,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.reasonResponse.observe(this, Observer {
+        viewModel.reasonResponse.observe(viewLifecycleOwner, {
             when(it){
                 is Success -> onSuccessGetReason(it.data)
                 is Fail -> activity?.run {
@@ -86,14 +88,16 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_product_report, container, false)
+        binding = FragmentProductReportBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        recycler_view.adapter = adapter
-        recycler_view.clearItemDecoration()
+        binding.recyclerView.apply {
+            this.adapter = this@ProductReportFragment.adapter
+            clearItemDecoration()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

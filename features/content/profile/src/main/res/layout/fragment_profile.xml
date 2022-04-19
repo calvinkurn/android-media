@@ -23,63 +23,12 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/footerOwn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/separator_action"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
-
-                <com.tokopedia.design.component.ButtonCompat
-                    android:id="@+id/addCuration"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:text="@string/profile_add_rec"
-                    android:textAllCaps="false"
-                    android:textColor="#f531353b"
-                    app:buttonCompatSize="medium"
-                    app:buttonCompatType="secondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/separator_action"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/separator_action"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.tokopedia.design.component.ButtonCompat
-                    android:id="@+id/shareProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:text="@string/profile_share_profile"
-                    android:textAllCaps="false"
-                    app:buttonCompatSize="medium"
-                    app:buttonCompatType="primary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toRightOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/separator_action"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <LinearLayout
                 android:id="@+id/footerOthers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:padding="@dimen/dp_16"
+                android:padding="16dp"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -87,8 +36,8 @@
                     android:id="@+id/footerOthersText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     app:fontSize="micro"
                     app:layout_constraintStart_toStartOf="parent"
@@ -99,9 +48,9 @@
                 <FrameLayout
                     android:id="@+id/footerOthersFollow"
                     android:layout_width="@dimen/dp_100"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:background="@drawable/bg_af_rounded_corner_green"
                     android:clickable="true"
                     android:focusable="true"
@@ -123,27 +72,27 @@
                 <LinearLayout
                     android:id="@+id/footerOthersShare"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_af_rounded_corner_grey"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     tools:ignore="UnusedAttribute">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         app:srcCompat="@drawable/ic_share_grey_profile" />
 
                     <com.tokopedia.design.component.TextViewCompat
                         android:id="@+id/footerOthersShareText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
                         android:text="@string/title_share_en"
                         android:textColor="@color/color_like_comment_share"
                         android:visibility="gone"
@@ -207,9 +156,9 @@
                                 android:id="@+id/toolbar_parallax"
                                 android:layout_width="match_parent"
                                 android:layout_height="?attr/actionBarSize"
-                                android:layout_marginLeft="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_24"
-                                android:layout_marginRight="@dimen/dp_16"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginTop="24dp"
+                                android:layout_marginRight="16dp"
                                 android:orientation="horizontal">
 
                                 <ImageView
@@ -225,7 +174,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_marginLeft="@dimen/dp_16"
+                                    android:layout_marginLeft="16dp"
                                     android:layout_weight="1"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/sp_17"
@@ -236,7 +185,16 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_marginLeft="@dimen/dp_16"
+                                    android:layout_marginLeft="16dp"
+                                    android:tint="@color/white"
+                                    tools:src="@drawable/ic_share_white" />
+
+                                <ImageView
+                                    android:id="@+id/iv_action2_parallax"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="16dp"
                                     android:tint="@color/white"
                                     tools:src="@drawable/ic_share_white" />
 
@@ -245,14 +203,14 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/dp_16"
+                                android:layout_margin="16dp"
                                 android:orientation="horizontal">
 
                                 <FrameLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/bg_af_circle_white"
-                                    android:padding="@dimen/dp_2">
+                                    android:padding="2dp">
 
                                     <ImageView
                                         android:id="@+id/iv_profile"
@@ -263,7 +221,7 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/dp_10"
+                                    android:layout_marginLeft="10dp"
                                     android:orientation="vertical">
 
                                     <LinearLayout
@@ -273,11 +231,11 @@
 
                                         <ImageView
                                             android:id="@+id/kolBadge"
-                                            android:layout_width="@dimen/dp_20"
-                                            android:layout_height="@dimen/dp_16"
+                                            android:layout_width="20dp"
+                                            android:layout_height="16dp"
                                             android:layout_gravity="center_vertical"
-                                            android:paddingEnd="@dimen/dp_4"
-                                            android:paddingRight="@dimen/dp_4"
+                                            android:paddingEnd="4dp"
+                                            android:paddingRight="4dp"
                                             android:visibility="gone"
                                             app:srcCompat="@drawable/ic_verified_badge"
                                             tools:ignore="RtlSymmetry"
@@ -297,7 +255,7 @@
                                         android:id="@+id/followers"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/dp_4"
+                                        android:layout_marginTop="4dp"
                                         android:textColor="@color/white"
                                         android:textSize="@dimen/sp_12"
                                         tools:text="200 follower" />
@@ -306,7 +264,7 @@
                                         android:id="@+id/followBtn"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/dp_8"
+                                        android:layout_marginTop="8dp"
                                         android:text="@string/profile_follow"
                                         android:textAllCaps="false"
                                         android:visibility="gone"
@@ -318,7 +276,7 @@
                                         android:id="@+id/editButton"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/dp_8"
+                                        android:layout_marginTop="8dp"
                                         android:text="@string/profile_edit"
                                         android:textAllCaps="false"
                                         android:visibility="gone"
@@ -332,7 +290,7 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_10"
+                            android:layout_height="10dp"
                             android:layout_gravity="bottom"
                             android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_rectangle" />
@@ -358,8 +316,8 @@
                             android:id="@+id/toolbar_menu"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
                             android:orientation="horizontal">
 
                             <ImageView
@@ -375,7 +333,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginLeft="16dp"
                                 android:layout_weight="1"
                                 android:textColor="@color/black_70"
                                 android:textSize="@dimen/sp_17"
@@ -386,7 +344,16 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/dp_16"
+                                android:layout_marginLeft="16dp"
+                                android:tint="#52565E"
+                                tools:src="@drawable/ic_share_white" />
+
+                            <ImageView
+                                android:id="@+id/iv_action2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="16dp"
                                 android:tint="#52565E"
                                 tools:src="@drawable/ic_share_white" />
 
@@ -409,7 +376,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingTop="@dimen/dp_10"
+                    android:paddingTop="10dp"
                     android:orientation="vertical"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:reverseLayout="false" />
@@ -432,4 +399,18 @@
                 android:layout_gravity="center" />
         </FrameLayout>
     </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_create_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/fab_create_post_bottom_margin"
+        android:tint="@color/Neutral_N0"
+        android:visibility="gone"
+        app:backgroundTint="@color/Green_G400"
+        app:srcCompat="@drawable/ic_plus_add"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

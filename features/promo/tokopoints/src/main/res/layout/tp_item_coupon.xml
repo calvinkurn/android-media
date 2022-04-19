@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/tp_margin_medium">
+        android:paddingBottom="@dimen/tp_margin_normal">
 
         <ImageView
             android:id="@+id/img_banner"
@@ -46,14 +46,14 @@
             android:paddingTop="@dimen/tp_padding_xxsmall"
             android:paddingRight="@dimen/tp_margin_small"
             android:paddingBottom="@dimen/tp_padding_xxsmall"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_11"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Sisa Count 1" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,8 +62,9 @@
             android:paddingLeft="@dimen/tp_margin_medium"
             android:paddingTop="@dimen/tp_padding_small"
             android:paddingRight="@dimen/tp_margin_medium"
-            android:textColor="@color/black_70"
-            android:textSize="@dimen/tp_text_size_xsmall"
+            android:textColor="@color/Unify_N700"
+            app:typographyType="heading_5"
+            tools:text="text decription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
@@ -83,25 +84,25 @@
             android:id="@+id/text_point_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
-            android:textColor="@color/black_54"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/tp_text_size_xsmall"
-            android:visibility="gone"
+            tools:text="Text Point Label"
             app:layout_constraintStart_toEndOf="@+id/img_points_stack"
             app:layout_constraintTop_toTopOf="@+id/img_points_stack" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_point_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="2dp"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/tp_text_size_small"
-            android:visibility="gone"
+            android:textColor="@color/Unify_G400"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Text point Value"
             app:layout_constraintStart_toEndOf="@+id/img_points_stack"
             app:layout_constraintTop_toBottomOf="@+id/text_point_label" />
 
@@ -109,8 +110,8 @@
             android:id="@+id/text_point_discount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
             android:layout_marginTop="2dp"
             android:background="@drawable/bg_tp_slash_discount"
             android:fontFamily="sans-serif-medium"
@@ -118,7 +119,7 @@
             android:paddingTop="@dimen/tp_padding_xxsmall"
             android:paddingRight="@dimen/tp_padding_xsmall"
             android:paddingBottom="@dimen/tp_padding_xxsmall"
-            android:textColor="#ea212d"
+            android:textColor="@color/Unify_R500"
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/text_point_value"
@@ -133,9 +134,9 @@
             android:layout_marginLeft="@dimen/tp_margin_small"
             android:layout_marginTop="@dimen/tp_padding_regular"
             android:text="@string/tp_label_valid_for"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/tp_text_size_xsmall"
-            android:visibility="gone"
+            tools:text="Text Time Label"
             app:layout_constraintStart_toEndOf="@+id/img_time"
             app:layout_constraintTop_toBottomOf="@+id/text_point_value" />
 
@@ -169,9 +170,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/tp_margin_small"
             android:layout_marginLeft="@dimen/tp_margin_small"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/tp_text_size_small"
-            android:visibility="gone"
+            tools:text="text Time Value"
             app:layout_constraintStart_toEndOf="@+id/img_time"
             app:layout_constraintTop_toBottomOf="@+id/text_time_label" />
 
@@ -179,12 +180,12 @@
             android:id="@+id/text_disabled_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/tp_margin_medium"
+            android:layout_marginLeft="@dimen/tp_margin_medium"
             android:layout_marginTop="@dimen/tp_margin_xsmall"
-            android:textColor="@color/red_error"
+            android:textColor="@color/Unify_Y500"
             android:textSize="@dimen/tp_text_size_small"
-            android:visibility="gone"
+            tools:text="Text Disable Error"
             app:layout_constraintStart_toEndOf="@+id/img_time"
             app:layout_constraintTop_toBottomOf="@+id/text_time_value" />
 
@@ -192,7 +193,7 @@
             android:id="@+id/button_continue"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/tp_margin_medium"
             android:layout_marginRight="@dimen/tp_margin_medium"
             android:background="@drawable/bg_button_orange"
@@ -202,7 +203,7 @@
             android:paddingTop="@dimen/tp_padding_small"
             android:paddingRight="@dimen/tp_margin_large"
             android:paddingBottom="@dimen/tp_padding_small"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:textSize="@dimen/tp_text_size_xsmall"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -210,7 +211,7 @@
             app:layout_constraintHeight_default="wrap"
             app:layout_constraintHeight_max="@dimen/dp_32"
             app:layout_constraintTop_toBottomOf="@+id/img_banner"
-            app:layout_goneMarginTop="@dimen/dp_16"
+            app:layout_goneMarginTop="16dp"
             tools:text="Gunakan" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

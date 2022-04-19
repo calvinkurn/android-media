@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 
+@Deprecated("duplicate class")
 class Interactor private constructor(){
 
     private val graphqlCacheManager by lazy { GraphqlCacheManager() }
@@ -27,6 +28,9 @@ class Interactor private constructor(){
         @Volatile private var INSTANCE: Interactor? = null
 
         @JvmStatic
+        @Deprecated("This is duplication",
+                replaceWith = ReplaceWith("GraphqlInteractor.getInstance()",
+                        "com.tokopedia.graphql.coroutines.data.GraphqlInteractor"))
         fun getInstance(): Interactor{
             return INSTANCE ?: synchronized(this){
                 INSTANCE ?: Interactor().also { INSTANCE = it }

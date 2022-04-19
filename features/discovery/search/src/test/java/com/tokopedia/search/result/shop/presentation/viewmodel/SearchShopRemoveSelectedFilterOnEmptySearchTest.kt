@@ -1,10 +1,8 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.result.isExecuted
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.dynamicFilterModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.handphoneOption
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.jakartaOption
@@ -14,10 +12,9 @@ import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldContain
 import com.tokopedia.search.shouldNotContain
-import com.tokopedia.usecase.coroutines.UseCase
 import org.junit.Test
 
-internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Remove selected filter with Option's unique id`() {
@@ -97,7 +94,7 @@ internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopViewMo
     private fun `Given search shop view model with search parameter contains several location filter`() {
         val searchShopParameterWithLocationFilter = mapOf<String, Any>(
                 SearchApiConst.Q to "samsung",
-                SearchApiConst.FCITY to "1,2,3"
+                SearchApiConst.FCITY to "1#2#3"
         )
 
         searchShopViewModel = createSearchShopViewModel(searchShopParameterWithLocationFilter)
@@ -106,7 +103,7 @@ internal class SearchShopRemoveSelectedFilterOnEmptySearchTest: SearchShopViewMo
     private fun `Then Search Parameter should only contain the remaining location filter`() {
         val searchParameter = searchShopViewModel.getSearchParameter()
 
-        val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.VALUE_SEPARATOR)
+        val remainingLocationFilter = searchParameter[SearchApiConst.FCITY].toString().split(OptionHelper.OPTION_SEPARATOR)
 
         remainingLocationFilter shouldNotContain "1"
         remainingLocationFilter shouldContain "2"

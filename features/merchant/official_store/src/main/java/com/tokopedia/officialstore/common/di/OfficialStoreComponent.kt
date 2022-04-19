@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,7 +16,7 @@ interface OfficialStoreComponent {
     @ApplicationContext
     fun getContext(): Context
     fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
-    fun getCoroutineDispatcher(): CoroutineDispatcher
+    fun getDispatcherProvider(): CoroutineDispatchers
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
 }

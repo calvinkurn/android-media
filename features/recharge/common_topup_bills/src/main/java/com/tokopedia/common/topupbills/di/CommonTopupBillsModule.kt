@@ -3,13 +3,15 @@ package com.tokopedia.common.topupbills.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
-import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
+import com.tokopedia.common.topupbills.data.source.ContactDataSource
+import com.tokopedia.common.topupbills.data.source.ContactDataSourceImpl
+import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favorite.domain.usecase.ModifyRechargeFavoriteNumberUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,17 +25,7 @@ class CommonTopupBillsModule {
 
     @CommonTopupBillsScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @CommonTopupBillsScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @CommonTopupBillsScope
-    @Provides
-    fun provideTopupBillsDispatcher(): TopupBillsDispatchersProvider = TopupBillsDispatchersProvider()
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @CommonTopupBillsScope
     @Provides
@@ -51,6 +43,30 @@ class CommonTopupBillsModule {
     @Provides
     fun provideDigitalCheckVoucherUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
         return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun provideGetRechargeFavoriteNumberUseCase(graphqlRepository: GraphqlRepository): RechargeFavoriteNumberUseCase {
+        return RechargeFavoriteNumberUseCase(graphqlRepository)
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun provideModifyRechargeFavoriteNumberUseCase(graphqlRepository: GraphqlRepository): ModifyRechargeFavoriteNumberUseCase {
+        return ModifyRechargeFavoriteNumberUseCase(graphqlRepository)
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper {
+        return PermissionCheckerHelper()
+    }
+
+    @CommonTopupBillsScope
+    @Provides
+    fun provideContactDataSource(@ApplicationContext context: Context): ContactDataSource {
+        return ContactDataSourceImpl(context.contentResolver)
     }
 
 }

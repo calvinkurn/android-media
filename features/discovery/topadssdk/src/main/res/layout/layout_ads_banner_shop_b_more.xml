@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="118dp"
     android:layout_height="118dp"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -21,7 +21,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:text="@string/see_more_txt"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
             app:typographyType="heading_6" />

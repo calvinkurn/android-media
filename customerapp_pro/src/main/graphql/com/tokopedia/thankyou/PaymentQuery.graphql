@@ -1,0 +1,22 @@
+query PaymentQuery($paymentId:Int!) {
+  payment(payment_id:$paymentId){
+    payment_id
+    payment_ref_num
+    orders{
+        order_id
+        phone
+    }
+    payment_method{
+      method
+      instant{
+        gateway{
+          gateway_name
+          gateway_img_url
+        }
+      }
+      transfer{
+        destination_account
+      }
+    }
+  }
+}

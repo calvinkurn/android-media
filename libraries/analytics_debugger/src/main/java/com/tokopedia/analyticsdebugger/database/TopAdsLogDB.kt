@@ -26,6 +26,15 @@ data class TopAdsLogDB (
     @ColumnInfo(name = "sourceName")
     var sourceName: String = "",
 
+    @ColumnInfo(name = "productId")
+    var productId: String = "",
+
+    @ColumnInfo(name = "productName")
+    var productName: String = "",
+
+    @ColumnInfo(name = "imageUrl")
+    var imageUrl: String = "",
+
     @ColumnInfo(name = "eventStatus")
     var eventStatus: String = "",
 
@@ -33,5 +42,8 @@ data class TopAdsLogDB (
     var timestamp: Long = 0,
 
     @ColumnInfo(name = "fullResponse")
-    var fullResponse: String = ""
+    var fullResponse: String = "",
+
+    @ColumnInfo(name = "componentName")
+    var componentName: String = ""
 )

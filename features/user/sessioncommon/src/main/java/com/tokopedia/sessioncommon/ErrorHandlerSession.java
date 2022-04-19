@@ -3,15 +3,14 @@ package com.tokopedia.sessioncommon;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.sessioncommon.R;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 
 /**
  * @author by nisie on 10/2/18.
  */
-public class ErrorHandlerSession extends ErrorHandler {
+public class ErrorHandlerSession {
 
     public interface ErrorCode {
         int UNKNOWN = 1000;
@@ -21,8 +20,6 @@ public class ErrorHandlerSession extends ErrorHandler {
         int WS_ERROR = 1004;
         int UNSUPPORTED_FLOW = 1005;
 
-        int FACEBOOK_AUTHORIZATION_EXCEPTION = 1121;
-        int FACEBOOK_EXCEPTION = 1122;
         int EMPTY_ACCESS_TOKEN = 1123;
         int GOOGLE_FAILED_ACCESS_TOKEN = 1124;
         int WEBVIEW_ERROR = 1125;
@@ -37,9 +34,13 @@ public class ErrorHandlerSession extends ErrorHandler {
         void onError(String errorMessage);
     }
 
+    public static String getErrorMessage(Context context, Throwable e) {
+        return ErrorHandler.getErrorMessage(context, e);
+    }
+
     public static void getErrorMessage(ErrorForbiddenListener listener, Throwable e, Context context) {
         String forbiddenMessage = context.getString(R.string.default_request_error_forbidden_auth);
-        String errorMessage = getErrorMessage(context, e);
+        String errorMessage = ErrorHandler.getErrorMessage(context, e);
         if (errorMessage.equals(forbiddenMessage)) {
             listener.onForbidden();
         } else {
@@ -59,9 +60,6 @@ public class ErrorHandlerSession extends ErrorHandler {
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
             return showErrorCode ? formatString(e.getLocalizedMessage(), ((MessageErrorException)
                     e).getErrorCode()) : e.getLocalizedMessage();
-        } else if (e instanceof com.tokopedia.network.exception.MessageErrorException
-                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return  e.getLocalizedMessage();
         } else {
             return ErrorHandler.getErrorMessage(context, e);
         }

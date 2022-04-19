@@ -1,0 +1,25 @@
+{
+  "data": {
+    "ace_search_product_v4": {
+      "header": {
+        "totalData": 107,
+        "totalDataText": "107",
+        "defaultView": 1,
+        "responseCode": 0,
+        "errorMessage": "",
+        "additionalParams": "",
+        "keywordProcess": "0"
+      },
+      "data": {
+        "isQuerySafe": true,
+        "autocompleteApplink": "tokopedia://search-autocomplete?q\u003d",
+        "redirection": {
+          "redirectApplink": ""
+        },
+        "products": [
+
+        ]
+      }
+    }
+  }
+}

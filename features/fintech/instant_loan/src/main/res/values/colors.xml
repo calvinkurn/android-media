@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="il_gray">#666666</color>
-    <color name="selected_image_overlay">#99000000</color>
-    <color name="il_text_error">#FFFF6E6E</color>
-    <color name="il_white_four">#e0e0e0</color>
-</resources>

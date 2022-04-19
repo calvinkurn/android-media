@@ -29,6 +29,12 @@ public interface QrScannerContract {
         void goToPaymentPage(String imeiNumber, JsonObject barcodeData);
 
         boolean getRemoteConfigForOvoPay();
+
+        void goToEventRedeemPage(String url);
+
+        boolean getRemoteConfigPeduliLindungi();
+
+        String getCallbackUrlFromPeduliLindungi();
     }
 
     interface Presenter extends CustomerPresenter<View> {

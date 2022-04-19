@@ -4,31 +4,33 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultShopCpmLayoutBinding
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import kotlinx.android.synthetic.main.search_result_shop_cpm_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ShopCpmViewHolder(
         itemView: View,
         val bannerAdsListener: BannerAdsListener?
-): AbstractViewHolder<ShopCpmViewModel>(itemView) {
+): AbstractViewHolder<ShopCpmDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.search_result_shop_cpm_layout
     }
+    private var binding: SearchResultShopCpmLayoutBinding? by viewBinding()
 
     init {
-        itemView.adsBannerViewSearchShop?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener{
+        binding?.adsBannerViewSearchShop?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener{
             override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
                 bannerAdsListener?.onBannerAdsClicked(position, applink, data)
             }
         })
 
-        itemView.adsBannerViewSearchShop?.setTopAdsImpressionListener(createTopAdsItemImpressionListener())
+        binding?.adsBannerViewSearchShop?.setTopAdsImpressionListener(createTopAdsItemImpressionListener())
     }
 
     private fun createTopAdsItemImpressionListener(): TopAdsItemImpressionListener {
@@ -39,13 +41,13 @@ internal class ShopCpmViewHolder(
         }
     }
 
-    override fun bind(shopCpmViewModel: ShopCpmViewModel?) {
-        if (shopCpmViewModel == null) return
+    override fun bind(shopCpmDataView: ShopCpmDataView?) {
+        if (shopCpmDataView == null) return
 
-        initCpmModel(shopCpmViewModel)
+        initCpmModel(shopCpmDataView)
     }
 
-    private fun initCpmModel(shopCpmViewModel: ShopCpmViewModel) {
-        itemView.adsBannerViewSearchShop?.displayAds(shopCpmViewModel.cpmModel)
+    private fun initCpmModel(shopCpmDataView: ShopCpmDataView) {
+        binding?.adsBannerViewSearchShop?.displayAds(shopCpmDataView.cpmModel)
     }
 }

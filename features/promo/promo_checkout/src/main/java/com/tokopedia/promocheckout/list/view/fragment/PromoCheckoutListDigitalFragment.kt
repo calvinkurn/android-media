@@ -25,6 +25,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
+
     @Inject
     lateinit var userSession: UserSession
     lateinit var promoDigitalModel: PromoDigitalModel
@@ -68,14 +69,14 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],
-                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
+                data.message.text, data.titleDescription, data.discountAmount, state = data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
+        textInputCoupon.textFieldInput.setText(promoCheckoutLastSeenModel.promoCode)
         promoCheckoutAnalytics.clickDigitalLastSeenPromo(promoCheckoutLastSeenModel.promoCode, userSession.userId)
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.home_recom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -14,17 +16,20 @@ import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
+import com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
+import com.tokopedia.kotlin.extensions.view.gone
 
 /**
  * Created by lukas on 21/05/2019
  *
  * A activity class for default activity when opening recommendation page from deeplink
  */
+@SuppressLint("GoogleAppIndexingApiWarning")
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
-        const val PRODUCT_ID = "PRODUCT_ID"
+        private const val PRODUCT_ID = "PRODUCT_ID"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -38,7 +43,17 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
             putExtra(PRODUCT_ID, productId)
         }
+
+        private const val PARAM_TOKONOW = "tokonow"
+        private const val URL_PATH_1 = 1
+        private const val URL_PATH_2 = 2
     }
+
+    override fun getParentViewResourceID(): Int = com.tokopedia.home_recom.R.id.recom_container
+
+    override fun getLayoutRes(): Int = com.tokopedia.home_recom.R.layout.recommendation_activity
+
+    override fun getToolbarResourceID(): Int = com.tokopedia.home_recom.R.id.recom_toolbar
 
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
@@ -47,17 +62,33 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun getNewFragment(): Fragment {
         return when{
             intent.data != null -> {
-                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
-                        getSimilarRecomPageProductId(),
-                        getRef(),
-                        getSource(),
-                        getInternalRef())
-                else RecommendationFragment
-                        .newInstance(
-                                getRecomPageProductId(),
-                                getSource(),
-                                getRef(),
-                                getInternalRef())
+                when {
+                    isTokonowProductList(intent?.data?.toString() ?: "") -> {
+                        toolbar.gone()
+                        InfiniteTokonowRecomFragment.newInstance(
+                                productId = getTokonowRecomProductId(),
+                                ref = getRef(),
+                                queryParam = getSource(),
+                                internalRef = getInternalRef(),
+                                fragmentInflater = FragmentInflater.ACTIVITY
+                        )
+                    }
+                    isSimilarProduct(intent?.data?.toString()
+                            ?: "") -> SimilarProductRecommendationFragment.newInstance(
+                            getSimilarRecomPageProductId(),
+                            getRef(),
+                            getSource(),
+                            getInternalRef(),
+                            FragmentInflater.ACTIVITY
+                    )
+                    else -> RecommendationFragment
+                            .newInstance(
+                                    getRecomPageProductId(),
+                                    getSource(),
+                                    getRef(),
+                                    getInternalRef(),
+                                    FragmentInflater.ACTIVITY)
+                }
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)
@@ -75,9 +106,19 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     private fun getInternalRef() = intent.data?.getQueryParameter("search_ref") ?: ""
 
     private fun getSimilarRecomPageProductId() =
-            if (isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1)
+            if (isNumber(intent.data?.pathSegments?.get(URL_PATH_1)
+                            ?: "")) intent.data?.pathSegments?.get(URL_PATH_1)
                     ?: ""
             else ""
+
+    private fun getTokonowRecomProductId(): String {
+        var productId = ""
+        intent.data?.pathSegments?.get(URL_PATH_2)?.let {
+            if (isNumber(it)) productId = it
+        }
+        return productId
+    }
+
 
     /**
      * Function [isSimilarProduct]
@@ -86,8 +127,13 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @param url is string variable for checking this is number or not
      * @return boolean
      */
-    private fun isSimilarProduct(url: String): Boolean{
+
+    private fun isSimilarProduct(url: String): Boolean {
         return url.contains("/d/") || url.contains("/d?") || url.contains("/d")
+    }
+
+    private fun isTokonowProductList(url: String): Boolean {
+        return url.contains(PARAM_TOKONOW)
     }
 
     /**
@@ -96,8 +142,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * @param text is string variable for checking this is number or not
      * @return boolean
      */
-    private fun isNumber(text: String): Boolean{
-        return (text.toIntOrNull() != null)
+    private fun isNumber(text: String): Boolean {
+        return text.all { it in '0'..'9' }
     }
 
     /**
@@ -113,8 +159,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      * [onOptionsItemSelected] is override from [BaseSimpleActivity]
      * this function will handle options item selected
      */
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId){
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
             android.R.id.home -> {
                 onBackPressed()
                 true
@@ -130,7 +176,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
-            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber( intent.data?.pathSegments?.get(0) ?: "")){
+            if(intent?.data?.pathSegments?.isEmpty() == false && isNumber(intent.data?.pathSegments?.get(0)
+                            ?: "")){
                 RecommendationPageTracking.eventUserClickBackWithProductId()
             }else{
                 RecommendationPageTracking.eventUserClickBack()

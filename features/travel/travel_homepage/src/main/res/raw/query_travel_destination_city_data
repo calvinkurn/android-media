@@ -1,6 +1,0 @@
-query travelcollective($webURLs:String!) {
-    TravelDestinationCityData(WebURL : $webURLs) {
-      CityID
-      CityName
-   }
-}

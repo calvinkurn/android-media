@@ -9,6 +9,7 @@ public class PaymentData {
     List<HashMap<String, String>> products = new ArrayList<>();
     public String paymentId = "";
     public String productType = "";
+    public String paymentEventName = "";
     public String revenue = "";
     public String revenueIDRtoDouble = "";
     public String shipping = "";
@@ -18,6 +19,7 @@ public class PaymentData {
     public String itemPrice = "";
     public boolean newBuyer;
     public boolean monthlyNewBuyer;
+    public boolean isFromNative;
 
     public boolean isNewBuyer() {
         return newBuyer;
@@ -117,5 +119,13 @@ public class PaymentData {
 
     public void setShippingIDRtoDouble(String shippingIDRtoDouble) {
         this.shippingIDRtoDouble = shippingIDRtoDouble;
+    }
+
+    public String getPaymentEventName() {
+        return paymentEventName;
+    }
+
+    public void setPaymentEventName(String paymentEventName) {
+        this.paymentEventName = paymentEventName;
     }
 }

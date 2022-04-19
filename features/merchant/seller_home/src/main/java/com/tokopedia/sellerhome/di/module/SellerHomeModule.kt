@@ -1,113 +1,86 @@
 package com.tokopedia.sellerhome.di.module
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.graphql.coroutines.data.Interactor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.HeaderErrorListResponse
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
-import com.tokopedia.sellerhome.data.remote.TickerService
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import javax.inject.Named
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-@SellerHomeScope
 @Module
 class SellerHomeModule {
 
-    @SellerHomeScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
-    @SellerHomeScope
-    @Provides
-    fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
-
-    @SellerHomeScope
-    @Provides
-    fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-
-    @SellerHomeScope
-    @Provides
-    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
-        return MultiRequestGraphqlUseCase(graphqlRepository)
+    companion object {
+        private const val VOUCHER_CREATION_PREF_NAME = "voucher_creation"
     }
 
     @SellerHomeScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @SellerHomeScope
-    @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        val collector = ChuckerCollector(
-                context = context,
-                showNotification = GlobalConfig.isAllowDebuggingTools()
-        )
-
-        return ChuckerInterceptor(
-                context = context,
-                collector = collector
-        )
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
     @SellerHomeScope
     @Provides
-    fun provideOkHttpClient(@SellerHomeScope chuckInterceptor: ChuckerInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-
-        val builder = OkHttpClient.Builder()
-                .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(chuckInterceptor)
-                    .addInterceptor(httpLoggingInterceptor.apply
-                    { level = HttpLoggingInterceptor.Level.BODY })
-        }
-        return builder.build()
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun provideTickerRetrofit(builder: Retrofit.Builder,
-                              @SellerHomeScope okHttpClient: OkHttpClient): Retrofit {
-        return builder.baseUrl(TickerService.BASE_URL).client(okHttpClient).build()
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun provideTickerService(retrofit: Retrofit): TickerService {
-        return retrofit.create(TickerService::class.java)
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @SellerHomeScope
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
-            FirebaseRemoteConfigImpl(context)
+        FirebaseRemoteConfigImpl(context)
 
     @SellerHomeScope
     @Provides
     fun provideSellerHomeRemoteConfig(remoteConfig: FirebaseRemoteConfigImpl): SellerHomeRemoteConfig {
         return SellerHomeRemoteConfig(remoteConfig)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideFreeShippingTracker(userSession: UserSessionInterface): SettingFreeShippingTracker {
+        val analytics = TrackApp.getInstance().gtm
+        return SettingFreeShippingTracker(analytics, userSession)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideSellerMenuTracker(userSession: UserSessionInterface): SellerMenuTracker {
+        val analytics = TrackApp.getInstance().gtm
+        return SellerMenuTracker(analytics, userSession)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
+        return WidgetLastUpdatedSharedPref(context)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideLastUpdatedInfoEnabled(): Boolean {
+        return true
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideVoucherCreationSharedPref(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(VOUCHER_CREATION_PREF_NAME, Context.MODE_PRIVATE)
     }
 }

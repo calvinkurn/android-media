@@ -8,23 +8,23 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="end"
         android:gravity="left"
-        android:lineHeight="@dimen/dp_18"
+        android:lineHeight="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         tools:text="Tanggal Transaksi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_umrah_desc"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ellipsize="end"
         android:gravity="right"
-        android:lineHeight="@dimen/dp_18"
+        android:lineHeight="@dimen/spacing_lvl4"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_3"
         tools:text="7 Aug 2019 17:22 WIB" />

@@ -1,38 +1,34 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
-import android.content.Context
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
-import com.tokopedia.shop_showcase.common.ShowcaseType
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 
 class ShopShowcaseListReorderAdapter(
         val listener: ShopShowcaseReorderListener,
-        val onStartDragListener: OnStartDragListener?,
-        private val isMyShop: Boolean
+        val onStartDragListener: OnStartDragListener?
 ) : RecyclerView.Adapter<ShopShowcaseListReorderAdapter.ViewHolder>(), ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
-    private var showcaseList: MutableList<ShowcaseItem> = mutableListOf()
-    val _showcaseList: List<ShowcaseItem>
+    private var showcaseList: MutableList<ShopEtalaseModel> = mutableListOf()
+    val _showcaseList: List<ShopEtalaseModel>
         get() = showcaseList
 
-    fun updateDataShowcaseList(showcaseListData: ArrayList<ShowcaseItem>) {
+    fun updateDataShowcaseList(showcaseListData: ArrayList<ShopEtalaseModel>) {
         showcaseList = showcaseListData.toMutableList()
 
         // Handling undragable list
         for (showcase in showcaseList) {
-            if (showcase.type == ShowcaseType.GENERATED) {
+            if (showcase.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) {
                 generatedSowcaseList += 1
             }
         }
@@ -40,7 +36,12 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(R.layout.shop_showcase_item_reorder))
+        val binding = ItemShopShowcaseListImageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        )
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -48,7 +49,7 @@ class ShopShowcaseListReorderAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindData(showcaseList[position], position)
+        holder.bind(showcaseList[position])
     }
 
     override fun onItemDismiss(position: Int) {
@@ -69,35 +70,32 @@ class ShopShowcaseListReorderAdapter(
         }
     }
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val context: Context
-        private var titleShowcase: TextView? = null
-        private var buttonMove: ImageView? = null
+    inner class ViewHolder(itemViewBinding: ItemShopShowcaseListImageBinding) : ShopShowcaseListImageBaseViewHolder(itemViewBinding) {
 
         init {
-            context = itemView.context
-            titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
-            buttonMove = itemView.findViewById(R.id.img_move)
+            itemViewBinding.apply {
+                itemShowcaseActionButton = imgMoveShowcase
+            }
         }
 
-        fun bindData(dataShowcase: ShowcaseItem, position: Int) {
-            titleShowcase?.text = dataShowcase.name
+        override fun bind(element: Any) {
+            // cast to actual ui model
+            val elementUiModel = element as ShopEtalaseModel
 
-            if (dataShowcase.type == ShowcaseType.GENERATED) {
-                buttonMove?.visibility = View.INVISIBLE
-            } else {
-                buttonMove?.visibility = View.VISIBLE
-            }
+            // render showcase info
+            renderShowcaseMainInfo(elementUiModel, isMyShop = true)
 
-            buttonMove?.setOnTouchListener { _, event ->
-                @Suppress("DEPRECATION")
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener?.onStartDrag(this@ViewHolder)
+            // set listener for showcase action button
+            itemShowcaseActionButton?.apply {
+                // handle showcase action drag listener
+                setOnTouchListener { _, event ->
+                    @Suppress("DEPRECATION")
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                        onStartDragListener?.onStartDrag(this@ViewHolder)
+                    }
+                    false
                 }
-                false
             }
         }
-
     }
-
 }

@@ -9,18 +9,21 @@ public interface InboxTicketTracking {
     interface Event{
         String EventName = "clickInboxBantuan";
         String EventView = "viewInboxBantuan";
+        String Event = "newContactUsEvent";
     }
 
     interface Category {
         String EventInboxTicket = "Inbox Ticket";
         String EventHelpMessageInbox = "inbox pesan bantuan";
+        String EventCategoryInbox= "inbox pesan bantuan";
     }
+
     interface Action{
-        String EventTicketClick = "Click Ticket";
+        String EventTicketClick = "click ticket";
         String EventClickHubungi = "Click Hubungi Kami";
         String EventClickDetailTrasanksi = "Click Detail Transaksi";
         String EventClickAttachImage = "Click Attach Image";
-        String EventClickSubmitReply = "Click Submit Reply";
+        String EventClickReplyTicket = "click reply ticket";
         String EventClickReason = "Click Reason";
         String EventClickFilter = "Click Filter";
         String EventClickSelectAllMessage = "Click Select All Message";
@@ -32,9 +35,13 @@ public interface InboxTicketTracking {
         String EventClickSearchDetails = "Click Search In Details";
         String EventNotAttachImageRequired = "Not Attach Image Required";
         String EventClickCsatPerReply = "click rating csat per reply";
-        String EventRatingCsatOnSlider = "click rating csat on slider";
+        String EventClickOnCsatRating= "click rating csat";
+        String EventRatingCsatOnSlider = "click jawaban membantu";
         String EventClickCloseTicket = "click close ticket";
         String EventImpressionOnCsatRating= "impression on csat rating";
+        String EventClickSubmitCsatRating= "click submit rating csat";
+        String EventClickTicketFilter= "click use filter";
+        String EventClickChatbotButton= "click use chatbot";
     }
     interface Label {
         String InboxEmpty = "Inbox - Empty State";
@@ -46,7 +53,9 @@ public interface InboxTicketTracking {
         String NoResult = "No Result";
         String EventHelpful = "helpful";
         String EventNotHelpful = "not helpful";
-        String EventYes = "yes";
-        String EventNo = "no";
+        String EventLabelYaTutup = "Ya,tutup";
+        String EventLabelBatal = "Batal";
+        String EventLabelYa = "Ya";
+        String EventLabelTidak = "Ya";
     }
 }

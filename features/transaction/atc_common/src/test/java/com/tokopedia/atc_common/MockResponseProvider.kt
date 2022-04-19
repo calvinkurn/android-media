@@ -21,7 +21,7 @@ object MockResponseProvider {
 
 val responseAtcSuccess = """
     {
-     "add_to_cart": {
+     "add_to_cart_v2": {
        "error_message": [
          "Produk berhasil dimasukkan ke Keranjang Belanja"
        ],
@@ -58,7 +58,7 @@ val responseAtcSuccess = """
 
 val responseAtcError = """
     {
-    "add_to_cart": {
+    "add_to_cart_v2": {
       "error_message": [
         "Yaah, barang ini sudah nggak tersedia. Move on ke barang lainnya, yuk!"
       ],

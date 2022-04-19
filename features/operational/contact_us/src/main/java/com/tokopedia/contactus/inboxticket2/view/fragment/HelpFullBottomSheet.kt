@@ -1,21 +1,24 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.contactus.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class HelpFullBottomSheet(context: Context,
-                          private val closeBottomSheetListener: CloseSHelpFullBottomSheet) : FrameLayout(context), View.OnClickListener {
-    private fun init() {
-        val helpfullView = LayoutInflater.from(context).inflate(R.layout.helpfull_bottom_sheet_layout, this, true)
+class HelpFullBottomSheet(context: Context, private val closeBottomSheetListener: CloseSHelpFullBottomSheet) : BottomSheetUnify(), View.OnClickListener {
+    init {
+        val helpfullView = View.inflate(context, R.layout.helpfull_bottom_sheet_layout, null)
         val noButton = helpfullView.findViewById<TextView>(R.id.tv_no_button)
         val yesButton = helpfullView.findViewById<TextView>(R.id.tv_yes_button)
         noButton.setOnClickListener(this)
         yesButton.setOnClickListener(this)
+        setChild(helpfullView)
+        showKnob = true
+        showCloseIcon = false
+        showHeader = false
     }
+
 
     override fun onClick(view: View) {
         if (view.id == R.id.tv_no_button) {
@@ -27,9 +30,5 @@ class HelpFullBottomSheet(context: Context,
 
     interface CloseSHelpFullBottomSheet {
         fun onClick(agreed: Boolean)
-    }
-
-    init {
-        init()
     }
 }

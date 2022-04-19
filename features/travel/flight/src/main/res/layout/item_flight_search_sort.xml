@@ -7,20 +7,19 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFlightSortDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Harga Terendah" />
 
     <View
-        android:id="@+id/seperator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/flight_dp_1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Neutral_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/tvFlightSortDescription" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify

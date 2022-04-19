@@ -9,6 +9,6 @@
     android:layout_marginEnd="@dimen/spacing_lvl3"
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
-    android:textColor="@color/product_manage_charcoal_grey"
+    android:textColor="@color/Unify_N700_68"
     app:typographyType="body_2"
     app:typographyWeight="reguler"/>

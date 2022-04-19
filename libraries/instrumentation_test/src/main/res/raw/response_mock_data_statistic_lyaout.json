@@ -1,0 +1,555 @@
+[
+  {
+    "data": {
+      "GetSellerDashboardPageLayout": {
+        "widget": [
+          {
+            "widgetType": "section",
+            "title": "Ringkasan statistik",
+            "subtitle": "Rutin pantau perkembangan toko untuk tingkatkan penjualanmu.",
+            "tooltip": {
+              "title": "Ringkasan statistik",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Pendapatan bersih baru",
+                  "description": "Didapat dari pesanan yang baru masuk, di luar ongkos kirim."
+                },
+                {
+                  "title": "Produk dilihat",
+                  "description": "Jumlah kunjungan ke halaman produkmu."
+                },
+                {
+                  "title": "Konversi",
+                  "description": "Persentase transaksi sukses dibagi dengan jumlah produk dilihat."
+                },
+                {
+                  "title": "Pesanan baru",
+                  "description": "Jumlah pesanan yang baru masuk dan sudah dibayar oleh pembeli."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Pendapatan bersih baru",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Didapat dari pesanan yang baru masuk, di luar ongkos kirim.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "totalNetRevenueVerified",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Produk dilihat",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Jumlah kunjungan ke halaman produkmu.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "productViewStatistic",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Konversi",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Persentase transaksi sukses dibagi dengan jumlah produk dilihat.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "conversionRateSummary",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Pesanan baru",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Jumlah pesanan yang baru masuk dan sudah dibayar oleh pembeli.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "totalOrderSummary",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "section",
+            "title": "Jumlah pendapatan",
+            "subtitle": "Cek pendapatan toko untuk atur strategi penjualan.",
+            "tooltip": {
+              "title": "Jumlah pendapatan",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Pendapatan bersih baru",
+                  "description": "Didapat dari pesanan yang baru masuk, di luar ongkos kirim."
+                },
+                {
+                  "title": "Pendapatan kotor diterima",
+                  "description": "Didapat dari pesanan yang sudah selesai diproses, termasuk ongkos kirim."
+                },
+                {
+                  "title": "Pendapatan bersih diterima",
+                  "description": "Didapat dari pesanan yang sudah selesai diproses, di luar ongkos kirim."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "lineGraph",
+            "title": "Pendapatan bersih baru",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "netRevenueVerified",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Pendapatan kotor diterima",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Didapat dari pesanan yang sudah selesai diproses, termasuk ongkos kirim.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "grossIncomeSummary",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Pendapatan bersih diterima",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Didapat dari pesanan yang sudah selesai diproses, di luar ongkos kirim.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "totalNetRevenueFinish",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "section",
+            "title": "Bagaimana Bebas Ongkir memengaruhi pendapatanmu?",
+            "subtitle": "Lihat perkembangan penjualan di tokomu dengan Bebas Ongkir.",
+            "tooltip": {
+              "title": "Bagaimana Bebas Ongkir memengaruhi pendapatanmu?",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Detail pendapatan bersih",
+                  "description": "Pendapatan dari pesanan yang baru masuk, berdasarkan pemakaian Bebas Ongkir."
+                },
+                {
+                  "title": "Detail pesanan baru",
+                  "description": "Jumlah pesanan yang baru masuk, berdasarkan pemakaian Bebas Ongkir."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "pieChart",
+            "title": "Detail pendapatan bersih",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "verifiedOrdersBONetAmount",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "pieChart",
+            "title": "Detail pesanan baru",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "verifiedOrdersBOQuantity",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "section",
+            "title": "Produk dilihat dan konversi",
+            "subtitle": "Pantau berapa kali produkmu dilihat dan terjual.",
+            "tooltip": {
+              "title": "Produk dilihat dan konversi",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Tren produk dilihat",
+                  "description": "Perhitungan seluruh kunjungan ke halaman produkmu per hari."
+                },
+                {
+                  "title": "Tren konversi produk",
+                  "description": "Persentase transaksi sukses dibagi dengan jumlah produk dilihat per hari."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "lineGraph",
+            "title": "Tren produk dilihat",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "productViewTrend",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "lineGraph",
+            "title": "Tren konversi produk",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": false,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "conversionRate",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "section",
+            "title": "Performa pesanan",
+            "subtitle": "Perkembangan pesanan yang berhasil dibayar oleh pembeli.",
+            "tooltip": {
+              "title": "Performa pesanan",
+              "content": "",
+              "show": true,
+              "list": [
+                {
+                  "title": "Tren pesanan",
+                  "description": "Jumlah pesanan yang sukses dibayarkan per hari."
+                },
+                {
+                  "title": "Tipe pembatalan",
+                  "description": "Jumlah pembatalan pesanan sesuai tipe."
+                },
+                {
+                  "title": "Rata-rata transaksi",
+                  "description": "Perhitungan rata-rata nominal pembelian dalam satu pesanan."
+                },
+                {
+                  "title": "Rata-rata jumlah barang",
+                  "description": "Perhitungan rata-rata barang terjual dalam satu pesanan."
+                }
+              ]
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "lineGraph",
+            "title": "Tren pesanan",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "totalOrderStatistic",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "barChart",
+            "title": "Tipe pembatalan",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "orderRejectByCategorization",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Rata-rata transaksi",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Perhitungan rata-rata nominal pembelian dalam satu pesanan.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "averageOrderSummary",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          },
+          {
+            "widgetType": "card",
+            "title": "Rata-rata jumlah barang",
+            "subtitle": "",
+            "tooltip": {
+              "title": "",
+              "content": "Perhitungan rata-rata barang terjual dalam satu pesanan.",
+              "show": true,
+              "list": []
+            },
+            "showEmpty": true,
+            "postFilter": [],
+            "url": "",
+            "applink": "",
+            "dataKey": "averageQuantitySoldSummary",
+            "ctaText": "",
+            "emptyState": {
+              "imageUrl": "",
+              "title": "",
+              "description": "",
+              "ctaText": "",
+              "applink": ""
+            }
+          }
+        ]
+      }
+    }
+  }
+]

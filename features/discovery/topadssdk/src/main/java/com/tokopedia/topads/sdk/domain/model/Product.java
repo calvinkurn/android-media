@@ -46,6 +46,10 @@ public class Product implements Parcelable {
     private static final String KEY_CAMPAIGN = "campaign";
     private static final String KEY_LABEL_GROUP = "label_group";
     private static final String KEY_FREE_ONGKIR = "free_ongkir";
+    private static final String KEY_CATEGORY_BREADCRUMB = "category_breadcrumb";
+    private static final String KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED = "product_item_sold_payment_verified";
+    private static final String KEY_PRODUCT_MINIMUM_ORDER = "product_minimum_order";
+    private static final String KEY_HEADLINE_PRODUCT_RATING_AVERAGE = "rating_average";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -141,7 +145,7 @@ public class Product implements Parcelable {
 
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
-    private ImageProduct imageProduct;
+    private ImageProduct imageProduct = new ImageProduct();
 
     @SerializedName(KEY_CAMPAIGN)
     @Expose
@@ -155,13 +159,29 @@ public class Product implements Parcelable {
     @Expose
     private FreeOngkir freeOngkir = new FreeOngkir();
 
+    @SerializedName(KEY_CATEGORY_BREADCRUMB)
+    @Expose
     private String categoryBreadcrumb = "";
+
+    @SerializedName(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)
+    @Expose
+    private String countSold = "";
+
+    @SerializedName(KEY_PRODUCT_MINIMUM_ORDER)
+    @Expose
+    private int productMinimumOrder = 0;
+
+    @SerializedName(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)
+    @Expose
+    private String headlineProductRatingAverage = "";
 
     private boolean topAds = false;
 
     private String recommendationType = "";
 
     private boolean loaded = false;
+
+    private boolean hasAddToCartButton = false;
 
     public Product() {
     }
@@ -263,6 +283,18 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_FREE_ONGKIR)) {
             setFreeOngkir(new FreeOngkir(object.getJSONObject(KEY_FREE_ONGKIR)));
         }
+        if(!object.isNull(KEY_CATEGORY_BREADCRUMB)){
+            setCategoryBreadcrumb(object.getString(KEY_CATEGORY_BREADCRUMB));
+        }
+        if(!object.isNull(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED)){
+            setCountSold(object.getString(KEY_PRODUCT_ITEM_SOLD_PAYMENT_VERIFIED));
+        }
+        if(!object.isNull(KEY_PRODUCT_MINIMUM_ORDER)) {
+            setProductMinimumOrder(object.getInt(KEY_PRODUCT_MINIMUM_ORDER));
+        }
+        if(!object.isNull(KEY_HEADLINE_PRODUCT_RATING_AVERAGE)) {
+            setHeadlineProductRatingAverage(object.getString(KEY_HEADLINE_PRODUCT_RATING_AVERAGE));
+        }
     }
 
     protected Product(Parcel in) {
@@ -295,6 +327,10 @@ public class Product implements Parcelable {
         campaign = in.readParcelable(Campaign.class.getClassLoader());
         labelGroupList = in.createTypedArrayList(LabelGroup.CREATOR);
         freeOngkir = in.readParcelable(FreeOngkir.class.getClassLoader());
+        categoryBreadcrumb = in.readString();
+        countSold = in.readString();
+        productMinimumOrder = in.readInt();
+        headlineProductRatingAverage = in.readString();
     }
 
     @Override
@@ -328,6 +364,10 @@ public class Product implements Parcelable {
         dest.writeParcelable(campaign, flags);
         dest.writeTypedList(labelGroupList);
         dest.writeParcelable(freeOngkir, flags);
+        dest.writeString(categoryBreadcrumb);
+        dest.writeString(countSold);
+        dest.writeInt(productMinimumOrder);
+        dest.writeString(headlineProductRatingAverage);
     }
 
     @Override
@@ -609,5 +649,37 @@ public class Product implements Parcelable {
 
     public FreeOngkir getFreeOngkir() {
         return this.freeOngkir;
+    }
+
+    public String getCountSold() {
+        return this.countSold;
+    }
+
+    public void setCountSold(String countSold) {
+        this.countSold = countSold;
+    }
+
+    public int getProductMinimumOrder() {
+        return this.productMinimumOrder;
+    }
+
+    public void setProductMinimumOrder(int productMinimumOrder) {
+        this.productMinimumOrder = productMinimumOrder;
+    }
+
+    public void setHeadlineProductRatingAverage(String headlineProductRatingAverage) {
+        this.headlineProductRatingAverage = headlineProductRatingAverage;
+    }
+
+    public String getHeadlineProductRatingAverage() {
+        return this.headlineProductRatingAverage;
+    }
+
+    public boolean isHasAddToCartButton() {
+        return hasAddToCartButton;
+    }
+
+    public void setHasAddToCartButton(boolean hasAddToCartButton) {
+        this.hasAddToCartButton = hasAddToCartButton;
     }
 }

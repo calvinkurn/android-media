@@ -15,7 +15,9 @@ public class RulesUtil {
         interface Payload {
             String NOTIFICATION_ID = "notificationId";
             String NOTIFICATION_TYPE = "notificationType";
+            String CUSTOM_VALUES = "customValues";
             String CAMPAIGN_ID = "campaignId";
+            String CAMPAIGN_CODE = "campaignCode";
             String CAMPAIGN_USER_TOKEN = "campaignUserToken";
             String PARENT_ID = "parentId";
             String START_TIME = "st";
@@ -23,27 +25,20 @@ public class RulesUtil {
             String FREQUENCY = "freq";
             String CANCELLABLE = "d";
             String IS_TEST = "isTest";
+            String PERST_ON = "perstOn";
             String SCREEN_NAME = "s";
+            String MULTIPLE_SCREEN_NAME = "ss";
             String UI = "ui";
+            String SHOP_ID = "shopId";
         }
     }
 
     public static boolean isValidTimeFrame(long startTime, long endTime,
                                            long currentTimeStamp, ElapsedTime lastElapsedTime){
         //Should you delete all of the time data on reinitialization
-        long deltaTime = 0l;
-        deltaTime = android.os.SystemClock.elapsedRealtime() - lastElapsedTime.elapsedTime;
-        lastElapsedTime.elapsedTime = android.os.SystemClock.elapsedRealtime();
-
         RepositoryManager.getInstance().getStorageProvider().
-                putElapsedTimeToStore(lastElapsedTime);
-        long correctedCurrentTime = currentTimeStamp + deltaTime;
-        if(startTime <= correctedCurrentTime && (endTime >= correctedCurrentTime ||
-                endTime == 0l)){
-            return true;
-        }
-        else {
-            return false;
-        }
+                putElapsedTimeToStore(lastElapsedTime).subscribe();
+        return startTime <= currentTimeStamp && (endTime >= currentTimeStamp ||
+                endTime == 0l);
     }
 }

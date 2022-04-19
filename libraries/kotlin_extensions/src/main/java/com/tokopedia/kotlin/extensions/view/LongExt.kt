@@ -49,7 +49,7 @@ fun Long.toAmountStringByDivider(
         append(wholeNum)
         if (fractionNum > 0) {
             val fullString = this@toAmountStringByDivider.toString()
-            val fractionString = fullString.substring(max(0, fullString.indexOf(wholeNum.toString()) + 1), fullString.length)
+            val fractionString = fullString.substring(max(0, fullString.indexOf(wholeNum.toString()) + 1) + wholeNum.toString().length-1, fullString.length)
             append(separator)
             println(decimalPlaces)
             for (num in 0 until decimalPlaces) {

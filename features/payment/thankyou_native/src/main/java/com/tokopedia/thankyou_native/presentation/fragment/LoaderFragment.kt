@@ -1,8 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
-import android.os.Bundle
-import android.os.Handler
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,8 @@ import com.tokopedia.thankyou_native.data.mapper.Invalid
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
+import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -77,15 +77,15 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun loadThankPageData() {
         globalError.gone()
         arguments?.let {
-            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
-                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
+            if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
+                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
+                        it.getString(ARG_MERCHANT, ""))
             }
         }
     }
 
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
@@ -151,6 +151,18 @@ class LoaderFragment : BaseDaggerFragment() {
         lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
+        triggerHaptics()
+    }
+
+    private fun triggerHaptics() {
+        try {
+            val vibrationService = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrationService.vibrate(VibrationEffect.createOneShot(VIBRATION_MILLIS, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrationService.vibrate(VIBRATION_MILLIS)
+            }
+        } catch(ignore: Exception) { }
     }
 
     private fun prepareLoaderLottieTask(): LottieTask<LottieComposition>? {
@@ -162,9 +174,9 @@ class LoaderFragment : BaseDaggerFragment() {
         lottieTask?.addListener { result: LottieComposition? ->
             result?.let {
                 lottieAnimationView?.setComposition(result)
-                lottieAnimationView.repeatCount = LottieDrawable.INFINITE
+                lottieAnimationView?.repeatCount = LottieDrawable.INFINITE
                 lottieAnimationView?.repeatMode = LottieDrawable.RESTART
-                lottieAnimationView.playAnimation()
+                lottieAnimationView?.playAnimation()
             }
         }
     }
@@ -172,6 +184,7 @@ class LoaderFragment : BaseDaggerFragment() {
     companion object {
         const val RPC_ERROR_STR = "rpc error:"
         const val DELAY_MILLIS = 2000L
+        const val VIBRATION_MILLIS = 150L
         const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle

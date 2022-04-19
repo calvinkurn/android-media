@@ -7,50 +7,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.payment.setting.R
-import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
-import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
-import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import javax.inject.Inject
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
-import com.tokopedia.payment.setting.list.di.SettingListPaymentModule
-import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
-import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
+import com.tokopedia.payment.setting.di.SettingPaymentComponent
+import com.tokopedia.payment.setting.list.model.PaymentSignature
+import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
+import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
+import com.tokopedia.payment.setting.list.view.viewmodel.SettingsListViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
-import com.tokopedia.design.component.Dialog
+import javax.inject.Inject
 
 
 class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, SettingListPaymentAdapterTypeFactory>(),
-        SettingListPaymentContract.View, SettingListEmptyViewHolder.ListenerEmptyViewHolder {
+        SettingListEmptyViewHolder.ListenerEmptyViewHolder {
+
+    private var paymentSignature: PaymentSignature? = null
 
     @Inject
-    lateinit var settingListPaymentPresenter : SettingListPaymentPresenter
-    val progressDialog : ProgressDialog by lazy { ProgressDialog(context) }
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.run {
-            GraphqlClient.init(this)
-        }
-        super.onCreate(savedInstanceState)
+    private val settingsListViewModel: SettingsListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
+        viewModelProvider.get(SettingsListViewModel::class.java)
+    }
+
+    private val progressDialog: ProgressDialog by lazy { ProgressDialog(context) }
+
+    override fun initInjector() {
+        getComponent(SettingPaymentComponent::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,18 +65,42 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
-            getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+            getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
-        view.authenticateCreditCard.setOnClickListener{
+        view.authenticateCreditCard.setOnClickListener {
             activity?.run {
-                settingListPaymentPresenter.checkVerificationPhone()
+                showLoadingDialog()
+                settingsListViewModel.checkVerificationPhone()
             }
         }
         updateViewCounter(adapter.dataSize)
+        observeViewModel()
     }
 
-    private fun updateViewCounter(size : Int) {
-        view?.counterCreditCard?.setText(getString(R.string.payment_label_saved_card, size))
+
+    private fun observeViewModel() {
+        settingsListViewModel.paymentQueryResultLiveData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    onPaymentSignature(it.data.paymentSignature)
+                    renderList(ArrayList(it.data.creditCard.cards ?: arrayListOf()))
+                }
+                is Fail -> showGetListError(it.throwable)
+            }
+        })
+        settingsListViewModel.phoneVerificationStatusLiveData.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                hideLoadingDialog()
+                onSuccessVerifPhone()
+            } else {
+                hideLoadingDialog()
+                onNeedVerifPhone()
+            }
+        })
+    }
+
+    private fun updateViewCounter(size: Int) {
+        view?.counterCreditCard?.text = getString(R.string.payment_label_saved_card, size)
     }
 
     override fun getAdapterTypeFactory(): SettingListPaymentAdapterTypeFactory {
@@ -85,13 +115,16 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun onClickAddCard() {
         activity?.run {
-            this@SettingListPaymentFragment.startActivityForResult(AddCreditCardActivity.createIntent(this), REQUEST_CODE_ADD_CREDIT_CARD)
+            paymentSignature?.let { paymentSignature ->
+                this@SettingListPaymentFragment
+                        .startActivityForResult(AddCreditCardActivity.createIntent(this, paymentSignature), REQUEST_CODE_ADD_CREDIT_CARD)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK){
-            when (requestCode){
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
                 REQUEST_CODE_DETAIL_CREDIT_CARD, REQUEST_CODE_ADD_CREDIT_CARD, REQUEST_CODE_AUTH_CREDIT_CARD -> loadInitialData()
                 REQUEST_CODE_VERIF_PHONE -> onSuccessVerifPhone()
             }
@@ -99,13 +132,9 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
+    override fun getScreenName() = ""
 
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
-    }
+    override fun isLoadMoreEnabledByDefault() = false
 
     override fun showGetListError(throwable: Throwable?) {
         hideAuthPaymentView()
@@ -114,62 +143,54 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
         updateViewCounter(list.size)
-        if(list.size > 0 && list.size < 4){
+        if (list.size in CARD_LIST_RANGE_FOR_ADD_MORE_CARD) {
             list.add(SettingListAddCardModel())
         }
         super.renderList(list)
         showAuthPaymentView()
     }
 
-    override fun initInjector() {
-        DaggerSettingListPaymentComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(SettingListPaymentModule())
-                .build()
-                .inject(this)
-        settingListPaymentPresenter.attachView(this)
-    }
-
-    override fun showLoadingDialog() {
+    private fun showLoadingDialog() {
         progressDialog.show()
     }
 
-    override fun hideLoadingDialog() {
+    private fun hideLoadingDialog() {
         progressDialog.hide()
     }
 
-    override fun onSuccessVerifPhone() {
+    private fun onSuccessVerifPhone() {
         activity?.run {
             this@SettingListPaymentFragment.startActivityForResult(AuthenticateCreditCardActivity.createIntent(this), REQUEST_CODE_AUTH_CREDIT_CARD)
         }
     }
 
-    override fun onNeedVerifPhone() {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
-        dialog.setDesc(getString(R.string.payment_label_desc_dialog_verif))
-        dialog.setBtnOk(getString(R.string.payment_label_continue_dialog_verif))
-        dialog.setBtnCancel(getString(R.string.payment_label_cancel_dialog_verif))
-        dialog.setOnOkClickListener {
-            activity?.run {
-                val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
-                this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
+    private fun onNeedVerifPhone() {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.payment_label_title_dialog_verif_phone))
+            dialog.setDescription(getString(R.string.payment_label_desc_dialog_verif))
+            dialog.setPrimaryCTAText(getString(R.string.payment_label_continue_dialog_verif))
+            dialog.setSecondaryCTAText(getString(R.string.payment_label_cancel_dialog_verif))
+            dialog.setPrimaryCTAClickListener {
+                activity?.run {
+                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+                    this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
+                }
+                dialog.dismiss()
             }
-            dialog.dismiss()
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setOnCancelClickListener {
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
-    override fun onDestroy() {
-        settingListPaymentPresenter.detachView()
-        super.onDestroy()
+    private fun onPaymentSignature(paymentSignature: PaymentSignature?) {
+        this.paymentSignature = paymentSignature
     }
 
     override fun loadData(page: Int) {
-        settingListPaymentPresenter.getCreditCardList(resources)
+        settingsListViewModel.getCreditCardList()
         hideAuthPaymentView()
     }
 
@@ -188,12 +209,13 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
-        val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
-        val REQUEST_CODE_ADD_CREDIT_CARD = 4273
-        val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
-        val REQUEST_CODE_VERIF_PHONE = 3734
+        val CARD_LIST_RANGE_FOR_ADD_MORE_CARD = 1..3
+        const val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
+        const val REQUEST_CODE_ADD_CREDIT_CARD = 4273
+        const val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
+        const val REQUEST_CODE_VERIF_PHONE = 3734
 
-        fun createInstance() : SettingListPaymentFragment {
+        fun createInstance(): SettingListPaymentFragment {
             return SettingListPaymentFragment()
         }
     }

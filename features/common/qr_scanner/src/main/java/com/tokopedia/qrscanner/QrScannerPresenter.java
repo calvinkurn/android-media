@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common_wallet.balance.domain.GetWalletBalanceUseCase;
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -18,6 +20,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.qrscanner.branchio.BranchIOAndroidDeepLink;
 import com.tokopedia.qrscanner.branchio.BranchIODeeplinkUseCase;
+import com.tokopedia.qrscanner.event_redeem.data.EventRedeem;
 import com.tokopedia.qrscanner.scanner.domain.usecase.ScannerUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -51,6 +54,9 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     private static final String QR_ID = "qr_id";
     private static final String OVO_TEXT = "ovo";
     private static final String GPNR_TEXT = "gpnqr";
+    private static final String EVENT_REDEEM = "tokopedia.com/v1/api/event/custom/redeem/invoice";
+    private static final String PEDULI_LINDUNGI_CHECK_IN = "checkin";
+    private static final String PEDULI_LINDUNGI_CHECK_OUT = "checkout";
 
     private ScannerUseCase scannerUseCase;
     private BranchIODeeplinkUseCase branchIODeeplinkUseCase;
@@ -81,6 +87,7 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         Uri uri = Uri.parse(barcodeData);
         String host = uri.getHost();
         boolean isOvoPayQrEnabled = getView().getRemoteConfigForOvoPay();
+        boolean isEnabledPeduliLindungi = getView().getRemoteConfigPeduliLindungi();
         if (host != null && uri.getPathSegments() != null) {
             if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
                 onScanCompleteGetInfoQrCampaign(uri.getPathSegments().get(0));
@@ -94,7 +101,13 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
         } else if (isOvoPayQrEnabled && barcodeData.toLowerCase().contains(OVO_TEXT)
                 || barcodeData.toLowerCase().contains(GPNR_TEXT)) {
             checkBarCode(barcodeData);
-        } else {
+        } else if (barcodeData.toLowerCase().contains(EVENT_REDEEM)){
+            checkEventRedeem(barcodeData);
+        } else if(isEnabledPeduliLindungi && (barcodeData.contains(PEDULI_LINDUNGI_CHECK_IN) || barcodeData.contains(PEDULI_LINDUNGI_CHECK_OUT))){
+            String path = ApplinkConst.WEBVIEW + "?url=" + getView().getCallbackUrlFromPeduliLindungi() + "&payload="+barcodeData;
+            openActivity(path);
+        }
+        else {
             getView().showErrorGetInfo(context.getString(R.string.qr_scanner_msg_dialog_wrong_scan));
         }
     }
@@ -260,6 +273,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
                                 getView().showErrorGetInfo(context.getString(R.string.qr_scanner_no_available_feature));
                             }
                         }));
+    }
+
+    private void checkEventRedeem(String qrCode){
+        EventRedeem eventRedeem = new Gson().fromJson(qrCode, EventRedeem.class);
+        getView().goToEventRedeemPage(eventRedeem.getUrl());
     }
 
     @Override

@@ -31,4 +31,7 @@
 
     <string name="phone_code_format">+%1$d</string>
     <string name="flight_label_search_hint_airport">Cari bandara atau kota yang dituju</string>
+    <string name="travel_title_help">Tokopedia Care</string>
+    <string name="travel_title_promo">Promo</string>
+    <string name="travel_title_transaction_list">Daftar Transaksi</string>
 </resources>

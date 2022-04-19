@@ -15,9 +15,10 @@ import javax.inject.Inject
 
 class GroupInfoUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GroupInfoResponse>(graphqlRepository) {
 
-    fun setParams(groupId: String) {
+    fun setParams(groupId: String, source: String) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.GROUP_ID] = groupId
+        queryMap[ParamObject.SOURCE] = source
         setRequestParams(queryMap)
     }
 

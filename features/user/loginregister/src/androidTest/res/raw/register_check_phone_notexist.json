@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "registerCheck": {
+        "isExist": false,
+        "isPending": false,
+        "status": 0,
+        "registerType": "phone",
+        "userID": 0,
+        "view": "0851-5636-4695-11",
+        "errors": []
+      }
+    }
+  }
+]

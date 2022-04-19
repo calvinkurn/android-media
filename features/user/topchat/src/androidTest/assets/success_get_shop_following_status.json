@@ -1,0 +1,11 @@
+{
+  "shopInfoByID": {
+    "result": [
+      {
+        "favoriteData": {
+          "alreadyFavorited": 0
+        }
+      }
+    ]
+  }
+}

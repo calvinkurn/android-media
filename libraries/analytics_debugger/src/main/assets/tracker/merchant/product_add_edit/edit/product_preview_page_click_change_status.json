@@ -1,0 +1,13 @@
+{
+  "readme": "click change product status on product preview page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click product status button",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

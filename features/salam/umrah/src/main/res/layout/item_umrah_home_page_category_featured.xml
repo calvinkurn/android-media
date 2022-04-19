@@ -12,10 +12,10 @@
         android:id="@+id/tv_umrah_home_page_category_featured_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginLeft="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/unify_space_12"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12" />
+        android:paddingLeft="@dimen/unify_space_12"
+        android:paddingRight="@dimen/unify_space_12" />
 
 </LinearLayout>

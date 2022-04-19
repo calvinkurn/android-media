@@ -1,6 +1,0 @@
-query umrahTermsConditions($params: UmrahTermsConditionsInput!){
-  umrahTermsConditions(params: $params){
-    header
-    content
-  }
-}

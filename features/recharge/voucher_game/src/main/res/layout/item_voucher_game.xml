@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/dp_4">
+    android:layout_marginBottom="@dimen/unify_space_4">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_2"
-        app:cardCornerRadius="@dimen/dp_5"
-        app:cardElevation="@dimen/dp_2"
+        android:layout_margin="@dimen/unify_space_2"
+        app:cardCornerRadius="@dimen/voucher_game_dp_5"
+        app:cardElevation="@dimen/unify_space_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/item_image"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_0"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="@dimen/unify_space_0"
                 android:scaleType="fitCenter"
                 app:layout_constraintDimensionRatio="3:2"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -39,9 +39,9 @@
                 android:id="@+id/promo_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginRight="@dimen/unify_space_8"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -58,9 +58,9 @@
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_gravity="center"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="small"
         tools:text="PUBG: Mobile" />
 

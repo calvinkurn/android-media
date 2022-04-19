@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
     <ImageView
         android:id="@+id/user_image"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
         android:background="@color/clr_6b767e"
         android:foreground="@drawable/circle_crop"
         app:layout_constraintStart_toStartOf="parent"

@@ -3,16 +3,17 @@ package com.tokopedia.logisticcart.shipping.features.shippingdurationocc
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
 
 class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
 
@@ -21,39 +22,39 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
 
     fun showBottomSheet(fragment: Fragment, list: List<RatesViewModelType>, listener: ShippingDurationOccBottomSheetListener) {
         fragment.context?.let { context ->
-            fragment.fragmentManager?.let { fm ->
-                this.listener = listener
-                bottomSheetUnify = BottomSheetUnify().apply {
-                    isDragable = true
-                    isHideable = true
-                    setTitle(context.getString(R.string.title_bottomsheet_shipment))
-                    val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
-                    setupChild(child, list)
-                    fragment.view?.height?.div(2)?.let { height ->
-                        customPeekHeight = height
-                    }
-                    setChild(child)
-                    show(fm, null)
+            this.listener = listener
+            bottomSheetUnify = BottomSheetUnify().apply {
+                isDragable = true
+                isHideable = true
+                clearContentPadding = true
+                setTitle(context.getString(R.string.title_bottomsheet_shipment))
+                val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
+                setupChild(child, list)
+                fragment.view?.height?.div(2)?.let { height ->
+                    customPeekHeight = height
                 }
+                setChild(child)
+                show(fragment.parentFragmentManager, null)
             }
         }
     }
 
     private fun setupChild(child: View, list: List<RatesViewModelType>) {
-        val rvShipping = child.rv_shipping
-        val mutableList = list.toMutableList()
+        val rvShipping: RecyclerView = child.findViewById(R.id.rv_shipping)
+        val mutableList = list.filterNot { item -> item is ShippingDurationUiModel && item.serviceData.isUiRatesHidden }.toMutableList()
         mutableList.add(0, NotifierModel())
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
         rvShipping.adapter = ShippingDurationOccAdapter(mutableList, this)
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
+    override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        var selectedShippingCourierUiModel = shippingCourierViewModelList[0]
-        for (shippingCourierUiModel in shippingCourierViewModelList) {
-            val recommend = shippingCourierUiModel.productData.isRecommend
+        var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
+        for (shippingCourierUiModel in shippingCourierUiModelList) {
+            val recommend =
+                if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
             if (recommend) {
                 selectedShippingCourierUiModel = shippingCourierUiModel
             }
@@ -71,7 +72,8 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         return false
     }
 
-    override fun onLogisticPromoClicked(data: LogisticPromoUiModel?) {
-
+    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+        listener.onLogisticPromoClicked(data)
+        bottomSheetUnify.dismiss()
     }
 }

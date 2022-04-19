@@ -8,15 +8,12 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalOrderDetail {
 
-    @JvmField
-    val HOST_ORDER_LIST = "order_list"
+    const val HOST_ORDER_LIST = "order_list"
 
-    @JvmField
-    val INTERNAL_ORDER_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_ORDER_LIST}"
+    const val INTERNAL_ORDER_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_ORDER_LIST}"
 
 
-    @JvmField
-    val ORDER_LIST_URL = "$INTERNAL_ORDER_LIST?url={URL}"
+    const val ORDER_LIST_URL = "$INTERNAL_ORDER_LIST?url={URL}"
 
 
 }

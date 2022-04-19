@@ -50,7 +50,6 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     override fun getScreenName() = null
 
     override fun initInjector() {
-        GraphqlClient.init(context!!)
         activity?.let {
             (it.applicationContext as BaseMainApplication).baseAppComponent
         }.let {
@@ -177,7 +176,8 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
         presenter.sendReport(
                 contentId,
                 adapter.getSelectedItem().type,
-                reasonMessage
+                reasonMessage,
+                "content"
         )
     }
 }

@@ -48,10 +48,10 @@ class PricePillsAdapter(private val callback: Callback?) : RecyclerView.Adapter<
         fun bind(pricePillOption: Option, position: Int) {
             val isPricePillSelected = isValueRangeMatch(pricePillOption)
             if (isPricePillSelected) {
-                pricePillItem?.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.unify_G500))
+                pricePillItem?.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 pricePillItem?.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_selected)
             } else {
-                pricePillItem?.setTextColor(context.resources.getColor(R.color.price_pills_text_color_normal))
+                pricePillItem?.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 pricePillItem?.background = context.resources.getDrawable(R.drawable.filter_price_pill_item_background_neutral)
             }
             pricePillItem?.text = pricePillOption.name

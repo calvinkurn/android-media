@@ -5,8 +5,8 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 
 class SeeMorePdpViewHolder(view: View,
                            private val channels: DynamicHomeChannel.Channels)

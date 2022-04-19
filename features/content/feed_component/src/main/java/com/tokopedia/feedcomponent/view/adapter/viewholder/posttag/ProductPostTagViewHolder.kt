@@ -3,13 +3,14 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.annotation.Size
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
@@ -24,31 +25,28 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.min
 import kotlin.math.roundToInt
 
-/**
- * @author by yoasfs on 2019-07-18
- */
+private const val RAD_20f = 20f
+private const val RAD_30f = 30f
 
 class ProductPostTagViewHolder(val mainView: View,
                                val listener: DynamicPostViewHolder.DynamicPostListener,
-                               val screenWidth: Int)
+                               private val screenWidth: Int)
     : AbstractViewHolder<ProductPostTagViewModel>(mainView) {
 
     private lateinit var productLayout: FrameLayout
     private lateinit var productImage: ImageView
-    private lateinit var productPrice: TextView
-    private lateinit var productName: TextView
-    private lateinit var productTag: TextView
+    private lateinit var productPrice: Typography
+    private lateinit var productName: Typography
+    private lateinit var productTag: Typography
     private lateinit var btnBuy: FrameLayout
-    private lateinit var textBtnBuy: TextView
+    private lateinit var textBtnBuy: Typography
     private lateinit var productNameSection: LinearLayout
     private lateinit var container: CardUnify
     private lateinit var widgetRating: RatingBarReview
-
-    private val RAD_10f = 10f
-    private val RAD_20f = 20f
-    private val RAD_30f = 30f
 
     override fun bind(item: ProductPostTagViewModel) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -79,7 +77,7 @@ class ProductPostTagViewHolder(val mainView: View,
                 if (text.isEmpty()) text = getString(R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) R.color.Neutral_N200 else R.color.Neutral_N0
+                        if (isCTADisabled) R.color.Unify_N200 else com.tokopedia.unifyprinciples.R.color.Unify_N0
                 ))
             }
         } else btnBuy.gone()
@@ -98,7 +96,7 @@ class ProductPostTagViewHolder(val mainView: View,
         }
         if (item.feedType != DynamicPostViewHolder.SOURCE_DETAIL && item.needToResize) {
             container = itemView.findViewById(R.id.container)
-            container.layoutParams.width = screenWidth * 3/4
+            container.layoutParams.width = screenWidth * 3 / 4
         }
 
         if (item.tags.isNotEmpty()) {
@@ -117,8 +115,9 @@ class ProductPostTagViewHolder(val mainView: View,
         if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
             tag.textColor = getDefaultTextColor()
         }
-        textView.setTextColor(Color.parseColor(tag.textColor.hex))
-        textView.background = renderDrawable(tag.bgColor.hex, tag.bgColor.opacity)
+        val textColor = if(tag.textColor.hex.isEmpty()) getString(R.string.feed_color_pojo_dms_hex_black_value) else tag.textColor.hex
+        textView.setTextColor(Color.parseColor(textColor))
+        textView.background = renderDrawable(tag.bgColor.hex, OPACITY_70)
     }
 
     private fun renderDrawable(hex: String, opacity: String): Drawable {
@@ -132,15 +131,15 @@ class ProductPostTagViewHolder(val mainView: View,
 
     private fun calculateBackgroundAlpha(opacityString: String): Int {
         val floatValue = opacityString.toFloat()
-        return (floatValue * 100).toInt()
+        return (floatValue * 255).toInt()
     }
 
     private fun getDefaultBackgroundColor(): ColorPojo {
-        return ColorPojo(HEX_BLACK, OPACITY_70)
+        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_black_value), OPACITY_70)
     }
 
     private fun getDefaultTextColor(): ColorPojo {
-        return ColorPojo(HEX_WHITE, OPACITY_100)
+        return ColorPojo(getString(R.string.feed_color_pojo_dms_hex_white_value), OPACITY_100)
     }
 
     private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
@@ -175,8 +174,6 @@ class ProductPostTagViewHolder(val mainView: View,
         @LayoutRes
         val LAYOUT = R.layout.item_producttag_list
 
-        private const val HEX_BLACK = "#000"
-        private const val HEX_WHITE = "#fff"
         private const val OPACITY_70 = "0.7"
         private const val OPACITY_100 = "1"
     }

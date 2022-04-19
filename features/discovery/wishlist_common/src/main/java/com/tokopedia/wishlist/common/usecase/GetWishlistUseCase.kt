@@ -4,10 +4,13 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.wishlist.common.R
+import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.response.GetWishlistResponse
+import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -27,9 +30,16 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
         const val DEFAULT_PAGE = 1
         const val DEFAULT_COUNT = 10
         const val SOURCE_CART = "cart"
+        const val ADDITIONAL_PARAMS = "additionalParams"
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<GetWishlistResponse> {
+        ChooseAddressUtils.getLocalizingAddressData(context.applicationContext)?.apply {
+            requestParams.putObject(ADDITIONAL_PARAMS, WishlistAdditionalParamRequest(district_id.toEmptyStringIfZero(), city_id.toEmptyStringIfZero(),
+                    lat.toEmptyStringIfZero(), long.toEmptyStringIfZero(),
+                    postal_code.toEmptyStringIfZero(), address_id.toEmptyStringIfZero()))
+        }
+
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.get_wishlist_query),
                 GetWishlistResponse::class.java,
@@ -46,5 +56,4 @@ class GetWishlistUseCase @Inject constructor(private val context: Context) : Use
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
-
 }

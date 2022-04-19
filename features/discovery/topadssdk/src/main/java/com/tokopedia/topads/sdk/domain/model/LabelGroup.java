@@ -14,6 +14,7 @@ public class LabelGroup implements Parcelable {
     private static final String KEY_POSITION = "position";
     private static final String KEY_TYPE = "type";
     private static final String KEY_TITLE = "title";
+    private static final String KEY_URL = "url";
 
     @SerializedName(KEY_POSITION)
     @Expose
@@ -27,10 +28,15 @@ public class LabelGroup implements Parcelable {
     @Expose
     private String title;
 
-    public LabelGroup(String position, String type, String title) {
+    @SerializedName(KEY_URL)
+    @Expose
+    private String imageUrl = "";
+
+    public LabelGroup(String position, String type, String title, String imageUrl) {
         this.position = position;
         this.type = type;
         this.title = title;
+        this.imageUrl = imageUrl;
     }
 
     public LabelGroup(JSONObject object) throws JSONException {
@@ -43,12 +49,16 @@ public class LabelGroup implements Parcelable {
         if(!object.isNull(KEY_TITLE)){
             this.title = object.getString(KEY_TITLE);
         }
+        if(!object.isNull(KEY_URL)){
+            this.imageUrl = object.getString(KEY_URL);
+        }
     }
 
     protected LabelGroup(Parcel in) {
         position = in.readString();
         type = in.readString();
         title = in.readString();
+        imageUrl = in.readString();
     }
 
     @Override
@@ -56,6 +66,7 @@ public class LabelGroup implements Parcelable {
         dest.writeString(position);
         dest.writeString(type);
         dest.writeString(title);
+        dest.writeString(imageUrl);
     }
 
     @Override
@@ -85,5 +96,9 @@ public class LabelGroup implements Parcelable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getImageUrl() {
+        return imageUrl == null ? "" : imageUrl;
     }
 }

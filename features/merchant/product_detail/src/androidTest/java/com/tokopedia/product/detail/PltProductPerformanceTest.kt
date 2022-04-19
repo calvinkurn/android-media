@@ -1,15 +1,19 @@
 package com.tokopedia.product.detail
 
+import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
-import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.instrumentation.test.R
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.TestRepeatRule
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
 
 
 /**
@@ -27,20 +31,31 @@ class PltProductPerformanceTest {
     @Before
     fun doBeforeRun() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = ProductDetailActivity.createIntent(context, "220891000")
+        setupGraphqlMockResponseWithCheck(createMockModelConfig())
+
+        val intent = ProductDetailActivity.createIntent(context, "1060957410")
         activityRule.launchActivity(intent)
-        activityRule.activity.deleteDatabase("tokopedia_graphql.db")
+    }
+
+    private fun createMockModelConfig(): MockModelConfig {
+        return object : MockModelConfig() {
+            override fun createMockModel(context: Context): MockModelConfig {
+                addMockResponse("pdpGetLayout", getRawString(context, R.raw.response_mock_data_pdp_get_layout), FIND_BY_CONTAINS)
+                return this
+            }
+        }
     }
 
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
+        TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
         activityRule.activity.finishAndRemoveTask()
     }
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(35000)
     }
 
     private fun savePLTPerformanceResultData(tag: String) {
@@ -49,7 +64,7 @@ class PltProductPerformanceTest {
             PerformanceDataFileUtils.writePLTPerformanceFile(
                     activityRule.activity,
                     tag,
-                    performanceData)
+                    performanceData,performanceData.attribution[ProductDetailActivity.PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY] ?: "")
         }
     }
 }

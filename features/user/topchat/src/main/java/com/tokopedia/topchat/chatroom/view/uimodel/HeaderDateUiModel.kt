@@ -21,14 +21,6 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
 
     private val formatter = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
 
-    private fun convertToDate(timeStamp: Long): String {
-        return try {
-            formatter.format(Date(timeStamp))
-        } catch (e: Exception) {
-            formatter.format(Date())
-        }
-    }
-
     val dateTimestamp: Long
         get() {
             return try {
@@ -51,10 +43,29 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
         return typeFactory.type(this)
     }
 
+    private fun convertToDate(timeStamp: Long): String {
+        return try {
+            formatter.format(Date(timeStamp))
+        } catch (e: Exception) {
+            formatter.format(Date())
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is HeaderDateUiModel) {
+            return other.date == this.date
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return date.hashCode()
+    }
+
     companion object {
+        const val DATE_FORMAT = "d MMM yyyy"
         private const val RELATIVE_TODAY = "Hari ini"
         private const val RELATIVE_YESTERDAY = "Kemarin"
-        private const val DATE_FORMAT = "d MMM yyyy"
-        private const val HEADER_DATE_FORMAT = "MMMM d, yyyy"
+        private const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
     }
 }

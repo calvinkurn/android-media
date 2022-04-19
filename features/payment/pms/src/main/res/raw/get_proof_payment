@@ -1,7 +1,0 @@
-query getProof($transactionID: String!, $merchantCode: String!) {
-   getProof(transactionID: $transactionID, merchantCode: $merchantCode) {
-      success
-      message
-      imageUrl
-   }
-}

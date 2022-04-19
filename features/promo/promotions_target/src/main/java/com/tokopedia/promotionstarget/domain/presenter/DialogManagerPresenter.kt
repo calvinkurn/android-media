@@ -1,5 +1,6 @@
 package com.tokopedia.promotionstarget.domain.presenter
 
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
@@ -36,17 +37,19 @@ class DialogManagerPresenter @Inject constructor(
         return getCatalogDetail(ids)
     }
 
-    private fun mapperGratificationResponseToCouponIds(popGratificationBenefits: List<PopGratificationBenefitsItem?>?): List<String> {
-        var ids = popGratificationBenefits?.map {
-            it?.referenceID.toString()
-        }
-        if (ids == null) {
-            ids = emptyList()
+    @VisibleForTesting
+    fun mapperGratificationResponseToCouponIds(popGratificationBenefits: List<PopGratificationBenefitsItem?>?): List<String> {
+        val ids = arrayListOf<String>()
+        popGratificationBenefits?.forEach {
+            if(it?.referenceID!=null){
+                ids.add(it.referenceID.toString())
+            }
         }
         return ids
     }
 
-    private suspend fun getCatalogDetail(ids: List<String>): GetCouponDetailResponse {
+    @VisibleForTesting
+    suspend fun getCatalogDetail(ids: List<String>): GetCouponDetailResponse {
         return couponDetailUseCase.getResponse(ids)
     }
 

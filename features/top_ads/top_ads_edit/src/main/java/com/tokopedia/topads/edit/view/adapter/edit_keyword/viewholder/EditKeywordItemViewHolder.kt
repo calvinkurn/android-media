@@ -2,109 +2,92 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.design.text.watcher.NumberTextWatcher
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_EXACT
-import com.tokopedia.topads.edit.utils.Constants.KEYWORD_TYPE_PHRASE
-import com.tokopedia.topads.edit.utils.Constants.MAX
-import com.tokopedia.topads.edit.utils.Constants.MIN
-import com.tokopedia.topads.edit.utils.Constants.TITLE_1
-import com.tokopedia.topads.edit.utils.Constants.TITLE_2
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
-import com.tokopedia.topads.edit.view.sheet.EditKeywordSortSheet
-import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.*
+import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.HIGH
+import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.LOW
+import com.tokopedia.topads.edit.view.adapter.keyword.viewholder.KeywordItemViewHolder.Companion.MEDIUM
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordItemViewHolder(val view: View,
-                                private var actionDelete: ((pos: Int) -> Unit)?,
-                                private val actionClick: (() -> MutableMap<String, Int>),
-                                private var actionEnable: (() -> Unit),
-                                private var actionStatusChange: ((pos: Int) -> Unit)) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
+class EditKeywordItemViewHolder(
+    val view: View,
+    var actionDelete: (pos: Int) -> Unit,
+    var editBudget: ((pos: Int) -> Unit)?,
+    var editType: ((pos: Int) -> Unit)?
+) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
+
+
+    private var btnDelete = view.findViewById<IconUnify>(com.tokopedia.topads.common.R.id.btnDelete)
+    private var budgetEdit =
+        view.findViewById<IconUnify>(com.tokopedia.topads.common.R.id.editBudget)
+    private var typeEdit = view.findViewById<IconUnify>(com.tokopedia.topads.common.R.id.editType)
+    private var keywordData =
+        view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordData)
+    private var keywordName =
+        view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordName)
+    private var typeKeyword =
+        view.findViewById<Typography>(com.tokopedia.topads.common.R.id.typeKeyword)
+    private var keywordBudget =
+        view.findViewById<Typography>(com.tokopedia.topads.common.R.id.keywordBudget)
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.topads_edit_keyword_edit_item_layout
-        private var bidMap = mutableMapOf<String, Int>()
+        var LAYOUT = R.layout.topads_create_layout_budget_list_item
 
+        private const val SPECIFIC_TYPE = "Spesifik"
+        private const val BROAD_TYPE = "Luas"
+        private const val EXACT_POSITIVE = 21
     }
 
-    private lateinit var sortKeywordList: EditKeywordSortSheet
+    override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: String) {
 
-    override fun bind(item: EditKeywordItemViewModel, data: MutableList<Int>, error: MutableList<Boolean>) {
+        item.let {
+            btnDelete.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionDelete.invoke(adapterPosition)
+            }
+            budgetEdit.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    editBudget?.invoke(adapterPosition)
+            }
+            typeEdit.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    editType?.invoke(adapterPosition)
+            }
+            val competition = when (item.data.competition) {
+                LOW -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
+                MEDIUM -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation)
+                HIGH -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high)
+                else -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_unknown)
+            }
 
-        item.data.let {
-            view.keyword_name.text = it.tag
-            if (item.data.type == KEYWORD_TYPE_PHRASE)
-                view.sort.text = TITLE_1
+            val search = if (it.data.totalSearch == "-1")
+                "-"
             else
-                view.sort.text = TITLE_2
-            if (adapterPosition < data.size)
-                view.budget.textFieldInput.setText(data[adapterPosition].toString())
-            bidMap = actionClick.invoke()
-            if (data[adapterPosition] < bidMap[MIN]!! && bidMap[MIN] != 0) {
-                setError(true, view.resources.getString(R.string.min_bid_error), bidMap[MIN]!!)
-                error[adapterPosition] = true
-
-            } else if (data[adapterPosition] > bidMap[MAX]!! && bidMap[MAX] != 0) {
-                error[adapterPosition] = true
-                setError(true, view.resources.getString(R.string.max_bid_error), bidMap[MAX]!!)
-            }
-            view.delete.setOnClickListener {
-                actionDelete?.invoke(adapterPosition)
-            }
-            actionEnable.invoke()
-            view.sort.setOnClickListener {
-                sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
-                sortKeywordList.setChecked(view.sort.text.toString())
-                sortKeywordList.show()
-                sortKeywordList.onItemClick = {
-                    val prev = view.sort.text
-                    view.sort.text = sortKeywordList.getSelectedSortId()
-                    if (sortKeywordList.getSelectedSortId() == TITLE_1) {
-                        item.data.type = KEYWORD_TYPE_PHRASE
-                    } else {
-                        item.data.type = KEYWORD_TYPE_EXACT
-                    }
-                    if (prev != view.sort.text)
-                        actionStatusChange.invoke(adapterPosition)
-                }
-            }
-            view.budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(view.budget.textFieldInput, "0") {
-                override fun onNumberChanged(number: Double) {
-                    super.onNumberChanged(number)
-                    val result = number.toInt()
-                    if (bidMap[MIN] == 0)
-                        bidMap = actionClick.invoke()
-
-                    if (adapterPosition < data.size)
-                        data[adapterPosition] = result
-                    when {
-                        result < bidMap[MIN]!! -> {
-                            error[adapterPosition] = true
-                            setError(true, view.resources.getString(R.string.min_bid_error), bidMap[MIN]!!)
-                        }
-                        result > bidMap[MAX]!! -> {
-                            error[adapterPosition] = true
-                            setError(true, view.resources.getString(R.string.max_bid_error), bidMap["max"]!!)
-                        }
-                        else -> {
-                            error[adapterPosition] = false
-                            view.budget.setError(false)
-                            view.budget.setMessage("")
-                        }
-                    }
-                    actionEnable.invoke()
-
-                }
-            })
+                it.data.totalSearch
+            keywordData.text = MethodChecker.fromHtml(
+                String.format(
+                    view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data),
+                    competition,
+                    search
+                )
+            )
+            keywordName.text = item.data.name
+            if (item.data.typeInt == EXACT_POSITIVE)
+                typeKeyword.text = SPECIFIC_TYPE
+            else
+                typeKeyword.text = BROAD_TYPE
+            if (item.data.priceBid != "0")
+                keywordBudget.text = "Rp " + item.data.priceBid
+            else
+                keywordBudget.text = "Rp $minBid"
         }
-    }
-
-    fun setError(isError: Boolean, error: String, bid: Int) {
-        view.budget.setError(isError)
-        view.budget.setMessage(String.format(error, bid))
     }
 }

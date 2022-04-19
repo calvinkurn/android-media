@@ -3,44 +3,34 @@ package com.tokopedia.logout.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.logout.domain.model.LogoutDomain
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.logout.domain.model.LogoutDataModel
 import com.tokopedia.logout.domain.usecase.LogoutUseCase
-import com.tokopedia.logout.domain.usecase.LogoutUseCase.Companion.getParam
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.CoroutineDispatcher
-import rx.Subscriber
 import javax.inject.Inject
 
 class LogoutViewModel @Inject constructor(
-        private val userSession: UserSession,
         private val logoutUseCase: LogoutUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
-    private val logoutMutableLiveData = MutableLiveData<Result<LogoutDomain>>()
-    val logoutLiveData: LiveData<Result<LogoutDomain>>
-        get() = logoutMutableLiveData
+    private val _logoutResult = MutableLiveData<Result<LogoutDataModel>>()
+    val logoutResult: LiveData<Result<LogoutDataModel>>
+        get() = _logoutResult
 
     fun doLogout() {
-        logoutUseCase.execute(getParam(userSession), object : Subscriber<LogoutDomain>() {
-            override fun onCompleted() {
-
+        launchCatchError(block = {
+            val result = logoutUseCase(Unit)
+            if(result.response.success) {
+                _logoutResult.value = Success(result)
+            } else {
+                _logoutResult.value = Fail(Throwable(result.response.errors[0].message))
             }
-
-            override fun onError(e: Throwable) {
-                logoutMutableLiveData.postValue(Fail(e))
-            }
-
-            override fun onNext(t: LogoutDomain) {
-                if (t.is_success) {
-                    logoutMutableLiveData.postValue(Success(t))
-                } else {
-                    logoutMutableLiveData.postValue(Fail(Throwable("gagal logout")))
-                }
-            }
+        }, onError = {
+            _logoutResult.value = Fail(it)
         })
     }
 }

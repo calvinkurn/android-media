@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 /**
  * Created by jegul on 20/02/20
@@ -27,7 +26,7 @@ fun <T> LiveData<T>.getOrAwaitValue(
 
     // Don't wait indefinitely if the LiveData is not set.
     if (!latch.await(time, timeUnit)) {
-        throw TimeoutException("LiveData value was never set.")
+        throw NoValueException()
     }
 
     @Suppress("UNCHECKED_CAST")

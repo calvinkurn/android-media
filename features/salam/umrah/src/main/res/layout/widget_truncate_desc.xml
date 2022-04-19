@@ -14,9 +14,9 @@
         tools:text="@string/umrah_travel_info_desc_content"
         app:typographyType="small"
         android:textColor="@color/Neutral_N700"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         />
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tg_load_more"
@@ -26,7 +26,7 @@
         android:visibility="gone"
         android:textColor="@color/Green_G500"
         android:text="@string/umrah_travel_read_more"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         />
 
 

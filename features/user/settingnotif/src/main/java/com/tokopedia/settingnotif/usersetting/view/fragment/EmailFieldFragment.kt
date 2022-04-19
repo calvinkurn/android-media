@@ -2,10 +2,11 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingStateDataView.removeBuyerNotificationSetting
@@ -15,25 +16,24 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewMod
 
 class EmailFieldFragment: SettingFieldFragment() {
 
-    private lateinit var viewModel: SettingStateViewModel
+    private val viewModel: SettingStateViewModel by lazy {
+        ViewModelProvider(
+                this,
+                viewModelFactory
+        ).get(SettingStateViewModel::class.java)
+    }
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
     }
 
-    override fun getGqlRawQuery(): Int {
-        return R.raw.query_email_setting
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
+        NotifSettingAnalytics.sendScreenName(SCREEN_NAME)
     }
 
-    private fun initViewModel() {
-        viewModel = ViewModelProviders
-                .of(this, viewModelFactory)
-                .get(SettingStateViewModel::class.java)
+    override fun getGqlRawQuery(): Int {
+        return R.raw.query_email_setting
     }
 
     override fun onResume() {
@@ -76,4 +76,8 @@ class EmailFieldFragment: SettingFieldFragment() {
 
     override fun getScreenName() = getString(R.string.settingnotif_email)
     override fun getNotificationType() = TYPE_EMAIL
+
+    companion object{
+        private const val SCREEN_NAME = "Email Notification Settings Page"
+    }
 }

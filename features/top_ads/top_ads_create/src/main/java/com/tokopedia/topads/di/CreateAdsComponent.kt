@@ -12,11 +12,15 @@ import dagger.Component
 @Component(modules = [CreateAdsModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CreateAdsComponent {
 
-    fun inject(createGroupAdsFragment: CreateGroupAdsFragment)
     fun inject(productAdsListFragment: ProductAdsListFragment)
     fun inject(keywordAdsListFragment: KeywordAdsListFragment)
     fun inject(budgetingAdsFragment: BudgetingAdsFragment)
     fun inject(summaryAdsFragment: SummaryAdsFragment)
+    fun inject(autoBidSelectionFragment: AutoBidSelectionFragment)
     fun inject(adCreationChooserFragment: AdCreationChooserFragment)
+    fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen)
+    fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen2)
+    fun inject(creationOnboardingFragScreen: CreationOnboardingFragScreen3)
+
 
 }

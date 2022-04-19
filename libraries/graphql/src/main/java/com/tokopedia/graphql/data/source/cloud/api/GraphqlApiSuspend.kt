@@ -1,25 +1,31 @@
 package com.tokopedia.graphql.data.source.cloud.api;
 
-
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.GraphqlConstant.GqlApiKeys.ANDROID_FLAG
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import rx.Observable
-import retrofit2.http.HeaderMap
+import retrofit2.http.*
 
 /**
  * Created by Vishal
  */
 interface GraphqlApiSuspend {
 
+
     @POST("./")
-    @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
+    @Headers(ANDROID_FLAG)
     suspend fun getResponseSuspend(@Body requestObject: MutableList<GraphqlRequest>,
                                    @HeaderMap header: Map<String, String>,
-                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
+                                   @Header(GraphqlConstant.GqlApiKeys.CACHE,) values: String?,
+                                   @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) queryIdentifier: String?): Response<JsonArray>
+
+    @POST()
+    @Headers(ANDROID_FLAG)
+    suspend fun getResponseSuspendWithPath(
+                                   @Url url: String,
+                                   @Body requestObject: MutableList<GraphqlRequest>,
+                                   @HeaderMap header: Map<String, String>,
+                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?,
+                                   @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) queryIdentifier: String?): Response<JsonArray>
 }

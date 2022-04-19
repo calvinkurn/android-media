@@ -11,11 +11,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 @Module
-@GlobalSearchSellerScope
 class GlobalSearchSellerModule {
 
     @GlobalSearchSellerScope
@@ -25,10 +22,6 @@ class GlobalSearchSellerModule {
     @GlobalSearchSellerScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-
-    @GlobalSearchSellerScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @GlobalSearchSellerScope
     @Provides

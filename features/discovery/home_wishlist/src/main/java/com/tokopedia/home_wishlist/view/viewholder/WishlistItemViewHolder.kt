@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.view.viewholder
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.model.datamodel.WishlistItemDataModel
 import com.tokopedia.home_wishlist.view.ext.setSafeOnClickListener
@@ -24,6 +25,10 @@ class WishlistItemViewHolder(
 
     override fun bind(element: WishlistItemDataModel, listener: SmartListener) {
         productCardView.run {
+            val productFreeOngkir = when {
+                element.productItem.freeOngkirExtra.isActive -> element.productItem.freeOngkirExtra
+                else -> element.productItem.freeOngkir
+            }
             setProductModel(
                     ProductCardModel(
                             productName = element.productItem.name,
@@ -38,8 +43,8 @@ class WishlistItemViewHolder(
                             ratingCount = element.productItem.rating,
                             reviewCount = element.productItem.reviewCount,
                             freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.productItem.freeOngkir.isActive,
-                                    imageUrl = element.productItem.freeOngkir.imageUrl
+                                    isActive = productFreeOngkir.isActive,
+                                    imageUrl = productFreeOngkir.imageUrl
                             ),
                             labelGroupList = element.productItem.labels.map { labelGroup ->
                                 ProductCardModel.LabelGroup(
@@ -110,8 +115,12 @@ class WishlistItemViewHolder(
                 checkBox.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
                 productCardView.wishlistPage_hideCTAButton(!element.isOnBulkRemoveProgress)
                 productCardView.setOnClickListener {
-                    if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
-                    else (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
+
+                    // to prevent ArrayIndexOutOfBoundsException
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        if(element.isOnBulkRemoveProgress) (listener as WishlistListener).onClickCheckboxDeleteWishlist(adapterPosition, !checkBox.isChecked)
+                        else (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
+                    }
                 }
             }
 

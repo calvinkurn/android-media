@@ -1,0 +1,124 @@
+{
+  "chatListMessage": {
+    "list": [
+      {
+        "msgID": 958559711,
+        "messageKey": "user-47676617~shop-2155436",
+        "attributes": {
+          "contact": {
+            "id": 47676617,
+            "role": "user",
+            "domain": "",
+            "name": "Velovea",
+            "shopStatus": 0,
+            "tag": "Pengguna",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Langsung diproses!",
+          "lastReplyTimeStr": "1594716635774",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false
+        }
+      },
+      {
+        "msgID": 841591582,
+        "messageKey": "user-1125521~shop-2155436",
+        "attributes": {
+          "contact": {
+            "id": 1125521,
+            "role": "user",
+            "domain": "",
+            "name": "Dion",
+            "shopStatus": 0,
+            "tag": "Pengguna",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "apaaaa ya",
+          "lastReplyTimeStr": "1594700330911",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false
+        }
+      },
+      {
+        "msgID": 81054785,
+        "messageKey": "user-7986504~shop-2155436",
+        "attributes": {
+          "contact": {
+            "id": 7986504,
+            "role": "user",
+            "domain": "",
+            "name": "Jefly",
+            "shopStatus": 0,
+            "tag": "Pengguna",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "hai ini add template chat dari katalon apps using special character !@#$%^\u0026amp;*()_+{}|\u0026#34;:?\u0026gt;\u0026lt;",
+          "lastReplyTimeStr": "1594466057675",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false
+        }
+      },
+      {
+        "msgID": 585009861,
+        "messageKey": "user-13739657~shop-2155436",
+        "attributes": {
+          "contact": {
+            "id": 13739657,
+            "role": "user",
+            "domain": "",
+            "name": "iwan",
+            "shopStatus": 0,
+            "tag": "Pengguna",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Voucher - Test beta, Minimum Pembelian: Rp 100.000",
+          "lastReplyTimeStr": "1594295701592",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false
+        }
+      },
+      {
+        "msgID": 1047988637,
+        "messageKey": "user-17235411~shop-2155436",
+        "attributes": {
+          "contact": {
+            "id": 17235411,
+            "role": "user",
+            "domain": "",
+            "name": "Gary",
+            "shopStatus": 0,
+            "tag": "Pengguna",
+            "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5238789/shop_xs_thumbnail/desktop"
+          },
+          "lastReplyMessage": "Uploaded Image",
+          "lastReplyTimeStr": "1590721818271",
+          "readStatus": 2,
+          "unreads": 0,
+          "unreadsreply": 0,
+          "fraudStatus": 0,
+          "pinStatus": 0,
+          "isReplyByTopbot": false
+        }
+      }
+    ],
+    "hasNext": false,
+    "pagingNext": false,
+    "showTimeMachine": 0
+  }
+}

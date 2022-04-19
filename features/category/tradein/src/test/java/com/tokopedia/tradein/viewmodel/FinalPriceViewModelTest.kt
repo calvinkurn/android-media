@@ -1,14 +1,12 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.tradein.model.AddressResult
-import com.tokopedia.tradein.model.DeviceDataResponse
-import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
-import com.tokopedia.tradein.usecase.DiagnosticDataUseCase
-import com.tokopedia.tradein.usecase.GetAddressUseCase
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.common_tradein.model.AddressResult
+import com.tokopedia.common_tradein.model.DeviceDataResponse
+import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse
+import com.tokopedia.common_tradein.usecase.DiagnosticDataUseCase
+import com.tokopedia.common_tradein.usecase.GetAddressUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -26,11 +24,9 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class FinalPriceViewModelTest {
-    val context: Context = mockk()
     val getAddressUseCase: GetAddressUseCase = mockk()
     val diagnosticDataUseCase: DiagnosticDataUseCase = mockk()
     var finalPriceViewModel = spyk(FinalPriceViewModel(getAddressUseCase, diagnosticDataUseCase))
-    val resources: Resources = mockk()
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -51,8 +47,8 @@ class FinalPriceViewModelTest {
     /**************************** getDiagnosticData() *******************************************/
     @Test
     fun getDiagnosticData() {
-        val deviceDataResponse: DeviceDataResponse? = null
-        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any(), any()) } returns deviceDataResponse
+        val deviceDataResponse: DeviceDataResponse = mockk<DeviceDataResponse>(relaxed = true)
+        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } returns deviceDataResponse
 
         finalPriceViewModel.getDiagnosticData()
 
@@ -63,8 +59,7 @@ class FinalPriceViewModelTest {
     @Test
     fun getDiagnosticDataException() {
         val exception = "Diagnostic Data Exception"
-        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any(), any()) } throws Exception(exception)
-        coEvery { finalPriceViewModel.getResource()?.getString(any()) } returns exception
+        coEvery { diagnosticDataUseCase.getDiagnosticData(any(), any()) } throws Exception(exception)
 
         finalPriceViewModel.getDiagnosticData()
 
@@ -81,7 +76,7 @@ class FinalPriceViewModelTest {
         val addressData: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data? = null
         val token: Token? = null
         val addressResult = AddressResult(addressData, token)
-        coEvery { getAddressUseCase.getAddress(any()) } returns addressResult
+        coEvery { getAddressUseCase.getAddress() } returns addressResult
 
         finalPriceViewModel.getAddress()
 
@@ -92,7 +87,7 @@ class FinalPriceViewModelTest {
 
     @Test
     fun getAddressException() {
-        coEvery { getAddressUseCase.getAddress(any()) } throws Exception("AddressResult Exception")
+        coEvery { getAddressUseCase.getAddress() } throws Exception("AddressResult Exception")
 
         finalPriceViewModel.getAddress()
 

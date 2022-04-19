@@ -34,6 +34,10 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
         return RecommendationItemViewHolder.LAYOUT
     }
 
+    override fun type(bannerTopAdsDataModel: BannerTopAdsDataModel): Int {
+        return BannerTopAdsViewHolder.LAYOUT
+    }
+
     override fun type(emptyWishlistDataModel: EmptyWishlistDataModel): Int {
         return EmptyWishlistViewHolder.LAYOUT
     }
@@ -68,6 +72,7 @@ class WishlistTypeFactoryImpl(private val appExecutors: SmartExecutors) : Wishli
             EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
             EmptySearchWishlistViewHolder.LAYOUT -> EmptySearchWishlistViewHolder(view)
             ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view)
+            BannerTopAdsViewHolder.LAYOUT -> BannerTopAdsViewHolder(view)
             RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationCarouselViewHolder.LAYOUT -> RecommendationCarouselViewHolder(view, appExecutors)

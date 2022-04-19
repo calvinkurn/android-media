@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/container_occ_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:container_color="GREEN">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_new_occ_onboarding"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:scaleType="fitCenter"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_new_occ_onboarding_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+    </com.tokopedia.unifycomponents.ContainerUnify>
+
+    <View
+        android:id="@+id/divider_occ_onboarding"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Unify_N50" />
+</LinearLayout>

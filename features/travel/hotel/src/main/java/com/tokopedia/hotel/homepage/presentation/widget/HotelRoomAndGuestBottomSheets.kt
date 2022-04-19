@@ -50,18 +50,23 @@ class HotelRoomAndGuestBottomSheets : BottomSheetUnify() {
         spvRoomCounter.value = roomCount
         spvAdultCounter.value = adultCount
 
-        spvRoomCounter.setOnPassengerCountChangeListener {
-            if (spvRoomCounter.value > spvAdultCounter.value) {
-                spvAdultCounter.value = it
+        spvRoomCounter.setOnPassengerCountChangeListener(object : SelectPassengerView.OnPassengerCountChangeListener {
+            override fun onChange(number: Int): Boolean {
+                if (spvRoomCounter.value > spvAdultCounter.value) {
+                    spvAdultCounter.value = number
+                }
+                return true
             }
-            true
-        }
-        spvAdultCounter.setOnPassengerCountChangeListener {
-            if (spvRoomCounter.value > spvAdultCounter.value) {
-                spvRoomCounter.value = it
+        })
+        spvAdultCounter.setOnPassengerCountChangeListener(object : SelectPassengerView.OnPassengerCountChangeListener {
+            override fun onChange(number: Int): Boolean {
+                if (spvRoomCounter.value > spvAdultCounter.value) {
+                    spvRoomCounter.value = number
+                }
+                return true
             }
-            true
-        }
+
+        })
         btnSave.setOnClickListener {
             if (::listener.isInitialized) {
                 listener.onSaveGuest(spvRoomCounter.value, spvAdultCounter.value)

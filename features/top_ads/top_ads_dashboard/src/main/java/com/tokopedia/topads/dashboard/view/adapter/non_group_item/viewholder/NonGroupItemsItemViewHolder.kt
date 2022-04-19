@@ -3,37 +3,47 @@ package com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
-import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonGroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
-import java.lang.NumberFormatException
 
 
 /**
  * Created by Pika on 2/6/20.
  */
 
+private const val CLICK_IMG_MENU = "click - edit ads tanpa group"
+private const val CLICK_NON_AKTIFKAN = "click - nonaktifkan single ads"
+private const val CLICK_UHBAH = "click - ubah iklan single ads"
+private const val CLICK_HAPUS = "click - hapus iklan single ads"
 class NonGroupItemsItemViewHolder(val view: View,
                                   var selectMode: ((select: Boolean) -> Unit),
                                   var actionDelete: ((pos: Int) -> Unit),
                                   var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                  var editDone: ((groupId: Int, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemViewModel>(view) {
+                                  var editDone: ((groupId: String, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemModel>(view) {
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: NonGroupItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+    private val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
+        TopadsSelectActionSheet.newInstance()
+    }
+
+    override fun bind(item: NonGroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<WithoutGroupDataItem>) {
+        view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
         item.let {
             when (it.data.adStatusDesc) {
 
@@ -52,14 +62,14 @@ class NonGroupItemsItemViewHolder(val view: View,
                 view.check_box.visibility = View.VISIBLE
                 view.label.visibility = View.INVISIBLE
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
                 view.img_menu.visibility = View.VISIBLE
                 view.check_box.visibility = View.GONE
                 view.label.visibility = View.VISIBLE
             }
 
             view.label.text = it.data.adStatusDesc
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
             view.product_name.text = it.data.productName
             setProgressBar(it.data)
             view.check_box.isChecked = item.isChecked
@@ -69,15 +79,14 @@ class NonGroupItemsItemViewHolder(val view: View,
                 view.klik_count.text = statsData[adapterPosition].statTotalClick
                 view.persentase_klik_count.text = statsData[adapterPosition].statTotalCtr
                 view.pengeluaran_count.text = statsData[adapterPosition].statTotalSpent
-                view.pendapatan_count.text = statsData[adapterPosition].statTotalGrossProfit
-                view.produk_terjual_count.text = statsData[adapterPosition].statTotalSold
-
+                view.produk_terjual_count.text = statsData[adapterPosition].statTotalConversion
             }
+            view.pendapatan_count.text = it.data.statTotalGrossProfit
 
             if (!view.check_box.isChecked) {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             } else {
-                view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             }
         }
 
@@ -86,23 +95,27 @@ class NonGroupItemsItemViewHolder(val view: View,
                 view.check_box.isChecked = !view.check_box.isChecked
                 item.isChecked = view.check_box.isChecked
                 if (item.isChecked)
-                    view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                    view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
                 else
-                    view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                    view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
             }
         }
 
         view.img_menu.setOnClickListener {
-            val sheet = TopadsSelectActionSheet.newInstance(view.context, item.data.adStatus, item.data.productName)
-            sheet.show()
-            sheet.onEditAction = {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),item.data.adStatus, item.data.productName, item.data.groupId)
+            sheet?.onEditAction = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
                 editDone.invoke(item.data.adId, item.data.adPriceBid)
             }
-            sheet.onDeleteClick = {
+            sheet?.onDeleteClick = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
-            sheet.changeStatus = {
+            sheet?.changeStatus = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                    CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }
@@ -111,7 +124,7 @@ class NonGroupItemsItemViewHolder(val view: View,
         view.item_card.setOnLongClickListener {
             item.isChecked = true
             view.check_box.isChecked = true
-            view.card_view.setCardBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+            view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
             selectMode.invoke(true)
             true
         }
@@ -127,7 +140,7 @@ class NonGroupItemsItemViewHolder(val view: View,
                 e.printStackTrace()
             }
             view.progress_status1.text = data.adPriceDailySpentFmt
-            view.progress_status2.text = String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
+            view.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), data.adPriceDaily)
         } else {
             view.progress_layout.visibility = View.GONE
         }

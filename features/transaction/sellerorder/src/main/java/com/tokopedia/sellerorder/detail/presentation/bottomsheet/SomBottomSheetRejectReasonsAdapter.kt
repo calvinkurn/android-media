@@ -5,13 +5,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.BottomsheetRejectItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-11-05.
  */
-class SomBottomSheetRejectReasonsAdapter(private var listener: ActionListener): RecyclerView.Adapter<SomBottomSheetRejectReasonsAdapter.ViewHolder>()  {
+class SomBottomSheetRejectReasonsAdapter(private var listener: ActionListener) :
+    RecyclerView.Adapter<SomBottomSheetRejectReasonsAdapter.ViewHolder>() {
+
+    companion object {
+        const val REJECT_REASON_PRODUCT_EMPTY = 1
+        const val REJECT_REASON_SHOP_CLOSED = 4
+        const val REJECT_REASON_COURIER_PROBLEMS = 7
+        const val REJECT_REASON_OTHER_REASON = 14
+        const val REJECT_REASON_BUYER_NO_RESPONSE = 15
+    }
+
     var listRejectReasons = mutableListOf<SomReasonRejectData.Data.SomRejectReason>()
 
     interface ActionListener {
@@ -27,12 +38,23 @@ class SomBottomSheetRejectReasonsAdapter(private var listener: ActionListener): 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.rb_reject.visibility = View.GONE
-        holder.itemView.label_reject.text = listRejectReasons[position].reasonText
-        holder.itemView.setOnClickListener {
-            listener.onRejectReasonItemClick(listRejectReasons[position])
-        }
+        holder.bind(listRejectReasons.getOrNull(position))
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding by viewBinding<BottomsheetRejectItemBinding>()
+
+        fun bind(element: SomReasonRejectData.Data.SomRejectReason?) {
+            element?.run {
+                binding?.run {
+                    rbReject.visibility = View.GONE
+                    labelReject.text = reasonText
+                    root.setOnClickListener {
+                        listener.onRejectReasonItemClick(element)
+                    }
+                }
+            }
+        }
+    }
 }

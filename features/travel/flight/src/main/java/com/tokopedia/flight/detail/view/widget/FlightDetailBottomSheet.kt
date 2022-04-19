@@ -8,10 +8,9 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailFacilityFragment
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailFragment
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailPriceFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_flight_detail.view.*
@@ -48,7 +47,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
             }
         }
 
-        flightAnalytics = FlightAnalytics(FlightDateUtil())
+        flightAnalytics = FlightAnalytics()
 
         initBottomSheet()
     }
@@ -121,7 +120,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                     flightDetailButtonContainer.visibility = View.GONE
                 }
                 flightDetailSelectButton.setOnClickListener {
-                    if (::listener.isInitialized) listener.onSelectedFromDetail(flightDetailModel.id)
+                    if (::listener.isInitialized) listener.onSelectedFromDetail(this@FlightDetailBottomSheet, flightDetailModel.id)
                 }
 
             }
@@ -209,7 +208,7 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onSelectedFromDetail(selectedId: String)
+        fun onSelectedFromDetail(detailBottomSheet: FlightDetailBottomSheet, selectedId: String)
     }
 
     companion object {

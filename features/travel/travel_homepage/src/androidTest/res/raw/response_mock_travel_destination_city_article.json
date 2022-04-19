@@ -1,0 +1,40 @@
+[
+  {
+    "data": {
+      "TravelArticle": {
+        "items": [
+          {
+            "tag": 1,
+            "title": "This is a title",
+            "publishedDate": "2012-10-01T09:45:00.000+02:00",
+            "webURL": "tokopedia://hotel/dashboard",
+            "appURL": "tokopedia://hotel/dashboard",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_80b3abd1-51c8-449e-a17e-9ab3b255dbc7.jpeg"
+          },
+          {
+            "tag": 2,
+            "title": "This is a title",
+            "publishedDate": "2012-10-01T09:45:00.000+02:00",
+            "webURL": "tokopedia://hotel/dashboard",
+            "appURL": "tokopedia://hotel/dashboard",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_80b3abd1-51c8-449e-a17e-9ab3b255dbc7.jpeg"
+          },
+          {
+            "tag": 3,
+            "title": "This is a title",
+            "publishedDate": "2012-10-01T09:45:00.000+02:00",
+            "webURL": "tokopedia://hotel/dashboard",
+            "appURL": "tokopedia://hotel/dashboard",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_80b3abd1-51c8-449e-a17e-9ab3b255dbc7.jpeg"
+          }
+        ],
+        "meta": {
+          "title": "Seputar Bandung",
+          "URLTitle": "Lihat semua",
+          "webURL": "https://www.tokopedia.com/blog/insight/travel-dan-kuliner/",
+          "appURL": "tokopedia://webview?url=https://www.tokopedia.com/blog/insight/travel-dan-kuliner/"
+        }
+      }
+    }
+  }
+]

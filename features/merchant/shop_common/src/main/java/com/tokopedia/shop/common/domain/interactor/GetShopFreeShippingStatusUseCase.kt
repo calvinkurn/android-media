@@ -12,9 +12,9 @@ class GetShopFreeShippingStatusUseCase @Inject constructor(
         private const val PARAM_USER_ID = "userID"
         private const val PARAM_SHOP_ID = "shopIDs"
 
-        fun createRequestParams(userId: Int, shopIds: List<Int>): RequestParams {
+        fun createRequestParams(userId: Long, shopIds: List<Long>): RequestParams {
             return RequestParams().apply {
-                putInt(PARAM_USER_ID, userId)
+                putLong(PARAM_USER_ID, userId)
                 putObject(PARAM_SHOP_ID, shopIds)
             }
         }

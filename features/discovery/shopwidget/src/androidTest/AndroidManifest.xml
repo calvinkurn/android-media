@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.shopwidget">
+
+    <application
+        android:label="Shop Widget Instrumentation Test"
+        tools:replace="android:label">
+    </application>
+
+</manifest>

@@ -8,4 +8,5 @@ sealed class NotificationItemState {
     object PushNotif: NotificationItemState()
     object Email: NotificationItemState()
     object Phone: NotificationItemState()
+    object Troubleshooter: NotificationItemState()
 }

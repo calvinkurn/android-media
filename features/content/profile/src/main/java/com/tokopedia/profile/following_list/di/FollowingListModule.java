@@ -3,7 +3,6 @@ package com.tokopedia.profile.following_list.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -13,12 +12,12 @@ import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListLo
 import com.tokopedia.profile.following_list.domain.interactor.GetFollowingListUseCase;
 import com.tokopedia.profile.following_list.domain.interactor.GetShopFollowingListUseCase;
 import com.tokopedia.profile.following_list.view.listener.FollowingList;
-import com.tokopedia.profile.following_list.view.presenter.UserFollowListPresenter;
 import com.tokopedia.profile.following_list.view.presenter.ShopFollowingListPresenter;
-import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
-import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
+import com.tokopedia.profile.following_list.view.presenter.UserFollowListPresenter;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingResultViewModel;
 import com.tokopedia.profile.following_list.view.viewmodel.ShopFollowingViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingResultViewModel;
+import com.tokopedia.profile.following_list.view.viewmodel.UserFollowingViewModel;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -30,7 +29,7 @@ import dagger.Provides;
  * @author by milhamj on 24/04/18.
  */
 
-@Module(includes = {CoroutineDispatcherModule.class})
+@Module
 public class FollowingListModule {
 
     @FollowingListScope

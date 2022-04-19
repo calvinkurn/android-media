@@ -1,12 +1,9 @@
 package com.tokopedia.atc_common.domain.model.response
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-/**
- * Created by Irfan Khoirul on 2019-07-10.
- */
-
+@Parcelize
 data class AddToCartDataModel(
     var errorMessage: ArrayList<String> = arrayListOf(),
     var status: String = "",
@@ -15,46 +12,98 @@ data class AddToCartDataModel(
     var responseJson: String = ""
 ) : Parcelable {
 
+    /*
+     This method is for checking if ATC error and has message from backend
+     Note: This is useful for ATC OCS when OVO validation failed and need custom error handling
+     For tracking, it is recommended to use isStatusError() instead
+     */
     fun isDataError(): Boolean {
         return (data.success == 0 || !status.equals("OK", true)) && (data.message.isNotEmpty() || errorMessage.isNotEmpty())
+    }
+
+    /*
+     This method is for checking if ATC error without capability of custom error handling when no message provided from backend
+     This is recommended for sending tracking
+     */
+    fun isStatusError(): Boolean {
+        return (data.success == 0 || !status.equals("OK", true))
     }
 
     fun getAtcErrorMessage(): String? {
         return errorMessage.firstOrNull() ?: data.message.firstOrNull()
     }
 
-    constructor(parcel: Parcel) : this(
-            parcel.createStringArrayList(),
-            parcel.readString(),
-            parcel.readParcelable(DataModel::class.java.classLoader),
-            parcel.readParcelable(ErrorReporterModel::class.java.classLoader),
-            parcel.readString())
-
     companion object {
         const val STATUS_OK = "OK"
         const val STATUS_ERROR = "ERROR"
-
-        @JvmField
-        val CREATOR = object : Parcelable.Creator<AddToCartDataModel> {
-            override fun createFromParcel(parcel: Parcel): AddToCartDataModel {
-                return AddToCartDataModel(parcel)
-            }
-
-            override fun newArray(size: Int): Array<AddToCartDataModel?> {
-                return arrayOfNulls(size)
-            }
-        }
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeStringList(errorMessage)
-        parcel.writeString(status)
-        parcel.writeParcelable(data, flags)
-        parcel.writeParcelable(errorReporter, flags)
-        parcel.writeString(responseJson)
-    }
-
-    override fun describeContents(): Int {
-        return 0
     }
 }
+
+@Parcelize
+data class DataModel(
+        var success: Int = 0,
+        var cartId: String = "",
+        var productId: Long = 0,
+        var quantity: Int = 0,
+        var notes: String = "",
+        var shopId: Long = 0,
+        var customerId: Long = 0,
+        var warehouseId: Long = 0,
+        var trackerAttribution: String = "",
+        var trackerListName: String = "",
+        var ucUtParam: String = "",
+        var isTradeIn: Boolean = false,
+        var message: ArrayList<String> = arrayListOf(),
+        var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
+        var refreshPrerequisitePage: Boolean = false
+) : Parcelable
+
+@Parcelize
+data class ErrorReporterModel(
+        var eligible: Boolean = false,
+        var texts: ErrorReporterTextModel = ErrorReporterTextModel()
+): Parcelable
+
+@Parcelize
+data class ErrorReporterTextModel(
+        var submitTitle: String = "",
+        var submitDescription: String = "",
+        var submitButton: String = "",
+        var cancelButton: String = ""
+): Parcelable
+
+@Parcelize
+data class OvoValidationDataModel(
+        var status: Int = 0,
+        var applink: String = "",
+        var ovoInsufficientBalance: OvoInsufficientBalance = OvoInsufficientBalance()
+): Parcelable
+
+@Parcelize
+data class OvoInsufficientBalance(
+        var title: String = "",
+        var description: String = "",
+        var details: OvoInsufficientDetails = OvoInsufficientDetails(),
+        var buttons: OvoInsufficientButton = OvoInsufficientButton()
+): Parcelable
+
+@Parcelize
+data class OvoInsufficientDetails(
+        var productPrice: Long = 0,
+        var shippingEstimation: Int = 0,
+        var ovoBalance: Int = 0,
+        var topupBalance: Int = 0
+): Parcelable
+
+@Parcelize
+data class OvoInsufficientButton(
+        var topupButton: OvoInsufficientTopup = OvoInsufficientTopup(),
+        var otherMethodButton: OvoInsufficientTopup = OvoInsufficientTopup()
+): Parcelable
+
+@Parcelize
+data class OvoInsufficientTopup(
+        var text: String = "",
+        var applink: String = "",
+        var enable: Boolean = false
+): Parcelable

@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DEALS
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -44,7 +45,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(), this) }
+    private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(),this) }
+
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
     lateinit var progressDialog: ProgressDialog
@@ -68,17 +70,25 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         return inflater.inflate(R.layout.fragment_promo_checkout_list, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
     }
 
     override fun showProgressLoading() {
-        progressDialog.show()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.show()
+        }
     }
 
     override fun hideProgressLoading() {
-        progressDialog.hide()
+        activity?.let {
+            if (!it.isFinishing) progressDialog.hide()
+        }
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -86,6 +96,12 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
+        }
+    }
+
+    override fun changeTitle(title: String) {
+        if (!title.isNullOrBlank()) {
+            promo_checkout_list_last_seen_label.setText(title)
         }
     }
 
@@ -99,34 +115,34 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
-        with (view.recyclerViewLastSeenPromo) {
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
+        with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
+
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(dividerItemDecoration)
         }
 
-
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
-        with (getRecyclerView(view)) {
+        getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
         }
 
         progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage(getString(R.string.title_loading))
-        textInputCoupon.setText(promoCode)
+        progressDialog.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+        textInputCoupon.textFieldInput.setText(promoCode)
 
         populateLastSeen()
         buttonUse.setOnClickListener {
-            onPromoCodeUse(textInputCoupon.text.toString())
+            onPromoCodeUse(textInputCoupon.textFieldInput.text.toString())
         }
         if (isCouponActive) {
-            getRecyclerView(view).visibility = View.VISIBLE
+            getRecyclerView(view)?.visibility = View.VISIBLE
         } else {
-            getRecyclerView(view).visibility = View.GONE
+            getRecyclerView(view)?.visibility = View.GONE
         }
     }
 
@@ -149,36 +165,44 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
 
         if (e is CheckPromoCodeException || e is MessageErrorException) {
-            textInputLayoutCoupon.error = e.message
+            textInputCoupon.setError(true)
+            e.message?.let { textInputCoupon.setMessage(it) }
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
         }
     }
 
     override fun onErrorEmptyPromo() {
-        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
+        textInputCoupon.setError(true)
+        textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == Activity.RESULT_OK) {
             activity?.setResult(Activity.RESULT_OK, data)
             activity?.finish()
+        } else if (requestCode == REQUEST_CODE_PROMO_DETAIL && resultCode == REQUEST_CODE_PROMO_DEALS) {
+            activity?.setResult(REQUEST_CODE_PROMO_DEALS, data)
+            activity?.finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>) {
-        promoLastSeenAdapter.listData.clear()
-        promoLastSeenAdapter.listData.addAll(data)
-        promoLastSeenAdapter.notifyDataSetChanged()
-        populateLastSeen()
+    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>, isDeals: Boolean) {
+        if (!data.isNullOrEmpty()) {
+            promoLastSeenAdapter.listData.clear()
+            promoLastSeenAdapter.listData.addAll(data)
+            promoLastSeenAdapter.isDeals = isDeals
+            promoLastSeenAdapter.notifyDataSetChanged()
+            populateLastSeen()
+        }
     }
 
     protected fun populateLastSeen() {
-        if (promoLastSeenAdapter.listData.isEmpty()) {
-            containerLastSeen.visibility = View.GONE
-        } else {
+        if (promoLastSeenAdapter.listData.isNotEmpty()) {
             containerLastSeen.visibility = View.VISIBLE
+        } else {
+            containerLastSeen.visibility = View.GONE
         }
     }
 

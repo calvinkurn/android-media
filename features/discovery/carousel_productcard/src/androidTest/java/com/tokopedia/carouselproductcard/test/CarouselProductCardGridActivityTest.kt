@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.productcard.ProductCardModel
 
@@ -32,11 +34,11 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return carouselProductCardGridTestData.size
+            return carouselProductCardTestData.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(carouselProductCardGridTestData[position])
+            holder.bind(carouselProductCardTestData[position])
         }
 
         override fun onViewRecycled(holder: ViewHolder) {
@@ -58,7 +60,18 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         fun bind(productCardModelList: List<ProductCardModel>) {
             item?.bindCarouselProductCardViewGrid(
                     productCardModelList = productCardModelList,
-                    recyclerViewPool = recycledViewPool
+                    recyclerViewPool = recycledViewPool,
+                    carouselProductCardOnItemATCNonVariantClickListener = object: CarouselProductCardListener.OnATCNonVariantClickListener {
+                        override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                            Toast.makeText(itemView.context, "ATC non variant position $carouselProductCardPosition, quantity $quantity", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener {
+                        override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            Toast.makeText(itemView.context, "ATC variant position $carouselProductCardPosition", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    showSeeMoreCard = true
             )
         }
 

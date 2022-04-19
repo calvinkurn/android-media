@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+  <style name="BoldToolbar">
+    <item name="android:textSize">@dimen/fontSize_lvl4</item>
+    <item name="android:textColor">@color/updateinactivephone_dms_dark_n0</item>
+  </style>
 </resources>

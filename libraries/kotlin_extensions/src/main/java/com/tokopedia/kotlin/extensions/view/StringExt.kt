@@ -36,6 +36,28 @@ fun String?.toZeroStringIfNull(): String {
     return this ?: "0"
 }
 
+fun String?.toZeroStringIfNullOrBlank(): String {
+    return when {
+        this == null -> {
+            this.toZeroStringIfNull()
+        }
+        this.isBlank() -> {
+            "0"
+        }
+        else -> {
+            this
+        }
+    }
+}
+
+fun String?.toIntSafely(): Int {
+    return try {
+        toIntOrZero()
+    } catch (e: Exception) {
+        0
+    }
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
@@ -86,6 +108,20 @@ fun String.parseAsHtml(): CharSequence {
 }
 
 fun String.asUpperCase(): String {
-    val locale = Locale("id")
+    val locale = Locale.getDefault()
     return this.toUpperCase(locale)
 }
+
+fun String.asLowerCase(): String {
+    val locale = Locale.getDefault()
+    return this.toLowerCase(locale)
+}
+
+fun String.asCamelCase(): String {
+    val locale = Locale.getDefault()
+    return this.capitalize(locale)
+}
+
+fun String?.toEmpty(): String = ""
+
+val String.Companion.EMPTY get() = ""

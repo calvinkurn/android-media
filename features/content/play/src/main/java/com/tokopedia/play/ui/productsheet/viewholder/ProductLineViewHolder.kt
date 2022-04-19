@@ -1,74 +1,63 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
-import android.graphics.Paint
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.graphics.drawable.DrawableCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.adapterdelegate.BaseViewHolder
+import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.ui.product.ProductBasicViewHolder
+import com.tokopedia.play.view.type.ComingSoon
+import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 03/03/20
  */
-class ProductLineViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
+class ProductLineViewHolder(itemView: View, private val listener: Listener) : ProductBasicViewHolder(itemView, listener) {
 
-    val tvProductTitle: TextView = itemView.findViewById(R.id.tv_product_title)
-    private val ivProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
-    private val llProductDiscount: LinearLayout = itemView.findViewById(R.id.ll_product_discount)
-    private val tvProductDiscount: TextView = itemView.findViewById(R.id.tv_product_discount)
-    private val tvOriginalPrice: TextView = itemView.findViewById(R.id.tv_original_price)
-    private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
-    private val ivProductAtc: ImageView = itemView.findViewById(R.id.iv_product_atc)
+    private val btnProductAtc: UnifyButton = itemView.findViewById(R.id.btn_product_atc)
+    private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
+    private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
+    private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
 
-    private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
-
-    init {
-        tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-        ivProductAtc.drawable.mutate()
-    }
-
-    fun bind(item: ProductLineUiModel) {
-        ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
-        tvProductTitle.text = item.title
-
+    override fun bind(item: PlayProductUiModel.Product) {
+        super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                shadowOutOfStock.show()
+                lblOutOfStock.show()
+                tvOutOfStock.gone()
+                btnProductAtc.setDrawable(
+                    getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
+                )
                 btnProductBuy.isEnabled = false
-                ivProductAtc.isEnabled = false
-                btnProductBuy.text = getString(R.string.play_product_empty)
-
-                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_atc_image_disabled))
+                btnProductAtc.isEnabled = false
             }
+
             is StockAvailable -> {
+                shadowOutOfStock.gone()
+                lblOutOfStock.gone()
+                tvOutOfStock.shouldShowWithAction(item.stock.stock <= MIN_STOCK){
+                    tvOutOfStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
+                }
                 btnProductBuy.isEnabled = true
-                ivProductAtc.isEnabled = true
-                btnProductBuy.text = getString(R.string.play_product_buy)
-
-                DrawableCompat.setTintList(ivProductAtc.drawable, null)
+                btnProductAtc.isEnabled = true
+                btnProductAtc.setDrawable(
+                    getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                )
             }
-        }
-
-        when (item.price) {
-            is DiscountedPrice -> {
-                llProductDiscount.visible()
-                tvProductDiscount.text = itemView.context.getString(R.string.play_discount_percent, item.price.discountPercent)
-                tvOriginalPrice.text = item.price.originalPrice
-                tvCurrentPrice.text = item.price.discountedPrice
-            }
-            is OriginalPrice -> {
-                llProductDiscount.gone()
-                tvCurrentPrice.text = item.price.price
+            is ComingSoon ->{
+                btnProductAtc.hide()
+                btnProductBuy.hide()
             }
         }
 
@@ -76,18 +65,19 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
             listener.onBuyProduct(item)
         }
 
-        ivProductAtc.setOnClickListener {
+        btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
-        }
-
-        itemView.setOnClickListener {
-            if (!item.applink.isNullOrEmpty()) listener.onClickProductCard(item)
         }
     }
 
-    interface Listener {
-        fun onBuyProduct(product: ProductLineUiModel)
-        fun onAtcProduct(product: ProductLineUiModel)
-        fun onClickProductCard(product: ProductLineUiModel)
+    companion object {
+        val LAYOUT = R.layout.item_play_product_line
+
+        private const val MIN_STOCK: Int = 5
+    }
+
+    interface Listener : ProductBasicViewHolder.Listener {
+        fun onBuyProduct(product: PlayProductUiModel.Product)
+        fun onAtcProduct(product: PlayProductUiModel.Product)
     }
 }

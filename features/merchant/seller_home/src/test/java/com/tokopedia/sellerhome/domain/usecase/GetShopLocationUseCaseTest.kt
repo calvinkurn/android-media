@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.sellerhome.utils.TestHelper
@@ -55,13 +55,13 @@ class GetShopLocationUseCaseTest {
         getShopLocationUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val actualShopLocation = getShopLocationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         val expectedShopLocation = ShippingLoc(13)
@@ -74,14 +74,14 @@ class GetShopLocationUseCaseTest {
         getShopLocationUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val actualShopLocation = getShopLocationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(actualShopLocation)

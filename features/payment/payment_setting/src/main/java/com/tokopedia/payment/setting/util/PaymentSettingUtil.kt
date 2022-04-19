@@ -1,7 +1,5 @@
 package com.tokopedia.payment.setting.util
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 
 val FORMAT_URL_IMAGE = "%s/%s/%s.png"

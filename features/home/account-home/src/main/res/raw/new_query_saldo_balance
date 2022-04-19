@@ -1,6 +1,0 @@
-query {
-    balance {
-        buyer_usable
-        seller_usable
-    }
-}

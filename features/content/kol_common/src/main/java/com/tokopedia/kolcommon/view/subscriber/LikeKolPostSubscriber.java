@@ -1,9 +1,10 @@
 package com.tokopedia.kolcommon.view.subscriber;
 
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.kolcommon.util.GraphqlErrorHandler;
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 
 import rx.Subscriber;
 
@@ -31,7 +32,7 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     public void onError(Throwable e) {
         if (view != null) {
             view.onLikeKolError(
-                    GraphqlErrorHandler.getErrorMessage(view.getAndroidContext(), e)
+                    ErrorHandler.getErrorMessage(view.getAndroidContext(), e)
             );
         }
     }
@@ -42,7 +43,7 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
             if (isSuccess) {
                 view.onLikeKolSuccess(rowNumber, action);
             } else {
-                view.onLikeKolError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                view.onLikeKolError(ErrorHandler.getErrorMessage(view.getAndroidContext(), new MessageErrorException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)));
             }
         }
     }

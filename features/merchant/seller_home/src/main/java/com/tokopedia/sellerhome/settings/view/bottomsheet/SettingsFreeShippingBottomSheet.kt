@@ -1,24 +1,26 @@
 package com.tokopedia.sellerhome.settings.view.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.centralizedpromo.constant.CentralizedPromoUrl
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.databinding.BottomSheetSettingsFreeShippingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottom_sheet_settings_free_shipping.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
+class SettingsFreeShippingBottomSheet : BottomSheetUnify() {
 
     companion object {
-        val TAG: String = SettingsFreeShippingBottomSheet::class.java.simpleName
+        private val TAG = SettingsFreeShippingBottomSheet::class.java.canonicalName
 
         fun createInstance(): SettingsFreeShippingBottomSheet {
             return SettingsFreeShippingBottomSheet()
@@ -26,25 +28,35 @@ class SettingsFreeShippingBottomSheet: BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    lateinit var freeShippingTracker: SettingFreeShippingTracker
+
+    private var binding by autoClearedNullable<BottomSheetSettingsFreeShippingBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-        val itemView = View.inflate(context,
-            R.layout.bottom_sheet_settings_free_shipping, null)
-
-        setChild(itemView)
         setTitle(getString(R.string.settings_free_shipping_title))
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetSettingsFreeShippingBinding.inflate(inflater)
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnFreeShippingDetail.setOnClickListener {
-            SettingFreeShippingTracker.trackFreeShippingDetailClick(userSession)
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+        binding?.btnFreeShippingDetail?.setOnClickListener {
+            freeShippingTracker.trackFreeShippingDetailClick()
+            RouteManager.route(
+                context, ApplinkConstInternalGlobal.WEBVIEW,
+                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+            )
             dismiss()
         }
     }

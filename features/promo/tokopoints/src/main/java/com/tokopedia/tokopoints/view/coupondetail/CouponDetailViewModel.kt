@@ -26,7 +26,7 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
     val onReFetch = MutableLiveData<Resources<String>>()
     val onRedeemCoupon = MutableLiveData<Resources<String>>()
     val finish = MutableLiveData<Unit>()
-    val userInfo = MutableLiveData<MfGetUserInfo>()
+    val userInfo = MutableLiveData<PhoneVerificationResponse>()
 
     lateinit var data: CouponValueEntity
     lateinit var couponCode: String
@@ -85,11 +85,13 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
         launchCatchError(block = {
             val data = repository.swipeMyCoupon(data.realCode, "").getSuccessData<CouponSwipeUpdateOuter>().swipeCoupon
             if (data != null) {
-                if (data.getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                if (data.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     onCouponSwipe.value = Success(data)
                 } else {
-                    if (data.getResultStatus().getMessages().size > 0) {
-                        onCouponSwipe.value = ErrorMessage(data.getResultStatus().getMessages().get(0))
+                    if (data.resultStatus.messages?.isNotEmpty() == true) {
+                        onCouponSwipe.value = data.resultStatus.messages?.get(0)?.let {
+                            ErrorMessage(it)
+                        }
                     }
                 }
             } else throw NullPointerException("data is null")
@@ -124,7 +126,7 @@ class CouponDetailViewModel @Inject constructor(bundle: Bundle, private val repo
     fun isPhonerVerfied() {
         launchCatchError(block = {
             val data = repository.getUserPhoneVerificationInfo().getSuccessData<PhoneVerificationResponse>()
-            userInfo.value = data.mfGetUserInfo
+            userInfo.value = data
         }) {
         }
     }

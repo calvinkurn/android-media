@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.promocheckoutmarketplace">
+
+    <application
+        android:label="Promo Marketplace Test"
+        tools:replace="android:label">
+        <activity
+            android:name="com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutActivity"
+            android:label="@string/promo_checkout_marketplace_module_title_activity_promo_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
+    </application>
+
+</manifest>

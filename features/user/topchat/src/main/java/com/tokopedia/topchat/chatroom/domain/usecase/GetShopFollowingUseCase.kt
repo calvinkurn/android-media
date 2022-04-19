@@ -1,57 +1,55 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topchat.R
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
-import rx.Subscriber
 import javax.inject.Inject
 
-/**
- * @author by nisie on 16/01/19.
- */
+open class GetShopFollowingUseCase@Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<Long, ShopFollowingPojo>(dispatcher.io) {
 
-class GetShopFollowingUseCase @Inject constructor(
-        val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase
-) {
-
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_shop_following_status)
-        val graphqlRequest = GraphqlRequest(query,
-                ShopFollowingPojo::class.java, requestParams, false)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+    override suspend fun execute(params: Long): ShopFollowingPojo {
+        val param = generateParam(params)
+        return repository.request(graphqlQuery(), param)
     }
+
+    private fun generateParam(shopId: Long): Map<String, Any> {
+        val shopIds = listOf(shopId)
+        val inputFields = listOf(DEFAULT_FAVORITE)
+        return mapOf<String, Any>(
+            PARAM_SHOP_IDS to shopIds,
+            PARAM_INPUT_FIELDS to inputFields
+        )
+    }
+
+    override fun graphqlQuery(): String = """
+        query get_shop_following_status(
+            $$PARAM_SHOP_IDS: [Int!]!, 
+            $$PARAM_INPUT_FIELDS: [String!]!
+        ) {
+          shopInfoByID(
+            input: {
+                shopIDs: $$PARAM_SHOP_IDS,
+                fields: $$PARAM_INPUT_FIELDS
+            }
+          ) {
+            result {
+              favoriteData {
+                alreadyFavorited
+              }
+            }
+          }
+        }
+
+    """.trimIndent()
 
     companion object {
-
-        private val PARAM_SHOP_IDS: String = "shopIDs"
-        private val PARAM_INPUT_FIELDS: String = "inputFields"
-        private val DEFAULT_FAVORITE: String = "favorite"
-
-
-        fun generateParam(shopId: Int):
-                Map<String, Any> {
-            val shopIds = ArrayList<Int>()
-            shopIds.add(shopId)
-
-            val inputFields = ArrayList<String>()
-            inputFields.add(DEFAULT_FAVORITE)
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_SHOP_IDS] = shopIds
-            requestParams[PARAM_INPUT_FIELDS] = inputFields
-            return requestParams
-        }
+        private const val PARAM_SHOP_IDS = "shopIDs"
+        private const val PARAM_INPUT_FIELDS = "inputFields"
+        private const val DEFAULT_FAVORITE: String = "favorite"
     }
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
 }

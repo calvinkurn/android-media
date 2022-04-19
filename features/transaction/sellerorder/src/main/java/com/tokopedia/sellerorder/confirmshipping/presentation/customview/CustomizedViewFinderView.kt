@@ -1,14 +1,13 @@
 package com.tokopedia.sellerorder.confirmshipping.presentation.customview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.util.AttributeSet
-import com.journeyapps.barcodescanner.ViewfinderView
-import android.annotation.SuppressLint
 import android.graphics.Paint
-import androidx.core.content.ContextCompat
 import android.graphics.Paint.ANTI_ALIAS_FLAG
-import com.tokopedia.sellerorder.R
+import android.util.AttributeSet
+import androidx.core.content.ContextCompat
+import com.journeyapps.barcodescanner.ViewfinderView
 
 /**
  * Created by fwidjaja on 2019-11-16.
@@ -26,7 +25,7 @@ class CustomizedViewFinderView(context: Context, attrs: AttributeSet) : Viewfind
 
         //initialize new paint in the constructor
         val borderPaint = Paint(ANTI_ALIAS_FLAG)
-        borderPaint.color = ContextCompat.getColor(context, com.tokopedia.design.R.color.white)
+        borderPaint.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
         //inside onDraw
         val framingRect = cameraPreview?.framingRect

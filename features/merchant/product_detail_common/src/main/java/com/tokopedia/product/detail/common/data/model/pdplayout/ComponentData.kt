@@ -1,10 +1,18 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.product.Cashback
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.data.model.product.Stock
+import com.tokopedia.product.detail.common.data.model.product.VariantBasic
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
+import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
 data class ComponentData(
+        //region General data
         @SerializedName("applink")
         val applink: String = "",
         @SerializedName("content")
@@ -17,16 +25,24 @@ data class ComponentData(
         val isApplink: Boolean = true,
         @SerializedName("icon")
         val icon: String = "",
+        @SerializedName("separator")
+        val separator: String = "",
+        @SerializedName("description")
+        val description: String = "",
+        //endregion
 
-        // Snapshot data
+        //region custom info palugada ... on pdpDataCustomInfo
+        @SerializedName("label")
+        val labels: List<CustomInfoLabelData> = listOf(),
+        //endregion
+
+        //region Content data
         @SerializedName("campaign")
         val campaign: CampaignModular = CampaignModular(),
-        @SerializedName("isCOD")
-        val isCOD: Boolean = false,
+        @SerializedName("thematicCampaign")
+        val thematicCampaign: ThematicCampaign = ThematicCampaign(),
         @SerializedName("isCashback")
         val isCashback: Cashback = Cashback(),
-        @SerializedName("isFreeOngkir")
-        val isFreeOngkir: IsFreeOngkir = IsFreeOngkir(),
         @SerializedName("isOS")
         val isOS: Boolean = false,
         @SerializedName("isPowerMerchant")
@@ -39,35 +55,62 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
-        @SerializedName("pictures")
-        val pictures: List<Picture> = listOf(),
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
         val stock: Stock = Stock(),
         @SerializedName("variant")
-        val variant: Variant = Variant(),
+        val variant: VariantBasic = VariantBasic(),
         @SerializedName("videos")
-        val videos: List<Video> = listOf(),
+        val youtubeVideos: List<YoutubeVideo> = listOf(),
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
         val preOrder: PreOrder = PreOrder(),
+        @SerializedName("isCOD")
+        val isCod: Boolean = false,
+        //endregion
+        //region Variant data
+        @SerializedName("parentID")
+        val parentId: String = "",
+        @SerializedName("errorCode")
+        val errorCode: Int = 0,
+        @SerializedName("sizeChart")
+        val sizeChart: String = "",
+        @SerializedName("maxFinalPrice")
+        val maxFinalPrice: Float = 0F,
+        @SerializedName("defaultChild")
+        val defaultChild: String = "",
+        @SerializedName("variants")
+        val variants: List<Variant> = listOf(),
+        @SerializedName("children")
+        val children: List<VariantChild> = listOf(),
+        //endregioncopy
 
-        //upcoming deals / notifyMe
-        @SerializedName("campaignID")
-        val campaignId: String = "",
-        @SerializedName("campaignType")
-        val campaignType: String = "",
-        @SerializedName("campaignTypeName")
-        val campaignTypeName: String = "",
-        @SerializedName("endDate")
-        val endDate: String = "",
-        @SerializedName("startDate")
-        val startDate: String = "",
-        @SerializedName("notifyMe")
-        val notifyMe: Boolean = false
+        //region one liners data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true,
+        //endregioncopy
+
+        //region category carousel
+        @SerializedName("titleCarousel")
+        val titleCarousel: String = "",
+        @SerializedName("list")
+        val categoryCarouselList: List<CategoryCarousel> = listOf()
+        //endregion
 ) {
+    companion object {
+        private const val PRODUCT_IMAGE_TYPE = "image"
+    }
 
     val hasWholesale: Boolean
         get() = wholesale != null && wholesale.isNotEmpty()
@@ -76,14 +119,14 @@ data class ComponentData(
         if (media.isEmpty()) return null
 
         val firstImage = media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }
 
         return if (firstImage != null) {
             when {
-                firstImage.uRLThumbnail.isNotEmpty() -> pictures[0].urlThumbnail
-                firstImage.uRL300.isNotEmpty() -> pictures[0].url300
-                firstImage.uRLOriginal.isNotEmpty() -> pictures[0].urlOriginal
+                firstImage.uRLThumbnail.isNotEmpty() -> firstImage.uRLThumbnail
+                firstImage.uRL300.isNotEmpty() -> firstImage.uRL300 ?: ""
+                firstImage.uRLOriginal.isNotEmpty() -> firstImage.uRLOriginal
                 else -> ""
             }
         } else {
@@ -94,25 +137,66 @@ data class ComponentData(
     fun getProductImageUrl(): String? {
         if (media.isEmpty()) return null
         return media.find {
-            it.type == "image"
+            it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
     }
 
-    fun getFsProductIsActive(): Boolean {
-        return isFreeOngkir.isActive
-    }
-
-    fun getFsProductImageUrl(): String {
-        return isFreeOngkir.imageURL
+    fun getImagePathExceptVideo(): ArrayList<String>? {
+        val imageData = media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }.map { it.uRLOriginal }
+        val arrayList = arrayListOf<String>()
+        return if (imageData.isEmpty()) {
+            null
+        } else {
+            arrayList.addAll(imageData)
+            arrayList
+        }
     }
 
     fun getImagePath(): ArrayList<String> {
         return ArrayList(media.map {
-            if (it.type == "image") {
+            if (it.type == PRODUCT_IMAGE_TYPE) {
                 it.uRLOriginal
             } else {
                 it.uRLThumbnail
             }
         })
     }
+
+    fun getGalleryItems(): List<ProductDetailGallery.Item> {
+        return media.mapIndexed { index, media ->
+            val url: String
+            val thumbnailUrl: String
+            val type: ProductDetailGallery.Item.Type
+            if (media.type == PRODUCT_IMAGE_TYPE) {
+                url = media.uRLOriginal
+                thumbnailUrl = media.uRLOriginal
+                type = ProductDetailGallery.Item.Type.Image
+            } else {
+                url = media.videoURLAndroid
+                thumbnailUrl = media.uRLThumbnail
+                type = ProductDetailGallery.Item.Type.Video
+            }
+
+            ProductDetailGallery.Item(
+                id = index.toString(),
+                url = url,
+                thumbnailUrl = thumbnailUrl,
+                tag = media.description.takeIf { media.variantOptionId != "0" },
+                type = type
+            )
+        }
+    }
 }
+
+data class CategoryCarousel(
+        @SerializedName("icon")
+        val icon: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("isApplink")
+        var isApplink: Boolean = false,
+        @SerializedName("applink")
+        val applink: String = "",
+        @SerializedName("categoryID")
+        val categoryId: String = ""
+)

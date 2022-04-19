@@ -6,6 +6,53 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSahRamadhanBg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bg_sah_ramadhan_home"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSahRamadhanBgLeft"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:unify_image_corner_radius="0"
+        app:unify_image_placeholder="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@id/ivSahRamadhanBg"
+        app:layout_constraintBottom_toBottomOf="@id/ivSahRamadhanBg"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSahRamadhanBgRight"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        app:unify_image_corner_radius="0"
+        app:unify_image_placeholder="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@id/ivSahRamadhanBg"
+        app:layout_constraintBottom_toBottomOf="@id/ivSahRamadhanBg"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintTop_toTopOf="@id/ivSahRamadhanBg"
+        app:srcCompat="@drawable/ic_sah_ramadhan_pattern"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_sah_ramadhan_ornament"/>
+
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"
@@ -23,16 +70,6 @@
             app:tickerShapeType="full"
             app:tickerType="announcement" />
     </RelativeLayout>
-
-    <View
-        android:id="@+id/viewBgShopStatus"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/sah_medium_widget_height"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relTicker" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -66,6 +103,18 @@
 
                     <com.tokopedia.globalerror.GlobalError
                         android:id="@+id/sahGlobalError"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.empty_state.EmptyStateUnify
+                        android:id="@+id/empty_state_seller_home"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

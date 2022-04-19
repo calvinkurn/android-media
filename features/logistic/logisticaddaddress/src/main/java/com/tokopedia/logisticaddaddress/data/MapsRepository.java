@@ -1,12 +1,12 @@
 package com.tokopedia.logisticaddaddress.data;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.uimodel.AutoCompleteUiModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.domain.IMapsMapper;
-import com.tokopedia.logisticdata.data.apiservice.MapsApi;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Data;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.CoordinateModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.apiservice.MapsApi;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Data;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -34,8 +34,8 @@ public class MapsRepository implements IMapsRepository {
     }
 
     @Override
-    public Observable<AutoCompleteViewModel> getAutoCompleteList(TKPDMapParam<String, Object> params,
-                                                                 final String query) {
+    public Observable<AutoCompleteUiModel> getAutoCompleteList(TKPDMapParam<String, Object> params,
+                                                               final String query) {
         return mapsApi.getRecommendedPlaces(params)
                 .map(response -> {
                     handleError(response);
@@ -47,7 +47,7 @@ public class MapsRepository implements IMapsRepository {
     }
 
     @Override
-    public Observable<CoordinateViewModel> getLatLng(TKPDMapParam<String, Object> params) {
+    public Observable<CoordinateUiModel> getLatLng(TKPDMapParam<String, Object> params) {
         return mapsApi.getLatLng(params)
                 .map(response -> {
                     handleError(response);
@@ -58,7 +58,7 @@ public class MapsRepository implements IMapsRepository {
     }
 
     @Override
-    public Observable<CoordinateViewModel> getLatLngFromGeocode(TKPDMapParam<String, Object> params) {
+    public Observable<CoordinateUiModel> getLatLngFromGeocode(TKPDMapParam<String, Object> params) {
         return mapsApi.getLatLngGeocode(params)
                 .map(response -> {
                     handleError(response);

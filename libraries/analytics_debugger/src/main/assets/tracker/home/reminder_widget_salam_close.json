@@ -1,0 +1,13 @@
+{
+  "readme": "Reminder Widget salam close",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "homepage-salam",
+      "event": "clickHomepage",
+      "eventAction": "click close on salam",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    }
+  ]
+}

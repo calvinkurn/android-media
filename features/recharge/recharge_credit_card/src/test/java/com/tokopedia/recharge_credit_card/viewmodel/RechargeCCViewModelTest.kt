@@ -44,7 +44,7 @@ class RechargeCCViewModelTest {
         result[RechargeCCBankListReponse::class.java] = RechargeCCBankListReponse(RechargeCCBankList(bankList = mutableListOf()))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getListBank("", 0)
@@ -64,7 +64,7 @@ class RechargeCCViewModelTest {
         result[RechargeCCBankListReponse::class.java] = RechargeCCBankListReponse(RechargeCCBankList(bankList = mutableListOf(), messageError = errorMessage))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getListBank("", 0)
@@ -72,7 +72,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorMessage, actualData.value)
+        Assert.assertEquals(errorMessage, actualData.value?.message)
     }
 
     @Test
@@ -85,14 +85,14 @@ class RechargeCCViewModelTest {
         errors[RechargeCCBankListReponse::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         //when
         rechargeCCViewModel.getListBank("", 0)
 
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 
     //========================================= MENU DETAIL ================================
@@ -108,7 +108,7 @@ class RechargeCCViewModelTest {
         result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(RechargeCCMenuDetail(tickers = tickers))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getMenuDetail("", "169")
@@ -128,7 +128,7 @@ class RechargeCCViewModelTest {
         result[RechargeCCMenuDetailResponse::class.java] = RechargeCCMenuDetailResponse(RechargeCCMenuDetail(tickers = tickers))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getMenuDetail("", "169")
@@ -139,6 +139,26 @@ class RechargeCCViewModelTest {
         Assert.assertEquals(tickers, actualData.value)
     }
 
+    @Test
+    fun getPrefix_ErrorGetApi_FailedGetTicker() {
+        //given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[RechargeCCMenuDetail::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        //when
+        rechargeCCViewModel.getMenuDetail("", "169")
+
+        //then
+        val actualData = rechargeCCViewModel.tickers
+        Assert.assertNull(actualData.value)
+    }
+
     //========================================= PREFIX =====================================
 
     @Test
@@ -146,17 +166,25 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
+
+        val validations = listOf(
+            Validation("Max 16 digits", "Maksimal 16 digits", "^\\\\d{0,16}\$"),
+            Validation("Min 15 digits", "Minimal 15 digit", "^\\d{15,}$")
+        )
 
         val result = HashMap<Type, Any>()
-        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
+        result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(
+            prefixes = prefixes,
+            validations = validations
+        ))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getPrefixes("", "45678910", "169")
@@ -167,6 +195,16 @@ class RechargeCCViewModelTest {
         Assert.assertEquals(rechargeCCSelected.defaultProductId, actualData.value?.defaultProductId)
         Assert.assertEquals(rechargeCCSelected.operatorId, actualData.value?.operatorId)
         Assert.assertEquals(rechargeCCSelected.imageUrl, actualData.value?.imageUrl)
+
+        val actualRules = rechargeCCViewModel.rule
+        Assert.assertNotNull(actualRules)
+        Assert.assertEquals(validations.size, actualRules.value?.size)
+        Assert.assertEquals(validations[0].message, actualRules.value?.get(0)?.message)
+        Assert.assertEquals(validations[0].title, actualRules.value?.get(0)?.title)
+        Assert.assertEquals(validations[0].rule, actualRules.value?.get(0)?.rule)
+        Assert.assertEquals(validations[1].message, actualRules.value?.get(1)?.message)
+        Assert.assertEquals(validations[1].title, actualRules.value?.get(1)?.title)
+        Assert.assertEquals(validations[1].rule, actualRules.value?.get(1)?.rule)
     }
 
     @Test
@@ -178,7 +216,7 @@ class RechargeCCViewModelTest {
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getPrefixes("", "45678910", "169")
@@ -186,7 +224,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -194,17 +232,17 @@ class RechargeCCViewModelTest {
         //given
         val prefixes = mutableListOf<CatalogPrefixs>()
         prefixes.add(CatalogPrefixs("1", "1234",
-                CatalogOperator(12, CatalogPrefixAttributes("image1", 14))))
+                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))))
         prefixes.add(CatalogPrefixs("2", "4567",
-                CatalogOperator(13, CatalogPrefixAttributes("image2", 15))))
+                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))))
 
-        val rechargeCCSelected = RechargeCreditCard(13, 15, "image2")
+        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
 
         val result = HashMap<Type, Any>()
         result[RechargeCCCatalogPrefix::class.java] = RechargeCCCatalogPrefix(CatalogPrefixSelect(prefixes = prefixes))
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         rechargeCCViewModel.getPrefixes("", "", "169")
@@ -212,7 +250,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -225,13 +263,13 @@ class RechargeCCViewModelTest {
         errors[RechargeCCCatalogPrefix::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         //when
         rechargeCCViewModel.getPrefixes("", "", "169")
 
         //then
         val actualData = rechargeCCViewModel.errorPrefix
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 }

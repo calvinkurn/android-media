@@ -1,23 +1,21 @@
 package com.tokopedia.play.model
 
-import android.provider.MediaStore.Video
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.state.PlayVideoState
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
-import java.util.*
+import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 
 /**
@@ -27,190 +25,451 @@ class ModelBuilder {
 
     private val gson = Gson()
 
-    private val channelJson = """
-    {
-      "gc_token": "",
-      "partner_type": 0,
-      "partner_id": 0,
-      "channel_id": 2315,
-      "title": "Test Channel Tanpa Shop",
-      "description": "Test Description",
-      "cover_url": "https://tokopedia.com",
-      "start_time": 1580515200,
-      "end_time": 1580536800,
-      "total_view_formatted": "12",
-      "is_published": false,
-      "is_active": false,
-      "is_freeze": false,
-      "moderator_id": "",
-      "moderator_name": "Admin",
-      "moderator_thumb_url": "",
-      "content_id": 0,
-      "content_type": 0,
-      "like_type": 1,
-      "channel_type": 0,
-      "is_show_cart": true,
-      "is_show_product_tagging": true,
-      "pinned_product": {
-        "title_pinned": "Ayo belanja barang pilihan kami sebelum kehabisan!",
-        "title_bottom_sheet": "Produk Pilihan Seller",
-        "is_show_discount": false
-      },
-      "pinned_message": {
-        "pinned_message_id": 3187,
-        "title": "twretwqeyrtqywergsfdhgafdhgasfdtwqreyqwretqwebvsdbavsdlksdiwue12561526125175361537153",
-        "max_title_chars": 36,
-        "message": " ",
-        "max_message_chars": 72,
-        "image_url": "",
-        "redirect_url": "tokopedia://shop/321513/etalase/19151054"
-      },
-      "quick_reply": [
-        "😊",
-        "😍",
-        "😘",
-        "❤",
-        "👍",
-        "👏",
-        "🎉",
-        "😂"
-      ],
-      "settings": {
-        "ping_interval": 5000,
-        "max_chars": 200,
-        "max_retries": 3,
-        "min_reconnect_delay": 3000
-      },
-      "banned": {
-        "msg": "Anda diblokir oleh admin karena melanggar syarat dan ketentuan Play, sehingga tidak dapat melihat konten ini.",
-        "title": "Akun Anda Terblokir",
-        "button_title": "OK"
-      },
-      "exit_msg": {
-        "title": "Keluar dari Play?",
-        "body": "Pastikan sudah vote dan mengikuti kuis untuk mendapatkan hadiah menarik."
-      },
-      "freeze_channel_state": {
-        "category": "",
-        "title": "Test Channel Tanpa Shop Telah Berakhir",
-        "desc": "Nantikan dan gabung di channel Test Channel Tanpa Shop selanjut nya.",
-        "btn_title": "Mulai Belanja",
-        "btn_app_link": "tokopedia://home"
-      },
-      "video_stream": {
-        "video_stream_id": 367,
-        "orientation": "vertical",
-        "type": "vod",
-        "is_live": false,
-        "config": {
-          "stream_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          "is_auto_play": false
-        },
-        "buffer_control": {
-          "max_buffer_in_second": 50,
-          "min_buffer_in_second": 15,
-          "buffer_for_playback": 2,
-          "buffer_for_playback_after_rebuffer": 5
-        }
-      },
-      "chat_permit": {
-        "is_show_chat": false,
-        "error_chat_message": "Mohon maaf fitur chat dinonaktifkan untuk saat ini."
+    private val channelJsonWithRecom = """
+        {
+         "playGetChannelDetailsWithRecom": {
+            "meta":{
+               "cursor":"ENdOGdDIMaNpuvA/IJqGxYAG"
+            },
+            "data":[
+               {
+                  "id":"10071",
+                  "title":"Test shop",
+                  "is_live":false,
+                  "partner":{
+                     "id":"479887",
+                     "type":"shop",
+                     "name":"haha stag",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/7/31/479887/479887_b682302c-3c6b-4053-859e-027af3a97c68.png",
+                     "badge_url":"https://images.tokopedia.net/img/official_store/badge_os.png",
+                     "app_link":"tokopedia://shop/479887",
+                     "web_link":"https://staging.tokopedia.com/hahastag"
+                  },
+                  "video":{
+                     "id":"752",
+                     "orientation":"vertical",
+                     "type":"vod",
+                     "stream_source":"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"225",
+                     "title":"testing publish unpublish",
+                     "redirect_url":"https://www.google.com/"
+                  },
+                  "quick_replies":[
+                     "❤ ❤ ❤",
+                     "☺",
+                     "👽",
+                     "✈"
+                  ],
+                  "configurations":{
+                     "show_cart":false,
+                     "show_pinned_product":false,
+                     "ping_interval":10000,
+                     "max_chars":200,
+                     "max_retries":5,
+                     "min_reconnect_delay":5000,
+                     "has_promo":true,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":true,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"10071",
+                        "like_type":3
+                     },
+                     "pinned_product_config":{
+                        "pin_title":"Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        "bottom_sheet_title":"Produk Pilihan Seller"
+                     },
+                     "room_background":{
+                        "image_url":""
+                     }
+                  },
+                  "app_link":"tokopedia://play/10071",
+                  "web_link":"https://www.tokopedia.com/play/update",
+                  "share":{
+                     "text":"\"Test shop\"\nYuk, nonton siaran dari haha stag di Tokopedia PLAY! Bakal seru banget lho!\n        ${'$'}{url}        ",
+                     "redirect_url":"https://tokopedia.link/rEOLlsKdLab",
+                     "use_short_url":false,
+                     "meta_title":"Tokopedia PLAY seru!",
+                     "meta_description":"Nonton siaran seru di Tokopedia PLAY!",
+                     "is_show_button":true
+                  }
+               },
+               {
+                  "id":"10748",
+                  "title":"Test - Tokopedia Play !",
+                  "is_live":false,
+                  "partner":{
+                     "id":"479887",
+                     "type":"shop",
+                     "name":"haha stag",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/7/31/479887/479887_b682302c-3c6b-4053-859e-027af3a97c68.png",
+                     "badge_url":"https://images.tokopedia.net/img/official_store/badge_os.png",
+                     "app_link":"tokopedia://shop/479887",
+                     "web_link":"https://staging.tokopedia.com/hahastag"
+                  },
+                  "video":{
+                     "id":"1105",
+                     "orientation":"horizontal",
+                     "type":"vod",
+                     "stream_source":"https://youtu.be/F1EsfKxZ2xs",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"",
+                     "title":"",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "❤ ❤ ❤",
+                     "☺",
+                     "👽",
+                     "✈"
+                  ],
+                  "configurations":{
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "ping_interval":10000,
+                     "max_chars":200,
+                     "max_retries":5,
+                     "min_reconnect_delay":5000,
+                     "has_promo":false,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":true,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"10748",
+                        "like_type":3
+                     },
+                     "pinned_product_config":{
+                        "pin_title":"Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        "bottom_sheet_title":"Produk Pilihan Seller"
+                     },
+                     "room_background":{
+                        "image_url":""
+                     }
+                  },
+                  "app_link":"tokopedia://play/10748",
+                  "web_link":"https://www.tokopedia.com/play/update",
+                  "share":{
+                     "text":"\"Test - Tokopedia Play !\"\nYuk, nonton siaran dari haha stag di Tokopedia PLAY! Bakal seru banget lho!\n        ${'$'}{url}        ",
+                     "redirect_url":"https://tokopedia.link/RwsJ8Dcb2cb",
+                     "use_short_url":false,
+                     "meta_title":"Tokopedia PLAY seru!",
+                     "meta_description":"Nonton siaran seru di Tokopedia PLAY!",
+                     "is_show_button":true
+                  }
+               },
+               {
+                  "id":"10758",
+                  "title":"Test - Tokopedia Play !",
+                  "is_live":false,
+                  "partner":{
+                     "id":"479887",
+                     "type":"shop",
+                     "name":"haha stag",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/7/31/479887/479887_b682302c-3c6b-4053-859e-027af3a97c68.png",
+                     "badge_url":"https://images.tokopedia.net/img/official_store/badge_os.png",
+                     "app_link":"tokopedia://shop/479887",
+                     "web_link":"https://staging.tokopedia.com/hahastag"
+                  },
+                  "video":{
+                     "id":"1115",
+                     "orientation":"horizontal",
+                     "type":"vod",
+                     "stream_source":"https://youtu.be/F1EsfKxZ2xs",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"",
+                     "title":"",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "❤ ❤ ❤",
+                     "☺",
+                     "👽",
+                     "✈"
+                  ],
+                  "configurations":{
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "ping_interval":10000,
+                     "max_chars":200,
+                     "max_retries":5,
+                     "min_reconnect_delay":5000,
+                     "has_promo":false,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":false,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"10758",
+                        "like_type":3
+                     },
+                     "pinned_product_config":{
+                        "pin_title":"Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        "bottom_sheet_title":"Produk Pilihan Seller"
+                     },
+                     "room_background":{
+                        "image_url":""
+                     }
+                  },
+                  "app_link":"tokopedia://play/10758",
+                  "web_link":"https://www.tokopedia.com/play/update",
+                  "share":{
+                     "text":"\"Test - Tokopedia Play !\"\nYuk, nonton siaran dari haha stag di Tokopedia PLAY! Bakal seru banget lho!\n        ${'$'}{url}        ",
+                     "redirect_url":"https://tokopedia.link/phwM9Fyc2cb",
+                     "use_short_url":false,
+                     "meta_title":"Tokopedia PLAY seru!",
+                     "meta_description":"Nonton siaran seru di Tokopedia PLAY!",
+                     "is_show_button":true
+                  }
+               },
+               {
+                  "id":"10756",
+                  "title":"Test - Tokopedia Play !",
+                  "is_live":false,
+                  "partner":{
+                     "id":"479887",
+                     "type":"shop",
+                     "name":"haha stag",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/7/31/479887/479887_b682302c-3c6b-4053-859e-027af3a97c68.png",
+                     "badge_url":"https://images.tokopedia.net/img/official_store/badge_os.png",
+                     "app_link":"tokopedia://shop/479887",
+                     "web_link":"https://staging.tokopedia.com/hahastag"
+                  },
+                  "video":{
+                     "id":"1113",
+                     "orientation":"horizontal",
+                     "type":"vod",
+                     "stream_source":"https://youtu.be/F1EsfKxZ2xs",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"",
+                     "title":"",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "❤ ❤ ❤",
+                     "☺",
+                     "👽",
+                     "✈"
+                  ],
+                  "configurations":{
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "ping_interval":10000,
+                     "max_chars":200,
+                     "max_retries":5,
+                     "min_reconnect_delay":5000,
+                     "has_promo":false,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":false,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"10756",
+                        "like_type":3
+                     },
+                     "pinned_product_config":{
+                        "pin_title":"Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        "bottom_sheet_title":"Produk Pilihan Seller"
+                     },
+                     "room_background":{
+                        "image_url":""
+                     }
+                  },
+                  "app_link":"tokopedia://play/10756",
+                  "web_link":"https://www.tokopedia.com/play/update",
+                  "share":{
+                     "text":"\"Test - Tokopedia Play !\"\nYuk, nonton siaran dari haha stag di Tokopedia PLAY! Bakal seru banget lho!\n        ${'$'}{url}        ",
+                     "redirect_url":"https://tokopedia.link/us2iYzyc2cb",
+                     "use_short_url":false,
+                     "meta_title":"Tokopedia PLAY seru!",
+                     "meta_description":"Nonton siaran seru di Tokopedia PLAY!",
+                     "is_show_button":true
+                  }
+               },
+               {
+                  "id":"10748",
+                  "title":"Test - Tokopedia Play !",
+                  "is_live":false,
+                  "partner":{
+                     "id":"479887",
+                     "type":"shop",
+                     "name":"haha stag",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/7/31/479887/479887_b682302c-3c6b-4053-859e-027af3a97c68.png",
+                     "badge_url":"https://images.tokopedia.net/img/official_store/badge_os.png",
+                     "app_link":"tokopedia://shop/479887",
+                     "web_link":"https://staging.tokopedia.com/hahastag"
+                  },
+                  "video":{
+                     "id":"1105",
+                     "orientation":"horizontal",
+                     "type":"vod",
+                     "stream_source":"https://youtu.be/F1EsfKxZ2xs",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"",
+                     "title":"",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "❤ ❤ ❤",
+                     "☺",
+                     "👽",
+                     "✈"
+                  ],
+                  "configurations":{
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "ping_interval":10000,
+                     "max_chars":200,
+                     "max_retries":5,
+                     "min_reconnect_delay":5000,
+                     "has_promo":false,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh=true\u0026titlebar=false\u0026autoplay=true\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":true,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"10748",
+                        "like_type":3
+                     },
+                     "pinned_product_config":{
+                        "pin_title":"Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        "bottom_sheet_title":"Produk Pilihan Seller"
+                     },
+                     "room_background":{
+                        "image_url":""
+                     }
+                  },
+                  "app_link":"tokopedia://play/10748",
+                  "web_link":"https://www.tokopedia.com/play/update",
+                  "share":{
+                     "text":"\"Test - Tokopedia Play !\"\nYuk, nonton siaran dari haha stag di Tokopedia PLAY! Bakal seru banget lho!\n        ${'$'}{url}        ",
+                     "redirect_url":"https://tokopedia.link/RwsJ8Dcb2cb",
+                     "use_short_url":false,
+                     "meta_title":"Tokopedia PLAY seru!",
+                     "meta_description":"Nonton siaran seru di Tokopedia PLAY!",
+                     "is_show_button":true
+                  }
+               }
+            ]
+         }
       }
-    }
-    """.trimIndent()
-
-    private val channelWithShopJson = """
-    {
-      "gc_token": "",
-      "partner_type": 1,
-      "partner_id": 2900759,
-      "channel_id": 2315,
-      "title": "Test Channel Dengan Shop",
-      "description": "Test Description",
-      "cover_url": "https://tokopedia.com",
-      "start_time": 1580515200,
-      "end_time": 1580536800,
-      "total_view_formatted": "12",
-      "is_published": false,
-      "is_active": false,
-      "is_freeze": false,
-      "moderator_id": "",
-      "moderator_name": "Admin",
-      "moderator_thumb_url": "",
-      "content_id": 0,
-      "content_type": 0,
-      "like_type": 1,
-      "channel_type": 0,
-      "is_show_cart": true,
-      "is_show_product_tagging": true,
-      "pinned_product": {
-        "title_pinned": "Ayo belanja barang pilihan kami sebelum kehabisan!",
-        "title_bottom_sheet": "Produk Pilihan Seller",
-        "is_show_discount": false
-      },
-      "pinned_message": {
-        "pinned_message_id": 3187,
-        "title": "twretwqeyrtqywergsfdhgafdhgasfdtwqreyqwretqwebvsdbavsdlksdiwue12561526125175361537153",
-        "max_title_chars": 36,
-        "message": " ",
-        "max_message_chars": 72,
-        "image_url": "",
-        "redirect_url": "tokopedia://shop/321513/etalase/19151054"
-      },
-      "quick_reply": [
-        "😊",
-        "😍",
-        "😘",
-        "❤",
-        "👍",
-        "👏",
-        "🎉",
-        "😂"
-      ],
-      "settings": {
-        "ping_interval": 5000,
-        "max_chars": 200,
-        "max_retries": 3,
-        "min_reconnect_delay": 3000
-      },
-      "banned": {
-        "msg": "Anda diblokir oleh admin karena melanggar syarat dan ketentuan Play, sehingga tidak dapat melihat konten ini.",
-        "title": "Akun Anda Terblokir",
-        "button_title": "OK"
-      },
-      "exit_msg": {
-        "title": "Keluar dari Play?",
-        "body": "Pastikan sudah vote dan mengikuti kuis untuk mendapatkan hadiah menarik."
-      },
-      "freeze_channel_state": {
-        "category": "",
-        "title": "Test Channel Tanpa Shop Telah Berakhir",
-        "desc": "Nantikan dan gabung di channel Test Channel Tanpa Shop selanjut nya.",
-        "btn_title": "Mulai Belanja",
-        "btn_app_link": "tokopedia://home"
-      },
-      "video_stream": {
-        "video_stream_id": 367,
-        "orientation": "vertical",
-        "type": "vod",
-        "is_live": false,
-        "config": {
-          "stream_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-          "is_auto_play": false
-        },
-        "buffer_control": {
-          "max_buffer_in_second": 50,
-          "min_buffer_in_second": 15,
-          "buffer_for_playback": 2,
-          "buffer_for_playback_after_rebuffer": 5
-        }
-      },
-      "chat_permit": {
-        "is_show_chat": false,
-        "error_chat_message": "Mohon maaf fitur chat dinonaktifkan untuk saat ini."
-      }
-    }
     """.trimIndent()
 
     private val shopInfoJson = """
@@ -241,11 +500,19 @@ class ModelBuilder {
 
     private val totalLikeCount = """
         {
-            "like": {
-                "fmt": "48",
-                "value": 48
+        "broadcasterReportSummariesBulk": {
+          "reportData": [
+            {
+              "channel": {
+                "metrics": {
+                  "totalLike": "48",
+                  "totalLikeFmt": "48"
+                }
+              }
             }
+          ]
         }
+      }
     """.trimIndent()
 
     private val isLike = """
@@ -255,65 +522,269 @@ class ModelBuilder {
     """.trimIndent()
 
     private val channelTagItemsJson = """
-    {
-      "products": [
         {
-          "id": "15240013",
-          "name": "Indomie Soto Lamongan",
-          "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/7/3/5511658/5511658_081f12a8-2229-4062-87d6-a405f17d5c90_500_500.jpg",
-          "shop_id": "479887",
-          "original_price": 60000,
-          "original_price_formatted": "Rp 60.000",
-          "discount": 0,
-          "price": 0,
-          "price_formatted": "",
-          "quantity": 9988,
-          "is_variant": false,
-          "is_available": false,
-          "order": 0,
-          "app_link": "tokopedia://product/15240013",
-          "web_link": "https://staging.tokopedia.com/hahastag/indomie-soto-lamongan",
-          "min_quantity": 1
+        "playGetTagsItemSection": {
+          "sections": [
+            {
+              "sourceID": "23676",
+              "type": "active",
+              "title": "RE ACTIVE",
+              "countdown": {
+                "copy": "Berakhir dalam"
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": "https://images.tokopedia.net/img/playasset/Ornament%20Left%20-%20420px.png"
+              },
+              "startTime": "2022-02-16T18:32:00+07:00",
+              "endTime": "2022-02-17T18:02:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286844",
+                  "Name": "IBO3",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_1fada4fe-8444-4911-b3e0-b70b54b119b6_1500_946.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 11000,
+                  "OriginalPriceFormatted": "Rp 11.000",
+                  "Discount": 2,
+                  "Price": 10780,
+                  "PriceFormatted": "Rp 10.780",
+                  "Quantity": 100,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 2,
+                  "AppLink": "tokopedia://product/14286844",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/ibo3",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14286886",
+                  "Name": "Amida's Hyakuren",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_d9d8103d-95b4-4cb7-96bd-485710f5e1e6_640_404.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 125000,
+                  "OriginalPriceFormatted": "Rp 125.000",
+                  "Discount": 3,
+                  "Price": 121250,
+                  "PriceFormatted": "Rp 121.250",
+                  "Quantity": 100,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 3,
+                  "AppLink": "tokopedia://product/14286886",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/amidas-hyakuren",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "0",
+              "type": "other",
+              "title": "Produk Lainnya",
+              "countdown": {
+                "copy": ""
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "1970-01-01T07:00:00+07:00",
+              "endTime": "1970-01-01T07:00:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14288512",
+                  "Name": "Gandum Bael",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/10/5510248/5510248_f43d3d8e-3a2a-4147-ba3c-a6b82c60e168_774_1200.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 123213,
+                  "OriginalPriceFormatted": "Rp 123.213",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 10000,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 0,
+                  "AppLink": "tokopedia://product/14288512",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/gandum-bael",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14288322",
+                  "Name": "RECONGUISTA *6*",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/6/5510248/5510248_30997a9b-c6f8-40cf-885c-44ed2bfd2a8e_800_505.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 1111111,
+                  "OriginalPriceFormatted": "Rp 1.111.111",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 10000,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": true,
+                  "Order": 1,
+                  "AppLink": "tokopedia://product/14288322",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/reconguista-6",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "23674",
+              "type": "upcoming",
+              "title": "Rilisan Spesial",
+              "countdown": {
+                "copy": "Dimulai dalam"
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "2022-02-19T18:25:00+07:00",
+              "endTime": "2022-02-19T18:55:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286891",
+                  "Name": "Gusion",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_34dd0a6d-ea93-47ae-a04a-42a32752f138_2048_1291.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 100000,
+                  "OriginalPriceFormatted": "Rp 100.000",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 5,
+                  "AppLink": "tokopedia://product/14286891",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/gusion",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                },
+                {
+                  "ID": "14286893",
+                  "Name": "Man Rodi",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_0533af43-539a-4445-b8f5-eb6c41aff395_2048_1292.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 80000,
+                  "OriginalPriceFormatted": "Rp 80.000",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 6,
+                  "AppLink": "tokopedia://product/14286893",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/man-rodi",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            },
+            {
+              "sourceID": "0",
+              "type": "other",
+              "title": "Produk Habis",
+              "countdown": {
+                "copy": ""
+              },
+              "background": {
+                "gradient": [],
+                "imageUrl": ""
+              },
+              "startTime": "1970-01-01T07:00:00+07:00",
+              "endTime": "1970-01-01T07:00:00+07:00",
+              "serverTime": "2022-02-17T10:13:36+07:00",
+              "products": [
+                {
+                  "ID": "14286895",
+                  "Name": "Graze Custom",
+                  "ImageUrl": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/4/3/5510248/5510248_d0630ab7-4f66-45c6-be27-a1177ac72c66_1500_946.jpg",
+                  "ShopID": "479541",
+                  "OriginalPrice": 1212,
+                  "OriginalPriceFormatted": "Rp 1.212",
+                  "Discount": 0,
+                  "Price": 0,
+                  "PriceFormatted": "Rp 0",
+                  "Quantity": 0,
+                  "QuantityRender": {
+                    "show": false,
+                    "copy": "",
+                    "color": ""
+                  },
+                  "IsVariant": false,
+                  "IsAvailable": false,
+                  "Order": 4,
+                  "AppLink": "tokopedia://product/14286895",
+                  "WebLink": "https://staging.tokopedia.com/ituajakak/graze-custom",
+                  "MinQuantity": 1,
+                  "IsFreeShipping": false
+                }
+              ]
+            }
+          ],
+          "vouchers": [
+            {
+              "ID": "9541",
+              "Name": "rintihanhatiini",
+              "ShopID": "479541",
+              "Title": "Cashback 20rb",
+              "Subtitle": "min. pembelian 100rb",
+              "VoucherType": 3,
+              "VoucherImage": "https://images-staging.tokopedia.net/img/BTJGre/2022/2/15/bf02129d-32f2-45aa-bedd-6fec960c950e.jpg",
+              "VoucherImageSquare": "https://images-staging.tokopedia.net/img/nNLhqY/2022/2/15/99a9866d-44eb-49ac-a4f1-79dbacaf6bc8.jpg",
+              "VoucherQuota": 25,
+              "VoucherFinishTime": "2022-03-16T00:30:00Z",
+              "VoucherCode": "ITUAL5I01B",
+              "IsHighlighted": false,
+              "IsVoucherCopyable": false,
+              "IsPrivate": false
+            }
+          ],
+          "config": {
+            "peek_product_count": 15,
+            "title_bottomsheet": "Promo dan Produk Lainnya"
+          }
         }
-      ],
-      "vouchers": [
-        {
-          "voucher_id": "12",
-          "voucher_name": "test date",
-          "shop_id": "105407",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 1,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/4/5480066/5480066_4a86d259-d8ce-4501-a1d8-17803320bc35",
-          "voucher_image_square": "",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2018-12-07T23:30:00Z"
-        },
-        {
-          "voucher_id": "1470",
-          "voucher_name": "VOUCHER 2020",
-          "shop_id": "478804",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 1,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_eb6e74a3-1ad9-4fd8-a17f-19d3197bb869",
-          "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2020/2/17/5479551/5479551_c3171bd3-1b75-4b46-a451-9228273072ca",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2020-03-17T00:30:00Z"
-        },
-        {
-          "voucher_id": "123",
-          "voucher_name": "ini cashback",
-          "shop_id": "479155",
-          "title": " ",
-          "subtitle": "min. pembelian ",
-          "voucher_type": 3,
-          "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2018/10/15/5480709/5480709_318c7508-710f-4fb7-a55a-794730de70fb",
-          "voucher_image_square": "",
-          "voucher_quota": 100,
-          "voucher_finish_time": "2018-12-05T23:30:00Z"
-        }
-      ]
     }
     """.trimIndent()
 
@@ -680,510 +1151,53 @@ class ModelBuilder {
      }
     """.trimIndent()
 
-    private val parentVariant = """
+    private val socketCredential = """
         {
-            "parentID": 745647988,
-            "defaultChild": 745647992,
-            "sizeChart": "",
-            "alwaysAvailable": false,
-            "stock": 52,
-            "variant": [
-              {
-                "productVariantID": 15125086,
-                "variantID": 1,
-                "variantUnitID": 0,
-                "name": "warna",
-                "identifier": "colour",
-                "unitName": "",
-                "position": 1,
-                "option": [
-                  {
-                    "productVariantOptionID": 47372624,
-                    "variantUnitValueID": 9,
-                    "value": "Merah",
-                    "hex": "#ff0016",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
-                    }
-                  },
-                  {
-                    "productVariantOptionID": 47372625,
-                    "variantUnitValueID": 5,
-                    "value": "Biru",
-                    "hex": "#1d6cbb",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
-                    }
-                  },
-                  {
-                    "productVariantOptionID": 47372626,
-                    "variantUnitValueID": 18,
-                    "value": "Hijau",
-                    "hex": "#006400",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
-                    }
-                  },
-                  {
-                    "productVariantOptionID": 47372627,
-                    "variantUnitValueID": 2,
-                    "value": "Hitam",
-                    "hex": "#000000",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
-                    }
-                  },
-                  {
-                    "productVariantOptionID": 47372628,
-                    "variantUnitValueID": 6,
-                    "value": "Biru Muda",
-                    "hex": "#8ad1e8",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
-                    }
-                  },
-                  {
-                    "productVariantOptionID": 47372629,
-                    "variantUnitValueID": 16,
-                    "value": "Cokelat",
-                    "hex": "#8b4513",
-                    "picture": {
-                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
-                    }
-                  }
-                ]
+            "gc_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxOTAxNjg3MSwiaWQiOjE5MDE2ODcxLCJuYW1lIjoiRmF1emFub2ZhbWkgU2F0dSBEdWEiLCJkYXRhIjoiIiwicGFydG5lcl90eXBlIjowLCJwYXJ0bmVyX2lkIjowLCJhdWQiOiJGYXV6YW5vZmFtaSBTYXR1IER1YSIsImV4cCI6MTU5NzI0MjI1MCwianRpIjoiMTkwMTY4NzEiLCJpYXQiOjE1OTcyMjcyNTAsImlzcyI6InRva29wZWRpYV9wbGF5IiwibmJmIjoxNTk3MjI3MjUwLCJzdWIiOiJ0b2tvcGVkaWFfcGxheV90b2tlbl8xOTAxNjg3MV8xNTk3MjI3MjUwIn0.akrNYluXcNogqxk83H9Gr1ZlqpH4eam1UlwRK6xD7H0",
+            "setting": {
+                "ping_interval": 10000,
+                "max_chars": 200,
+                "max_retries": 5,
+                "min_reconnect_delay": 5000
               }
-            ],
-            "children": [
-              {
-                "productID": 745647991,
-                "price": 110000.0,
-                "priceFmt": "Rp 110.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": true,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Stok tersisa \u003c5, beli segera!",
-                  "stockWordingHTML": "Stok \u003cb style\u003d\u0027color:red\u0027\u003etersisa \u0026lt;5,\u003c/b\u003e beli segera!",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372624
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Merah",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-merah",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              },
-              {
-                "productID": 745647992,
-                "price": 120000.0,
-                "priceFmt": "Rp 120.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": true,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Stok tinggal \u003c20, beli segera!",
-                  "stockWordingHTML": "Stok tinggal \u0026lt;20, beli segera!",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372625
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Biru",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              },
-              {
-                "productID": 745647993,
-                "price": 130000.0,
-                "priceFmt": "Rp 130.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": false,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Tersedia Untuk Varian Lain",
-                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372626
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Hijau",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hijau",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              },
-              {
-                "productID": 745647994,
-                "price": 300000.0,
-                "priceFmt": "Rp 300.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": true,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Stok tinggal \u003c20, beli segera!",
-                  "stockWordingHTML": "Stok tinggal \u0026lt;20, beli segera!",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372627
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Hitam",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hitam",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              },
-              {
-                "productID": 745647995,
-                "price": 500000.0,
-                "priceFmt": "Rp 500.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": false,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Tersedia Untuk Varian Lain",
-                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372628
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Biru Muda",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru-muda",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              },
-              {
-                "productID": 745647996,
-                "price": 190000.0,
-                "priceFmt": "Rp 190.000",
-                "sku": "",
-                "stock": {
-                  "stock": 0,
-                  "isBuyable": false,
-                  "alwaysAvailable": false,
-                  "isLimitedStock": false,
-                  "stockWording": "Tersedia Untuk Varian Lain",
-                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
-                  "otherVariantStock": "available",
-                  "minimumOrder": 1,
-                  "maximumOrder": 0
-                },
-                "optionID": [
-                  47372629
-                ],
-                "productName": "starterpokemonberdasarkanwarna - Cokelat",
-                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-cokelat",
-                "picture": {
-                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
-                },
-                "campaignInfo": {
-                  "getStockPercentageInt": 0,
-                  "campaignID": "0",
-                  "isActive": false,
-                  "originalPrice": 0.0,
-                  "originalPriceFmt": "",
-                  "discountPercentage": 0.0,
-                  "discountPrice": 0.0,
-                  "discountPriceFmt": "",
-                  "campaignType": 0,
-                  "campaignTypeName": "",
-                  "startDate": "",
-                  "endDate": "",
-                  "stock": 0,
-                  "isAppsOnly": false,
-                  "appLinks": ""
-                },
-                "isWishlist": false,
-                "isCOD": false
-              }
-            ]
-          }
-    """.trimIndent()
+        }""".trimIndent()
 
-    private val listOfVariantCategory = """
-        [
-            {
-              "name": "warna",
-              "identifier": "colour",
-              "variantGuideline": "",
-              "hasCustomImage": true,
-              "selectedValue": "",
-              "isLeaf": true,
-              "variantOptions": [
-                {
-                  "variantId": 47372624,
-                  "currentState": 0,
-                  "variantHex": "#ff0016",
-                  "variantName": "Merah",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                },
-                {
-                  "variantId": 47372625,
-                  "currentState": 0,
-                  "variantHex": "#1d6cbb",
-                  "variantName": "Biru",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                },
-                {
-                  "variantId": 47372626,
-                  "currentState": -1,
-                  "variantHex": "#006400",
-                  "variantName": "Hijau",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                },
-                {
-                  "variantId": 47372627,
-                  "currentState": 0,
-                  "variantHex": "#000000",
-                  "variantName": "Hitam",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                },
-                {
-                  "variantId": 47372628,
-                  "currentState": -1,
-                  "variantHex": "#8ad1e8",
-                  "variantName": "Biru Muda",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                },
-                {
-                  "variantId": 47372629,
-                  "currentState": -1,
-                  "variantHex": "#8b4513",
-                  "variantName": "Cokelat",
-                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-                  "isBuyable": false,
-                  "stock": 0,
-                  "variantOptionIdentifier": "colour",
-                  "variantCategoryKey": "15125086",
-                  "selectedStockWording": "",
-                  "level": 0,
-                  "flashSale": false,
-                  "hasCustomImages": true
-                }
-              ]
-            }
-          ]
-    """.trimIndent()
+    fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildChannel() = gson.fromJson(channelJson, Channel::class.java)
+    fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
 
-    fun buildChannelWithShop() = gson.fromJson(channelWithShopJson, Channel::class.java)
+    fun buildChannelWithShop(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
+    fun buildShopInfo(): ShopInfo = gson.fromJson(shopInfoJson, ShopInfo::class.java)
 
-    fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
+    fun buildNewChat(): PlayChat = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Data::class.java)
+    fun buildTotalLike(): TotalLikeContent.Response = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
-    fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
+    fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
-    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildProductTagging(): ProductSection = gson.fromJson(channelTagItemsJson, ProductSection::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, ProductDetailVariantCommonResponse::class.java)
+    fun buildProductVariant(): GetProductVariantResponse = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
-    fun buildProduct() = gson.fromJson(product, Product::class.java)
+    fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
-    fun buildVariantSheetUiModel() = VariantSheetUiModel(
-            product = PlayUiMapper.mapItemProduct(buildProduct()),
-            action = ProductAction.AddToCart,
-            parentVariant = gson.fromJson(parentVariant, ProductVariantCommon::class.java),
-            listOfVariantCategory = gson.fromJson(listOfVariantCategory, object : TypeToken<List<VariantCategory>>() {}.type),
-            mapOfSelectedVariants = mutableMapOf("15125086" to 0)
+    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(
+        isSuccess = true,
+        errorMessage = IllegalStateException(""),
+        cartId = "123"
     )
-
-    fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
-    fun buildAddToCartModelResponseFail() = AddToCartDataModel(
-            errorMessage = arrayListOf("error message"),
-            data = DataModel(cartId = "", success = 0)
+    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(
+        isSuccess = false,
+        errorMessage = IllegalStateException("error message "),
+        cartId = ""
     )
-
     fun buildCartUiModel(
-            product: ProductLineUiModel,
+            product: PlayProductUiModel.Product,
             action: ProductAction,
             bottomInsetsType: BottomInsetsType,
             isSuccess: Boolean = true,
-            errorMessage: String = "",
+            errorMessage: Throwable = IllegalStateException(""),
             cartId: String = "123"
     ) = CartFeedbackUiModel(
             isSuccess = isSuccess,
@@ -1197,44 +1211,9 @@ class ModelBuilder {
     /**
      * UI Model
      */
-    fun buildStateHelperUiModel(
-        shouldShowPinned: Boolean = true,
-        channelType: PlayChannelType = PlayChannelType.Live,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap()
-    ) = StateHelperUiModel(
-            shouldShowPinned = shouldShowPinned,
-            channelType = channelType,
-            bottomInsets = bottomInsets
-    )
-
-    fun buildChannelInfoUiModel(
-            id: String = "1230",
-            title: String = "Channel live",
-            description: String = "Ini Channel live",
-            channelType: PlayChannelType = PlayChannelType.Live,
-            partnerId: Long = 123151,
-            partnerType: PartnerType = PartnerType.ADMIN,
-            moderatorName: String = "Lisa",
-            contentId: Int = 1412,
-            contentType: Int = 2,
-            likeType: Int = 1,
-            isShowCart: Boolean = true
-    ) = ChannelInfoUiModel(id, title, description, channelType, partnerId, partnerType,
-            moderatorName, contentId, contentType, likeType, isShowCart)
-
     fun buildVideoPropertyUiModel(
-            state: PlayVideoState = PlayVideoState.Playing
+            state: PlayViewerVideoState = PlayViewerVideoState.Play
     ) = VideoPropertyUiModel(state = state)
-
-    fun buildVideoStreamUiModel(
-            uriString: String = "https://tkp.me",
-            channelType: PlayChannelType = PlayChannelType.Live,
-            isActive: Boolean = true
-    ) = VideoStreamUiModel(
-            uriString = uriString,
-            channelType = channelType,
-            isActive = isActive
-    )
 
     fun buildPlayChatUiModel(
             messageId: String = "1",
@@ -1250,62 +1229,6 @@ class ModelBuilder {
             isSelfMessage = isSelfMessage
     )
 
-    fun buildTotalLikeUiModel(
-            totalLike: Int = 1200,
-            totalLikeFormatted: String = "1.2k"
-    ) = TotalLikeUiModel(
-            totalLike = totalLike,
-            totalLikeFormatted = totalLikeFormatted
-    )
-
-    fun buildTotalViewUiModel(
-            totalView: String = "1.5k"
-    ) = TotalViewUiModel(
-            totalView = totalView
-    )
-
-    fun buildPartnerInfoUiModel(
-            id: Long = 10213,
-            name: String = "Partner",
-            type: PartnerType = PartnerType.SHOP,
-            isFollowed: Boolean = false,
-            isFollowable: Boolean = true
-    ) = PartnerInfoUiModel(
-            id = id,
-            name = name,
-            type = type,
-            isFollowed = isFollowed,
-            isFollowable = isFollowable
-    )
-
-    fun buildPinnedMessageUiModel(
-            applink: String? = "https://tkp.me",
-            partnerName: String = "Admin",
-            title: String = "message"
-    ) = PinnedMessageUiModel(
-            applink = applink,
-            partnerName = partnerName,
-            title = title
-    )
-
-    fun buildPinnedProductUiModel(
-            partnerName: String = "Admin",
-            title: String = "message",
-            isPromo: Boolean = false
-    ) = PinnedProductUiModel(
-            partnerName = partnerName,
-            title = title,
-            isPromo = isPromo
-    )
-
-    fun buildPinnedRemoveUiModel() = PinnedRemoveUiModel
-
-    fun buildQuickReplyUiModel(
-            quickReplyList: List<String> = listOf("Keren", "UwU")
-    ) = QuickReplyUiModel(
-            quickReplyList = quickReplyList
-    )
-
     fun buildPlayBufferControl(
             minBufferMs: Int = 15000,
             maxBufferMs: Int = 50000,
@@ -1316,50 +1239,6 @@ class ModelBuilder {
             maxBufferMs = maxBufferMs,
             bufferForPlaybackMs = bufferForPlaybackMs,
             bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
-    )
-
-    fun buildCartUiModel(
-            isShow: Boolean = true,
-            count: Int = 1
-    ) = CartUiModel(
-            isShow = isShow,
-            count = count
-    )
-
-    fun buildProductSheetUiModel(
-            title: String = "Yeaya",
-            voucherList: List<PlayVoucherUiModel> = emptyList(),
-            productList: List<PlayProductUiModel> = emptyList()
-    ) = ProductSheetUiModel(
-            title = title,
-            voucherList = voucherList,
-            productList = productList
-    )
-
-    fun buildVariantSheetUiModel(
-            product: ProductLineUiModel = buildProductLineUiModel(),
-            action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariantCommon? = null,
-            stockWording: String? = "Stok tersedia",
-            listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
-    ) = VariantSheetUiModel(
-            product = product,
-            action = action,
-            parentVariant = parentVariant,
-            stockWording = stockWording,
-            listOfVariantCategory = listOfVariantCategory,
-            mapOfSelectedVariants = mapOfSelectedVariants
-    )
-
-    fun buildMerchantVoucherUiModel(
-            type: MerchantVoucherType = MerchantVoucherType.Discount,
-            title: String = "Diskon gedean",
-            description: String = "wowaw"
-    ) = MerchantVoucherUiModel(
-            type = type,
-            title = title,
-            description = description
     )
 
     fun buildProductLineUiModel(
@@ -1373,7 +1252,7 @@ class ModelBuilder {
             minQty: Int = 2,
             isFreeShipping: Boolean = true,
             applink: String? = "https://tkp.me"
-    ) = ProductLineUiModel(
+    ) = PlayProductUiModel.Product(
             id = id,
             shopId = shopId,
             imageUrl = imageUrl,
@@ -1392,7 +1271,7 @@ class ModelBuilder {
 
     fun buildOriginalPrice(
             price: String = "Rp120.000",
-            priceNumber: Long = 120000
+            priceNumber: Double = 120000.0
     ) = OriginalPrice(
             price = price,
             priceNumber = priceNumber
@@ -1402,7 +1281,7 @@ class ModelBuilder {
             originalPrice: String = "Rp120.000",
             discountPercent: Int = 10,
             discountedPrice: String = "Rp108.000",
-            discountedPriceNumber: Long = 108000
+            discountedPriceNumber: Double = 108000.0
     ) = DiscountedPrice(
             originalPrice = originalPrice,
             discountPercent = discountPercent,
@@ -1444,8 +1323,9 @@ class ModelBuilder {
 
     fun buildBottomInsetsState(
             isShown: Boolean = false,
-            isPreviousSameState: Boolean = false
-    ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
+            isPreviousSameState: Boolean = false,
+            estimatedInsetsHeight: Int = 250
+    ) = if (isShown) BottomInsetsState.Shown(estimatedInsetsHeight, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
 
     fun <T>buildPlayResultLoading(
             showPlaceholder: Boolean = true
@@ -1459,4 +1339,116 @@ class ModelBuilder {
     fun <T>buildPlayResultSuccess(
             data: T
     ) = PlayResult.Success(data)
+
+    fun buildShareInfoUiModel(channel: Channel): PlayShareInfoUiModel {
+        val fullShareContent = try {
+            channel.share.text.replace("${'$'}{url}", channel.share.redirectUrl)
+        } catch (e: Throwable) {
+            "${channel.share.text}/n${channel.share.redirectUrl}"
+        }
+
+        return PlayShareInfoUiModel(
+                content = fullShareContent,
+                shouldShow = channel.share.isShowButton
+                        && channel.share.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
+
+    fun buildUserReportList(
+        reasoningId: Int = 1,
+        title: String = "Harga Detail",
+        detail: String = "Harga Tidak Wajar",
+        submissionData: UserReportOptions.OptionAdditionalField = UserReportOptions.OptionAdditionalField(
+            key = "report_reason",
+            label = "Detail Laporan",
+            max = 255,
+            min = 10,
+            type = "textarea"
+        )
+    ) : PlayUserReportUiModel.Loaded{
+        val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
+            title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
+        )
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt), ResultState.Success)
+    }
+
+    fun generateResponseSectionGql(
+        size: Int = 2,
+        shopId: String = "123",
+        imageUrl: String = "https://www.tokopedia.com",
+        title: String = "Barang Murah",
+        isVariantAvailable: Boolean = false,
+        minQty: Int = 1,
+        isFreeShipping: Boolean = false,
+        applink: String? = null,
+        gradient: List<String>? = null
+    ): ProductSection.Response {
+        var productList = ""
+        for (i in 1..size) {
+            productList += """
+                {
+                    app_link: "$applink",
+                    discount: 0,
+                    id: $i,
+                    image_url: "$imageUrl",
+                    is_available: false,
+                    is_free_shipping: $isFreeShipping,
+                    is_variant: $isVariantAvailable,
+                    min_quantity: $minQty,
+                    name: "Barang $i",
+                    order: 0,
+                    original_price: 123,
+                    original_price_formatted: "123",
+                    price: 0,
+                    price_formatted: "",
+                    quantity: 0,
+                    shop_id: "$shopId",
+                    web_link: "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"
+              }
+            """.trimIndent()
+            if (i != size) productList += ","
+        }
+
+        var sectionList = ""
+        for (x in 1..size) {
+            sectionList += """{
+                type: "active",
+                title: "$title $x",
+                countdown: {
+                    copy: "Berakhir dalam"
+                },
+                background: {
+                    gradient: "$gradient",
+                    image_url: "https://via.placeholder.com/150"
+                },
+                start_time: "2022-01-02T15:04:05Z07:00",
+                end_time: "2022-01-02T16:04:05Z07:00",
+                server_time: "2022-01-02T15:14:05Z07:00",
+                products : [
+                    $productList
+                 ]
+                }
+            """.trimIndent()
+            if (x != size) sectionList += ","
+        }
+        val data =  """
+             {
+                "data": {
+                      "playGetTagsItemSection":{
+                          "sections" : [
+                            $sectionList
+                          ],
+                          "config" : {
+                            "peek_product_count" : 15,
+                            "title_bottomsheet" : "Promo dan Produk Lainnya"
+                          }
+                      }
+                }
+             }
+            """.trimIndent()
+
+        return gson.fromJson(data, ProductSection.Response::class.java)
+    }
 }

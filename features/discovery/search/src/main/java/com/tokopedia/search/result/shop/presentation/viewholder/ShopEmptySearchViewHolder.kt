@@ -12,26 +12,28 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultShopEmptyLayoutBinding
+import com.tokopedia.search.databinding.SearchResultShopEmptySelectedFilterItemBinding
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SpacingItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import kotlinx.android.synthetic.main.search_result_shop_empty_layout.view.*
-import kotlinx.android.synthetic.main.search_result_shop_empty_selected_filter_item.view.*
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 internal class ShopEmptySearchViewHolder(
         itemView: View,
         private val emptyStateListener: EmptyStateListener
-): AbstractViewHolder<ShopEmptySearchViewModel>(itemView) {
+): AbstractViewHolder<ShopEmptySearchDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.search_result_shop_empty_layout
     }
+    private var binding: SearchResultShopEmptyLayoutBinding? by viewBinding()
 
     private val context: Context = itemView.context
 
-    override fun bind(element: ShopEmptySearchViewModel?) {
+    override fun bind(element: ShopEmptySearchDataView?) {
         if (element == null) return
 
         bindTextViewContent(element)
@@ -39,15 +41,15 @@ internal class ShopEmptySearchViewHolder(
         bindButtonSearchAgain(element)
     }
 
-    private fun bindTextViewContent(element: ShopEmptySearchViewModel) {
+    private fun bindTextViewContent(element: ShopEmptySearchDataView) {
         val contentText = getContentText(element)
 
-        itemView.textViewSearchShopEmptyContent?.shouldShowWithAction(contentText.isNotEmpty()) {
-            itemView.textViewSearchShopEmptyContent?.text = contentText
+        binding?.textViewSearchShopEmptyContent?.shouldShowWithAction(contentText.isNotEmpty()) {
+            binding?.textViewSearchShopEmptyContent?.text = contentText
         }
     }
 
-    private fun getContentText(element: ShopEmptySearchViewModel): String {
+    private fun getContentText(element: ShopEmptySearchDataView): String {
         return if (element.isFilterActive) {
             String.format(context.getString(R.string.msg_empty_search_shop_content_with_filter), element.query)
         } else {
@@ -55,8 +57,8 @@ internal class ShopEmptySearchViewHolder(
         }
     }
 
-    private fun bindRecyclerViewSelectedFilter(element: ShopEmptySearchViewModel) {
-        itemView.recyclerViewSearchShopEmptySelectedFilter?.shouldShowWithAction(element.isFilterActive) {
+    private fun bindRecyclerViewSelectedFilter(element: ShopEmptySearchDataView) {
+        binding?.recyclerViewSearchShopEmptySelectedFilter?.shouldShowWithAction(element.isFilterActive) {
             val selectedFilterAdapter = SelectedFilterAdapter(emptyStateListener)
 
             initRecyclerViewSelectedFilter(selectedFilterAdapter)
@@ -65,14 +67,14 @@ internal class ShopEmptySearchViewHolder(
     }
 
     private fun initRecyclerViewSelectedFilter(selectedFilterAdapter: SelectedFilterAdapter) {
-        itemView.recyclerViewSearchShopEmptySelectedFilter?.layoutManager = createSelectedFilterRecyclerViewLayoutManager()
-        itemView.recyclerViewSearchShopEmptySelectedFilter?.adapter = selectedFilterAdapter
+        binding?.recyclerViewSearchShopEmptySelectedFilter?.layoutManager = createSelectedFilterRecyclerViewLayoutManager()
+        binding?.recyclerViewSearchShopEmptySelectedFilter?.adapter = selectedFilterAdapter
 
-        if (itemView.recyclerViewSearchShopEmptySelectedFilter?.itemDecorationCount == 0) {
-            itemView.recyclerViewSearchShopEmptySelectedFilter?.addItemDecoration(createSelectedFilterRecyclerViewItemDecoration())
+        if (binding?.recyclerViewSearchShopEmptySelectedFilter?.itemDecorationCount == 0) {
+            binding?.recyclerViewSearchShopEmptySelectedFilter?.addItemDecoration(createSelectedFilterRecyclerViewItemDecoration())
         }
 
-        itemView.recyclerViewSearchShopEmptySelectedFilter?.let {
+        binding?.recyclerViewSearchShopEmptySelectedFilter?.let {
             ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
         }
     }
@@ -85,20 +87,20 @@ internal class ShopEmptySearchViewHolder(
     }
 
     private fun createSelectedFilterRecyclerViewItemDecoration(): RecyclerView.ItemDecoration {
-        return SpacingItemDecoration(context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8))
+        return SpacingItemDecoration(context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
     }
 
     private fun populateSelectedFilterToRecylerView(selectedFilterAdapter: SelectedFilterAdapter) {
-        val selectedFilterFromEmptyStateListener = emptyStateListener.selectedFilterAsOptionList
+        val selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList()
 
         if (selectedFilterFromEmptyStateListener?.isNotEmpty() == true) {
             selectedFilterAdapter.setOptionList(selectedFilterFromEmptyStateListener)
         }
     }
 
-    private fun bindButtonSearchAgain(element: ShopEmptySearchViewModel) {
-        itemView.buttonSearchShopEmptySearchAgain?.shouldShowWithAction(!element.isFilterActive) {
-            itemView.buttonSearchShopEmptySearchAgain?.setOnClickListener {
+    private fun bindButtonSearchAgain(element: ShopEmptySearchDataView) {
+        binding?.buttonSearchShopEmptySearchAgain?.shouldShowWithAction(!element.isFilterActive) {
+            binding?.buttonSearchShopEmptySearchAgain?.setOnClickListener {
                 emptyStateListener.onEmptyButtonClicked()
             }
         }
@@ -127,11 +129,16 @@ internal class ShopEmptySearchViewHolder(
         }
     }
 
-    private class SelectedFilterItemViewHolder(itemView: View, private val clickListener: EmptyStateListener) : RecyclerView.ViewHolder(itemView) {
+    private class SelectedFilterItemViewHolder(
+        itemView: View,
+        private val clickListener: EmptyStateListener
+    ) : RecyclerView.ViewHolder(itemView) {
+        private var binding: SearchResultShopEmptySelectedFilterItemBinding? by viewBinding()
 
         fun bind(option: Option) {
-            itemView.filterText?.text = option.name
-            itemView.filterText?.setOnClickListener { clickListener.onSelectedFilterRemoved(option.uniqueId) }
+            val binding = binding ?: return
+            binding.filterText.text = option.name
+            binding.filterText.setOnClickListener { clickListener.onSelectedFilterRemoved(option.uniqueId) }
         }
     }
 }

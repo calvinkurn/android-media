@@ -1,0 +1,17 @@
+[
+  {
+    "data": {
+      "tokopoints": {
+        "status": {
+          "tier": {
+            "eggImageHomepageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/silver.png",
+            "eggImageURL": "https://assets.tokopedia.net/asts/rewards/unify/silver.svg",
+            "id": 420,
+            "name": "Silver",
+            "nameDesc": "Member Silver"
+          }
+        }
+      }
+    }
+  }
+]

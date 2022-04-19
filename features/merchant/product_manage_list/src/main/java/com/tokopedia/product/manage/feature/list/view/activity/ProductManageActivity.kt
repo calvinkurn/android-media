@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -17,7 +18,7 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
 
-class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
+open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"
@@ -44,11 +45,8 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         initInjector()
 
         if (!GlobalConfig.isSellerApp()) {
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setupLayout(savedInstanceState)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
         }
     }
 
@@ -75,7 +73,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     }
 
     override fun getComponent(): ProductManageListComponent {
-        return ProductManageListInstance.getComponent(application)
+        return ProductManageListInstance.getComponent(this)
     }
 
     private fun goToSellerAppDashboard() {

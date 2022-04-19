@@ -1,0 +1,221 @@
+[
+  {
+    "data": {
+      "kero_maps_autocomplete": {
+        "error_code" : 101,
+        "data": {
+          "predictions": [
+            {
+              "description": "Jakarta, Indonesia",
+              "place_id": "ChIJnUvjRenzaS4RoobX2g-_cVM",
+              "types": [
+                "colloquial_area",
+                "locality",
+                "political",
+                "geocode"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 3,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Jakarta",
+                  "offset": 0
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 9
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Jakarta",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 3,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Indonesia"
+              }
+            },
+            {
+              "description": "Jakarta Selatan, South Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJs7AiJOzxaS4RAk1AR_7QoDk",
+              "types": [
+                "locality",
+                "political",
+                "geocode"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 3,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Jakarta Selatan",
+                  "offset": 0
+                },
+                {
+                  "value": "South Jakarta City",
+                  "offset": 17
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 37
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 46
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Jakarta Selatan",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 3,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "South Jakarta City, Jakarta, Indonesia"
+              }
+            },
+            {
+              "description": "Jakarta Timur, East Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJE-f7SNHyaS4RqfXt61J9Zm4",
+              "types": [
+                "locality",
+                "political",
+                "geocode"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 3,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Jakarta Timur",
+                  "offset": 0
+                },
+                {
+                  "value": "East Jakarta City",
+                  "offset": 15
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 34
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 43
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Jakarta Timur",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 3,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "East Jakarta City, Jakarta, Indonesia"
+              }
+            },
+            {
+              "description": "Jakarta Barat, West Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJGdcQ0cn3aS4RoLjULejFAAM",
+              "types": [
+                "locality",
+                "political",
+                "geocode"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 3,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Jakarta Barat",
+                  "offset": 0
+                },
+                {
+                  "value": "West Jakarta City",
+                  "offset": 15
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 34
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 43
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Jakarta Barat",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 3,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "West Jakarta City, Jakarta, Indonesia"
+              }
+            },
+            {
+              "description": "Jakarta Pusat, Central Jakarta City, Jakarta, Indonesia",
+              "place_id": "ChIJB0vJuDb0aS4R9oJ8iznVpm4",
+              "types": [
+                "locality",
+                "political",
+                "geocode"
+              ],
+              "matched_substrings": [
+                {
+                  "length": 3,
+                  "offset": 0
+                }
+              ],
+              "terms": [
+                {
+                  "value": "Jakarta Pusat",
+                  "offset": 0
+                },
+                {
+                  "value": "Central Jakarta City",
+                  "offset": 15
+                },
+                {
+                  "value": "Jakarta",
+                  "offset": 37
+                },
+                {
+                  "value": "Indonesia",
+                  "offset": 46
+                }
+              ],
+              "structured_formatting": {
+                "main_text": "Jakarta Pusat",
+                "main_text_matched_substrings": [
+                  {
+                    "length": 3,
+                    "offset": 0
+                  }
+                ],
+                "secondary_text": "Central Jakarta City, Jakarta, Indonesia"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

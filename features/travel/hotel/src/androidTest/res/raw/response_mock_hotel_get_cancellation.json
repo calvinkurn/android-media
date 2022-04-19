@@ -1,0 +1,180 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "propertyGetCancellation": {
+        "data": {
+          "cancelCartID": "fn897eneaffasnds7a",
+          "cancelCartExpiry": "2020-12-31T15:59:59",
+          "property": {
+            "propertyID": 5,
+            "name": "Hotel Ciputra Jakarta",
+            "type": "Hotel",
+            "address": "Jl. Letnan Jenderal S. Parman",
+            "propertyImage": {
+              "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/112595654.jpg?k=6151fb940b5627e3337cfebddc38284b712c2a7c7cea4bd824bce689ff6ebf6e&amp;o=",
+              "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max500/112595654.jpg?k=6151fb940b5627e3337cfebddc38284b712c2a7c7cea4bd824bce689ff6ebf6e&amp;o=",
+              "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/max300/112595654.jpg?k=6151fb940b5627e3337cfebddc38284b712c2a7c7cea4bd824bce689ff6ebf6e&amp;o="
+            },
+            "star": 4,
+            "paymentNote": "",
+            "checkInOut": [
+              {
+                "title": "Check In",
+                "checkInOut": {
+                  "day": "Kamis",
+                  "date": "14 Mei 2020",
+                  "time": "14:00"
+                }
+              },
+              {
+                "title": "Check Out",
+                "checkInOut": {
+                  "day": "Minggu",
+                  "date": "17 Mei 2020",
+                  "time": "12:00"
+                }
+              }
+            ],
+            "stayLength": "2 malam",
+            "isDirectPayment": false,
+            "room": [
+              {
+                "isBreakFastIncluded": false,
+                "maxOccupancy": 2,
+                "roomName": "Kamar deluxe double",
+                "roomContent": "1 kamar, 1 tamu",
+                "isRefundAble": true,
+                "isCCRequired": false
+              }
+            ]
+          },
+          "cancelPolicy": {
+            "title": "Ketentuan Pembatalan",
+            "policy": [
+              {
+                "title": "Tidak dapat dikembalikan",
+                "desc": "biaya pemesanan tidak dapat dikembalikan",
+                "active": true,
+                "feeInLocalCurrency": {
+                  "amountStr": "Rp 123.456",
+                  "amount": 123456,
+                  "currency": "IDR"
+                },
+                "fee": {
+                  "amountStr": "Rp 130",
+                  "amount": 130,
+                  "currency": "JPY"
+                },
+                "styling": "active"
+              },
+              {
+                "title": "Dikembalikan 40%",
+                "desc": "21 May - 21 June 2019",
+                "active": false,
+                "feeInLocalCurrency": {
+                  "amountStr": "Rp 56.789",
+                  "amount": 56789,
+                  "currency": "IDR"
+                },
+                "fee": {
+                  "amountStr": "Rp 130",
+                  "amount": 130,
+                  "currency": "JPY"
+                },
+                "styling": "greyout"
+              },
+              {
+                "title": "Pembatalan gratis",
+                "desc": "20 April - 20 May",
+                "active": false,
+                "feeInLocalCurrency": {
+                  "amountStr": "GRATIS",
+                  "amount": 0,
+                  "currency": "IDR"
+                },
+                "fee": {
+                  "amountStr": "GRATIS",
+                  "amount": 0,
+                  "currency": "JPY"
+                },
+                "styling": "greyout"
+              }
+            ]
+          },
+          "cancelInfo": {
+            "desc": "Dana akan dikembalikan ke saldo tokopedia. <hyperlink>Pelajari lebih lanjut</hyperlink>",
+            "isClickable": true,
+            "longDesc": {
+              "title": "Pengembalian Dana",
+              "desc": "Seluruh kebijakan terkait pengembalian <br><b>1. Kartu Kredit</b><br>Refund akan dikirim maks 14 hari kerja.<br><b>2. Kredivo</b><br>Refund akan dikirim ke limit Kredivo.<br>"
+            }
+          },
+          "payment": {
+            "title": "Pengembalian Dana",
+            "detail": [
+              {
+                "title": "Biaya pemesanan",
+                "amount": "Rp 400.000"
+              },
+              {
+                "title": "Biaya pembatalan",
+                "amount": "- Rp 40.000"
+              },
+              {
+                "title": "Biaya layanan",
+                "amount": "- Rp 20.000"
+              }
+            ],
+            "summary": [
+              {
+                "title": "Total Refund",
+                "amount": "Rp 340.000"
+              },
+              {
+                "title": "Total Biaya",
+                "amount": "Rp 60.000"
+              }
+            ],
+            "footer": {
+              "desc": "Ingin reschedule atau ubah pesanan ? Atau butuh bantuan lebih lanjut ? Kunjungi <hyperlink>Pusat Bantuan</hyperlink>",
+              "links": [
+                "https://tokopedia.com/help?invoice_id=XXX&amp;product=HOTEL"
+              ]
+            }
+          },
+          "reasons": [
+            {
+              "id": "1",
+              "title": "tidak membutuhkan tempat menginap lagi",
+              "freeText": false
+            },
+            {
+              "id": "2",
+              "title": "tidak jadi berangkat",
+              "freeText": false
+            },
+            {
+              "id": "3",
+              "title": "alasan lainnya",
+              "freeText": true
+            }
+          ],
+          "footer": {
+            "desc": "Ingin reschedule atau ubah pesanan ? Atau butuh bantuan lebih lanjut ? Kunjungi <hyperlink>Pusat Bantuan</hyperlink>",
+            "links": [
+              "https://tokopedia.com/help?invoice_id=XXX&amp;product=HOTEL"
+            ]
+          },
+          "confirmationButton": {
+            "title": "Yakin batal menginap ?",
+            "desc": "Kamar Delux (2 malam, 1 kamar) akan dibatalkan"
+          }
+        },
+        "meta": {
+          "invoiceID": "TCQ-3FCQ-5QWG"
+        }
+      }
+    }
+  }
+]

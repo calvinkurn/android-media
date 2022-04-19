@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tfStartDate"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl4"
+            app:text_field_label="@string/start_date"
+            app:text_field_placeholder="@string/select_date" />
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tfEndDate"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl4"
+            app:text_field_label="@string/end_date"
+            app:text_field_placeholder="@string/select_date" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_weight="1"
+        android:layout_width="match_parent">
+
+        <com.tokopedia.calendar.UnifyCalendar
+            android:id="@+id/penaltyFilterCalendar"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingStart="@dimen/spacing_lvl4" />
+
+    </FrameLayout>
+
+</LinearLayout>

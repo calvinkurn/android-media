@@ -10,8 +10,9 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
@@ -25,7 +26,7 @@ import com.tokopedia.unifyprinciples.Typography
 class DynamicChannelThematicViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelDataModel>(view) {
 
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_thematic_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
@@ -40,19 +41,19 @@ class DynamicChannelThematicViewHolder(
 
     private val contentList = itemView.findViewById<CarouselProductCardView>(R.id.dc_thematic_rv)
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
-            dcEventHandler.mixBannerImpression(dynamicChannelData)
-            dcEventHandler.mixImageImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData.header)
-            setupBanner(dynamicChannelData.banner, dynamicChannelData)
-            setupContent(dynamicChannelData)
+            dcEventHandler.mixBannerImpression(dynamicChannelData.channel)
+            dcEventHandler.mixImageImpression(dynamicChannelData.channel)
+            setupHeader(dynamicChannelData.channel.header)
+            setupBanner(dynamicChannelData.channel.banner, dynamicChannelData.channel)
+            setupContent(dynamicChannelData.channel)
         }
     }
 
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
-            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_20), 0, 0)
+            mainContainer.setMargin(0, 20f.toDpInt(), 0, 0)
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
             headerCountDown.visibility = View.GONE
@@ -65,7 +66,7 @@ class DynamicChannelThematicViewHolder(
             }
 
         } else {
-            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_6), 0, 0)
+            mainContainer.setMargin(0, 6f.toDpInt(), 0, 0)
             headerContainer.visibility = View.GONE
         }
     }
@@ -159,7 +160,7 @@ class DynamicChannelThematicViewHolder(
                 slashedPrice = it?.slashedPrice ?: "",
                 discountPercentage = it?.discount ?: ""
             )
-        } ?: listOf()
+        }
     }
 
     companion object {

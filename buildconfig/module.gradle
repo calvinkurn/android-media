@@ -1,5 +1,11 @@
-apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
-apply from: "$rootProject.projectDir/tools/set_debug_tools.gradle"
+def isDebuggable() {
+    if (project.hasProperty('enableDebug') && enableDebug == "true") {
+        return "true";
+    }
+    return "false";
+}
+
+
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -20,6 +26,14 @@ android {
         androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
 
+    lintOptions {
+        checkReleaseBuilds false
+        checkDependencies true
+        htmlReport false
+        warningsAsErrors false
+        abortOnError false
+    }
+
     buildTypes {
         debug {
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
@@ -28,7 +42,7 @@ android {
         release {
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
-            debuggable = isDebugable(project).toBoolean()
+            debuggable = isDebuggable().toBoolean()
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
         }
@@ -49,10 +63,14 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/LICENSE.md'
+        exclude 'META-INF/**'
     }
 }
 
 dependencies {
+
+    implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.supportV4
@@ -61,28 +79,23 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.rxJavaMath
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation 'org.assertj:assertj-core:3.8.0'
-    testImplementation rootProject.ext.testDependencies.powerMock
-    testImplementation rootProject.ext.testDependencies.powerMockJUnit
-    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
-    testImplementation rootProject.ext.testDependencies.powerMockito
-    testImplementation rootProject.ext.testDependencies.powerMockXstream
+    testImplementation rootProject.ext.testDependencies.assertJCore
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
@@ -91,6 +104,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
-    androidTestImplementation 'org.mockito:mockito-android:2.6.3'
+    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+
+    lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 }

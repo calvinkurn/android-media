@@ -12,7 +12,8 @@
         android:id="@+id/imgWidgetOnError"
         android:layout_width="@dimen/sah_dimen_110dp"
         android:layout_height="@dimen/sah_dimen_80dp"
-        tools:src="@drawable/unify_globalerrors_connection" />
+        tools:src="@drawable/unify_globalerrors_connection"
+        android:contentDescription="@string/sah_content_desc_image_widget_error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
         android:maxLines="1"
         android:text="@string/sah_line_graph_error_message"
         android:textAlignment="center"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         app:typographyWeight="bold" />
 </LinearLayout>

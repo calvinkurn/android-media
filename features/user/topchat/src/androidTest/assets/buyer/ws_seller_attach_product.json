@@ -1,0 +1,58 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 66961,
+    "from": "Seller Testing",
+    "from_uid": 17235411,
+    "from_user_name": "Seller Testing",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/143252780/user_thumbnail/desktop",
+    "is_opposite": true,
+    "to_uid": 143252780,
+    "message": {
+      "censored_reply": "Ini stoknya masih ada, Min?",
+      "original_reply": "Ini stoknya masih ada, Min?",
+      "timestamp": "2021-06-17T13:53:11.390382701+07:00",
+      "timestamp_fmt": "17 June 2021, 13:53 WIB",
+      "timestamp_unix": 1623912791390,
+      "timestamp_unix_nano": 1623912791390383000
+    },
+    "start_time": "2021-06-17T06:53:08.154Z",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "product_id": 856839291,
+        "product_profile": {
+          "discounted_percentage": 0,
+          "drop_percentage": "",
+          "free_ongkir": {
+            "image_url": "",
+            "is_active": false
+          },
+          "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/5/18/47807457/47807457_7c98941a-b4ec-4a79-8868-6ae1344c44c6_450_450",
+          "is_campaign_active": false,
+          "name": "b4n-t4l-gul-1n6",
+          "price": "Rp40.004.300",
+          "price_before_int": 0,
+          "remaining_stock": 1,
+          "shop_id": 5238789,
+          "status": 1,
+          "stock_info": {},
+          "text": "Ini stoknya masih ada, Min?",
+          "url": "https://www.tokopedia.com/l3g0w4t1/b4n-t4l-gul-1n6?whid=0",
+          "variant": []
+        }
+      },
+      "fallback_attachment": {
+        "html": "Ini stoknya masih ada, Min?",
+        "message": "Ini stoknya masih ada, Min?"
+      },
+      "id": 1,
+      "type": 3
+    },
+    "show_rating": false,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}

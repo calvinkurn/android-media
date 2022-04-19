@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="margin_2dp">2dp</dimen>
-    <dimen name="top_margin_default">12dp</dimen>
-    <dimen name="margin_default">16dp</dimen>
     <dimen name="image_width_brand">90dp</dimen>
+    <dimen name="font_medium">16sp</dimen>
+    <dimen name="margin_small">10dp</dimen>
 
+    <dimen name="order_detail_seperator_1dp">1dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_card_padding_bottom_14dp">14dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_card_title_margin_start_46dp">46dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_header_height_40dp">40dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_header_image_margin_start_14dp">14dp</dimen>
+    <dimen name="buyer_order_cancel_bundling_header_image_size">20dp</dimen>
+
+    <dimen name="deals_voucher_corner_ticket_view">4dp</dimen>
+    <dimen name="deals_voucher_elevation_ticket_view">4dp</dimen>
+    <dimen name="deals_voucher_border_width_ticket_view">1dp</dimen>
+    <dimen name="deals_voucher_right_line_width">6dp</dimen>
+    <dimen name="deals_voucher_divider_size">3dp</dimen>
+    <dimen name="deals_voucher_qr_code_size">200dp</dimen>
 </resources>

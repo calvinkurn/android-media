@@ -1,59 +1,142 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
-import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
-import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
-import com.tokopedia.tokopoints.view.model.*
-import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.notification.PopupNotifUsecase
+import com.tokopedia.tokopoints.notification.model.popupnotif.PopupNotifResponse
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
+import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
+import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
+import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
-import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
+import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
+import com.tokopedia.tokopoints.view.util.ErrorMessage
+import com.tokopedia.tokopoints.view.util.Loading
+import com.tokopedia.tokopoints.view.util.Resources
+import com.tokopedia.tokopoints.view.util.Success
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 @TokoPointScope
-class TokoPointsHomeViewModel @Inject constructor(private val repository: TokopointsHomeRepository) : CatalogPurchaseRedeemptionViewModel(repository), TokoPointsHomeContract.Presenter {
-    var pagerSelectedItem = 0
-
+class TokoPointsHomeViewModel @Inject constructor(
+    private val tokopointsHomeUsecase: TokopointsHomeUsecase,
+    private val recommUsecase: RewardsRecommUsecase,
+    private val popupNotifUsecase: PopupNotifUsecase
+) : BaseViewModel(Dispatchers.Main), TokoPointsHomeContract.Presenter {
 
     val tokopointDetailLiveData = MutableLiveData<Resources<TokopointSuccess>>()
-    val tokoenDetailLiveData = MutableLiveData<LuckyEggEntity>()
-    val couponCountLiveData = MutableLiveData<TokoPointSumCoupon>()
+    val rewardIntroData = MutableLiveData<Resources<IntroResponse>>()
+    var defferedPopUpNotifData : Deferred<PopupNotifResponse>? = null
+    var deferredSavingData: Deferred<UserSavingResponse>? = null
+    var defferedRecomData: Deferred<RewardsRecommendation>? = null
+    var defferedRewardTickerResponse: Deferred<RewardTickerListResponse>? = null
+    val PAGE_NAME = "rewards_page"
+    val PAGE_NUMBER = 1
+    val recommIndex = 0
+    val TOKOPOINT_DRAWER = "drawer"
 
     override fun getTokoPointDetail() {
         launchCatchError(block = {
-         tokopointDetailLiveData.value = Loading()
-            val graphqlResponse = repository.getTokoPointDetailData()
-            val data = graphqlResponse.getData<TokoPointDetailEntity>(TokoPointDetailEntity::class.java)
-            val dataSection = graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
-            if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokoPoints,dataSection.sectionContent.sectionContent))
+            tokopointDetailLiveData.value = Loading()
+            val graphqlResponse = tokopointsHomeUsecase.getTokoPointDetailData()
+            val data = graphqlResponse.getData<RewardResponse>(RewardResponse::class.java)
+            val dataSection =
+                graphqlResponse.getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java)
+            data?.let {
+                if (data.tokopediaRewardTopSection?.isShowIntroActivity == true) {
+                    getRewardIntroData()
+                }
             }
-            //handling for lucky egg data
-            val tokenDetail = graphqlResponse.getData<TokenDetailOuter>(TokenDetailOuter::class.java)
-            if (tokenDetail != null && tokenDetail.tokenDetail != null && tokenDetail.tokenDetail.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                tokoenDetailLiveData.value = tokenDetail.tokenDetail
+            if (data.tokopediaRewardTopSection?.isShowSavingPage == true) {
+                deferredSavingData = getUserSavingData()
             }
-        }){
+            defferedRewardTickerResponse = getStatusMatchingData()
+            defferedPopUpNotifData = getPopNotifData()
+            defferedRecomData = getRecommendationData()
+            if (data != null && dataSection != null && dataSection.sectionContent != null &&
+                data.tokopediaRewardTopSection != null
+            ) {
+                tokopointDetailLiveData.value = Success(
+                    TokopointSuccess(
+                        TopSectionResponse(
+                            data.tokopediaRewardTopSection,
+                            deferredSavingData?.await()?.tokopointsUserSaving, defferedRewardTickerResponse?.await(),
+                            defferedPopUpNotifData?.await()?.tokopoints
+                        ), dataSection.sectionContent.sectionContent, defferedRecomData?.await()
+                    )
+                )
+            } else {
+                throw NullPointerException("error in data")
+            }
+        }) {
             tokopointDetailLiveData.value = ErrorMessage(it.localizedMessage)
         }
     }
 
-    override fun tokopointOnboarding2020(view : TokoPointsHomeContract.View) {
-        TokoPointsNotificationManager.fetchNotification(view.activityContext, "onboarding", Tokopoint2020Subscriber(view))
+    fun getRewardIntroData() {
+        launchCatchError(block = {
+            val response = tokopointsHomeUsecase.getRewardIntroData()
+            val data = response.getData<IntroResponse>(IntroResponse::class.java)
+            rewardIntroData.value = Success(data)
+        }) {
+        }
     }
 
-
-    //Handling sum token
-    val couponCount: Unit
-        get() {
-            launchCatchError(block = {
-                val couponOuter = repository.getCouponCountData()
-                if ( couponOuter.tokopointsSumCoupon != null) {
-                    couponCountLiveData.value = couponOuter.tokopointsSumCoupon
-                }
-            }){}
+    fun getPopNotifData(): Deferred<PopupNotifResponse>{
+        var tokopointDetailEntity  = PopupNotifResponse()
+        return async(Dispatchers.IO) {
+            try {
+                val  response = popupNotifUsecase.getPopupNotif(TOKOPOINT_DRAWER)
+                tokopointDetailEntity= response.getData(PopupNotifResponse::class.java)
+            }catch (e: Exception){}
+            tokopointDetailEntity
         }
-}
+    }
 
-data class TokopointSuccess(val tokoPointEntity: TokoPointEntity,val sectionList: MutableList<SectionContent>)
+    private suspend fun getRecommendationData(): Deferred<RewardsRecommendation> {
+        return async(Dispatchers.IO) {
+            var recommendation = RewardsRecommendation(listOf(), "", "")
+            try {
+                val response = recommUsecase.getData(recommUsecase.getRequestParams(PAGE_NUMBER,PAGE_NAME))
+                val recomWidget = response[recommIndex]
+                val title = recomWidget.title
+                val appLink = recomWidget.seeMoreAppLink
+                val list = recommUsecase.mapper.recommWidgetToListOfVisitables(recomWidget)
+                recommendation = RewardsRecommendation(list, title, appLink)
+            } catch (e: Exception) {
+            }
+            recommendation
+        }
+    }
+
+    private suspend fun getUserSavingData(): Deferred<UserSavingResponse> {
+        return async(Dispatchers.IO) {
+            var userSavingResponse = UserSavingResponse()
+            try {
+                val response = tokopointsHomeUsecase.getUserSavingData()
+                userSavingResponse = response.getData(UserSavingResponse::class.java)
+            } catch (e: Exception) {
+            }
+            userSavingResponse
+        }
+    }
+
+    private suspend fun getStatusMatchingData(): Deferred<RewardTickerListResponse> {
+        return async(Dispatchers.IO) {
+            var rewardTickerResponse = RewardTickerListResponse()
+            try {
+                val response = tokopointsHomeUsecase.getUserStatusMatchingData()
+                rewardTickerResponse = response.getData(RewardTickerListResponse::class.java)
+            } catch (e: Exception) {
+            }
+            rewardTickerResponse
+        }
+    }
+}

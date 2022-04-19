@@ -5,10 +5,9 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*
 import com.tokopedia.search.result.stubExecute
 import com.tokopedia.search.shouldBe
-import io.mockk.verify
 import org.junit.Test
 
-internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopEmptyResultTest: SearchShopDataViewTestFixtures() {
 
     override fun setUp() { /* no setup required */ }
 
@@ -20,13 +19,12 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success and only contains empty search data`()
-        `Then should post empty search tracking event`()
         `Then should NOT post shop recommendation item impression tracking event`()
         `Then should NOT post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
+        `Then assert quick filter and shimmering is hidden`()
     }
 
     private fun `Given search shop view model without filter`() {
@@ -52,12 +50,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         searchShopState.shouldBeInstanceOf<State.Success<*>>()
         searchShopState.shouldOnlyHaveEmptySearchModel()
         searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(false)
-    }
-
-    private fun `Then should post empty search tracking event`() {
-        val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
-
-        emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
     }
 
     private fun `Then should NOT post shop recommendation item impression tracking event`() {
@@ -96,11 +88,9 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         hasNextPage shouldBe false
     }
 
-    private fun `Then assert bottom navigation visibility event is false (hidden)`() {
-        val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
-
-        val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
-        bottomNavigationVisibilityEvent shouldBe false
+    private fun `Then assert quick filter and shimmering is hidden`() {
+        searchShopViewModel.getQuickFilterIsVisibleLiveData().value shouldBe false
+        searchShopViewModel.getShimmeringQuickFilterIsVisibleLiveData().value shouldBe false
     }
 
     @Test
@@ -111,13 +101,12 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success, contains empty result view, recommendation title, recommendation items, and load more`()
-        `Then should post empty search tracking event`()
         `Then should post shop recommendation item impression tracking event`()
         `Then should post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is true`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
+        `Then assert quick filter and shimmering is hidden`()
     }
 
     private fun `Given search shop API will be successful and return empty search shop with recommendation shop has next page`() {
@@ -163,13 +152,12 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
         `When handle view is visible and added`()
 
         `Then assert search shop state is success, contains empty result view, recommendation title, and recommendation items`()
-        `Then should post empty search tracking event`()
         `Then should post shop recommendation item impression tracking event`()
         `Then should post shop recommendation product preview impression tracking event`()
         `Then should NOT post shop item impression tracking event`()
         `Then should NOT post product preview impression tracking event`()
         `Then assert has next page is false`()
-        `Then assert bottom navigation visibility event is false (hidden)`()
+        `Then assert quick filter and shimmering is hidden`()
     }
 
     private fun `Given search shop API will be successful and return empty search shop with recommendation shop without next page`() {
@@ -192,20 +180,12 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
 
         `When handle view is visible and added`()
 
-        `Then assert save dynamic filter is executed`()
         `Then assert dynamic filter response event is success (true)`()
         `Then assert search shop state is success and have updated Empty Search Model with Filter Data`()
     }
 
     private fun `Given search shop view model`() {
         searchShopViewModel = createSearchShopViewModel()
-    }
-
-    private fun `Then assert save dynamic filter is executed`() {
-        verify(exactly = 1) {
-            searchLocalCacheHandler.saveDynamicFilterModelLocally(
-                    SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
-        }
     }
 
     private fun `Then assert dynamic filter response event is success (true)`() {
@@ -229,7 +209,6 @@ internal class SearchShopEmptyResultTest: SearchShopViewModelTestFixtures() {
 
         `When handle view is visible and added`()
 
-        `Then assert save dynamic filter is executed`()
         `Then assert dynamic filter response event is success (true)`()
         `Then assert search shop state is success, have updated Empty Search Model with Filter Data, and contains shop recommendation`()
         `Then assert has next page is true`()

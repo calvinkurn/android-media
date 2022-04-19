@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">recommendation_widget_common</string>
+    <string name="best_seller_title_other_product">Produk Lainnya</string>
+    <string name="best_seller_see_more">Lihat Semua</string>
+    <string name="recommendation_carousel_see_more_product">Lihat Produk Lainnya</string>
+    <string name="comparison_see_more_title">Lihat semua</string>
+    <string name="comparison_see_more_specs">Lihat Spesifikasi Selengkapnya</string>
+    <string name="recom_see_more_dc_mix">Lihat Produk Lainnya</string>
+    <string name="recom_lihat_semua">Lihat Semua</string>
+    <string name="content_desc_arrow">content_desc_arrow</string>
+    <string name="content_desc_banner">content_desc_banner</string>
+    <string name="text_other_recom">Rekomendasi Lainnya</string>
+
+    <string name="content_desc_background_see_more">background see more</string>
+    <string name="content_desc_see_more">see more</string>
+
+    <string name="failed_to_load">Gagal memuat, silahkah coba lagi</string>
 </resources>

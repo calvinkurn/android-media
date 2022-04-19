@@ -12,35 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.tokopedia.design.price.DynamicBackgroundSeekBar
+    <com.tokopedia.unifycomponents.RangeSliderUnify
+        app:valueFrom="5"
+        app:valueTo="15"
+        app:initialValue="5"
+        app:step="1"
+        app:initialMaxValue="15"
         android:id="@+id/dbs_background"
         app:layout_constraintLeft_toLeftOf="@+id/rv_umrah_seekbar_range"
         app:layout_constraintRight_toRightOf="@+id/rv_umrah_seekbar_range"
         app:layout_constraintTop_toBottomOf="@+id/rv_umrah_seekbar_range"
-        android:layout_marginTop="@dimen/dp_19"
-        app:dbsb_background_color="@color/grey_300"
-        app:dbsb_foreground_color="@color/tkpd_main_green"
-        android:layout_width="0dp"
-        android:layout_height="4dp"/>
-
-    <View
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_umrah_seekbar_range"
-        android:id="@+id/thumb_min"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:background="@drawable/price_input_seekbar_button_pressed"
-        android:layout_marginTop="@dimen/dp_6"
-        />
-
-    <View
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_umrah_seekbar_range"
-        android:id="@+id/thumb_max"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
-        android:background="@drawable/price_input_seekbar_button_pressed"
-        android:layout_marginTop="@dimen/dp_6"
-        />
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

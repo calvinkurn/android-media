@@ -8,13 +8,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.
@@ -131,7 +131,7 @@ class ProductCardViewSmallGrid: ProductCardView {
 
     fun setImageShopUrl(imageUrl: String) {
         imageShop?.let { imageShop ->
-            ImageHandler.loadImageCircle2(context, imageShop, imageUrl)
+            imageShop.loadImageCircle(imageUrl)
         }
     }
 
@@ -234,7 +234,7 @@ class ProductCardViewSmallGrid: ProductCardView {
                 shouldShowFreeOngkirImage,
                 skeleton_imageFreeOngkirPromo,
                 blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageRounded2(context, it, freeOngkir.imageUrl)
+            it.loadImageRounded(freeOngkir.imageUrl)
         }
     }
 
@@ -287,7 +287,7 @@ class ProductCardViewSmallGrid: ProductCardView {
     }
 
     fun setLabelPreOrderInvisible(isInvisible: Boolean){
-        label_pre_order?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
+        labelPreOrder?.visibility =  if (isInvisible) View.INVISIBLE else View.VISIBLE
     }
 
     fun setlabelDiscountInvisible(isInvisible: Boolean) {

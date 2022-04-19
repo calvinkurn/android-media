@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_location_event_gradient"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4">
+
+    <ImageView
+        android:id="@+id/imgToped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ent_ic_events"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtFirstTimeFirstHeading"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:text="@string/ent_search_search_first_time_first_heading"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginLeft="@dimen/dimen_dp_10"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/imgToped"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtFirstTimeSecondHeading"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginLeft="10dp"
+        android:text="@string/ent_search_search_first_time_second_heading"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@+id/txtFirstTimeFirstHeading"
+        app:layout_constraintStart_toEndOf="@id/imgToped"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,7 @@ public class Shop implements Parcelable {
     private static final String KEY_OWNER_ID = "owner_id";
     private static final String KEY_IS_OWNER = "is_owner";
     private static final String KEY_BADGES = "badges";
+    private static final String KEY_SHOP_RATING_AVG = "shop_rating_avg";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -102,6 +103,10 @@ public class Shop implements Parcelable {
     @Expose
     private List<Badge> badges = new ArrayList<>();
 
+    @SerializedName(KEY_SHOP_RATING_AVG)
+    @Expose
+    private String shopRatingAvg = "";
+
     public Shop() {
     }
 
@@ -160,6 +165,9 @@ public class Shop implements Parcelable {
                 badges.add(new Badge(badgeArray.getJSONObject(i)));
             }
         }
+        if(!object.isNull(KEY_SHOP_RATING_AVG)) {
+            setShopRatingAvg(object.getString(KEY_SHOP_RATING_AVG));
+        }
     }
 
     protected Shop(Parcel in) {
@@ -181,6 +189,7 @@ public class Shop implements Parcelable {
         ownerId = in.readString();
         isOwner = in.readByte() != 0;
         badges = in.createTypedArrayList(Badge.CREATOR);
+        shopRatingAvg = in.readString();
     }
 
     @Override
@@ -203,6 +212,7 @@ public class Shop implements Parcelable {
         dest.writeString(ownerId);
         dest.writeByte((byte) (isOwner ? 1 : 0));
         dest.writeTypedList(badges);
+        dest.writeString(shopRatingAvg);
     }
 
     @Override
@@ -372,5 +382,13 @@ public class Shop implements Parcelable {
 
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
+    }
+
+    public void setShopRatingAvg(String shopRatingAvg) {
+        this.shopRatingAvg = shopRatingAvg;
+    }
+
+    public String getShopRatingAvg() {
+        return this.shopRatingAvg;
     }
 }

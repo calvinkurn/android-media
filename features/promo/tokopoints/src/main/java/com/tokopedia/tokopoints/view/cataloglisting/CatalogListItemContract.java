@@ -22,37 +22,23 @@ public interface CatalogListItemContract {
 
         void hideLoader();
 
-
         Context getActivityContext();
 
         Context getAppContext();
 
         Resources getResources();
 
-
         int getCurrentCategoryId();
 
         int getCurrentSubCategoryId();
-
-        void showRedeemCouponDialog(String cta, String code, String title);
-
-        void showConfirmRedeemDialog(String cta, String code, String title);
-
-        void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
-
-        void refreshCatalog(List<CatalogStatusItem> items);
-
-        void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
 
         void onPreValidateError(String title, String message);
 
         void gotoSendGiftPage(int id, String title, String pointStr);
 
-        void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader);
     }
 
     interface Presenter {
-
 
         void fetchLatestStatus(List<Integer> catalogsIds);
     }

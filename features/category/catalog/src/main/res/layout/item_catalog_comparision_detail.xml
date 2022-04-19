@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        >
+
+        <include
+            android:id="@+id/base_catalog_card"
+            layout="@layout/catalog_staggered_product_card_item_layout"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        >
+
+        <include
+            android:id="@+id/comparision_card"
+            layout="@layout/catalog_staggered_product_card_item_layout"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

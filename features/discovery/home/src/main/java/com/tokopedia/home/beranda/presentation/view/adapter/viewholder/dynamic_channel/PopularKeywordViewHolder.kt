@@ -6,19 +6,32 @@ import android.view.ViewStub
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home.databinding.HomePopularKeywordBinding
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -27,47 +40,79 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
-                                val popularKeywordListener: PopularKeywordListener)
+                                private val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListDataModel>(view) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
     }
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_popular_keyword_widget_load_time"
+
     private var adapter: PopularKeywordAdapter? = null
     var channelTitle: Typography? = null
     var tvReload: Typography? = null
     var ivReload: AppCompatImageView? = null
     var loadingView: View? = null
-    private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    var channelSubtitle: TextView? = null
+
+    private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
+    private val rotateToDegrees = 360f
+    private val pivotXValue = 0.5f
+    private val pivotYValue = 0.5f
+    private val rotateAnimation = RotateAnimation(0f, rotateToDegrees, Animation.RELATIVE_TO_SELF, pivotXValue, Animation.RELATIVE_TO_SELF, pivotYValue)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
+    private val homeComponentDividerHeader = view.findViewById<DividerUnify>(R.id.home_component_divider_header)
+    private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
+    private val loaderPopularKeywordTitle = view.findViewById<LoaderUnify>(R.id.loader_popular_keyword_title)
+    private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
 
     init{
         rotateAnimation.duration = 500
         rotateAnimation.interpolator = LinearInterpolator()
+        performanceMonitoring = PerformanceMonitoring()
     }
 
     override fun bind(element: PopularKeywordListDataModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
+        homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
+
         initStub(element)
         initAdapter(element)
+        setChannelDivider(element)
     }
 
     override fun bind(element: PopularKeywordListDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
+    private fun setChannelDivider(element: PopularKeywordListDataModel) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = homeComponentDividerHeader,
+            dividerBottom = homeComponentDividerFooter
+        )
+    }
+
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
-            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel)
-            recyclerView.layoutManager = GridLayoutManager(view.context, 2)
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition)
+            val spanCount = DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context)
+            recyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)
+        if(element.isErrorLoad || element.popularKeywordList.isEmpty()) recyclerView.gone()
+        else recyclerView.visible()
+        performanceMonitoring?.stopTrace()
+        performanceMonitoring = null
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {
         try {
             val channelTitleStub: View? = itemView.findViewById(R.id.channel_title)
+            val channelSubtitleStub: View? = itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
             val tvReloadStub: View? = itemView.findViewById(R.id.tv_reload)
             val ivReloadStub: View? = itemView.findViewById(R.id.iv_reload)
             val loadingViewStub: View? = itemView.findViewById(R.id.loading_popular)
@@ -82,7 +127,8 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             channelTitleStub?.let {
-                if (element.channel.header.name.isNotEmpty()) {
+                val title = if (element.title.isNotEmpty()) element.title else element.channel.header.name
+                if (title.isNotEmpty()) {
                     it.visibility = View.VISIBLE
                     channelTitle = if (channelTitleStub is ViewStub &&
                             !isViewStubHasBeenInflated(channelTitleStub)) {
@@ -91,16 +137,37 @@ class PopularKeywordViewHolder (val view: View,
                     } else {
                         itemView.findViewById(R.id.channel_title)
                     }
-                    channelTitle?.text = element.channel.header.name
+                    channelTitle?.text = title
                     channelTitle?.visibility = View.VISIBLE
                     channelTitle?.setTextColor(
-                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor)
-                            else ContextCompat.getColor(view.context, R.color.Neutral_N700)
+                            if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
+                            else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
                     )
-                } else {
-                    it.visibility = View.GONE
+                    loaderPopularKeywordTitle?.gone()
+                    anchorReloadButtonTo(R.id.channel_title)
                 }
             }
+            /**
+             * Requirement:
+             * Only show channel subtitle when it is exist
+             */
+            val channelSubtitleName = element.subTitle
+            if (channelSubtitleName.isNotEmpty()) {
+                channelSubtitle = if (channelSubtitleStub is ViewStub &&
+                        !isViewStubHasBeenInflated(channelSubtitleStub)) {
+                    val stubChannelView = channelSubtitleStub.inflate()
+                    stubChannelView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                } else {
+                    itemView?.findViewById(com.tokopedia.home_component.R.id.channel_subtitle)
+                }
+                channelSubtitle?.text = channelSubtitleName
+                channelSubtitle?.visibility = View.VISIBLE
+
+                anchorReloadButtonTo(R.id.channel_subtitle)
+            } else {
+                channelSubtitle?.visibility = View.GONE
+            }
+
             tvReloadStub?.let {
                 it.visibility = View.VISIBLE
                 tvReload = if (tvReloadStub is ViewStub &&
@@ -123,9 +190,33 @@ class PopularKeywordViewHolder (val view: View,
                 }
                 ivReload?.setOnClickListener(reloadClickListener(element))
             }
+            if(!element.isErrorLoad) {
+                errorPopularKeyword?.hide()
+                channelTitle?.show()
+                ivReload?.show()
+                tvReload?.show()
+            } else {
+                errorPopularKeyword.show()
+                loaderPopularKeywordTitle?.hide()
+                ivReload?.hide()
+                tvReload?.hide()
+                channelTitle?.hide()
+                channelSubtitle?.hide()
+                loadingView?.hide()
+            }
+            errorPopularKeyword.progressState = false
+            errorPopularKeyword?.refreshBtn?.setOnClickListener(reloadClickListener(element))
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun anchorReloadButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(containerPopularKeyword)
+        constraintSet.connect(R.id.iv_reload, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.iv_reload, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(containerPopularKeyword)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
@@ -134,9 +225,17 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun reloadClickListener(element: PopularKeywordListDataModel): View.OnClickListener {
         return View.OnClickListener {
-            ivReload?.startAnimation(rotateAnimation)
+            if (ivReload?.isVisible == true) {
+                ivReload?.startAnimation(rotateAnimation)
+            }
+
+            if (channelTitle == null || channelTitle?.isVisible == false) {
+                loaderPopularKeywordTitle?.visible()
+            }
             loadingView?.show()
+            errorPopularKeyword.hide()
             adapter?.clearList()
+            errorPopularKeyword.progressState = true
             popularKeywordListener.onPopularKeywordSectionReloadClicked(element.position, element.channel)
         }
     }
@@ -154,7 +253,7 @@ class PopularKeywordViewHolder (val view: View,
 
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
-        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
-        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, keyword: String)
+        fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
+        fun onPopularKeywordItemImpressed(channel: DynamicHomeChannel.Channels, position: Int, popularKeywordDataModel: PopularKeywordDataModel,  positionInWidget: Int)
     }
 }

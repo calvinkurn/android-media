@@ -1,164 +1,130 @@
 package com.tokopedia.play.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
+import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.BufferTrackingModel
-import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.analytic.TrackingField
-import com.tokopedia.play.analytic.WatchDurationModel
-import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.keyboard.KeyboardWatcher
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.extensions.*
+import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.contract.PlayNavigation
+import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
+import com.tokopedia.play.view.measurement.bounds.BoundsKey
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
+import com.tokopedia.play.view.measurement.bounds.manager.videobounds.VideoBoundsManager
+import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
+import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
+import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isYouTube
+import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.PlayVideoState
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.dpToPx
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_play.*
+import com.tokopedia.play_common.util.KeyboardWatcher
+import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
+import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
+import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.play_common.viewcomponent.viewComponent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.abs
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment() {
+class PlayFragment @Inject constructor(
+    viewModelFactory: PlayViewModel.Factory,
+    private val pageMonitoring: PlayPltPerformanceCallback,
+    private val analytic: PlayAnalytic
+) :
+        TkpdBaseV4Fragment(),
+        PlayFragmentContract,
+        FragmentVideoViewComponent.Listener,
+        FragmentYouTubeViewComponent.Listener,
+        PlayVideoScalingManager.Listener {
 
-    companion object {
-        const val ANIMATION_DURATION = 300L
+    private lateinit var ivClose: View
+    private val fragmentVideoView by viewComponent {
+        FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
+    }
+    private val fragmentUserInteractionView by viewComponent {
+        FragmentUserInteractionViewComponent(channelId, it, R.id.fl_user_interaction, childFragmentManager)
+    }
+    private val fragmentBottomSheetView by viewComponent {
+        FragmentBottomSheetViewComponent(channelId, it, R.id.fl_bottom_sheet, childFragmentManager)
+    }
+    private val fragmentYouTubeView by viewComponent {
+        FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
 
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
-        private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
-
-        private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
-        private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
-        private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
-        private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
-
-        private const val FULL_SCALE_FACTOR = 1.0f
-
-        fun newInstance(channelId: String?): PlayFragment {
-            return PlayFragment().apply {
-                val args = Bundle()
-                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = args
-            }
+    val viewModelProviderFactory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return viewModelFactory.create(channelId) as T
         }
     }
 
-    private var channelId = ""
-
-    @TrackingField
-    private var bufferTrackingModel = BufferTrackingModel(
-            isBuffering = false,
-            bufferCount = 0,
-            lastBufferMs = System.currentTimeMillis(),
-            shouldTrackNext = false
-    )
-    
-    @TrackingField
-    private var watchDurationModel = WatchDurationModel(
-            watchTime = null,
-            cumulationDuration = 0L
-    )
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
-
-    private val videoScaleAnimator = AnimatorSet()
-    private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            flVideo.isClickable = true
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-    }
-    private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-    }
-
-    private var pageMonitoring: PageLoadTimePerformanceInterface? = null
-
+    private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
-
-    private lateinit var ivClose: ImageView
-    private lateinit var flVideo: FrameLayout
-    private lateinit var flInteraction: FrameLayout
-    private lateinit var flBottomSheet: FrameLayout
-    private lateinit var flGlobalError: FrameLayout
 
     private val keyboardWatcher = KeyboardWatcher()
 
-    override fun getScreenName(): String = "Play"
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
+    private val playNavigation: PlayNavigation
+        get() = requireActivity() as PlayNavigation
+
+    private var videoScalingManager: VideoScalingManager? = null
+    private var videoBoundsManager: VideoBoundsManager? = null
+    private val boundsMap = BoundsKey.values.associate { Pair(it, 0) }.toMutableMap()
+
+    private var isFirstTopBoundsCalculated = false
+
+    override fun getScreenName(): String = "Play"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupPageMonitoring()
-        playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
-        channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
+        playViewModel = ViewModelProvider(this, viewModelProviderFactory)
+            .get(PlayViewModel::class.java)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            processChannelInfo()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -169,148 +135,338 @@ class PlayFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
         setupView(view)
-        setupScreen(view)
-
-        if (childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(flVideo.id, PlayVideoFragment.newInstance(channelId), VIDEO_FRAGMENT_TAG)
-                    .commit()
-        }
-
-        if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId), INTERACTION_FRAGMENT_TAG)
-                    .commit()
-        }
-
-        if (childFragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(channelId), BOTTOM_SHEET_FRAGMENT_TAG)
-                    .commit()
-        }
-
-        if (childFragmentManager.findFragmentByTag(ERROR_FRAGMENT_TAG) == null) {
-            childFragmentManager.beginTransaction()
-                    .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId), ERROR_FRAGMENT_TAG)
-                    .commit()
-        }
+        setupInsets(view)
+        setupObserve()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeGetChannelInfo()
-        observeSocketInfo()
-        observeEventUserInfo()
-        observeVideoProperty()
-        observeVideoStream()
+    override fun onStart() {
+        super.onStart()
+        ivClose.requestApplyInsetsWhenAttached()
     }
 
     override fun onResume() {
         super.onResume()
         stopPrepareMonitoring()
-        startNetworkMonitoring()
-        playViewModel.resumeWithChannelId(channelId)
-        requireView().post {
-            registerKeyboardListener(requireView())
-        }
+        onPageFocused()
+        view?.postDelayed({
+            view?.let { registerKeyboardListener(it) }
+        }, KEYBOARD_REGISTER_DELAY)
     }
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
-        super.onPause()
-
-        bufferTrackingModel = bufferTrackingModel.copy(
-                isBuffering = false,
-                bufferCount = if (bufferTrackingModel.isBuffering) bufferTrackingModel.bufferCount - 1 else bufferTrackingModel.bufferCount,
-                shouldTrackNext = false
+        onPageDefocused()
+        playParentViewModel.setLatestChannelStorageData(
+                channelId,
+                playViewModel.latestCompleteChannelData
         )
+        super.onPause()
     }
 
-    fun onNewChannelId(channelId: String?) {
-        if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
-            (activity as PlayNewChannelInteractor).onNewChannel(channelId)
+    override fun onDestroyView() {
+        if (view != null) getVideoScalingManager().onDestroy()
+        videoScalingManager = null
+
+        destroyInsets(requireView())
+        super.onDestroyView()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
         }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        val isIntercepted = childFragmentManager.fragments.asSequence()
+                .filterIsInstance<PlayFragmentContract>()
+                .any { it.onInterceptOrientationChangedEvent(newOrientation) }
+        val videoOrientation = playViewModel.videoOrientation
+        return isIntercepted || !videoOrientation.isHorizontal
+    }
+
+    override fun onEnterPiPState(pipState: PiPState) {
+        if (playViewModel.isPiPAllowed) {
+            childFragmentManager.fragments
+                    .forEach {
+                        if (it is PlayFragmentContract) it.onEnterPiPState(pipState)
+                    }
+        }
+    }
+
+    /**
+     * FragmentVideo View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentVideoViewComponent) {
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
+    /**
+     * FragmentYouTube View Component Listener
+     */
+    override fun onFragmentClicked(view: FragmentYouTubeViewComponent, isScaling: Boolean) {
+        if (!isScaling) return
+
+        if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+        else hideAllInsets()
+    }
+
+    /**
+     * Video Scaling Manager Listener
+     */
+    override fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int) {
+        fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
+    }
+
+    override fun onAnimationStart(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.startAnimateInsets(isHidingInsets)
+    }
+
+    override fun onAnimationFinish(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
+    }
+
+    fun onFirstTopBoundsCalculated() {
+        isFirstTopBoundsCalculated = true
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            when {
+                playViewModel.videoPlayer.isYouTube -> {
+                    fragmentYouTubeView.safeInit()
+                    fragmentYouTubeView.show()
+                }
+                else -> {
+                    fragmentVideoView.safeInit()
+                    fragmentVideoView.show()
+                }
+            }
+        }
+    }
+
+    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        if (orientation.isLandscape || view == null) return
+        getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
+    }
+
+    fun onBottomInsetsViewHidden() {
+        if (view == null) return
+        getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val totalView = playViewModel.totalView
+            if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+        })
+    }
+
+    fun setCurrentVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
+        val key = BoundsKey.getByOrientation(orientation, videoOrientation)
+        boundsMap[key] = topBounds
+
+        invalidateVideoTopBounds(videoOrientation)
+    }
+
+    /**
+     * @return true means the onBackPressed() has been handled by this fragment
+     */
+    fun onBackPressed(): Boolean {
+        val isHandled = playViewModel.goBack()
+        return when {
+            isHandled -> isHandled
+            else -> false
+        }
+    }
+
+    /**
+     * When viewpager is swiped to this fragment
+     */
+    fun setFragmentActive(position: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            /**
+             * Workaround because the first UI load is slower,
+             * TODO("Maybe find a way to have this logic from viewModel")
+             */
+            if (position == 0) delay(FIRST_FRAGMENT_ACTIVE_DELAY)
+            viewLifecycleOwner.awaitResume()
+            playViewModel.submitAction(SetChannelActiveAction)
+        }
+    }
+
+    private fun processChannelInfo() {
+        try {
+            playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        } catch (e: Throwable) {}
+    }
+
+    //TODO("Somehow when clearing viewpager, onResume is called, and when it happens, channel id is already empty so this might cause crash")
+    private fun onPageFocused() {
+        try {
+            val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
+            playViewModel.focusPage(channelData)
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
+            sendSwipeRoomAnalytic()
+        } catch (e: Throwable) {}
+    }
+
+    private fun onPageDefocused() {
+        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP)
+    }
+
+    private fun invalidateVideoTopBounds(
+            videoOrientation: VideoOrientation = playViewModel.videoOrientation
+    ) {
+        val key = BoundsKey.getByOrientation(orientation, playViewModel.videoOrientation)
+        val topBounds = boundsMap[key] ?: 0
+        getVideoBoundsManager().invalidateVideoBounds(videoOrientation, playViewModel.videoPlayer, topBounds)
+    }
+
+    private fun getVideoScalingManager(): VideoScalingManager = synchronized(this) {
+        if (videoScalingManager == null) {
+            videoScalingManager = PlayVideoScalingManager(requireView() as ViewGroup, this)
+        }
+        return videoScalingManager!!
+    }
+
+    private fun getVideoBoundsManager(): VideoBoundsManager = synchronized(this) {
+        if (videoBoundsManager == null) {
+            videoBoundsManager = PlayVideoBoundsManager(requireView() as ViewGroup, object : ScreenOrientationDataSource {
+                override fun getScreenOrientation(): ScreenOrientation {
+                    return orientation
+                }
+            })
+        }
+        return videoBoundsManager!!
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val newOrientation = ScreenOrientation.getByInt(newConfig.orientation)
+        if (newOrientation.isLandscape) hideAllInsets()
+
+        invalidateVideoTopBounds()
+    }
+
+    private fun destroyInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(requireView(), null)
     }
 
     private fun initView(view: View) {
         with (view) {
             ivClose = findViewById(R.id.iv_close)
-            flVideo = findViewById(R.id.fl_video)
-            flInteraction = findViewById(R.id.fl_interaction)
-            flBottomSheet = findViewById(R.id.fl_bottom_sheet)
-            flGlobalError = findViewById(R.id.fl_global_error)
         }
     }
 
     private fun setupView(view: View) {
-        ivClose.setOnClickListener {
-            hideKeyboard()
-        }
-        flVideo.setOnClickListener {
-            hideAllInsets()
-        }
+        ivClose.setOnClickListener { hideKeyboard() }
+        fragmentVideoView.safeInit()
+        fragmentUserInteractionView.safeInit()
+        fragmentBottomSheetView.safeInit()
+
+        invalidateVideoTopBounds()
+        hideAllInsets()
     }
 
-    private fun setupScreen(view: View) {
-        setFullScreen()
-        setInsets(view)
-    }
+    private fun setupInsets(view: View) {
+        ivClose.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
 
-    private fun setFullScreen() {
-        PlayFullScreenHelper.showSystemUi(requireActivity())
-    }
-
-    private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-            val closeLp = ivClose.layoutParams as ViewGroup.MarginLayoutParams
-            ivClose.setMargin(closeLp.leftMargin, offset12 + insets.systemWindowInsetTop, closeLp.rightMargin, closeLp.bottomMargin)
-
-            insets
-        }
-    }
-
-    private fun observeGetChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success ->
-                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
             }
-        })
+        }
     }
 
-    private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is PlaySocketInfo.Reconnect ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}", playViewModel.channelType)
-                is PlaySocketInfo.Error ->
-                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}", playViewModel.channelType)
-            }
-        })
+    private fun setupObserve() {
+        observeVideoMeta()
+        observeChannelInfo()
+        observeBottomInsetsState()
+        observePiPEvent()
+
+        observeUiState()
     }
 
-    private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.isFreeze)
-                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-            else if (it.isBanned)
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
-        })
+    //region observe
+    /**
+     * Observe
+     */
+    private fun handleStatus(status: PlayStatusUiModel) {
+        if (status.channelStatus.statusType.isFreeze) {
+            dismissToaster()
+
+            if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && status.channelStatus.statusSource == PlayStatusSource.Socket) doAutoSwipe()
+            else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
+
+        } else if (status.channelStatus.statusType.isBanned) {
+            showEventDialog(status.config.bannedModel.title, status.config.bannedModel.message, status.config.bannedModel.btnTitle)
+        }
+        if (status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned) {
+            unregisterKeyboardListener(requireView())
+        }
+
+        fragmentVideoViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentBottomSheetViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
+        fragmentYouTubeViewOnStateChanged(isFreezeOrBanned = status.channelStatus.statusType.isFreeze || status.channelStatus.statusType.isBanned)
     }
 
-    private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            handleBufferAnalytics(it.state)
-            handleDurationAnalytics(it.state)
-        })
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
+            fragmentVideoViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            fragmentYouTubeViewOnStateChanged(videoPlayer = meta.videoPlayer)
+        }
     }
 
-    private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+    private fun observeChannelInfo() {
+        playViewModel.observableChannelInfo.observe(viewLifecycleOwner, DistinctObserver {
             setWindowSoftInputMode(it.channelType.isLive)
+            setBackground(it.backgroundUrl)
         })
     }
+
+    private fun observeBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
+            buttonCloseViewOnStateChanged(bottomInsets = it)
+            fragmentBottomSheetViewOnStateChanged(bottomInsets = it)
+
+            /**
+             * We have to change the translationZ for now, because in some cases, the interaction view
+             * cover part of the video and prevents the click on the video
+             */
+            if (it.isAnyShown) {
+                playNavigation.requestDisableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = -1f
+            }
+            else {
+                playNavigation.requestEnableNavigation()
+                fragmentUserInteractionView.rootView.translationZ = 0f
+            }
+        })
+    }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, EventObserver {
+            if (it is PiPState.Requesting) onEnterPiPState(it)
+        })
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                val prevState = cachedState.prevValue
+
+                handleStatus(state.status)
+            }
+        }
+    }
+    //endregion
 
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
@@ -328,123 +484,34 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                activity?.supportFinishAfterTransition()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        videoScaleAnimator.cancel()
-    }
-
-    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun onBottomInsetsViewHidden() {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsHiddenAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-        })
-    }
-
     /**
      * Performance Monitoring
      */
-    private fun setupPageMonitoring() {
-        if (activity != null && activity is PlayActivity) {
-            pageMonitoring = (activity as PlayActivity).getPageMonitoring()
-        }
-    }
-
     private fun stopPrepareMonitoring() {
-        pageMonitoring?.stopPreparePagePerformanceMonitoring()
-    }
-
-    private fun startNetworkMonitoring() {
-        pageMonitoring?.startNetworkRequestPerformanceMonitoring()
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
     }
 
     private fun stopNetworkMonitoring() {
-        pageMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
     }
 
     fun startRenderMonitoring() {
         stopNetworkMonitoring()
-        pageMonitoring?.startRenderPerformanceMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
     }
 
     fun stopRenderMonitoring() {
-        pageMonitoring?.stopRenderPerformanceMonitoring()
+        pageMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
 
+    fun getVideoLatency() = playViewModel.videoLatency
+
     private fun stopPageMonitoring() {
-        pageMonitoring?.stopMonitoring()
+        pageMonitoring.stopMonitoring()
     }
 
-    /**
-     * @return true means the onBackPressed() has been handled by this fragment
-     */
-    fun onBackPressed(): Boolean {
-        val isHandled = playViewModel.onBackPressed()
-        if (!isHandled) {
-            val currentWatchDuration = watchDurationModel.watchTime?.let { abs(System.currentTimeMillis() - it) }.orZero()
-            val totalDuration = watchDurationModel.cumulationDuration + currentWatchDuration
-            PlayAnalytics.clickLeaveRoom(channelId, totalDuration, playViewModel.channelType)
-        }
-        return isHandled
-    }
-
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -459,22 +526,20 @@ class PlayFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun registerKeyboardListener(view: View) {
+    fun registerKeyboardListener(view: View) {
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
-                ivClose.visible()
             }
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
-                ivClose.invisible()
-                if (!playViewModel.stateHelper.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
 
-    private fun unregisterKeyboardListener(view: View) {
+    fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
     }
 
@@ -483,50 +548,82 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.hideInsets(isKeyboardHandled = true)
     }
 
-    /**
-     * Analytic
-     */
-    private fun handleBufferAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Error) {
-            PlayAnalytics.errorState(channelId,
-                    "$ERR_STATE_VIDEO: ${state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
-                    playViewModel.channelType)
+    fun sendTrackerWhenRotateFullScreen() {
+        analytic.userTiltFromPortraitToLandscape()
+    }
 
-        } else if (state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
-            val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
+    private fun setBackground(backgroundUrl: String) {
+        Glide.with(requireContext()).load(backgroundUrl).into(object : CustomTarget<Drawable?>() {
+            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
 
-            bufferTrackingModel = BufferTrackingModel(
-                    isBuffering = true,
-                    bufferCount = nextBufferCount,
-                    lastBufferMs = System.currentTimeMillis(),
-                    shouldTrackNext = bufferTrackingModel.shouldTrackNext
-            )
-        } else if ((state is PlayVideoState.Playing || state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
-            if (bufferTrackingModel.shouldTrackNext) {
-                PlayAnalytics.trackVideoBuffering(
-                        bufferCount = bufferTrackingModel.bufferCount,
-                        bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
-                )
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
+                view?.background = resource
             }
+        })
+    }
 
-            bufferTrackingModel = bufferTrackingModel.copy(
-                    isBuffering = false,
-                    shouldTrackNext = true
-            )
+    private fun doAutoSwipe() {
+        if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
+    }
+
+    private fun sendSwipeRoomAnalytic() {
+        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
+    }
+
+    //region onStateChanged
+    /**
+     * OnStateChanged
+     */
+    private fun buttonCloseViewOnStateChanged(bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets) {
+        if (bottomInsets.isKeyboardShown) ivClose.show()
+        else ivClose.invisible()
+    }
+
+    private fun fragmentVideoViewOnStateChanged(
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (videoPlayer.isYouTube || (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown)) {
+            fragmentVideoView.safeRelease()
+            fragmentVideoView.hide()
         }
     }
 
-    private fun handleDurationAnalytics(state: PlayVideoState) {
-        if (state is PlayVideoState.Playing) {
-            if (watchDurationModel.watchTime == null) watchDurationModel = watchDurationModel.copy(
-                    watchTime = System.currentTimeMillis()
-            )
-        } else {
-            val watchTime = watchDurationModel.watchTime
-            if (watchTime != null) watchDurationModel = watchDurationModel.copy(
-                    watchTime = null,
-                    cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
-            )
+    private fun fragmentBottomSheetViewOnStateChanged(
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if (isFreezeOrBanned && !bottomInsets.isAnyBottomSheetsShown) {
+            fragmentBottomSheetView.safeRelease()
+            fragmentBottomSheetView.hide()
         }
+    }
+
+    private fun fragmentYouTubeViewOnStateChanged(
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (isFreezeOrBanned) {
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                return@launchWhenResumed
+            }
+
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            }
+        }
+    }
+    //endregion
+
+    companion object {
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+
+        const val KEYBOARD_REGISTER_DELAY = 200L
+        private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

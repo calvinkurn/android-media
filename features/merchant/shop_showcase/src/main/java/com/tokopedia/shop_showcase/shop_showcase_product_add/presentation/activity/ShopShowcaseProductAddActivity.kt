@@ -1,10 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.activity
 
-import android.os.Build
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop_showcase.R
@@ -18,7 +15,11 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragme
 class ShopShowcaseProductAddActivity: BaseSimpleActivity() {
 
     companion object {
+        @LayoutRes
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+
+        @IdRes
+        val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
     private var isActionEdit: Boolean = false
@@ -35,18 +36,6 @@ class ShopShowcaseProductAddActivity: BaseSimpleActivity() {
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
-    }
-
-    override fun setupStatusBar() {
-        val window: Window = window
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
+        return PARENT_VIEW_ACTIVITY
     }
 }

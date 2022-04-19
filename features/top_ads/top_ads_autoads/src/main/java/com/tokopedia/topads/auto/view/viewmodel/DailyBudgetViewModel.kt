@@ -1,32 +1,30 @@
 package com.tokopedia.topads.auto.view.viewmodel
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.data.entity.BidInfoData
-import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
-import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
-import com.tokopedia.topads.auto.data.network.response.*
+import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
-import com.tokopedia.topads.auto.internal.RawQueryKeyObject.QUERY_TOPADS_DEPOSIT
-import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.IDS
+import com.tokopedia.topads.auto.view.RequestHelper
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
+import com.tokopedia.topads.common.data.model.AutoAdsParam
+import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopAdsAutoAds
+import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -34,26 +32,28 @@ import javax.inject.Inject
  */
 class DailyBudgetViewModel @Inject constructor(
         private val context: Context,
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatchers,
         private val repository: GraphqlRepository,
-        private val rawQueries: Map<String, String>
-) : BaseViewModel(dispatcher) {
+        private val rawQueries: Map<String, String>,
+        private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+        private val bidInfoUseCase: BidInfoUseCase) : BaseViewModel(dispatcher.main) {
 
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
-    val topAdsDeposit = MutableLiveData<Int>()
+    private val topAdsDeposit : MutableLiveData<Int> = MutableLiveData()
 
-    fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit) {
+    fun getTopAdsDepositLiveData() : LiveData<Int> = topAdsDeposit
+
+    fun getBudgetInfo(requestType: String, source: String, onSuccess: (ResponseBidInfo.Result) -> Unit) {
         launchCatchError(block = {
-            val dummyId: MutableList<Int> = mutableListOf()
-            val map = mapOf(TYPE to PRODUCT,IDS to dummyId)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-            val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
-                        TopadsBidInfo.Response::class.java,
-                        mapOf(ParamObject.SUGGESTION to map,SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
-                repository.getReseponse(listOf(request), cacheStrategy)
-            }
-            onSuccess(data.getSuccessData<TopadsBidInfo.Response>())
+            val dummyId: MutableList<String> = mutableListOf()
+            val suggestionsDefault = ArrayList<DataSuggestions>()
+            suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
+            bidInfoUseCase.setParams(suggestionsDefault, requestType, source)
+            bidInfoUseCase.executeQuerySafeMode({
+                onSuccess(it)
+            }, {
+                it.printStackTrace()
+            })
         }) {
             it.printStackTrace()
         }
@@ -61,12 +61,11 @@ class DailyBudgetViewModel @Inject constructor(
 
     fun postAutoAds(param: AutoAdsParam) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
+            val data = withContext(dispatcher.io) {
+                val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
-                val cacheStrategy = GraphqlCacheStrategy
-                        .Builder(CacheType.ALWAYS_CLOUD).build()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                val cacheStrategy = RequestHelper.getCacheStrategy()
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
@@ -76,45 +75,32 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
-    fun getTopAdsDeposit(shopId: Int) {
+    fun getTopAdsDeposit() {
         launchCatchError(
                 block = {
-                    val param = mapOf(SHOP_ID to shopId,
-                            CREDIT_DATA to "unclaimed", SHOP_DATA to "0")
-                    val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
-                                TopAdsDepositResponse.Data::class.java,
-                                param)
-                        val cacheStrategy = GraphqlCacheStrategy
-                                .Builder(CacheType.ALWAYS_CLOUD).build()
-                        repository.getReseponse(listOf(request), cacheStrategy)
-                    }
-                    data.getSuccessData<TopAdsDepositResponse.Data>().let {
-                        topAdsDeposit.postValue(it.topadsDashboardDeposits.data.amount)
-                    }
-                }) {
-            it.printStackTrace()
-        }
+                    val response = topAdsGetShopDepositUseCase.executeOnBackground()
+                    topAdsDeposit.value = response.topadsDashboardDeposits.data.amount
+                },
+                onError = {
+                    it.printStackTrace()
+                })
     }
 
     fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
-                        EstimationResponse::class.java, mapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
-                val cacheStrategy = GraphqlCacheStrategy
-                        .Builder(CacheType.ALWAYS_CLOUD).build()
-                repository.getReseponse(listOf(request), cacheStrategy)
+            val data = withContext(dispatcher.io) {
+                val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
+                        EstimationResponse::class.java, hashMapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
+                val cacheStrategy = RequestHelper.getCacheStrategy()
+                repository.response(listOf(request), cacheStrategy)
             }
-            data.getSuccessData<EstimationResponse>().topadsStatisticsEstimationAttribute.data[0].let {
-                onSuccess(it)
-            }
+            onSuccess(data.getSuccessData<EstimationResponse>().topadsStatisticsEstimationAttribute.data[0])
         }) {
             it.printStackTrace()
         }
     }
 
-    fun getParams(dataParams: AutoAdsParam): RequestParams {
+    private fun getParams(dataParams: AutoAdsParam): RequestParams {
         val params = RequestParams.create()
         try {
             params.putAll(Utils.jsonToMap(Gson().toJson(dataParams)))
@@ -130,26 +116,24 @@ class DailyBudgetViewModel @Inject constructor(
     }
 
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
-        return if (number <= 0) {
-            context.getString(R.string.error_empty_budget)
-        } else if (number < minDailyBudget) {
-            String.format(context.getString(R.string.error_minimum_budget), minDailyBudget)
-        } else if (number > maxDailyBudget) {
-            String.format(context.getString(R.string.error_maximum_budget), maxDailyBudget)
-        } else if (number < maxDailyBudget && number > minDailyBudget && number % BUDGET_MULTIPLE_BY != 0.0) {
-            context.getString(R.string.error_multiply_budget, BUDGET_MULTIPLE_BY.toString())
-        } else {
-            null
+        return when {
+            number <= 0 ->
+                context.getString(R.string.error_empty_budget)
+            number < minDailyBudget ->
+                String.format(context.getString(R.string.error_minimum_budget), minDailyBudget)
+            number > maxDailyBudget ->
+                String.format(context.getString(R.string.error_maximum_budget), maxDailyBudget)
+            number < maxDailyBudget && number > minDailyBudget && number % BUDGET_MULTIPLE_BY != 0.0 ->
+                context.getString(R.string.error_multiply_budget, BUDGET_MULTIPLE_BY.toString())
+            else ->
+                null
         }
     }
 
     companion object {
-        val BUDGET_MULTIPLE_BY = 1000.0
-        val SHOP_ID = "shopId"
-        val REQUEST_TYPE = "requestType"
-        val SOURCE = "source"
-        val TYPE = "type"
-        const val CREDIT_DATA = "creditData"
-        const val SHOP_DATA = "shopData"
+        const val BUDGET_MULTIPLE_BY = 1000.0
+        const val SHOP_ID = "shopId"
+        const val SOURCE = "source"
+        const val TYPE = "type"
     }
 }

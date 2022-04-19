@@ -2,7 +2,6 @@ package com.tokopedia.topads.edit.view.adapter.product.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
 import kotlinx.android.synthetic.main.topads_edit_layout_product_list_item_product.view.*
@@ -28,7 +27,7 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : 
             view.product_price.text = it.data.productPrice
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked
-            ImageLoader.LoadImage(view.product_image, it.data.productImage)
+            view.product_image.setImageUrl(it.data.productImage)
             view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionChecked?.invoke()

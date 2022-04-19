@@ -14,7 +14,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:background="@color/Neutral_N0">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/umrah_search_recycler_view"
@@ -22,39 +22,34 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:fillViewport="true"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_64"
+                android:paddingTop="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/layout_lvl7"
                 android:scrollbars="vertical" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_umrah_search_message"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/spacing_lvl8"
+                android:layout_height="@dimen/spacing_lvl8"
                 android:layout_gravity="bottom|right"
-                android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
-                android:backgroundTint="@color/green_300"
+                android:layout_marginRight="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:backgroundTint="@color/Green_G500"
                 android:clickable="true"
-                app:backgroundTint="@color/green_300"
-                app:fabCustomSize="@dimen/dp_48"
+                app:backgroundTint="@color/Green_G500"
+                app:fabCustomSize="@dimen/spacing_lvl8"
                 app:srcCompat="@drawable/ic_umrah_message" />
 
         </FrameLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <com.tokopedia.design.button.BottomActionView
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/umrah_search_bottom_action_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:bav_1_display="true"
-        app:bav_2_display="true"
-        app:bav_icon_1="@drawable/ic_system_action_sort_grayscale_24"
-        app:bav_icon_2="@drawable/ic_system_action_filter_grayscale_24"
-        app:bav_label_1="@string/travel_title_sort_search"
-        app:bav_label_2="@string/label_filter"
+        app:fbType="group"
         app:layout_anchor="@+id/umrah_search_recycler_view"
         app:layout_anchorGravity="bottom|center_horizontal" />
 

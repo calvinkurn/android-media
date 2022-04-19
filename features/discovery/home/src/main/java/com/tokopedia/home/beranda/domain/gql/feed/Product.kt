@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.gql.feed
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -36,6 +37,7 @@ data class Product(
         @SerializedName("tracker_image_url")
         @Expose
         val trackerImageUrl: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: String = "",
@@ -51,12 +53,18 @@ data class Product(
         @SerializedName("discount_percentage")
         @Expose
         val discountPercentage: Int = 0,
+        @SerializedName("clusterID")
+        @Expose
+        val clusterId: Int = -1,
         @SerializedName("rating")
         @Expose
         val rating: Int = 0,
         @SerializedName("count_review")
         @Expose
         val countReview: Int = 0,
+        @SerializedName("ratingAverage")
+        @Expose
+        val ratingFloat: String = "",
         @SerializedName("recommendation_type")
         @Expose
         val recommendationType: String = "",

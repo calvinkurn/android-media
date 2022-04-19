@@ -1,5 +1,6 @@
 package com.tokopedia.search.utils
 
+import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldHaveKeyValue
 import com.tokopedia.search.shouldHaveSize
 import org.junit.Test
@@ -30,5 +31,20 @@ internal class SearchKotlinExtTest {
         mapValuesInString.shouldHaveKeyValue("integer", "1")
         mapValuesInString.shouldHaveKeyValue("boolean", "false")
         mapValuesInString.shouldHaveKeyValue("double", "1.0")
+    }
+
+    @Test
+    fun `Decode query parameters in applink`() {
+        null.decodeQueryParameter() shouldBe ""
+        "".decodeQueryParameter() shouldBe ""
+        "tokopedia".decodeQueryParameter() shouldBe "tokopedia"
+        "tokopedia://search?".decodeQueryParameter() shouldBe "tokopedia://search?"
+        "tokopedia://search??".decodeQueryParameter() shouldBe "tokopedia://search?"
+        "tokopedia://search?q".decodeQueryParameter() shouldBe "tokopedia://search?"
+        "tokopedia://search?q=".decodeQueryParameter() shouldBe "tokopedia://search?"
+        "tokopedia://search?q=samsung&fcity=".decodeQueryParameter() shouldBe "tokopedia://search?q=samsung"
+        "tokopedia://search?q=samsung&fcity=1,2#3".decodeQueryParameter() shouldBe "tokopedia://search?q=samsung&fcity=1%2C2%233"
+        "tokopedia://search?q=samsung&fcity=1,2#3?".decodeQueryParameter() shouldBe "tokopedia://search?q=samsung&fcity=1%2C2%233%3F"
+        "tokopedia://search?q=samsung&fcity=1,2#3?&".decodeQueryParameter() shouldBe "tokopedia://search?q=samsung&fcity=1%2C2%233%3F"
     }
 }

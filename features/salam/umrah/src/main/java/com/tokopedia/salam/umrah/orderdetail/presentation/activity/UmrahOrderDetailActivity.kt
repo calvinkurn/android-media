@@ -36,7 +36,7 @@ class UmrahOrderDetailActivity : BaseSimpleActivity(), HasComponent<UmrahOrderDe
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            orderId = uri.lastPathSegment
+            orderId = uri.lastPathSegment ?: ""
         } else if (savedInstanceState != null) {
             orderId = savedInstanceState.getString(KEY_ORDER_ID, "")
         }

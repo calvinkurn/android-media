@@ -1,0 +1,24 @@
+apply from: "$rootDir/buildconfig/aar/local-aar-config.gradle"
+
+ext.includeAlways = { name, path = null ->
+    include(name)
+    if (path != null)
+        project(name).projectDir = new File(rootDir, path)
+}
+
+ext.includeIfEnabled = { name, path = null ->
+    if (ext.useAARForDevBuild) {
+        def nameTrim = name
+        if (name.startsWith(":")) {
+            nameTrim = name.replaceFirst(":", "")
+        }
+        if (ext.inDevModules.contains(nameTrim)) {
+            println("Include: " + name)
+            includeAlways(name, path)
+        } else {
+            println("Use AAR: " + name)
+        }
+    } else {
+        includeAlways(name, path)
+    }
+}

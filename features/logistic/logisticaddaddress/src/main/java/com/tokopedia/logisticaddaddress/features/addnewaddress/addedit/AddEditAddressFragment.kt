@@ -1,9 +1,13 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -20,6 +24,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
+import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_NEGATIVE
@@ -27,16 +38,17 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.util.getLatLng
+import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
@@ -62,7 +74,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isMismatchSolved: Boolean = false
     private var isUnnamedRoad: Boolean = false
     private var isNullZipcode: Boolean = false
-    private val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
@@ -70,7 +81,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
-    private val MINIMUM_CHARACTER = 8
+    private val MINIMUM_CHARACTER = 9
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
@@ -78,6 +89,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isLongitudeNotEmpty: Boolean? = false
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
+    private var isCircuitBreaker: Boolean = false
+    private val toppers: String = "Toppers-"
+
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     lateinit var mapView: MapView
 
@@ -88,6 +104,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     lateinit var userSession: UserSessionInterface
 
     companion object {
+        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
+        const val REQUEST_CODE_CONTACT_PICKER = 99
+        const val PREFERENCES_NAME = "add_address_preferences"
+        const val ADDRESS_CONTACT_HAS_SHOWN = "address_show_coach_mark"
+
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
@@ -99,6 +120,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     putBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, extra.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD))
                     putBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, extra.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false))
                     putBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, extra.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true))
+                    putBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, extra.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false))
                 }
             }
         }
@@ -124,7 +146,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             isUnnamedRoad = it.getBoolean(AddressConstants.EXTRA_IS_UNNAMED_ROAD, false)
             isNullZipcode = it.getBoolean(AddressConstants.EXTRA_IS_NULL_ZIPCODE, false)
             isLogisticLabel = it.getBoolean(AddressConstants.EXTRA_IS_LOGISTIC_LABEL, true)
+            isCircuitBreaker = it.getBoolean(AddressConstants.EXTRA_IS_CIRCUIT_BREAKER, false)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -140,10 +165,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         createFragment()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        }
+    }
+
     private fun createFragment() {
         prepareMap()
         prepareLayout()
         setViewListener()
+        showOnBoarding()
     }
 
     private fun prepareMap() {
@@ -163,10 +197,14 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 
         et_label_address.setText(labelRumah)
-        et_receiver_name.setText(userSession.name)
+
+        if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
+            et_receiver_name.setText(userSession.name)
+        }
+
         et_kode_pos_mismatch.setText(saveAddressDataModel?.postalCode ?: "")
         et_phone.setText(userSession.phoneNumber)
 
@@ -177,6 +215,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.clearFocus()
         et_receiver_name.clearFocus()
         et_phone.clearFocus()
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, user_consent, getString(R.string.add_new_address_save), if(!isMismatch && !isMismatchSolved) LogisticUserConsentHelper.ANA_POSITIVE else LogisticUserConsentHelper.ANA_NEGATIVE)
     }
 
     private fun setViewListener() {
@@ -200,7 +239,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
         if (!isMismatch && !isMismatchSolved) {
             et_detail_address.apply {
-                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
+                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper, null))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive(isFullFlow, isLogisticLabel) }
                 addTextChangedListener(setDetailAlamatWatcher())
 
@@ -240,6 +279,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                     return@setOnTouchListener false
                 }
 
+                addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
+
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
                         AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive(isFullFlow, isLogisticLabel)
@@ -250,7 +291,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         } else {
             if (isMismatch) {
                 et_kota_kecamatan_mismatch.apply {
-                    addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
+                    addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper, null))
                     setOnClickListener {
                         showDistrictRecommendationBottomSheet()
                         AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
@@ -259,7 +300,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             et_alamat_mismatch.apply {
-                addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper))
+                addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper, null))
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
@@ -280,6 +321,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
             et_receiver_name.apply {
+                addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper, null))
                 setOnTouchListener { view, event ->
                     view.parent.requestDisallowInterceptTouchEvent(true)
                     if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
@@ -320,7 +362,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper, null))
         }
 
         et_phone.apply {
@@ -331,7 +373,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char)))
+        }
+
+        btn_contact_picker.setOnClickListener {
+            onNavigateToContact()
         }
     }
 
@@ -370,7 +416,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                 }
                 return@setOnTouchListener false
             }
-            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
+            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper, null))
         }
     }
 
@@ -506,7 +552,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             wrapper.setErrorEnabled(false)
         } else {
             wrapper.setErrorEnabled(true)
-            wrapper.setHint("")
             wrapper.error = s
         }
     }
@@ -528,22 +573,21 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         setWrapperError(et_phone_wrapper, null)
     }
 
-    private fun setWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+    private fun setWrapperWatcher(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty()) {
+                if (s.isNotEmpty() && s.length < 9) {
+                    setWrapperError(wrapper, textWatcher)
+                } else {
                     setWrapperError(wrapper, null)
                 }
             }
 
             override fun afterTextChanged(text: Editable) {
-                if (text.isNotEmpty()) {
-                    setWrapperError(wrapper, null)
-                }
             }
         }
     }
@@ -580,7 +624,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
     }
 
-    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, isCircuitBreaker: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
@@ -592,13 +636,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             ll_normal.visibility = View.GONE
             ll_mismatch.visibility = View.VISIBLE
 
-            if (isMismatch) {
-                setMismatchMapHeader()
-                setMismatchForm()
-
-            } else {
-                setMismatchSolvedMapHeader()
-                setMismatchSolvedForm()
+            when {
+                isCircuitBreaker -> {
+                    setCircuitBreakerOnHeader()
+                    setMismatchForm()
+                }
+                isMismatch -> {
+                    setMismatchMapHeader()
+                    setMismatchForm()
+                }
+                else -> {
+                    setMismatchSolvedMapHeader()
+                    setMismatchSolvedForm()
+                }
             }
             setupRvKodePosChips()
         }
@@ -648,7 +698,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun setMismatchMapHeader() {
         disable_map_layout.visibility = View.VISIBLE
         icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
-        context?.resources?.getColor(R.color.separator_color)?.let { icon_pointer.setColorFilter(it) }
+        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)?.let { icon_pointer.setColorFilter(it) }
         btn_map.apply {
             text = getString(R.string.define_pinpoint)
             val params = btn_map.layoutParams
@@ -686,6 +736,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         }
     }
 
+    private fun setCircuitBreakerOnHeader() {
+        disable_map_layout.visibility = View.VISIBLE
+        icon_pointer.setImageDrawable(context?.resources?.getDrawable(R.drawable.ic_green_pointer))
+        context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100)?.let { icon_pointer.setColorFilter(it) }
+        btn_map.isClickable = false
+    }
+
     private fun setNormalForm() {
         tv_address_based_on_pinpoint.text = "${this.saveAddressDataModel?.title}, ${this.saveAddressDataModel?.formattedAddress}"
         et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
@@ -719,9 +776,29 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
+    private fun showOnBoarding() {
+        val coachMarkHasShown = localCacheHandler.getBoolean(ADDRESS_CONTACT_HAS_SHOWN, false)
+        if (coachMarkHasShown) {
+            return
+        }
+
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        coachMarkItem.add(CoachMark2Item(btn_contact_picker,
+            getString(R.string.contact_title_coachmark),
+            getString(R.string.contact_desc_coachmark)))
+
+        val coachMark = context?.let { CoachMark2(it) }
+        coachMark?.showCoachMark(coachMarkItem)
+
+        localCacheHandler.apply {
+            putBoolean(ADDRESS_CONTACT_HAS_SHOWN, true)
+            applyEditor()
+        }
+    }
+
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -731,9 +808,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private fun showZipCodes() {
         ViewCompat.setLayoutDirection(rv_kodepos_chips_mismatch, ViewCompat.LAYOUT_DIRECTION_LTR)
         saveAddressDataModel?.zipCodes?.let {
+            rv_kodepos_chips_mismatch.visibility = View.VISIBLE
             zipCodeChipsAdapter.zipCodes = it.toMutableList()
             zipCodeChipsAdapter.notifyDataSetChanged()
-            rv_kodepos_chips_mismatch.visibility = View.VISIBLE
         }
     }
 
@@ -744,6 +821,44 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
+    }
+
+    private fun onNavigateToContact() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.checkPermissions(this,
+                    getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            //no-op
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            //no-op
+                        }
+
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    }, this.getString(R.string.rationale_need_contact))
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+        )
+    }
+
+    private fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            view?.let {
+                Toaster.build(it, getString(R.string.contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
     }
 
     private fun setSaveAddressModel() {
@@ -780,6 +895,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         saveAddressDataModel?.receiverName = et_receiver_name.text.toString()
         saveAddressDataModel?.phone = et_phone.text.toString()
         saveAddressDataModel?.postalCode = et_kode_pos_mismatch.text.toString()
+
+        if (userSession.name.isNotEmpty() && userSession.name.contains(toppers, ignoreCase = true)) {
+            saveAddressDataModel?.applyNameAsNewUserFullname = true
+        }
     }
 
     override fun onSuccessAddAddress(saveAddressDataModel: SaveAddressDataModel) {
@@ -840,7 +959,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        arrangeLayout(isMismatch, isMismatchSolved)
+        arrangeLayout(isMismatch, isMismatchSolved, isCircuitBreaker)
     }
 
     override fun onStart() {
@@ -883,6 +1002,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         presenter.getAutoComplete(districtName)
+    }
+
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
+        //no-op
     }
 
     override fun moveMap(latitude: Double, longitude: Double) {
@@ -937,33 +1060,48 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == FINISH_PINPOINT_FLAG && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
-                    isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
-                }
-
-                if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
-                    saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-                    saveAddressDataModel?.let {
-                        currentLat = it.latitude.toDouble()
-                        currentLong = it.longitude.toDouble()
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == FINISH_PINPOINT_FLAG) {
+                if (data != null) {
+                    if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
+                        isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
                     }
-                }
 
-                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
-                    isMismatchSolved = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, true)
+                    if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
+                        saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+                        saveAddressDataModel?.let {
+                            currentLat = it.latitude.toDouble()
+                            currentLong = it.longitude.toDouble()
+                        }
+                    }
+
+                    if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
+                        isMismatchSolved = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, true)
+                    }
+                    createFragment()
                 }
-                createFragment()
-            }
-        } else {
-            // this solves issue when positif ANA changed into negatif ANA
-            if (data == null) {
-                isMismatch = true
-                isMismatchSolved = false
-                createFragment()
+            } else if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                val contactURI = data?.data
+                var contact: ContactData? = null
+                if (contactURI != null) {
+                    contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
+                }
+                val contactNumber = contact?.contactNumber
+                val phoneNumberOnly = removeSpecialChars(contactNumber.toString())
+                et_phone.setText(phoneNumberOnly)
+            } else {
+                // this solves issue when positif ANA changed into negatif ANA
+                if (data == null) {
+                    isMismatch = true
+                    isMismatchSolved = false
+                    createFragment()
+                }
             }
         }
+    }
+
+    private fun removeSpecialChars(s: String): String {
+        return s.replace("[^A-Za-z0-9 ]".toRegex(), "").replace(" ","")
     }
 
     private fun setDetailAlamatWatcher(): TextWatcher {
@@ -999,7 +1137,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     override fun showError(t: Throwable?) {
         val message = ErrorHandler.getErrorMessage(context, t)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
     }
 
     override fun onDetach() {

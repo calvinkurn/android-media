@@ -1,0 +1,36 @@
+{
+  "readme": "Play Viewer - PiP Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click button pip",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "pip screen active",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "pip screen finished",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    }
+  ]
+}

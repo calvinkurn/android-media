@@ -4,12 +4,14 @@ query get_project_info($projectId: Int!) {
         StatusName
         Message
         IsAllowToRegister
+        Reason
         TypeList {
           TypeID
           Status
           StatusName
           IsAllowToUpload
         }
+        IsSelfie
     }
 }
 

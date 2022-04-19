@@ -1,132 +1,99 @@
 package com.tokopedia.topads.view.adapter.keyword
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.view.adapter.keyword.viewholder.KeywordViewHolder
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordEmptyViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordGroupViewModel
-import com.tokopedia.topads.view.adapter.keyword.viewmodel.KeywordItemViewModel
+import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.create.R
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.HIGH
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.LOW
+import com.tokopedia.topads.view.adapter.bidinfo.viewholder.MEDIUM
+import com.tokopedia.unifycomponents.Label
+import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
 
 
 /**
  * Author errysuprayogi on 14,November,2019
  */
-class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : RecyclerView.Adapter<KeywordViewHolder<KeywordViewModel>>() {
+class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : RecyclerView.Adapter<KeywordListAdapter.ViewHolder>() {
 
 
-    var items: MutableList<KeywordViewModel> = mutableListOf()
-    private var remains: MutableList<KeywordViewModel> = mutableListOf()
-    var favoured: MutableList<KeywordItemViewModel> = mutableListOf()
-    var manualKeywords: MutableList<KeywordItemViewModel> = mutableListOf()
-    private var SELECTED_KEYWORD = " Kata Kunci Pilihan"
-    private var RECOMMENDED = "Rekomendasi"
+    var items: MutableList<KeywordDataItem> = mutableListOf()
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordViewHolder<KeywordViewModel> {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.holder(viewType, view) as KeywordViewHolder<KeywordViewModel>
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return items[position].type(typeFactory)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordListAdapter.ViewHolder {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.topads_create_layout_keyword_list_item, parent, false)
+        return ViewHolder(v)
     }
 
     override fun getItemCount(): Int {
         return items.count()
     }
 
-    override fun onBindViewHolder(holder: KeywordViewHolder<KeywordViewModel>, position: Int) {
-        holder.bind(items[position])
-    }
-
-    fun getSelectedItems(): List<KeywordItemViewModel> {
-        val selected = mutableListOf<KeywordItemViewModel>()
+    fun getSelectedItems(): List<KeywordDataItem> {
+        val selected = mutableListOf<KeywordDataItem>()
         items.forEach { model ->
-            if ((model is KeywordItemViewModel) && model.isChecked) {
+            if (model.onChecked) {
                 selected.add(model)
             }
         }
         return selected
     }
 
-    fun addNewKeyword(it: KeywordItemViewModel): Boolean {
-        if (items.size == 0) {
-            items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.view.keyword_name.text = items[holder.adapterPosition].keyword
+        try {
+            if (items[holder.adapterPosition].totalSearch == "-1") {
+                holder.view.keyword_count.text = "  -  "
+
+            } else
+                holder.view.keyword_count.text = Utils.convertToCurrencyString(items[holder.adapterPosition].totalSearch.toLong())
+        } catch (e: Exception) {
+            holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
         }
-        if (items[0] is KeywordEmptyViewModel) {
-            items.clear()
-            items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
-            items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
+        holder.view.checkBox.setOnCheckedChangeListener(null)
+        holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
+
+        holder.view.setOnClickListener {
+            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
         }
-        favoured.forEachIndexed { index, _ ->
-            if (favoured[index].data.keyword == it.data.keyword) {
-                return true
+        holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (holder.adapterPosition != RecyclerView.NO_POSITION) {
+                items[holder.adapterPosition].onChecked = isChecked
+                onChecked.invoke(holder.adapterPosition)
             }
         }
-        var index = 0
-        items.forEachIndexed { ind, item ->
-            if (item is KeywordItemViewModel) {
-                if (item.data.keyword == it.data.keyword) {
-                    index = ind
-                }
+        when (items[holder.adapterPosition].competition) {
+            LOW -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+            }
+
+            MEDIUM -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+            }
+
+            HIGH -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+            }
+
+            items[holder.adapterPosition].competition -> {
+                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
+            }
+
+        }
+    }
+
+    fun setSelectedItem(selectedKeywordStage: MutableList<KeywordDataItem>?) {
+        items.forEach {
+            if(selectedKeywordStage?.contains(it)==true){
+                it.onChecked = true
             }
         }
-        if (index != 0) {
-            items.removeAt(index)
-        } else
-            manualKeywords.add(it)
-
-        items.removeAll(favoured)
-        favoured.add(it)
-        items.addAll(1, favoured)
-        it.isChecked = true
-        notifyDataSetChanged()
-        return false
-    }
-
-    fun setSelectedKeywords(it: List<KeywordItemViewModel>) {
-        favoured.clear()
-        remains.clear()
-        favoured.addAll(it)
-        items.removeAll(favoured)
-        items.forEach { index ->
-            if (index is KeywordItemViewModel)
-                remains.add(index)
-        }
-        items.clear()
-        items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        items.addAll(favoured)
-        if (remains.size != 0) {
-            items.add(KeywordGroupViewModel(RECOMMENDED))
-            items.addAll(remains)
-        }
-        notifyDataSetChanged()
-    }
-
-
-    fun setSelectedList(selectedKeywords: MutableList<String>) {
-        items.forEachIndexed { _, key ->
-            if (key is KeywordItemViewModel) {
-                key.isChecked = false
-                selectedKeywords.forEach {
-                    if (key is KeywordItemViewModel) {
-                        if (key.data.keyword == it) {
-                            key.isChecked = true
-                        }
-                    }
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun addManual(list: MutableList<KeywordItemViewModel>) {
-        items.clear()
-        manualKeywords.addAll(list)
-        items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        items.addAll(list)
-        notifyDataSetChanged()
     }
 }

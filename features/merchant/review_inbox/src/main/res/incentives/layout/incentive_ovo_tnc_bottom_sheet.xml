@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_incentive_ovo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoTitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/layout_lvl3"
+            android:paddingEnd="@dimen/layout_lvl3"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            tools:text="Mau dapat OVO Points?" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_12"
+            android:gravity="center"
+            android:paddingStart="@dimen/layout_lvl3"
+            android:paddingEnd="@dimen/layout_lvl3"
+            app:layout_constraintEnd_toEndOf="@id/tgIncentiveOvoTitle"
+            app:layout_constraintStart_toStartOf="@id/tgIncentiveOvoTitle"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoTitle"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
+            tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_incentive_ovo_illustrations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_incentive_ovo_illustration" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/incentiveOvoDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:background="@color/Unify_NN100"
+            app:layout_constraintTop_toBottomOf="@id/rv_incentive_ovo_illustrations" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incentiveOvoDivider"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Baca Syarat" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIncentiveOvoExplain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:nestedScrollingEnabled="false"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:paddingEnd="@dimen/layout_lvl2"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoDescription" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/incentiveOvoBtnContinueReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            app:layout_constraintTop_toBottomOf="@id/rvIncentiveOvoExplain" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

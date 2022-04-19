@@ -2,75 +2,73 @@ package com.tokopedia.topads.view.adapter.bidinfo.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.design.text.watcher.NumberTextWatcher
-import com.tokopedia.topads.create.R
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.view.adapter.bidinfo.viewModel.BidInfoItemViewModel
-import kotlinx.android.synthetic.main.topads_create_layout_budget_list_item.view.*
+import com.tokopedia.unifyprinciples.Typography
 
-class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<String>, var selectedSuggestBid: MutableList<Int>,private var suggestBidInitial: List<Int>, var actionClose: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+const val LOW = "low"
+const val HIGH = "high"
+const val MEDIUM = "mid"
+const val KALI = " kali"
+
+class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int) -> Unit, var editBudget: ((pos: Int, budget: String) -> Unit)?, var editType: ((pos: Int) -> Unit)?) : BidInfoViewHolder<BidInfoItemViewModel>(view) {
+
+    var btnDelete = view.findViewById<IconUnify>(R.id.btnDelete)
+    var btnEditBudget = view.findViewById<IconUnify>(R.id.editBudget)
+    var editTypeBtn = view.findViewById<IconUnify>(R.id.editType)
+    var keywordData = view.findViewById<Typography>(R.id.keywordData)
+    var keywordName = view.findViewById<Typography>(R.id.keywordName)
+    var keywordType = view.findViewById<Typography>(R.id.typeKeyword)
+    var keywordBudget = view.findViewById<Typography>(R.id.keywordBudget)
 
     companion object {
-        private const val FACTOR = 50
         @LayoutRes
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
-        private var bidMap = mutableMapOf<String, Int>()
     }
 
-    override fun bind(item: BidInfoItemViewModel) {
-        bidMap = actionClick!!.invoke()
+    override fun bind(item: BidInfoItemViewModel, minBid: String) {
         item.let {
-            if (selectedKeywords.size != 0) {
-                view.title.text = selectedKeywords[adapterPosition]
-                if (selectedSuggestBid[adapterPosition] != 0) {
-                    view.budget.textFieldInput.setText(selectedSuggestBid[adapterPosition].toString())
-                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), selectedSuggestBid[adapterPosition], false)
-                } else {
-                    view.budget.textFieldInput.setText(bidMap["min"].toString())
-                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
 
-
-                }
-            }
-
-            view.budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(view.budget.textFieldInput, "0") {
-                override fun onNumberChanged(number: Double) {
-                    super.onNumberChanged(number)
-                    val result = number.toInt()
-                    selectedSuggestBid[adapterPosition] = result
-                    when {
-                        result < bidMap["min"]!! -> {
-                            item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.min_bid_error), bidMap["min"]!!, true)
-                        }
-                        result > bidMap["max"]!! -> {
-                            item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.max_bid_error), bidMap["max"]!!, true)
-                        }
-                        result % FACTOR != 0 ->{
-                            item.isError = true
-                            setMessageErrorField(view.resources.getString(R.string.error_multiple_50),FACTOR ,true)
-                        }
-                        else -> {
-                            item.isError = false
-                            if (suggestBidInitial[adapterPosition] != 0) {
-                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), suggestBidInitial[adapterPosition], false)
-                            } else {
-                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
-                            }
-                        }
+            btnDelete.setOnClickListener {
+                view.context?.let { context ->
+                    val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                    dialog.setTitle(String.format(view.resources.getString(com.tokopedia.topads.common.R.string.topads_create_del_key_conf_dialog_title), item.data.keyword))
+                    dialog.setDescription(context.getString(com.tokopedia.topads.common.R.string.topads_create_del_key_conf_dialog_desc))
+                    dialog.setPrimaryCTAText(context.getString(com.tokopedia.topads.common.R.string.topads_common_cancel_btn))
+                    dialog.setSecondaryCTAText(context.getString(com.tokopedia.topads.common.R.string.topads_create_ya_hapus))
+                    dialog.setPrimaryCTAClickListener {
+                        dialog.dismiss()
                     }
-                    actionEnable!!.invoke()
+                    dialog.setSecondaryCTAClickListener {
+                        actionDelete.invoke(adapterPosition)
+                        dialog.dismiss()
+                    }
+                    dialog.show()
                 }
-            })
-            view.close_button.setOnClickListener {
-                actionClose!!.invoke(adapterPosition)
             }
+            btnEditBudget.setOnClickListener {
+                editBudget?.invoke(adapterPosition, keywordBudget.text.toString().removeCommaRawString())
+            }
+            editTypeBtn.setOnClickListener {
+                editType?.invoke(adapterPosition)
+            }
+            val competition = when (item.data.competition) {
+                LOW -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
+                MEDIUM -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation)
+                HIGH -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high)
+                else -> view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low)
+            }
+            keywordData?.text = MethodChecker.fromHtml(String.format(view.context.getString(com.tokopedia.topads.common.R.string.topads_create_keyword_data), competition, item.data.totalSearch))
+            keywordName.text = item.data.keyword
+            keywordType.text = item.data.keywordType
+            if (item.data.bidSuggest != "0")
+                keywordBudget.text = "Rp " + item.data.bidSuggest
+            else
+                keywordBudget.text = "Rp $minBid"
         }
-    }
-
-    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
-        view.budget.setError(bool)
-        view.budget.setMessage(String.format(error, bid))
-
     }
 }

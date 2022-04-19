@@ -14,14 +14,14 @@ class ShakeSubscriber(val appContext: Context, val callback: ShakeDetectManager.
         private val SHAKE_SHAKE = "shake-shake"
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (!GlobalConfig.isSellerApp()) {
             ShakeDetectManager.getShakeDetectManager().init(appContext, callback)
         }
     }
 
-    override fun onActivityResumed(activity: Activity?) {
-        processOnActivityResumed(activity, activity?.intent)
+    override fun onActivityResumed(activity: Activity) {
+        processOnActivityResumed(activity, activity.intent)
     }
 
     private fun processOnActivityResumed(activity: Activity?, intent: Intent?) {
@@ -59,14 +59,14 @@ class ShakeSubscriber(val appContext: Context, val callback: ShakeDetectManager.
         return null
     }
 
-    override fun onActivityPaused(activity: Activity?) {
+    override fun onActivityPaused(activity: Activity) {
         if (!GlobalConfig.isSellerApp()) {
             ShakeDetectManager.getShakeDetectManager().unregisterShake()
         }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
-        if (activity != null && activity is BaseActivity) {
+    override fun onActivityDestroyed(activity: Activity) {
+        if (activity is BaseActivity) {
             val baseActivity = activity
             if (!GlobalConfig.isSellerApp()) {
                 var screenName = baseActivity.screenName
@@ -78,13 +78,13 @@ class ShakeSubscriber(val appContext: Context, val callback: ShakeDetectManager.
         }
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
 
     }
 
-    override fun onActivityStarted(activity: Activity?) {
+    override fun onActivityStarted(activity: Activity) {
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
     }
 }

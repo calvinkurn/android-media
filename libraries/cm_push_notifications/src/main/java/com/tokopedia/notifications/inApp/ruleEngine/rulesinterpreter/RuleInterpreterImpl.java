@@ -23,62 +23,67 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     private ElapsedTime elapsedTimeObj;
 
     @Override
-    public void checkForValidity(String entity, int state, long currentTime,
-                                 DataProvider dataProvider) {
-        makeRequestForData(entity, currentTime, dataProvider);
+    public void checkForValidity(String entity, long currentTime,
+                                 DataProvider dataProvider, int entityHashCode, boolean isActivity) {
+        makeRequestForData(entity, currentTime, dataProvider, entityHashCode, isActivity);
     }
 
-    private void makeRequestForData(final String entity, final long currentTime,  final DataProvider dataProvider){
+    private void makeRequestForData(
+            final String entity,
+            final long currentTime,
+            final DataProvider dataProvider,
+            int entityHashCode,
+            final boolean isActivity
+    ){
         Observable.fromCallable(new Callable<ElapsedTime>() {
             @Override
             public ElapsedTime call() throws Exception {
-                return RepositoryManager.
-                        getInstance().getStorageProvider().getElapsedTimeFromStore();
+                return RepositoryManager.getInstance()
+                        .getStorageProvider()
+                        .getElapsedTimeFromStore();
             }
         }).map(new Func1<ElapsedTime, List<CMInApp>>() {
             @Override
             public List<CMInApp> call(ElapsedTime elapsedTime) {
-                if(elapsedTime != null){
+                if (elapsedTime != null) {
                     elapsedTimeObj = elapsedTime;
-                }
-                else {
+                } else {
                     createAndSetElapsedTime();
                 }
-                return RepositoryManager.
-                        getInstance().getStorageProvider().getDataFromStore(entity);
+                return RepositoryManager.getInstance()
+                        .getStorageProvider()
+                        .getDataFromStore(entity, isActivity);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<CMInApp>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null);
-
-                    }
-
-                    @Override
-                    public void onNext(List<CMInApp> inAppDataList) {
-                        if( inAppDataList != null){
+                    @Override public void onNext(List<CMInApp> inAppDataList) {
+                        if (inAppDataList != null) {
                             inAppList = inAppDataList;
-                            Iterator<CMInApp> iter = inAppList.iterator();
-                            while (iter.hasNext()) {
-                                CMInApp inAppData = iter.next();
-                                if(!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
+                            Iterator<CMInApp> inApp = inAppList.iterator();
+                            while (inApp.hasNext()) {
+                                CMInApp inAppData = inApp.next();
+                                if (!(checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()) &&
                                         checkIfFrequencyIsValid(inAppData, System.currentTimeMillis()) &&
-                                        checkIfBehaviourRulesAreValid(inAppData))){
-                                    iter.remove();
-                                    if(performDeletion(inAppData)) {
-                                        RepositoryManager.getInstance().getStorageProvider().deleteRecord(inAppData.id);
+                                        checkIfBehaviourRulesAreValid(inAppData))) {
+                                    inApp.remove();
+                                    if (performDeletion(inAppData)) {
+                                        RepositoryManager.getInstance()
+                                                .getStorageProvider()
+                                                .deleteRecord(inAppData.id)
+                                                .subscribe();
                                     }
                                 }
                             }
                         }
-                        dataProvider.notificationsDataResult(inAppList);
+                        dataProvider.notificationsDataResult(inAppList, entityHashCode, entity);
                     }
+
+                    @Override public void onError(Throwable e) {
+                        dataProvider.notificationsDataResult(null,entityHashCode, entity);
+                    }
+
+                    @Override public void onCompleted() {}
                 });
     }
 
@@ -139,11 +144,15 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
     }
 
     private boolean performDeletion(CMInApp inAppData){
-        if((inAppData.startTime != 0L && inAppData.endTime != 0L) || (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ))){
-            return true;
-        }
-        else {
+        boolean perstOn = inAppData.isPersistentToggle();
+        if (!perstOn && checkIfActiveInTimeFrame(inAppData, System.currentTimeMillis()))
             return false;
+        else {
+            if (inAppData.endTime < System.currentTimeMillis() && inAppData.lastShownTime == 0 && inAppData.freq > 0) {
+                RepositoryManager.getInstance().onInappExpired(inAppData);
+            }
+            return inAppData.endTime < System.currentTimeMillis() ||
+                    (!inAppData.isShown && (inAppData.freq == 0 || inAppData.freq < RulesUtil.Constants.DEFAULT_FREQ));
         }
     }
 

@@ -13,40 +13,40 @@ import javax.inject.Inject
  * @author by nisie on 23/04/19.
  * Don't forget to remove basic token after success / fail
  */
-class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase)
-    : BaseDaggerPresenter<AddNameListener.View>(), AddNameListener.Presenter {
+class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase) :
+    BaseDaggerPresenter<AddNameListener.View>(), AddNameListener.Presenter {
 
     override fun registerPhoneNumberAndName(name: String, phoneNumber: String) {
-        view.showLoading()
-        registerUseCase.execute(
-                RegisterUseCase.generateParamRegisterPhone(name, phoneNumber), object :
-                Subscriber<GraphqlResponse>() {
-            override fun onNext(graphqlResponse: GraphqlResponse?) {
-                graphqlResponse?.run {
-                    val registerPojo = graphqlResponse
-                            .getData<RegisterPojo>(RegisterPojo::class.java)
-                    val registerInfo = registerPojo.register
+	view.showLoading()
+	registerUseCase.execute(
+	    RegisterUseCase.generateParamRegisterPhone(name, phoneNumber), object :
+		Subscriber<GraphqlResponse>() {
+		override fun onNext(graphqlResponse: GraphqlResponse?) {
+		    graphqlResponse?.run {
+			val registerPojo = graphqlResponse
+			    .getData<RegisterPojo>(RegisterPojo::class.java)
+			val registerInfo = registerPojo.register
 
-                    if (registerInfo.errors.isEmpty()) {
-                        view.onSuccessRegister(registerInfo)
-                    } else {
-                        view.onErrorRegister(MessageErrorException(registerInfo.errors[0].message))
-                    }
-                }
+			if (registerInfo.errors.isEmpty()) {
+			    view.onSuccessRegister(registerInfo)
+			} else {
+			    view.onErrorRegister(MessageErrorException(registerInfo.errors[0].message))
+			}
+		    }
 
-            }
+		}
 
-            override fun onCompleted() {
-            }
+		override fun onCompleted() {
+		}
 
-            override fun onError(e: Throwable?) {
-                if (e != null) {
-                    view.onErrorRegister(e)
-                }
-            }
-        }
+		override fun onError(e: Throwable?) {
+		    if (e != null) {
+			view.onErrorRegister(e)
+		    }
+		}
+	    }
 
-        )
+	)
     }
 
 }

@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductEntity
@@ -31,7 +31,7 @@ class UmrahSearchViewModelTest{
 
     @RelaxedMockK
     lateinit var mGraphqlRepository: GraphqlRepository
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahSearchViewModel: UmrahSearchViewModel
 
     private val umrahSearchProducts = listOf(UmrahSearchProduct())
@@ -115,7 +115,7 @@ class UmrahSearchViewModelTest{
         result[objectType] = UmrahSearchProductEntity(umrahSearchProducts)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { mGraphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         // when
         umrahSearchViewModel.searchUmrahProducts(1, "")
@@ -140,7 +140,7 @@ class UmrahSearchViewModelTest{
 
         val gqlResponseFail = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { mGraphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         // when
         umrahSearchViewModel.searchUmrahProducts(1, "")

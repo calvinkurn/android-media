@@ -1,0 +1,27 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "shopType": ".+",
+      "event": "clickShopPage",
+      "eventAction": "click etalase list",
+      "sessionIris": ".+",
+      "eventLabel":"etalase (.+)"
+    },
+    {
+      "eventCategory": "shop page - (buyer|seller)",
+      "shopId": ".+",
+      "userId": ".+",
+      "event": "clickShopPage",
+      "eventAction": "click etalase chip",
+      "sessionIris": ".+",
+      "businessUnit": ".+",
+      "currentSite": ".+",
+      "eventLabel":"click - etalase chip - (.+)"
+    }
+  ]
+}

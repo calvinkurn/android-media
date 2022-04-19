@@ -19,9 +19,9 @@ import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
-import kotlinx.android.synthetic.main.item_footer.view.title as titleFooter
-import kotlinx.android.synthetic.main.item_header.view.title as titleHeader
-import kotlinx.android.synthetic.main.item_report_type.view.*
+import com.tokopedia.report.databinding.ItemFooterBinding
+import com.tokopedia.report.databinding.ItemHeaderBinding
+import com.tokopedia.report.databinding.ItemReportTypeBinding
 
 class ReportReasonAdapter(private val listener: OnReasonClick,
                           private val tracking: MerchantReportTracking): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -90,16 +90,19 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
     }
 
     inner class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view){
+        private val binding = ItemHeaderBinding.bind(view)
         fun setTitle(title: String){
-            itemView.titleHeader.text = if (title.isBlank()) itemView.context
+            binding.title.text = if (title.isBlank()) itemView.context
                     .getString(R.string.product_report_header) else title
         }
     }
 
     inner class FooterViewHolder(view: View): RecyclerView.ViewHolder(view){
+        private val binding = ItemFooterBinding.bind(view)
+        private val context = view.context
         init {
-            with(itemView){
-                titleFooter.movementMethod = LinkMovementMethod.getInstance()
+            with(binding){
+                title.movementMethod = LinkMovementMethod.getInstance()
                 val spannable = MethodChecker.fromHtml(context.getString(R.string.product_report_see_all_types)) as Spannable
                 spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
                     val start = spannable.getSpanStart(it)
@@ -109,7 +112,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
                                 tracking.eventReportLearnMore()
-                                RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
                             override fun showUnderline() = false
@@ -119,15 +122,16 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
                     spannable.setSpan(urlSpan, start, end, 0)
                     spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
                 }
-                titleFooter.text = spannable
+                title.text = spannable
             }
         }
     }
 
     inner class ItemViewHolder(view: View): RecyclerView.ViewHolder(view){
+        private val binding = ItemReportTypeBinding.bind(view)
 
         fun bind(reason: ProductReportReason){
-            with(itemView){
+            with(binding){
                 title.text = reason.value
                 if (reason.detail.isBlank() || filteredId.isEmpty()) subtitle.gone()
                 else {

@@ -2,16 +2,19 @@ package com.tokopedia.gamification.giftbox.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapCrackUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxTapTapHomeUseCase
+import com.tokopedia.gamification.giftbox.presentation.fragments.BenefitType
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.gamification.taptap.data.entiity.TapTapBaseEntity
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -23,14 +26,21 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     @Volatile
     var tokenId: String = ""
+
     @Volatile
-    var campaignId: String = ""
+    var campaignId: Long = 0
+    var waitingForCrackResult = false
+    private val CRACK_GIFT_TIME_OUT = 3000L
+    private val GET_COUPON_DETAIL_TIME_OUT = 4000L
+    var canShowLoader = true
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
-    val giftCrackLiveData: MutableLiveData<LiveDataResult<Pair<CouponDetailResponse?, ResponseCrackResultEntity>>> = MutableLiveData()
+    val giftCrackLiveData: MutableLiveData<LiveDataResult<ResponseCrackResultEntity>> = MutableLiveData()
+    val couponLiveData: MutableLiveData<LiveDataResult<CouponDetailResponse>> = MutableLiveData()
 
     fun getGiftBoxHome() {
-        giftHomeLiveData.postValue(LiveDataResult.loading())
+        if (canShowLoader)
+            giftHomeLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             val response = homeUseCase.getResponse(HashMap())
             giftHomeLiveData.postValue(LiveDataResult.success(response))
@@ -40,12 +50,39 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     }
 
     fun crackGiftBox() {
+
+        waitingForCrackResult = true
         launchCatchError(block = {
-            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
-            val couponDetail = composeApi(response)
-            giftCrackLiveData.postValue(LiveDataResult.success(Pair(couponDetail, response)))
+            var responseReceived = false
+            withTimeout(CRACK_GIFT_TIME_OUT) {
+                val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
+                responseReceived = true
+                giftCrackLiveData.postValue(LiveDataResult.success(response))
+            }
+            if (!responseReceived) {
+                giftCrackLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
+            }
         }, onError = {
             giftCrackLiveData.postValue(LiveDataResult.error(it))
+        })
+    }
+
+    fun getCouponDetails(benfitItems: List<CrackBenefitEntity>) {
+        launchCatchError(block = {
+            var responseReceived = false
+            withTimeout(GET_COUPON_DETAIL_TIME_OUT) {
+                val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
+                        .map { it.referenceID }
+                val data = getCatalogDetail(ids)
+                responseReceived = true
+                couponLiveData.postValue(LiveDataResult.success(data))
+            }
+            if (!responseReceived) {
+                couponLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
+            }
+
+        }, onError = {
+            couponLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
@@ -57,16 +94,12 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
         return getCatalogDetail(ids)
     }
 
-
-    //todo Rahul later, after clearing doubts from backend
     private fun mapperGratificationResponseToCouponIds(response: ResponseCrackResultEntity): List<String> {
         var ids = arrayListOf<String>()
         response.crackResultEntity.benefits?.forEach {
-            //            if (it.referenceID != null) {
-//                if (it.referenceID != 0) {
-//                    ids.add(it.referenceID.toString())
-//                }
-//            }
+            if (!it.referenceID.isNullOrEmpty()) {
+                ids.add(it.referenceID.toString())
+            }
         }
         return ids
     }

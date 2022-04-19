@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
@@ -10,53 +12,112 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
+import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
+import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
+import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.*
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.view.VideoTabFragment
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 25/07/18.
  */
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener {
+private const val FEED_PAGE = "feed"
+private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
+
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
+
+    private var showOldToolbar: Boolean = false
+    private var shouldHitFeedTracker: Boolean = false
+    private var isTrackerOnBroadcastRecieveAlreadyHit: Boolean = false
+    private var isFeedSelectedFromBottomNavigation: Boolean = false
+    private var feedToolbar: Toolbar? = null
+    private var authorList: List<Author>? = null
+    private lateinit var newFeedReceiver: BroadcastReceiver
+    private var postProgressUpdateView: PostProgressUpdateView? = null
+    private var viewPager: ViewPager? = null
+    private var mInProgress = false
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+        const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
+        const val PARAM_IS_EDIT_STATE = "is_edit_state"
+        const val PARAM_MEDIA_PREVIEW = "media_preview"
+        const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+
+        const val TITLE = "title"
+        const val SUB_TITLE = "subtitle"
+        const val TOOLBAR_ICON_URL = "icon_url"
+        const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val BROADCAST_FEED = "BROADCAST_FEED"
+        const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
+
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -70,7 +131,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     internal lateinit var affiliatePreference: AffiliatePreference
 
-    val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+    @Inject
+    lateinit var toolBarAnalytics: FeedToolBarAnalytics
+
+    @Inject
+    lateinit var entryPointAnalytic: FeedEntryPointAnalytic
+
+    private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
 
     private val viewModel by lazy {
@@ -89,12 +156,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
-    private var isFabExpanded = false
+    private var badgeNumberCart: Int = 0
     private var toolbarType = TOOLBAR_GRADIENT
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
-
+    private var isSeller = false
 
     private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
@@ -107,13 +174,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -128,23 +195,134 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isSeller = userSession.hasShop() || userSession.isAffiliate
         activity?.let {
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initNavRevampAbTest()
+        initToolbar()
         initView()
         requestFeedTab()
+        initFab()
+    }
+
+    private fun initNavRevampAbTest() {
+        showOldToolbar = false
+    }
+
+    private fun getInboxIcon(): Int {
+        return IconList.ID_MESSAGE
+    }
+
+    private fun initToolbar() {
+        status_bar_bg.visibility = when {
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+            else -> View.INVISIBLE
+        }
+        status_bar_bg2.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
+            else -> View.INVISIBLE
+        }
+        toolbarParent.removeAllViews()
+        initNewToolBar()
+        toolbarParent.addView(feedToolbar)
+    }
+
+    private fun initNewToolBar() {
+        feed_background_frame.hide()
+        feedToolbar = context?.let { NavToolbar(it) }
+        (feedToolbar as? NavToolbar)?.let {
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+            it.switchToLightToolbar()
+            it.setContentInsetsAbsolute(0,0)
+            it.setToolbarPageName(FEED_PAGE)
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setIcon(getToolbarIcons())
+            it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+        }
+    }
+
+    private fun initOldToolBar() {
+        feed_background_frame.show()
+        feedToolbar = context?.let { FeedMainToolbar(it) }
+        setFeedBackgroundCrossfader()
+        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
+                showNormalTextWhiteToolbar()
+            } else {
+                showWhiteTextTransparentToolbar()
+            }
+        })
+        (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
+    }
+
+    private fun getToolbarIcons(): IconBuilder {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(getInboxIcon()) { onInboxButtonClick() }
+
+        icons.addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+        icons.apply {
+            addIcon(IconList.ID_CART) {}
+        }
+        if(!showOldToolbar){
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
+        return icons
     }
 
     override fun onPause() {
         super.onPause()
-        hideAllFab(false)
+        hideAllFab()
+        shouldHitFeedTracker = true
+        unRegisterNewFeedReceiver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!userSession.isLoggedIn || !isSeller)
+            fab_feed.visibility = View.GONE
+        else
+            fab_feed.visibility = View.VISIBLE
+        registerNewFeedReceiver()
+
+        if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
+            toolBarAnalytics.createAnalyticsForOpenScreen(
+                viewPager?.currentItem ?: 0,
+                userSession.isLoggedIn.toString(),
+                userSession.userId
+            )
+            toolBarAnalytics.userVisitsFeed(userSession.isLoggedIn.toString(), userSession.userId)
+        }
+
+
+        if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
+            if (!mInProgress) {
+                val isEditPost = activity?.intent?.getBooleanExtra(
+                    PARAM_IS_EDIT_STATE, false) ?: false
+                postProgressUpdateView?.resetProgressBarState(isEditPost)
+                if (!isEditPost) {
+                    val mediaPath = activity?.intent?.getStringExtra(
+                        PARAM_MEDIA_PREVIEW) ?: ""
+                    postProgressUpdateView?.setFirstIcon(mediaPath)
+                }
+                updateVisibility(true)
+                mInProgress = true
+                postProgressUpdateView?.registerBroadcastReceiver()
+                postProgressUpdateView?.registerBroadcastReceiverProgress()
+            }
+        } else {
+            updateVisibility(false)
+        }
     }
 
     override fun onDestroy() {
         viewModel.tabResp.removeObservers(this)
         viewModel.whitelistResp.removeObservers(this)
         viewModel.flush()
+        postProgressUpdateView?.unregisterBroadcastReceiver()
+        postProgressUpdateView?.unregisterBroadcastReceiverProgress()
         super.onDestroy()
     }
 
@@ -185,10 +363,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return isLightThemeStatusBar
     }
 
-    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        toolbar?.run {
+    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
+        (feedToolbar as? FeedMainToolbar)?.run {
             setNotificationNumber(notificationCount)
             setInboxNumber(inboxCount)
+        }
+        (feedToolbar as? NavToolbar)?.run {
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            setBadgeCounter(getInboxIcon(), inboxCount)
+            setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount
         this.badgeNumberInbox = inboxCount
@@ -196,9 +379,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) {
-            hideAllFab(false)
-        }
+        if (!isVisibleToUser) hideAllFab()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        childFragmentManager.fragments
+                .filterIsInstance<FeedPlusFragment>()
+                .forEach { it.onParentFragmentHiddenChanged(hidden) }
     }
 
     @JvmOverloads
@@ -213,44 +401,192 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initView() {
-        //status bar background compability
-        setFeedBackgroundCrossfader()
-        activity?.let {
-            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-        }
-        status_bar_bg.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
-        }
-        status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
-            else -> View.GONE
-        }
-
-        hideAllFab(true)
-        if (!userSession.isLoggedIn) {
-            fab_feed.show()
-            fab_feed.setOnClickListener { onGoToLogin() }
-        }
+        postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
+        viewPager = view?.findViewById(R.id.view_pager)
+        postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
+        postProgressUpdateView?.setPostUpdateListener(this)
+        hideAllFab()
         setAdapter()
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
-        feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
+        setViewPager()
+        //initial value when feed opened for very first time
+        isFeedSelectedFromBottomNavigation = true
+
+        newFeedReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        if (intent.hasExtra(FEED_IS_VISIBLE)) {
+                            isFeedSelectedFromBottomNavigation = intent.extras?.getBoolean(
+                                FEED_IS_VISIBLE
+                            ) ?: isFeedSelectedFromBottomNavigation
+                        }
+                        if (!isTrackerOnBroadcastRecieveAlreadyHit && isFeedSelectedFromBottomNavigation) {
+                            isTrackerOnBroadcastRecieveAlreadyHit = true
+                            toolBarAnalytics.createAnalyticsForOpenScreen(
+                                viewPager?.currentItem ?: 0,
+                                userSession.isLoggedIn.toString(),
+                                userSession.userId
+                            )
+                        }
+
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+
+                        //When some other tab in selected instead of feed from bottom navigation
+                        isFeedSelectedFromBottomNavigation = false
+                        isTrackerOnBroadcastRecieveAlreadyHit = false
+                    }
                 }
             }
-        })
+        }
+        registerNewFeedReceiver()
+        onNotificationChanged(
+            badgeNumberNotification,
+            badgeNumberInbox,
+            badgeNumberCart
+        ) // notify badge after toolbar created
+    }
+    private fun registerNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            val intentFilter = IntentFilter()
 
+            intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
+
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .registerReceiver(newFeedReceiver, intentFilter)
+        }
+    }
+
+    private fun unRegisterNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .unregisterReceiver(newFeedReceiver)
+        }
+    }
+
+
+    private fun initFab() {
+        fab_feed.type = FloatingButtonUnify.BASIC
+        fab_feed.color = FloatingButtonUnify.COLOR_GREEN
+        fab_feed.circleMainMenu.setOnClickListener {
+            fab_feed.menuOpen = !fab_feed.menuOpen
+            if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
+        }
+
+        val items = arrayListOf<FloatingButtonItem>()
+
+        if (userSession.hasShop() && userSession.isLoggedIn) {
+            items.add(
+                FloatingButtonItem(
+                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+                    title = getString(R.string.feed_fab_create_live),
+                    listener = {
+                        fab_feed.menuOpen = false
+                        entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                        RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+                    }
+                )
+            )
+        }
+
+        if (isSeller && userSession.isLoggedIn) {
+            items.add(
+                    FloatingButtonItem(
+                            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+                            title = getString(R.string.feed_fab_create_post),
+                            listener = {
+                                try {
+                                    fab_feed.menuOpen = false
+                                    entryPointAnalytic.clickCreatePostEntryPoint()
+                                    val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                                    if (shouldShowNewContentCreationFlow) {
+                                        val authors = viewModel.feedContentForm.authors
+                                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                                                MAX_MULTI_SELECT_ALLOWED_VALUE)
+                                        intent.putExtra(TITLE,
+                                                getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
+                                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+                                        intent.putExtra(SUB_TITLE, name)
+                                        intent.putExtra(TOOLBAR_ICON_URL,
+                                                authors.first().thumbnail
+                                        )
+                                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        startActivity(intent)
+                                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                                    } else {
+                                        openBottomSheetToFollowOldFlow()
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e)
+                                }
+                            }
+                    )
+            )
+        }
+
+        if (items.isNotEmpty()) {
+            fab_feed.addItem(items)
+            fab_feed.show()
+        } else {
+            fab_feed.hide()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        activity?.run {
+            unRegisterNewFeedReceiver()
+        }
+    }
+
+    private fun enableContentCreationNewFlow(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
+    }
+
+
+    private fun setViewPager() {
+        view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
+                toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
+
+                updateFeedUpdateVisibility(position)
+
+                if (position == 1 || position == 2) {
+                    postProgressUpdateView?.hide()
+                    if (position == 2) {
+                        videoTabAutoPlayJumboWidget()
+                    }
+                } else if (position == 0 && mInProgress) {
+                    postProgressUpdateView?.show()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
     }
 
     private fun requestFeedTab() {
         showLoading()
         viewModel.getDynamicTabs()
+        viewModel.getContentForm()
     }
 
     private fun showLoading() {
@@ -271,7 +607,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onSuccessGetTab(data: FeedTabs) {
-        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM }
+        val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
+
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        feedData.forEach {
+            tab_layout?.addNewTab(it.title)
+        }
+
         pagerAdapter.setItemList(feedData)
         view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         view_pager.offscreenPageLimit = pagerAdapter.count
@@ -280,34 +622,34 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         tab_layout.visibility = View.VISIBLE
         view_pager.visibility = View.VISIBLE
 
+
+
         if (hasCategoryIdParam()) {
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist()
+            viewModel.getWhitelist(authorList?.isEmpty()?:false)
         }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
-        if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
-            showFeedFab(whitelistDomain)
-        }
+        authorList = whitelistDomain.authors
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                    Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist()
+                    viewModel.getWhitelist(authorList?.isEmpty()?:false)
                 }
             })
         }
     }
 
     private fun setFeedBackgroundCrossfader() {
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.dp_50)
-        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.dp_100)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.searchbar_tansition_range)
+        startToTransitionOffset = status_bar_bg.layoutParams.height + resources.getDimensionPixelSize(R.dimen.searchbar_start_tansition_offsite)
         activity?.let {
             val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
             val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)
@@ -323,13 +665,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-                else -> View.GONE
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+                else -> View.INVISIBLE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.tkpd_main_green))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.font_black_disabled_38), MethodChecker.getColor(activity, R.color.tkpd_main_green))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             requestStatusBarDark()
         }
@@ -340,12 +681,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, R.color.white))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, R.color.white), MethodChecker.getColor(activity, R.color.white))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }
@@ -362,43 +703,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist
-    }
-
-    private fun showFeedFab(whitelistDomain: WhitelistDomain) {
-        fab_feed.show()
-        isFabExpanded = true
-        if (whitelistDomain.authors.size > 1) {
-            fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-        } else if (whitelistDomain.authors.size == 1) {
-            val author = whitelistDomain.authors.first()
-            fab_feed.setOnClickListener { onGoToLink(author.link) }
-        }
-    }
-
-    private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
-        return View.OnClickListener {
-            if (isFabExpanded) {
-                hideAllFab(false)
-            } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
-                layout_grey_popup.visibility = View.VISIBLE
-                for (author in whitelistDomain.authors) {
-                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                        fab_feed_byme.show()
-                        text_fab_byme.visibility = View.VISIBLE
-                        text_fab_byme.text = author.title
-                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
-                    } else {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        text_fab_shop.text = author.title
-                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
-                    }
-                }
-                layout_grey_popup.setOnClickListener { hideAllFab(false) }
-                isFabExpanded = true
-            }
-        }
     }
 
     private fun goToCreateAffiliate() {
@@ -419,22 +723,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun hideAllFab(isInitial: Boolean) {
+    fun hideAllFab() {
         if (activity == null) {
             return
         }
 
-        if (isInitial) {
-            fab_feed.hide()
-        } else {
-            fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_backward)
-        }
-        fab_feed_byme.hide()
-        fab_feed_shop.hide()
-        text_fab_byme.visibility = View.GONE
-        text_fab_shop.visibility = View.GONE
-        layout_grey_popup.visibility = View.GONE
-        isFabExpanded = false
+        fab_feed.menuOpen = false
     }
 
     private fun onGoToLink(link: String) {
@@ -451,16 +745,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun showCreatePostOnBoarding() {
-        fab_feed.addOneTimeGlobalLayoutListener {
-            val x1: Int = fab_feed.x.toInt()
-            val y1: Int = fab_feed.y.toInt()
-            val x2: Int = x1 + fab_feed.width
-            val y2: Int = y1 + fab_feed.height
+        val fabCircle = fab_feed.circleMainMenu
+        fabCircle.addOneTimeGlobalLayoutListener {
+            val location = IntArray(2)
+            fabCircle.getLocationOnScreen(location)
+
+            val x1 = location[0]
+            val y1 = location[1]
+            val x2 = x1 + fabCircle.width
+            val y2 = y1 + fabCircle.height
 
             coachMarkItem = CoachMarkItem(
-                    fab_feed,
-                    getString(R.string.feed_onboarding_create_post_title),
-                    getString(R.string.feed_onboarding_create_post_detail)
+                fabCircle,
+                getString(R.string.feed_onboarding_create_post_title),
+                getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
             showFabCoachMark()
@@ -468,7 +766,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
+        if (::coachMarkItem.isInitialized
+            && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)
+            && !fab_feed.circleMainMenu.isOrWillBeHidden) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
@@ -476,12 +776,100 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
+        outState.putBoolean(keyIsLightThemeStatusBar, isLightThemeStatusBar)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
+        isLightThemeStatusBar = savedInstanceState?.getBoolean(keyIsLightThemeStatusBar)
                 ?: false
     }
+
+    private fun onImageSearchClick(hint: String) {
+        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        onImageSearchClick()
+    }
+
+    override fun onImageSearchClick() {
+        toolBarAnalytics.eventClickSearch()
+    }
+
+    override fun onInboxButtonClick() {
+        toolBarAnalytics.eventClickInbox()
+    }
+
+    override fun onNotificationClick() {
+        toolBarAnalytics.eventClickNotification()
+    }
+
+    override fun swipeOnPostUpdate() {
+        Toaster.build(requireView(),
+            getString(R.string.feed_post_successful_toaster),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL).show()
+        mInProgress = false
+        postProgressUpdateView?.unregisterBroadcastReceiver()
+        postProgressUpdateView?.unregisterBroadcastReceiverProgress()
+        activity?.intent?.putExtra("show_posting_progress_bar", false)
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is FeedPlusFragment) {
+                fragment.onRefreshForNewPostUpdated()
+            }
+        } catch (e: IllegalStateException) {
+            //no op
+        }
+        updateVisibility(false)
+    }
+    fun videoTabAutoPlayJumboWidget(){
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
+            if (fragment is VideoTabFragment) {
+                fragment.autoplayJumboWidget()
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
+
+    }
+    fun updateFeedUpdateVisibility(position: Int) {
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(position)
+            if (fragment is FeedPlusFragment) {
+                fragment.updateFeedVisibilityVariable(position == 0)
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
+    }
+
+    override fun onRetryCLicked() {
+        toolBarAnalytics.eventClickRetryToPostOnProgressBar(userSession.shopId)
+    }
+
+    override fun updateVisibility(flag: Boolean) {
+        if (flag) {
+            postProgressUpdateView?.show()
+        } else {
+            postProgressUpdateView?.hide()
+        }
+    }
+
+    private fun openBottomSheetToFollowOldFlow() {
+        when {
+            isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
+                val intent = SellerMigrationActivity.createIntent(
+                        context = requireContext(),
+                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                        screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
+                setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+
+            }
+        }
+    }
+
+
 }

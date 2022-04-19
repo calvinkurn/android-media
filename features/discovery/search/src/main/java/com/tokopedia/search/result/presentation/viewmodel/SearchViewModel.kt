@@ -3,17 +3,15 @@ package com.tokopedia.search.result.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.discovery.common.DispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.Event
-import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel
 
 internal class SearchViewModel(
-        coroutineDispatcher: DispatcherProvider
-): BaseViewModel(coroutineDispatcher.ui()) {
+        coroutineDispatcher: CoroutineDispatchers
+): BaseViewModel(coroutineDispatcher.main) {
 
     private val showAutoCompleteEventLiveData = MutableLiveData<Event<Boolean>>()
     private val hideLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
-    private val childViewVisibleEventLiveData = MutableLiveData<Event<ChildViewVisibilityChangedModel>>()
     private val bottomNavigationVisibilityLiveData = MutableLiveData<Boolean>()
 
     fun showAutoCompleteView() {
@@ -22,14 +20,6 @@ internal class SearchViewModel(
 
     fun hideSearchPageLoading() {
         hideLoadingEventLiveData.postValue(Event(true))
-    }
-
-    fun onChildViewVisibilityChanged(childViewVisibilityChangedModel: ChildViewVisibilityChangedModel) {
-        if (childViewVisibilityChangedModel.isChildViewVisibleToUser
-                && childViewVisibilityChangedModel.isChildViewReady) {
-
-            childViewVisibleEventLiveData.postValue(Event(childViewVisibilityChangedModel))
-        }
     }
 
     fun changeBottomNavigationVisibility(isVisible: Boolean) {
@@ -42,10 +32,6 @@ internal class SearchViewModel(
 
     fun getHideLoadingEventLiveData(): LiveData<Event<Boolean>> {
         return hideLoadingEventLiveData
-    }
-
-    fun getChildViewVisibleEventLiveData(): LiveData<Event<ChildViewVisibilityChangedModel>> {
-        return childViewVisibleEventLiveData
     }
 
     fun getBottomNavigationVisibilityLiveData(): LiveData<Boolean> {

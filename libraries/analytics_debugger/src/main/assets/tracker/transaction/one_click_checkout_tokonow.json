@@ -1,0 +1,23 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewCheckoutExpressIris",
+      "eventCategory": "order summary",
+      "eventAction": "view overweight ticker",
+      "eventLabel": "\\d+",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "viewCheckoutExpressIris",
+      "eventCategory": "order summary",
+      "eventAction": "view message in courier 2 jam sampai",
+      "eventLabel": ".*",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    }
+  ]
+}

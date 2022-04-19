@@ -3,10 +3,12 @@ package com.tokopedia.shop_showcase.common
 object ImageAssets {
     const val PRODUCT_EMPTY = "https://ecs7.tokopedia.net/android/others/illustration_product_empty.png"
     const val SEARCH_SHOWCASE_NOT_FOUND = "https://ecs7.tokopedia.net/android/merchant/shop_showcase/search_empty.png"
+    const val PICKER_LIST_EMPTY = "https://ecs7.tokopedia.net/android/shop/showcase_picker_empty_state.png"
 }
 
 object AppScreen {
     const val ADD_SHOP_SHOWCASE_SCREEN = "Add Shop Showcase Screen"
+    const val SHOP_SHOWCASE_PICKER_SCREEN = "Shop Showcase Picker Screen"
 }
 
 object PageNameConstant {
@@ -17,6 +19,9 @@ object PageNameConstant {
 object ShopShowcaseListParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_ETALASE_ID = "ETALASE_ID"
+    const val EXTRA_ETALASE_NAME = "ETALASE_NAME"
+    const val EXTRA_ETALASE_TYPE = "ETALASE_TYPE"
+    const val EXTRA_ETALASE_BADGE = "ETALASE_BADGE"
     const val EXTRA_SELECTED_ETALASE_ID = "EXTRA_SELECTED_ETALASE_ID"
     const val EXTRA_EDIT_SHOWCASE_RESULT = "IS_EDIT_SHOWCASE_SUCCESS"
     const val EXTRA_IS_SHOW_DEFAULT = "IS_SHOW_DEFAULT"
@@ -25,17 +30,13 @@ object ShopShowcaseListParam {
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
     const val EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE = "EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE"
     const val EXTRA_IS_NEED_TO_RELOAD_DATA = "EXTRA_IS_NEED_TO_RELOAD_DATA"
+    const val EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE = "EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE"
 }
 
 object ShopShowcaseEditParam {
     const val EXTRA_SHOWCASE_ID = "SHOWCASE_ID"
     const val EXTRA_SHOWCASE_NAME = "SHOWCASE_NAME"
     const val EXTRA_IS_ACTION_EDIT = "IS_ACTION_EDIT"
-}
-
-object ShowcaseType {
-    const val GENERATED: Int = -1
-    const val CUSTOM: Int = 1
 }
 
 object TextConstant {
@@ -56,3 +57,7 @@ object PageType {
 }
 
 const val TOTAL_GENERATED_ID: Int = 10
+const val MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT = 10
+const val MAX_TOTAL_SHOWCASE_PM_AND_OS = 200
+const val CARD_HEADER_ELEVATION = 16.0f
+const val CARD_HEADER_NO_ELEVATION = 0f

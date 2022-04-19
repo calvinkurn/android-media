@@ -2,6 +2,7 @@ package com.example.akamai_bot_lib
 
 import com.tokopedia.akamai_bot_lib.*
 import org.junit.Assert
+import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
@@ -11,6 +12,10 @@ import java.util.*
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class ExampleUnitTest2 {
+
+    @Rule @JvmField
+    public val timberConsoleTree = TimberConsoleRule()
+
     @Test
     fun addition_isCorrect() {
         Assert.assertEquals(4, 2 + 2.toLong())
@@ -26,7 +31,7 @@ class ExampleUnitTest2 {
     fun staticTest() {
         val query = "mutation RegisterUsername (\$affiliateName: String!) {\n  validate_use_promo_revamp(affiliateName: \$affiliateName) {\n    success\n    error {\n      message\n      type\n      code\n    }\n  }\n}\n"
 
-        val xTkpdAkamai = getAny(query)
+        val xTkpdAkamai = getQueryListFromQueryString(query)
                 .asSequence()
                 .filter { it ->
                     registeredGqlFunctions.containsKey(it)

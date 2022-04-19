@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/emoneyPdpCheckoutViewLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/unify_space_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emoneyPdpCheckoutViewTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/recharge_pdp_emoney_total_payment"
+        app:layout_constraintEnd_toStartOf="@id/emoneyPdpCheckoutViewButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/emoneyPdpCheckoutViewTotalPayment"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/emoneyPdpCheckoutViewTotalPayment"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toStartOf="@id/emoneyPdpCheckoutViewButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emoneyPdpCheckoutViewTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="body_2"
+
+        app:typographyWeight="bold"
+        tools:text="Rp49.200" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/emoneyPdpCheckoutViewButton"
+        android:layout_width="@dimen/emoney_pdp_checkout_button_min_width"
+        android:layout_height="wrap_content"
+        android:text="@string/recharge_pdp_emoney_next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonSize="medium" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,7 @@ import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 
 class SettingTypeAdapter(
         private val data: List<SettingTypeDataView>,
-        private val settingTypeContract: SettingTypeFragment.SettingTypeContract
+        private val settingTypeContract: SettingTypeFragment.SettingTypeContract?
 ) : RecyclerView.Adapter<SettingTypeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingTypeViewHolder {

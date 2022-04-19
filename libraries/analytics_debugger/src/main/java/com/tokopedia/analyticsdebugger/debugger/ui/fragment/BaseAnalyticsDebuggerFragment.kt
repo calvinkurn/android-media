@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerDetailActivity
 import com.tokopedia.analyticsdebugger.debugger.ui.adapter.AnalyticsDebuggerTypeFactory
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
 
@@ -41,7 +41,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonSearch!!.setOnClickListener { v ->
+        buttonSearch!!.setOnClickListener { _ ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
                 presenter!!.reloadData()
             } else {
@@ -126,6 +126,10 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
         presenter!!.reloadData()
     }
 
+    override fun showCount(count: Int) {
+        //noop
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_analytics_debugger, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -144,7 +148,6 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     companion object {
-
         val TAG = BaseAnalyticsDebuggerFragment::class.java.simpleName
     }
 }

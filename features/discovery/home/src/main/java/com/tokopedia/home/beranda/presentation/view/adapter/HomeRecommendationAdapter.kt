@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
@@ -32,7 +33,7 @@ class HomeRecommendationAdapter(
      * This override void from [BaseListAdapter]
      * It handling binding viewHolder
      * @param holder the viewHolder on bind
-     * @param position the position of the viewHolder
+     * @param item item visitable
      */
     override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: HomeRecommendationVisitable) {
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
@@ -40,7 +41,8 @@ class HomeRecommendationAdapter(
             is HomeRecommendationLoading,
             is HomeRecommendationError,
             is HomeRecommendationEmpty,
-            is HomeRecommendationLoadMore -> layout.isFullSpan = true
+            is HomeRecommendationLoadMore,
+            is HomeRecommendationBannerTopAdsDataModel -> layout.isFullSpan = true
         }
         holder.bind(item, listener)
     }
@@ -61,5 +63,7 @@ interface HomeRecommendationListener: SmartListener {
     fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
     fun onProductThreeDotsClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
     fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel)
+    fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
+    fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int)
     fun onRetryGetProductRecommendationData()
 }

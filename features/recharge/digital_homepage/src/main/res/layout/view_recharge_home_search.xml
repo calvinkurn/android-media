@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N0"
+    android:id="@+id/digital_homepage_search_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/layout_lvl0">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/digital_homepage_search_view_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_N0"
+            android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="@dimen/layout_lvl0"
+            app:contentInsetStart="@dimen/layout_lvl0"
+            app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+            app:navigationIcon="@drawable/ic_system_action_back_grayscale_24">
+
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/digital_homepage_search_view_search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/spacing_lvl4"
+                app:search_bar_clearable="true"
+                app:search_bar_placeholder="@string/digital_home_search_view_hint"
+                app:search_bar_show_icon="false" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

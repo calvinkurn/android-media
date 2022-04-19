@@ -1,0 +1,56 @@
+[
+   {
+      "data":{
+         "rechargeCatalogMenuDetail":{
+            "catalog":{
+               "id":155,
+               "name":"e-samsat",
+               "label":"E-Samsat",
+               "icon":""
+            },
+            "recommendations":[
+
+            ],
+            "promos":[
+               {
+                  "id":1573,
+                  "filename":"https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+                  "filename_webp":"",
+                  "img_url":"https://www.tokopedia.com/promo/digital-cashback-17/",
+                  "status":1,
+                  "title":"[Tagihan]. Cashback terus-terusan. S\u0026K lengkap klik di sini. ",
+                  "subtitle":"kode promo : {BAYARTERUS}",
+                  "promo_code":"BAYARTERUS"
+               },
+               {
+                  "id":2556,
+                  "filename":"https://ecs7.tokopedia.net/img/banner/2020/9/7/42484317/42484317_ffea4be4-2458-4347-8101-1cb8b118f7a2.jpg",
+                  "filename_webp":"",
+                  "img_url":"https://www.tokopedia.com/promo/digital-citi/",
+                  "status":1,
+                  "title":"[CITIDG25] Bayar PBB dan kebutuhan lainnya dengan kartu kredit/debit Citibank, diskon 5% hingga Rp25rb. Klik di sini.",
+                  "subtitle":"Kode promo: {CITIDG25}",
+                  "promo_code":"CITIDG25"
+               },
+               {
+                  "id":2557,
+                  "filename":"",
+                  "filename_webp":"",
+                  "img_url":"https://www.tokopedia.com/promo/digital-citi/",
+                  "status":1,
+                  "title":"[CITIDG50] Bayar PBB dan kebutuhan lainnya dengan kartu kredit/debit Citibank, diskon Rp50rb. Klik di sini.",
+                  "subtitle":"Kode Promo: {CITIDG50}",
+                  "promo_code":"CITIDG50"
+               }
+            ],
+            "tickers":[
+
+            ],
+            "banners":[
+
+            ],
+            "express_checkout":false
+         }
+      }
+   }
+]

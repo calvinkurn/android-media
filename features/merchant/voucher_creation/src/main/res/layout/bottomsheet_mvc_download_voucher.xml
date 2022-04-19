@@ -12,7 +12,6 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:text="@string/mvc_download_general"
         android:textColor="@color/light_N700_96"
-        
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

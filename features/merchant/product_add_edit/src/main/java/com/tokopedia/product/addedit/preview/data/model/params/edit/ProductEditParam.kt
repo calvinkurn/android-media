@@ -51,15 +51,12 @@ data class ProductEditParam (
         @SerializedName("shop")
         @Expose
         var shop: ShopParam = ShopParam(),
-        @SerializedName("catalog")
-        @Expose
-        var catalog: Catalog = Catalog(),
         @SerializedName("category")
         @Expose
         var category: Category? = null,
-        @SerializedName("menu")
+        @SerializedName("menus")
         @Expose
-        var productEtalase: ProductEtalase? = null,
+        var productShowCases: List<ProductEtalase>? = null,
         @SerializedName("pictures")
         @Expose
         var picture: Pictures = Pictures(),
@@ -74,5 +71,11 @@ data class ProductEditParam (
         var videos: Videos? = Videos(),
         @SerializedName("variant")
         @Expose
-        var variant: Variant? = null
+        var variant: Variant? = null,
+        @SerializedName("cpl")
+        @Expose
+        var cpl: CPLData = CPLData(),
+        @SerializedName("annotations")
+        @Expose
+        var annotations: List<String>? = null
 ) : Parcelable

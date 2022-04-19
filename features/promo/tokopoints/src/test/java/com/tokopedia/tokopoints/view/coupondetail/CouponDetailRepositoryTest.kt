@@ -5,13 +5,10 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.spyk
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class CouponDetailRepositoryTest {
 
@@ -21,7 +18,7 @@ class CouponDetailRepositoryTest {
     val map = mockk<Map<String,String>>()
     val data = mockk<GraphqlResponse>()
     val graphqlRepository = mockk<GraphqlRepository>{
-        coEvery{getReseponse(any(),any())} returns data
+        coEvery{response(any(),any())} returns data
     }
     @Before
     fun setUp() {
@@ -67,6 +64,14 @@ class CouponDetailRepositoryTest {
         coEvery{map[CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON] }  returns "bdkjasv"
         runBlocking {
             assert(repository.swipeMyCoupon(partnercode,pin) == data)
+        }
+    }
+
+    @Test
+    fun getUserPhoneVerificationInfo() {
+        coEvery{map[CommonConstant.GQLQuery.TP_GQL_USER_INFO] }  returns "bdkjasv"
+        runBlocking {
+            assert(repository.getUserPhoneVerificationInfo() == data)
         }
     }
 }

@@ -1,0 +1,29 @@
+[
+  {
+    "data": {
+      "gamiFloating": {
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "Success"
+          ],
+          "reason": ""
+        },
+        "id": 47,
+        "name": "DailyGiftboxNew",
+        "sumToken": 0,
+        "sumTokenStr": "",
+        "cta": {
+          "url": "https://m.tokopedia.com/kotak-kejutan/pre-tap-tap-update",
+          "appLink": "tokopedia://gamification_gift_daily"
+        },
+        "timeRemainingSeconds": 0,
+        "isShowTime": false,
+        "timerFontColor": "",
+        "timerBGColor": "",
+        "unixTimestamp": 0,
+        "imgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/09/GIF-HADIAH-LANGSUNG-1.gif"
+      }
+    }
+  }
+]

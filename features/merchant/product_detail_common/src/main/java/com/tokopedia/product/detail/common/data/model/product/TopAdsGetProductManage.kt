@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsGetProductManageResponse(
-        @SerializedName("topAdsGetProductManage")
+        @SerializedName("topAdsGetProductManageV2")
         @Expose
         val topAdsGetProductManage: TopAdsGetProductManage? = null
 )

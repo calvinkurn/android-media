@@ -1,24 +1,19 @@
 package com.tokopedia.core.app;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
-import androidx.multidex.MultiDex;
-
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.toolargetool.TooLargeTool;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -30,54 +25,47 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.fabric.sdk.android.Fabric;
+import java.io.File;
 
-public abstract class MainApplication extends MainRouterApplication{
 
-    public static final int DATABASE_VERSION = 7;
-    public static String PACKAGE_NAME;
-    public static MainApplication instance;
+public abstract class MainApplication extends CoreNetworkApplication {
+
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
     private UserSession userSession;
     protected RemoteConfig remoteConfig;
-
-
-    public static MainApplication getInstance() {
-        return instance;
-    }
+    private String MAINAPP_ADDGAIDTO_BRANCH = "android_addgaid_to_branch";
+    private static final String ENABLE_ASYNC_REMOTECONFIG_MAINAPP_INIT = "android_async_remoteconfig_mainapp_init";
+    private final String ENABLE_ASYNC_CRASHLYTICS_USER_INFO = "android_async_crashlytics_user_info";
+    private final String ENABLE_ASYNC_BRANCH_USER_INFO = "android_async_branch_user_info";
 
     protected void initRemoteConfig() {
-        WeaveInterface remoteConfigWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
+        remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(MainApplication.this);
+    public UserSession getUserSession() {
+        return userSession;
     }
 
-    public static int getCurrentVersion(Context context) {
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            return pInfo.versionCode;
-        } catch (NameNotFoundException e) {
-            e.printStackTrace();
+    public void initFileDirConfig(){
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        File extCacheDir = this.getExternalCacheDir();
+        if (extCacheDir == null) {
+            GlobalConfig.EXTERNAL_CACHE_DIR = "";
+        } else {
+            GlobalConfig.EXTERNAL_CACHE_DIR = extCacheDir.getAbsolutePath();
         }
-        return 0;
+        File extFileDir = this.getExternalFilesDir(null);
+        if (extFileDir == null) {
+            GlobalConfig.EXTERNAL_FILE_DIR = "";
+        } else {
+            GlobalConfig.EXTERNAL_FILE_DIR = extFileDir.getAbsolutePath();
+        }
     }
 
     public static boolean isDebug() {
@@ -87,17 +75,13 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        PACKAGE_NAME = getPackageName();
 
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
 
-        locationUtils = new LocationUtils(this);
-        locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -114,17 +98,17 @@ public abstract class MainApplication extends MainRouterApplication{
                 return executeInBackground();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutine(executeBgWorkWeave,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ3_ASYNC, remoteConfig));
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeBgWorkWeave,
+                RemoteConfigKey.ENABLE_SEQ3_ASYNC, context, true);
     }
 
     @NotNull
     private Boolean executeInBackground(){
-        TooLargeTool.startLogging(MainApplication.this);
+        locationUtils = new LocationUtils(MainApplication.this);
+        locationUtils.initLocationBackground();
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             upgradeSecurityProvider();
         }
-        init();
         return true;
     }
 
@@ -143,21 +127,23 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public void onTerminate() {
         super.onTerminate();
-        locationUtils.deInitLocationBackground();
-    }
-
-    private void init() {
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        if(locationUtils != null) {
+            locationUtils.deInitLocationBackground();
         }
     }
 
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
-            Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier(userSession.getUserId());
-            Crashlytics.setUserEmail(userSession.getEmail());
-            Crashlytics.setUserName(userSession.getName());
+            WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
+                @NotNull
+                @Override
+                public Object execute() {
+                    FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                    crashlytics.setUserId(userSession.getUserId());
+                    return true;
+                }
+            };
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(crashlyticsUserInfoWeave, ENABLE_ASYNC_CRASHLYTICS_USER_INFO, getApplicationContext(), true);
         }
     }
 
@@ -172,31 +158,27 @@ public abstract class MainApplication extends MainRouterApplication{
         return appComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent) {
-        this.appComponent = appComponent;
-    }
-
+    //this method needs to be called from here in case of migration get it tested from CM team
     @NotNull
     private Boolean initBranch(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
-
-        if(userSession.isLoggedIn()) {
-            UserData userData = new UserData();
-            userData.setUserId(userSession.getUserId());
-
-            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                    userData));
+        LinkerManager.initLinkerManager(getApplicationContext());
+        if(remoteConfig.getBoolean(MAINAPP_ADDGAIDTO_BRANCH, false)){
+            LinkerManager.getInstance().setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         }
+        WeaveInterface branchUserIdentityWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                if(userSession.isLoggedIn()) {
+                    UserData userData = new UserData();
+                    userData.setUserId(userSession.getUserId());
+                    LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
+                            userData));
+                }
+                return true;
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(branchUserIdentityWeave, ENABLE_ASYNC_BRANCH_USER_INFO, getApplicationContext(), true);
         return true;
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return InboxRouter.getInboxMessageActivityClass();
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return InboxRouter.getInboxResCenterActivityClass();
     }
 }

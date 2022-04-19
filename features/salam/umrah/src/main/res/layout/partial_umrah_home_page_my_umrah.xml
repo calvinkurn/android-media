@@ -7,8 +7,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:clipToPadding="false"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/unify_space_12"
+        android:paddingLeft="@dimen/unify_space_12"
         android:id="@+id/rv_umrah_home_page_my_umrah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,16 +1,28 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import java.util.ArrayList
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -18,83 +30,90 @@ import java.util.ArrayList
 
 class ShopHomeVoucherViewHolder(
         itemView: View,
-        override val isOwner: Boolean,
         private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
-) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView), MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
+) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {
-        fun onVoucherItemImpressed(parentPosition: Int, itemPosition: Int, voucher: MerchantVoucherViewModel)
-        fun onVoucherSeeAllClicked()
-        fun onVoucherClicked(
-                parentPosition: Int,
-                position: Int,
-                merchantVoucherViewModel: MerchantVoucherViewModel
-        )
+        fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int)
+        fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int)
+        fun onVoucherReloaded()
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_merchant_voucher
     }
+    private val viewBinding: ItemShopHomeMerchantVoucherBinding? by viewBinding()
+    private var merchantVoucherWidget: MvcView? = null
+    private var merchantVoucherReload: CardView? = null
+    private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
+    private var merchantVoucherShimmering: LoaderImageView? = null
+    private var textReload: Typography? = null
+    private var imageReload: ImageView? = null
+    private var textReloadDesc: Typography? = null
 
     init {
-        findView(itemView)
+        findView()
     }
 
-    private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
-    private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
-
-    private fun findView(itemView: View) {
-        merchantVoucherListWidget = itemView.findViewById(R.id.merchantVoucherListWidget)
+    private fun findView() {
+        merchantVoucherWidget = viewBinding?.merchantVoucherWidget
+        merchantVoucherReload = viewBinding?.merchantVoucherReload?.root
+        merchantVoucherShimmering = viewBinding?.merchantVoucherShimmering?.root
+        textReload = viewBinding?.merchantVoucherReload?.textReload
+        imageReload = viewBinding?.merchantVoucherReload?.imageReload
+        textReloadDesc = viewBinding?.merchantVoucherReload?.textReloadDesc
     }
 
     override fun bind(model: ShopHomeVoucherUiModel) {
-        merchantVoucherUiModel = model
-        val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
+        if (model.isError) {
+            merchantVoucherShimmering?.hide()
+            merchantVoucherWidget?.hide()
+            merchantVoucherReload?.show()
+            textReloadDesc?.text = getReloadDesc()
 
-        merchantVoucherListWidget?.apply {
-            setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
-            setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-            setTitle(model.header.title)
-            setSeeAllText(model.header.ctaText)
-            getVoucherHeaderContainer()?.let {
-                val leftPadding = it.paddingLeft
-                val topPadding = it.paddingTop
-                val rightPadding = it.paddingRight
-                val bottomPadding = 0
-                it.setPadding(
-                        leftPadding,
-                        topPadding,
-                        rightPadding,
-                        bottomPadding
-                )
+            textReload?.setOnClickListener {
+                shopHomeVoucherViewHolderListener.onVoucherReloaded()
+                merchantVoucherShimmering?.show()
+                merchantVoucherReload?.hide()
+
+            }
+            imageReload?.setOnClickListener {
+                shopHomeVoucherViewHolderListener.onVoucherReloaded()
+                merchantVoucherShimmering?.show()
+                merchantVoucherReload?.hide()
+            }
+        } else {
+            if (model.data != null && model.data.isShown == true) {
+                if(model.data.animatedInfoList?.size.orZero() > 1)
+                    shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
+                else
+                    shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
+                merchantVoucherShimmering?.hide()
+                merchantVoucherWidget?.show()
+                merchantVoucherReload?.hide()
+                merchantVoucherUiModel = model
+
+                model.data.apply {
+                    merchantVoucherWidget?.setData(MvcData(
+                            model.data.animatedInfoList
+                    ),
+                            shopId = model.data.shopId ?: "0",
+                            source = MvcSource.SHOP
+                    )
+                }
             }
         }
-        recyclerViewState?.let {
-            merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
-        }
     }
 
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
-
-    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        val position = merchantVoucherUiModel?.data?.indexOf(merchantVoucherViewModel) ?: 0
-        shopHomeVoucherViewHolderListener.onVoucherClicked(
-                adapterPosition,
-                position,
-                merchantVoucherViewModel
-        )
-    }
-
-    override fun onSeeAllClicked() {
-        shopHomeVoucherViewHolderListener.onVoucherSeeAllClicked()
-    }
-
-    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {
-        shopHomeVoucherViewHolderListener.onVoucherItemImpressed(
-                adapterPosition,
-                voucherPosition,
-                merchantVoucherViewModel
-        )
+    private fun getReloadDesc(): SpannableStringBuilder {
+        val spannableStringBuilder = SpannableStringBuilder(getString(R.string.shop_page_reload))
+        spannableStringBuilder.setSpan(StyleSpan(Typeface.BOLD), 0, getString(R.string.shop_page_reload).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return SpannableStringBuilder()
+                .append(getString(R.string.shop_page_reload_beginning_of_description))
+                .append(" ")
+                .append(spannableStringBuilder)
+                .append(" ")
+                .append(getString(R.string.shop_page_reload_end_of_description))
     }
 }

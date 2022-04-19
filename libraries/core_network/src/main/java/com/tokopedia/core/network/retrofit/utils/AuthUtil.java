@@ -5,8 +5,8 @@ import android.util.Base64;
 
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.authentication.AuthConstant;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthConstant;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.CoreNetworkApplication;
@@ -87,8 +87,6 @@ public class AuthUtil {
         public static final String KEY_WSV4_NEW = convert(RAW_KEY_WSV4);
         public static final String KEY_WSV4 = "web_service_v4";
         public static final String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
-        public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
         public static String KEY_BRANCHIO = convert(RAW_BRANCHIO_KEY_ID);
     }
 
@@ -122,6 +120,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_X_TKPD_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -211,6 +210,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -240,6 +240,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -282,6 +283,7 @@ public class AuthUtil {
         finalHeader.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         finalHeader.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         finalHeader.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        finalHeader.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
         return finalHeader;
     }
 
@@ -409,55 +411,6 @@ public class AuthUtil {
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
 //        params.put(PARAM_X_TKPD_USER_ID, userId);
-        return params;
-    }
-
-    public static TKPDMapParam<String, String> generateParamsNetwork(Context context) {
-        String deviceId = GCMHandler.getRegistrationId(context);
-        UserSession userSession = new UserSession(CoreNetworkApplication.getAppContext());
-        String userId = userSession.getUserId();
-        String hash = md5(userId + "~" + deviceId);
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        //      params.put(PARAM_X_TKPD_USER_ID, userId);
-        return params;
-    }
-
-
-    public static TKPDMapParam<String, String> generateParamsNetwork(Context context,
-                                                                     TKPDMapParam<String, String> params,
-                                                                     String userId) {
-
-        String deviceId = GCMHandler.getRegistrationId(context);
-        String hash = md5(userId + "~" + deviceId);
-
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
-        return params;
-    }
-
-    public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
-                                                                           TKPDMapParam<String, Object>
-                                                                                   params,
-                                                                           String userId) {
-
-        String deviceId = GCMHandler.getRegistrationId(context);
-        String hash = md5(userId + "~" + deviceId);
-
-        params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
-        params.put(PARAM_HASH, hash);
-        params.put(PARAM_OS_TYPE, "1");
-        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
         return params;
     }
 

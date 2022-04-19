@@ -20,10 +20,10 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingTop="8dp"
         android:paddingLeft="10dp"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingRight="10dp"
+        android:paddingBottom="8dp"
         tools:visibility="visible" />
 
 

@@ -1,36 +1,16 @@
 package com.tokopedia.flight.search.domain
 
-import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.data.FlightSearchRepository
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import javax.inject.Inject
 
 /**
  * Created by Rizky on 15/10/18.
  */
 class FlightSearchCountUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<Int>() {
+        private val flightSearchRepository: FlightSearchRepository) {
 
-    private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
-
-    override fun createObservable(requestParams: RequestParams): Observable<Int> {
-        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
-
-        return flightSearchRepository.getSearchCount(filterModel)
-    }
-
-    fun executeCoroutine(requestParams: RequestParams): Int {
-        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
-
-        return flightSearchRepository.getSearchCountCoroutine(filterModel)
-    }
-
-    fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel)
-        return requestParams
-    }
+    suspend fun execute(flightFilterModel: FlightFilterModel): Int =
+            flightSearchRepository.getSearchCount(flightFilterModel)
 
 }

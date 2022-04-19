@@ -19,8 +19,8 @@ import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
 class UmrahCheckoutPilgrimsActivity : BaseSimpleActivity(),HasComponent<UmrahCheckoutComponent> {
 
 
-    override fun getNewFragment(): Fragment? = UmrahCheckoutPilgrimsFragment.createInstance(
-            intent.getParcelableExtra(EXTRA_PILGRIMS)
+    override fun getNewFragment(): Fragment = UmrahCheckoutPilgrimsFragment.createInstance(
+            intent.getParcelableExtra(EXTRA_PILGRIMS) ?: UmrahCheckoutPilgrims()
     )
 
     override fun getComponent(): UmrahCheckoutComponent =

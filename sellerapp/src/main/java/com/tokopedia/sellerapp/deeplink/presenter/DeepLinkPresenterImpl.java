@@ -1,35 +1,35 @@
 package com.tokopedia.sellerapp.deeplink.presenter;
 
+import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
+import static com.tokopedia.webview.ConstantKt.KEY_URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
+import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity;
-import com.tokopedia.topads.TopAdsManagementInternalRouter;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topads.view.activity.CreationOnboardingActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import static com.tokopedia.webview.ConstantKt.KEY_TITLE;
-import static com.tokopedia.webview.ConstantKt.KEY_URL;
+import java.util.Map;
 
 
 /**
@@ -41,7 +41,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
-    private static final int PELUANG = 13;
     public static final int INVOICE = 14;
     public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_ITEM_ID = "item_id";
@@ -61,7 +60,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     @Override
-    public void processDeepLinkAction(Uri uriData) {
+    public void processDeepLinkAction(Activity activity, Uri uriData) {
 
         String screenName;
         int type = getDeepLinkType(uriData);
@@ -69,10 +68,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case TOPADS:
                 openTopAds(uriData);
                 screenName = AppScreen.SCREEN_TOPADS;
-                break;
-            case PELUANG:
-                screenName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
-                openPeluangPage(uriData.getPathSegments(), uriData);
                 break;
             case INVOICE:
                 openInvoice(uriData.getPathSegments(), uriData);
@@ -87,7 +82,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 screenName = AppScreen.SCREEN_DEEP_LINK;
                 break;
         }
-        sendCampaignGTM(uriData.toString(), screenName);
+        sendCampaignGTM(activity, uriData.toString(), screenName);
     }
 
 
@@ -110,8 +105,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         try {
             if (isTopAds(linkSegment))
                 return TOPADS;
-            else if (isPeluang(linkSegment))
-                return PELUANG;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isExcludedHostUrl(uriData))
@@ -129,28 +122,28 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
     }
 
-    private boolean isPeluang(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
-        );
-    }
     private static boolean isInvoice(List<String> linkSegment) {
         return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
     }
 
     @Override
-    public void sendCampaignGTM(String campaignUri, String screenName) {
-        if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
-            return;
-        }
-        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(Uri.parse(campaignUri));
-        campaign.setScreenName(screenName);
-        UnifyTracking.eventCampaign(context, campaign);
-        UnifyTracking.eventCampaign(context, campaignUri);
+    public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
+        TrackApp.getInstance().getGTM().sendCampaign(activity, campaignUri, screenName, false);
+    }
+
+    private void sendScreen(String campaignUri, String screenName, Campaign campaign) {
+        Map<String, Object> campaignMap = campaign.getCampaign();
+        Map<String, String> customDimension = new HashMap<>();
+        customDimension.put(Authenticated.KEY_DEEPLINK_URL, campaignUri);
+        String utmSource = (String) campaignMap.get(AppEventTracking.GTM.UTM_SOURCE);
+        String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
+        customDimension.put("utmSource", utmSource);
+        customDimension.put("utmMedium", utmMedium);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
-        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(CoreNetworkApplication.getAppContext());
         String excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST);
         if (!TextUtils.isEmpty(excludedHost)) {
             List<String> listExcludedString = Arrays.asList(excludedHost.split(","));
@@ -164,7 +157,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isExcludedUrl(Uri uriData) {
-        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(CoreNetworkApplication.getAppContext());
         String excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL);
         if (!TextUtils.isEmpty(excludedUrl)) {
             List<String> listExcludedString = Arrays.asList(excludedUrl.split(","));
@@ -184,31 +177,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!userSession.hasShop()) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
-        } else if (TextUtils.isEmpty(type)) {
+        } else if (TextUtils.isEmpty(type) || TOPADS_VIEW_TYPE.equals(type)) {
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);
-        } else if (TOPADS_VIEW_TYPE.equals(type)) {
-            String adId = uriData.getQueryParameter(PARAM_AD_ID);
-            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsDetailProductIntent(context);
-            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
-            intentToLaunch.setData(uriData);
         } else if (TOPADS_CREATE_TYPE.equals(type)) {
-            String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
-            intentToLaunch = TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
-            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            intentToLaunch = new Intent(context, CreationOnboardingActivity.class);
             intentToLaunch.setData(uriData);
         }
         context.startActivity(intentToLaunch);
-        context.finish();
-    }
-
-    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
-        String query = uriData.getQueryParameter("q");
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.SELLER_OPPORTUNITY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
         context.finish();
     }
 

@@ -1,6 +1,8 @@
 package com.tokopedia.graphql;
 
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.db.GQLQueryHashMapDao;
+import com.tokopedia.graphql.data.db.GQLQueryHashModel;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseDao;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseModel;
 
@@ -16,6 +18,7 @@ public class GraphqlCacheManager {
     private String Value;
     private long expiredTime = 0;
     private GraphqlDatabaseDao databaseDao;
+    private GQLQueryHashMapDao gqlQueryHashMapDao;
 
     public static long lastDeleteExpired = 0L;
     public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(5);
@@ -23,6 +26,7 @@ public class GraphqlCacheManager {
     @Inject
     public GraphqlCacheManager() {
         databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
+        gqlQueryHashMapDao = GraphqlClient.getGraphqlDatabase().getGQLQueryHashMapDao();
     }
 
     public GraphqlCacheManager setKey(String key) {
@@ -44,11 +48,11 @@ public class GraphqlCacheManager {
         return this;
     }
 
-    public long getCacheDuration(int duration) {
+    public long getCacheDuration(final int duration) {
         return System.currentTimeMillis() / 1000L + (duration * 1000);
     }
 
-    public void store() {
+    public void  store() {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = Key;
         simpleDB.value = Value;
@@ -60,7 +64,7 @@ public class GraphqlCacheManager {
 
     }
 
-    public void save(String key, String value, long durationInMiliSeconds) {
+    public void save(final String key, final String value, final long durationInMiliSeconds) {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = key;
         simpleDB.value = value;
@@ -68,13 +72,13 @@ public class GraphqlCacheManager {
         databaseDao.insertSingle(simpleDB);
     }
 
-    public void delete(String key) {
+    public void delete(final String key) {
         GraphqlDatabaseModel simpleDB = new GraphqlDatabaseModel();
         simpleDB.key = key;
         databaseDao.delete(simpleDB);
     }
 
-    public String get(String key) {
+    public String get(final String key) {
         long currentTime = System.currentTimeMillis();
         GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key, currentTime);
         deleteExpiredRecord(currentTime);
@@ -85,7 +89,7 @@ public class GraphqlCacheManager {
         }
     }
 
-    public void deleteExpiredRecord(Long currentTime){
+    public void deleteExpiredRecord(final Long currentTime){
         try {
             if (currentTime - lastDeleteExpired > periodOfExpirationDeletion) {
                 databaseDao.deleteExpiredRows(currentTime);
@@ -133,4 +137,25 @@ public class GraphqlCacheManager {
         GraphqlDatabaseModel cache = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao().getGraphqlModel(key);
         return cache != null;
     }
+
+    public void saveQueryHash(String key, String value){
+        GQLQueryHashModel gqlQueryHashModel = new GQLQueryHashModel();
+        gqlQueryHashModel.setKey(key);
+        gqlQueryHashModel.setValue(value);
+        gqlQueryHashMapDao.insertSingle(gqlQueryHashModel);
+    }
+
+    public String getQueryHashValue(String key){
+        String value = "";
+        GQLQueryHashModel gqlQueryHashModel = gqlQueryHashMapDao.getGraphqlModel(key);
+        if(gqlQueryHashModel != null){
+            value = gqlQueryHashModel.getValue();
+        }
+        return value;
+    }
+
+    public void deleteQueryHashValue(String key){
+        gqlQueryHashMapDao.deleteQueryHash(key);
+    }
+
 }

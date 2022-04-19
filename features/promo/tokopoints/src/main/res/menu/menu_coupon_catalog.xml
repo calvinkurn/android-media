@@ -7,6 +7,6 @@
         android:icon="@drawable/ic_share_coupon_catalog"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:title="@string/share" />
+        android:title="@string/tp_share" />
 
 </menu>

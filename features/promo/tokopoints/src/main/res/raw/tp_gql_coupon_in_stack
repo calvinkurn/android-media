@@ -4,6 +4,7 @@ query CouponInStack($stackID: String!) {
       id
       promoID
       code
+      title
       imageURL
       imageURLMobile
       redirectURL

@@ -1,48 +1,68 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-/**
- * Created by Steven on 18/03/19.
- */
-class TopChatVoucherUiModel
-/**
- * Constructor for WebSocketResponse / API Response
- *
- * @param messageId         messageId
- * @param fromUid           userId of sender
- * @param from              name of sender
- * @param fromRole          role of sender
- * @param attachmentId      attachment id
- * @param attachmentType    attachment type. Please refer to
- * @param replyTime         replytime in unixtime
- * @param imageUrlTop       image url Top image
- * @param redirectUrlTop    redirect url in http for Top image click
- * @param imageUrlBottom    image url Bottom image
- * @param redirectUrlBottom redirect url in http for Bottom image click
- * @param blastId           blast id for campaign.
- */
-(
-        messageId: String,
-        fromUid: String,
-        from: String,
-        fromRole: String,
-        attachmentId: String,
-        attachmentType: String,
-        replyTime: String,
-        message: String,
-        isRead: Boolean,
-        isDummy: Boolean,
-        isSender: Boolean,
-        var voucherModel: MerchantVoucherModel,
-        var replyId: String,
-        var blastId: String
-) : SendableViewModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, "", isRead, isDummy, isSender, message), Visitable<TopChatTypeFactory> {
+class TopChatVoucherUiModel private constructor(
+    builder: Builder
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
+
+    private val voucherModel: MerchantVoucherModel = builder.voucherModel
+    private val isPublic: Int = builder.isPublic
+    private val isLockToProduct: Int = builder.isLockToProduct
+    val applink: String = builder.applink
+    val voucher: MerchantVoucherViewModel = MerchantVoucherViewModel(voucherModel).apply {
+        this.isPublic = isPublic()
+        this.isLockToProduct = isLockToProduct()
+    }
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    private fun isPublic(): Boolean {
+        return isPublic == 1
+    }
+
+    fun isLockToProduct(): Boolean {
+        return isLockToProduct == 1
+    }
+
+    class Builder : SendableUiModel.Builder<Builder, TopChatVoucherUiModel>() {
+
+        internal lateinit var voucherModel: MerchantVoucherModel
+        internal var isPublic: Int = 1
+        internal var isLockToProduct: Int = 0
+        internal var applink: String = ""
+
+        fun withVoucherModel(voucherModel: MerchantVoucherModel): Builder {
+            this.voucherModel = voucherModel
+            return self()
+        }
+
+        fun withIsPublic(isPublic: Int): Builder {
+            this.isPublic = isPublic
+            return self()
+        }
+
+        fun withIsLockToProduct(isLockToProduct: Int): Builder {
+            this.isLockToProduct = isLockToProduct
+            return self()
+        }
+
+        fun withApplink(applink: String): Builder {
+            this.applink = applink
+            return self()
+        }
+
+        override fun build(): TopChatVoucherUiModel {
+            if (!::voucherModel.isInitialized) {
+                throw IllegalStateException("MerchantVoucherModel must be initialized")
+            }
+            return TopChatVoucherUiModel(this)
+        }
     }
 }

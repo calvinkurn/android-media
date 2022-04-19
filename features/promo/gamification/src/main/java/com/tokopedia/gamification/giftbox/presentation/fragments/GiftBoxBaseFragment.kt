@@ -3,6 +3,7 @@ package com.tokopedia.gamification.giftbox.presentation.fragments
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
@@ -12,19 +13,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.analytics.GtmGiftTapTap
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
+import com.tokopedia.gamification.giftbox.presentation.helpers.GiftBoxTapTapAudio
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
 
 
@@ -37,15 +42,14 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var viewFlipper: ViewFlipper
     lateinit var tvTapHint: AppCompatTextView
     lateinit var starsContainer: StarsContainer
-    lateinit var rewardContainer: RewardContainer
     lateinit var giftBoxDailyView: GiftBoxDailyView
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
     lateinit var toolbar: Toolbar
-    lateinit var imageToolbarIcon: View
+    lateinit var imageToolbarIcon: AppCompatImageView
     lateinit var tvToolbarTitle: AppCompatTextView
-    lateinit var fmParent: FrameLayout
-    lateinit var imageSound: AppCompatImageView
+    lateinit var fmParent: ViewGroup
+    var imageSound: AppCompatImageView? = null
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -54,10 +58,14 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
+    val LARGE_PHONE_HEIGHT = 1900
 
+    val giftBoxTapTapAudio = GiftBoxTapTapAudio()
     var bgSoundManager: AudioManager? = null
     var rewardSoundManager: AudioManager? = null
     var mAudiosManager: AudioManager? = null
+    var timeoutAudioManager: AudioManager? = null
+    var countDownAudioManager: AudioManager? = null
     var defaultErrorMessage = ""
     var userSession: UserSession? = null
     var isTablet = false
@@ -77,7 +85,6 @@ open class GiftBoxBaseFragment : Fragment() {
         loader = v.findViewById(R.id.loader)
         tvTapHint = v.findViewById(R.id.tvTapHint)
         starsContainer = v.findViewById(R.id.starsContainer)
-        rewardContainer = v.findViewById(R.id.reward_container)
         viewFlipper = v.findViewById(R.id.viewFlipper)
         tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
@@ -100,11 +107,13 @@ open class GiftBoxBaseFragment : Fragment() {
         toggleSound(isSoundEnabled())
 
         imageToolbarIcon.setOnClickListener {
-            GtmEvents.clickBackButton(userSession?.userId)
-            activity?.finish()
+            when (this) {
+                is GiftBoxDailyFragment -> GtmEvents.clickBackButton(userSession?.userId)
+            }
+            activity?.onBackPressed()
         }
 
-        imageSound.setOnClickListener {
+        imageSound?.setOnClickListener {
             val state = !isSoundEnabled()
             toggleSound(state)
             if (state) {
@@ -123,14 +132,16 @@ open class GiftBoxBaseFragment : Fragment() {
         if (activity is AppCompatActivity) {
             (activity as AppCompatActivity).setSupportActionBar(toolbar)
             (activity as AppCompatActivity).supportActionBar?.title = ""
-            tvToolbarTitle.text = activity?.getString(com.tokopedia.gamification.R.string.gami_gift_box_toolbar_title)
+            tvToolbarTitle.text = activity?.getString(R.string.gami_gift_60_toolbar_title)
         }
+        ImageViewCompat.setImageTintList(imageToolbarIcon, ColorStateList.valueOf(ContextCompat.getColor(imageToolbarIcon.context, android.R.color.white)))
+        tvToolbarTitle.setTextColor(ContextCompat.getColor(tvToolbarTitle.context, android.R.color.white))
     }
 
     fun getScreenDimens() {
         if (activity != null) {
             val displayMetrics = DisplayMetrics()
-            activity!!.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
             screenHeight = displayMetrics.heightPixels
             screenWidth = displayMetrics.widthPixels
         }
@@ -150,8 +161,10 @@ open class GiftBoxBaseFragment : Fragment() {
         loader.visibility = View.GONE
     }
 
+    open fun getMenu() = R.menu.gami_menu_share
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.gami_menu_share, menu)
+        inflater.inflate(getMenu(), menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -160,17 +173,25 @@ open class GiftBoxBaseFragment : Fragment() {
             R.id.action_share -> {
                 performShareAction()
             }
+            R.id.action_info -> {
+                handleInfoIconClick()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun performShareAction() {
+    open fun handleInfoIconClick() {}
+
+    open fun performShareAction() {
         try {
             var userName = ""
             var shareText = ""
             context?.let {
                 userName = UserSession(it).name.trim()
-                shareText = String.format(it.getString(com.tokopedia.gamification.R.string.gami_gift_share), userName)
+                shareText = when (this) {
+                    is GiftBoxTapTapFragment -> String.format(it.getString(R.string.gami_gift_60_share), userName)
+                    else -> String.format(it.getString(R.string.gami_gift_share), userName)
+                }
             }
 
             val sendIntent: Intent = Intent().apply {
@@ -181,42 +202,71 @@ open class GiftBoxBaseFragment : Fragment() {
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
-            GtmEvents.clickShareButton(userSession?.userId)
+            when (this) {
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickShareButton(userSession?.userId)
+                is GiftBoxDailyFragment -> GtmEvents.clickShareButton(userSession?.userId)
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
     fun showRedError(view: View, message: String, actionText: String, method: (() -> Unit)?) {
-        Toaster.make(view,
+        Toaster.toasterCustomBottomHeight = 30.toPx()
+        val snackbar = Toaster.build(
+                view,
                 message,
-                Snackbar.LENGTH_LONG,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 actionText = actionText,
                 clickListener = View.OnClickListener {
                     GtmEvents.clickToaster(userSession?.userId)
                     method?.invoke()
-                },
-                type = Toaster.TYPE_ERROR)
+                }
+        )
+        snackbar.show()
+        val params = snackbar.view.layoutParams
+        when (params) {
+            is CoordinatorLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+            is FrameLayout.LayoutParams -> params.gravity = Gravity.BOTTOM
+        }
+        params.width = CoordinatorLayout.LayoutParams.MATCH_PARENT
+        snackbar.view.layoutParams = params
+
+        when (this) {
+            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewToastError(userSession?.userId, message)
+            is GiftBoxDailyFragment -> GtmEvents.viewToastError(userSession?.userId, message)
+        }
     }
 
     fun showNoInterNetDialog(method: (() -> Unit), context: Context) {
         val dialog = NoInternetDialog()
         dialog.showDialog(context)
         dialog.btnRetry.setOnClickListener {
-            dialog.closeAbleDialog.dismiss()
+            dialog.bottomSheet?.dismiss()
             method.invoke()
-            GtmEvents.clickTryAgainButton(userSession?.userId)
+            when (this) {
+                is GiftBoxTapTapFragment -> GtmGiftTapTap.clickTryAgain(userSession?.userId)
+                is GiftBoxDailyFragment -> GtmEvents.clickTryAgainButton(userSession?.userId)
+            }
+        }
+
+        when (this) {
+            is GiftBoxTapTapFragment -> GtmGiftTapTap.viewNoInternetError(userSession?.userId)
+            is GiftBoxDailyFragment -> GtmEvents.viewNoInternetError(userSession?.userId)
         }
     }
 
     fun toggleSound(enable: Boolean) {
-        val editor = getSharedPres()?.edit()
-        editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
-        editor?.apply()
-        if (enable) {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
-        } else {
-            imageSound.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+        imageSound?.let {
+            val editor = getSharedPres()?.edit()
+            editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
+            editor?.apply()
+            if (enable) {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_on)
+            } else {
+                it.setImageResource(com.tokopedia.gamification.R.drawable.gf_ic_sound_off)
+            }
         }
     }
 
@@ -252,9 +302,17 @@ open class GiftBoxBaseFragment : Fragment() {
         if (isSoundEnabled()) {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
-                bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg, true)
+                if (giftBoxTapTapAudio.bgSoundPath.isNullOrEmpty()) {
+                    bgSoundManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_bg_tap_60, true)
+                } else {
+                    bgSoundManager?.playAudio(giftBoxTapTapAudio.bgSoundPath!!, true)
+                }
             }
         }
+    }
+
+    fun isBackgroundSoundPlaying(): Boolean {
+        return bgSoundManager?.mPlayer?.isPlaying ?: false
     }
 
     fun playTapSound() {
@@ -264,6 +322,37 @@ open class GiftBoxBaseFragment : Fragment() {
                     mAudiosManager = AudioFactory.createAudio(soundIt)
                 }
                 mAudiosManager?.playAudio(com.tokopedia.gamification.R.raw.gf_giftbox_tap)
+            }
+        }
+    }
+
+    fun playTimeOutSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (timeoutAudioManager == null) {
+                    timeoutAudioManager = AudioFactory.createAudio(soundIt)
+                }
+                if (giftBoxTapTapAudio.timeUpSoundPath.isNullOrEmpty()) {
+                    timeoutAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_timeout)
+                } else {
+                    timeoutAudioManager?.playAudio(giftBoxTapTapAudio.timeUpSoundPath!!)
+                }
+
+            }
+        }
+    }
+
+    fun playCountDownSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (countDownAudioManager == null) {
+                    countDownAudioManager = AudioFactory.createAudio(soundIt)
+                }
+                if (giftBoxTapTapAudio.countDownSoundPath.isNullOrEmpty()) {
+                    countDownAudioManager?.playAudio(com.tokopedia.gamification.R.raw.gami_count_down)
+                } else {
+                    countDownAudioManager?.playAudio(giftBoxTapTapAudio.countDownSoundPath!!)
+                }
             }
         }
     }
@@ -291,18 +380,10 @@ open class GiftBoxBaseFragment : Fragment() {
         return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
     }
 
-    fun fadeOutSoundIcon() {
-        imageSound.animate().alpha(0f).setDuration(300L).start()
-    }
-
-    fun fadeInSoundIcon() {
-        imageSound.animate().alpha(1f).setDuration(300L).start()
-    }
-
     fun isConnectedToInternet(): Boolean {
         context?.let {
-            return DeviceConnectionInfo.isConnectCellular(it) || DeviceConnectionInfo.isConnectWifi(it)
-        }
+            return DeviceConnectionInfo.isConnectCellular(it) ||
+                    DeviceConnectionInfo.isConnectWifi(it)}
         return false
     }
 }

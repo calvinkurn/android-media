@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +23,8 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -43,12 +47,17 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationBannerTopAdsDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -76,9 +85,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private lateinit var viewModel: HomeRecommendationViewModel
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
-    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.recycler_view) }
+    private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
+    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(requireContext()), StaggeredGridLayoutManager.VERTICAL) }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
@@ -91,7 +100,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var parentPool: RecyclerView.RecycledViewPool? = null
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
-
+    private var coachmarkLocalCache: CoachMarkLocalCache? = null
+    private var pmProProductPosition: Int = -1
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.layout_home_feed_fragment, container, false)
@@ -101,12 +112,21 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         super.onCreate(savedInstanceState)
         initInjector()
         initViewModel()
+        viewModel.topAdsBannerNextPage = homeCategoryListener?.getTopAdsBannerNextPage()?:""
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.coachmarkLocalCache = CoachMarkLocalCache(context = context)
+        activity?.let {
+            this.remoteConfigInstance = RemoteConfigInstance(it.application)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(WIHSLIST_STATUS_IS_WISHLIST)) {
-            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
             val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
             val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
             updateWishlist(id, wishlistStatusFromPdp, position)
@@ -117,6 +137,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                     handleWishlistAction(productCardOptionsModel)
                 }
             })
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -147,7 +168,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     open fun initBuilderComponent(): DaggerBerandaComponent.Builder {
-        return DaggerBerandaComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+        return DaggerBerandaComponent.builder().baseAppComponent((requireActivity().application as BaseMainApplication).baseAppComponent)
     }
 
     @VisibleForTesting
@@ -156,11 +177,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     private fun observeLiveData(){
-        viewModel.homeRecommendationLiveData.observe(this, androidx.lifecycle.Observer { data ->
+        viewModel.homeRecommendationLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { data ->
             adapter.submitList(data.homeRecommendations)
         })
 
-        viewModel.homeRecommendationNetworkLiveData.observe(this, androidx.lifecycle.Observer {result ->
+        viewModel.homeRecommendationNetworkLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {result ->
             if(result.isFailure){
                 view?.let {
                     if(adapter.itemCount > 1){
@@ -185,7 +206,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_4)))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
                 LAYOUT,
@@ -211,14 +232,18 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun createEndlessRecyclerViewListener(){
         endlessRecyclerViewScrollListener = object : HomeFeedEndlessScrollListener(recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE, page)
+                viewModel.loadNextData(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, page, getLocationParamString())
             }
         }
     }
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            TopAdsUrlHitter(this::class.qualifiedName).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl)
+            TopAdsUrlHitter(className).hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -247,7 +272,12 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            TopAdsUrlHitter(this::class.qualifiedName).hitClickUrl(context, homeRecommendationItemDataModel.product.clickUrl)
+            TopAdsUrlHitter(className).hitClickUrl(context,
+                    homeRecommendationItemDataModel.product.clickUrl,
+                    homeRecommendationItemDataModel.product.id,
+                    homeRecommendationItemDataModel.product.name,
+                    homeRecommendationItemDataModel.product.imageUrl,
+                    HOME_RECOMMENDATION_FRAGMENT)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -286,8 +316,17 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         trackingQueue.putEETracking(HomeRecommendationTracking.getBannerRecommendation(bannerRecommendationDataModel) as HashMap<String, Any>)
     }
 
+    override fun onBannerTopAdsClick(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(HomeRecommendationTracking.getClickBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position))
+        RouteManager.route(context, homeTopAdsRecommendationBannerDataModelDataModel.topAdsImageViewModel?.applink)
+    }
+
+    override fun onBannerTopAdsImpress(homeTopAdsRecommendationBannerDataModelDataModel: HomeRecommendationBannerTopAdsDataModel, position: Int) {
+        trackingQueue.putEETracking(HomeRecommendationTracking.getImpressionBannerTopAds(homeTopAdsRecommendationBannerDataModelDataModel, tabIndex, position) as HashMap<String, Any>)
+    }
+
     override fun onRetryGetProductRecommendationData() {
-        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE)
+        viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
     private fun initListeners() {
@@ -320,7 +359,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, position)
-            startActivityForResult(intent, REQUEST_FROM_PDP)
+            try {
+                startActivityForResult(intent, REQUEST_FROM_PDP)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 
@@ -339,8 +382,15 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun loadFirstPageData() {
         if (userVisibleHint && isAdded && activity != null && !hasLoadData) {
             hasLoadData = true
-            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_PER_PAGE)
+            viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
         }
+    }
+
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
     }
 
     fun scrollToTop() {
@@ -390,13 +440,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_add_wishlist)
         view?.let {
             Toaster.make(
                     it,
                     message,
-                    Snackbar.LENGTH_LONG,
+                    Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
                     getString(R.string.go_to_wishlist),
                     View.OnClickListener { goToWishlist() })
@@ -410,9 +460,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
+        val view = requireActivity().findViewById<View>(android.R.id.content)
         val message = getString(R.string.msg_success_remove_wishlist)
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
     }
 
     private fun showMessageFailedWishlistAction() {
@@ -426,16 +476,19 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     companion object {
+        private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment"
+        private const val HOME_RECOMMENDATION_FRAGMENT = "home_recommendation_fragment"
         const val ARG_TAB_INDEX = "ARG_TAB_INDEX"
         const val ARG_RECOM_ID = "ARG_RECOM_ID"
         const val ARG_TAB_NAME = "ARG_TAB_NAME"
+        const val DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE = 12
+
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val HOME_JANKY_FRAMES_MONITORING_PAGE_NAME = "home"
         private const val HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed"
         private const val REQUEST_FROM_PDP = 349
-        private const val DEFAULT_TOTAL_ITEM_PER_PAGE = 12
         private const val DEFAULT_SPAN_COUNT = 2
 
         fun newInstance(tabIndex: Int, recomId: Int, tabName: String): HomeRecommendationFragment {
@@ -447,5 +500,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             homeFeedFragment.arguments = bundle
             return homeFeedFragment
         }
+    }
+
+    private fun getLocationParamString() : String {
+        return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
 }

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class ShopDetail {
   @SerializedName("id")
   @Expose
-  private Integer id;
+  private String id;
 
   @SerializedName("name")
   @Expose
@@ -24,6 +24,10 @@ public class ShopDetail {
   @Expose
   private Boolean isGold;
 
+  @SerializedName("badge")
+  @Expose
+  private String badgeUrl;
+
   @SerializedName("url")
   @Expose
   private String url;
@@ -40,7 +44,7 @@ public class ShopDetail {
   @Expose
   private String shareLinkURL;
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -60,6 +64,10 @@ public class ShopDetail {
     this.isGold = isGold;
   }
 
+  public void setBadgeUrl(String badgeUrl) {
+    this.badgeUrl = badgeUrl;
+  }
+
   public void setUrl(String url) {
     this.url = url;
   }
@@ -76,7 +84,7 @@ public class ShopDetail {
     this.shareLinkURL = shareLinkURL;
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 
@@ -94,6 +102,10 @@ public class ShopDetail {
 
   public Boolean getIsGold() {
     return this.isGold;
+  }
+
+  public String getBadgeUrl() {
+    return badgeUrl;
   }
 
   public String getUrl() {

@@ -1,8 +1,6 @@
 package com.tokopedia.navigation.presentation.adapter
 
-import com.tokopedia.navigation.domain.model.Inbox
-import com.tokopedia.navigation.domain.model.RecomTitle
-import com.tokopedia.navigation.domain.model.Recommendation
+import com.tokopedia.navigation.domain.model.*
 
 /**
  * Author errysuprayogi on 13,March,2019
@@ -14,5 +12,9 @@ interface InboxTypeFactory {
     fun type(recomendation: Recommendation): Int
 
     fun type(recomTitle: RecomTitle): Int
+
+    fun type(inboxTopAdsBanner: InboxTopAdsBannerUiModel): Int
+
+    fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int
 
 }

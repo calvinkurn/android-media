@@ -2,83 +2,101 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
+import com.tokopedia.topchat.common.util.ViewUtil
 
 /**
  * Created by Steven on 18/03/19.
  */
-class TopChatVoucherViewHolder(itemView: View, private var voucherListener: TopChatVoucherListener)
-    : BaseChatViewHolder<TopChatVoucherUiModel>(itemView), MerchantVoucherView.OnMerchantVoucherViewListener {
+class TopChatVoucherViewHolder constructor(
+        itemView: View,
+        private var voucherListener: TopChatVoucherListener
+) : BaseChatViewHolder<TopChatVoucherUiModel>(itemView) {
 
-    private var chatStatus: ImageView = itemView.findViewById(com.tokopedia.chat_common.R.id.chat_status)
-    private var isOwner: Boolean = false
-    private lateinit var model: TopChatVoucherUiModel
     private var merchantVoucherView: MerchantVoucherView? = itemView.findViewById(R.id.merchantVoucherView)
+    private var voucherContainer: LinearLayout? = itemView.findViewById(R.id.topchat_voucher_container)
 
-    override fun bind(viewModel: TopChatVoucherUiModel) {
-        super.bind(viewModel)
-        model = viewModel
-        val element = viewModel.voucherModel
-        val data = MerchantVoucherViewModel(element)
-        isOwner = viewModel.isSender
+    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+            merchantVoucherView,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            getStrokeWidthSenderDimenRes()
+    )
+    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+            merchantVoucherView,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            R.dimen.dp_topchat_0,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_topchat_2,
+            R.dimen.dp_topchat_1,
+            Gravity.CENTER,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            getStrokeWidthSenderDimenRes()
+    )
 
-        bindVoucherView(viewModel, data)
-        setupChatBubbleAlignment(isOwner, viewModel)
-
-        itemView.setOnClickListener {
-            voucherListener.onVoucherClicked(data)
+    override fun bind(element: TopChatVoucherUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            Payload.REBIND -> bind(element)
         }
     }
 
-    private fun bindVoucherView(viewModel: TopChatVoucherUiModel, data: MerchantVoucherViewModel) {
-        merchantVoucherView?.onMerchantVoucherViewListener = this
-        merchantVoucherView?.setData(data, false)
+    override fun bind(element: TopChatVoucherUiModel) {
+        super.bind(element)
+        TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView)
+        TopChatVoucherViewHolderBinder.bindClick(
+            element,
+            merchantVoucherView,
+            voucherListener,
+            TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT
+        )
+        bindChatBubbleAlignment(element)
+        bindBackground(element)
+        voucherListener.onVoucherSeen(element, TopChatVoucherViewHolderBinder.SOURCE_MANUAL_ATTACHMENT)
     }
 
-    override fun alwaysShowTime(): Boolean {
-        return true
+    private fun bindBackground(element: TopChatVoucherUiModel) {
+        if (element.isSender) {
+            merchantVoucherView?.background = bgSender
+        } else {
+            merchantVoucherView?.background = bgOpposite
+        }
     }
 
-    override fun getDateId(): Int {
-        return R.id.tvDate
-    }
-
-    private fun setupChatBubbleAlignment(isSender: Boolean, element: TopChatVoucherUiModel) {
-        if (isSender) {
+    private fun bindChatBubbleAlignment(element: TopChatVoucherUiModel) {
+        if (element.isSender) {
             setChatRight(element)
-            bindChatReadStatus(element)
         } else {
             setChatLeft()
         }
     }
 
     private fun setChatLeft() {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.START
-        chatStatus.visibility = View.GONE
+        voucherContainer?.gravity = Gravity.START
     }
 
     private fun setChatRight(element: TopChatVoucherUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topchat_voucher_container).gravity = Gravity.END
-        chatStatus.visibility = View.VISIBLE
-        bindChatReadStatus(element)
-    }
-
-    override fun isOwner(): Boolean {
-        return isOwner
-    }
-
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        voucherListener.onVoucherCopyClicked(merchantVoucherViewModel.voucherCode
-                , model.messageId, model.replyId
-                , model.blastId, model.attachmentId, model.replyTime, model.fromUid)
+        voucherContainer?.gravity = Gravity.END
     }
 
     companion object {

@@ -1,7 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.common_tradein">
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
 </manifest>
 

@@ -1,0 +1,328 @@
+[{
+  "data": {
+    "digiPersoSearchSuggestion": {
+      "data": {
+        "id": "suggestion",
+        "name": "SUGGESTION",
+        "tracking": {
+          "userType": "non login",
+          "keyword": "pake"
+        },
+        "items": [
+          {
+            "template": "header",
+            "type": "",
+            "appLink": "",
+            "url": "",
+            "title": "Pilihan Kategori Produk",
+            "subtitle": "",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "",
+              "categoryID": "",
+              "categoryName": "",
+              "operatorID": "",
+              "operatorName": ""
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_single_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2",
+            "url": "https://staging.tokopedia.com/paket-data/",
+            "title": "PulsaAs",
+            "subtitle": "",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/22/21181130/21181130_907dac9a-c185-43d1-b459-2389f0b6efea.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "",
+              "operatorName": ""
+            },
+            "childItems": []
+          },
+          {
+            "template": "header",
+            "type": "",
+            "appLink": "",
+            "url": "",
+            "title": "Pilihan Operator",
+            "subtitle": "",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "",
+              "categoryID": "",
+              "categoryName": "",
+              "operatorID": "",
+              "operatorName": ""
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=1",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=1",
+            "title": "Axis",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/axis_2.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "1",
+              "operatorName": "Axis"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=584",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=584",
+            "title": "Hinet",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/hinet.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "584",
+              "operatorName": "Hinet"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=2",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=2",
+            "title": "Indosat - IM3",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/im3_2.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "2",
+              "operatorName": "Indosat - IM3"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=17",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=17",
+            "title": "Indosat - Mentari",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/im3_2.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "17",
+              "operatorName": "Indosat - Mentari"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=2557",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=2557",
+            "title": "KOTA YOGYAKARTA",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "2557",
+              "operatorName": "KOTA YOGYAKARTA"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=2706",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=2706",
+            "title": "Live.On",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2021/1/28/59205941/59205941_105f73bb-7a1e-4c33-8cda-a4031ed6142a.jpg",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "2706",
+              "operatorName": "Live.On"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=7",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=7",
+            "title": "Smartfren",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_3.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "7",
+              "operatorName": "Smartfren"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=15",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=15",
+            "title": "Telkomsel - As",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/as_2.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "15",
+              "operatorName": "Telkomsel - As"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=12",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=12",
+            "title": "Telkomsel - Simpati",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/simpati_2.png",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "12",
+              "operatorName": "Telkomsel - Simpati"
+            },
+            "childItems": []
+          },
+          {
+            "template": "list_double_line",
+            "type": "",
+            "appLink": "tokopedia://digital/form?category_id=2&operator_id=228",
+            "url": "https://staging.tokopedia.com/paket-data/?action=edit_data&operator_id=228",
+            "title": "Tokocash",
+            "subtitle": "Paket Data",
+            "iconTitle": "",
+            "iconSubtitle": "",
+            "shortcutImage": "",
+            "imageURL": "https://ecs7.tokopedia.net/img/recharge/operator/tokocash.jpg",
+            "urlTracker": "",
+            "discountPercentage": "",
+            "discountedPrice": "",
+            "originalPrice": "",
+            "tracking": {
+              "itemType": "autocomplete",
+              "categoryID": "2",
+              "categoryName": "Paket Data",
+              "operatorID": "228",
+              "operatorName": "Tokocash"
+            },
+            "childItems": []
+          }
+        ]
+      }
+    }
+  }
+}]

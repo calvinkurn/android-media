@@ -14,7 +14,6 @@ import dagger.multibindings.IntoMap
  */
 
 @Module
-@TravelDestinationScope
 abstract class TravelDestinationViewModelModule {
 
     @TravelDestinationScope

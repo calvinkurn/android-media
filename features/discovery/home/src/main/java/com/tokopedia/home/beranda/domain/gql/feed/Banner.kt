@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.domain.gql.feed
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class Banner(
@@ -10,6 +11,7 @@ data class Banner(
         val buAttribution: String = "",
         @SerializedName("creative_name")
         val creativeName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Int = 0,
         @SerializedName("image_url")

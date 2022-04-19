@@ -15,4 +15,10 @@ interface ShopHomeDisplayWidgetListener {
             displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
             parentPosition: Int,
             adapterPosition: Int
-    )}
+    )
+
+    fun loadYouTubeData(videoUrl: String, widgetId: String)
+
+    fun onDisplayWidgetImpression(model: ShopHomeDisplayWidgetUiModel, position: Int)
+
+}

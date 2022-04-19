@@ -1,0 +1,118 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 1,
+            "title": "Top Banner",
+            "sub_title": "",
+            "template": "TOP_BANNER",
+            "app_link": "tokopedia://promo/produk-digital/",
+            "text_link": "Lihat Semua",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression top banner\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"17\",\"item_name\":\"NEW USER CASHBACK\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/11193909-9d2a-4d6f-ae03-025c1d5ade7b.jpg\",\"creative_slot\":\"0\"},{\"item_id\":\"19\",\"item_name\":\"TOPED\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/29545086-56b8-4c1c-a0c7-e6f89af14221.jpg\",\"creative_slot\":\"1\"},{\"item_id\":\"16\",\"item_name\":\"GOOGLE PLAY X PUBG\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/d08f1cb9-7af6-44a8-9579-504c8f2a7ee5.jpg\",\"creative_slot\":\"2\"},{\"item_id\":\"15\",\"item_name\":\"BIG CAMPAIGN FINSERV\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/8d00bcb6-9949-4fcd-8fd4-4040c92c459d.jpg\",\"creative_slot\":\"3\"}]}"
+              }
+            ],
+            "items": [
+              {
+                "id": 17,
+                "title": "NEW USER CASHBACK",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top banner\",\"eventLabel\":\"0 - Top Banner - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"17\",\"item_name\":\"NEW USER CASHBACK\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/11193909-9d2a-4d6f-ae03-025c1d5ade7b.jpg\",\"creative_slot\":\"0\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://discovery/digital-pengguna-baru",
+                "web_link": "https://www.tokopedia.com/discovery/digital-pengguna-baru",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/11193909-9d2a-4d6f-ae03-025c1d5ade7b.jpg",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 19,
+                "title": "TOPED",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top banner\",\"eventLabel\":\"1 - Top Banner - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"19\",\"item_name\":\"TOPED\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/29545086-56b8-4c1c-a0c7-e6f89af14221.jpg\",\"creative_slot\":\"1\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://promo/digital-cashback-5/",
+                "web_link": "https://www.tokopedia.com/promo/digital-cashback-5/",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/29545086-56b8-4c1c-a0c7-e6f89af14221.jpg",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 16,
+                "title": "GOOGLE PLAY X PUBG",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top banner\",\"eventLabel\":\"2 - Top Banner - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"16\",\"item_name\":\"GOOGLE PLAY X PUBG\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/d08f1cb9-7af6-44a8-9579-504c8f2a7ee5.jpg\",\"creative_slot\":\"2\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://promo/digital-google-play/",
+                "web_link": "https://www.tokopedia.com/promo/digital-google-play/",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/d08f1cb9-7af6-44a8-9579-504c8f2a7ee5.jpg",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 15,
+                "title": "BIG CAMPAIGN FINSERV",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click top banner\",\"eventLabel\":\"3 - Top Banner - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"15\",\"item_name\":\"BIG CAMPAIGN FINSERV\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/8d00bcb6-9949-4fcd-8fd4-4040c92c459d.jpg\",\"creative_slot\":\"3\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://discovery/digital-finansial-services",
+                "web_link": "https://www.tokopedia.com/discovery/digital-finansial-services",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/17/8d00bcb6-9949-4fcd-8fd4-4040c92c459d.jpg",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

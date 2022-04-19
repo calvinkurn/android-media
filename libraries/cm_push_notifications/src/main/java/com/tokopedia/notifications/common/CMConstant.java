@@ -6,9 +6,12 @@ package com.tokopedia.notifications.common;
 public interface CMConstant {
 
     interface RemoteKeys{
-        String KEY_IS_INAPP_ENABLE = "app_cm_inapp_enable";
+        String KEY_IS_INAPP_ENABLE = "app_cm_inapp_enable_new2";
+        String KEY_IS_CM_PUSH_ENABLE = "app_cm_push_enable_new2";
         String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
+        String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
+        String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
     }
 
 
@@ -25,16 +28,23 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String NEXT_PUSH_DELETE_TIME_CACHE_KEY = "next_push_delete_time";
+    String INAPP_DISPLAY_COUNTER = "inapp_display_counter";
+    String MAX_INAPP_DISPLAY_COUNT = "max_inapp_display_count";
+    String NEXT_INAPP_DISPLAY_TIME = "next_inapp_display_time";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
     String HTTP = "http";
     String WWW = "www";
 
+    interface CMPrefKeys{
+        String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+    }
+
 
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
-        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -84,9 +94,10 @@ public interface CMConstant {
         String GRID_DATA = "gridData";
         String SUB_TEXT = "subText";
 
-
         String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
         String VISUAL_EXPANDED_IMAGE = "expandedImg";
+        String VISUAL_COLLAPSED_ELEMENT_ID = "ceid";
+        String VISUAL_EXPANDED_ELEMENT_ID = "eeid";
         String ACTION_BUTTON_ICON = "icon";
         String CAMPAIGN_ID = "campaignId";
         String PD_ACTION = "pdAction";
@@ -94,7 +105,8 @@ public interface CMConstant {
         String PRODUCT_INFO_LIST = "product_info_list";
         String PARENT_ID = "parentId";
         String CAMPAIGN_USER_TOKEN = "campaignUserToken";
-        String ELEMENT_ID="id";
+        String ELEMENT_ID = "id";
+        String GENERIC_LINK = "genericLink";
 
         String NOTIFICATION_MODE = "isOffline";
         String NOTIFICATION_START_TIME= "startTime";
@@ -104,6 +116,7 @@ public interface CMConstant {
         String USER_TRANSACTION_ID = "userTransId";
         String USER_ID = "userId";
         String SHOP_ID = "shopId";
+        String IS_BIG_IMAGE = "is_big_image";
         String BLAST_ID = "notifcenterBlastId";
 
         String ADD_TO_CART = "addToCart";
@@ -120,6 +133,38 @@ public interface CMConstant {
         String WEBHOOK_PARAM = "webhook_params";
         String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
+
+        String NOTIFICATION_PRODUCT_TYPE = "notificationProductType";
+        String FREE_DELIVERY = "bebasOngkir";
+        String STOCK_AVAILABLE = "stockAvailable";
+        String REVIEW_SCORE = "reviewScore";
+        String REVIEW_NUMBER = "reviewNumber";
+        String REVIEW_ICON = "reviewIcon";
+
+        String MAIN_APP_PRIORITY = "mainappPriority";
+        String SELLER_APP_PRIORITY = "sellerappPriority";
+        String ADVANCE_TARGET = "isAdvanceTarget";
+
+        interface PayloadExtraDataKey {
+            String CAMPAIGN_NAME = "cmpgnName";
+            String JOURNEY_ID = "jrnId";
+            String JOURNEY_NAME = "jrnName";
+            String SESSION_ID = "sesnId";
+        }
+
+
+        String NOTIFICATION_CHANNEL = "nfChnl";
+        String NOTIFICATION_SOUND = "nfSnd";
+    }
+
+    interface NotificationProductType {
+        String V1 = "v1";
+        String V2 = "v2";
+    }
+
+    interface PreDefineActionType {
+        String ATC = "atc";
+        String OCC = "occ";
     }
 
     interface ReceiverExtraData {
@@ -157,6 +202,8 @@ public interface CMConstant {
         String ACTION_CAROUSEL_NOTIFICATION_DISMISS = "com.tokopedia.notification.action_carousel_dismiss";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
         String ACTION_GRID_MAIN_CLICK = "com.tokopedia.notification.action_grid_main_click";
+        String ACTION_VISUAL_COLLAPSED_CLICK = "com.tokopedia.notification.action_visual_collapsed_click";
+        String ACTION_VISUAL_EXPANDED_CLICK = "com.tokopedia.notification.action_visual_expanded_click";
 
         String ACTION_PRODUCT_NOTIFICATION_DISMISS = "com.tokopedia.notification.product_notification_dismiss ";
         String ACTION_PRODUCT_CLICK = "com.tokopedia.notification.product_click";
@@ -170,10 +217,27 @@ public interface CMConstant {
 
     interface CouponCodeExtra {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
+    }
+
+    interface TimberTags {
+        int MAX_LIMIT = 1000;
+    }
+
+    interface UTMParams {
+        String UTM_SOURCE = "utm_source";
+        String UTM_MEDIUM = "utm_medium";
+        String UTM_CAMPAIGN = "utm_campaign";
+        String UTM_CONTENT = "utm_content";
+        String UTM_TERM = "utm_term";
+        String SCREEN_NAME = "screenName";
+        String SCREEN_NAME_VALUE = "CM Applink Handler";
+        String UTM_GCLID = "gclid";
     }
 
 }

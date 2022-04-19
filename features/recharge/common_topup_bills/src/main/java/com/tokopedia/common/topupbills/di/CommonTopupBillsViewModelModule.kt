@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * @author by resakemal on 13/08/19
  */
 @Module
-@CommonTopupBillsScope
 abstract class CommonTopupBillsViewModelModule {
 
     @CommonTopupBillsScope

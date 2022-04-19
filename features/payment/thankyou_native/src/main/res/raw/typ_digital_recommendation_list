@@ -1,0 +1,25 @@
+query ($device_id: Int!, $category_ids: String) {
+    rechargeFavoriteRecommendationList(device_id: $device_id, category_ids: $category_ids) {
+        title
+        recommendations {
+            iconUrl
+            title
+            clientNumber
+            appLink
+            webLink
+            type
+            position
+            categoryId
+            categoryName
+            productId
+            productName
+            productPrice
+            isATC
+            operatorName
+            operatorID
+            tag
+            tagType
+            description
+        }
+    }
+}

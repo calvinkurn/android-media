@@ -9,20 +9,15 @@ import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author  by alvarisi on 12/8/16.
  */
 
 public class PushNotificationDataInteractor implements IPushNotificationDataInteractor {
-    private final CompositeSubscription mCompositeSubscription;
     private final PushNotificationRepository mPushNotificationRepository;
-    private Context applicationContext;
 
     public PushNotificationDataInteractor(Context applicationContext) {
-        this.applicationContext = applicationContext;
-        this.mCompositeSubscription = new CompositeSubscription();
         this.mPushNotificationRepository = new PushNotificationDataRepository(applicationContext);
     }
 

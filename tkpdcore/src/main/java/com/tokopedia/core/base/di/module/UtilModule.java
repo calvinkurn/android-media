@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,12 +13,6 @@ import dagger.Provides;
  */
 @Module
 public class UtilModule {
-
-    @Provides
-    public SessionHandler provideSessionHandler(@ApplicationContext Context context){
-        return new SessionHandler(context);
-    }
-
 
     @Provides
     public GCMHandler provideGcmHandler(@ApplicationContext Context context){

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="page_name_wishlist">Wishlist</string>
+    <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
+    <string name="hint_cari_wishlist">Cari di Wishlist</string>
+    <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
+    <string name="wishlist_manage_label">Atur</string>
+    <string name="wishlist_cancel_manage_label">Batal</string>
+    <string name="wishlist_save_label">Simpan</string>
+    <string name="wishlist_delete_label">Hapus</string>
+    <string name="wishlist_tutup_label">Tutup</string>
+    <string name="wishlist_oke_label">Oke</string>
+    <string name="button_empty_state_wishlist">Cari Barang</string>
+    <string name="empty_state_button">Reset Filter</string>
+    <string name="empty_state_title">Nggak ada barang sesuai filter di Wishlist</string>
+    <string name="empty_state_desc">Coba reset atau ubah filter kamu, ya.</string>
+    <string name="empty_state_desc_1">Mau simpan barang untuk beli nanti? Bandingkan harga dan spesifikasinya? Di sini tempatnya!</string>
+    <string name="empty_state_desc_2">Lagi lihat-lihat, ada barang yang kamu suka? Klik ikon hati buat simpan di Wishlist.</string>
+    <string name="empty_state_desc_3">Akses Wishlist-mu kapan saja, masuk dari menu navigasi dan halaman Keranjang.</string>
+    <string name="empty_state_img">https://images.tokopedia.net/img/android/wishlist_v2/empty_state.png</string>
+    <string name="empty_state_img_1">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_1.png</string>
+    <string name="empty_state_img_2">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_2.png</string>
+    <string name="empty_state_img_3">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_3.png</string>
+    <string name="empty_state_img_not_found">https://images.tokopedia.net/img/android/wishlist_v2/empty_state_not_found.png</string>
+    <string name="empty_state_not_found_button">Cari di Tokopedia</string>
+    <string name="empty_state_not_found_title">Oops, barang itu nggak ada di Wishlist-mu</string>
+    <string name="empty_state_not_found_description">Mau coba cari %1$s di Tokopedia?</string>
+    <string name="wishlist_v2_delete_msg_default">Barang telah dihapus dari Wishlist.</string>
+    <string name="wishlist_v2_bulk_delete_msg_toaster">%d barang telah dihapus dari Wishlist.</string>
+    <string name="wishlist_v2_popup_delete_bulk_title">Yakin hapus %d barang ini dari Wishlist?</string>
+    <string name="wishlist_v2_delete_text">Hapus</string>
+    <string name="wishlist_v2_barang_label">barang</string>
+    <string name="wishlist_v2_delete_text_counter">Hapus (%d)</string>
+    <string name="wishlist_v2_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
+    <string name="wishlist_v2_share_text">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
+    <string name="wishlist_v2_failed_to_get_information">Informasi gagal dimuat</string>
+
+    <string name="on_error_observing_wishlist_v2_string_builder">Error observingWishlistV2(). userId: %1$s | %2$s | %3$s</string>
+    <string name="on_error_observing_wishlist_data_string_builder">Error observingWishlistData(). userId: %1$s | %2$s | %3$s</string>
+    <string name="on_error_observing_delete_wishlist_v2_string_builder">Error observingDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
+    <string name="on_error_observing_bulk_delete_wishlist_v2_string_builder">Error observingBulkDeleteWishlistV2(). userId: %1$s | %2$s | %3$s</string>
+    <string name="on_error_observing_atc_string_builder">Error observingAtc(). userId: %1$s | %2$s | %3$s</string>
+</resources>

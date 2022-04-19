@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#45000000"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/innerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff">
+        android:textColor="@color/Unify_N700_96">
 
         <TextView
             android:id="@+id/tv_cmTitle"
@@ -24,6 +24,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toTopOf="@+id/iv_cmImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +60,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toTopOf="@+id/ll_buttonContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +80,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-
         </LinearLayout>
 
         <ImageView
@@ -86,8 +87,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:src="@drawable/ic_cross_inapp"
+            android:layout_marginEnd="8dp"
+            app:srcCompat="@drawable/cm_ic_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -98,10 +99,9 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:contentDescription="@string/app_name"
         android:layout_alignTop="@id/blank_iv"
-        android:src="@drawable/ic_cross_inapp"
+        app:srcCompat="@drawable/cm_ic_close"
         android:visibility="gone" />
 
     <ImageView
@@ -109,7 +109,6 @@
         android:layout_width="0dp"
         android:layout_height="10dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:contentDescription="@string/app_name"
         android:visibility="gone" />
 

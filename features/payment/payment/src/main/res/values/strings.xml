@@ -11,5 +11,6 @@
     <string name="fingerprint_label_try_again">Coba Lagi</string>
     <string name="fingerprint_label_register_fingerprint">Sidik jari anda menggantikan SMS OTP</string>
     <string name="toppay_title">Pembayaran</string>
+    <string name="toppay_title_content_desc">Pembayaran nomor %s</string>
     <string name="toppay_error_login">Proses pembayaran gagal, mohon ulangi lagi</string>
 </resources>

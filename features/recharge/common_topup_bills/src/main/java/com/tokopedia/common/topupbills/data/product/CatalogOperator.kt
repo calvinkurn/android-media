@@ -10,7 +10,7 @@ open class CatalogOperator(
 
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("attributes")
         @Expose
         val attributes: CatalogOperatorAttributes = CatalogOperatorAttributes()

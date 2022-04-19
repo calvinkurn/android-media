@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AssetImageView">
+        <attr name="image_picker_insta_has_round_corner" format="boolean" />
+    </declare-styleable>
+</resources>

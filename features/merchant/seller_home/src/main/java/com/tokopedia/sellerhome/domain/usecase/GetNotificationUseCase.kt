@@ -1,11 +1,12 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.gqlquery.GqlGetNotification
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
@@ -21,8 +22,8 @@ class GetNotificationUseCase(
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GetNotificationsResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(GqlGetNotification, GetNotificationsResponse::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetNotificationsResponse::class.java)
 
@@ -35,27 +36,6 @@ class GetNotificationUseCase(
     }
 
     companion object {
-        private const val QUERY = "query getNotifications(\$typeId:Int!) {\n" +
-                "  notifications {\n" +
-                "    chat {\n" +
-                "      unreads\n" +
-                "      unreadsSeller\n" +
-                "      unreadsUser\n" +
-                "    }\n" +
-                "    sellerOrderStatus {\n" +
-                "      newOrder\n" +
-                "      readyToShip\n" +
-                "      shipped\n" +
-                "      arriveAtDestination\n" +
-                "    }\n" +
-                "  }\n" +
-                "  notifcenter_unread(type_id:\$typeId) {\n" +
-                "    notif_unread\n" +
-                "    notif_unread_int\n" +
-                "  }\n" +
-                "  status\n" +
-                "}"
-
         private const val TYPE_ID = "typeId"
         private const val TYPE_ID_DEFAULT = 0
         private const val TYPE_ID_SELLER = 2

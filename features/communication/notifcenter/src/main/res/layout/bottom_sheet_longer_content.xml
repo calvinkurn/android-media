@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scroll_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/spacing_lvl4"
+                app:layout_constraintBottom_toBottomOf="@+id/view_shadow_btn_cta"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/content_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_title_bs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl4"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
+                        android:layout_marginBottom="@dimen/spacing_lvl2"
+                        app:typographyType="heading_3"
+                        tools:text="Gebyar Diskon Elektronik" />
+
+                    <!-- Remove this later with fixed banner size -->
+                    <com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
+                        android:id="@+id/content_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/spacing_lvl4"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
+                        android:layout_marginBottom="@dimen/notif_dp_16"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        tools:src="@tools:sample/avatars"
+                        tools:visibility="visible" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_content_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_lvl4"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
+                        app:typographyType="body_2"
+                        tools:text="@tools:sample/lorem/random" />
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <View
+                android:id="@+id/view_shadow_btn_cta"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_lvl2"
+                android:layout_gravity="bottom"
+                android:background="@drawable/notifcenter_bs_cta_shadow"
+                app:layout_constraintBottom_toTopOf="@+id/btn_longer_content_cta"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </FrameLayout>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_longer_content_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/notif_dp_8"
+            android:text="@string/title_notifcenter_click_here"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

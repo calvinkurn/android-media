@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                 android:id="@+id/image_gift_box_lid"
                 android:layout_width="325dp"
                 android:layout_height="130dp"
-                tools:srcCompat="@drawable/gf_ic_lid_frame_7" />
+                tools:srcCompat="@drawable/gf_ic_lid_7" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_box_front"
@@ -59,15 +59,15 @@
 
     </FrameLayout>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/image_flat_glow"
         android:layout_width="373dp"
         android:layout_height="251dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginEnd="@dimen/dp_7"
         android:layout_marginRight="@dimen/dp_7"
-        app:srcCompat="@drawable/gf_ic_box_stage_glow"
+        app:remoteFileName="ic_box_stage_glow.png"
         tools:translationY="240dp"
         tools:visibility="visible" />
 
-</FrameLayout>
+</merge>

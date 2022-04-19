@@ -6,6 +6,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.cpmJSONObject
 import com.tokopedia.search.result.notCpmShopJsonObject
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
@@ -72,10 +73,11 @@ internal val moreAceSearchShopWithRecommendationWithoutNextPage = SearchShopMode
 internal val cpmModel = CpmModel(cpmJSONObject)
 internal val notCpmShopModel = CpmModel(notCpmShopJsonObject)
 
-internal val searchShopModel = SearchShopModel(aceSearchShopWithNextPage, cpmModel)
-internal val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage, cpmModel)
-internal val searchShopModelWithoutCpm = SearchShopModel(aceSearchShopWithNextPage)
-internal val searchShopModelWithoutValidCpmShop = SearchShopModel(aceSearchShopWithNextPage, notCpmShopModel)
+internal val searchShopQuickFilterModel = "searchshop/quickfilter/quick-filter-response.json".jsonToObject<SearchShopModel.FilterSort>()
+internal val searchShopModel = SearchShopModel(aceSearchShopWithNextPage, cpmModel, searchShopQuickFilterModel)
+internal val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage, cpmModel, searchShopQuickFilterModel)
+internal val searchShopModelWithoutCpm = SearchShopModel(aceSearchShop = aceSearchShopWithNextPage, quickFilter = searchShopQuickFilterModel)
+internal val searchShopModelWithoutValidCpmShop = SearchShopModel(aceSearchShopWithNextPage, notCpmShopModel, searchShopQuickFilterModel)
 internal val searchShopModelEmptyList = SearchShopModel()
 internal val searchShopModelEmptyWithRecommendationHasNextPage = SearchShopModel(aceSearchShopWithRecommendationHasNextPage)
 internal val searchShopModelEmptyWithRecommendationWithoutNextPage = SearchShopModel(aceSearchShopWithRecommendationWithoutNextPage)
@@ -83,6 +85,7 @@ internal val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage
 internal val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
 internal val searchMoreShopWithRecommendationHasNextPage = SearchShopModel(moreAceSearchShopWithRecommendationHasNextPage)
 internal val searchMoreShopWithRecommendationWithoutNextPage = SearchShopModel(moreAceSearchShopWithRecommendationWithoutNextPage)
+internal val searchShopModelEmptyQuickFilter = SearchShopModel(aceSearchShopWithNextPage, cpmModel)
 
 internal val officialOption = OptionHelper.generateOptionFromUniqueId(
         OptionHelper.constructUniqueId("official", "true", "Official Store")

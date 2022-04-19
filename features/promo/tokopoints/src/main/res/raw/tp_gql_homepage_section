@@ -1,5 +1,5 @@
 {
-  tokopointsHomepage {
+  tokopointsHomepage(apiVersion:"3.0.0") {
     sectionContent {
       layoutType
       sectionTitle
@@ -89,6 +89,15 @@
           isShowTukarButton
           quotaPercentage
         }
+        countdownInfo{
+          isShown
+          type
+          label
+          countdownUnix
+          countdownStr
+          textColor
+          backgroundColor
+        }
       }
       layoutTickerAttr {
         tickerList {
@@ -110,6 +119,44 @@
           }
         }
       }
+       layoutTopAdsAttr {
+       jsonTopAdsDisplayParam
+      }
+      layoutMerchantCouponAttr {
+        topAdsJsonParam
+        CatalogMVCWithProductsList {
+           shopInfo {
+            id
+            name
+            iconUrl
+            url
+            appLink
+            shopStatusIconURL
+           }
+        title
+        maximumBenefitAmountStr
+        subtitle
+        adInfo {
+            AdID
+            AdViewUrl
+            AdClickUrl
+           }
+        products {
+        id
+        imageURL
+        name
+        redirectURL
+        redirectAppLink
+        benefitLabel
+        category {
+             id
+             name
+             rootID
+             rootName
+               }
+            }
+         }
+       }
     }
   }
 }

@@ -1,23 +1,25 @@
 package com.tokopedia.shop.product.view.adapter
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.*
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
-import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.product.view.viewholder.ErrorNetworkWrapViewHolder
 import com.tokopedia.shop.product.view.viewholder.ShopProductListEmptyViewHolder
 
 import com.tokopedia.shop.product.view.datamodel.*
-import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
-import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.shop.product.view.listener.*
 import com.tokopedia.shop.product.view.viewholder.*
 
 class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: MembershipStampAdapter.MembershipStampAdapterListener?,
@@ -25,15 +27,20 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
                                     private val shopProductImpressionListener: ShopProductImpressionListener?,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
                                     private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
-                                    private val shopProductEtalaseListViewHolderListener: ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener?,
-                                    private val onMerchantVoucherListWidgetListener: MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener?,
+                                    private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
                                     private val shopProductAddViewHolderListener: ShopProductAddViewHolder.ShopProductAddViewHolderListener?,
                                     private val shopProductsEmptyViewHolderListener: ShopProductsEmptyViewHolder.ShopProductsEmptyViewHolderListener?,
+                                    private val shopProductEmptySearchListener: ShopProductEmptySearchListener?,
+                                    private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+                                    private val shopShowcaseEmptySearchListener: ShopShowcaseEmptySearchListener?,
+                                    private val shopProductSearchSuggestionListener: ShopProductSearchSuggestionListener?,
                                     private val isGridSquareLayout: Boolean,
                                     private val deviceWidth: Int,
                                     @param:ShopTrackProductTypeDef @field:ShopTrackProductTypeDef
-                                    private val shopTrackType: Int) : BaseAdapterTypeFactory() {
+                                    private val shopTrackType: Int,
+                                    private val isShowTripleDot: Boolean) : BaseAdapterTypeFactory() {
     private var shopProductAdapter: ShopProductAdapter? = null
+    var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 
     fun attachAdapter(shopProductAdapter: ShopProductAdapter) {
         this.shopProductAdapter = shopProductAdapter
@@ -47,56 +54,86 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
         return ShopProductListEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopEmptyProductViewModel: ShopEmptyProductViewModel): Int {
+    fun type(shopEmptyProductUiModel: ShopEmptyProductUiModel): Int {
         return ShopProductsEmptyViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseHighlightViewModel: ShopProductEtalaseHighlightViewModel): Int {
+    fun type(shopProductEtalaseHighlightUiModel: ShopProductEtalaseHighlightUiModel): Int {
         return ShopProductEtalaseHighlightViewHolder.LAYOUT
     }
 
-    fun type(etalaseHighlightCarouselViewModel: EtalaseHighlightCarouselViewModel): Int {
+    fun type(etalaseHighlightCarouselUiModel: EtalaseHighlightCarouselUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
-    fun type(membershipStampProgressViewModel: MembershipStampProgressViewModel): Int {
+    fun type(membershipStampProgressUiModel: MembershipStampProgressUiModel): Int {
         return MembershipStampProgressViewHolder.LAYOUT
     }
 
-    fun type(shopProductFeaturedViewModel: ShopProductFeaturedViewModel): Int {
+    fun type(shopProductFeaturedUiModel: ShopProductFeaturedUiModel): Int {
         return ShopProductCarouselViewHolder.LAYOUT
     }
 
-    fun type(shopMerchantVoucherViewModel: ShopMerchantVoucherViewModel): Int {
+    fun type(shopMerchantVoucherUiModel: ShopMerchantVoucherUiModel): Int {
         return ShopMerchantVoucherViewHolder.LAYOUT
     }
 
-    fun type(shopProductViewModel: ShopProductViewModel): Int {
-        return ShopProductViewHolder.GRID_LAYOUT
+    fun type(shopProductUiModel: ShopProductUiModel): Int {
+        return when(productCardType) {
+            ShopProductViewGridType.SMALL_GRID -> {
+                ShopProductViewHolder.GRID_LAYOUT
+            }
+            ShopProductViewGridType.BIG_GRID -> {
+                ShopProductItemBigGridViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.LIST -> {
+                ShopProductItemListViewHolder.LAYOUT
+            }
+        }
     }
 
     override fun type(errorNetworkModel: ErrorNetworkModel): Int {
         return ErrorNetworkWrapViewHolder.LAYOUT
     }
 
-    fun type(etalaseLabelViewModel: ShopProductEtalaseListViewModel): Int {
-        return ShopProductEtalaseListViewHolder.LAYOUT
+    fun type(etalaseLabelViewModel: ShopProductSortFilterUiModel): Int {
+        return ShopProductSortFilterViewHolder.LAYOUT
     }
 
-    fun type(viewModel: HideViewModel): Int {
+    fun type(uiModel: HideUiModel): Int {
         return HideViewHolder.LAYOUT
     }
 
-    fun type(shopProductEtalaseTitleViewModel: ShopProductEtalaseTitleViewModel): Int {
+    fun type(shopProductEtalaseTitleUiModel: ShopProductEtalaseTitleUiModel): Int {
         return ShopProductEtalaseTitleViewHolder.LAYOUT
     }
 
-    fun type(shopProductAddViewModel: ShopProductAddViewModel): Int {
+    fun type(shopProductChangeGridSectionUiModel: ShopProductChangeGridSectionUiModel): Int {
+        return ShopProductChangeGridSectionViewHolder.LAYOUT
+    }
+
+    fun type(shopProductSearchResultSuggestionUiModel: ShopProductSearchResultSuggestionUiModel): Int {
+        return ShopProductSearchResultSuggestionViewHolder.LAYOUT
+    }
+
+    fun type(shopProductAddUiModel: ShopProductAddUiModel): Int {
         return ShopProductAddViewHolder.LAYOUT
     }
 
-    fun type(shopSellerEmptyProductAllEtalaseViewModel: ShopSellerEmptyProductAllEtalaseViewModel): Int {
+    fun type(shopSellerEmptyProductAllEtalaseUiModel: ShopSellerEmptyProductAllEtalaseUiModel): Int {
         return ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT
+    }
+
+    fun type(shopProductTitleEmptyUiModel: ShopProductTitleEmptyUiModel): Int {
+        return ShopProductTitleEmptyViewHolder.LAYOUT
+    }
+
+    fun type(shopProductEmptySearchUiModel: ShopProductEmptySearchUiModel): Int {
+        return ShopProductEmptySearchViewHolder.LAYOUT
+    }
+
+    fun type(shopProductEmptyShowcaseUiModel: ShopProductEmptyShowcaseUiModel): Int {
+        return ShopProductEmptyShowcaseViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -104,17 +141,24 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             LoadingShimmeringGridViewHolder.LAYOUT -> return LoadingShimmeringGridViewHolder(parent)
             ShopProductListEmptyViewHolder.LAYOUT -> return ShopProductListEmptyViewHolder(parent, emptyProductOnClickListener)
             ShopProductsEmptyViewHolder.LAYOUT -> return ShopProductsEmptyViewHolder(parent, shopProductsEmptyViewHolderListener)
+            ShopProductTitleEmptyViewHolder.LAYOUT -> return ShopProductTitleEmptyViewHolder(parent)
+            ShopProductEmptySearchViewHolder.LAYOUT -> return ShopProductEmptySearchViewHolder(parent, shopProductEmptySearchListener)
+            ShopProductEmptyShowcaseViewHolder.LAYOUT -> return ShopProductEmptyShowcaseViewHolder(parent, shopShowcaseEmptySearchListener)
             ErrorNetworkWrapViewHolder.LAYOUT -> return ErrorNetworkWrapViewHolder(parent)
             ShopProductEtalaseTitleViewHolder.LAYOUT -> return ShopProductEtalaseTitleViewHolder(parent)
-            ShopProductEtalaseListViewHolder.LAYOUT -> return ShopProductEtalaseListViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
             ShopProductAddViewHolder.LAYOUT -> return ShopProductAddViewHolder(parent, shopProductAddViewHolderListener)
             ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT -> return ShopProductSellerAllEtalaseEmptyViewHolder(parent)
-            ShopMerchantVoucherViewHolder.LAYOUT -> return ShopMerchantVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+            ShopMerchantVoucherViewHolder.LAYOUT -> return ShopMerchantVoucherViewHolder(parent)
             ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener,
                     parent.context.getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null)
             ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
-            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type)
+            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type, isShowTripleDot)
+            ShopProductItemListViewHolder.LAYOUT -> return ShopProductItemListViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
+            ShopProductItemBigGridViewHolder.LAYOUT -> return ShopProductItemBigGridViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, ShopTrackProductTypeDef.PRODUCT, isShowTripleDot)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
+            ShopProductChangeGridSectionViewHolder.LAYOUT -> return ShopProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
+            ShopProductSearchResultSuggestionViewHolder.LAYOUT -> return ShopProductSearchResultSuggestionViewHolder(parent, shopProductSearchSuggestionListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)
             } else {

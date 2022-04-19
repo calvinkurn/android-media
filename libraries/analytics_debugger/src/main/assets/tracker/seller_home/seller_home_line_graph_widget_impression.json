@@ -1,0 +1,15 @@
+{
+  "readme": "Seller Home Dashboard - trend line widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewHomepageIris",
+      "eventCategory": "seller app - home",
+      "eventAction": "impression widget trendline",
+      "eventLabel": ".{1,}",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "physical goods",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

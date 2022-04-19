@@ -25,9 +25,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import org.json.JSONException;
 
@@ -50,6 +50,8 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.tokopedia.contactus.inboxticket2.domain.usecase.UploadImageUseCaseKt.IMAGE_QUALITY;
 
 /**
  * Created by nisie on 8/12/16.
@@ -303,7 +305,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                         File file;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                            file = ImageProcessingUtil.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY);
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }

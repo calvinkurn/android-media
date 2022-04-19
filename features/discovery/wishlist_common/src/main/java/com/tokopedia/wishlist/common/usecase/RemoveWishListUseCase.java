@@ -25,7 +25,6 @@ public class RemoveWishListUseCase {
     public RemoveWishListUseCase(Context context) {
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
-        GraphqlClient.init(context);
     }
 
     public void createObservable(String productId, String userId,
@@ -34,9 +33,12 @@ public class RemoveWishListUseCase {
         graphqlUseCase.clearRequest();
 
         Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
-        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        if (!productId.isEmpty()) {
+            variables.put(PARAM_PRODUCT_ID, productId);
+        }
+        if (!userId.isEmpty()) {
+            variables.put(PARAM_USER_ID, Integer.parseInt(userId));
+        }
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(),

@@ -9,11 +9,12 @@ import android.preference.PreferenceManager;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import static com.tokopedia.pushnotif.Constant.Host.CHATBOT;
+import static com.tokopedia.pushnotif.data.constant.Constant.Host.CHATBOT;
 
 /**
  * @author ricoharisin .
@@ -50,7 +51,9 @@ public class ApplinkNotificationHelper {
         model.setTargetApp(data.getString("target_app", ""));
         model.setTransactionId(data.getString("trans_id", ""));
         model.setImages(data.getString("images", ""));
-
+        model.setMainAppPriority(data.getString("mainapp_priority", ""));
+        model.setSellerAppPriority(data.getString("sellerapp_priority", ""));
+        model.setIsAdvanceTarget(data.getString("is_advance_target", "false").equals("true"));
         return model;
     }
 
@@ -67,10 +70,30 @@ public class ApplinkNotificationHelper {
             Uri uri = Uri.parse(appLinks);
             String host = uri.getHost();
             if (host.equals("talk") || host.equals("topchat")) {
-                return Integer.parseInt(uri.getLastPathSegment());
+                return getTruncatedMessageId(uri.getLastPathSegment());
             }
             return 0;
         } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private static int getTruncatedMessageId(String messageId) {
+        int LIMIT_NOTIFICATION_ID = 5;
+        int result;
+        if (messageId.length() > LIMIT_NOTIFICATION_ID) {
+            String tempId = messageId.substring(messageId.length() - LIMIT_NOTIFICATION_ID);
+            result = safelyCastStringToInt(tempId);
+        } else {
+            result = safelyCastStringToInt(messageId);
+        }
+        return result;
+    }
+
+    private static int safelyCastStringToInt(String stringText) {
+        try {
+            return Integer.parseInt(stringText);
+        } catch (Throwable ignored) {
             return 0;
         }
     }
@@ -160,9 +183,17 @@ public class ApplinkNotificationHelper {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT;
     }
 
+    private static final int CONSUMER_PRO_APPLICATION = 3;
+
     public static Boolean isTargetApp(ApplinkNotificationModel applinkNotificationModel) {
-        return (applinkNotificationModel.getTargetApp() == null) ||
-                (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        if (GlobalConfig.APPLICATION_TYPE == CONSUMER_PRO_APPLICATION) {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.PACKAGE_CONSUMER_APP));
+        }
+        else {
+            return (applinkNotificationModel.getTargetApp() == null) ||
+                    (applinkNotificationModel.getTargetApp() != null && applinkNotificationModel.getTargetApp().contains(GlobalConfig.APPLICATION_ID));
+        }
     }
 }
 

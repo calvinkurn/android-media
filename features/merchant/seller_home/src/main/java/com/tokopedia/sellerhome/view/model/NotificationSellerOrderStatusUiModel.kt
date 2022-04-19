@@ -5,8 +5,6 @@ package com.tokopedia.sellerhome.view.model
  */
 
 data class NotificationSellerOrderStatusUiModel(
-        val arriveAtDestination: Int = 0,
         val newOrder: Int = 0,
-        val readyToShip: Int = 0,
-        val shipped: Int = 0
+        val readyToShip: Int = 0
 )

@@ -1,0 +1,133 @@
+{
+  "event_content_by_id": {
+    "data": {
+      "title": "",
+      "meta_description": "",
+      "meta_title": "",
+      "meta_index": 0,
+      "meta_follow": 0,
+      "section_data": [
+        {
+          "priority": 3,
+          "section": "Gimana cara ke sana?",
+          "content": [
+            {
+              "id": "143",
+              "content_section_id": "82",
+              "priority": 1,
+              "content_type_id": 9,
+              "value_image": {
+                "url": "",
+                "redirect_url": ""
+              },
+              "value_header_image": {
+                "header_text": "",
+                "columns": [],
+                "footer_text": ""
+              },
+              "value_accordion": [],
+              "value_text": "",
+              "value_label_bullet": [],
+              "value_image_bullet": [],
+              "value_carousel": [],
+              "value_bullet_list": [
+                {
+                  "bullet": "1",
+                  "title": "Dari hotel:",
+                  "description": "Tanyakan kepada pihak hotel apakah mereka menyediakan layanan shuttle ke Universtal Studio Japan"
+                },
+                {
+                  "bullet": "2",
+                  "title": "Dengan Bus:",
+                  "description": "35 - 45 menit dari Kansai Airport dan 45 menit dari Itami Airport"
+                },
+                {
+                  "bullet": "3",
+                  "title": "Dengan kereta:",
+                  "description": "dari Namba, naiklah kereta jalur Hnashin Namba ke Nishikujo(perhentian ke-4) lalu pindah ke kereta jalur JR Yumasaki dan turun di stasiun Universal"
+                },
+                {
+                  "bullet": "4",
+                  "title": "Dengan Pesawat:",
+                  "description": "dari Namba, naiklah kereta jalur Hnashin Namba ke Nishikujo(perhentian ke-4) lalu pindah ke kereta jalur JR Yumasaki dan turun di stasiun Universal"
+                },
+                {
+                  "bullet": "5",
+                  "title": "Dengan Kapal:",
+                  "description": "dari Namba, naiklah kereta jalur Hnashin Namba ke Nishikujo(perhentian ke-4) lalu pindah ke kereta jalur JR Yumasaki dan turun di stasiun Universal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "priority": 2,
+          "section": "Informasi Penting",
+          "content": [
+            {
+              "id": "141",
+              "content_section_id": "98",
+              "priority": 1,
+              "content_type_id": 5,
+              "value_image": {
+                "url": "",
+                "redirect_url": ""
+              },
+              "value_header_image": {
+                "header_text": "",
+                "columns": [],
+                "footer_text": ""
+              },
+              "value_accordion": [
+                {
+                  "title": "Cara Pengunaan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                },
+                {
+                  "title": "Syarat & ketentuan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                },
+                {
+                  "title": "Kebijakan Pembatalan",
+                  "content": "Anda akan menerima email konfirmasi dan voucher sesaat setelah pemesanan..\n\nTest 123 click "
+                }
+              ],
+              "value_text": "",
+              "value_label_bullet": [],
+              "value_image_bullet": [],
+              "value_carousel": [],
+              "value_bullet_list": []
+            }
+          ]
+        },
+        {
+          "priority": 1,
+          "section": "Tentang Kegiatan Ini",
+          "content": [
+            {
+              "id": "118",
+              "content_section_id": "83",
+              "priority": 1,
+              "content_type_id": 1,
+              "value_image": {
+                "url": "",
+                "redirect_url": ""
+              },
+              "value_header_image": {
+                "header_text": "",
+                "columns": [],
+                "footer_text": ""
+              },
+              "value_accordion": [],
+              "value_text": "<div><p>Mount Fuji adalah salah satu ikon terkenal di dunia sekaligus menyimbolkan negara ini secara visual. Pada tour klasik ini, anda akan dibantu oleh pemandu berbahasa Inggris atau Mandarin dan dibawa ke tempat-tempat terbaik. Jelajahi mulai dari Shinjuku Prince Hotel hingga Fuji Hakone yang merupakan sebuah taman nasional indah. Serta, kagumi apiknya ladang tanaman yang memiliki warna-warna cantik dan dapat memanjakan mata.</p><p>Dari sini, anda akan jalan-jalan melihat Oshino Hakkai dan mengagumi sebuah area yang terdiri dari 8 danau cantik. Danau-danau ini terbentuk dari lelehan es Mount Fuji.</p><p>Langkah akan dilanjutkan dan berhenti di Peace Park Stupa untuk melihat pagoda Buddha putih yang menawan sebagai simbol perdamaian. Selanjutnya, anda memiliki banyak waktu luang untuk berbelanja di Gotemba Premium Outlet dan mengakhiri hari di Takashimaya, wilayah yang terkenal di Shinjuku.</p></div><div><img alt=\"Mount fuji day tour\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/mi38qaopqcsiqgtfqev9/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\" title=\"Image: https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/mi38qaopqcsiqgtfqev9/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Kagumi keindahan alam Mount Fuji yang cantik dan area-area sekitarnya</div></div><div><img alt=\"Mount fuji day tour\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/l7uxdh4cyi4uqu4cl6bj/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Sebagai salah satu tempat paling cantik di dunia, anda akan melihat kesempurnaan dari taman nasionalnya</div></div><div><img alt=\"Mount fuji day tour\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/eeinajk4jwexr8jtqkjl/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Danau-danau indah yang terbentuk dari lelehan es Mount Fuji adalah salah satu primadona dari tour ini</div></div><div><img alt=\"Mount fuji day tour\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1280,h_960,f_auto/w_79,x_14,y_14,g_south_west,l_klook_water/activities/mmy2wx2iqqxh5vkktyfb/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Cicipi teh hijau yang nikmat dan hangat, ini merupakan cara sempurna untuk menyiasati temperatur Mount Fuji yang dingin</div></div><div><img alt=\"Oshino Hakkai\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_863,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/fhjjbxz2ozdtwxgpdiod/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Rasakan salah satu sumber air panas terbaik di Jepang, di desa Oshino Hakkai</div></div><div><img alt=\"Mount fuji day tour\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1295,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/o7pefqvznn2kg43wsvhm/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"><div>Dan.. akhiri hari anda dengan pengalaman berbelanja!</div></div><div><img alt=\"\" src=\"https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_873,h_1080,f_auto/w_53,x_10,y_10,g_south_west,l_klook_water/activities/oqgpidlctzqknfddjfoh/MountFujiClassicTour:OshinoHakkai,GotembaPremiumOutletsMatchaExperience.jpeg\"></div>",
+              "value_label_bullet": [],
+              "value_image_bullet": [],
+              "value_carousel": [],
+              "value_bullet_list": []
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

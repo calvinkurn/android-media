@@ -16,7 +16,7 @@ class UpdateShopShowcaseUseCase(
 
     override suspend fun executeOnBackground(): UpdateShopShowcaseResponse {
         val request = GraphqlRequest(MUTATION, UpdateShopShowcaseBaseResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
         val responseData = response.getData<UpdateShopShowcaseBaseResponse>(UpdateShopShowcaseBaseResponse::class.java)
         return responseData.updateShopShowcaseResponse
     }

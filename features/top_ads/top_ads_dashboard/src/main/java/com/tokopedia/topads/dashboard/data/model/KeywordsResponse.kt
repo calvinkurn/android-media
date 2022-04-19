@@ -72,7 +72,7 @@ data class KeywordsResponse(
             @field:SerializedName("current")
             val current: Int = 0,
 
-            @field:SerializedName("min")
-            val min:Int = 0
+            @field:SerializedName("max")
+            val max:Int = 0
     )
 }

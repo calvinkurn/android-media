@@ -4,12 +4,12 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.domain.model.FpmFileLogModel
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel
+import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity
 import com.tokopedia.config.GlobalConfig
 

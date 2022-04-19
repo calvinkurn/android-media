@@ -10,16 +10,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/dp_16" />
+        app:layout_constraintGuide_begin="@dimen/unify_space_16" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCompanyAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/sbank_company_account"
-        android:textColor="@color/Neutral_N700_96"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />
@@ -28,30 +28,27 @@
         android:id="@+id/tvLiability"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:text="@string/sbank_limited_liability"
-        android:textColor="@color/Neutral_N700_68"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvCompanyAccount"
         app:typographyType="body_3" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewCompanyAccount"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/Neutral_N75"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvLiability" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivCompanyAccount"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:rotation="270"
-        android:src="@drawable/unify_chips_ic_chevron_normal"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toTopOf="@+id/viewCompanyAccount"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent" />
@@ -61,10 +58,10 @@
         android:id="@+id/tvFamilyAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/sbank_family_account"
-        android:textColor="@color/Neutral_N700_96"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewCompanyAccount"
         app:typographyType="body_2" />
@@ -73,30 +70,27 @@
         android:id="@+id/tvDontHavePersonalAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:text="@string/sbank_dont_have_personal_Account"
-        android:textColor="@color/Neutral_N700_68"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvFamilyAccount"
         app:typographyType="body_3" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewFamilyAccount"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/Neutral_N75"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvDontHavePersonalAccount" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFamilyAccount"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:rotation="270"
-        android:src="@drawable/unify_chips_ic_chevron_normal"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@+id/viewFamilyAccount"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintTop_toBottomOf="@+id/viewCompanyAccount" />
@@ -106,10 +100,10 @@
         android:id="@+id/tvOtherAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/sbank_other_account"
-        android:textColor="@color/Neutral_N700_96"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/viewFamilyAccount"
         app:typographyType="body_2" />
@@ -118,30 +112,27 @@
         android:id="@+id/tvErrorInInputData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="@dimen/unify_space_2"
         android:text="@string/sbank_error_input_data"
-        android:textColor="@color/Neutral_N700_68"
-        android:textStyle="bold"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvOtherAccount"
         app:typographyType="body_3" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewOtherAccount"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/Neutral_N75"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toBottomOf="@+id/tvErrorInInputData" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivOtherAccount"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:rotation="270"
-        android:src="@drawable/unify_chips_ic_chevron_normal"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toTopOf="@+id/viewOtherAccount"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintTop_toBottomOf="@+id/viewFamilyAccount" />
@@ -149,8 +140,8 @@
 
     <View
         android:id="@+id/viewCompanyAccountClickable"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
         app:layout_constraintBottom_toTopOf="@id/viewCompanyAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -158,8 +149,8 @@
 
     <View
         android:id="@+id/viewFamilyAccountClickable"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
         app:layout_constraintBottom_toTopOf="@id/viewFamilyAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,8 +158,8 @@
 
     <View
         android:id="@+id/viewOtherAccountClickable"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="@dimen/unify_space_0"
         app:layout_constraintBottom_toTopOf="@id/viewOtherAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -187,5 +178,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/dp_16" />
+        app:layout_constraintGuide_end="@dimen/unify_space_16" />
 </androidx.constraintlayout.widget.ConstraintLayout>

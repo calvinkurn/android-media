@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.GMCommonUrl
-import com.tokopedia.gm.common.constant.GMParamConstant
 import com.tokopedia.gm.common.data.interceptor.PowerMerchantSubscribeInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.network.NetworkRouter
@@ -21,9 +18,9 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import javax.inject.Named
-import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 
 /**
  * @author by milhamj on 12/06/19.
@@ -105,22 +102,9 @@ class GmCommonModule {
         return UserSession(context)
     }
 
+    @GmCommonQualifier
     @Provides
-    @Named(GMParamConstant.RAW_DEACTIVATION)
-    fun providePmOffRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)
+    fun provideGqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
-
-    @Provides
-    @Named(GMParamConstant.RAW_ACTIVATION)
-    fun providePmOnRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_activation)
-    }
-
-    @Provides
-    @Named(GMParamConstant.RAW_GM_STATUS)
-    fun provicePmStatusRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)
-    }
-
 }

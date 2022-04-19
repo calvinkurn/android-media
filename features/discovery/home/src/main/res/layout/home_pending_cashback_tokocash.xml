@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.8"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_bottom_sheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/home_dms_color_pending_tokocash"
+                tools:text="Contoh Judul"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/body_bottom_sheet"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                style="@style/TextView.Small"
+                tools:text="Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. "/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/link_bottom_sheet"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                style="@style/TextView.Small.Green"
+                tools:text="Lihat selengkapnya (Contoh)"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_bottom_sheet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxHeight="96dp"
+            android:padding="10dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_desc_tokopoint"
+            tools:src="@drawable/ic_badge_gold"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/button_opsi_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:background="@drawable/rect_white_rounded_stroke_gray"
+        android:textColor="@color/home_dms_color_pending_tokocash_disabled"
+        tools:text="Test" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/button_close_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_button_green_enabled"
+        android:gravity="center"
+        android:text="@string/text_ticker_action_close"
+        android:textColor="@color/Unify_Static_White" />
+
+</LinearLayout>

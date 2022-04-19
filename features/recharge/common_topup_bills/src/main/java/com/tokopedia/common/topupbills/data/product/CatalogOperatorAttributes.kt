@@ -4,10 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by resakemal on 28/11/19.
  */
+@Parcelize
 class CatalogOperatorAttributes(
         @SerializedName("name")
         @Expose
@@ -32,42 +35,18 @@ class CatalogOperatorAttributes(
         val helpImage: String = "",
         @SerializedName("operator_labels")
         @Expose
-        val operatorLabel: List<String> = listOf()
-) : Parcelable {
+        val operatorLabel: List<String> = listOf(),
+        @SerializedName("prefix")
+        @Expose
+        val prefix: List<RechargePrefix> = listOf(),
+        @SerializedName("product_descriptions")
+        @Expose
+        val productDescriptions: List<String> = listOf(),
+        @SerializedName("operator_descriptions")
+        @Expose
+        val operatorDescriptions: List<String> = listOf(),
+        @SerializedName("default_product_id")
+        @Expose
+        val defaultProductId: String = "",
 
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createStringArrayList()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(name)
-        parcel.writeString(image)
-        parcel.writeString(imageUrl)
-        parcel.writeString(description)
-        parcel.writeString(helpCta)
-        parcel.writeString(helpText)
-        parcel.writeString(helpImage)
-        parcel.writeStringList(operatorLabel)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<CatalogOperatorAttributes> {
-        override fun createFromParcel(parcel: Parcel): CatalogOperatorAttributes {
-            return CatalogOperatorAttributes(parcel)
-        }
-
-        override fun newArray(size: Int): Array<CatalogOperatorAttributes?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

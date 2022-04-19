@@ -19,5 +19,5 @@ fun Bitmap.toTempFile(context: Context, filename: String): File {
 }
 
 private fun createLocalFile(context: Context, fileNameWithFormat: String): File {
-    return File(context.filesDir, fileNameWithFormat)
+    return File(context.filesDir, "Tokopedia/"+ fileNameWithFormat)
 }

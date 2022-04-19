@@ -1,7 +1,8 @@
 package com.tokopedia.logger.datasource.cloud
 
-abstract class LoggerCloudDataSource<T,U> {
+import com.tokopedia.logger.model.scalyr.ScalyrConfig
+import com.tokopedia.logger.model.scalyr.ScalyrEvent
 
-    abstract suspend fun sendLogToServer(config: T, eventList: List<U>): Boolean
-
+interface LoggerCloudDataSource {
+    suspend fun sendLogToServer(config: ScalyrConfig, eventList: List<ScalyrEvent>): Boolean
 }

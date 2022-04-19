@@ -1,5 +1,6 @@
 package com.tokopedia.websocket
 
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
@@ -24,12 +25,13 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization", "Bearer $accessToken")
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
     }
 
     private fun initWebSocket(subscriber: Subscriber<in WebSocketInfo>, accessToken: String) {
         webSocket = client.newWebSocket(getRequest(url, accessToken), object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response?) {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
                 if (!subscriber.isUnsubscribed) {
                     subscriber.onNext(WebSocketInfo(webSocket, true))
                 }
@@ -48,9 +50,13 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.onNext(WebSocketInfo.createReconnect())
-                    subscriber.onError(t)
+                try {
+                    if (!subscriber.isUnsubscribed) {
+                        subscriber.onNext(WebSocketInfo.createReconnect())
+                        subscriber.onError(t)
+                    }
+                } catch (e: Throwable) {
+
                 }
             }
 

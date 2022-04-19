@@ -20,11 +20,11 @@ class SettingStateViewModel @Inject constructor(
 ): ViewModel(), SettingFieldContract.SettingState {
 
     private val pinnedItems = arrayListOf<VisitableSettings>()
-    private val temporaryList = arrayListOf<ParentSetting>()
+    private val settingStateList = arrayListOf<ParentSetting>()
 
     override fun getPinnedItems() = pinnedItems
 
-    override fun getSettingStates() = temporaryList
+    override fun getSettingStates() = settingStateList
 
     private fun addPinnedItems(
             data: UserSettingDataView,
@@ -56,13 +56,12 @@ class SettingStateViewModel @Inject constructor(
     override fun addPinnedEmailItems(data: UserSettingDataView) {
         addPinnedItems(data) {
             val email = userSession.email
-            val hasEmail = email.isNotEmpty()
 
-            // pinned add email
-            addPinnedPermission(hasEmail, activationEmail())
+            // pinned recom tag to adding a new email if user doesn't have
+            addPinnedPermission(email.isEmpty(), activationEmail())
 
             // pinned change email
-            if (hasEmail) pinnedItems.add(changeEmail(email))
+            if (email.isNotEmpty()) pinnedItems.add(changeEmail(email))
         }
     }
 
@@ -87,13 +86,13 @@ class SettingStateViewModel @Inject constructor(
 
     override fun saveLastStateAll(list: MutableList<Visitable<*>>) {
         val listMapper = mapCloneSettings(list)
-        temporaryList.clear()
-        temporaryList.addAll(listMapper)
+        settingStateList.clear()
+        settingStateList.addAll(listMapper)
     }
 
     override fun updateSettingState(setting: ParentSetting?) {
         if (setting == null) return
-        temporaryList.find { it.key == setting.key }.let {
+        settingStateList.find { it.key == setting.key }.let {
             it.apply {
                 it?.status = setting.status
                 it?.isEnabled = setting.isEnabled

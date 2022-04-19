@@ -5,13 +5,14 @@
     android:id="@+id/yang_lagi_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_10">
+    android:layout_marginBottom="10dp">
 
     <ImageView
         android:id="@+id/item_icon"
+        android:contentDescription="@string/content_desc_item_icon"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
-        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,14 +21,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_name"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center"
         android:lines="2"
         android:maxLines="2"
-        android:padding="@dimen/dp_10"
-        android:textColor="@color/white"
+        android:padding="10dp"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_icon"
@@ -35,6 +36,6 @@
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="kesehatan"
-        tools:textColor="@color/black" />
+        tools:textColor="@color/Unify_N700" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

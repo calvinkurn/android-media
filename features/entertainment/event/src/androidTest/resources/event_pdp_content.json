@@ -1,0 +1,84 @@
+[
+  {
+    "data": {
+      "event_content_by_id": {
+        "data": {
+          "title": "",
+          "meta_description": "",
+          "meta_title": "",
+          "meta_index": 0,
+          "meta_follow": 0,
+          "section_data": [
+            {
+              "priority": 2,
+              "section": "Informasi Penting",
+              "content": [
+                {
+                  "id": "154",
+                  "content_section_id": "146",
+                  "priority": 1,
+                  "content_type_id": 5,
+                  "value_image": {
+                    "url": "",
+                    "redirect_url": ""
+                  },
+                  "value_header_image": {
+                    "header_text": "",
+                    "columns": [],
+                    "footer_text": ""
+                  },
+                  "value_accordion": [
+                    {
+                      "title": "Cara Penggunaan",
+                      "content": "-Harap memperhatikan kategori tiket ! Untuk WNI harap memilih tiket dengan Indonesian ID Card/KTP \n-Anda akan mendapatkan konfirmasi booking via email\n-Anda bisa langsung masuk ke atraksi dengan voucher ini\n- Voucher dapat digunakan hingga 31 Maret 2021"
+                    },
+                    {
+                      "title": "Syarat dan Ketentuan",
+                      "content": "- Harap memperhatikan kategori tiket ! Untuk WNI harap memilih tiket dengan Indonesian ID Card/KTP \n-Voucher dapat digunakan hingga 24 Desember 2020\n-Kunjungan terakhir: 1 jam sebelum lokasi tutup\n-Anak berusia 0-1 tahun dapat masuk secara gratis\n-Berlaku harga yang sama untuk anak berusia 13+ tahun dan orang dewasa"
+                    },
+                    {
+                      "title": "Kebijakan Pembatalan",
+                      "content": "Pemesanan anda tidak dapat dibatalkan, di-refund, atau diubah"
+                    }
+                  ],
+                  "value_text": "",
+                  "value_label_bullet": [],
+                  "value_image_bullet": [],
+                  "value_carousel": [],
+                  "value_bullet_list": []
+                }
+              ]
+            },
+            {
+              "priority": 1,
+              "section": "Tentang Kegiatan Ini",
+              "content": [
+                {
+                  "id": "155",
+                  "content_section_id": "147",
+                  "priority": 1,
+                  "content_type_id": 1,
+                  "value_image": {
+                    "url": "",
+                    "redirect_url": ""
+                  },
+                  "value_header_image": {
+                    "header_text": "",
+                    "columns": [],
+                    "footer_text": ""
+                  },
+                  "value_accordion": [],
+                  "value_text": "\u003cp\u003eBeli tiket Bali Zoo lebih murah dengan paket Buy Now, Explore Whenever ! Voucher valid untuk pemakaian hingga 24 Desember 2020\u003cbr\u003e\u003c/p\u003e\u003cp\u003eLihat lebih dekat flora dan fauna eksotis Indonesia dengan mengunjungi Bali Zoo. Rumah bagi lebih dari 350 fauna, kebun binatang ini terletak di jantung pulau Bali dan menawarkan pengalaman edukasi dari alam menakjubkan di Bali.\u003c/p\u003e\u003cp\u003ePilih antara kunjungan reguler, tour \"explorer\" selama sehari dengan memberi makan fauna, transportasi, dan makan siang, atau anda lebih memilih untuk bertemu dengan fauna Bali Zoo di malam hari yang sudah termasuk dengan makan malam dan transportasi.\u003c/p\u003e\u003cp\u003eDengan banyak hal yang bisa anda saksikan, lakukan, dan jelajahi, Bali Zoo Tour adalah aktivitas terbaik untuk anda dan keluarga. Dengan layanan antar jemput hotel yang nyaman, yang harus anda lakukan adalah menikmati waktu sebaik mungkin.\u003c/p\u003e",
+                  "value_label_bullet": [],
+                  "value_image_bullet": [],
+                  "value_carousel": [],
+                  "value_bullet_list": []
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+]

@@ -62,7 +62,6 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardDataModel?) {
         if(element?.playCardHome == null){
             container.hide()
-            listener.getPlayChannel(adapterPosition)
         } else {
             onBind(element)
         }
@@ -167,8 +166,8 @@ class PlayCardViewHolder(
         helper?.onActivityResume()
     }
 
-    fun pause(){
-        helper?.onActivityPause()
+    fun pause(shouldPausePlay: Boolean){
+        helper?.onActivityPause(shouldPausePlay)
     }
 
     fun getHelper() = helper

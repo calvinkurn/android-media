@@ -1,0 +1,71 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 6,
+            "title": "Promo Loyal Dual",
+            "sub_title": "",
+            "template": "DUAL_BANNERS",
+            "app_link": "tokopedia://",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression dual banners\",\"eventLabel\":\"non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"27\",\"item_name\":\"Test 1\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/05e377b9-1d3c-4ad6-b9a3-e4aec8419a0a.png\",\"creative_slot\":\"0\"},{\"item_id\":\"28\",\"item_name\":\"Test 2\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/a7b24ca1-071e-4ac8-a229-8460f8195010.png\",\"creative_slot\":\"1\"}]}"
+              }
+            ],
+            "items": [
+              {
+                "id": 27,
+                "title": "Test 1",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click dual banners\",\"eventLabel\":\"0 - Promo Loyal Dual - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"27\",\"item_name\":\"Test 1\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/05e377b9-1d3c-4ad6-b9a3-e4aec8419a0a.png\",\"creative_slot\":\"0\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://recharge/home?platform_id=32",
+                "web_link": "https://www.tokopedia.com/pulsa",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/05e377b9-1d3c-4ad6-b9a3-e4aec8419a0a.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              },
+              {
+                "id": 28,
+                "title": "Test 2",
+                "sub_title": "",
+                "tracking": [
+                  {
+                    "action": "click",
+                    "data": "{\"event\":\"select_content\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"click dual banners\",\"eventLabel\":\"1 - Promo Loyal Dual - non login\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[{\"item_id\":\"28\",\"item_name\":\"Test 2\",\"creative_name\":\"https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/a7b24ca1-071e-4ac8-a229-8460f8195010.png\",\"creative_slot\":\"1\"}]}"
+                  }
+                ],
+                "content": "",
+                "app_link": "tokopedia://recharge/home?platform_id=32",
+                "web_link": "https://www.tokopedia.com/pulsa",
+                "text_link": "",
+                "media_url": "https://ecs7.tokopedia.net/img/AtBaCW/2020/9/9/a7b24ca1-071e-4ac8-a229-8460f8195010.png",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

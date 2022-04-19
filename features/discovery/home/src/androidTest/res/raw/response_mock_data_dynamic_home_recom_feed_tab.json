@@ -1,0 +1,60 @@
+[
+    {
+        "data": {
+            "get_home_recommendation": {
+                "recommendation_tabs": [
+                    {
+                        "id": 1,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/8/29/5479567/5479567_1033f532-cda0-4096-9bd8-e94b2d79184d.png",
+                        "name": "Tab 1"
+                    },
+                    {
+                        "id": 35,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2020/3/2/5479567/5479567_2df39179-b90e-4e15-9a29-03fa24609e85.png",
+                        "name": "Tab 2"
+                    },
+                    {
+                        "id": 34,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/8/29/5479567/5479567_1033f532-cda0-4096-9bd8-e94b2d79184d.png",
+                        "name": "Tab 3"
+                    },
+                    {
+                        "id": 9,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/8/29/5479567/5479567_9a3682ac-dc8e-4adb-872b-e174620ba9d0.png",
+                        "name": "Tab 4"
+                    },
+                    {
+                        "id": 18,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/10/14/5479567/5479567_7abe36b6-fee0-4a36-9947-b5e265319263.png",
+                        "name": "Tab 5"
+                    },
+                    {
+                        "id": 25,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/10/23/5479567/5479567_63edea90-b914-46d2-8056-e18f0c7b25d3.png",
+                        "name": "Tab 6"
+                    },
+                    {
+                        "id": 24,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/10/23/5479567/5479567_b11bde98-f8ad-44a5-b503-d86c285382c4.png",
+                        "name": "Tab 7"
+                    },
+                    {
+                        "id": 32,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2020/2/24/5479567/5479567_579af218-4680-4504-a968-36f7880d77fd.png",
+                        "name": "Tab 8"
+                    },
+                    {
+                        "id": 37,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/8/29/5479567/5479567_1033f532-cda0-4096-9bd8-e94b2d79184d.png",
+                        "name": "Tab 9"
+                    },
+                    {
+                        "id": 42,
+                        "image_url": "https://images.tokopedia.net/img/cache/100/attachment/2019/8/29/5479567/5479567_1033f532-cda0-4096-9bd8-e94b2d79184d.png",
+                        "name": "Tab 10"
+                    }
+                ]
+            }
+        }
+    }
+]

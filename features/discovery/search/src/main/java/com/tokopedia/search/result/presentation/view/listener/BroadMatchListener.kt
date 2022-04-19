@@ -1,10 +1,22 @@
 package com.tokopedia.search.result.presentation.view.listener
 
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 
 interface BroadMatchListener {
-    fun onBroadMatchItemClicked(broadMatchItemViewModel: BroadMatchItemViewModel)
+    fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
 
-    fun onBroadMatchSeeMoreClicked(broadMatchViewModel: BroadMatchViewModel)
+    fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView)
+
+    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
+
+    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+
+    fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView)
+
+    val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
+
+    val productCardLifecycleObserver: ProductCardLifecycleObserver?
 }

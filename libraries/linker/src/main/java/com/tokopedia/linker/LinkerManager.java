@@ -1,5 +1,6 @@
 package com.tokopedia.linker;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.linker.interfaces.WrapperInterface;
@@ -92,5 +93,31 @@ public class LinkerManager {
         if(wrapperObj != null){
             wrapperObj.initSession();
         }
+    }
+
+    public void initSession(Activity activity, boolean uriHaveCampaignData){
+        if(wrapperObj != null){
+            wrapperObj.initSession(activity, uriHaveCampaignData);
+        }
+    }
+
+    public void setDelayedSessionInitFlag(){
+        if(wrapperObj != null){
+            wrapperObj.setDelayedSessionInitFlag();
+        }
+    }
+
+    public void setDataFromInstallReferrerParams(String installReferrerData) {
+        if(wrapperObj != null){
+            wrapperObj.setDataFromInstallReferrerParams(installReferrerData);
+        }
+    }
+
+    public boolean isFirstAppOpen(Context context){
+        boolean isFirstAppOpen = false;
+        if(wrapperObj != null){
+            isFirstAppOpen = wrapperObj.isFirstOpen(context);
+        }
+        return isFirstAppOpen;
     }
 }

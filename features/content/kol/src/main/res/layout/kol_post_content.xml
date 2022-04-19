@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/dp_5"
-    android:paddingRight="@dimen/dp_5">
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
 
     <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
         android:id="@+id/imageViewPager"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/imageViewPager"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginBottom="4dp"
         app:tabBackground="@drawable/kol_tab_selector"
         app:tabGravity="center"
         app:tabIndicatorHeight="0dp" />
@@ -28,12 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/imageViewPager"
         android:layout_alignStart="@id/imageViewPager"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_kol_circle_white"
         android:fontFamily="sans-serif-medium"
-        android:padding="@dimen/dp_8"
+        android:padding="8dp"
         android:textColor="@color/black_54"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal"
@@ -47,9 +47,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/imageViewPager"
         android:gravity="center"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4"
-        android:paddingTop="@dimen/dp_10">
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/tooltip"
@@ -72,14 +72,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_kol_rounded_white"
-            android:elevation="@dimen/dp_0"
+            android:elevation="0dp"
             android:fontFamily="sans-serif-medium"
             android:foreground="?android:attr/selectableItemBackground"
             android:lineSpacingExtra="4sp"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
             android:text="@string/kol_add_photo"
             android:textAllCaps="false"
             android:textColor="@color/black_54"
@@ -94,7 +94,7 @@
     <View
         android:id="@+id/bottom_space"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10"
+        android:layout_height="10dp"
         android:layout_below="@id/tooltip_area"
         android:visibility="gone"
         tools:visibility="visible" />

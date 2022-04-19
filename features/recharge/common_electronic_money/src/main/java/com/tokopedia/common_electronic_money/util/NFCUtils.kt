@@ -32,5 +32,12 @@ class NFCUtils {
             return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
                     cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16)
         }
+
+        @JvmStatic
+        fun stringToByteArrayRadix(str: String): ByteArray{
+            return str.chunked(2)
+                    .map { it.toInt(16).toByte() }
+                    .toByteArray()
+        }
     }
 }

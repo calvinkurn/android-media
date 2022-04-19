@@ -1,11 +1,23 @@
-query dynamicHomeChannel($type: String) {
+query dynamicHomeChannel($type: String, $location: String) {
     dynamicHomeChannel {
-        channels(type: $type) {
+        channels(type: $type, location: $location) {
             id
             name
             layout
+            pageName
             type
             campaignID
+            widgetParam
+            contextualInfo
+            campaignCode
+            viewAllCard {
+                id
+                contentType
+                title
+                description
+                imageUrl
+                gradientColor
+            }
             header {
                 id
                 name
@@ -15,6 +27,8 @@ query dynamicHomeChannel($type: String) {
                 expiredTime
                 backColor
                 backImage
+                subtitle
+                textColor
             }
             hero {
                 id
@@ -39,16 +53,40 @@ query dynamicHomeChannel($type: String) {
                 productClickUrl
                 impression
                 cashback
+                rating
+                ratingAverage
+                count_review
+                warehouseID
                 discountPercentage
                 freeOngkir {
                     isActive
                     imageUrl
                 }
+                shop{
+                    shopID
+                    name
+                    applink
+                    city
+                    imageUrl
+                    url
+                }
+                campaignCode
                 labelGroup {
                     position
                     title
                     type
+                    url
                 }
+                back_color
+                productImageUrl
+                benefit{
+                    type
+                    value
+                }
+                badges{
+                    image_url
+                }
+                expiredTime
             }
             banner {
                 id

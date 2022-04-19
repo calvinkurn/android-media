@@ -1,0 +1,294 @@
+{
+  "data": {
+    "GetSellerDashboardPageLayout": {
+      "widget": [
+        {
+          "widgetType": "section",
+          "title": "Penting hari ini",
+          "subtitle": "",
+          "tooltip": {
+            "title": "Penting hari ini",
+            "content": "",
+            "show": true,
+            "list": [
+              {
+                "title": "Pesanan baru",
+                "description": "Jumlah pesanan yang perlu diproses."
+              },
+              {
+                "title": "Siap dikirim",
+                "description": "Jumlah pesanan yang perlu dikirim."
+              },
+              {
+                "title": "Komplain pesanan",
+                "description": "Jumlah komplain dari pembeli yang perlu diselesaikan."
+              },
+              {
+                "title": "Chat belum dibaca",
+                "description": "Jumlah chat dari pembeli yang perlu dibaca."
+              },
+              {
+                "title": "Diskusi belum dibaca",
+                "description": "Jumlah diskusi dari pembeli yang perlu dibaca."
+              }
+            ]
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "",
+          "applink": "",
+          "dataKey": "",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Pesanan baru",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [
+            {
+              "name": "test",
+              "value": "test"
+            }
+          ],
+          "url": "https://seller-staging.tokopedia.com/myshop_order?status=new_order",
+          "applink": "tokopedia://seller/new-order",
+          "dataKey": "newOrder",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Siap dikirim",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/myshop_order?status=confirm_shipping",
+          "applink": "tokopedia://seller/shipment",
+          "dataKey": "readyToShipOrder",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Komplain pesanan",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/resolution-center/inbox/seller",
+          "applink": "",
+          "dataKey": "complaint",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Chat baru",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/chat",
+          "applink": "",
+          "dataKey": "unreadChat",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Diskusi belum dibaca",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": true,
+            "list": [
+              {
+                "title": "",
+                "description": ""
+              }
+            ]
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/inbox-talk",
+          "applink": "tokopedia://talk",
+          "dataKey": "discussion",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Ulasan belum dibalas",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/review/inbox",
+          "applink": "tokopedia://review",
+          "dataKey": "unrepliedReview",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "section",
+          "title": "Ringkasan penjualan",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": false,
+          "postFilter": [],
+          "url": "",
+          "applink": "",
+          "dataKey": "",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Produk terjual",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "/home-beta",
+          "applink": "",
+          "dataKey": "productSoldVerified",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "card",
+          "title": "Produk dilihat",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "/home-beta",
+          "applink": "",
+          "dataKey": "productViewStatistic",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "multiTrendline",
+          "title": "",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "/statistic/overview",
+          "applink": "",
+          "dataKey": "productActivity",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "section",
+          "title": "Performa toko",
+          "subtitle": "{DATE_YESTERDAY_PAST_7D} - {DATE_YESTERDAY}",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "",
+          "applink": "",
+          "dataKey": "",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "post",
+          "title": "Stok produk",
+          "subtitle": "",
+          "tooltip": {
+            "title": "Stok produk",
+            "content": "Pastikan stok produkmu tersedia agar dapat memenuhi semua pesanan pembeli.",
+            "show": true,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "",
+          "applink": "tokopedia://seller/product/manage?filter=isEmptyStockOnly",
+          "dataKey": "lowStock",
+          "ctaText": "Tambah Stok Sekarang"
+        },
+        {
+          "widgetType": "carouselImage",
+          "title": "Khusus untukmu",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "",
+          "applink": "",
+          "dataKey": "home",
+          "ctaText": ""
+        },
+        {
+          "widgetType": "post",
+          "title": "Artikel",
+          "subtitle": "",
+          "tooltip": {
+            "title": "",
+            "content": "",
+            "show": false,
+            "list": []
+          },
+          "showEmpty": true,
+          "postFilter": [],
+          "url": "https://seller-staging.tokopedia.com/edu/articles/",
+          "applink": "tokopedia://webview?url=https://seller.tokopedia.com/edu/articles/",
+          "dataKey": "article",
+          "ctaText": "Selengkapnya"
+        }
+      ]
+    }
+  }
+}

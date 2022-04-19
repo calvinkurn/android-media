@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.contractor;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -29,7 +30,7 @@ public class CheckoutDealContractor {
 
         android.view.View getRootView();
 
-        void showPromoSuccessMessage(String text, String message, long discountAmount);
+        void showPromoSuccessMessage(String text, String message, long discountAmount, Boolean isCancel);
 
         void updateAmount(String s);
 
@@ -45,7 +46,11 @@ public class CheckoutDealContractor {
 
         void updatePromoCode(String code);
 
-        void clickGoToPromo();
+        void clickGoToPromo(Context context);
+
+        void clickGoToDetailPromo(Context context, String couponCode);
+
+        void clickGotToListPromoApplied(Context context, String promoCode);
 
     }
 }

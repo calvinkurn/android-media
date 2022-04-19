@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:padding="@dimen/phoneverification_dp_20">
+
+        <ImageView
+            android:id="@+id/img_app_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@null"
+            android:layout_marginTop="@dimen/phoneverification_dp_30" />
+
+        <TextView
+            android:id="@+id/tv_app_share_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_app_share"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/phoneverification_dp_15"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:text="@string/app_share_label_desc"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/fontSize_lvl3"
+            android:textStyle="normal" />
+
+        <EditText
+            android:id="@+id/tv_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_app_share_desc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/phoneverification_dp_15"
+            android:fontFamily="sans-serif"
+            android:gravity="left"
+            android:padding="@dimen/phoneverification_dp_15"
+            android:textColor="@color/Unify_G500"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/btn_activation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_phone_number"
+            android:layout_marginTop="@dimen/phoneverification_dp_30"
+            android:background="@color/Unify_G500"
+            android:gravity="center_horizontal|center_vertical"
+            android:padding="@dimen/phoneverification_dp_15"
+            android:text="@string/referral_verify_phone_number"
+            android:textColor="@color/Unify_N0"
+            android:textSize="@dimen/fontSize_lvl3" />
+    </RelativeLayout>
+
+</FrameLayout>

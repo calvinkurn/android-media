@@ -1,8 +1,13 @@
 package com.tokopedia.core.analytics.container;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -11,26 +16,38 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
+import com.tokopedia.analyticsdebugger.cassava.GtmLogger;
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,11 +61,19 @@ import timber.log.Timber;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.google.gson.Gson;
+
 public class GTMAnalytics extends ContextAnalytics {
+    public static final String OPEN_SCREEN = "openScreen";
+    public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String KEY_GCLID = "gclid";
+    public static final String CLIENT_ID = "clientId";
+    public static final String SESSION_IRIS = "sessionIris";
+    public static final String PROMOVIEW = "promoview";
     private static final String EMPTY_DEFAULT_VALUE = "none / other";
-
     private static final String KEY_DIMENSION_40 = "dimension40";
-
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
     private static final String KEY_ACTION = "eventAction";
@@ -56,22 +81,41 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String USER_ID = "userId";
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
-    public static final String OPEN_SCREEN = "openScreen";
-    public static final String CAMPAIGN_TRACK = "campaignTrack";
-    public static final String KEY_GCLID = "gclid";
-    public static final String CLIENT_ID = "clientId";
-    public static final String SESSION_IRIS = "sessionIris";
+    private static final String TRANSACTION = "transaction";
+    private static final String PRODUCTVIEW = "productview";
+    private static final String PRODUCTCLICK = "productclick";
+    private static final String VIEWPRODUCT = "viewproduct";
+    private static final String REMOVEFROMCART = "removefromcart";
+    private static final String ADDTOCART = "addtocart";
+    private static final String CHECKOUT = "checkout";
+    private static final String BEGINCHECKOUT = "begin_checkout";
+    // have status that describe pending.
+    private static final String CHECKOUT_PROGRESS = "checkout_progress";
+    private static final String PROMOCLICK = "promoclick";
+    public static String[] GENERAL_EVENT_KEYS = new String[]{
+            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
+    };
+    private static final String ECOMMERCE = "ecommerce";
     private final Iris iris;
-    private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
+    private final Long DELAY_GET_CONN = 120000L; //2 minutes
+    private TetraDebugger tetraDebugger;
     private String clientIdString = "";
-    private UserSessionInterface userSession;
+    private final UserSessionInterface userSession;
+    private final SharedPreferences sharedPreferences;
     private String connectionTypeString = "";
     private Long lastGetConnectionTimeStamp = 0L;
-    private final Long DELAY_GET_CONN = 120000L; //2 minutes
-
     private String mGclid = "";
-    // have status that describe pending.
+
+    private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
+    private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
+    private static long gtmSizeThresholdLog = 0;
+    private static final String EMBRACE_BREADCRUMB_FORMAT = "%s, %s";
+    private static final String EMBRACE_KEY = "GTMAnalytics";
+    private static final String EMBRACE_EVENT_NAME = "eventName";
+    private static final String EMBRACE_EVENT_ACTION = "eventAction";
+    private static final String EMBRACE_EVENT_LABEL = "eventLabel";
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -81,6 +125,124 @@ public class GTMAnalytics extends ContextAnalytics {
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         userSession = new UserSession(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public static String bruteForceCastToString(Object object) {
+        Integer integer = safeCast(object, Integer.class);
+
+        if (integer != null)
+            return integer.toString();
+
+        Long aLong = safeCast(object, Long.class);
+
+        if (aLong != null)
+            return aLong.toString();
+
+        Double aDouble = safeCast(object, Double.class);
+
+        if (aDouble != null)
+            return aDouble.toString();
+
+        String aString = safeCast(object, String.class);
+
+        return TextUtils.isEmpty(aString) ? "" : aString;
+    }
+
+    public static <T> T safeCast(Object o, Class<T> clazz) {
+        return clazz != null && clazz.isInstance(o) ? clazz.cast(o) : null;
+    }
+
+    public static Map<String, Object> clone(Map<String, Object> original) {
+        Map<String, Object> map = new HashMap<>();
+        for (Iterator<String> iterator = original.keySet().iterator(); iterator.hasNext(); ) {
+            String key = iterator.next();
+            Object value = original.get(key);
+            if (value != null) {
+                if (value instanceof Map) {
+                    map.put(key, clone((Map<String, Object>) value));
+                } else if (value instanceof Object[]) {
+                    map.put(key, clone((Object[]) value));
+                } else if (value instanceof List) {
+                    map.put(key, clone((List) value));
+                } else {
+                    map.put(key, value);
+                }
+            }
+        }
+        return map;
+    }
+
+    public static List clone(List original) {
+        List result = new ArrayList();
+        if (original != null) {
+            for (int i = 0; i < original.size(); i++) {
+                Object value = original.get(i);
+                if (value != null) {
+                    if (value instanceof Map) {
+                        result.add(clone((Map<String, Object>) value));
+                    } else if (value instanceof Object[]) {
+                        result.add(clone((Object[]) value));
+                    } else if (value instanceof List) {
+                        result.add(clone((List) value));
+                    } else {
+                        result.add(value);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static Object[] clone(Object[] original) {
+        Object[] result = new Object[original.length];
+        if (original != null) {
+            for (int i = 0; i < original.length; i++) {
+                Object value = original[i];
+                if (value != null) {
+                    if (value instanceof Map) {
+                        result[i] = clone((Map<String, Object>) value);
+                    } else if (value instanceof Object[]) {
+                        result[i] = clone((Object[]) value);
+                    } else if (value instanceof List) {
+                        result[i] = clone((List) value);
+                    } else {
+                        result[i] = value;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Map<String, Object> bundleToMap(Bundle extras) {
+        Map<String, Object> map = new HashMap<>();
+
+        Set<String> ks = extras.keySet();
+        for (String key : ks) {
+            Object object = extras.get(key);
+            if (object != null) {
+                if (object instanceof ArrayList) {
+                    object = convertAllBundleToMap((ArrayList) object);
+                } else if (object instanceof Bundle) {
+                    object = bundleToMap((Bundle) object);
+                }
+                map.put(key, object);
+            }
+        }
+        return map;
+    }
+
+    private static List<Object> convertAllBundleToMap(ArrayList list) {
+        List<Object> newList = new ArrayList<>();
+        for (Object object : list) {
+            if (object instanceof Bundle) {
+                newList.add(bundleToMap((Bundle) object));
+            } else {
+                newList.add(object);
+            }
+        }
+        return newList;
     }
 
     @Override
@@ -99,32 +261,49 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneralGtmV5Internal(map);
     }
 
-
     @Override
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
+
+        // https://tokopedia.atlassian.net/browse/AN-19138
+        if (!value.containsKey(ECOMMERCE)) {
+            sendGeneralEvent(value);
+            return;
+        }
+        // https://tokopedia.atlassian.net/browse/AN-19138
+
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(this::sendEnhanceECommerceEventOrigin)
+                .subscribe(getDefaultSubscriber());
+    }
+
+    private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
         // V4
         clearEnhanceEcommerce();
         pushGeneralEcommerce(clone(value));
 
         // V5
         try {
-
             String keyEvent = keyEvent(clone(value));
-
             // prevent sending null keyevent
-            if (keyEvent == null)
-                return;
+            if (keyEvent == null) return false;
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
             StringBuilder stacktrace = new StringBuilder();
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 stacktrace.append(String.format("%s\n", ste.toString()));
             }
-            GtmLogger.getInstance(context).saveError(stacktrace.toString());
-            if (e != null && !TextUtils.isEmpty(e.getMessage())) {
-                Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
+            Map<String, Object> logMap = Collections.singletonMap("stacktrace", stacktrace.toString());
+            GtmLogger.getInstance(context).save(logMap, null, AnalyticsSource.ERROR);
+            if (!TextUtils.isEmpty(e.getMessage())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("msg", e.getMessage());
+                map.put("err", e.toString());
+                ServerLogger.log(Priority.P2, "GTM_ANALYTIC_ERROR", map);
             }
         }
+        return true;
     }
 
     public Bundle addWrapperValue(Bundle bundle) {
@@ -137,7 +316,10 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        pushEventV5(eventName, addWrapperValue(value), context);
+        Bundle bundle = addWrapperValue(value);
+        bundle = addGclIdIfNeeded(eventName, bundle);
+        pushEventV5(eventName, bundle, context);
+        pushIris(eventName, bundle);
     }
 
     @SuppressWarnings("unchecked")
@@ -168,15 +350,6 @@ public class GTMAnalytics extends ContextAnalytics {
         } else {
             return null;
         }
-    }
-
-    public static class PurchaseKey {
-        private static final String KEY_ID = "id";
-        private static final String KEY_AFFILIATION = "affiliation";
-        private static final String KEY_REVENUE = "revenue";
-        private static final String KEY_TAX = "tax";
-        public static final String KEY_SHIPPING = "shipping";
-        public static final String KEY_COUPON = "coupon";
     }
 
     private Bundle factoryBundle(String keyEvent, Map<String, Object> value) {
@@ -466,17 +639,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    public static class CheckoutKey {
-
-        private static final String KEY_NAME = "name";
-        private static final String KEY_ID = "id";
-        private static final String KEY_PRICE = "price";
-        private static final String KEY_BRAND = "brand";
-        private static final String KEY_CAT = "category";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_QTY = "quantity";
-    }
-
     private Bundle checkoutProductMap(Map<String, Object> value) {
         String id = bruteForceCastToString(value.remove(CheckoutKey.KEY_ID));
         String name = (String) value.remove(CheckoutKey.KEY_NAME);
@@ -504,37 +666,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
 
         return checkoutBundle;
-    }
-
-    private static class ATCKey {
-        private static final String KEY_NAME = "name";
-        private static final String KEY_ID = "id";
-        private static final String KEY_PRICE = "price";
-        private static final String KEY_BRAND = "brand";
-        private static final String KEY_CAT = "category";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_QTY = "quantity";
-    }
-
-    private static class ProductKey {
-        private static final String KEY_NAME = "name";
-        private static final String KEY_ID = "id";
-        private static final String KEY_PRICE = "price";
-        private static final String KEY_BRAND = "brand";
-        private static final String KEY_CAT = "category";
-        private static final String KEY_VARIANT = "variant";
-        private static final String KEY_POSITION = "position";
-        private static final String KEY_LIST = "list";
-    }
-
-    private static class ViewProductResult {
-        public Bundle first;
-        public String list;
-
-        public ViewProductResult(Bundle first, String list) {
-            this.first = first;
-            this.list = list;
-        }
     }
 
     private ViewProductResult viewProductMap(Map<String, Object> value, int index) {
@@ -618,38 +749,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
     }
 
-    public static String bruteForceCastToString(Object object) {
-        Integer integer = safeCast(object, Integer.class);
-
-        if (integer != null)
-            return integer.toString();
-
-        Long aLong = safeCast(object, Long.class);
-
-        if (aLong != null)
-            return aLong.toString();
-
-        Double aDouble = safeCast(object, Double.class);
-
-        if (aDouble != null)
-            return aDouble.toString();
-
-        String aString = safeCast(object, String.class);
-
-        return TextUtils.isEmpty(aString) ? "" : aString;
-    }
-
-    public static <T> T safeCast(Object o, Class<T> clazz) {
-        return clazz != null && clazz.isInstance(o) ? clazz.cast(o) : null;
-    }
-
-    private static class PromotionKey {
-        private static final String KEY_NAME = "name";
-        private static final String KEY_ID = "id";
-        private static final String KEY_CREATIVE = "creative";
-        private static final String KEY_POSITION = "position";
-    }
-
     private Bundle promotionMap(Map<String, Object> value) {
         String id = bruteForceCastToString(value.remove(PromotionKey.KEY_ID));
         String name = (String) value.remove(PromotionKey.KEY_NAME);
@@ -670,68 +769,6 @@ public class GTMAnalytics extends ContextAnalytics {
 
     }
 
-    public static Map<String, Object> clone(Map<String, Object> original) {
-        Map<String, Object> map = new HashMap<>();
-        for (Iterator<String> iterator = original.keySet().iterator(); iterator.hasNext(); ) {
-            String key = iterator.next();
-            Object value = original.get(key);
-            if (value != null) {
-                if (value instanceof Map) {
-                    map.put(key, clone((Map<String, Object>) value));
-                } else if (value instanceof Object[]) {
-                    map.put(key, clone((Object[]) value));
-                } else if (value instanceof List) {
-                    map.put(key, clone((List) value));
-                } else {
-                    map.put(key, value);
-                }
-            }
-        }
-        return map;
-    }
-
-    public static List clone(List original) {
-        List result = new ArrayList();
-        if (original != null) {
-            for (int i = 0; i < original.size(); i++) {
-                Object value = original.get(i);
-                if (value != null) {
-                    if (value instanceof Map) {
-                        result.add(clone((Map<String, Object>) value));
-                    } else if (value instanceof Object[]) {
-                        result.add(clone((Object[]) value));
-                    } else if (value instanceof List) {
-                        result.add(clone((List) value));
-                    } else {
-                        result.add(value);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public static Object[] clone(Object original[]) {
-        Object result[] = new Object[original.length];
-        if (original != null) {
-            for (int i = 0; i < original.length; i++) {
-                Object value = original[i];
-                if (value != null) {
-                    if (value instanceof Map) {
-                        result[i] = clone((Map<String, Object>) value);
-                    } else if (value instanceof Object[]) {
-                        result[i] = clone((Object[]) value);
-                    } else if (value instanceof List) {
-                        result[i] = clone((List) value);
-                    } else {
-                        result[i] = value;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     public String getClientIDString() {
         try {
             if (TextUtils.isEmpty(clientIdString)) {
@@ -747,11 +784,16 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public String getCachedClientIDString() {
-        if(clientIdString == null) {
+        if (clientIdString == null) {
             return "";
         }
 
         return clientIdString;
+    }
+
+    @Override
+    public String getIrisSessionId() {
+        return iris.getSessionId();
     }
 
     @Override
@@ -766,7 +808,6 @@ public class GTMAnalytics extends ContextAnalytics {
     public void sendScreen(String screenName, Map<String, String> customDimension) {
 
         UserSessionInterface userSession = new UserSession(context);
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
         // V5 sendScreen
@@ -774,18 +815,20 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString(KEY_EVENT, OPEN_SCREEN);
-        if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
-            bundle.putString("userId", sessionHandler.getLoginID());
-        }else{
+        String userId = userSession.getUserId();
+        if (!TextUtils.isEmpty(userId)) {
+            bundle.putString("userId", userId);
+        } else {
             bundle.putString("userId", "");
         }
         bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putBoolean("isLoggedInStatus", userSession.isLoggedIn());
-        if(!TextUtils.isEmpty(userSession.getShopId())) {
+        if (!TextUtils.isEmpty(userSession.getShopId())) {
             bundle.putString("shopId", userSession.getShopId());
-        }else{
+        } else {
             bundle.putString("shopId", "");
         }
+        putDarkModeValue(bundle);
         putNetworkSpeed(bundle);
 
         if (customDimension != null) {
@@ -796,12 +839,22 @@ public class GTMAnalytics extends ContextAnalytics {
             }
         }
 
-        pushEventV5("openScreen", bundle, context);
+        pushEventV5("openScreen", wrapWithSessionIris(bundle), context);
+        iris.saveEvent(bundleToMap(bundle));
+    }
+
+    private void putDarkModeValue(Bundle bundle) {
+        boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
+        if(isDarkMode) {
+            bundle.putString("theme", "dark");
+        } else {
+            bundle.putString("theme", "light");
+        }
     }
 
     public void putNetworkSpeed(Bundle bundle) {
         if (TextUtils.isEmpty(connectionTypeString) ||
-                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)){
+                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)) {
             connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
             lastGetConnectionTimeStamp = System.currentTimeMillis();
         }
@@ -848,42 +901,88 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
-        String name = eventName == null ? (String) values.get("event") : eventName;
-        if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values);
-        if (tetraDebugger != null) {
-            tetraDebugger.send(values);
+        // fix Caused by java.lang.NoSuchMethodError
+        try {
+            String name = eventName == null ? (String) values.get("event") : eventName;
+            if (!isGtmV5) name += " (legacy_v4)";
+            String source = (isGtmV5) ? AnalyticsSource.GTM : AnalyticsSource.LEGACY_GTM;
+            GtmLogger.getInstance(context).save(values, name, source);
+            logEventSize(eventName, values);
+            logEventForVerification(eventName, values);
+            if (tetraDebugger != null) {
+                tetraDebugger.send(values);
+            }
+        } catch (Exception e) {
+            Timber.w(e);
         }
     }
 
-    private static Map<String, Object> bundleToMap(Bundle extras) {
-        Map<String, Object> map = new HashMap<>();
-
-        Set<String> ks = extras.keySet();
-        for (String key : ks) {
-            Object object = extras.get(key);
-            if (object != null) {
-                if (object instanceof ArrayList) {
-                    object = convertAllBundleToMap((ArrayList) object);
-                } else if (object instanceof Bundle) {
-                    object = bundleToMap((Bundle) object);
-                }
-                map.put(key, object);
-            }
+    private long getGTMSizeLogThreshold(){
+        if (gtmSizeThresholdLog == 0){
+            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY,
+                    GTM_SIZE_LOG_THRESHOLD_DEFAULT);
         }
-        return map;
+        return gtmSizeThresholdLog;
     }
 
-    private static List<Object> convertAllBundleToMap(ArrayList list) {
-        List<Object> newList = new ArrayList<>();
-        for (Object object : list) {
-            if (object instanceof Bundle) {
-                newList.add(bundleToMap((Bundle) object));
-            } else {
-                newList.add(object);
+    private void logEventSize(String eventName, Map<String, Object> values) {
+        int size = values.toString().length();
+        if (size < getGTMSizeLogThreshold()) {
+            return;
+        }
+        String eventCategory = (String) values.get("eventCategory");
+        if (!TextUtils.isEmpty(eventCategory)) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_cat");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", eventCategory);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+            return;
+        }
+        String screenName = (String) values.get("screenName");
+        if (!TextUtils.isEmpty(screenName)) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", screenName);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+            return;
+        }
+        String pageType = (String) values.get("pageType");
+        if (!TextUtils.isEmpty(pageType)) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "event_screen");
+            messageMap.put("name", eventName);
+            messageMap.put("size", String.valueOf(size));
+            messageMap.put("value", pageType);
+            ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+            return;
+        }
+        Map<String, String> messageMap = new HashMap<>();
+        messageMap.put("type", "event_others");
+        messageMap.put("name", eventName);
+        messageMap.put("size", String.valueOf(size));
+        ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+    }
+
+    private void logEventForVerification(String eventName, Map<String, Object> values){
+        if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
+            if(values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                    values.get(AppEventTracking.GTM.UTM_SOURCE) != null &&
+                    !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "event_verification");
+                messageMap.put("name", eventName);
+                messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
+                messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
+                messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
+                messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
+                messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
+                ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
             }
         }
-        return newList;
     }
 
     public void sendScreenAuthenticated(String screenName) {
@@ -916,19 +1015,18 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void eventAuthenticate(Map<String, String> customDimension) {
         String afUniqueId = getAfUniqueId(context);
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
         UserSessionInterface userSession = new UserSession(context);
         Map<String, Object> map = DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, DataLayer.mapOf(
                         Authenticated.KEY_USER_SELLER, (userSession.hasShop() ? 1 : 0),
                         Authenticated.KEY_USER_FULLNAME, userSession.getName(),
-                        Authenticated.KEY_USER_ID, sessionHandler.getGTMLoginID(),
+                        Authenticated.KEY_USER_ID, userSession.getGTMLoginID(),
                         Authenticated.KEY_SHOP_ID, userSession.getShopId(),
                         Authenticated.KEY_AF_UNIQUE_ID, (afUniqueId != null ? afUniqueId : "none"),
                         Authenticated.KEY_USER_EMAIL, userSession.getEmail()
                 ),
-                Authenticated.ANDROID_ID, sessionHandler.getAndroidId(),
-                Authenticated.ADS_ID, sessionHandler.getAdsId(),
+                Authenticated.ANDROID_ID, userSession.getAndroidId(),
+                Authenticated.ADS_ID, userSession.getAdsId(),
                 Authenticated.GA_CLIENT_ID, getClientIDString()
         );
         if (customDimension != null && customDimension.size() > 0) {
@@ -936,18 +1034,6 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         pushEvent(Authenticated.KEY_CD_NAME, map);
     }
-
-    private static final String TRANSACTION = "transaction";
-    private static final String PRODUCTVIEW = "productview";
-    private static final String PRODUCTCLICK = "productclick";
-    private static final String VIEWPRODUCT = "viewproduct";
-    private static final String REMOVEFROMCART = "removefromcart";
-    private static final String ADDTOCART = "addtocart";
-    private static final String CHECKOUT = "checkout";
-    private static final String BEGINCHECKOUT = "begin_checkout";
-    private static final String CHECKOUT_PROGRESS = "checkout_progress";
-    private static final String PROMOCLICK = "promoclick";
-    public static final String PROMOVIEW = "promoview";
 
     private void pushEECommerceInternal(String keyEvent, Bundle bundle) {
         // replace list
@@ -984,23 +1070,57 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         //
         bundle.putString(KEY_EVENT, keyEvent);
-        pushEventV5(keyEvent, bundle, context);
+        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
+    }
+
+    @Override
+    public void sendCampaign(Activity activity,
+                             String campaignUrl,
+                             String screenName,
+                             boolean isOriginalUrlAmp){
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUrl), isOriginalUrlAmp);
+        if (!TrackingUtils.isValidCampaign(campaign.getCampaign())) return;
+
+        campaign.setScreenName(screenName);
+
+        // V5
+        sendCampaign(campaign.getCampaign());
+
+        // v4
+        pushEvent("campaignTrack", campaign.getCampaign());
+        sendGeneralEvent(campaign.getNullCampaignMap());
+
+        sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUrl
+        ).getEvent());
     }
 
     public void sendCampaign(Map<String, Object> param) {
-        Bundle bundle = new Bundle();
+        if (!TrackingUtils.isValidCampaign(param)) return;
 
-        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        Bundle bundle = new Bundle();
         String afUniqueId = getAfUniqueId(context);
 
         bundle.putString("appsflyerId", afUniqueId);
-        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("userId", userSession.getUserId());
         bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 
+
+        // AN-23730
+        Object xClid = param.get(AppEventTracking.GTM.X_CLID);
+        if (xClid != null && xClid instanceof String) {
+            String xClid_  = (String)xClid;
+            bundle.putString(AppEventTracking.GTM.X_CLID,xClid_);
+        }
+
+
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
-        if(!TextUtils.isEmpty(gclid)) {
+        if (!TextUtils.isEmpty(gclid)) {
             bundle.putString("gclid", gclid);
             mGclid = gclid;
         }
@@ -1010,57 +1130,126 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("utmContent", (String) param.get(AppEventTracking.GTM.UTM_CAMPAIGN));
         bundle.putString("utmTerm", (String) param.get(AppEventTracking.GTM.UTM_TERM));
 
-        pushEventV5("campaignTrack", bundle, context);
+        pushEventV5("campaignTrack", wrapWithSessionIris(bundle), context);
     }
 
-    public static String GENERAL_EVENT_KEYS[] = new String[]{
-            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
-    };
-
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
+        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
+    }
+
+    private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
         pushGeneral(params);
 
         if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
-            return;
+            return false;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
-        bundle.putString(KEY_EVENT, params.get(KEY_EVENT)+"");
+        bundle.putString(KEY_EVENT, params.get(KEY_EVENT) + "");
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))
                 bundle.putString(entry.getKey(), bruteForceCastToString(entry.getValue()));
         }
 
-        pushEventV5(params.get(KEY_EVENT) + "", bundle, context);
+        pushEventV5(params.get(KEY_EVENT) + "", wrapWithSessionIris(bundle), context);
+        return true;
     }
 
+    public Bundle wrapWithSessionIris(Bundle bundle) {
+        // AN-18166
+        // globally put sessionIris
+        String sessionIris = bundle.getString(SESSION_IRIS);
+        if (TextUtils.isEmpty(sessionIris)) {
+            bundle.putString(SESSION_IRIS, iris.getSessionId());
+        }
+        return bundle;
+        // end of globally put sessionIris
+    }
+
+    @SuppressLint("MissingPermission")
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
+            publishNewRelic(eventName, bundle);
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             logV5(context, eventName, bundle);
+            trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        Observable.just(data)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    pushIris("", it);
-                    return true;
-                })
-                .subscribe(getDefaultSubscriber());
+    private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
+        String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
+        try {
+            EmbraceConfig config =
+                    new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+            if (bundle.containsKey(KEY_CATEGORY)) {
+                String eventCategoryValue = bundle.getString(KEY_CATEGORY);
+                if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
+                    EmbraceMonitoring.INSTANCE.logBreadcrumb(
+                            String.format(
+                                    EMBRACE_BREADCRUMB_FORMAT,
+                                    EMBRACE_KEY,
+                                    createJsonFromBundle(eventName, bundle)
+                            )
+                    );
+                }
+            }
+        } catch (Exception e) { }
     }
 
+    private JSONObject createJsonFromBundle(String eventName, Bundle bundle) {
+        JSONObject json = new JSONObject();
+        Set<String> keys = bundle.keySet();
+        try {
+            json.put(EMBRACE_EVENT_NAME, eventName);
+
+            if (bundle.containsKey(KEY_ACTION)) {
+                String action = bundle.getString(KEY_ACTION);
+                json.put(EMBRACE_EVENT_ACTION, action);
+            }
+
+            if (bundle.containsKey(KEY_LABEL)) {
+                String label = bundle.getString(KEY_LABEL);
+                json.put(EMBRACE_EVENT_LABEL, label);
+            }
+        } catch(JSONException e) {
+            //Handle exception here
+        }
+        return json;
+    }
+
+    public void publishNewRelic(String eventName, Bundle bundle) {
+        Map<String, Object> map = bundleToMap(bundle);
+        for(Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<String, Object> entry = it.next();
+            Object value = entry.getValue();
+            if (value != null & value instanceof String){
+                String value2 = (String)value;
+                if(TextUtils.isEmpty(value2)) {
+                    it.remove();
+                }
+            }
+        }
+        if(GlobalConfig.isSellerApp()){
+            NewRelicUtil.sendTrack(eventName, map);
+        }
+    }
+
+    private void pushGeneral(Map<String, Object> values) {
+        Map<String, Object> data = new HashMap<>(values);
+        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
+        pushIris("", data);
+    }
 
     private void pushGeneralEcommerce(Map<String, Object> values) {
         Map<String, Object> data = new HashMap<>(values);
@@ -1080,17 +1269,33 @@ public class GTMAnalytics extends ContextAnalytics {
                 .subscribe(getDefaultSubscriber());
     }
 
-    private void addGclIdIfNeeded(String eventName, Map<String, Object> values){
-        if(null == eventName) return;
+    private void addGclIdIfNeeded(String eventName, Map<String, Object> values) {
+        if (null == eventName) return;
         switch (eventName.toLowerCase()) {
             case FirebaseAnalytics.Event.ADD_TO_CART:
             case ADDTOCART:
             case FirebaseAnalytics.Event.VIEW_ITEM:
             case VIEWPRODUCT:
+            case PRODUCTVIEW:
             case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
             case TRANSACTION:
                 values.put(KEY_GCLID, mGclid);
         }
+    }
+
+    private Bundle addGclIdIfNeeded(String eventName, Bundle values) {
+        if (mGclid.isEmpty() || null == eventName) return values;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case PRODUCTVIEW:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.putString(KEY_GCLID, mGclid);
+        }
+        return values;
     }
 
     public void eventOnline(String uid) {
@@ -1106,28 +1311,24 @@ public class GTMAnalytics extends ContextAnalytics {
      * ada skema di gtm yang nge-cache nah ini gimana?
      */
     public void clearEnhanceEcommerce() {
-        pushGeneral(
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null,
-                        "products", null,
-                        "promotions", null,
-                        "ecommerce", null,
-                        "currentSite", null,
-                        "channelId", null,
-                        "attribution", null,
-                        "affinityLabel", null,
-                        "categoryId", null,
-                        "shopId", null
-                )
-        );
+        // no op. push Iris send null is always ignored.
     }
 
     private void pushIris(String eventName, Map<String, Object> values) {
         if (iris != null) {
             if (!eventName.isEmpty()) {
                 values.put("event", eventName);
+            }
+            if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
+                iris.saveEvent(values);
+            }
+        }
+    }
+
+    private void pushIris(String eventName, Bundle values) {
+        if (iris != null) {
+            if (!eventName.isEmpty()) {
+                values.putString("event", eventName);
             }
             if (values.get("event") != null && !String.valueOf(values.get("event")).equals("")) {
                 iris.saveEvent(values);
@@ -1152,5 +1353,63 @@ public class GTMAnalytics extends ContextAnalytics {
 
             }
         };
+    }
+
+    public static class PurchaseKey {
+        public static final String KEY_SHIPPING = "shipping";
+        public static final String KEY_COUPON = "coupon";
+        private static final String KEY_ID = "id";
+        private static final String KEY_AFFILIATION = "affiliation";
+        private static final String KEY_REVENUE = "revenue";
+        private static final String KEY_TAX = "tax";
+    }
+
+    public static class CheckoutKey {
+
+        private static final String KEY_NAME = "name";
+        private static final String KEY_ID = "id";
+        private static final String KEY_PRICE = "price";
+        private static final String KEY_BRAND = "brand";
+        private static final String KEY_CAT = "category";
+        private static final String KEY_VARIANT = "variant";
+        private static final String KEY_QTY = "quantity";
+    }
+
+    private static class ATCKey {
+        private static final String KEY_NAME = "name";
+        private static final String KEY_ID = "id";
+        private static final String KEY_PRICE = "price";
+        private static final String KEY_BRAND = "brand";
+        private static final String KEY_CAT = "category";
+        private static final String KEY_VARIANT = "variant";
+        private static final String KEY_QTY = "quantity";
+    }
+
+    private static class ProductKey {
+        private static final String KEY_NAME = "name";
+        private static final String KEY_ID = "id";
+        private static final String KEY_PRICE = "price";
+        private static final String KEY_BRAND = "brand";
+        private static final String KEY_CAT = "category";
+        private static final String KEY_VARIANT = "variant";
+        private static final String KEY_POSITION = "position";
+        private static final String KEY_LIST = "list";
+    }
+
+    private static class ViewProductResult {
+        public Bundle first;
+        public String list;
+
+        public ViewProductResult(Bundle first, String list) {
+            this.first = first;
+            this.list = list;
+        }
+    }
+
+    private static class PromotionKey {
+        private static final String KEY_NAME = "name";
+        private static final String KEY_ID = "id";
+        private static final String KEY_CREATIVE = "creative";
+        private static final String KEY_POSITION = "position";
     }
 }

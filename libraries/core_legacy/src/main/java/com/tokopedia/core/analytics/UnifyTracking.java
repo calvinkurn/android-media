@@ -261,36 +261,11 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickAddFeaturedProduct(Context context) {
-        eventFeaturedProduct(context,AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
-    }
-
-    public static void eventSortFeaturedProductChange(Context context) {
-        eventFeaturedProduct(context,AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
-    }
-
-    public static void eventSortFeaturedProductNotChange(Context context) {
-        eventFeaturedProduct(context,AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
-    }
-
-    public static void eventDeleteFeaturedProduct(Context context) {
-        eventFeaturedProduct(context,AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
-    }
-
     public static void eventCampaign(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
                 AppEventTracking.Event.CAMPAIGN,
                 AppEventTracking.Category.CAMPAIGN,
                 AppEventTracking.Action.DEEPLINK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRegisterError(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_ERROR,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_ERROR,
                 label
         ).getEvent());
     }
@@ -302,77 +277,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.SHARE_TO + label
         ).getEvent());
-    }
-
-    public static void eventManageShopShipping(Context context) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SHOP_MANAGE,
-                AppEventTracking.Category.SHOP_MANAGE,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.SHOP_SHIPPING
-        ).getEvent());
-    }
-
-    public static void eventShopTabSelected(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SALES,
-                AppEventTracking.Category.SALES,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventAddProductError(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
-                AppEventTracking.AddProduct.EVENT_ACTION_ERROR,
-                label
-        ).getEvent());
-    }
-
-    public static void eventWidgetInstalled(Context context) {
-        eventWidget(context, AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
-    }
-
-    public static void eventWidgetRemoved(Context context) {
-        eventWidget(context, AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
-    }
-
-    public static void eventAccessAppViewWidget(Context context) {
-        eventWidget(context, AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
-    }
-
-    public static void eventWidget(Context context, String action, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SELLER_WIDGET,
-                AppEventTracking.Category.SELLER_APP_WIDGET,
-                action,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventCreateShopSellerApp(Context context, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_CREATE_SHOP,
-                AppEventTracking.Category.CREATE_SHOP,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventCreateShopFillLogisticError(Context context) {
-        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
-    }
-
-    public static void eventOpportunity(Context context, String event, String category,
-                                        String action, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                event,
-                category,
-                action,
-                label)
-                .getEvent());
     }
 
     public static void eventReferralAndShare(Context context, String action, String label) {
@@ -394,23 +298,6 @@ public class UnifyTracking extends TrackingUtils {
                 action,
                 label
         ).getEvent());
-    }
-
-    public static void eventFeaturedProduct(Context context, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.SHOP_MANAGE,
-                AppEventTracking.Category.FEATURED_PRODUCT,
-                AppEventTracking.Action.CLICK,
-                eventLabel
-        ).getEvent());
-    }
-
-    public static void eventTickErrorFeaturedProduct(Context context) {
-        eventFeaturedProduct(context, AppEventTracking.EventLabel.TICK_ERROR);
-    }
-
-    public static void eventSavePickFeaturedProduct(Context context, String counterProduct) {
-        eventFeaturedProduct(context, AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
     }
 
     /**

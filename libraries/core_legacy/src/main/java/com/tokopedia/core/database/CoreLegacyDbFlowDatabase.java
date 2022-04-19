@@ -20,7 +20,7 @@ public abstract class CoreLegacyDbFlowDatabase extends RoomDatabase {
     public static final String NAME = "core";
     public static final int VERSION = 1;
 
-    private static CoreLegacyDbFlowDatabase instance;
+    private volatile static CoreLegacyDbFlowDatabase instance;
 
     public static CoreLegacyDbFlowDatabase getInstance(Context context)  {
         if  (instance == null) {

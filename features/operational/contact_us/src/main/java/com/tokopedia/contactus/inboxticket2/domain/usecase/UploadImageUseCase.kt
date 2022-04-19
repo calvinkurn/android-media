@@ -1,126 +1,98 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tokopedia.contactus.R
-import com.tokopedia.contactus.inboxticket2.data.UploadImageContactUs
-import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl
-import com.tokopedia.contactus.orderquery.data.ImageUpload
-import com.tokopedia.contactus.orderquery.data.ImageUploadResult
-import com.tokopedia.core.network.retrofit.utils.NetworkCalculator
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils
-import com.tokopedia.core.network.v4.NetworkConfig
-import com.tokopedia.core.util.ImageUploadHandler
-import okhttp3.MediaType
+import com.tokopedia.contactus.inboxticket2.data.ImageUpload
+import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
+import com.tokopedia.contactus.inboxticket2.data.model.PicObjPojo
+import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
+import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.utils.image.ImageProcessingUtil
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
-import java.io.File
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import javax.inject.Inject
 
 const val IMAGE_UPLOAD_URL = "https://u12.tokopedia.net"
+private const val IMAGE_UPLOAD_PATH = "/upload/attachment"
+private const val ATTACHMENT_TYPE = "fileToUpload\"; filename=\"image.jpg"
+const val IMAGE_QUALITY = 70
+private const val PARAM_WEB_SERVICE = "web_service"
+private const val PARAM_ID = "id"
 
-class UploadImageUseCase @Inject constructor(private val context: Context) {
+class ContactUsUploadImageUseCase @Inject constructor(private val context: Context,
+                                                      private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>) {
 
-    suspend fun uploadFile(imageUploads: List<ImageUpload>?,
-                           networkCalculators: List<NetworkCalculator>,
-                           files: List<File>,
-                           isLoggedIn: Boolean): List<ImageUpload> {
-        val list = arrayListOf<ImageUpload>()
+   suspend fun uploadFile(userId: String,
+                          imageUploads: List<ImageUpload>?,
+                          files: List<String>,
+                          listOfSecureImageParmeter: ArrayList<SecureImageParameter>): List<ImageUpload>{
+        val list = ArrayList<ImageUpload>()
         imageUploads?.forEachIndexed { index, imageUpload ->
 
-            val upload: ImageUploadResult = getImageUploadresult(networkCalculators[index], files[index],isLoggedIn)
+            val params =getParams(userId,files[index])
 
-            if (upload.data != null) {
-                imageUpload.picSrc = upload.data.picSrc
-                imageUpload.picObj = upload.data.picObj
-            } else if (upload.messageError != null) {
-                throw RuntimeException(upload.messageError)
-            }
+            val response = uploadImageUseCase
+                    .createObservable(params)
+                    .toBlocking()
+                    .first()
+                    .dataResultImageUpload
+
+            imageUpload.picObj = getModifiedPicObj(response.data.picObj, listOfSecureImageParmeter[index])
             list.add(imageUpload)
-
         }
         return list
     }
 
+    fun getModifiedPicObj(picObj: String, secureImageParameter: SecureImageParameter): String? {
+        val picObjPojo = GsonBuilder().create()
+                .fromJson<PicObjPojo>(picObj.decode(),
+                        PicObjPojo::class.java)
+        picObjPojo.fileName = secureImageParameter.imageData?.imageDataValues?.fileName
+        picObjPojo.filePath = secureImageParameter.imageData?.imageDataValues?.filePath
+
+        return Gson().toJson(picObjPojo).encode();
+    }
+
+    private fun String.decode(): String {
+        return android.util.Base64.decode(this, android.util.Base64.DEFAULT).toString(charset("UTF-8"))
+    }
+
+    private fun String.encode(): String {
+        return android.util.Base64.encodeToString(this.toByteArray(charset("UTF-8")), android.util.Base64.DEFAULT)
+    }
+
+    private fun getParams(userId: String, pathFile: String): RequestParams {
+        val reqParam = HashMap<String, RequestBody>()
+        reqParam[PARAM_WEB_SERVICE] = createRequestBody("1")
+        reqParam[PARAM_ID] = createRequestBody(String.format("%s%s", userId, pathFile))
+
+        return uploadImageUseCase.createRequestParam(pathFile,
+                IMAGE_UPLOAD_PATH,
+                ATTACHMENT_TYPE,
+                reqParam)
+    }
+
+
+    private fun createRequestBody(content: String): RequestBody {
+        return content.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
     @Throws(IOException::class)
-    fun getFile(imageUpload: List<ImageUpload>?): List<File> {
-        val list = ArrayList<File>()
+    fun getFile(imageUpload: List<ImageUpload>?): List<String> {
+        val list = ArrayList<String>()
         imageUpload?.forEach {
+            val s = ImageProcessingUtil.compressImageFile(it.fileLoc ?: "", IMAGE_QUALITY)
             list.add(try {
-                ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(it.fileLoc))
+                s.absolutePath
             } catch (e: IOException) {
                 throw IOException(context.getString(R.string.contact_us_error_upload_image))
             })
         }
         return list
-    }
-
-    suspend fun getImageUploadresult(networkCalculator: NetworkCalculator, file: File, isLoggedIn: Boolean): ImageUploadResult {
-        val userId = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[NetworkCalculator.USER_ID] ?: "")
-        val deviceId = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[NetworkCalculator.DEVICE_ID] ?: "")
-        val hash = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[NetworkCalculator.HASH] ?: "")
-        val deviceTime = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[NetworkCalculator.DEVICE_TIME] ?: "")
-        val fileToUpload = RequestBody.create(MediaType.parse("image/*"),
-                file)
-        val imageId = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[InboxDetailPresenterImpl.PARAM_IMAGE_ID] ?: "")
-        val web_service = RequestBody.create(MediaType.parse("text/plain"),
-                networkCalculator.content[InboxDetailPresenterImpl.PARAM_WEB_SERVICE] ?: "")
-        return if (isLoggedIn) {
-            RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
-                    .create(UploadImageContactUs::class.java)
-                    .uploadImage(
-                            networkCalculator.header[NetworkCalculator.CONTENT_MD5],  // 1
-                            networkCalculator.header[NetworkCalculator.DATE],  // 2
-                            networkCalculator.header[NetworkCalculator.AUTHORIZATION],  // 3
-                            networkCalculator.header[NetworkCalculator.X_METHOD],  // 4
-                            userId,
-                            deviceId,
-                            hash,
-                            deviceTime,
-                            fileToUpload,
-                            imageId, web_service
-                    )
-        } else {
-            RetrofitUtils.createRetrofit(IMAGE_UPLOAD_URL)
-                    .create(UploadImageContactUs::class.java)
-                    .uploadImagePublic(
-                            networkCalculator.header[NetworkCalculator.CONTENT_MD5],  // 1
-                            networkCalculator.header[NetworkCalculator.DATE],  // 2
-                            networkCalculator.header[NetworkCalculator.AUTHORIZATION],  // 3
-                            networkCalculator.header[NetworkCalculator.X_METHOD],  // 4
-                            userId,
-                            deviceId,
-                            hash,
-                            deviceTime,
-                            fileToUpload,
-                            imageId,
-                            web_service)
-        }
-    }
-
-     fun getNetworkCalculatorList(imageUpload: List<ImageUpload>?): List<NetworkCalculator> {
-        val list = ArrayList<NetworkCalculator>()
-        imageUpload?.forEach {
-            list.add(
-                    getNetworkCalculator()
-                            .setIdentity()
-                            .addParam(InboxDetailPresenterImpl.PARAM_IMAGE_ID, it.imageId)
-                            .addParam(InboxDetailPresenterImpl.PARAM_WEB_SERVICE, "1")
-                            .compileAllParam()
-                            .finish()
-            )
-        }
-        return list
-    }
-
-    fun getNetworkCalculator(): NetworkCalculator {
-        return NetworkCalculator(
-                NetworkConfig.POST, context,
-                IMAGE_UPLOAD_URL)
-
     }
 }

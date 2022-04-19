@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingEnd="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/flight_dp_20">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_1"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         app:corners="20"
         app:layout_constraintEnd_toStartOf="@+id/shimmering_iv_1"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,8 +24,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_iv_1"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_tv_1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,8 +34,8 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="20"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_1"
         app:width_weight="0.4" />
@@ -43,16 +43,16 @@
     <View
         android:id="@+id/shimmering_seperator_1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_22"
-        android:background="#f3f4f5"
+        android:layout_height="@dimen/flight_dp_1"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_iv_2"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="20"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,11 +60,11 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_3"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/shimmering_iv_2"
@@ -73,9 +73,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_4"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/shimmering_tv_3"
@@ -85,9 +85,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmering_tv_5"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/shimmering_tv_3"
@@ -99,25 +99,25 @@
     <View
         android:id="@+id/shimmering_seperator_2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_12"
-        android:background="#f3f4f5"
+        android:layout_height="@dimen/flight_dp_1"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_tv_5" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmering_iv_3"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:corners="20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_seperator_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_width="@dimen/flight_dp_160"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/shimmering_iv_3"
         app:layout_constraintEnd_toStartOf="@+id/shimmering_iv_3"

@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.helper
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.os.CountDownTimer
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.device.info.DeviceConnectionInfo
@@ -20,9 +21,7 @@ import kotlin.coroutines.CoroutineContext
 class HomePlayWidgetHelper(
         private val context: Context,
         private val exoPlayerView: TokopediaPlayView
-) :
-        ExoPlayerControl,
-        CoroutineScope {
+) : ExoPlayerControl{
 
     companion object{
         private const val DELAY_PLAYING = 2000L
@@ -40,6 +39,23 @@ class HomePlayWidgetHelper(
 
     private val playManager
         get() = PlayVideoManager.getInstance(context)
+
+    private val timerDelayBack = object : CountDownTimer(DELAY_BACK, 1000) {
+        override fun onFinish() {
+            observeVideoPlayer()
+            resumeVideo()
+        }
+
+        override fun onTick(millisUntilFinished: Long) {}
+    }
+
+    private val timerDelayPlay = object : CountDownTimer(DELAY_PLAYING, 1000) {
+        override fun onFinish() {
+            playManager.resume()
+        }
+
+        override fun onTick(millisUntilFinished: Long) {}
+    }
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -62,7 +78,7 @@ class HomePlayWidgetHelper(
         }
     }
 
-    private val connectionStateObserver = object :  Observer<PlayConnectionState> {
+    private val connectionStateObserver = object : Observer<PlayConnectionState> {
         override fun onChanged(state: PlayConnectionState?) {
             when (state) {
                 is PlayConnectionState.UnAvailable -> {
@@ -75,13 +91,6 @@ class HomePlayWidgetHelper(
             }
         }
     }
-
-
-    /* Master job */
-    private val masterJob = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = masterJob + Dispatchers.Main
 
     private fun isDeviceHasRequirementAutoPlay(): Boolean{
         return DimensionUtils.getDensityMatrix(context) >= 1.5f
@@ -108,21 +117,17 @@ class HomePlayWidgetHelper(
     }
 
     override fun releasePlayer() {
-        playManager.releasePlayer()
+        playManager.release()
     }
 
     override fun playerPause() {
-        masterJob.cancelChildren()
         exoPlayerView.setPlayer(null)
-        playManager.stopPlayer()
+        this.timerDelayBack.cancel()
+        this.timerDelayPlay.cancel()
     }
 
     override fun playerPlayWithDelay() {
-        masterJob.cancelChildren()
-        launch(coroutineContext){
-            delay(DELAY_PLAYING)
-            playManager.resumeCurrentVideo()
-        }
+        timerDelayPlay.start()
     }
 
     override fun play(url: String){
@@ -144,14 +149,14 @@ class HomePlayWidgetHelper(
         if(videoUri != null && !videoUri?.toString().isNullOrEmpty()
                 && isDeviceHasRequirementAutoPlay()
                 && isAutoPlay) {
-            playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
+            playManager.playUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)
             playerPlayWithDelay()
         }
     }
 
-    override fun isPlayerPlaying() = PlayVideoManager.getInstance(context).isVideoPlaying()
+    override fun isPlayerPlaying() = PlayVideoManager.getInstance(context).isPlaying()
 
     override fun onViewAttach() {
         preparePlayer()
@@ -167,25 +172,21 @@ class HomePlayWidgetHelper(
 
     override fun onActivityResume() {
         if(DeviceConnectionInfo.isConnectWifi(context) && isDeviceHasRequirementAutoPlay()) {
-            masterJob.cancelChildren()
-            launch(coroutineContext){
-                delay(DELAY_BACK)
-                observeVideoPlayer()
-                resumeVideo()
-            }
+            timerDelayBack.start()
         } else {
             stopVideoPlayer()
         }
     }
 
-    override fun onActivityPause() {
-        masterJob.cancelChildren()
-        exoPlayerView.setPlayer(null)
+    override fun onActivityPause(shouldPausePlay: Boolean) {
+        playerPause()
         removeVideoPlayerObserver()
+        if(shouldPausePlay) playManager.stop()
     }
 
-    override fun onActivityStop() {
-        masterJob.cancelChildren()
+    override fun onActivityDestroy() {
+        timerDelayBack.cancel()
+        timerDelayPlay.cancel()
         exoPlayerView.setPlayer(null)
         releasePlayer()
         mPlayer = null
@@ -205,12 +206,12 @@ class HomePlayWidgetHelper(
     }
 
     private fun muteVideoPlayer() {
-        playManager.muteVideo(true)
+        playManager.mute(true)
         playManager.setRepeatMode(true)
     }
 
     private fun stopVideoPlayer() {
-        playManager.stopPlayer()
+        playManager.stop()
     }
 
 }

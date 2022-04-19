@@ -6,10 +6,12 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
-import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -20,7 +22,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.ArgumentMatchers.anyMap
 import java.io.File
 import java.lang.reflect.Type
 
@@ -29,23 +30,23 @@ class GetPdpLayoutUseCaseTest {
 
     companion object {
         const val GQL_GET_PDP_LAYOUT_JSON = "json/gql_get_pdp_layout.json"
+        const val GQL_GET_PDP_LAYOUT_USECASE_JSON = "json/gql_get_pdp_layout_usecase_response.json"
+        const val GQL_GET_PDP_LAYOUT_REMOVE_COMPONENT_JSON = "json/gql_get_pdp_layout_remove_component.json"
         const val GQL_GET_PDP_LAYOUT_ERROR_TOBACCO_JSON = "json/gql_get_pdp_layout_tobacco.json"
     }
 
     @RelaxedMockK
     lateinit var gqlUseCase: MultiRequestGraphqlUseCase
 
-    @RelaxedMockK
-    lateinit var requestParams: RequestParams
-
     @get:Rule
     public val thrown = ExpectedException.none()
 
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(
-                anyMap(),
-                gqlUseCase
-        )
+        GetPdpLayoutUseCase(gqlUseCase, "")
+    }
+
+    private val useCaseTestLayoutId by lazy {
+        GetPdpLayoutUseCase(gqlUseCase, "56")
     }
 
     @Before
@@ -107,6 +108,31 @@ class GetPdpLayoutUseCaseTest {
         }
     }
 
+    @Test
+    fun `given layout id from dev option should match`() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+
+        useCaseTestLayoutId.executeOnBackground()
+
+        val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        Assert.assertEquals(layoutId, "56")
+    }
+
+    @Test
+    fun `given layout id from dev and from param should use from param`() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+
+        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "", TokoNowParam())
+        useCaseTestLayoutId.executeOnBackground()
+
+        val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        Assert.assertEquals(layoutId, "122")
+    }
+
     private fun createMockGraphqlResponse(type: ERROR_TYPE): GraphqlResponse {
         return when (type) {
             ERROR_TYPE.TOBACCO -> {
@@ -152,7 +178,7 @@ class GetPdpLayoutUseCaseTest {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(GQL_GET_PDP_LAYOUT_JSON),
+                getJsonFromFile(GQL_GET_PDP_LAYOUT_USECASE_JSON),
                 JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)

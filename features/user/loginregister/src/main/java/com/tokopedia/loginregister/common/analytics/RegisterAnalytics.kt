@@ -20,6 +20,10 @@ import javax.inject.Inject
  */
 class RegisterAnalytics @Inject constructor() {
 
+    val MEDIUM_EMAIL = "email"
+    val MEDIUM_PHONE = "phone"
+    val MEDIUM_GOOGLE = "google"
+
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -111,6 +115,16 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     //#R5
+    fun trackFailedClickEmailSignUpButtonAlreadyRegistered() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED_POPUP_EMAIL
+        ))
+    }
+
+    //#R5
     fun trackClickPhoneSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
@@ -130,6 +144,16 @@ class RegisterAnalytics @Inject constructor() {
         ))
     }
 
+    //#R5
+    fun trackFailedClickPhoneSignUpButtonAlreadyRegistered() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_FAILED_POPUP_PHONE
+        ))
+    }
+
     //#R6
     fun trackClickGoogleButton(applicationContext: Context) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -142,21 +166,6 @@ class RegisterAnalytics @Inject constructor() {
         val map = HashMap<String, Any>()
         map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "GoogleSignInActivity"
         TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
-                map, applicationContext)
-    }
-
-    //#R7
-    fun trackClickFacebookButton(applicationContext: Context) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_CLICK
-        ))
-
-        val map = HashMap<String, Any>()
-        map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "Facebook"
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
                 map, applicationContext)
     }
 
@@ -403,20 +412,10 @@ class RegisterAnalytics @Inject constructor() {
 
     fun trackErrorRegister(errorMessage: String, loginMethod: String) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorRegisterEmail()
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorRegisterPhone()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorRegisterEmail(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorRegisterPhone(errorMessage)
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorRegisterGoogle(errorMessage)
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorRegisterFacebook(errorMessage)
         }
-    }
-
-    private fun onErrorRegisterFacebook(errorMessage: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_REGISTER_FAILED + errorMessage
-        ))
     }
 
     private fun onErrorRegisterGoogle(errorMessage: String) {
@@ -424,21 +423,31 @@ class RegisterAnalytics @Inject constructor() {
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_REGISTER_FAILED + errorMessage
+                LABEL_FAILED + errorMessage
         ))
     }
 
-    private fun onErrorRegisterPhone() {
-
+    private fun onErrorRegisterPhone(errorMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_FAILED + errorMessage
+        ))
     }
 
-    private fun onErrorRegisterEmail() {
-
+    private fun onErrorRegisterEmail(errorMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED + errorMessage
+        ))
     }
 
     fun trackSuccessRegister(
             loginMethod: String,
-            userId: Int,
+            userId: String,
             name: String,
             email: String,
             phoneNumber: String,
@@ -447,46 +456,25 @@ class RegisterAnalytics @Inject constructor() {
             shopName:String
     ) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
-            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
-            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId.toString(), name, email)
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone(userId.toString())
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle(userId.toString())
         }
         sendSuccessRegisterToMoengage(
                 userId,
-                name,
-                email,
                 getLoginMethodMoengage(loginMethod),
-                phoneNumber,
                 isGoldMerchant,
                 shopId,
                 shopName)
     }
 
-    //#R7
-    private fun onSuccessRegisterFacebook() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                ACTION_CLICK_ON_BUTTON_FACEBOOK,
-                LABEL_REGISTER_SUCCESS
-        ))
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_REGISTER_SUCCESS,
-                CATEGORY_REGISTER,
-                ACTION_REGISTER_SUCCESS,
-                FACEBOOK
-        ))
-    }
-
     //#R6
-    private fun onSuccessRegisterGoogle() {
+    private fun onSuccessRegisterGoogle(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_GOOGLE,
-                LABEL_REGISTER_SUCCESS
+                LABEL_SUCCESS
         ))
 
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -495,19 +483,20 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_REGISTER_SUCCESS,
                 LoginRegisterAnalytics.GOOGLE
         ))
+        sendBranchRegisterEvent(userId, MEDIUM_GOOGLE)
     }
 
-    private fun onSuccessRegisterPhone() {
+    private fun onSuccessRegisterPhone(userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
                 LABEL_SUCCESS
         ))
-
+        sendBranchRegisterEvent(userId, MEDIUM_PHONE)
     }
 
-    private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+    private fun onSuccessRegisterEmail(userId: String, name: String, email: String) {
         trackSuccessClickEmailSignUpButton()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
@@ -516,18 +505,18 @@ class RegisterAnalytics @Inject constructor() {
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
-        sendBranchRegisterEvent(email)
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId, EMAIL_METHOD)
+        sendBranchRegisterEvent(userId, MEDIUM_EMAIL)
     }
 
-    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
+    private fun sendSuccessRegisterToMoengage(userId: String, loginMethod: String?, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent("", userId,"", loginMethod?:"", "",  isGoldMerchant, shopId,shopName)
     }
 
-    private fun sendBranchRegisterEvent(email: String) {
+    private fun sendBranchRegisterEvent(userId: String, medium: String) {
         val userData = UserData()
-        userData.email = email
-        userData.phoneNumber = ""
+        userData.userId = userId
+        userData.medium = medium
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
@@ -596,9 +585,7 @@ class RegisterAnalytics @Inject constructor() {
 
     private fun getLoginMethodMoengage(loginMethod: String?): String? {
         return when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> EMAIL_METHOD
             UserSessionInterface.LOGIN_METHOD_EMAIL -> EMAIL_METHOD
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> FACEBOOK_METHOD
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> GOOGLE_METHOD
             UserSessionInterface.LOGIN_METHOD_PHONE -> PHONE_NUMBER_METHOD
             else -> loginMethod
@@ -618,9 +605,6 @@ class RegisterAnalytics @Inject constructor() {
         private val CATEGORY_LOGIN_PAGE = "login page"
         private val CATEGORY_REGISTER_PAGE = "register page"
         private val CATEGORY_REGISTER_WITH_EMAIL_PAGE = "register with email page"
-        private val CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP = "register with phone number otp"
-        private val CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE = "register with phone number page"
-        private val CATEGORY_EMAIL_AKTIVASI_AKUN = "email aktivasi akun"
         private val CATEGORY_ACTIVATION_PAGE = "activation page"
         private val CATEGORY_REGISTER = "Register"
 
@@ -633,25 +617,18 @@ class RegisterAnalytics @Inject constructor() {
         private val ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL = "click on button daftar - email"
         private val ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER = "click on button daftar - phone number"
         private val ACTION_CLICK_ON_BUTTON_GOOGLE = "click on button google"
-        private val ACTION_CLICK_ON_BUTTON_FACEBOOK = "click on button facebook"
         private val ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL = "click ya, masuk terdaftar - email"
         private val ACTION_CLICK_UBAH_TERDAFTAR_EMAIL = "click ubah terdaftar - email"
-        private val ACTION_CLICK_UBAH_EMAIL = "click ubah - email"
-        private val ACTION_CLICK_YA_BENAR_EMAIL = "click ya, benar - email"
         private val ACTION_CLICK_YA_BENAR_PHONE = "click ya, benar - phone number"
         private val ACTION_CLICK_UBAH_BENAR_PHONE = "click ubah, benar - phone number"
         private val ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE = "click ya, masuk terdaftar - phone number"
         private val ACTION_CLICK_UBAH_TERDAFTAR_PHONE = "click ubah terdaftar - phone number"
-        private val ACTION_CLICK_ON_BUTTON_BACK_PHONE = "click ubah terdaftar - phone number"
         private val ACTION_CLICK_SYARAT_DAN_KETENTUAN = "click syarat dan ketentuan"
         private val ACTION_CLICK_KEBIJAKAN_PRIVASI = "click kebijakan privasi"
-        private val ACTION_CLICK_ON_AKTIFKAN_AKUN_ANDA = "click on aktifkan akun anda"
         private val ACTION_CLICK_ON_BUTTON_AKTIVASI = "click on button aktivasi"
         private val ACTION_CLICK_KIRIM_ULANG = "click kirim ulang"
         private val ACTION_CLICK_OK_KIRIM_ULANG = "click ok (kirim ulang email)"
         private val ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email"
-        private val ACTION_CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi"
-        private val ACTION_CLICK_ON_BUTTON_SELESAI = "click on button selesai"
         private val ACTION_CLICK_ON_TICKER_LOGIN = "click on ticker login"
         private val ACTION_CLICK_TICKER_LINK = "click ticker link"
         private val ACTION_CLICK_ON_BUTTON_CLOSE_TICKER = "click on button close ticker"
@@ -665,20 +642,15 @@ class RegisterAnalytics @Inject constructor() {
         private val LABEL_CLICK = "click"
         private val LABEL_SUCCESS = "success"
         private val LABEL_FAILED = "failed - "
-        private val LABEL_LOGIN_SUCCESS = "login success"
-        private val LABEL_LOGIN_FAILED = "login failed - "
-        private val LABEL_REGISTER_SUCCESS = "register success"
-        private val LABEL_REGISTER_FAILED = "register failed - "
+        private val LABEL_FAILED_POPUP_PHONE = "failed - pop up phone number sudah terdaftar"
+        private val LABEL_FAILED_POPUP_EMAIL = "failed - pop up email sudah terdaftar"
         val LABEL_EMAIL_EXIST = "email exist"
         val LABEL_PHONE_EXIST = "phone number exist"
-        private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
         private const val LABEL_EMAIL = "Email"
 
         val GOOGLE = "google"
-        val FACEBOOK = "facebook"
 
         private const val EMAIL_METHOD = "Email"
-        private const val FACEBOOK_METHOD = "Facebook"
         private const val GOOGLE_METHOD = "Google"
         private const val PHONE_NUMBER_METHOD = "Phone Number"
     }

@@ -14,11 +14,13 @@ public class BannerShopViewModel implements Item<BannerAdsTypeFactory> {
     private final CpmData cpmData;
     private final String appLink;
     private final String adsClickUrl;
+    private final boolean isShowCta;
 
-    public BannerShopViewModel(CpmData cpmData, String appLink, String adsClickUrl) {
+    public BannerShopViewModel(CpmData cpmData, String appLink, String adsClickUrl, boolean isShowCta) {
         this.cpmData = cpmData;
         this.appLink = appLink;
         this.adsClickUrl = adsClickUrl;
+        this.isShowCta = isShowCta;
     }
 
     public CpmData getCpmData() {
@@ -31,6 +33,10 @@ public class BannerShopViewModel implements Item<BannerAdsTypeFactory> {
 
     public String getAdsClickUrl() {
         return adsClickUrl;
+    }
+
+    public boolean isShowCta() {
+        return isShowCta;
     }
 
     @Override

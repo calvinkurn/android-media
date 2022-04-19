@@ -4,7 +4,7 @@
 
 ```
 dependencies {
-    implementation project(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.websocket)
 }
 ```
 
@@ -60,9 +60,8 @@ subscription.add(subsribeWebsocket)
 
 ## Modules that implements this library
 - features/content/play
-- features/user/chat_common
+- features/communication/chat_common
 - features/user/chatbot
-- features/user/groupchat
 - features/user/topchat
 
 

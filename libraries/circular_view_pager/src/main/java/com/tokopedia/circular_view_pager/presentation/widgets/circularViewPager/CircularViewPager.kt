@@ -265,8 +265,17 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
      * This function needs to be called if dataSet has changed,
      * in order to reset current selected item and currentPagePosition and autoPageSelectionLock.
      */
-    private fun reset() {
+    fun reset() {
         resetImpressions()
+        resetScrollToStart()
+        /**
+         * Position is reset to pos 0, therefore impression in pos 0
+         * should be called
+         */
+        setImpression(0)
+    }
+
+    fun resetScrollToStart() {
         currentPagePosition = if (isInfinite) {
             viewPager.setCurrentItem(1, false)
             1
@@ -274,6 +283,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
             viewPager.setCurrentItem(0, false)
             0
         }
+        resetAutoScroll()
     }
 
     fun resetImpressions(){
@@ -313,5 +323,15 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     private fun resetAutoScroll() {
         pauseAutoScroll()
         resumeAutoScroll()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        resumeAutoScroll()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        pauseAutoScroll()
     }
 }

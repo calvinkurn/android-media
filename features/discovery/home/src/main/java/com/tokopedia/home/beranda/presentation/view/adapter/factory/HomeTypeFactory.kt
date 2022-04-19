@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
  * Created by Lukas on 2019-08-20
@@ -20,19 +21,15 @@ interface HomeTypeFactory {
 
     fun type(tickerDataModel: TickerDataModel): Int
 
+    fun type(bestSellerDataModel: BestSellerDataModel): Int
+
     fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
     fun type(useCaseIconSectionDataModel: UseCaseIconSectionDataModel): Int
 
     fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int
 
-    fun type(sellDataModel: SellDataModel): Int
-
     fun type(headerDataModel: HeaderDataModel): Int
-
-    fun type(topAdsDataModel: TopAdsDataModel): Int
-
-    fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
@@ -41,8 +38,6 @@ interface HomeTypeFactory {
     fun type(spotlightDataModel: SpotlightDataModel): Int
 
     fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
-
-    fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
 
     fun type(reviewDataModel: ReviewDataModel): Int
 
@@ -54,5 +49,35 @@ interface HomeTypeFactory {
 
     fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
 
-    fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int
+    fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
+
+    fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
+
+    fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
+
+    fun type(dataModel: CarouselPlayWidgetDataModel): Int
+
+    fun type(emptyBannerDataModel: EmptyBannerDataModel): Int
+
+    fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int
+
+    fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int
+
+    fun type(errorStateIconModel: ErrorStateIconModel): Int
+
+    fun type(errorStateChannelOneModel: ErrorStateChannelOneModel): Int
+
+    fun type(errorStateChannelTwoModel: ErrorStateChannelTwoModel): Int
+
+    fun type(errorStateChannelThreeModel: ErrorStateChannelThreeModel): Int
+
+    fun type(shimmeringChannelDataModel: ShimmeringChannelDataModel): Int
+
+    fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
+
+    fun type(errorStateAtfModel: ErrorStateAtfModel): Int
+
+    fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int
+
+    fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int
 }

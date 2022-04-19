@@ -5,5 +5,11 @@ package com.tokopedia.feedcomponent.view.viewmodel.responsemodel
  */
 data class AtcViewModel (
         var isSuccess: Boolean = false,
-        var applink: String = ""
+        var applink: String = "",
+        var errorMsg:String = "",
+        var activityId: String = "",
+        var postType: String = "",
+        var isFollowed: Boolean = false,
+        var  shopId: String = ""
+
 )

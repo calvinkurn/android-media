@@ -14,16 +14,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import kotlinx.android.synthetic.main.fragment_liveness_error.*
 import javax.inject.Inject
 
 class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
 
     private var failedType = -1
-    private var errorCode = 0
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
+    private var projectId = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -33,7 +34,7 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         failedType = arguments?.getInt(LivenessConstants.ARG_FAILED_TYPE)?: -1
-        errorCode = arguments?.getInt(LivenessConstants.ARG_ERROR_CODE)?: 0
+        projectId = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
         initViews()
     }
 
@@ -50,11 +51,6 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
         }
 
         when(failedType) {
-            LivenessConstants.FAILED_GENERAL -> {
-                setViews(getString(R.string.liveness_failed_reason_general_title),
-                        "${getString(R.string.liveness_failed_reason_general)} ($errorCode)",
-                        LivenessConstants.SCAN_FACE_FAIL_GENERAL)
-            }
             LivenessConstants.FAILED_BADNETWORK -> {
                 setViews(getString(R.string.liveness_failed_reason_bad_network_title),
                         getString(R.string.liveness_failed_reason_bad_network),
@@ -83,10 +79,10 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
     private fun buttonListener(){
         when(failedType){
             LivenessConstants.FAILED_BADNETWORK -> {
-                analytics.eventClickConnectionTimeout()
+                analytics.eventClickConnectionTimeout(projectId)
             }
             LivenessConstants.FAILED_TIMEOUT -> {
-                analytics.eventClickTimeout()
+                analytics.eventClickTimeout(projectId)
             }
         }
         activity?.setResult(Activity.RESULT_OK)
@@ -96,18 +92,20 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
     override fun trackOnBackPressed() {
         when(failedType){
             LivenessConstants.FAILED_BADNETWORK -> {
-                analytics.eventClickBackConnectionTimeout()
+                analytics.eventClickBackConnectionTimeout(projectId)
             }
             LivenessConstants.FAILED_TIMEOUT -> {
-                analytics.eventClickBackTimeout()
+                analytics.eventClickBackTimeout(projectId)
             }
         }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(): Fragment {
-            return LivenessErrorFragment()
+        fun newInstance(bundle: Bundle): Fragment {
+            return LivenessErrorFragment().apply {
+                arguments = bundle
+            }
         }
     }
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivProduct"
+        android:layout_width="@dimen/som_list_product_image_size"
+        android:layout_height="@dimen/som_list_product_image_size"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivProduct"
+        app:layout_constraintTop_toTopOf="@id/ivProduct"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_6"
+        tools:text="Air Jorda Gym Red Satin Original Produk Hoops Malaysia" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductVariant"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivProduct"
+        app:layout_constraintTop_toBottomOf="@id/tvProductName"
+        app:typographyType="heading_6"
+        tools:text="(Red | Ukuran Sepatu 42)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProductCount"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvProductName"
+        app:layout_constraintTop_toBottomOf="@id/tvProductVariant"
+        app:typographyType="body_3"
+        tools:text="1 Barang" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

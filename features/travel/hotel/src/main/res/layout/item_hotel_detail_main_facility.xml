@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_72"
-    android:layout_height="@dimen/dp_72"
+    android:layout_width="@dimen/hotel_72dp"
+    android:layout_height="@dimen/hotel_72dp"
     android:layout_marginLeft="@dimen/layout_lvl1"
     android:layout_marginRight="@dimen/layout_lvl1"
-    android:background="@drawable/bg_button_white_enabled_border"
+    android:background="@drawable/bg_hotel_facility_item"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/layout_lvl1">
@@ -22,11 +22,11 @@
         android:id="@+id/tv_main_facility_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center_horizontal"
-        app:typographyType="small"
-        android:textColor="@color/Neutral_N700_68"
-        tools:text="Wi-Fi Hotel Kencang"
         android:maxLines="2"
-        android:ellipsize="end"/>
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        tools:text="Wi-Fi Hotel Kencang" />
 
 </LinearLayout>

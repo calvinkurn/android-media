@@ -21,9 +21,6 @@ import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewMo
 
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.DATA_DETAIL
 
-/**
- * @author okasurya on 5/17/18.
- */
 class AnalyticsDebuggerDetailFragment : TkpdBaseV4Fragment() {
     private var textName: TextView? = null
     private var textTimestamp: TextView? = null
@@ -69,7 +66,7 @@ class AnalyticsDebuggerDetailFragment : TkpdBaseV4Fragment() {
             } else if (item.itemId == R.id.action_copy_text) {
                 val clipboard = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("tokopedia_analytics_debugger", viewModel!!.data)
-                clipboard.primaryClip = clip
+                clipboard.setPrimaryClip(clip)
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_LONG).show()
             }
         }

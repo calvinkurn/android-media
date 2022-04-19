@@ -1,0 +1,23 @@
+[
+  {
+    "data": {
+      "login_token": {
+        "acc_sid": "",
+        "access_token": "",
+        "expires_in": 5184000,
+        "refresh_token": "",
+        "sid": "",
+        "token_type": "Bearer",
+        "sq_check": false,
+        "action": 0,
+        "errors": [{"name":"","message":"Proses gagal. Silahkan coba beberapa saat lagi. [70012]"}],
+        "event_code": "FailedLoginFb",
+        "popup_error": {
+          "header": "",
+          "body": "",
+          "action": ""
+        }
+      }
+    }
+  }
+]

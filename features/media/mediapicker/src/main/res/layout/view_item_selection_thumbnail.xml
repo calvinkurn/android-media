@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp">
+
+    <FrameLayout
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="center">
+
+        <com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
+            android:id="@+id/img_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/picker_rect_grey_media" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_drag"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_gravity="bottom|start"
+            android:alpha="0.8"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            app:srcCompat="@drawable/picker_ic_baseline_more_24"
+            android:background="@drawable/picker_circle_trans_white" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="top|end"
+        android:background="@drawable/picker_circle_grey"
+        app:srcCompat="@drawable/ic_close_white"
+        android:padding="2dp"/>
+
+</FrameLayout>
+

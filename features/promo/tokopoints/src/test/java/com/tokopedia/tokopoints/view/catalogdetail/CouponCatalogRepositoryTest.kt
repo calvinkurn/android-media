@@ -1,17 +1,13 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class CouponCatalogRepositoryTest {
 
@@ -154,6 +150,30 @@ class CouponCatalogRepositoryTest {
                 every { getError(ApplyCouponBaseEntity::class.java) } returns null
             }
             repository.redeemCoupon("dnv")
+
+            coVerify (ordering = Ordering.ORDERED){
+                useCase.clearRequest()
+                useCase.addRequest(any())
+                useCase.executeOnBackground()
+            }
+
+        }
+    }
+
+
+    @Test
+    fun getListOfCatalog() {
+        runBlocking {
+            val useCase = mockk<MultiRequestGraphqlUseCase>()
+            repository.mGetCatalogUsecase = useCase
+            every { map[CommonConstant.GQLQuery.TP_GQL_CATALOG_LIST] } returns "sdfcasdv"
+            every { useCase.clearRequest() } just Runs
+            every { useCase.addRequest(any()) } just Runs
+            coEvery { useCase.executeOnBackground() } returns mockk{
+                every { getData<CatalogListingOuter>(CatalogListingOuter::class.java) } returns mockk()
+                every { getError(CatalogListingOuter::class.java) } returns null
+            }
+            repository.getListOfCatalog(1,1,0)
 
             coVerify (ordering = Ordering.ORDERED){
                 useCase.clearRequest()

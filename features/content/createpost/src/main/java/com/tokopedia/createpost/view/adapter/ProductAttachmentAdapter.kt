@@ -1,13 +1,13 @@
 package com.tokopedia.createpost.view.adapter
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
@@ -36,7 +36,7 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
 
     inner class ProductAttachmentViewHolder(view: View): RecyclerView.ViewHolder(view) {
         private val fullWidth = with(itemView.context.resources){
-            displayMetrics.widthPixels - getDimensionPixelSize(R.dimen.dp_16) * 2
+            displayMetrics.widthPixels - getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16) * 2
         }
 
         private val standardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_260)
@@ -51,8 +51,8 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price
                 product_price.setTextColor(ContextCompat.getColor(
-                        context, if (relatedProductItem.type == TYPE_AFFILIATE) R.color.af_commission_blue
-                        else R.color.Yellow_Y500))
+                        context, if (relatedProductItem.type == TYPE_AFFILIATE) com.tokopedia.affiliatecommon.R.color.af_commission_blue
+                        else R.color.cp_Yellow_Y500))
                 product_rating.gone()
 
                 delete.setOnClickListener { removeProduct(adapterPosition) }

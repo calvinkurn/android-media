@@ -10,24 +10,26 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistSearchTrackingListener
-import kotlinx.android.synthetic.main.item_search_result.view.*
+import com.tokopedia.brandlist.databinding.ItemSearchResultBinding
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 
-class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistSearchResultViewModel>(view) {
+class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistSearchResultUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_search_result
     }
 
+    private var binding: ItemSearchResultBinding? by viewBinding()
     private val context: Context = itemView.context
-    private val imgBrandLogo = itemView.iv_brand_logo
-    private val imgBrandImage = itemView.iv_brand_image
-    private val txtBrandName = itemView.tv_brand_name
+    private val imgBrandLogo = binding?.ivBrandLogo
+    private val imgBrandImage = binding?.ivBrandImage
+    private val txtBrandName = binding?.tvBrandName
 
-    override fun bind(element: BrandlistSearchResultViewModel) {
+    override fun bind(element: BrandlistSearchResultUiModel) {
         processString(element.name, element.searchQuery)
         bindData(element.defaultUrl, element.logoUrl)
         setupApplink(element.appsUrl, element.listener, element.id)
@@ -38,7 +40,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
         if(brandImageUrl.isNotBlank()) {
             ImageHandler.loadImage(context, imgBrandImage, brandImageUrl, null)
         } else {
-            imgBrandImage.visibility = View.GONE
+            imgBrandImage?.visibility = View.GONE
         }
 
     }
@@ -46,7 +48,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     private fun processString(name: String, searchQuery: String) {
         val startIndex = indexOfSearchQuery(name, searchQuery)
         if (startIndex == -1) {
-            txtBrandName.text = name
+            txtBrandName?.text = name
         } else {
             val highlightedTitle = SpannableString(name)
             highlightedTitle.setSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
@@ -54,7 +56,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
             highlightedTitle.setSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
                     startIndex + searchQuery.length,
                     name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            txtBrandName.text = highlightedTitle
+            txtBrandName?.text = highlightedTitle
         }
     }
 
@@ -65,7 +67,7 @@ class BrandlistSearchResultViewHolder(view: View): AbstractViewHolder<BrandlistS
     }
 
     private fun setupApplink(applink: String, tracking: BrandlistSearchTrackingListener, shopId: Int) {
-        itemView.search_result.setOnClickListener {
+        binding?.searchResult?.setOnClickListener {
             tracking.clickBrandOnSearchBox(shopId.toString())
             RouteManager.route(itemView.context, applink)
         }

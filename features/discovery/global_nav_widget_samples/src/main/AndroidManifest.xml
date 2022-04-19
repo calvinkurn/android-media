@@ -14,5 +14,4 @@
             android:label="@string/global_nav_widget_samples"
             android:theme="@style/Theme.White" />
     </application>
-
 </manifest>

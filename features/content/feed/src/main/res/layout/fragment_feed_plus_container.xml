@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/Unify_Background">
 
     <FrameLayout
         android:id="@+id/feed_background_frame"
@@ -18,12 +18,14 @@
             android:id="@+id/feed_background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/feed_background_image"
             android:background="@drawable/gradient_feed"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:contentDescription="@string/feed_header_mask"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
     </FrameLayout>
@@ -40,44 +42,49 @@
             android:visibility="invisible"
             app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg"
-            android:background="@color/green_600"
+            android:background="@color/Unify_G500"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|snap"
+            app:layout_scrollFlags="enterAlways"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.searchbar.FeedMainToolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
+            android:id="@+id/toolbarParent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="-20dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|snap"
-            app:screenName="/feed"/>
+            app:layout_scrollFlags="enterAlways"/>
 
         <View
             android:visibility="invisible"
             app:layout_collapseMode="pin"
             android:id="@+id/status_bar_bg2"
-            android:background="@color/green_600"
+            android:background="@color/Unify_G500"
             android:layout_width="match_parent"
             android:layout_marginTop="-5dp"
             android:layout_height="@dimen/dp_25"/>
 
-        <com.tokopedia.design.component.Tabs
+        <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
-            app:tabTextColor="@color/font_black_disabled_38"
+            app:tabSelectedTextColor="@color/Unify_GN500"
+            app:tabTextColor="@color/Unify_N700_32"
             app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/tkpd_main_green"
+            app:tabIndicatorColor="@color/Unify_GN500"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+            android:id="@+id/postUpdateView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -105,86 +112,16 @@
     </FrameLayout>
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/layout_grey_popup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black_54"
-            android:visibility="gone">
-
-        </FrameLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:visibility="gone"
-            app:backgroundTint="@color/tkpd_main_green"
-            app:srcCompat="@drawable/ic_feed_post_plus"
-            tools:visibility="visible"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed_byme"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_above="@id/fab_feed"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:visibility="invisible"
-            app:backgroundTint="@color/white"
-            app:srcCompat="@drawable/ic_feed_post_byme"/>
-
-
-        <TextView
-            android:id="@+id/text_fab_byme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/feed_create_post_byme"
-            android:layout_toLeftOf="@id/fab_feed_byme"
-            android:layout_alignTop="@id/fab_feed_byme"
-            android:layout_alignBottom="@id/fab_feed_byme"
-            android:textColor="@color/white"
-            android:layout_marginRight="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed_shop"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_above="@id/fab_feed_byme"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:visibility="invisible"
-            app:backgroundTint="@color/white"
-            app:srcCompat="@drawable/ic_feed_post_shop"/>
-
-        <TextView
-            android:id="@+id/text_fab_shop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/feed_create_post_shop"
-            android:layout_toLeftOf="@id/fab_feed_shop"
-            android:layout_alignTop="@id/fab_feed_shop"
-            android:layout_alignBottom="@id/fab_feed_shop"
-            android:textColor="@color/white"
-            android:layout_marginRight="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-    </RelativeLayout>
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/fab_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/Unify_GN500"
+        app:fbType="circle"
+        app:srcCompat="@drawable/ic_feed_post_plus"
+        tools:visibility="visible"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

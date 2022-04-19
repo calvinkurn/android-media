@@ -1,0 +1,43 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPage": {
+        "sections": [
+          {
+            "id": 7,
+            "title": "Beli <span style=\"color:#ffe500;\">produk digital</span> di tokopedia",
+            "sub_title": "Mulai dari pulsa, paket data, Listrik PLN",
+            "template": "TOP_BANNER_EMPTY",
+            "app_link": "tokopedia://",
+            "tracking": [
+              {
+                "action": "impression",
+                "data": "{\"event\":\"view_item\",\"eventCategory\":\"digital - subhomepage\",\"eventAction\":\"impression top banner empty\",\"eventLabel\":\"\",\"screenName\":\"/top-up-tagihan\",\"currentSite\":\"tokopediadigitalRecharge\",\"businessUnit\":\"recharge\",\"userId\":\"0\",\"promotions\":[]}"
+              }
+            ],
+            "items": [
+              {
+                "id": 0,
+                "title": "Beli <span style=\"color:#ffe500;\">produk digital</span> di tokopedia",
+                "sub_title": "Mulai dari pulsa, paket data, Listrik PLN",
+                "tracking": [],
+                "content": "",
+                "app_link": "",
+                "web_link": "",
+                "text_link": "",
+                "media_url": "",
+                "template": "",
+                "button_type": "",
+                "label_1": "",
+                "label_2": "",
+                "label_3": "",
+                "server_date": "",
+                "due_date": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

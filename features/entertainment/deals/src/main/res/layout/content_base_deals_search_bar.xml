@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_search_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBarDealsBaseSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:search_bar_placeholder="@string/deals_base_activity_search_placeholder"
+        app:search_bar_show_icon="false"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmerSearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl7"
+        app:corners="16"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

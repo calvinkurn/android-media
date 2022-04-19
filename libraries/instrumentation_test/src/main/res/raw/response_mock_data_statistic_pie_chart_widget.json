@@ -1,0 +1,70 @@
+[
+  {
+    "data": {
+      "fetchPieChartWidgetData": {
+        "data": [
+          {
+            "dataKey": "verifiedOrdersBONetAmount",
+            "data": {
+              "item": [
+                {
+                  "percentage": 0,
+                  "percentageFmt": "0%",
+                  "value": 0,
+                  "valueFmt": "Rp0",
+                  "legend": "Bebas Ongkir",
+                  "color": "#4FBA68"
+                },
+                {
+                  "percentage": 0,
+                  "percentageFmt": "0%",
+                  "value": 0,
+                  "valueFmt": "Rp0",
+                  "legend": "Non-Bebas Ongkir",
+                  "color": "#00B2C6"
+                }
+              ],
+              "summary": {
+                "value": 0,
+                "valueFmt": "Rp0",
+                "diffPercentage": 0,
+                "diffPercentageFmt": "\u003cspan style=color:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu"
+              }
+            },
+            "errorMsg": ""
+          },
+          {
+            "dataKey": "verifiedOrdersBOQuantity",
+            "data": {
+              "item": [
+                {
+                  "percentage": 0,
+                  "percentageFmt": "0%",
+                  "value": 0,
+                  "valueFmt": "0",
+                  "legend": "Bebas Ongkir",
+                  "color": "#4FBA68"
+                },
+                {
+                  "percentage": 0,
+                  "percentageFmt": "0%",
+                  "value": 0,
+                  "valueFmt": "0",
+                  "legend": "Non-Bebas Ongkir",
+                  "color": "#00B2C6"
+                }
+              ],
+              "summary": {
+                "value": 0,
+                "valueFmt": "0",
+                "diffPercentage": 0,
+                "diffPercentageFmt": "\u003cspan style=color:#31353B;\u003e\u003cb\u003e0%\u003c/b\u003e\u003c/span\u003e dari 7 hari lalu"
+              }
+            },
+            "errorMsg": ""
+          }
+        ]
+      }
+    }
+  }
+]

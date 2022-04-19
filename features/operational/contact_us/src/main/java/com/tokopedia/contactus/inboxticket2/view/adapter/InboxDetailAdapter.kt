@@ -20,19 +20,26 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
-import com.tokopedia.contactus.inboxticket2.view.adapter.InboxDetailAdapter.DetailViewHolder
-import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
+import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxDetailViewHolder
+import com.tokopedia.contactus.inboxticket2.view.adapter.holder.InboxHeaderViewHolder
+import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract
+import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
 import com.tokopedia.contactus.inboxticket2.view.utils.CLOSED
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.htmltags.HtmlUtil
 
 private const val ROLE_TYPE_AGENT = "agent"
+private const val VIEW_TYPE_HEADER = 0
 
 class InboxDetailAdapter(private val mContext: Context,
-                         private val commentList: List<CommentsItem>,
+                         private val commentList: MutableList<CommentsItem>,
                          needAttachment: Boolean,
-                         private val mPresenter: InboxDetailPresenter) : RecyclerView.Adapter<DetailViewHolder>() {
+                         private val mPresenter: InboxDetailContract.Presenter,
+                         private val inboxDetailListener: InboxDetailListener,
+                         private val userId: String,
+                         private val caseId: String) : RecyclerView.Adapter<InboxDetailViewHolder>() {
 
     private var needAttachment: Boolean
     private val indexExpanded: Int = -1
@@ -40,15 +47,25 @@ class InboxDetailAdapter(private val mContext: Context,
     private var searchText: String? = null
     private val utils: Utils by lazy { Utils() }
     private val hintAttachmentString: SpannableString
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
-        val inflater = LayoutInflater.from(
-                parent.context)
-        val v = inflater.inflate(R.layout.layout_item_message, parent, false)
-        return DetailViewHolder(v)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InboxDetailViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == VIEW_TYPE_HEADER) {
+            val view = inflater.inflate(R.layout.layout_item_message_header, parent, false)
+            InboxHeaderViewHolder(view)
+        } else {
+            val view = inflater.inflate(R.layout.layout_item_message, parent, false)
+            InboxMessageViewHolder(view)
+        }
+
     }
 
-    override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
-        holder.bindViewHolder(position, mPresenter)
+    override fun onBindViewHolder(holder: InboxDetailViewHolder, position: Int) {
+        if (holder is InboxMessageViewHolder) {
+            holder.bindViewHolder(position, mPresenter)
+        } else if (holder is InboxHeaderViewHolder) {
+            holder.bind(commentList[position], inboxDetailListener, utils)
+        }
     }
 
     fun enterSearchMode(text: String) {
@@ -73,7 +90,17 @@ class InboxDetailAdapter(private val mContext: Context,
         return commentList.size
     }
 
-    inner class DetailViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
+    fun addComment(commentsItem: CommentsItem) {
+        commentList.add(commentsItem)
+        notifyItemRangeChanged(itemCount - 2, 2)
+        (mContext as InboxDetailActivity).scrollTo(itemCount - 1)
+    }
+
+    inner class InboxMessageViewHolder(val view: View) : InboxDetailViewHolder(view), View.OnClickListener {
         private var ivProfile: ImageView? = null
         private var tvName: TextView? = null
         private var tvDateRecent: TextView? = null
@@ -98,11 +125,11 @@ class InboxDetailAdapter(private val mContext: Context,
             tvAttachmentHint = view.findViewById(R.id.tv_hint_attachment)
         }
 
-        fun bindViewHolder(position: Int, mPresenter: InboxDetailPresenter) {
+        fun bindViewHolder(position: Int, mPresenter: InboxDetailContract.Presenter) {
             if (commentList[position].attachment?.size ?: 0 > 0) {
                 if (attachmentAdapter == null) {
                     attachmentAdapter = AttachmentAdapter(commentList[position].attachment
-                            ?: listOf(), this@InboxDetailAdapter.mPresenter)
+                            ?: listOf(), this@InboxDetailAdapter.mPresenter, userId, caseId)
                 } else {
                     attachmentAdapter?.addAll(commentList[position].attachment
                             ?: listOf())
@@ -117,15 +144,16 @@ class InboxDetailAdapter(private val mContext: Context,
             val item = commentList[position]
             if (item.createdBy != null) {
                 ImageHandler.loadImageCircle2(mContext, ivProfile, item.createdBy?.picture)
-                tvName?.text = item.createdBy?.name
+                if (isRoleAgent(item)) tvName?.text = view.context.getString(R.string.contact_us_tokopedia_care_team)
+                else tvName?.text = item.createdBy?.name
             }
             if (item.rating != null && item.rating == KEY_DIS_LIKED) {
                 ratingThumbsDown.show()
-                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600))
+                ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_red_600))
                 ratingThumbsUp.hide()
             } else if (item.rating != null && item.rating == KEY_LIKED) {
                 ratingThumbsUp.show()
-                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500))
+                ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_g_500))
                 ratingThumbsDown.hide()
             }
             if (position == commentList.size - 1 || !commentList[position].isCollapsed || searchMode) {
@@ -144,10 +172,10 @@ class InboxDetailAdapter(private val mContext: Context,
                 }
                 if (searchMode) {
                     tvComment?.text = utils.getHighlightText(searchText ?: "",
-                            MethodChecker.fromHtml(item.message).toString())
+                            HtmlUtil.fromHtml(item.message ?: "").toString())
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 } else {
-                    tvComment?.text = MethodChecker.fromHtml(item.message)
+                    tvComment?.text = HtmlUtil.fromHtml(item.message ?: "")
                     tvComment?.movementMethod = LinkMovementMethod.getInstance()
                 }
                 tvComment?.show()
@@ -172,7 +200,7 @@ class InboxDetailAdapter(private val mContext: Context,
             }
             ratingThumbsUp.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
-                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.g_500))
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_g_500))
                     ratingThumbsDown.hide()
                     mPresenter.onClick(true, position, item.id ?: "")
                     sendGTMEvent(InboxTicketTracking.Label.EventHelpful)
@@ -180,7 +208,7 @@ class InboxDetailAdapter(private val mContext: Context,
             }
             ratingThumbsDown.setOnClickListener {
                 if (item.rating != null && !(item.rating == KEY_LIKED || item.rating == KEY_DIS_LIKED)) {
-                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, com.tokopedia.design.R.color.red_600))
+                    ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.contact_us_red_600))
                     ratingThumbsUp.hide()
                     mPresenter.onClick(false, position, item.id ?: "")
                     sendGTMEvent(InboxTicketTracking.Label.EventNotHelpful)
@@ -189,16 +217,14 @@ class InboxDetailAdapter(private val mContext: Context,
         }
 
         private fun sendGTMEvent(eventLabel: String) {
-            ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventName,
+            ContactUsTracking.sendGTMInboxTicket(view.context, InboxTicketTracking.Event.EventName,
                     InboxTicketTracking.Category.EventHelpMessageInbox,
                     InboxTicketTracking.Action.EventClickCsatPerReply,
                     eventLabel)
         }
 
         private fun isRoleAgent(item: CommentsItem?): Boolean {
-            return if (item?.createdBy?.role != null) {
-                item.createdBy?.role == ROLE_TYPE_AGENT
-            } else false
+            return item?.createdBy?.role == ROLE_TYPE_AGENT
         }
 
         private fun settingRatingButtonsVisibility(visibility: Int) {

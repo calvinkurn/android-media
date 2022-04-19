@@ -3,7 +3,6 @@ package com.tokopedia.productcard.v2
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -17,14 +16,14 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageWithTarget
+import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
@@ -180,8 +179,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getTitleMarginTop(): Int {
-        return if (textViewShopName.isNotNullAndVisible) R.dimen.dp_2
-        else R.dimen.dp_8
+        return if (textViewShopName.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setPriceMarginTop() {
@@ -192,8 +191,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getPriceMarginTop(): Int {
-        return if (labelDiscount.isNotNullAndVisible) R.dimen.dp_2
-        else R.dimen.dp_4
+        return if (labelDiscount.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_2
+        else com.tokopedia.design.R.dimen.dp_4
     }
 
     protected open fun setLocationMarginLeft() {
@@ -204,8 +203,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getLocationMarginLeft(): Int {
-        return if (linearLayoutShopBadges.isNotNullAndVisible) R.dimen.dp_4
-        else R.dimen.dp_8
+        return if (linearLayoutShopBadges.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setLocationConstraintEnd() {
@@ -218,11 +217,11 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
         if(isTextLocationIsAtBottomOfCard()) {
-            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, com.tokopedia.design.R.dimen.dp_4)
         }
         else {
             imageProduct?.doIfVisible { imageProduct ->
-                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, R.dimen.dp_8)
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, com.tokopedia.design.R.dimen.dp_8)
             }
         }
     }
@@ -242,8 +241,8 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun getReviewCountMarginLeft(): Int {
-        return if(linearLayoutImageRating.isNotNullAndVisible) R.dimen.dp_4
-        else R.dimen.dp_8
+        return if(linearLayoutImageRating.isNotNullAndVisible) com.tokopedia.design.R.dimen.dp_4
+        else com.tokopedia.design.R.dimen.dp_8
     }
 
     protected open fun setImageFreeOngkirPromoConstraint() {
@@ -252,7 +251,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageFreeOngkirPromoTopConstraintView?.let {
                 setViewConstraint(
-                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                        imageFreeOngkirPromo.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
                 )
             }
         }
@@ -274,7 +273,7 @@ abstract class ProductCardView: BaseCustomView {
 
             labelOffersTopConstraintView?.let {
                 setViewConstraint(
-                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                        labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, com.tokopedia.design.R.dimen.dp_8
                 )
             }
         }
@@ -293,7 +292,7 @@ abstract class ProductCardView: BaseCustomView {
 
             imageTopAdsTopConstraintView?.let {
                 setViewConstraint(
-                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, R.dimen.dp_0
+                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, com.tokopedia.design.R.dimen.dp_0
                 )
             }
         }
@@ -421,32 +420,27 @@ abstract class ProductCardView: BaseCustomView {
         if(!TextUtils.isEmpty(url)) {
             val view = LayoutInflater.from(context).inflate(R.layout.product_card_badge_layout, null)
 
-            ImageHandler.loadImageBitmap2(context, url, object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    loadShopBadgeSuccess(view, resource)
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    loadShopBadgeFailed(view)
-                }
-            })
+            loadImageWithTarget(context, url, {
+                centerCrop()
+            }, MediaTarget(
+                    view.findViewById<ImageView>(R.id.badge),
+                    onReady = { badgeView, resource ->
+                        loadShopBadgeSuccess(view, badgeView, resource)
+                    },
+                    onFailed = { _, _ ->
+                        loadShopBadgeFailed(view)
+                    }
+            ))
         }
     }
 
-    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
-        val image = view.findViewById<ImageView>(R.id.badge)
-
+    private fun loadShopBadgeSuccess(layout: View, badgeView: ImageView, bitmap: Bitmap) {
         if (bitmap.height <= 1 && bitmap.width <= 1) {
-            view.visibility = View.GONE
+            layout.visibility = View.GONE
         } else {
-            image.setImageBitmap(bitmap)
-            view.visibility = View.VISIBLE
-            addShopBadge(view)
+            badgeView.setImageBitmap(bitmap)
+            layout.visibility = View.VISIBLE
+            addShopBadge(layout)
         }
     }
 
@@ -498,7 +492,7 @@ abstract class ProductCardView: BaseCustomView {
 
         imageFreeOngkirPromo.configureVisibilityWithBlankSpaceConfig(
                 shouldShowFreeOngkirImage, blankSpaceConfig.freeOngkir) {
-            ImageHandler.loadImageRounded2(context, it, freeOngkir.imageUrl)
+            it.loadIcon(freeOngkir.imageUrl)
         }
     }
 
@@ -512,7 +506,7 @@ abstract class ProductCardView: BaseCustomView {
 
     open fun setImageProductUrl(imageUrl: String) {
         imageProduct?.let {
-            ImageHandler.loadImageThumbs(context, it, imageUrl)
+            it.loadImage(imageUrl)
         }
     }
 

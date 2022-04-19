@@ -5,24 +5,23 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationNotFoundViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchRecommendationNotFoundUiModel
 import com.tokopedia.brandlist.common.ImageAssets
-import kotlinx.android.synthetic.main.brandlist_all_brand_not_found.view.*
-import kotlinx.android.synthetic.main.brandlist_search_recom_not_found_view_holder.view.*
-import kotlinx.android.synthetic.main.brandlist_search_recom_not_found_view_holder.view.brand_not_found_layout
-import kotlinx.android.synthetic.main.brandlist_search_recom_not_found_view_holder.view.img_brand_not_found
+import com.tokopedia.brandlist.databinding.BrandlistSearchRecomNotFoundViewHolderBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class BrandlistSearchRecommendationNotFoundViewHolder(
         itemView: View,
         private val listener: Listener
-): AbstractViewHolder<BrandlistSearchRecommendationNotFoundViewModel>(itemView) {
+): AbstractViewHolder<BrandlistSearchRecommendationNotFoundUiModel>(itemView) {
+    private var binding: BrandlistSearchRecomNotFoundViewHolderBinding? by viewBinding()
 
-    override fun bind(element: BrandlistSearchRecommendationNotFoundViewModel?) {
-        itemView.brand_not_found_layout.visibility = View.VISIBLE
-        ImageHandler.loadImage(itemView.context, itemView.img_brand_not_found,
+    override fun bind(element: BrandlistSearchRecommendationNotFoundUiModel?) {
+        binding?.brandNotFoundLayout?.visibility = View.VISIBLE
+        ImageHandler.loadImage(itemView.context, binding?.imgBrandNotFound,
                 ImageAssets.BRAND_NOT_FOUND, null)
-        itemView.btn_search_brands.setOnClickListener {
+        binding?.btnSearchBrands?.setOnClickListener {
             listener.onClickSearchButton()
         }
     }

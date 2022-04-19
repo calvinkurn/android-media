@@ -18,6 +18,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.databinding.ActivityImagePreviewPdpBinding
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
 import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPdpComponent
 import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPdpView
@@ -25,10 +26,8 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 /**
  * created by rival on 07/11/19
@@ -52,7 +51,10 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     lateinit var remoteConfig: RemoteConfig
 
     private var productId: String = "0"
-    private var isWishlisted by Delegates.notNull<Boolean>()
+    private var isWishlisted: Boolean = false
+    private var shopId: String = ""
+
+    private var binding: ActivityImagePreviewPdpBinding? = null
 
     override fun layoutId(): Int {
         return R.layout.activity_image_preview_pdp
@@ -60,11 +62,13 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityImagePreviewPdpBinding.bind(findViewById(R.id.imagePreviewPdpContainer))
 
         val extraData = intent?.extras
         if (extraData != null) {
             productId = extraData.getString(PRODUCT_ID) ?: "0"
             isWishlisted = extraData.getBoolean(IS_WISHLISTED, false)
+            shopId = extraData.getString(SHOP_ID, "")
         }
 
         initInjector()
@@ -80,28 +84,33 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     private fun updateView() {
-        findViewById<Button>(R.id.ivDownload)?.hide()
+        findViewById<Button>(com.tokopedia.imagepreview.R.id.ivDownload)?.hide()
+
+        if (viewModel.isShopOwner(shopId)) {
+            binding?.btnAddToWishlist?.hide()
+            return
+        }
 
         val isCanShowing = remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)
         if (isCanShowing) {
-            btnAddToWishlist?.show()
+            binding?.btnAddToWishlist?.show()
         } else {
-            btnAddToWishlist?.hide()
+            binding?.btnAddToWishlist?.hide()
         }
 
         if (userSession.isLoggedIn) {
             if (isWishlisted) {
-                btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
+                binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
             } else {
-                btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+                binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
             }
         } else {
-            btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+            binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
         }
     }
 
     private fun initListener() {
-        btnAddToWishlist?.setOnClickListener {
+        binding?.btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
                 if (isWishlisted) {
                     removeWishlist()
@@ -114,10 +123,10 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             }
         }
 
-        findViewById<TouchViewPager>(R.id.viewPager)?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+        findViewById<TouchViewPager>(com.tokopedia.imagepreview.R.id.viewPager)?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
-                val swipeDirection = if(lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
+                val swipeDirection = if (lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
                 imagePreviewTracking.onImageSwipe(productId, swipeDirection, position)
                 lastPosition = position
             }
@@ -130,7 +139,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             }
         })
 
-        findViewById<ImageView>(R.id.ivClose)?.setOnClickListener {
+        findViewById<ImageView>(com.tokopedia.imagepreview.R.id.ivClose)?.setOnClickListener {
             setResult()
         }
     }
@@ -147,6 +156,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
@@ -197,11 +207,11 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     override fun showLoading() {
-        progressBar?.show()
+        binding?.progressBar?.show()
     }
 
     override fun hideLoading() {
-        progressBar?.hide()
+        binding?.progressBar?.hide()
     }
 
     override fun onSuccessAddWishlist() {
@@ -236,6 +246,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
         private const val KEY_WISHLIST_BUTTON = "android_customer_image_preview_wishlist_pdp"
 
+        private const val SHOP_ID = "shopId"
         private const val PRODUCT_ID = "productId"
         private const val IS_WISHLISTED = "isWishlisted"
         private const val IMAGE_SWIPE_DIRECTION_LEFT = "left"
@@ -248,13 +259,15 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         @JvmOverloads
         fun createIntent(
                 context: Context,
+                shopId: String,
                 productId: String,
                 isWishlisted: Boolean,
                 imageUris: ArrayList<String>,
                 imageDesc: ArrayList<String>? = null,
                 position: Int = 0,
                 title: String? = null,
-                description: String? = null): Intent {
+                description: String? = null,
+                disableDownload: Boolean = true): Intent {
             val intent = Intent(context, ImagePreviewPdpActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)
@@ -262,8 +275,10 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             bundle.putStringArrayList(IMAGE_URIS, imageUris)
             bundle.putStringArrayList(IMAGE_DESC, imageDesc)
             bundle.putInt(IMG_POSITION, position)
+            bundle.putString(SHOP_ID, shopId)
             bundle.putString(PRODUCT_ID, productId)
             bundle.putBoolean(IS_WISHLISTED, isWishlisted)
+            bundle.putBoolean(DISABLE_DOWNLOAD, disableDownload)
             intent.putExtras(bundle)
             return intent
         }

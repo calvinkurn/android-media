@@ -1,0 +1,42 @@
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_lvl4">
+
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/tfResendEticketEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6"
+            app:text_field_input_type="textEmailAddress"
+            app:text_field_label="@string/flight_resend_eticket_email_label"
+            app:text_field_label_static="true"
+            app:text_field_placeholder="@string/flight_resend_eticket_dialog_email_hint" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgResendETicketError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_R500"
+            android:visibility="gone"
+            app:typographyType="body_3"
+            tools:text="Error" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnResendETicketSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:enabled="false"
+            android:text="@string/flight_resend_eticket_dialog_send"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

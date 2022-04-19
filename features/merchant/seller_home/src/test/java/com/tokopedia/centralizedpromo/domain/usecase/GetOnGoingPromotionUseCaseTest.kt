@@ -78,13 +78,13 @@ class GetOnGoingPromotionUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetPromotionListResponseWrapper>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val onGoingPromotions = usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assertions.assertEquals(onGoingPromotions, successResult)
@@ -96,13 +96,13 @@ class GetOnGoingPromotionUseCaseTest {
         val errorResponse = TestHelper.createSuccessResponse<GetPromotionListResponseWrapper>(ERROR_RESPONSE_WITH_MESSAGE_ON_HEADER)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         val result = usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assertions.assertEquals(result, errorResultWithMessage)
@@ -114,14 +114,14 @@ class GetOnGoingPromotionUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetPromotionListResponseWrapper>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
     }
 }

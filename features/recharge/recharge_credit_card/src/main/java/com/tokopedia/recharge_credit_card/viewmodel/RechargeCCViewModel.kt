@@ -10,13 +10,10 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import okhttp3.internal.http2.ConnectionShutdownException
-import java.io.InterruptedIOException
-import java.net.SocketException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -24,18 +21,21 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     : BaseViewModel(dispatcher) {
 
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
-    val errorCCBankList = MutableLiveData<String>()
+    val errorCCBankList = MutableLiveData<Throwable>()
     val tickers = MutableLiveData<List<TickerCreditCard>>()
 
     private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
-    private val _errorPrefix = MutableLiveData<String>()
-    private val _bankNotSupported = MutableLiveData<String>()
+    private val _errorPrefix = MutableLiveData<Throwable>()
+    private val _bankNotSupported = MutableLiveData<Throwable>()
+    private val _rule = MutableLiveData<List<RuleModel>>()
 
     val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
-    val errorPrefix: LiveData<String> = _errorPrefix
-    val bankNotSupported: LiveData<String> = _bankNotSupported
+    val errorPrefix: LiveData<Throwable> = _errorPrefix
+    val bankNotSupported: LiveData<Throwable> = _bankNotSupported
+    val rule: LiveData<List<RuleModel>> = _rule
 
     private var foundPrefix: Boolean = false
+    var categoryName: String = ""
 
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
@@ -44,11 +44,12 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
             }.getSuccessData<RechargeCCMenuDetailResponse>()
 
+            categoryName = data.menuDetail.menuName
             if (data.menuDetail.tickers.isNotEmpty()) {
                 tickers.postValue(data.menuDetail.tickers)
             } else {
@@ -66,7 +67,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<RechargeCCBankListReponse>()
@@ -74,18 +75,11 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             if (data.rechargeCCBankList.messageError.isEmpty()) {
                 rechargeCCBankList.postValue(data.rechargeCCBankList)
             } else {
-                errorCCBankList.postValue(data.rechargeCCBankList.messageError)
+                errorCCBankList.postValue(MessageErrorException(data.rechargeCCBankList.messageError))
             }
 
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                errorCCBankList.postValue(ERROR_DEFAULT)
-            } else {
-                errorCCBankList.postValue(it.message)
-            }
+            errorCCBankList.postValue(it)
         }
     }
 
@@ -96,7 +90,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<RechargeCCCatalogPrefix>()
@@ -104,41 +98,37 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             if (data.prefixSelect.prefixes.isNotEmpty()) {
                 data.prefixSelect.prefixes.map {
                     if (creditCard.startsWith(it.value)) {
+                        val validations = data.prefixSelect.validations.map { validation ->
+                            RuleModel(
+                                validation.title,
+                                validation.message,
+                                validation.rule
+                            )
+                        }
+                        _rule.postValue(validations)
                         foundPrefix = true
                         return@map _rechargeCreditCard.postValue(RechargeCreditCard(
                                 it.operator.id,
                                 it.operator.attribute.defaultProductId,
-                                it.operator.attribute.imageUrl
+                                it.operator.attribute.imageUrl,
+                                it.operator.attribute.name
                         ))
                     }
                 }
             } else {
-                _bankNotSupported.postValue("")
+                _bankNotSupported.postValue(MessageErrorException(""))
             }
 
             if (!foundPrefix) {
-                _bankNotSupported.postValue("")
+                _bankNotSupported.postValue(MessageErrorException(""))
             }
         }) {
-            if (it is UnknownHostException ||
-                    it is SocketException ||
-                    it is InterruptedIOException ||
-                    it is ConnectionShutdownException) {
-                _errorPrefix.postValue(ERROR_DEFAULT)
-            } else {
-                _errorPrefix.postValue(it.message)
-            }
+            _errorPrefix.postValue(it)
         }
     }
 
     companion object {
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
-        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
-
-        //production
-        //const val CC_MENU_ID = 169
-        //staging
-        //const val CC_MENU_ID = 86
     }
 }

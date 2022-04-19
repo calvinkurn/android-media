@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
+import com.tokopedia.promocheckout.util.PromoCheckoutQuery
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.*
@@ -16,12 +17,14 @@ class GetDetailCouponMarketplaceUseCase(val resources: Resources)
 
     val ONE_CLICK_SHIPMENT = "oneClickShipment"
     val INPUT_CODE = "code"
+    val API_VERSION= "apiVersion"
 
     override fun execute(requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         val variables = HashMap<String, Any>()
         variables[INPUT_CODE] = requestParams?.getString(INPUT_CODE, "") ?: ""
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_detail_marketplace), DataPromoCheckoutDetail::class.java, variables)
+        variables[API_VERSION] = "2.0.0"
+
+        val graphqlRequest = GraphqlRequest(PromoCheckoutQuery.promoCheckoutDetailMarketPlace(), DataPromoCheckoutDetail::class.java, variables)
         clearRequest()
         addRequest(graphqlRequest)
 

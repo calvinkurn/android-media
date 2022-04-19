@@ -18,7 +18,9 @@ data class ProfileHeaderViewModel(
         val isAffiliate: Boolean = false,
         var isShowAffiliateContent: Boolean = false,
         var isFollowed: Boolean = false,
-        val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
+        val isOwner: Boolean = false,
+        val isCreatePostToggleOn: Boolean = false
+) : Visitable<ProfileTypeFactory> {
 
     companion object {
         const val ZERO = "0"

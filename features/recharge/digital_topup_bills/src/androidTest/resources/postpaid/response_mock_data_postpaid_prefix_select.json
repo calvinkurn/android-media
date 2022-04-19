@@ -1,0 +1,576 @@
+[
+  {
+    "data": {
+      "rechargeCatalogPrefixSelect": {
+        "componentID": 19,
+        "name": "client_number",
+        "paramName": "operator",
+        "text": "Masukkan Nomor HP",
+        "help": "",
+        "placeholder": "",
+        "validations": [
+          {
+            "id": 3,
+            "title": "Alphanumeric",
+            "message": "Nomor hanya boleh mengandung huruf dan angka",
+            "rule": "[a-zA-Z0-9]+"
+          },
+          {
+            "id": 4,
+            "title": "Max 14 Digit",
+            "message": "Nomor terlalu panjang, maksimum 14 karakter",
+            "rule": "^\\d{0,14}$"
+          },
+          {
+            "id": 5,
+            "title": "Min 10 Digit",
+            "message": "Nomor terlalu pendek, minimal 10 karakter",
+            "rule": "^\\d{10,}$"
+          }
+        ],
+        "prefixes": [
+          {
+            "key": "116",
+            "value": "0819",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "0818",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "0817",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "0877",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "0879",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08593",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "0878",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08595",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08597",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08592",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08599",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08594",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08596",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "116",
+            "value": "08590",
+            "operator": {
+              "id": 116,
+              "attributes": {
+                "name": "XL Prioritas",
+                "default_product_id": 563,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/xl_3.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0894",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0899",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0898",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0897",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0896",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "115",
+            "value": "0895",
+            "operator": {
+              "id": 115,
+              "attributes": {
+                "name": "Tri Pascabayar",
+                "default_product_id": 562,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tri_2.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0856",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0857",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0858",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0815",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0814",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0816",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0851",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0852",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0822",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0811",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "114",
+            "value": "0855",
+            "operator": {
+              "id": 114,
+              "attributes": {
+                "name": "Indosat - Matrix",
+                "default_product_id": 560,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/indosat.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0823",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0853",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0812",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0813",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "113",
+            "value": "0821",
+            "operator": {
+              "id": 113,
+              "attributes": {
+                "name": "Telkomsel - Halo",
+                "default_product_id": 559,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/telkomsel.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0889",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0888",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0882",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0883",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0885",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0884",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0886",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0887",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          },
+          {
+            "key": "117",
+            "value": "0881",
+            "operator": {
+              "id": 117,
+              "attributes": {
+                "name": "Smartfren Pascabayar",
+                "default_product_id": 561,
+                "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/smartfren_2.png"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

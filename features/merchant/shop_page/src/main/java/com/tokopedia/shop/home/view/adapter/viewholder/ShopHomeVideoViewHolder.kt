@@ -10,18 +10,19 @@ import androidx.constraintlayout.widget.Group
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubeThumbnailLoader
-import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.WidgetShopPageVideoYoutubeBinding
 import com.tokopedia.shop.home.HomeConstant
+import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
-import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -29,90 +30,85 @@ import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 
 class ShopHomeVideoViewHolder(
         val view: View,
-        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
-        YouTubeThumbnailView.OnInitializedListener, View.OnClickListener {
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), View.OnClickListener {
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
         const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
-
-    private var videoUrl: String = ""
-    private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
+    private val viewBinding: WidgetShopPageVideoYoutubeBinding? by viewBinding()
+    private var youTubeThumbnailShopPageImageUnify: ShopCarouselBannerImageUnify? = null
     private var loaderImageView: LoaderImageView? = null
-    private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
+    private var youTubeVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     private var btnYoutubePlayer: AppCompatImageView? = null
     private var ivVideoNotFound: AppCompatImageView? = null
     private var groupVideoError: Group? = null
+    private var textViewTitle: Typography? = viewBinding?.textViewTitle
 
     init {
-        youTubeThumbnailShopPage = view.findViewById(R.id.youtube_home_shop_page)
-        btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
+        youTubeThumbnailShopPageImageUnify = viewBinding?.youtubeHomeShopPage
+        btnYoutubePlayer = viewBinding?.btnYoutubePlayer
         btnYoutubePlayer?.hide()
-        loaderImageView = view.findViewById(R.id.loaderVideoYoutube)
-        ivVideoNotFound = view.findViewById(R.id.ivVideoNotFound)
-        groupVideoError = view.findViewById(R.id.groupVideoError)
-        youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        loaderImageView = viewBinding?.loaderVideoYoutube
+        ivVideoNotFound = viewBinding?.ivVideoNotFound
+        groupVideoError = viewBinding?.groupVideoError
     }
 
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
-        this.youtubVideoModel = model
-        val videoData = model.data?.first()
-        val uri = Uri.parse(videoData?.videoUrl ?: "")
-        videoUrl = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
-        btnYoutubePlayer?.setOnClickListener(this)
-        ivVideoNotFound?.setOnClickListener(this)
-        videoData?.let {
-            youTubeThumbnailShopPage?.addOnImpressionListener(it) {
-                listener.onDisplayItemImpression(
-                        model,
-                        it,
-                        adapterPosition,
-                        0
-                )
+        this.youTubeVideoModel = model
+        if (model.data?.firstOrNull()?.youTubeVideoDetail == null) {
+            val videoData = model.data?.firstOrNull()
+            listener.loadYouTubeData(videoData?.videoUrl.orEmpty(), model.widgetId)
+            btnYoutubePlayer?.setOnClickListener(this)
+            ivVideoNotFound?.setOnClickListener(this)
+            videoData?.let {
+                youTubeThumbnailShopPageImageUnify?.addOnImpressionListener(it) {
+                    listener.onDisplayItemImpression(
+                            model,
+                            it,
+                            adapterPosition,
+                            0
+                    )
+                }
             }
-        }
-        itemView.textViewTitle?.apply {
-            if (model.header.title.isEmpty()) {
-                hide()
-                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+        } else {
+            val highResVideoThumbnailUrl = model.data?.firstOrNull()?.youTubeVideoDetail.getMaxResThumbnailUrl()
+            if (highResVideoThumbnailUrl.isNotEmpty()) {
+                youTubeThumbnailShopPageImageUnify?.onUrlLoaded = { isSuccess ->
+                    if (isSuccess) {
+                        btnYoutubePlayer?.visible()
+                        groupVideoError?.gone()
+                        loaderImageView?.gone()
+                    } else {
+                        groupVideoError?.visible()
+                        loaderImageView?.gone()
+                    }
+                    isSuccess
+                }
+                youTubeThumbnailShopPageImageUnify?.apply {
+                    try {
+                        if (context.isValidGlideContext())
+                            urlSrc = highResVideoThumbnailUrl
+                    } catch (e: Throwable) {
                     }
                 }
+            } else {
+                groupVideoError?.visible()
+                loaderImageView?.gone()
+            }
+        }
+
+        textViewTitle?.apply {
+            if (model.header.title.isEmpty()) {
+                hide()
             } else {
                 text = model.header.title
                 show()
             }
         }
-    }
-
-    override fun onInitializationSuccess(youTubeThumbnailView: YouTubeThumbnailView?, youTubeThumbnailLoader: YouTubeThumbnailLoader?) {
-
-        youTubeThumbnailLoader?.setVideo(videoUrl)
-        youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener {
-            override fun onThumbnailLoaded(childYouTubeThumbnailView: YouTubeThumbnailView?, p1: String?) {
-                childYouTubeThumbnailView?.visible()
-                btnYoutubePlayer?.visible()
-                groupVideoError?.gone()
-                loaderImageView?.gone()
-                youTubeThumbnailLoader.release()
-            }
-
-            override fun onThumbnailError(childYouTubeThumbnailView: YouTubeThumbnailView?, errorReason: YouTubeThumbnailLoader.ErrorReason?) {
-                childYouTubeThumbnailView?.visible()
-                groupVideoError?.visible()
-                loaderImageView?.gone()
-                youTubeThumbnailLoader.release()
-            }
-        })
-    }
-
-    override fun onInitializationFailure(youTubeThumbnailView: YouTubeThumbnailView?, youTubeInitializationResult: YouTubeInitializationResult?) {
     }
 
     override fun onClick(view: View?) {
@@ -128,16 +124,40 @@ class ShopHomeVideoViewHolder(
 
     private fun playYoutube(view: View) {
         view.context?.let {
-            youtubVideoModel?.data?.let { videoItemList ->
-                listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
+            youTubeVideoModel?.data?.let { videoItemList ->
+                videoItemList.firstOrNull()?.run {
+                    listener.onDisplayItemClicked(youTubeVideoModel, this, adapterPosition, 0)
+                }
             }
+            val uri = Uri.parse(youTubeVideoModel?.data?.firstOrNull()?.videoUrl ?: "")
+            val youTubeVideoId = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {
-                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))
+                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, youTubeVideoId))
             } else {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + videoUrl)))
+                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + youTubeVideoId)))
             }
         }
+    }
+
+    private fun YoutubeVideoDetailModel?.getMaxResThumbnailUrl(): String {
+        return this?.items?.firstOrNull()?.snippet?.thumbnails?.let { thumbnails ->
+            thumbnails.maxres?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.standard?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.high?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.medium?.let{
+                return it.url.orEmpty()
+            }
+            thumbnails.default?.let{
+                return it.url.orEmpty()
+            }
+        } ?: ""
     }
 }

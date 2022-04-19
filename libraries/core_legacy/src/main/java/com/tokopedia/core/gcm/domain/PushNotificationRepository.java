@@ -1,12 +1,8 @@
 package com.tokopedia.core.gcm.domain;
 
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
-import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
-import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -20,12 +16,6 @@ public interface PushNotificationRepository {
     Observable<DeviceRegistrationDataResponse> deviceRegistration();
 
     Observable<Boolean> saveRegistrationDevice(String registration);
-
-    Observable<List<MessagePushNotification>> getSavedMessagePushNotification();
-
-    Observable<String> storePushNotification(String category, String response, String customIndex, String serverId);
-
-    Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification();
 
     Observable<Boolean> clearPushNotificationStorage();
 }

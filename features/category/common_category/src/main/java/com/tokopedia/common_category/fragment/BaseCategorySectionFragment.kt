@@ -82,6 +82,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     abstract fun reloadData()
     abstract fun getDepartMentId(): String
+    abstract fun getSwipeRefreshLayout(): SwipeRefreshLayout?
     abstract fun onShareButtonClicked()
     protected abstract fun getFilterRequestCode(): Int
 
@@ -108,7 +109,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     private fun initSwipeToRefresh() {
-        refreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        refreshLayout = getSwipeRefreshLayout()
         refreshLayout?.setOnRefreshListener {
             onSwipeToRefresh()
         }

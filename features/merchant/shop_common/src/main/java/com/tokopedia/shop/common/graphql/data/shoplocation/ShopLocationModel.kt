@@ -19,19 +19,19 @@ data class ShopLocationModel (
     val address: String = "",
     @SerializedName("districtId")
     @Expose
-    val districtId: Int = -1,
+    val districtId: String = "",
     @SerializedName("districtName")
     @Expose
     val districtName: String = "",
     @SerializedName("cityId")
     @Expose
-    val cityId: Int = -1,
+    val cityId: String = "",
     @SerializedName("cityName")
     @Expose
     val cityName: String = "",
     @SerializedName("stateId")
     @Expose
-    val stateId: Int = -1,
+    val stateId: String = "",
     @SerializedName("stateName")
     @Expose
     val stateName: String = "",

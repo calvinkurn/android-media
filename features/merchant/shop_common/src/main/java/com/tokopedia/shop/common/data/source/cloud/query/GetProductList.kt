@@ -3,13 +3,16 @@ package com.tokopedia.shop.common.data.source.cloud.query
 internal object GetProductList {
 
     val QUERY = """
-       query ProductList(${'$'}shopID:String!, ${'$'}filter:[GoodsFilterInput], ${'$'}sort:GoodsSortInput){
-        ProductList(shopID:${'$'}shopID, filter:${'$'}filter, sort:${'$'}sort){
+       query ProductList(${'$'}shopID:String!, ${'$'}warehouseID:String, ${'$'}filter:[GoodsFilterInput], ${'$'}sort:GoodsSortInput, ${'$'}extraInfo:[String]){
+        ProductList(shopID:${'$'}shopID, warehouseID:${'$'}warehouseID, filter:${'$'}filter, sort:${'$'}sort, extraInfo:${'$'}extraInfo){
             header{
                 processTime
                 messages
                 reason
                 errorCode
+            }
+            meta {
+                totalHits
             }
             data{
                 id
@@ -19,6 +22,9 @@ internal object GetProductList {
                     max
                 }
                 stock
+                stockReserved
+                hasStockReserved
+                isCampaign
                 cashback
                 status
                 featured
@@ -27,6 +33,15 @@ internal object GetProductList {
                 sku
                 pictures{
                     urlThumbnail
+                }
+                topads {
+                    status
+                    management
+                }
+                campaignType {
+                    id
+                    name
+                    iconURL
                 }
             }
         }

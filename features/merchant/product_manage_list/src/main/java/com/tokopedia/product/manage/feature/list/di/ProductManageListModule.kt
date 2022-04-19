@@ -9,23 +9,17 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
-import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
-import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
-import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
-import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
-import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource
-import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
-import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
@@ -36,9 +30,8 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@ProductManageListScope
 @Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
-class ProductManageListModule {
+class ProductManageListModule(private val context: Context) {
 
     @Provides
     @ProductManageListScope
@@ -55,7 +48,7 @@ class ProductManageListModule {
 
     @Provides
     @ProductManageListScope
-    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
+    fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
@@ -75,24 +68,6 @@ class ProductManageListModule {
     @ProductManageListScope
     fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource?): TopAdsSourceTaggingRepository {
         return TopAdsSourceTaggingRepositoryImpl(dataSource)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftRepository(productDraftDataSource: ProductDraftDataSource?, @ApplicationContext context: Context?): ProductDraftRepository {
-        return ProductDraftRepositoryImpl(productDraftDataSource, context)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftDb(@ApplicationContext context: Context?): ProductDraftDB {
-        return ProductDraftDB.getInstance(context!!)
-    }
-
-    @ProductManageListScope
-    @Provides
-    internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
-        return productDraftDB.getProductDraftDao()
     }
 
     @ProductManageListScope
@@ -130,18 +105,8 @@ class ProductManageListModule {
 
     @ProductManageListScope
     @Provides
-    @Named(ShopCommonParamApiConstant.GQL_PRODUCT_LIST)
-    fun provideProductListQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_get_product_list
-        )
-    }
-
-    @ProductManageListScope
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
-    fun provideGqlQueryShopInfo(@ApplicationContext context: Context): String {
+    fun provideGqlQueryShopInfo(): String {
         return GraphqlHelper.loadRawString(
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_get_shop_info)
@@ -150,7 +115,7 @@ class ProductManageListModule {
     @ProductManageListScope
     @Provides
     @Named(GQL_FEATURED_PRODUCT)
-    fun provideGqlMutationFeaturedProduct(@ApplicationContext context: Context): String {
+    fun provideGqlMutationFeaturedProduct(): String {
         return GraphqlHelper.loadRawString(
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
@@ -165,8 +130,9 @@ class ProductManageListModule {
 
     @ProductManageListScope
     @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
-            FirebaseRemoteConfigImpl(context)
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @ProductManageListScope
     @Provides

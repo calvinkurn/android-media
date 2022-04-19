@@ -21,7 +21,7 @@ class GetCategoryRecommendationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<ListItemUnify> {
         val gqlRequest = GraphqlRequest(QUERY, GetCategoryRecommendationResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCategoryRecommendationResponse::class.java)
         if (errors.isNullOrEmpty()) {

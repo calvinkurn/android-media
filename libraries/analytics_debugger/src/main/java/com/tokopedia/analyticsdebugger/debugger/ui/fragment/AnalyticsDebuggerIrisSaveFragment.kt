@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.debugger.ui.fragment
 
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 
 import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
@@ -18,4 +19,7 @@ class AnalyticsDebuggerIrisSaveFragment : BaseAnalyticsDebuggerFragment(), Analy
         }
     }
 
+    override fun showCount(count: Int) {
+        Toast.makeText(context, "Total Data Save $count", Toast.LENGTH_LONG).show()
+    }
 }

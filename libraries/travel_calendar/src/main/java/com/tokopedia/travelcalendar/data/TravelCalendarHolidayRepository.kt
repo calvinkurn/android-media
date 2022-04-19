@@ -10,7 +10,11 @@ import javax.inject.Inject
 class TravelCalendarHolidayRepository @Inject constructor() {
 
     fun getHolidayResultsLocal(): TravelCalendarHoliday.HolidayData? {
-        return PersistentCacheManager.instance.get(KEY_CALENDAR_HOLIDAY, TravelCalendarHoliday.HolidayData::class.java)
+        return try {
+            return PersistentCacheManager.instance.get(KEY_CALENDAR_HOLIDAY, TravelCalendarHoliday.HolidayData::class.java)
+        } catch (throwable:Throwable){
+            TravelCalendarHoliday.HolidayData()
+        }
     }
 
     fun saveHolidayResults(travelHolidayData: TravelCalendarHoliday.HolidayData) {

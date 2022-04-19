@@ -12,12 +12,17 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.vouchercreation.common.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.create.domain.model.upload.ImageUploadResponse
+import com.tokopedia.vouchercreation.shop.create.domain.model.upload.ImageUploadResponse
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import rx.Scheduler
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import javax.inject.Named
 
 @Module(includes = [ImageUploaderModule::class])
 class VoucherCreationModule {
@@ -43,4 +48,19 @@ class VoucherCreationModule {
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<ImageUploadResponse.ImageUploadData> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, ImageUploadResponse.ImageUploadData::class.java, imageUploaderUtils)
     }
+
+    @VoucherCreationScope
+    @Provides
+    fun providePermissionCheckerHelper(): PermissionCheckerHelper = PermissionCheckerHelper()
+
+    @VoucherCreationScope
+    @Provides
+    @Named("io")
+    fun provideSchedulerIo(): Scheduler = Schedulers.io()
+
+    @VoucherCreationScope
+    @Provides
+    @Named("main")
+    fun provideMainThreadScheduler(): Scheduler = AndroidSchedulers.mainThread()
+
 }

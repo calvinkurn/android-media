@@ -1,26 +1,6 @@
-mutation add_to_cart($productID: Int,
-                     $shopID: Int,
-                     $quantity: Int,
-                     $notes: String,
-                     $lang: String,
-                     $attribution: String,
-                     $listTracker: String,
-                     $ucParams: String,
-                     $warehouseID: Int,
-                     $atcFromExternalSource: String,
-                     $isSCP: Boolean) {
-  add_to_cart(
-    productID: $productID,
-    shopID: $shopID,
-    quantity: $quantity,
-    notes: $notes,
-    lang: $lang,
-    attribution: $attribution,
-    listTracker: $listTracker,
-    ucParams: $ucParams,
-    warehouseID: $warehouseID,
-    atcFromExternalSource: $atcFromExternalSource,
-    isSCP: $isSCP) {
+mutation add_to_cart_v2($param: ATCV2Params) {
+  add_to_cart_v2(
+    param: $param) {
         error_message
         status
         data {

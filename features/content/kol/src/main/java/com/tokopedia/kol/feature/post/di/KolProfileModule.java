@@ -3,9 +3,7 @@ package com.tokopedia.kol.feature.post.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
-import com.tokopedia.feedcomponent.di.CoroutineDispatcherModule;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
@@ -17,9 +15,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.vote.di.VoteModule;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,7 +24,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 12/02/18.
  */
 
-@Module(includes = {VoteModule.class, FeedComponentModule.class, CoroutineDispatcherModule.class})
+@Module(includes = {FeedComponentModule.class})
 public class KolProfileModule {
 
     @KolProfileScope
@@ -70,13 +65,6 @@ public class KolProfileModule {
     @Provides
     TopAdsApi provideTopAdsApi(Retrofit retrofit) {
         return retrofit.create(TopAdsApi.class);
-    }
-
-    @Provides
-    @KolProfileScope
-    @Named("atcMutation")
-    String provideAddToCartMutation(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart);
     }
 
     @KolProfileScope

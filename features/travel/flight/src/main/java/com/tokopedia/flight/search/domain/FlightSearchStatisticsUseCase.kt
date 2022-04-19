@@ -3,15 +3,12 @@ package com.tokopedia.flight.search.domain
 import android.text.TextUtils
 import android.util.SparseIntArray
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.data.FlightSearchRepository
+import com.tokopedia.flight.search.data.cache.db.JourneyAndRoutes
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.*
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.flight.search.presentation.model.statistics.*
 import java.util.*
 import javax.inject.Inject
 
@@ -19,21 +16,11 @@ import javax.inject.Inject
  * Created by Rizky on 15/10/18.
  */
 class FlightSearchStatisticsUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<FlightSearchStatisticModel>() {
+        private val flightSearchRepository: FlightSearchRepository) {
 
-    private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
-
-    override fun createObservable(requestParams: RequestParams): Observable<FlightSearchStatisticModel> {
-        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
-
-        return flightSearchRepository.getSearchFilter(TravelSortOption.CHEAPEST, filterModel)
-                .map { mapToFlightSearchStatisticsModel(it.journeyAndRoutes) }
-    }
-
-    fun executeCoroutine(requestParams: RequestParams): FlightSearchStatisticModel? {
-        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
-        return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterStatisticCoroutine(
-                TravelSortOption.CHEAPEST, filterModel).journeyAndRoutes)
+    suspend fun execute(flightFilterModel: FlightFilterModel): FlightSearchStatisticModel? {
+        return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterStatistic(
+                TravelSortOption.CHEAPEST, flightFilterModel).journeyAndRoutes)
     }
 
     private fun mapToFlightSearchStatisticsModel(journeyAndRoutesList: List<JourneyAndRoutes>):
@@ -57,6 +44,8 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         var isHaveSpecialPrice = false
         var isHaveBaggage = false
         var isHaveInFlightMeal = false
+        var isHasFreeRapidTest = false
+        var isSeatDistancing = false
 
         for (journeyAndRoutes in journeyAndRoutesList) {
             val price = journeyAndRoutes.flightJourneyTable.sortPriceNumeric
@@ -183,6 +172,14 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                     if (isHaveBaggage && isHaveInFlightMeal) break
                 }
             }
+
+            if (!isHasFreeRapidTest && journeyAndRoutes.flightJourneyTable.freeRapidTestLabel.isNotEmpty()) {
+                isHasFreeRapidTest = true
+            }
+
+            if (!isSeatDistancing && journeyAndRoutes.flightJourneyTable.seatDistancingLabel.isNotEmpty()) {
+                isSeatDistancing = true
+            }
         }
 
         //sort array
@@ -194,13 +191,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
 
         return FlightSearchStatisticModel(minPrice, maxPrice, minDuration, maxDuration, transitTypeStatList,
                 airlineStatList, departureTimeStatList, arrivalTimeStatList, refundableTypeStatList,
-                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
-    }
-
-    fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel)
-        return requestParams
+                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal, isHasFreeRapidTest, isSeatDistancing)
     }
 
 }

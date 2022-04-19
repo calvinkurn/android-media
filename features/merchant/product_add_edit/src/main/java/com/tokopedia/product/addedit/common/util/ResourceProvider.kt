@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.common.util
 
 import android.content.Context
+import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.product.addedit.R
 import javax.inject.Inject
@@ -8,7 +9,11 @@ import javax.inject.Inject
 class ResourceProvider @Inject constructor(@ApplicationContext val context: Context?) {
 
     private fun getString(resId: Int): String? {
-        return context?.getString(resId)
+        return try {
+            context?.getString(resId)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     // product name string properties
@@ -31,12 +36,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product price string properties
 
-    fun getEmptyProductPriceErrorMessage(): String? {
-        return getString(R.string.error_empty_product_price)
+    fun getPriceTipsMessage(): String {
+        return getString(R.string.label_add_product_price_tips).orEmpty()
     }
 
-    fun getMinLimitProductPriceErrorMessage(): String? {
-        return getString(R.string.error_product_price_less_than_min_limit)
+    fun getEmptyProductPriceErrorMessage(): String {
+        return getString(R.string.error_empty_product_price).orEmpty()
+    }
+
+    fun getMinLimitProductPriceErrorMessage(): String {
+        return getString(R.string.error_product_price_less_than_min_limit).orEmpty()
     }
 
     // product whole sale quantity string properties
@@ -77,12 +86,16 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product stock string properties
 
-    fun getEmptyProductStockErrorMessage(): String? {
-        return getString(R.string.error_empty_product_stock)
+    fun getEmptyProductStockErrorMessage(): String {
+        return getString(R.string.error_empty_product_stock).orEmpty()
     }
 
-    fun getMinLimitProductStockErrorMessage(): String? {
-        return getString(R.string.error_minimum_stock_quantity_is_one)
+    fun getMinLimitProductStockErrorMessage(minStock: Int = 1): String {
+        return try {
+            context?.getString(R.string.error_minimum_stock_quantity, minStock)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }.orEmpty()
     }
 
     fun getMaxLimitProductStockErrorMessage(): String? {
@@ -99,12 +112,18 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_minimum_order_cant_be_zero)
     }
 
-    fun getMaxLimitOrderQuantityErrorMessage(): String? {
-        return getString(R.string.error_maximum_order_exceeding_max_limit)
+    fun getMinOrderExceedLimitQuantityErrorMessage(): String? {
+        return getString(R.string.error_minimum_order_exceed_max_limit)
     }
 
     fun getMinOrderExceedStockErrorMessage(): String? {
         return getString(R.string.error_minimum_order_cant_exceed_available_stock)
+    }
+
+    // product SKU string properties
+
+    fun getEmptyProductSkuErrorMessage(): String? {
+        return getString(R.string.error_product_sku_space_exist)
     }
 
     // pre order string properties
@@ -141,12 +160,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.label_variant_subtitle_added) + "\n"
     }
 
-    fun getVariantButtonEmptyMessage(): String? {
-        return getString(R.string.label_add_variant)
-    }
-
-    fun getVariantButtonAddedMessage(): String? {
-        return getString(R.string.label_edit_variant)
+    fun getVariantCountSuffix(): String? {
+        return getString(R.string.label_variant_count_suffix)
     }
 
     // product add validation string properties
@@ -161,6 +176,52 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     fun getInvalidPhotoReachErrorMessage(): String? {
         return getString(R.string.error_invalid_photo_reach_maximum)
+    }
+
+    // Product specification properties
+
+    fun getProductSpecificationTips(): String {
+        return getString(R.string.label_product_specification_tips).orEmpty()
+    }
+
+    fun getProductSpecificationCounter(count: Int): String {
+        return try {
+            context?.getString(R.string.action_specification_counter, count).orEmpty()
+        } catch (e: Resources.NotFoundException) {
+            ""
+        }
+    }
+
+    // admin multi location string properties
+
+    fun getAddProductPriceMultiLocationMessage(): String {
+        return getString(R.string.message_add_product_price_only_main_location).orEmpty()
+    }
+
+    fun getEditProductPriceMultiLocationMessage(): String {
+        return getString(R.string.message_edit_product_price_only_main_location).orEmpty()
+    }
+
+    fun getAddProductStockMultiLocationMessage(): String? {
+        return getString(R.string.message_add_product_stock_only_main_location)
+    }
+
+    fun getEditProductStockMultiLocationMessage(): String? {
+        return getString(R.string.message_edit_product_stock_only_main_location)
+    }
+
+    // Title validation properties
+
+    fun getTitleValidationErrorTypo(): String {
+        return getString(R.string.error_product_title_validation_typo).orEmpty()
+    }
+
+    fun getTitleValidationErrorNegative(): String {
+        return getString(R.string.error_product_title_validation_negative).orEmpty()
+    }
+
+    fun getTitleValidationErrorBlacklisted(): String {
+        return getString(R.string.error_product_title_validation_blacklisted).orEmpty()
     }
 
     // Network errors

@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.checkout.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import io.mockk.MockKAnnotations
@@ -21,7 +21,7 @@ class UmrahCheckoutPilgrimsViewModelTest{
     @RelaxedMockK
     lateinit var umrahGetContactListUseCase: GetContactListUseCase
 
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahCheckoutPilgrimsViewModel: UmrahCheckoutPilgrimsViewModel
 
     @Before

@@ -5,14 +5,19 @@ object HomeConstant {
 }
 
 object GqlQueryConstant {
-    const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
-    const val GQL_ATC_MUTATION = "atcMutation"
+    const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }
 
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "promo"
+    const val DYNAMIC = "dynamic"
+    const val CAMPAIGN = "campaign"
+    const val PERSONALIZATION = "perso"
+    const val SHOWCASE = "etalase"
+    const val PROMO = "promo"
+    const val CARD = "card"
+    const val BUNDLE = "bundle"
 }
 
 object WidgetName {
@@ -21,7 +26,27 @@ object WidgetName {
     const val DISPLAY_SINGLE_COLUMN = "display_single_column"
     const val DISPLAY_DOUBLE_COLUMN = "display_double_column"
     const val DISPLAY_TRIPLE_COLUMN = "display_triple_column"
+    const val PLAY_CAROUSEL_WIDGET = "play"
     const val VIDEO = "video"
     const val PRODUCT = "product"
-    const val VOUCHER = "voucher"
+    const val RECENT_ACTIVITY = "recent_activity"
+    const val BUY_AGAIN = "buy_again"
+    const val REMINDER = "reminder"
+    const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
+    const val VOUCHER_STATIC = "voucher_static"
+    const val FLASH_SALE_TOKO = "flash_sale_toko"
+    const val INFO_CARD = "info_card"
+    const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
+    const val PRODUCT_BUNDLE_MULTIPLE = "multiple_bundling"
+    const val ETALASE_THEMATIC = "etalase_thematic"
+    const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
+
+    // showcase widget name list
+    const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"
+    const val SHOWCASE_SLIDER_MEDIUM = "etalase_slider_medium"
+    const val SHOWCASE_SLIDER_TWO_ROWS = "etalase_slider_kecil_2_baris"
+    const val SHOWCASE_GRID_SMALL = "etalase_banner_3_x_2"
+    const val SHOWCASE_GRID_MEDIUM = "etalase_banner_besar_2x2"
+    const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2x1"
+    const val IS_SHOW_ETALASE_NAME = 1
 }

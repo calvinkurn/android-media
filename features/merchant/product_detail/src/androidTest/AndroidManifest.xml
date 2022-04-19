@@ -7,5 +7,17 @@
     <application
         android:label="PDP Test"
         tools:replace="android:label">
+
+        <activity
+            android:name=".presentation.InstrumentTestProductDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".ProductDetailActivityCommonTest"
+            android:theme="@style/Theme.White"/>
+
+        <activity
+            android:name=".ui.base.ProductDetailActivityMock"
+            android:theme="@style/Theme.White"/>
     </application>
 </manifest>

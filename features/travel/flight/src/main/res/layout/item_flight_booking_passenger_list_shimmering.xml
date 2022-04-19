@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_28">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/flight_dp_28">
 
     <View
         android:id="@+id/shimmering_seperator_1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="#f3f4f5"
+        android:layout_height="@dimen/flight_dp_1"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_tv_1"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="10dp"
-        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginTop="@dimen/flight_dp_28"
         app:corners="20"
         app:layout_constraintEnd_toStartOf="@+id/loader_tv_2"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,10 +28,10 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_tv_2"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/flight_dp_10"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         app:corners="20"
         app:layout_constraintEnd_toStartOf="@+id/loader_iv_1"
         app:layout_constraintRight_toLeftOf="@+id/loader_iv_1"
@@ -39,10 +39,10 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loader_iv_1"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:corners="20"
         app:layout_constraintBottom_toBottomOf="@+id/loader_tv_2"
         app:layout_constraintEnd_toEndOf="parent"

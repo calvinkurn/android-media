@@ -1,20 +1,26 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
+import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class DigitalHomePageViewModelTest {
 
@@ -22,6 +28,10 @@ class DigitalHomePageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val mapParams = mapOf<String, String>()
+    lateinit var gqlResponseFail: GraphqlResponse
+
+    @MockK
+    lateinit var graphqlRepository: GraphqlRepository
 
     @RelaxedMockK
     lateinit var digitalHomePageUseCase: DigitalHomePageUseCase
@@ -32,8 +42,18 @@ class DigitalHomePageViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        digitalHomePageViewModel =
-                DigitalHomePageViewModel(digitalHomePageUseCase, DigitalHomePageTestDispatchersProvider())
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+        gqlResponseFail = GraphqlResponse(result, errors, false)
+
+        digitalHomePageViewModel = DigitalHomePageViewModel(
+                digitalHomePageUseCase,
+                CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
@@ -49,7 +69,7 @@ class DigitalHomePageViewModelTest {
         }
         val actualErrorData = digitalHomePageViewModel.isAllError.value
         assertNotNull(actualErrorData)
-        actualErrorData?.run { assertFalse(actualErrorData) }
+        actualErrorData?.run { Assert.assertFalse(actualErrorData) }
     }
 
     @Test
@@ -132,4 +152,5 @@ class DigitalHomePageViewModelTest {
         assertNotNull(actualErrorData)
         actualErrorData?.run { assert(actualErrorData) }
     }
+
 }

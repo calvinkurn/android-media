@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
@@ -193,7 +193,7 @@ public class TkpdWebView extends WebView {
             super.loadUrl(url, additionalHttpHeaders);
         } else {
             if (!GlobalConfig.DEBUG)
-                Crashlytics.log(
+                FirebaseCrashlytics.getInstance().log(
                         getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);

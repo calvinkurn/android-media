@@ -35,11 +35,13 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
         notifyDataSetChanged()
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
-        var view = convertView
-        if (view == null) {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view: View
+        if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = inflater.inflate(textViewResourceId, null)
+        } else {
+            view = convertView
         }
         val contact = getItem(position)
         if (contact != null) {
@@ -52,7 +54,11 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
     }
 
     override fun getItem(position: Int): TravelContactListModel.Contact? {
-        return suggestions.get(position)
+        return if (suggestions.isNotEmpty() && suggestions.size > position) {
+            suggestions[position]
+        } else {
+            null
+        }
     }
 
     override fun getCount(): Int {
@@ -63,7 +69,7 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
         return contactFilter
     }
 
-    val contactFilter = object: Filter() {
+    val contactFilter = object : Filter() {
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
             return (resultValue as TravelContactListModel.Contact).fullName
@@ -83,10 +89,9 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
             if (results.count > 0) {
-                clear()
-                val filteredList = results.values as ArrayList<TravelContactListModel.Contact>
-                for (contact in filteredList) add(contact)
                 notifyDataSetChanged()
+            } else {
+                notifyDataSetInvalidated()
             }
         }
     }

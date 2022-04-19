@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierUiModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 import static com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
 
@@ -30,7 +30,7 @@ public class CourierSelectionFragment extends TkpdBaseV4Fragment implements Orde
 
     private ToolbarChangeListener toolbarListener;
 
-    public static CourierSelectionFragment createInstance(ListCourierViewModel model) {
+    public static CourierSelectionFragment createInstance(ListCourierUiModel model) {
         CourierSelectionFragment fragment = new CourierSelectionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ORDER_COURIER_EXTRAS, model);
@@ -70,10 +70,10 @@ public class CourierSelectionFragment extends TkpdBaseV4Fragment implements Orde
     }
 
     @Override
-    public void onCourierSelected(CourierViewModel courierViewModel) {
-        if (courierViewModel.getCourierServiceList().size() > 1) {
+    public void onCourierSelected(CourierUiModel courierUiModel) {
+        if (courierUiModel.getCourierServiceList().size() > 1) {
             ServiceSelectionFragment serviceSelectionFragment = ServiceSelectionFragment
-                    .createFragment(courierViewModel);
+                    .createFragment(courierUiModel);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
                     .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
@@ -81,10 +81,10 @@ public class CourierSelectionFragment extends TkpdBaseV4Fragment implements Orde
         } else {
             toolbarListener.onChangeTitle(getString(R.string.title_confirm_shipment_logistic_module));
             CourierSelectionModel model = new CourierSelectionModel();
-            model.setCourierName(courierViewModel.getCourierName());
-            model.setCourierId(courierViewModel.getCourierId());
-            model.setServiceId(courierViewModel.getCourierServiceList().get(0).getServiceId());
-            model.setServiceName(courierViewModel.getCourierServiceList().get(0).getServiceName());
+            model.setCourierName(courierUiModel.getCourierName());
+            model.setCourierId(courierUiModel.getCourierId());
+            model.setServiceId(courierUiModel.getCourierServiceList().get(0).getServiceId());
+            model.setServiceName(courierUiModel.getCourierServiceList().get(0).getServiceName());
             listener.onCourierAdapterSelected(model);
         }
     }

@@ -3,7 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.edit.data.response.GetKeywordResponse
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder.EditKeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordViewModel
@@ -16,8 +16,10 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
 
 
     var items: MutableList<EditKeywordViewModel> = mutableListOf()
-    var data: MutableList<Int> = mutableListOf()
-    var error: MutableList<Boolean> = mutableListOf()
+    var data: MutableList<String> = mutableListOf()
+    var added: MutableList<Boolean> = mutableListOf()
+    var minBid: String = "0"
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditKeywordViewHolder<EditKeywordViewModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -33,20 +35,11 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
     }
 
     override fun onBindViewHolder(holder: EditKeywordViewHolder<EditKeywordViewModel>, position: Int) {
-        holder.bind(items[position], data, error)
+        holder.bind(items[position],added,minBid)
     }
 
-    fun isError(): Boolean {
-        error.forEach {
-            if (it) {
-                return true
-            }
-        }
-        return false
-    }
-
-    fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
-        val selected: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
+    fun getCurrentItems(): List<KeySharedModel> {
+        val selected: MutableList<KeySharedModel> = mutableListOf()
         items.forEach {
             if (it is EditKeywordItemViewModel) {
                 selected.add(it.data)
@@ -55,10 +48,20 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         return selected
     }
 
-    fun getBidData(list: MutableList<Int>, error: MutableList<Boolean>) {
-        this.error = error
+    fun getBidData(list: MutableList<String>, isnewlyAddded: MutableList<Boolean>) {
         this.data = list
+        this.added = isnewlyAddded
         notifyDataSetChanged()
     }
 
+    fun clearList(){
+        this.items.clear()
+        this.added.clear()
+        this.data.clear()
+    }
+
+    fun setBid(bid: String) {
+        minBid = bid
+        notifyDataSetChanged()
+    }
 }

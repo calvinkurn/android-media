@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatsetting.analytic
 
-import com.tokopedia.topchat.chatsetting.data.ChatSetting
+import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -13,7 +13,7 @@ class ChatSettingAnalytic @Inject constructor() {
     }
 
     // #CL4
-    fun eventClickChatSetting(element: ChatSetting) {
+    fun eventClickChatSetting(element: ItemChatSettingUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         TopChatAnalytics.Name.INBOX_CHAT,

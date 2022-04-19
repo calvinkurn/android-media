@@ -1,66 +1,39 @@
 package com.tokopedia.filter.common.data
 
-import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import kotlinx.android.parcel.Parcelize
 
-class DynamicFilterModel() : Parcelable {
+@Parcelize
+class DynamicFilterModel(@SerializedName("data")
+                         @Expose
+                         var data: DataValue = DataValue(),
+                         @SerializedName("status")
+                         @Expose
+                         var status: String = "",
+                         var defaultSortValue: String = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+) : Parcelable {
 
-    @SerializedName("process_time")
-    @Expose
-    var processTime: String = ""
-
-    @SerializedName("data")
-    @Expose
-    var data = DataValue()
-
-    @SerializedName("status")
-    @Expose
-    var status: String = ""
-
-    @SerializedName("isOfficialSelectedFlag")
-    @Expose
-    var isOfficialSelectedFlag = false
-
-    constructor(data: DataValue, processTime: String, status: String, isOfficialFlag: Boolean) : this() {
-        this.data = data
-        this.processTime = processTime
-        this.status = status
-        this.isOfficialSelectedFlag = isOfficialFlag
+    fun isEmpty(): Boolean {
+        return data.filter.map { it.options }.flatten().isEmpty()
     }
 
-    fun getIsOfficialSelectedFlag() : Boolean {
-        return isOfficialSelectedFlag
+    fun hasSort() = data.sort.isNotEmpty()
+
+    fun getSortKey() = if (hasSort()) data.sort[0].key else ""
+
+    fun getAppliedSort(mapParameter: Map<String, Any>): Sort? {
+        val sortValue = mapParameter[getSortKey()]?.toString() ?: ""
+
+        return if (defaultSortValue == sortValue) null
+        else findAppliedSort(sortValue)
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.processTime)
-        dest.writeParcelable(this.data, flags)
-        dest.writeString(this.status)
-    }
-
-    protected constructor(`in`: Parcel) : this() {
-        this.processTime = `in`.readString()
-        this.data = `in`.readParcelable(DataValue::class.java.getClassLoader())
-        this.status = `in`.readString()
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<DynamicFilterModel> = object : Parcelable.Creator<DynamicFilterModel> {
-            override fun createFromParcel(source: Parcel): DynamicFilterModel {
-                return DynamicFilterModel(source)
-            }
-
-            override fun newArray(size: Int): Array<DynamicFilterModel?> {
-                return arrayOfNulls(size)
-            }
+    private fun findAppliedSort(sortValue: String): Sort? =
+        data.sort.find {
+            it.key == getSortKey()
+                && it.value == sortValue
         }
-    }
 }

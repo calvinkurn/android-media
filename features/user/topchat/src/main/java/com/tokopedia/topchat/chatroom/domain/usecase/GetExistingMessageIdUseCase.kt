@@ -1,53 +1,59 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.topchat.R
+import androidx.collection.ArrayMap
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
-import rx.Subscriber
 import javax.inject.Inject
 
-/**
- * @author by nisie on 09/01/19.
- */
+open class GetExistingMessageIdUseCase @Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<GetExistingMessageIdUseCase.Param, GetExistingMessageIdPojo>(dispatcher.io) {
 
-class GetExistingMessageIdUseCase @Inject constructor(
-        val resources: Resources,
-        private val graphqlUseCase: GraphqlUseCase
-) {
-
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.query_get_existing_message_id)
-        val graphqlRequest = GraphqlRequest(query,
-                GetExistingMessageIdPojo::class.java, requestParams, false)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+    override suspend fun execute(params: Param): GetExistingMessageIdPojo {
+        val param = generateParam(params)
+        return repository.request(graphqlQuery(), param)
     }
+
+    private fun generateParam(existingMessageIdParam: Param): Map<String, Any> {
+        val requestParams = ArrayMap<String, Any>()
+        requestParams[PARAM_TO_SHOP_ID] = if (existingMessageIdParam.toShopId.isNotBlank()) {
+            existingMessageIdParam.toShopId.toLongOrZero()
+        } else 0
+        requestParams[PARAM_TO_USER_ID] = if (existingMessageIdParam.toUserId.isNotBlank()) {
+            existingMessageIdParam.toUserId.toLongOrZero()
+        } else 0
+        requestParams[PARAM_SOURCE] = existingMessageIdParam.source
+        return requestParams
+    }
+
+    override fun graphqlQuery(): String = """
+            query get_existing_message_id($$PARAM_TO_SHOP_ID: Int!, $$PARAM_TO_USER_ID: Int!, $$PARAM_SOURCE: String!) {
+              chatExistingChat(toShopId: $$PARAM_TO_SHOP_ID, toUserId: $$PARAM_TO_USER_ID, source: $$PARAM_SOURCE) {
+                messageId
+              }
+            }
+        """
+
+    data class Param (
+        @SerializedName(PARAM_TO_SHOP_ID)
+        var toShopId: String = "",
+
+        @SerializedName(PARAM_TO_USER_ID)
+        var toUserId: String = "",
+
+        @SerializedName(PARAM_SOURCE)
+        var source: String = ""
+    )
 
     companion object {
-
-        private val PARAM_TO_USER_ID: String = "toUserId"
-        private val PARAM_TO_SHOP_ID: String = "toShopId"
-        private val PARAM_SOURCE: String = "source"
-
-
-        fun generateParam(toShopId: String, toUserId: String, source: String):
-                Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_TO_SHOP_ID] = if (toShopId.isNotBlank()) toShopId.toInt() else 0
-            requestParams[PARAM_TO_USER_ID] = if (toUserId.isNotBlank()) toUserId.toInt() else 0
-            requestParams[PARAM_SOURCE] = source
-            return requestParams
-        }
+        private const val PARAM_TO_SHOP_ID: String = "toShopId"
+        private const val PARAM_TO_USER_ID: String = "toUserId"
+        private const val PARAM_SOURCE: String = "source"
     }
-
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
-
 }

@@ -35,8 +35,8 @@ class ProductManageFilterExpandActivity: BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        cacheManagerId = intent.getStringExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY)
-        fragmentflag = intent.getStringExtra(ProductManageFilterFragment.ACTIVITY_EXPAND_FLAG)
+        cacheManagerId = intent.getStringExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY) ?: ""
+        fragmentflag = intent.getStringExtra(ProductManageFilterFragment.ACTIVITY_EXPAND_FLAG) ?: ""
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }

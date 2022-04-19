@@ -6,10 +6,13 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Ashwani Tyagi on 22/10/18.
  */
+
+@Parcelize
 data class ActionButton(
         @SerializedName(CMConstant.PayloadKeys.TEXT)
         @ColumnInfo(name = CMConstant.PayloadKeys.TEXT)
@@ -45,38 +48,4 @@ data class ActionButton(
         @ColumnInfo(name = CMConstant.PayloadKeys.ADD_TO_CART)
         @Expose
         var addToCart: AddToCart? = null
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(PreDefineActions::class.java.classLoader),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readParcelable(AddToCart::class.java.classLoader))
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(text)
-        parcel.writeString(appLink)
-        parcel.writeString(actionButtonIcon)
-        parcel.writeParcelable(pdActions, flags)
-        parcel.writeString(element_id)
-        parcel.writeString(type)
-        parcel.writeParcelable(addToCart, flags)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ActionButton> {
-        override fun createFromParcel(parcel: Parcel): ActionButton {
-            return ActionButton(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ActionButton?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+) : Parcelable

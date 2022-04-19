@@ -3,20 +3,31 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
-import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.logisticCommon.data.entity.address.Destination;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 /**
  * Created by nisie on 9/6/16.
@@ -40,6 +51,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     private AddressRepository networkInteractor;
     private UserSessionInterface userSession;
     private RevGeocodeUseCase revGeocodeUseCase;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public AddAddressPresenterImpl(UserSessionInterface userSession,
@@ -48,6 +60,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         this.networkInteractor = addressRepository;
         this.userSession = userSession;
         this.revGeocodeUseCase = revGeocodeUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -58,6 +71,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void detachView() {
         networkInteractor.unsubscribe();
+        compositeSubscription.clear();
         mView = null;
     }
 
@@ -77,24 +91,32 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
     @Override
     public void requestReverseGeoCode(Context context, Destination destination) {
         String keyword = String.format("%s,%s", destination.getLatitude(), destination.getLongitude());
-        revGeocodeUseCase.execute(keyword)
-                .subscribe(new Subscriber<KeroMapsAutofill>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                revGeocodeUseCase.execute(keyword)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<KeroMapsAutofill>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.showErrorSnackbar(e.getMessage());
-                    }
+                            @Override
+                            public void onError(Throwable e) {
+                                if (mView != null) {
+                                    mView.showErrorToaster(e.getMessage());
+                                }
+                            }
 
-                    @Override
-                    public void onNext(KeroMapsAutofill keroMapsAutofill) {
-                        mView.setPinpointAddress(
-                                keroMapsAutofill.getData().getFormattedAddress());
-                    }
-                });
+                            @Override
+                            public void onNext(KeroMapsAutofill keroMapsAutofill) {
+                                if (mView != null) {
+                                    mView.setPinpointAddress(
+                                            keroMapsAutofill.getData().getFormattedAddress());
+                                }
+                            }
+                        })
+        );
     }
 
     private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {
@@ -116,7 +138,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onTimeout() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -124,7 +146,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onError(String error) {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar(error);
+                mView.showErrorToaster(error);
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -132,7 +154,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNullData() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -140,7 +162,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNoNetworkConnection() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
         };
@@ -169,7 +191,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         param.put(PARAM_POSTAL_CODE, (address.getPostalCode() != null) ? address.getPostalCode() : "");
         param.put(PARAM_RECEIVER_NAME, (address.getReceiverName() != null) ? address.getReceiverName() : "");
         param.put(PARAM_RECEIVER_PHONE, (address.getReceiverPhone() != null) ? address.getReceiverPhone() : "");
-        if (address.getLatitude() != null && address.getLongitude() != null) {
+        if (address.getLatitude() != null && address.getLongitude() != null && !address.getLatitude().equals("0.0") && !address.getLongitude().equals("0.0")) {
             param.put(PARAM_LATITUDE, String.valueOf(address.getLatitude()));
             param.put(PARAM_LONGITUDE, String.valueOf(address.getLongitude()));
         }

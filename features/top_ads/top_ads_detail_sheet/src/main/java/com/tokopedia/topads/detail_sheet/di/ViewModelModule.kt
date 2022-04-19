@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * Author errysuprayogi on 22,October,2019
  */
 @Module
-@TopAdsSheetScope
 abstract class ViewModelModule {
 
     @TopAdsSheetScope

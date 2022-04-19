@@ -1,8 +1,9 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductManageEmptyModel
 
 class ProductListDiffer: ProductManageDiffer() {
 
@@ -13,11 +14,17 @@ class ProductListDiffer: ProductManageDiffer() {
         val oldItem = oldProductList[oldItemPosition]
         val newItem = newProductList[newItemPosition]
 
-        return if(oldItem is ProductViewModel && newItem is ProductViewModel) {
-            oldItem.id == newItem.id
-        } else {
-            oldItem == newItem
+        val isTheSameObject = when {
+            oldItem is ProductUiModel && newItem is ProductUiModel -> {
+                isTheSameProduct(oldItem, newItem)
+            }
+            oldItem is ProductManageEmptyModel && newItem is ProductManageEmptyModel -> {
+                isTheSameEmptyModel(oldItem, newItem)
+            }
+            else -> false
         }
+
+        return isTheSameObject || isTheSameItem(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -35,5 +42,18 @@ class ProductListDiffer: ProductManageDiffer() {
         oldProductList = oldList
         newProductList= newList
         return this
+    }
+
+    private fun isTheSameProduct(oldItem: ProductUiModel, newItem: ProductUiModel): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    private fun isTheSameEmptyModel(oldItem: ProductManageEmptyModel,
+                                    newItem: ProductManageEmptyModel): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    private fun isTheSameItem(oldItem: Visitable<*>?, newItem: Visitable<*>?): Boolean {
+        return oldItem == newItem
     }
 }

@@ -28,8 +28,6 @@ public interface CouponDetailContract {
 
         Resources getResources();
 
-        void showRedeemCouponDialog(String cta, String code, String title);
-
         void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
 
         void onRealCodeReFresh(String realCode);

@@ -1,0 +1,176 @@
+[
+  {
+    "data": {
+      "discussionDataByQuestionID": {
+        "shopID": "1479278",
+        "shopURL": "https://www.tokopedia.com/tumblersbux",
+        "productID": "1079655705",
+        "productName": "ayam goreng upin ipin - 4",
+        "thumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2020/8/4/35743754-29fa-420c-9abc-fbfd155c9e66.jpg",
+        "url": "https://www.tokopedia.com/tumblersbux/ayam-goreng-upin-ipin-4",
+        "maxAnswerLength": 500,
+        "question": {
+          "questionID": "296180291",
+          "content": "asdasdadadaaaaBisa dikirim hari ini ga?",
+          "maskedContent": "",
+          "userName": "Gerard",
+          "userThumbnail": "https://accounts.tokopedia.com/image/v1/u/77356835/user_thumbnail/desktop",
+          "userID": "77356835",
+          "createTime": "2020-09-23T12:24:55Z",
+          "createTimeFormatted": "23 Sep 2020",
+          "state": {
+            "allowReply": true,
+            "allowUnmask": false,
+            "allowReport": true,
+            "allowDelete": false,
+            "allowFollow": false,
+            "isFollowed": true,
+            "isMasked": false,
+            "isYours": false
+          },
+          "totalAnswer": 6,
+          "answer": [
+            {
+              "answerID": "586010093",
+              "content": "test",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-10-02T17:59:08Z",
+              "createTimeFormatted": "2 Okt 2020",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            },
+            {
+              "answerID": "586636378",
+              "content": "test",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-10-09T13:25:59Z",
+              "createTimeFormatted": "9 Okt 2020",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            },
+            {
+              "answerID": "586884605",
+              "content": "okokok",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-10-12T14:19:49Z",
+              "createTimeFormatted": "12 Okt 2020",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            },
+            {
+              "answerID": "586970196",
+              "content": "test.",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-10-13T13:17:07Z",
+              "createTimeFormatted": "13 Okt 2020",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            },
+            {
+              "answerID": "586970235",
+              "content": "test.",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-10-13T13:17:30Z",
+              "createTimeFormatted": "13 Okt 2020",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            },
+            {
+              "answerID": "588696382",
+              "content": "yesss",
+              "maskedContent": "",
+              "userName": "Tumbler Starbucks 123",
+              "userThumbnail": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/11/20/1479278/1479278_46ddd992-79bd-479c-bd28-816932dae828.jpg",
+              "userID": "12299749",
+              "isSeller": true,
+              "createTime": "2020-11-03T09:21:09Z",
+              "createTimeFormatted": "3 minggu lalu",
+              "likeCount": 0,
+              "state": {
+                "isMasked": false,
+                "isLiked": false,
+                "allowLike": false,
+                "allowUnmask": false,
+                "allowReport": false,
+                "allowDelete": true,
+                "isYours": true
+              },
+              "attachedProductCount": 0,
+              "attachedProduct": []
+            }
+          ]
+        }
+      }
+    }
+  }
+]

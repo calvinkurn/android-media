@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 
 data class ShopPageTabModel(
         val tabTitle: String,
-        val tabIcon: Int,
+        var tabIconInactive: Int,
+        val tabIconActive: Int,
         val tabFragment: Fragment
 )

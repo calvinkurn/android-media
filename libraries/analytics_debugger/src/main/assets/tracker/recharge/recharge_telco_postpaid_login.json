@@ -1,0 +1,142 @@
+{
+  "readme": "Telco postpaid login",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from favorite number",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression recent icon",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "item_list": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": ".*"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click recent icon",
+      "eventLabel": ".* - .*",
+      "sessionIris": ".*",
+      "item_list": ".* - .* - .* - .*",
+      "items": [
+        {
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*",
+          "index": "\\d*.\\d*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d"
+        }
+      ]
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab promo",
+      "eventLabel": ".*",
+      "currentSite": "tokopediadigital",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab recent",
+      "eventLabel": ".*",
+      "currentSite": "tokopediadigital",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click cek tagihan",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "userId": ".*",
+      "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".*",
+      "eventAction": "view favorite number chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".*",
+      "eventAction": "view favorite contact chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click favorite number chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click favorite contact chip",
+      "sessionIris": ".*",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click autocomplete fav number",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - homepage",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click autocomplete fav contact",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - .+"
+    }
+  ]
+}

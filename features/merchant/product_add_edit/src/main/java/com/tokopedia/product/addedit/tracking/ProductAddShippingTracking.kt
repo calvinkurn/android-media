@@ -5,6 +5,7 @@ import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreen
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductImpression
 
 object ProductAddShippingTracking {
     const val SCREEN = "/addproductpage - shipping"
@@ -39,12 +40,16 @@ object ProductAddShippingTracking {
         })
     }
 
-    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "") {
+    fun clickFinish(shopId: String, isSuccess: Boolean, errorName: String = "", errorMessage: String = "") {
         if (isSuccess) {
             sendAddProductClick(SCREEN, shopId, "click finish success", "")
         } else {
-            sendAddProductClickWithoutScreen(shopId, "click finish error", errorName)
+            sendAddProductClickWithoutScreen(shopId, "click finish error", "$errorMessage - $errorName")
         }
+    }
+
+    fun uploadImageFailed(userId: String, errorName: String) {
+        sendAddProductImpression(userId, "impression add product error", "validation error - (Upload Image) $errorName")
     }
 
     fun redirectToShopPage(context: Context, shopId: String) {

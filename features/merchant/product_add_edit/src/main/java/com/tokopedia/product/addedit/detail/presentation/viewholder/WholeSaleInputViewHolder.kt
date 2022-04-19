@@ -12,12 +12,18 @@ import java.text.NumberFormat
 import java.util.*
 
 class WholeSaleInputViewHolder(itemView: View,
-                               private val clickListener: OnDeleteButtonClickListener,
+                               private val deleteClickListener: OnDeleteButtonClickListener,
+                               private val addClickListener: OnAddButtonClickListener,
                                private val textChangedListener: TextChangedListener)
     : RecyclerView.ViewHolder(itemView) {
 
     interface OnDeleteButtonClickListener {
         fun onDeleteButtonClicked(position: Int)
+    }
+
+    interface OnAddButtonClickListener {
+        fun getValidationCurrentWholeSaleQuantity(quantity: String, position: Int) : String
+        fun getValidationCurrentWholeSalePrice(price: String, position: Int): String
     }
 
     interface TextChangedListener {
@@ -82,7 +88,7 @@ class WholeSaleInputViewHolder(itemView: View,
 
         deleteButton?.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION) {
-                clickListener.onDeleteButtonClicked(adapterPosition)
+                deleteClickListener.onDeleteButtonClicked(adapterPosition)
             }
         }
     }
@@ -94,5 +100,17 @@ class WholeSaleInputViewHolder(itemView: View,
         wholeSalePriceField?.textFieldInput?.setText(inputModel.price)
         wholeSalePriceField?.setError(false)
         wholeSalePriceField?.setMessage("")
+        if (adapterPosition > 0) {
+            val quantityValidation = addClickListener.getValidationCurrentWholeSaleQuantity(inputModel.quantity, adapterPosition)
+            val priceValidation = addClickListener.getValidationCurrentWholeSalePrice(inputModel.price, adapterPosition)
+            if (quantityValidation.isNotEmpty()) {
+                wholeSaleQuantityField?.setError(true)
+                wholeSaleQuantityField?.setMessage(quantityValidation)
+            }
+            if (priceValidation.isNotEmpty()) {
+                wholeSalePriceField?.setError(true)
+                wholeSalePriceField?.setMessage(priceValidation)
+            }
+        }
     }
 }

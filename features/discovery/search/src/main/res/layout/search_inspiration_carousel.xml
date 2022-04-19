@@ -1,30 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ContainerUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inspirationCarousel"
-    android:layout_marginTop="@dimen/dp_26"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
+
+    <View
+        android:id="@+id/viewSeparatorTop"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Unify_N50"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCarouselTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/inspiration_carousel_title"
-        android:textColor="@color/charcoal_grey_96"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        app:typographyType="heading_4" />
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toBottomOf="@id/viewSeparatorTop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/inspirationCarouselSeeAllButton"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/inspirationCarouselSeeAllButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/inspiration_carousel_option_view_all"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_G500"
+        android:gravity="center"
+        android:background="?attr/selectableItemBackground"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/inspirationCarouselTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inspirationCarouselOptionList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_6"
-        android:orientation="horizontal"/>
+        android:layout_marginTop="@dimen/dp_7"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible" />
 
-</com.tokopedia.unifycomponents.ContainerUnify>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/inspirationCarouselChipsList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselOptionList"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_height="@dimen/dp_32"
+        tools:visibility="visible"/>
+
+    <include
+        android:id="@+id/inspirationCarouselChipsShimmeringView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        layout="@layout/search_shimmering_carousel_product_card" />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/inspirationCarouselChipsContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsShimmeringView"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/viewSeparatorBottom"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/dp_11"
+        android:background="@color/Unify_N50"
+        app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsContent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

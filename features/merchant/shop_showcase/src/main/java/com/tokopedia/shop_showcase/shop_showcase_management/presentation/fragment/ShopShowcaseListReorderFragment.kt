@@ -6,30 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_CUSTOM
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
-import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
-import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
-import com.tokopedia.shop_showcase.common.TOTAL_GENERATED_ID
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
+import com.tokopedia.shop_showcase.common.*
+import com.tokopedia.shop_showcase.databinding.FragmentReorderShowcaseBinding
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
@@ -50,7 +43,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         const val SHOWCASE_LIST = "SHOWCASE_LIST"
 
         @JvmStatic
-        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
+        fun createInstance(shopType: String, showcaseList: ArrayList<ShopEtalaseModel>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
             val fragment = ShopShowcaseListReorderFragment()
             if (showcaseList != null) {
                 val bundle = Bundle()
@@ -64,13 +57,14 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
-    private lateinit var headerUnify: HeaderUnify
-    private lateinit var headerLayout: CardView
-    private lateinit var loading: LoaderUnify
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentReorderShowcaseBinding? = null
+    private var headerUnify: HeaderUnify? = null
+    private var headerLayoutReorderShowcase: CardView? = null
+    private var loader: LoaderUnify? = null
+    private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListReorderAdapter: ShopShowcaseListReorderAdapter? = null
-    private var shopShowcaseListDefault: ArrayList<ShowcaseItem>? = null
+    private var shopShowcaseListDefault: ArrayList<ShopEtalaseModel>? = null
     private var itemTouchHelper: ItemTouchHelper? = null
     private var isMyShop: Boolean = false
 
@@ -78,7 +72,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         return activity?.run {
             DaggerShopShowcaseManagementComponent
                     .builder()
-                    .shopShowcaseManagementModule(ShopShowcaseManagementModule())
+                    .shopShowcaseManagementModule(ShopShowcaseManagementModule(this))
                     .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
                     .build()
         }
@@ -105,17 +99,20 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_reorder_showcase, container, false)
-        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
-        headerLayout = view.findViewById(R.id.header_layout)
-        recyclerView = view.findViewById(R.id.rv_list_showcase)
-        loading = view.findViewById(R.id.loading)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val binding = FragmentReorderShowcaseBinding.inflate(inflater, container, false).apply {
+            headerUnify = showcaseListToolbar
+            headerLayoutReorderShowcase = headerLayout
+            recyclerView = rvListShowcase
+            loader = loading
+        }
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        shopShowcaseListReorderAdapter = ShopShowcaseListReorderAdapter(this, this, isMyShop)
-        recyclerView.adapter = shopShowcaseListReorderAdapter
-        return view
+        shopShowcaseListReorderAdapter = ShopShowcaseListReorderAdapter(this, this)
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = shopShowcaseListReorderAdapter
+
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -137,17 +134,25 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onDestroy()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper!!.startDrag(viewHolder)
     }
 
     private fun initHeaderUnify() {
-        headerUnify.apply {
+        headerUnify?.apply {
             setNavigationOnClickListener {
-                fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                shopShowcaseFragmentNavigation.navigateToPage(
+                        page = PageNameConstant.SHOWCASE_LIST_PAGE,
+                        tag = null,
+                        showcaseList = null)
             }
         }
-        headerUnify.actionTextView?.setOnClickListener {
+        headerUnify?.actionTextView?.setOnClickListener {
             saveReorderListShowcase()
         }
     }
@@ -161,9 +166,9 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
 
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
-            loading.visibility = View.VISIBLE
+            loader?.visibility = View.VISIBLE
         } else {
-            loading.visibility = View.GONE
+            loader?.visibility = View.GONE
         }
     }
 
@@ -171,7 +176,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val shopShowcaseList = ArrayList<String>()
         shopShowcaseListReorderAdapter?._showcaseList?.let {
             for (shopShowcaseModel in it) {
-                if (shopShowcaseModel.id.toInt() > TOTAL_GENERATED_ID) {
+                if (shopShowcaseModel.type == ETALASE_CUSTOM) {
                     shopShowcaseList.add(shopShowcaseModel.id)
                 }
             }
@@ -180,17 +185,17 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     }
 
     private fun observeReorderShopShowcase() {
-        viewModel.reoderShopShowcaseResponse.observe(this, Observer {
+        viewModel.reoderShopShowcaseResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     val message = it.data.reorderShopShowcase.message
                     val isSuccess = it.data.reorderShopShowcase.success
                     if (isSuccess) {
                         showSuccessMessage(message)
-                        fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        shopShowcaseFragmentNavigation.navigateToPage(PageNameConstant.SHOWCASE_LIST_PAGE, null, null)
                     } else {
                         showErrorResponse(message)
-                        fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                        shopShowcaseFragmentNavigation.navigateToPage(PageNameConstant.SHOWCASE_LIST_PAGE, null, null)
                     }
                 }
                 is Fail -> {
@@ -203,18 +208,16 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private fun initRecyclerView() {
         var currentScrollPosition = 0
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-                val HAS_ELEVATION = 16.0f
-                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout?.cardElevation = NO_ELEVATION
+                        headerLayoutReorderShowcase?.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout?.cardElevation = HAS_ELEVATION
+                        headerLayoutReorderShowcase?.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }

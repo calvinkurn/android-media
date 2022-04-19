@@ -41,7 +41,7 @@ fun Activity.requestStatusBarDark() {
     }
 }
 
-private fun Window.setWindowFlag(bits: Int, on: Boolean) {
+fun Window.setWindowFlag(bits: Int, on: Boolean) {
     val winParams: WindowManager.LayoutParams = this.attributes
     if (on) {
         winParams.flags = winParams.flags or bits

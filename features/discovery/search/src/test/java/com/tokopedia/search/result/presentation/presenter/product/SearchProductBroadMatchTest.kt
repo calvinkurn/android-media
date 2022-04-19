@@ -1,21 +1,23 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.search.jsonToObject
+import com.tokopedia.search.*
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel
-import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
-import com.tokopedia.search.result.presentation.model.SuggestionViewModel
+import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsCollectionContaining.hasItem
+import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Test
 import rx.Subscriber
 
 private const val broadMatchResponseCode1EmptySearch = "searchproduct/broadmatch/response-code-1-empty-search.json"
 private const val broadMatchResponseCode1NotEmptySearch = "searchproduct/broadmatch/response-code-1-not-empty-search.json"
+private const val broadMatchResponseCode1Page2NotEmptySearch = "searchproduct/broadmatch/response-code-1-page-2-not-empty-search.json"
 private const val broadMatchResponseCode4 = "searchproduct/broadmatch/response-code-4.json"
 private const val broadMatchResponseCode4ButNoBroadmatch = "searchproduct/broadmatch/response-code-4-but-no-broadmatch.json"
 private const val broadMatchResponseCode4NoSuggestion = "searchproduct/broadmatch/response-code-4-no-suggestion.json"
@@ -27,13 +29,21 @@ private const val broadMatchResponseCode5Page1With16Products = "searchproduct/br
 private const val broadMatchResponseCode5Page2With16Products = "searchproduct/broadmatch/response-code-5-page-2-with-16-products.json"
 private const val broadMatchResponseCode5Page1WithResponseLowerThanCount = "searchproduct/broadmatch/response-code-5-page-1-with-response-lower-than-count.json"
 private const val broadMatchResponseCode5Page2WithResponseLowerThanCount = "searchproduct/broadmatch/response-code-5-page-2-with-response-lower-than-count.json"
+private const val broadMatchResponseCode0Page1Position0 = "searchproduct/broadmatch/response-code-0-page-1-position-0.json"
+private const val broadMatchResponseCode0Page1Position1 = "searchproduct/broadmatch/response-code-0-page-1-position-1.json"
+private const val broadMatchResponseCode0Page1Position4 = "searchproduct/broadmatch/response-code-0-page-1-position-4.json"
+private const val broadMatchResponseCode0Page1Position12 = "searchproduct/broadmatch/response-code-0-page-1-position-12.json"
+private const val broadMatchResponseCode0Page2 = "searchproduct/broadmatch/response-code-0-page-2.json"
+private const val broadMatchResponseCode0Page2Empty = "searchproduct/broadmatch/response-code-0-page-2-empty.json"
+private const val broadMatchResponseCode0Page2With1Product = "searchproduct/broadmatch/response-code-0-page-2-with-1-product.json"
 
 internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
+    private val keyword = "samsung"
 
     @Test
-    fun `Show empty result when response code is NOT 4 or 5`() {
+    fun `Show empty result when response code is NOT 0, 4, or 5`() {
         val searchProductModel = broadMatchResponseCode1EmptySearch.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -54,13 +64,20 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then assert view will only show empty search`() {
+        val visitableListSlot = slot<List<Visitable<*>>>()
         verify {
-            productListView.setEmptyProduct(null)
+            productListView.setProductList(capture(visitableListSlot))
         }
+
+        val visitableList = visitableListSlot.captured
+        assertThat(
+            visitableList,
+            hasItem(instanceOf<EmptyStateDataView>(EmptyStateDataView::class.java))
+        )
     }
 
     @Test
-    fun `Show empty result when response code is 4 or 5 but does not have broad match`() {
+    fun `Show empty result when response code is 0, 4, or 5 but does not have broad match`() {
         val searchProductModel = broadMatchResponseCode4ButNoBroadmatch.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
@@ -74,6 +91,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     fun `Show broad match and DO NOT show empty search for response code 4 and no product list`() {
         val searchProductModel = broadMatchResponseCode4.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given keyword from view`(keyword)
 
         `When Load Data`()
 
@@ -82,9 +100,25 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains SuggestionViewModel as first item`(visitableList)
         `Then assert visitable list contains BroadMatchViewModel`(
-                1, visitableList, searchProductModel
+            1,
+            visitableList,
+            searchProductModel,
+            keyword,
         )
-        `Then assert tracking event impression broad match`(visitableList)
+        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
+    }
+
+    private fun `Given keyword from view`(keyword: String) {
+        every { productListView.queryKey } returns keyword
+    }
+
+    private fun `Then assert visitable list does not contain SeparatorViewModel`(visitableList: List<Visitable<*>>) {
+        val separatorIndex = visitableList.indexOfFirst { it is SeparatorDataView }
+
+        separatorIndex.shouldBe(
+                -1,
+                "Separator is found on visitable list index $separatorIndex"
+        )
     }
 
     private fun `Then assert view will show product list`() {
@@ -96,72 +130,102 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Then assert visitable list contains SuggestionViewModel as first item`(visitableList: List<Visitable<*>>) {
-        visitableList[0].shouldBeInstanceOf<SuggestionViewModel>()
+        visitableList[0].shouldBeInstanceOf<SuggestionDataView>()
     }
 
     private fun `Then assert visitable list contains BroadMatchViewModel`(
-            expectedBroadMatchStartingPosition: Int,
-            visitableList: List<Visitable<*>>,
-            searchProductModel: SearchProductModel
+        expectedBroadMatchStartingPosition: Int,
+        visitableList: List<Visitable<*>>,
+        searchProductModel: SearchProductModel,
+        expectedActualKeyword: String,
     ) {
-        val otherRelated = searchProductModel.searchProduct.related.otherRelated
-        visitableList.filterIsInstance<BroadMatchViewModel>().size shouldBe otherRelated.size
+        val related = searchProductModel.searchProduct.data.related
+        val expectedTrackingOption = related.trackingOption
+        val otherRelated = related.otherRelatedList
+        visitableList.filterIsInstance<BroadMatchDataView>().size shouldBe otherRelated.size
 
-        var index = visitableList.indexOfFirst { it is BroadMatchViewModel }
+        var index = visitableList.indexOfFirst { it is BroadMatchDataView }
         index shouldBe expectedBroadMatchStartingPosition
 
         otherRelated.forEach {
             val visitable = visitableList[index]
-            visitable.shouldBeInstanceOf<BroadMatchViewModel>()
+            visitable.shouldBeInstanceOf<BroadMatchDataView>()
 
-            val broadMatchViewModel = visitable as BroadMatchViewModel
-            broadMatchViewModel.assertBroadMatchViewModel(it)
+            val broadMatchViewModel = visitable as BroadMatchDataView
+            broadMatchViewModel.assertBroadMatchViewModel(
+                it,
+                expectedTrackingOption,
+                expectedActualKeyword,
+            )
 
             index++
         }
     }
 
-    private fun BroadMatchViewModel.assertBroadMatchViewModel(otherRelated: SearchProductModel.OtherRelated) {
+    private fun BroadMatchDataView.assertBroadMatchViewModel(
+        otherRelated: SearchProductModel.OtherRelated,
+        expectedTrackingOption: Int,
+        expectedActualKeyword: String,
+    ) {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
-        broadMatchItemViewModelList.size shouldBe otherRelated.otherRelatedProductList.size
+        broadMatchItemDataViewList.size shouldBe otherRelated.productList.size
+        carouselOptionType shouldBe BroadMatch
+        trackingOption shouldBe expectedTrackingOption
+        componentId shouldBe otherRelated.componentId
+        actualKeyword shouldBe expectedActualKeyword
 
-        otherRelated.otherRelatedProductList.forEachIndexed { index, otherRelatedProduct ->
-            broadMatchItemViewModelList[index].assertBroadMatchItemViewModel(
-                    otherRelatedProduct, index + 1, otherRelated.keyword
+        otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
+            broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(
+                otherRelatedProduct,
+                index + 1,
+                otherRelated.keyword,
             )
         }
     }
 
-    private fun BroadMatchItemViewModel.assertBroadMatchItemViewModel(
-            otherRelatedProduct: SearchProductModel.OtherRelatedProduct,
-            expectedPosition: Int,
-            expectedAlternativeKeyword: String
+    private fun BroadMatchItemDataView.assertBroadMatchItemViewModel(
+        otherRelatedProduct: SearchProductModel.OtherRelatedProduct,
+        expectedPosition: Int,
+        expectedAlternativeKeyword: String,
     ) {
         id shouldBe otherRelatedProduct.id
         name shouldBe otherRelatedProduct.name
         price shouldBe otherRelatedProduct.price
         imageUrl shouldBe otherRelatedProduct.imageUrl
-        rating shouldBe otherRelatedProduct.rating
-        countReview shouldBe otherRelatedProduct.countReview
         url shouldBe otherRelatedProduct.url
         applink shouldBe otherRelatedProduct.applink
         priceString shouldBe otherRelatedProduct.priceString
         position shouldBe expectedPosition
         alternativeKeyword shouldBe expectedAlternativeKeyword
-    }
+        isWishlisted shouldBe otherRelatedProduct.isWishlisted
+        shopLocation shouldBe otherRelatedProduct.shop.city
+        ratingAverage shouldBe otherRelatedProduct.ratingAverage
 
-    private fun `Then assert tracking event impression broad match`(visitableList: List<Visitable<*>>) {
-        val broadMatchViewModelList = visitableList.filterIsInstance<BroadMatchViewModel>()
-
-        broadMatchViewModelList.forEach { broadMatchViewModel ->
-            verify {
-                productListView.trackBroadMatchImpression(
-                        broadMatchViewModel.keyword,
-                        broadMatchViewModel.broadMatchItemViewModelList.map { it.asImpressionObjectDataLayer() }
-                )
-            }
+        badgeItemDataViewList.listShouldBe(otherRelatedProduct.badgeList) { actual, expected ->
+            actual.imageUrl shouldBe expected.imageUrl
+            actual.isShown shouldBe expected.isShown
         }
+
+        labelGroupDataList.listShouldBe(otherRelatedProduct.labelGroupList) { actual, expected ->
+            actual.title shouldBe expected.title
+            actual.position shouldBe expected.position
+            actual.type shouldBe expected.type
+            actual.imageUrl shouldBe expected.url
+        }
+
+        freeOngkirDataView.isActive shouldBe otherRelatedProduct.freeOngkir.isActive
+        freeOngkirDataView.imageUrl shouldBe otherRelatedProduct.freeOngkir.imageUrl
+
+        isOrganicAds shouldBe otherRelatedProduct.ads.id.isNotEmpty()
+        topAdsViewUrl shouldBe otherRelatedProduct.ads.productViewUrl
+        this.topAdsClickUrl shouldBe otherRelatedProduct.ads.productClickUrl
+        topAdsWishlistUrl shouldBe otherRelatedProduct.ads.productWishlistUrl
+
+        carouselProductType.shouldBeInstanceOf<BroadMatchProduct>()
+        carouselProductType.hasThreeDots shouldBe true
+
+        componentId shouldBe otherRelatedProduct.componentId
     }
 
     @Test
@@ -169,6 +233,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModel = broadMatchResponseCode4NoSuggestion.jsonToObject<SearchProductModel>()
 
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given keyword from view`(keyword)
 
         `When Load Data`()
 
@@ -176,13 +241,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         val visitableList = visitableListSlot.captured
         `Then assert visitable list contains BroadMatchViewModel`(
-                0, visitableList, searchProductModel
+            0,
+            visitableList,
+            searchProductModel,
+            keyword,
         )
-        `Then assert tracking event impression broad match`(visitableList)
+        `Then assert visitable list does not contain SeparatorViewModel`(visitableList)
     }
 
     @Test
-    fun `DO NOT show broad match and show product list when response code is NOT 4 or 5`() {
+    fun `DO NOT show broad match and show product list when response code is NOT 0, 4, or 5`() {
         val searchProductModel = broadMatchResponseCode1NotEmptySearch.jsonToObject<SearchProductModel>()
         `Given Search Product API will return SearchProductModel`(searchProductModel)
 
@@ -196,7 +264,16 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
             productListView.setProductList(capture(visitableListSlot))
         }
 
-        visitableListSlot.captured.find { it is BroadMatchViewModel } shouldBe null
+        visitableListSlot.captured.assertNotContainBroadMatch()
+    }
+
+    private fun List<Visitable<*>>.assertNotContainBroadMatch() {
+        val broadMatchIndex = indexOfFirst { it is BroadMatchDataView }
+
+        broadMatchIndex.shouldBe(
+                -1,
+                "Broad match is found on visitable list index $broadMatchIndex"
+        )
     }
 
     @Test
@@ -208,27 +285,40 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
     private fun `Test Broad Match shown from page 1`(searchProductModel: SearchProductModel) {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given keyword from view`(keyword)
 
         `When Load Data`()
 
         `Then assert view will show product list`()
 
         val visitableList = visitableListSlot.captured
-        `Then assert suggestion view model is positioned after product list`(visitableList)
+        `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList)
 
-        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionViewModel } + 1
+        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionDataView } + 1
         `Then assert visitable list contains BroadMatchViewModel`(
-                expectedBroadMatchStartingPosition, visitableList, searchProductModel
+            expectedBroadMatchStartingPosition,
+            visitableList,
+            searchProductModel,
+            keyword,
         )
-        `Then assert tracking event impression broad match`(visitableList)
     }
 
-    private fun `Then assert suggestion view model is positioned after product list`(visitableList: List<Visitable<*>>) {
-        val lastProductItemIndex = visitableList.indexOfLast { it is ProductItemViewModel }
-        val expectedSuggestionViewModelIndex = lastProductItemIndex + 1
-        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionViewModel }
+    private fun `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList: List<Visitable<*>>) {
+        val lastProductItemIndex = visitableList.indexOfLast { it is ProductItemDataView }
 
-        actualSuggestionViewModelIndex shouldBe expectedSuggestionViewModelIndex
+        val expectedTopSeparatorViewModelIndex = lastProductItemIndex + 1
+        val actualTopSeparatorViewModelIndex = visitableList.indexOfFirst { it is SeparatorDataView }
+
+        val expectedSuggestionViewModelIndex = lastProductItemIndex + 2
+        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionDataView }
+
+        expectedTopSeparatorViewModelIndex.shouldBe(actualTopSeparatorViewModelIndex,
+                "Separator View Model is at position $expectedTopSeparatorViewModelIndex, should be at position $actualTopSeparatorViewModelIndex"
+        )
+
+        expectedSuggestionViewModelIndex.shouldBe(actualSuggestionViewModelIndex,
+                "Suggestion View Model is at position $expectedSuggestionViewModelIndex, should be at position $actualSuggestionViewModelIndex"
+        )
     }
 
     @Test
@@ -251,17 +341,20 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
 
         `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
         `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given keyword from view`(keyword)
         `Given Product List Presenter already load data`(visitableList)
 
         `When Load More Data`()
 
         `Then assert view will add product list`(visitableList)
-        `Then assert suggestion view model is positioned after product list`(visitableList)
-        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionViewModel } + 1
+        `Then assert top separator view model and suggestion view model is positioned under product list`(visitableList)
+        val expectedBroadMatchStartingPosition = visitableList.indexOfLast { it is SuggestionDataView } + 1
         `Then assert visitable list contains BroadMatchViewModel`(
-                expectedBroadMatchStartingPosition, visitableList, searchProductModelPage1
+            expectedBroadMatchStartingPosition,
+            visitableList,
+            searchProductModelPage1,
+            keyword,
         )
-        `Then assert tracking event impression broad match`(visitableList)
     }
 
     private fun `Given Search Product Load More API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -307,5 +400,202 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage2 = broadMatchResponseCode5Page2WithResponseLowerThanCount.jsonToObject<SearchProductModel>()
 
         `Test Broad Match shown from page 2 or above`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    @Test
+    fun `DO NOT show broad match in load more when response code is NOT 4 or 5`() {
+        val visitableList = mutableListOf<Visitable<*>>()
+        val searchProductModelPage1 = broadMatchResponseCode1NotEmptySearch.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode1Page2NotEmptySearch.jsonToObject<SearchProductModel>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given Product List Presenter already load data`(visitableList)
+
+        `When Load More Data`()
+
+        `Then assert view will add product list`(visitableList)
+        visitableList.assertNotContainBroadMatch()
+    }
+
+    @Test
+    fun `Show broad match at bottom of all product cards for position 0`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position0.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+
+        val expectedTopSeparatorPosition = searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem() + 1
+        val expectedBottomSeparatorPosition = -1
+
+        `Test broad match with position`(searchProductModelPage1, searchProductModelPage2, expectedTopSeparatorPosition, expectedBottomSeparatorPosition) { visitableList ->
+            val firstProductItemPosition = visitableList.indexOfFirst { it is SearchProductCountDataView }
+
+            firstProductItemPosition + expectedTopSeparatorPosition + 1
+        }
+    }
+
+    private fun SearchProductModel.getTotalProductItem(): Int {
+        return this.searchProduct.data.productList.size + this.topAdsModel.data.size
+    }
+
+    @Test
+    fun `Show broad match at top of all product cards for position 1`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position1.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+
+        val expectedTopSeparatorPosition = -1
+        val expectedBottomSeparatorPosition = 6
+        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 2
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition
+        ) { expectedSuggestionViewModelPosition }
+    }
+
+    @Test
+    fun `Show broad match at product card position 4`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position4.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+
+        val expectedTopSeparatorPosition = 5
+        val expectedBottomSeparatorPosition = 11
+        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+        { expectedSuggestionViewModelPosition }
+    }
+
+    @Test
+    fun `Show broad match at product card position 12`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
+
+        val expectedTopSeparatorPosition = 13
+        val expectedBottomSeparatorPosition = 19
+        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+
+        `Test broad match with position`(
+                searchProductModelPage1, searchProductModelPage2,
+                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+        { expectedSuggestionViewModelPosition }
+    }
+
+    private fun `Test broad match with position`(
+            searchProductModelPage1: SearchProductModel,
+            searchProductModelPage2: SearchProductModel,
+            expectedTopSeparatorPosition: Int,
+            expectedBottomSeparatorPosition: Int = -1,
+            getExpectedSuggestionViewModelPosition: (List<Visitable<*>>) -> Int
+    ) {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+        `Given keyword from view`(keyword)
+
+        `When load first page and load more data`(visitableList)
+
+        val expectedSuggestionViewModelPosition = getExpectedSuggestionViewModelPosition(visitableList)
+
+        `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition, expectedSuggestionViewModelPosition, visitableList)
+
+        val expectedBroadMatchViewModelPosition = expectedSuggestionViewModelPosition + 1
+
+        `Then assert visitable list contains SuggestionViewModel`(expectedSuggestionViewModelPosition, visitableList)
+        `Then assert visitable list contains BroadMatchViewModel`(
+            expectedBroadMatchViewModelPosition,
+            visitableList,
+            searchProductModelPage1,
+            keyword,
+        )
+
+        `Then assert bottom separator view model is positioned after broad match list`(expectedBottomSeparatorPosition,expectedSuggestionViewModelPosition, visitableList)
+
+    }
+
+    private fun `When load first page and load more data`(visitableList: MutableList<Visitable<*>>) {
+        val firstPageVisitableListSlot = slot<List<Visitable<*>>>()
+        every {
+            productListView.setProductList(capture(firstPageVisitableListSlot))
+        } answers {
+            visitableList.addAll(firstPageVisitableListSlot.captured)
+        }
+
+        val nextPageVisitableListSlot = slot<List<Visitable<*>>>()
+        every {
+            productListView.addProductList(capture(nextPageVisitableListSlot))
+        } answers {
+            visitableList.addAll(nextPageVisitableListSlot.captured)
+        }
+
+        productListPresenter.loadData(mapOf())
+        productListPresenter.loadMoreData(mapOf())
+    }
+
+    private fun `Then assert visitable list contains SuggestionViewModel`(expectedPosition: Int, visitableList: List<Visitable<*>>) {
+        val actualSuggestionViewModelIndex = visitableList.indexOfFirst { it is SuggestionDataView }
+
+        actualSuggestionViewModelIndex.shouldBe(expectedPosition,
+                "Suggestion View Model is at position $actualSuggestionViewModelIndex, should be at position $expectedPosition"
+        )
+    }
+
+    private fun `Then assert top separator view model is positioned before suggestion`(expectedTopSeparatorPosition: Int, suggestionViewModelIndex: Int, visitableList: List<Visitable<*>>) {
+        val actualTopSeparatorViewModelIndex = visitableList.withIndex().find {
+            it.value is SeparatorDataView && it.index < suggestionViewModelIndex
+        }?.index ?: -1
+
+        actualTopSeparatorViewModelIndex.shouldBe(expectedTopSeparatorPosition,
+                "Separator View Model is at position $actualTopSeparatorViewModelIndex, should be at position $expectedTopSeparatorPosition"
+        )
+    }
+
+    private fun `Then assert bottom separator view model is positioned after broad match list`(expectedBottomSeparatorPosition: Int, suggestionViewModelIndex: Int, visitableList: List<Visitable<*>>) {
+        val actualBottomSeparatorViewModelIndex = visitableList.withIndex().find {
+            it.value is SeparatorDataView && it.index > suggestionViewModelIndex
+        }?.index ?: -1
+
+        actualBottomSeparatorViewModelIndex.shouldBe(expectedBottomSeparatorPosition,
+                "Separator View Model is at position $actualBottomSeparatorViewModelIndex, should be at position $expectedBottomSeparatorPosition"
+        )
+    }
+
+    @Test
+    fun `Do not show broad match when load more is empty and position become invalid`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2Empty.jsonToObject<SearchProductModel>()
+
+        `Test do not show broad match with invalid position`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    @Test
+    fun `Do not show broad match when position is invalid with product card`() {
+        val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = broadMatchResponseCode0Page2With1Product.jsonToObject<SearchProductModel>()
+
+        `Test do not show broad match with invalid position`(searchProductModelPage1, searchProductModelPage2)
+    }
+
+    private fun `Test do not show broad match with invalid position`(
+            searchProductModelPage1: SearchProductModel,
+            searchProductModelPage2: SearchProductModel
+    ) {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        `Given Search Product API will return SearchProductModel`(searchProductModelPage1)
+        `Given Search Product Load More API will return SearchProductModel`(searchProductModelPage2)
+
+        `When load first page and load more data`(visitableList)
+
+        visitableList.assertNotContainBroadMatch()
+        `Then verify tracking event impression not hit`()
+    }
+
+    private fun `Then verify tracking event impression not hit`() {
+        verify(exactly = 0) {
+            productListView.trackEventImpressionBroadMatchItem(any())
+        }
     }
 }

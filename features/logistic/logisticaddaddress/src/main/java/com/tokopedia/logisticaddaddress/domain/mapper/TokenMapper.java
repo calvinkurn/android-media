@@ -11,7 +11,7 @@ public class TokenMapper {
 
     }
 
-    public Token reverseTokenModel(com.tokopedia.logisticdata.data.entity.address.Token token) {
+    public Token reverseTokenModel(com.tokopedia.logisticCommon.data.entity.address.Token token) {
         Token tokenModel = new Token();
         tokenModel.setUt(token.getUt());
         tokenModel.setDistrictRecommendation(token.getDistrictRecommendation());
@@ -19,8 +19,8 @@ public class TokenMapper {
         return tokenModel;
     }
 
-    public com.tokopedia.logisticdata.data.entity.address.Token convertTokenModel(Token token) {
-        com.tokopedia.logisticdata.data.entity.address.Token result = new com.tokopedia.logisticdata.data.entity.address.Token();
+    public com.tokopedia.logisticCommon.data.entity.address.Token convertTokenModel(Token token) {
+        com.tokopedia.logisticCommon.data.entity.address.Token result = new com.tokopedia.logisticCommon.data.entity.address.Token();
         result.setUt(token.getUt());
         result.setDistrictRecommendation(token.getDistrictRecommendation());
 

@@ -1,26 +1,40 @@
 package com.tokopedia.talk.feature.reply
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.common.data.TalkMutationData
+import com.tokopedia.talk.common.data.TalkMutationResponse
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewComment
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResultData
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteComment
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResultData
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalk
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResultData
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalk
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResultData
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
+import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
+import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
+import com.tokopedia.talk.feature.sellersettings.template.data.GetAllTemplateResponseWrapper
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import junit.framework.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyString
 
 class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
@@ -78,7 +92,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.followUnfollowTalk(questionId)
 
-        val expectedResponse = Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkFollowUnfollowTalkResponse.messageError.first()))
 
         verifyTalkFollowUnfollowTalkUseCaseExecuted()
         verifyTalkFollowUnfollowTalkErrorEquals(expectedResponse)
@@ -101,7 +115,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteTalk should execute expected use case and get expected data`() {
-        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(data = TalkDeleteTalkResultData(isSuccess = 1)))
+        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
 
         onTalkDeleteTalk_thenReturn(response)
@@ -116,14 +130,14 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteTalk fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(messageError = listOf("Some Error"), data = TalkDeleteTalkResultData(isSuccess = 0)))
+        val response = TalkDeleteTalkResponseWrapper(TalkDeleteTalk(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
 
         onTalkDeleteTalk_thenReturn(response)
 
         viewModel.deleteTalk(questionId)
 
-        val expectedResponse = Fail(Throwable(response.talkDeleteTalk.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkDeleteTalk.messageError.first()))
 
         verifyTalkDeleteTalkUseCaseExecuted()
         verifyTalkDeleteTalkErrorEquals(expectedResponse)
@@ -146,7 +160,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteComment should execute expected use case and get expected data`() {
-        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(data = TalkDeleteCommentResultData(isSuccess = 1)))
+        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
         val commentId = "19219314"
 
@@ -162,7 +176,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when deleteComment fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(messageError = listOf("Some Error"), data = TalkDeleteCommentResultData(isSuccess = 0)))
+        val response = TalkDeleteCommentResponseWrapper(TalkDeleteComment(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
         val commentId = "19219314"
 
@@ -170,7 +184,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.deleteComment(questionId, commentId)
 
-        val expectedResponse = Fail(Throwable(response.talkDeleteComment.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkDeleteComment.messageError.first()))
 
         verifyTalkDeleteCommentUseCaseExecuted()
         verifyTalkDeleteCommentErrorEquals(expectedResponse)
@@ -194,7 +208,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
     @Test
     fun `when createNewComment should execute expected use case and get expected data`() {
-        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkCreateNewCommentResultData(isSuccess = 1)))
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkMutationData(isSuccess = 1)))
         val questionId = "148148"
         val comment = "Barangnya ready ga ya?"
 
@@ -209,8 +223,29 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     }
 
     @Test
+    fun `when createNewComment with attachments should execute expected use case and get expected data`() {
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(data = TalkMutationData(isSuccess = 1)))
+        val questionId = "148148"
+        val comment = "Barangnya ready ga ya?"
+
+        onTalkCreateNewComment_thenReturn(response)
+
+        viewModel.setAttachedProducts(mutableListOf<AttachedProduct>(
+            AttachedProduct("123", "thumbnail", "produk keren", "link produk", "rp 1"),
+            AttachedProduct("1234", "thumbnail", "produk keren banget", "link produk", "rp 12"),
+            AttachedProduct("12345", "thumbnail", "produk keren sekali", "link produk", "rp 13")
+        ))
+        viewModel.createNewComment(comment, questionId)
+
+        val expectedResponse = Success(response)
+
+        verifyTalkCreateNewCommentUseCaseExecuted()
+        verifyTalkCreateNewCommentDataEquals(expectedResponse)
+    }
+
+    @Test
     fun `when createNewComment fails due to backend should execute expected use case and fail with expected error`() {
-        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(messageError = listOf("Some Error"), data = TalkCreateNewCommentResultData(isSuccess = 0)))
+        val response = TalkCreateNewCommentResponseWrapper(TalkCreateNewComment(messageError = listOf("Some Error"), data = TalkMutationData(isSuccess = 0)))
         val questionId = "148148"
         val comment = "Barangnya ready ga ya?"
 
@@ -218,7 +253,7 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
 
         viewModel.createNewComment(comment, questionId)
 
-        val expectedResponse = Fail(Throwable(response.talkCreateNewComment.messageError.first()))
+        val expectedResponse = Fail(MessageErrorException(response.talkCreateNewComment.messageError.first()))
 
         verifyTalkCreateNewCommentUseCaseExecuted()
         verifyTalkCreateNewCommentErrorEquals(expectedResponse)
@@ -275,13 +310,217 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     }
 
     @Test
-    fun `when set IsMyShop should set to expected value`() {
-        val expected = false
-        val shopId = "13516"
+    fun `when markCommentNotFraud success should execute expected usecase and get expected data`() {
+        val expectedResponse = TalkMarkCommentNotFraudResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 1)))
+        val commentId = anyString()
 
-        viewModel.setIsMyShop(shopId)
+        onTalkMarkCommentNotFraud_thenReturn(expectedResponse)
 
-        assertEquals(expected, viewModel.isMyShop)
+        viewModel.markCommentNotFraud(commentId, anyString())
+
+        verifyTalkMarkCommentNotFraudUseCaseExecuted()
+        verifyMarkCommentNotFraudDataEquals(Success(TalkMarkCommentNotFraudSuccess(commentId)))
+    }
+
+    @Test
+    fun `when markCommentNotFraud fail due to backend should execute expected usecase and fail with expected error`() {
+        val expectedResponse = TalkMarkCommentNotFraudResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 0)))
+
+        onTalkMarkCommentNotFraud_thenReturn(expectedResponse)
+
+        viewModel.markCommentNotFraud(anyString(), anyString())
+
+        verifyTalkMarkCommentNotFraudUseCaseExecuted()
+        verifyMarkCommentNotFraudErrorEquals(Fail(MessageErrorException(expectedResponse.talkMarkCommentNotFraud.messageError.firstOrNull())))
+    }
+
+    @Test
+    fun `when markCommentNotFraud fail due to network should execute expected usecase and fail with expected error`() {
+        val expectedResponse = Throwable()
+
+        onTalkMarkCommentNotFraudFail_thenReturn(expectedResponse)
+
+        viewModel.markCommentNotFraud(anyString(), anyString())
+
+        verifyTalkMarkCommentNotFraudUseCaseExecuted()
+        verifyMarkCommentNotFraudErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when markNotFraud success should execute expected usecase and get expected data`() {
+        val expectedResponse = TalkMarkNotFraudResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 1)))
+
+        onTalkMarkNotFraud_thenReturn(expectedResponse)
+
+        viewModel.markQuestionNotFraud(anyString())
+
+        verifyTalkMarkNotFraudUseCaseExecuted()
+        verifyMarkNotFraudDataEquals(Success(expectedResponse))
+    }
+
+    @Test
+    fun `when markNotFraud fail due to backend should execute expected usecase and fail with expected error`() {
+        val expectedResponse = TalkMarkNotFraudResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 0)))
+
+        onTalkMarkNotFraud_thenReturn(expectedResponse)
+
+        viewModel.markQuestionNotFraud(anyString())
+
+        verifyTalkMarkNotFraudUseCaseExecuted()
+        verifyMarkNotFraudErrorEquals(Fail(MessageErrorException(expectedResponse.talkMarkNotFraud.messageError.firstOrNull())))
+    }
+
+    @Test
+    fun `when markNotFraud fail due to network should execute expected usecase and fail with expected error`() {
+        val expectedResponse = Throwable()
+
+        onTalkMarkNotFraudFail_thenReturn(expectedResponse)
+
+        viewModel.markQuestionNotFraud(anyString())
+
+        verifyTalkMarkNotFraudUseCaseExecuted()
+        verifyMarkNotFraudErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when reportComment success should execute expected usecase and get expected data`() {
+        val expectedResponse = TalkReportCommentResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 1)))
+
+        onTalkReportComment_thenReturn(expectedResponse)
+
+        viewModel.reportComment(anyString())
+
+        verifyTalkReportCommentUseCaseExecuted()
+        verifyReportCommentDataEquals(Success(expectedResponse))
+    }
+
+    @Test
+    fun `when reportComment fail due to backend should execute expected usecase and fail with expected error`() {
+        val expectedResponse = TalkReportCommentResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 0)))
+
+        onTalkReportComment_thenReturn(expectedResponse)
+
+        viewModel.reportComment(anyString())
+
+        verifyTalkReportCommentUseCaseExecuted()
+        verifyReportCommentErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportComment.messageError.firstOrNull())))
+    }
+
+    @Test
+    fun `when reportComment fail due to network should execute expected usecase and fail with expected error`() {
+        val expectedResponse = Throwable()
+
+        onTalkReportCommentFail_thenReturn(expectedResponse)
+
+        viewModel.reportComment(anyString())
+
+        verifyTalkReportCommentUseCaseExecuted()
+        verifyReportCommentErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when reportTalk success should execute expected usecase and get expected data`() {
+        val expectedResponse = TalkReportTalkResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 1)))
+
+        onTalkReportTalk_thenReturn(expectedResponse)
+
+        viewModel.reportTalk(anyString())
+
+        verifyTalkReportTalkUseCaseExecuted()
+        verifyReportTalkDataEquals(Success(expectedResponse))
+    }
+
+    @Test
+    fun `when reportTalk fail due to backend should execute expected usecase and fail with expected error`() {
+        val expectedResponse = TalkReportTalkResponseWrapper(TalkMutationResponse(data = TalkMutationData(isSuccess = 0)))
+
+        onTalkReportTalk_thenReturn(expectedResponse)
+
+        viewModel.reportTalk(anyString())
+
+        verifyTalkReportTalkUseCaseExecuted()
+        verifyReportTalkErrorEquals(Fail(MessageErrorException(expectedResponse.talkReportTalk.messageError.firstOrNull())))
+    }
+
+    @Test
+    fun `when reportTalk fail due to network should execute expected usecase and fail with expected error`() {
+        val expectedResponse = Throwable()
+
+        onTalkReportTalkFail_thenReturn(expectedResponse)
+
+        viewModel.reportTalk(anyString())
+
+        verifyTalkReportTalkUseCaseExecuted()
+        verifyReportTalkErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when getTemplateList success should execute expected use case`() {
+        val expectedResponse = GetAllTemplateResponseWrapper()
+
+        onSuccessGetTemplateList_thenReturn(expectedResponse)
+
+        viewModel.getAllTemplates(ArgumentMatchers.anyBoolean())
+
+        verifyGetAllTemplatesUseCaseCalled()
+        verifyGetTemplateListSuccess(expectedResponse.chatTemplatesAll)
+    }
+
+    @Test
+    fun `when getTemplateList fail due to network error should execute expected use case and return fail`() {
+        val expectedResponse = Throwable()
+
+        onFailGetTemplateList_thenReturn(expectedResponse)
+
+        viewModel.getAllTemplates(ArgumentMatchers.anyBoolean())
+
+        verifyGetAllTemplatesUseCaseCalled()
+        verifyGetTemplateListFail(expectedResponse)
+    }
+
+    @Test
+    fun `when getUserId should get expected userId`() {
+        val expectedUserId = "102131"
+
+        onGetUserId_thenReturn(expectedUserId)
+
+        Assert.assertEquals(expectedUserId, viewModel.userId)
+    }
+
+    @Test
+    fun `when getProfilePicture should get expected profilePicture`() {
+        val expectedProfilePicture = "profilePicture"
+
+        onGetProfilePicture_thenReturn(expectedProfilePicture)
+
+        Assert.assertEquals(expectedProfilePicture, viewModel.profilePicture)
+    }
+
+    @Test
+    fun `when getShopAvatar should get expected shopAvatar`() {
+        val expectedShopAvatar = "shopAvatar"
+
+        onGetShopAvatar_thenReturn(expectedShopAvatar)
+
+        Assert.assertEquals(expectedShopAvatar, viewModel.shopAvatar)
+    }
+
+    @Test
+    fun `when getShopName should get expected shopName`() {
+        val expectedShopName = "shopName"
+
+        onGetShopName_thenReturn(expectedShopName)
+
+        Assert.assertEquals(expectedShopName, viewModel.getShopName())
+    }
+
+    @Test
+    fun `when set isMyShop should get expected value`() {
+        val expectedIsMyShop = true
+
+        viewModel.isMyShop = expectedIsMyShop
+
+        Assert.assertEquals(expectedIsMyShop, viewModel.isMyShop)
     }
 
     private fun onGetDiscussionData_thenReturn(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
@@ -324,6 +563,62 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         coEvery { talkCreateNewCommentUseCase.executeOnBackground() } throws exception
     }
 
+    private fun onTalkMarkCommentNotFraud_thenReturn(talkMarkCommentNotFraudResponseWrapper: TalkMarkCommentNotFraudResponseWrapper) {
+        coEvery { talkMarkCommentNotFraudUseCase.executeOnBackground() } returns talkMarkCommentNotFraudResponseWrapper
+    }
+
+    private fun onTalkMarkCommentNotFraudFail_thenReturn(throwable: Throwable) {
+        coEvery { talkMarkCommentNotFraudUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onTalkMarkNotFraud_thenReturn(talkMarkNotFraudResponseWrapper: TalkMarkNotFraudResponseWrapper) {
+        coEvery { talkMarkNotFraudUseCase.executeOnBackground() } returns talkMarkNotFraudResponseWrapper
+    }
+
+    private fun onTalkMarkNotFraudFail_thenReturn(throwable: Throwable) {
+        coEvery { talkMarkNotFraudUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onTalkReportComment_thenReturn(talkReportCommentResponseWrapper: TalkReportCommentResponseWrapper) {
+        coEvery { talkReportCommentUseCase.executeOnBackground() } returns talkReportCommentResponseWrapper
+    }
+
+    private fun onTalkReportCommentFail_thenReturn(throwable: Throwable) {
+        coEvery { talkReportCommentUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onTalkReportTalk_thenReturn(talkReportTalkResponseWrapper: TalkReportTalkResponseWrapper) {
+        coEvery { talkReportTalkUseCase.executeOnBackground() } returns talkReportTalkResponseWrapper
+    }
+
+    private fun onTalkReportTalkFail_thenReturn(throwable: Throwable) {
+        coEvery { talkReportTalkUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onSuccessGetTemplateList_thenReturn(getAllTemplateResponseWrapper: GetAllTemplateResponseWrapper) {
+        coEvery { getAllTemplatesUseCase.executeOnBackground() } returns getAllTemplateResponseWrapper
+    }
+
+    private fun onFailGetTemplateList_thenReturn(throwable: Throwable) {
+        coEvery { getAllTemplatesUseCase.executeOnBackground() } throws throwable
+    }
+
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSession.userId } returns userId
+    }
+
+    private fun onGetShopAvatar_thenReturn(shopAvatar: String) {
+        every { userSession.shopAvatar } returns shopAvatar
+    }
+
+    private fun onGetProfilePicture_thenReturn(profilePicture: String) {
+        every { userSession.profilePicture } returns profilePicture
+    }
+
+    private fun onGetShopName_thenReturn(shopName: String) {
+        every { userSession.shopName } returns shopName
+    }
+
     private fun verifyGetDiscussionDataByQuestionIdUseCaseExecuted() {
         coVerify { discussionDataByQuestionIDUseCase.executeOnBackground() }
     }
@@ -343,6 +638,23 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     private fun verifyTalkCreateNewCommentUseCaseExecuted() {
         coVerify { talkCreateNewCommentUseCase.executeOnBackground() }
     }
+
+    private fun verifyTalkMarkNotFraudUseCaseExecuted() {
+        coVerify { talkMarkNotFraudUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkMarkCommentNotFraudUseCaseExecuted() {
+        coVerify { talkMarkCommentNotFraudUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkReportCommentUseCaseExecuted() {
+        coVerify { talkReportCommentUseCase.executeOnBackground() }
+    }
+
+    private fun verifyTalkReportTalkUseCaseExecuted() {
+        coVerify { talkReportTalkUseCase.executeOnBackground() }
+    }
+
 
     private fun verifyDiscussionDataEquals(expectedResponse: Success<DiscussionDataByQuestionIDResponseWrapper>) {
         viewModel.discussionData.verifySuccessEquals(expectedResponse)
@@ -384,6 +696,38 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         viewModel.createNewCommentResult.verifyErrorEquals(expectedResponse)
     }
 
+    private fun verifyMarkCommentNotFraudDataEquals(expectedResponse: Success<TalkMarkCommentNotFraudSuccess>) {
+        viewModel.markCommentNotFraudResult.verifySuccessEquals(expectedResponse)
+    }
+
+    private fun verifyMarkCommentNotFraudErrorEquals(expectedResponse: Fail) {
+        viewModel.markCommentNotFraudResult.verifyErrorEquals(expectedResponse)
+    }
+
+    private fun verifyMarkNotFraudDataEquals(expectedResponse: Success<TalkMarkNotFraudResponseWrapper>) {
+        viewModel.markNotFraudResult.verifySuccessEquals(expectedResponse)
+    }
+
+    private fun verifyMarkNotFraudErrorEquals(expectedResponse: Fail) {
+        viewModel.markNotFraudResult.verifyErrorEquals(expectedResponse)
+    }
+
+    private fun verifyReportCommentDataEquals(expectedResponse: Success<TalkReportCommentResponseWrapper>) {
+        viewModel.reportCommentResult.verifySuccessEquals(expectedResponse)
+    }
+
+    private fun verifyReportCommentErrorEquals(expectedResponse: Fail) {
+        viewModel.reportCommentResult.verifyErrorEquals(expectedResponse)
+    }
+
+    private fun verifyReportTalkDataEquals(expectedResponse: Success<TalkReportTalkResponseWrapper>) {
+        viewModel.reportTalkResult.verifySuccessEquals(expectedResponse)
+    }
+
+    private fun verifyReportTalkErrorEquals(expectedResponse: Fail) {
+        viewModel.reportTalkResult.verifyErrorEquals(expectedResponse)
+    }
+
     private fun verifyIsFollowingEquals(isFollowing: Boolean) {
         assertEquals(viewModel.getIsFollowing(), isFollowing)
     }
@@ -391,4 +735,17 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
     private fun verifyAttachedProductsEqual(attachedProducts: MutableList<AttachedProduct>) {
         viewModel.attachedProducts.verifyValueEquals(attachedProducts)
     }
+
+    private fun verifyGetAllTemplatesUseCaseCalled() {
+        coVerify { getAllTemplatesUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetTemplateListSuccess(chatTemplatesAll: ChatTemplatesAll) {
+        viewModel.templateList.verifySuccessEquals(Success(chatTemplatesAll))
+    }
+
+    private fun verifyGetTemplateListFail(throwable: Throwable) {
+        viewModel.templateList.verifyErrorEquals(Fail(throwable))
+    }
+
 }

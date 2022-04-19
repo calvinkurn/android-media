@@ -14,15 +14,16 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.widget.SelectPassengerView
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.UmrahVariant
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.pdp.data.ParamPurchase
 import com.tokopedia.salam.umrah.pdp.di.UmrahPdpComponent
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity.Companion.EXTRA_IS_EMPTY
@@ -68,7 +69,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahPdpDetailViewModel.pdpAvailability.observe(this, Observer {
+        umrahPdpDetailViewModel.pdpAvailability.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> showGetListError()
@@ -77,7 +78,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
     }
 
     private fun showGetListError() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
+        NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.umrah_img_empty_search_png) {
             requestAvailabilityData()
         }
     }
@@ -85,15 +86,14 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
     private fun onSuccessGetResult(data: Int) {
         if (data >= paramPurchase.totalPassenger) {
             nextToCheckOut()
-        }
-        else{
+        } else {
             showSoldOutBottomSheet()
         }
     }
 
     private fun requestAvailabilityData() {
         umrahPdpDetailViewModel.getPdpAvailability(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_pdp), paramPurchase.slugName)
+                UmrahQuery.UMRAH_PDP_QUERY, paramPurchase.slugName)
     }
 
     private fun setupAll() {
@@ -104,14 +104,14 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         setupFAB()
     }
 
-    private fun setupFAB(){
+    private fun setupFAB() {
         fab_umrah_pdp_detail_message.bringToFront()
         fab_umrah_pdp_detail_message.setOnClickListener {
             checkChatSession()
         }
     }
 
-    private fun checkChatSession(){
+    private fun checkChatSession() {
         if (userSessionInterface.isLoggedIn) {
             context?.let {
                 startChatUmroh(it)
@@ -121,7 +121,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun startChatUmroh(context: Context){
+    private fun startChatUmroh(context: Context) {
         val intent = RouteManager.getIntent(context,
                 ApplinkConst.TOPCHAT_ASKSELLER,
                 resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, paramPurchase.slugName),
@@ -133,7 +133,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CODE_LOGIN_FAB -> context?.let{checkChatSession()}
+                REQUEST_CODE_LOGIN_FAB -> context?.let { checkChatSession() }
             }
         }
     }
@@ -147,7 +147,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun nextToCheckOut(){
+    private fun nextToCheckOut() {
         progressDialog.show()
         if (userSessionInterface.isLoggedIn) {
             progressDialog.dismiss()
@@ -171,6 +171,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
             goToLoginPage(REQUEST_CODE_LOGIN)
         }
     }
+
     private fun getParamPurchase() {
         UmrahPdpFragment.umrahProduct.let {
             paramPurchase.apply {
@@ -189,11 +190,14 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         spv_umrah_pdp_detail_jamaah.value = paramPurchase.totalPassenger
         spv_umrah_pdp_detail_jamaah.setMinimalPassenger(1)
         spv_umrah_pdp_detail_jamaah.setMaximalPassenger(maxPassenger)
-        spv_umrah_pdp_detail_jamaah.setOnPassengerCountChangeListener {
-            paramPurchase.totalPassenger = it
-            setupPurchaseSummary()
-            true
-        }
+        spv_umrah_pdp_detail_jamaah.setOnPassengerCountChangeListener(object : SelectPassengerView.OnPassengerCountChangeListener {
+            override fun onChange(number: Int): Boolean {
+                paramPurchase.totalPassenger = number
+                setupPurchaseSummary()
+                return true
+            }
+
+        })
     }
 
     private fun setupRVRoom() {
@@ -255,7 +259,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
             }
         }
         soldOutBottomSheet.setChild(view)
-        soldOutBottomSheet.show(fragmentManager!!, "")
+        soldOutBottomSheet.show(parentFragmentManager, "")
     }
 
     private fun showSoldOutPackage() {

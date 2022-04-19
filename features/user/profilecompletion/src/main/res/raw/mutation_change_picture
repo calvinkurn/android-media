@@ -1,6 +1,0 @@
-mutation change_picture($pic_obj: String!) {
-  change_picture(pic_obj: $pic_obj) {
-    isSuccess
-    error
-  }
-}

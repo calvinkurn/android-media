@@ -13,7 +13,7 @@
     <string name="open_shop_choose_city">Pilih Kota Terlebih Dahulu</string>
     <string name="open_shop_null_zip_code">Kota/Kecamatan tidak didukung oleh kurir pengiriman</string>
 
-    <string name="open_shop_revamp_default_hint_input_shop">Nama yang menarik lebih mudah diingat pembeli \nNama yang sudah dipilih tidak dapat diubah</string>
+    <string name="open_shop_revamp_default_hint_input_shop">Nama yang menarik lebih mudah diingat pembeli \nnama yang sudah dipilih tidak dapat diubah</string>
     <string name="open_shop_revamp_error_shop_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
     <string name="open_shop_revamp_error_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
     <string name="open_shop_revamp_error_shop_name_already_taken_hint_input_shop">Maaf nama toko tersebut telah digunakan</string>
@@ -33,7 +33,7 @@
     <string name="open_shop_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="open_shop_logout_button">Keluar</string>
     <string name="open_shop_cancel">Batal</string>
-    <string name="masukkan_info_toko">Masukkan info Toko</string>
+    <string name="masukkan_info_toko">Masukkan info toko</string>
     <string name="nama_domain">Nama Domain</string>
     <string name="title_text_greeting">Selamat Name,  Tokomu sudah jadi!</string>
     <string name="text_add_product">Tambah produk dan mulai usahamu</string>
@@ -41,4 +41,9 @@
     <string name="shop_splash_screen_sub_info">Tokomu sebentar lagi jadi. Ada yang segera ganti status jadi pengusaha nih…</string>
     <string name="text_default_choice_item">Pernah berjualan di e-commerce lain</string>
     <string name="text_default_title_quisionaire">Oh, apakah lalalalala?</string>
+
+    <string name="button_label_continue">Lanjut</string>
+    <string name="button_label_skip">Lewati</string>
+    <string name="tnc_input_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>
+    <string name="content_desc_announce_shop_open">announce the shop opening</string>
 </resources>

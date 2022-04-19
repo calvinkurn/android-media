@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivCircleGreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_oval_green" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="@+id/ivCircleGreen"
+        app:layout_constraintEnd_toEndOf="@+id/ivCircleGreen"
+        app:layout_constraintStart_toStartOf="@+id/ivCircleGreen"
+        app:layout_constraintTop_toTopOf="@+id/ivCircleGreen"
+        app:typographyType="heading_5"
+        tools:text="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescription"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ivCircleGreen"
+        app:layout_constraintTop_toTopOf="@+id/ivCircleGreen"
+        app:typographyType="body_2"
+        tools:text="Pengajuanmu akan diverifikasi selama maks. 24 jam. Setelah disetujui, kamu bisa langsung gunakan untuk belanja!" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerVertical"
+        android:layout_width="@dimen/unify_space_2"
+        android:layout_height="@dimen/unify_space_0"
+        app:layout_constraintBottom_toBottomOf="@+id/tvDescription"
+        app:layout_constraintEnd_toEndOf="@id/tvNumber"
+        app:layout_constraintStart_toStartOf="@id/tvNumber"
+        app:layout_constraintTop_toBottomOf="@+id/ivCircleGreen" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

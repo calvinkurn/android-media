@@ -1,0 +1,559 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 4,
+      "keywordProcess": "0",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "suggestion": "pi kayu seven plush e",
+        "query": "q=pikachu%20eevee%20plushie&rf=false&skip_broadmatch=true",
+        "text": "\"pikachu eevee plushie\" nggak ditemukan. Mau cek rekomendasi kami?"
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 1,
+        "otherRelated": [
+          {
+            "keyword": "pikachu eevee",
+            "url": "https://www.tokopedia.com/search?q=pikachu+eevee&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=pikachu+eevee&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 574261655,
+                "name": "Penghapus Pokemon 3D Setip Eraser Hapusan Stip Pikachu Snorlax Eevee - Kuning",
+                "price": 15500,
+                "priceStr": "Rp15.500",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/8/5/70371269/70371269_449933c4-33d7-472b-85b9-02a98b18459e_2048_2048",
+                "ratingAverage": "4.9",
+                "applink": "tokopedia://product/1074105134",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 7
+              },
+              {
+                "id": 574261652,
+                "name": "Boneka eevee 18cm/boneka teman pokemon/boneka karakter/boneka pikachu",
+                "price": 55000,
+                "priceStr": "Rp55.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/7/14/1025538191/1025538191_0d911196-0cb3-47c8-ace6-7550c869b689_384_384.jpg",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/1025538191",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 4
+              },
+              {
+                "id": 576261652,
+                "name": "Pokemon Lets go Pikachu Eevee PC Include DLC - Google Drive",
+                "price": 10000,
+                "priceStr": "Rp10.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/2/19/ff3398f0-230b-40fe-a436-480ce1cdc066.jpg",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/1850040222",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              }
+            ]
+          },
+          {
+            "keyword": "eevee plushie",
+            "url": "https://www.tokopedia.com/search?q=eevee+plushie&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=eevee+plushie&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 574211652,
+                "name": "Japan UFo Catcher eevee Jolteon plushie",
+                "price": 220000,
+                "priceStr": "Rp220.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2020/4/16/158701406726169/158701406726169_947e8d95-8e8c-49cc-a6d8-082fd82972d7.png",
+                "ratingAverage": "",
+                "applink": "tokopedia://product/787917600",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 574262652,
+                "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
+                "price": 167000,
+                "priceStr": "Rp167.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2020/11/3/999e142b-2530-4e01-90f4-006fbbe61dc2.jpg",
+                "ratingAverage": "",
+                "applink": "tokopedia://product/1310519588",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 12
+              },
+              {
+                "id": 574262352,
+                "name": "TERPOPULER BONEKA POKEMON EEVEE PLUSHIE CHANGI AIRPORT SINGAPORE",
+                "price": 167000,
+                "priceStr": "Rp167.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2020/11/7/51bc394f-910f-4294-920f-95ed8286a883.jpg",
+                "ratingAverage": "",
+                "applink": "tokopedia://product/1321684390",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              }
+            ]
+          },
+          {
+            "keyword": "pikachu plushie",
+            "url": "https://www.tokopedia.com/search?q=pikachu+plushie&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=pikachu+plushie&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 574262659,
+                "name": "[ Pokemon Center ] Pikachu x Snorlax Plushie",
+                "price": 275000,
+                "priceStr": "Rp275.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/8/15/156588304284132/156588304284132_7ddff75a-dfdc-4c03-a018-178442bbe9f1.png",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/534485509",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 1981032854,
+                "name": "Boneka Pikachu Pokemon Original Merk Banpresto Plushie",
+                "price": 70000,
+                "priceStr": "Rp70.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/6/c28e2f24-4730-4306-b0c2-5e44f770a2f9.jpg",
+                "ratingAverage": "",
+                "applink": "tokopedia://product/1981032854",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 469752802,
+                "name": "Boneka Pikachu Plushie Pilot Exclusive Jewel Pokemon Center Singapore",
+                "price": 500000,
+                "priceStr": "Rp500.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/5/11/2692619/2692619_0af3c8f3-6730-4d79-8f24-00cdb4995d16_1728_1728.jpg",
+                "ratingAverage": "",
+                "applink": "tokopedia://product/469752802",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              }
+            ]
+          },
+          {
+            "keyword": "plushie",
+            "url": "https://www.tokopedia.com/search?q=plushie&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=plushie&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 1694005698,
+                "name": "Fluffy Plushie Playmat by Sumimo - Magic World",
+                "price": 459000,
+                "priceStr": "Rp459.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/22/968b8574-021a-4a9f-a3ea-de0288a59eaa.jpg",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/1694005698",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 1911369091,
+                "name": "Genshin impact official plushie keychain Dodoco Klee - pelunasan",
+                "price": 138500,
+                "priceStr": "Rp138.500",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/6/12/73a29c51-d091-4b3b-bfe8-e20ff6828bef.jpg",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/1911369091",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 1781420935,
+                "name": "Plush Doll Happy Avocado Plushie 30 cm - 23cm",
+                "price": 100000,
+                "priceStr": "Rp100.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/10/2/2580372/2580372_9af78f15-8916-4924-b585-122901b8c49a_600_600",
+                "ratingAverage": "4.7",
+                "applink": "tokopedia://product/1781420935",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              }
+            ]
+          },
+          {
+            "keyword": "eevee",
+            "url": "https://www.tokopedia.com/search?q=eevee&source=related_keyword&st=product",
+            "applink": "tokopedia://search?q=eevee&source=related_keyword&st=product",
+            "product": [
+              {
+                "id": 410972256,
+                "name": "Pokepla No 42 Eevee",
+                "price": 110000,
+                "priceStr": "Rp110.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/2/18/868048/868048_e230d1e5-b867-4281-b652-10018000137f_878_878.jpg",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/410972256",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 378687907,
+                "name": "Nintendo Switch Pokemon Let's Go : Eevee ( Reg EUR / English )",
+                "price": 645000,
+                "priceStr": "Rp645.000",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/7/18/156344651945385/156344651945385_bf050ac1-cd7e-4a8a-b9b2-dd98543d9be5.png",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/378687907",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              },
+              {
+                "id": 473836862,
+                "name": "Takara Tomy Pokemon Figure - Eevee [READY]",
+                "price": 34900,
+                "priceStr": "Rp34.900",
+                "imageUrl": "https://images.tokopedia.net/img/cache/200-square/attachment/2019/5/15/155793319105436/155793319105436_42b83637-f771-4db1-9431-e2f1a461a734.png",
+                "ratingAverage": "5.0",
+                "applink": "tokopedia://product/473836862",
+                "shop": {
+                  "id": 3102419
+                },
+                "minOrder": 1,
+                "maxOrder": 13
+              }
+            ]
+          }
+        ]
+      },
+      "products": []
+    }
+  },
+
+  "category_filter": {
+    "filter": [
+      {
+        "title": "Olahan susu dan telur",
+        "options": [
+          {
+            "name": "Susu",
+            "key": "sc",
+            "icon": "",
+            "value": "1333",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/5/28/3944/3944_e637b7e4-ed47-4570-bbec-0358d2ba02ee.png",
+            "value": "1232",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Telur dari susu",
+            "key": "sc",
+            "icon": "https://ecs7.tokopedia.net/img/attachment/2019/12/26/77305583/77305583_0fef3b63-055a-4513-badd-d91cf636f72d.png",
+            "value": "1432",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  },
+
+  "quick_filter": {
+    "filter": [
+      {
+        "title": "Semua Susu",
+        "subTitle": "Kategori Susu",
+        "options": [
+          {
+            "name": "Susu segar",
+            "key": "sc",
+            "icon": "",
+            "value": "1324",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu biasa",
+            "key": "sc",
+            "icon": "",
+            "value": "1234",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Susu kental manis",
+            "key": "sc",
+            "icon": "",
+            "value": "1112",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Semua susu",
+            "key": "sc",
+            "icon": "",
+            "value": "1333",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Gratis Ongkir",
+        "options": [
+          {
+            "name": "Gratis Ongkir",
+            "key": "free_shipping",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Official Store",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "official",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Tukar Tambah",
+        "options": [
+          {
+            "name": "Tukar Tambah",
+            "key": "trade_in",
+            "icon": "",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Kurir Instan",
+        "options": [
+          {
+            "name": "Kurir Instan",
+            "key": "shipping",
+            "icon": "",
+            "value": "10,13",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Power Merchant",
+        "options": [
+          {
+            "name": "Power Merchant",
+            "key": "goldmerchant",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "value": "true",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  },
+
+  "searchJumper": {
+    "data": {
+      "title": "Mau belanja apa?",
+      "data": [
+        {
+          "title": "Bahan Makanan Kering",
+          "applink": "tokopedia://now/category/5000"
+        },
+        {
+          "title": "Bumbu Masakan",
+          "applink": "tokopedia://now/category/4807"
+        },
+        {
+          "title": "Daging & Seafood",
+          "applink": "tokopedia://now/category/4652"
+        },
+        {
+          "title": "Fashion",
+          "applink": "tokopedia://now/category/5061"
+        },
+        {
+          "title": "Gadget & Elektronik",
+          "applink": "tokopedia://now/category/5060"
+        },
+        {
+          "title": "Kesehatan",
+          "applink": "tokopedia://now/category/4722"
+        },
+        {
+          "title": "Makanan Jadi",
+          "applink": "tokopedia://now/category/4657"
+        },
+        {
+          "title": "Makanan Ringan",
+          "applink": "tokopedia://now/category/4681"
+        },
+        {
+          "title": "Makanan Sarapan",
+          "applink": "tokopedia://now/category/4693"
+        },
+        {
+          "title": "Mie, Pasta & Bihun",
+          "applink": "tokopedia://now/category/4666"
+        },
+        {
+          "title": "Minuman",
+          "applink": "tokopedia://now/category/5028"
+        },
+        {
+          "title": "Perawatan Tubuh & Kecantikan",
+          "applink": "tokopedia://now/category/4766"
+        },
+        {
+          "title": "Perlengkapan ibu & bayi",
+          "applink": "tokopedia://now/category/4709"
+        },
+        {
+          "title": "Perlengkapan Kebersihan",
+          "applink": "tokopedia://now/category/4737"
+        },
+        {
+          "title": "Rumah tangga",
+          "applink": "tokopedia://now/category/5026"
+        },
+        {
+          "title": "Sayur & Buah Segar",
+          "applink": "tokopedia://now/category/4858"
+        },
+        {
+          "title": "Telur & Olahan Susu",
+          "applink": "tokopedia://now/category/4809"
+        }
+      ]
+    }
+  }
+}

@@ -8,10 +8,10 @@ public class  WebSocketResponseData {
 
     @SerializedName("msg_id")
     @Expose
-    private int msgId;
+    private String msgId;
     @SerializedName("from_uid")
     @Expose
-    private int fromUid;
+    private String fromUid;
     @SerializedName("from")
     @Expose
     private String from;
@@ -20,7 +20,7 @@ public class  WebSocketResponseData {
     private String fromRole;
     @SerializedName("to_uid")
     @Expose
-    private int toUid;
+    private String toUid;
     @SerializedName("message")
     @Expose
     private Message message;
@@ -45,21 +45,20 @@ public class  WebSocketResponseData {
     @SerializedName("is_opposite")
     @Expose
     private boolean isOpposite;
+    @SerializedName("is_auto_reply")
+    @Expose
+    private boolean isAutoReply;
 
-    public int getMsgId() {
+    public boolean isAutoReply() {
+        return isAutoReply;
+    }
+
+    public String getMsgId() {
         return msgId;
     }
 
-    public void setMsgId(int msgId) {
-        this.msgId = msgId;
-    }
-
-    public int getFromUid() {
+    public String getFromUid() {
         return fromUid;
-    }
-
-    public void setFromUid(int fromUid) {
-        this.fromUid = fromUid;
     }
 
     public String getFrom() {
@@ -70,12 +69,8 @@ public class  WebSocketResponseData {
         this.from = from;
     }
 
-    public int getToUid() {
+    public String getToUid() {
         return toUid;
-    }
-
-    public void setToUid(int toUid) {
-        this.toUid = toUid;
     }
 
     public Message getMessage() {

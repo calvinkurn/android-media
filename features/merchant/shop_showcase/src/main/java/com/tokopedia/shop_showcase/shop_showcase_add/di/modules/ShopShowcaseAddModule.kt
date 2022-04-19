@@ -10,11 +10,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
-@ShopShowcaseAddScope
 @Module(includes = [ShopShowcaseAddUseCaseModule::class, ShopShowcaseAddViewModelModule::class])
 class ShopShowcaseAddModule {
     @ShopShowcaseAddScope
@@ -26,11 +22,6 @@ class ShopShowcaseAddModule {
     @ShopShowcaseAddScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
-
-    @ShopShowcaseAddScope
-    @Provides
-    @Named("Main")
-    fun provideMainDispatcherProvider(): CoroutineDispatcher = Dispatchers.Main
 
     @ShopShowcaseAddScope
     @Provides

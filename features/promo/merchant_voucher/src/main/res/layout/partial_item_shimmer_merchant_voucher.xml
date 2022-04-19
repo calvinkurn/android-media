@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_80"
-    android:layout_marginTop="@dimen/dp_6"
-    android:layout_marginBottom="@dimen/dp_6"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_2"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_2">
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="2dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,19 +23,19 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.6"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="@dimen/dp_150"
-                android:layout_height="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_height="12dp"
+                android:layout_marginBottom="6dp"
                 app:corners="@integer/corner_radius_shimmering" />
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="@dimen/dp_80"
-                android:layout_height="@dimen/dp_12"
+                android:layout_height="12dp"
                 app:corners="@integer/corner_radius_shimmering" />
         </LinearLayout>
 
@@ -43,14 +43,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             android:layout_weight="0.4"
             android:gravity="center"
             android:orientation="vertical">
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="@dimen/dp_80"
-                android:layout_height="@dimen/dp_12"
+                android:layout_height="12dp"
                 app:corners="@integer/corner_radius_shimmering" />
 
         </LinearLayout>

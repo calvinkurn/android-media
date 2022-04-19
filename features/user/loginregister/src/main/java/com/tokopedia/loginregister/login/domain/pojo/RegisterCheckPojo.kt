@@ -34,6 +34,9 @@ data class RegisterCheckData(
         @SerializedName("view")
         @Expose
         var view: String = "",
+        @SerializedName("uh")
+        @Expose
+        var useHash: Boolean = false,
         @SerializedName("errors")
         @Expose
         var errors: ArrayList<String> = arrayListOf()

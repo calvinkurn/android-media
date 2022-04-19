@@ -7,7 +7,7 @@ import android.view.View
 open class WebViewURLSpan(url: String?) : URLSpan(url){
     var listener: OnClickListener? = null
 
-    override fun onClick(widget: View?) {
+    override fun onClick(widget: View) {
         if (listener != null){
             listener?.onClick(url)
         } else {
@@ -15,9 +15,9 @@ open class WebViewURLSpan(url: String?) : URLSpan(url){
         }
     }
 
-    override fun updateDrawState(ds: TextPaint?) {
+    override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
-        ds?.isUnderlineText = listener?.showUnderline() ?: true
+        ds.isUnderlineText = listener?.showUnderline() ?: true
     }
 
     interface OnClickListener{

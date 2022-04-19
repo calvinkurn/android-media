@@ -40,7 +40,7 @@ class CatalogProductInput (
         class Validation(
                 @SerializedName("id")
                 @Expose
-                var id: Int = 0,
+                var id: String = "0",
                 @SerializedName("title")
                 @Expose
                 var title: String = "",

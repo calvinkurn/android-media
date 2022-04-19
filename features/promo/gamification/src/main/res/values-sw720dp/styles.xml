@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RewardSummary">
+        <item name="android:layout_width">420dp</item>
+        <item name="android:layout_height">716dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="GiftTapTapCampaignOverButton">
+        <item name="android:paddingLeft">@dimen/dp_50</item>
+        <item name="android:paddingStart">@dimen/dp_50</item>
+        <item name="android:paddingRight">@dimen/dp_50</item>
+        <item name="android:paddingEnd">@dimen/dp_50</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="GamiDirectView">
+        <item name="android:layout_width">448dp</item>
+    </style>
+
+    <style name="GamiDirectViewParent">
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+
+    <style name="GiftBoxReminderButton">
+        <item name="android:layout_width">350dp</item>
+    </style>
+
+</resources>

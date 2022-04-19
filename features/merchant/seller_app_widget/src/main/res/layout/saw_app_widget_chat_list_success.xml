@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawChatSuccessState"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
+    android:paddingBottom="@dimen/layout_lvl2"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/imgSawChatAppIcon"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:padding="@dimen/spacing_lvl2"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvSawChatShopName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imgSawChatAppIcon"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_toStartOf="@+id/btnSawChatRefresh"
+        android:layout_toEndOf="@+id/imgSawChatAppIcon"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700"
+        android:textSize="@dimen/unify_font_16"
+        android:textStyle="bold"
+        tools:text="Tomodachi Shop" />
+
+    <TextView
+        android:id="@+id/tvSawChatTotalChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSawChatShopName"
+        android:layout_alignStart="@+id/tvSawChatShopName"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/unify_font_10"
+        android:textStyle="bold"
+        tools:text="5 Pesanan Baru" />
+
+    <ImageView
+        android:id="@+id/icSawChatMoreChat"
+        android:layout_width="@dimen/layout_lvl1"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_alignTop="@+id/tvSawChatTotalChat"
+        android:layout_alignBottom="@+id/tvSawChatTotalChat"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_toEndOf="@+id/tvSawChatTotalChat"
+        app:srcCompat="@drawable/ic_saw_chevron_right" />
+
+    <TextView
+        android:id="@+id/tvSawChatUpdated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSawChatRefresh"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N700_44"
+        android:textSize="@dimen/unify_font_10"
+        tools:text="Diperbarui 11.00" />
+
+    <ImageButton
+        android:id="@+id/btnSawChatRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvSawChatShopName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:background="@color/transparent"
+        tools:src="@drawable/ic_saw_refresh" />
+
+    <ListView
+        android:id="@+id/lvSawChatList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/icSawChatMoreChat"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:divider="@null"
+        android:scrollbarThumbVertical="@color/Unify_N700_44"
+        tools:itemCount="4"
+        tools:listitem="@layout/saw_app_widget_chat_item" />
+</RelativeLayout>

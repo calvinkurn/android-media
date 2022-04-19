@@ -1,0 +1,121 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1638934640547",
+    "maxReplyTime": "1638958606899",
+    "block": {
+      "blockedUntil": "2021-04-03T12:07:47.598824+07:00",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "attachmentIDs": "",
+    "replyIDsAttachment": "",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 12299592,
+        "shopId": 3987128,
+        "interlocutor": false,
+        "name": "Try",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/12299592/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 39467501,
+        "shopId": 3987128,
+        "interlocutor": true,
+        "name": "Meraih mimpi",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/3987128/shop_xs_thumbnail/desktop",
+        "domain": "totokaku",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1619070591,
+          "timestampStr": "1619070591",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "8 Dec 2021",
+        "chats": [
+          {
+            "time": "12:55",
+            "replies": [
+              {
+                "msgId": 1401834176,
+                "replyId": "24186478505",
+                "senderId": 39467501,
+                "senderName": "yunitatujuh",
+                "role": "User",
+                "msg": "Uploaded Image",
+                "fraudStatus": 0,
+                "replyTime": "16389429244281000",
+                "status": 1,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "",
+                "label": "",
+                "parentReply": null,
+                "attachment": {
+                  "id": 1421387357,
+                  "type": 2,
+                  "attributes": "{\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2021/12/8/52bea03b-7475-4a46-8599-22a4ace15fb1.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/100-square/LUZQDL/2021/12/8/52bea03b-7475-4a46-8599-22a4ace15fb1.jpg\"}",
+                  "fallback": {
+                    "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003ePengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 1401834176,
+                "replyId": "24186478505",
+                "senderId": 12299592,
+                "senderName": "yunitatujuh",
+                "role": "User",
+                "msg": "Uploaded Image",
+                "fraudStatus": 0,
+                "replyTime": "1638942924424081000",
+                "status": 1,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": false,
+                "blastId": 0,
+                "source": "",
+                "label": "",
+                "parentReply": null,
+                "attachment": {
+                  "id": 1421387357,
+                  "type": 2,
+                  "attributes": "{\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2021/12/8/52bea03b-7475-4a46-8599-22a4ace15fb1.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/100-square/LUZQDL/2021/12/8/52bea03b-7475-4a46-8599-22a4ace15fb1.jpg\"}",
+                  "fallback": {
+                    "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003ePengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

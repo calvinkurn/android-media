@@ -36,4 +36,5 @@
     <string name="app_share_referral_label_desc"><![CDATA[Teman Anda juga mendapat cashback hingga Rp100.000. Bagikan kode referral ini:]]></string>
     <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
     <string name="error_apps_not_installed">Aplikasi tidak ditemukan</string>
+    <string name="referral_verify_phone_number">Verifikasi Nomor Ponsel</string>
 </resources>

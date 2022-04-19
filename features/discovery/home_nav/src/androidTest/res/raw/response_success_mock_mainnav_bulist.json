@@ -1,0 +1,58 @@
+[
+  {
+    "data": {
+      "dynamicHomeIcon": {
+        "categoryGroup": [
+          {
+            "applink": "",
+            "categoryRows": [
+              {
+                "applinks": "tokopedia://product/1234",
+                "id": 359,
+                "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2020/11/2/8965708/8965708_10423c01-434b-4030-aa1f-807698cfcd91.jpg",
+                "name": "Testing Category",
+                "url": "https://www.tokopedia.com"
+              }
+            ],
+            "id": 24,
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2020/11/2/8965708/8965708_8290086e-2c81-4af2-a896-f049994b86e9.jpg",
+            "title": "Kategori",
+            "url": ""
+          },
+          {
+            "applink": "tokopedia://travel",
+            "categoryRows": [],
+            "id": 25,
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2020/11/2/8965708/8965708_df0bd947-a2d9-4880-91f8-0072dfd4d7e5.jpg",
+            "title": "Travel",
+            "url": "www.tokopedia.com/travel"
+          },
+          {
+            "applink": "tokopedia://travel",
+            "categoryRows": [],
+            "id": 27,
+            "imageUrl": "",
+            "title": "Kategori",
+            "url": "www.tokopedia.com/travel"
+          },
+          {
+            "applink": "Testing",
+            "categoryRows": [],
+            "id": 28,
+            "imageUrl": "",
+            "title": "Testing",
+            "url": "Testing"
+          },
+          {
+            "applink": "testing://tokopedia.com",
+            "categoryRows": [],
+            "id": 29,
+            "imageUrl": "",
+            "title": "Testing 123",
+            "url": "www.testing.com"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -6,11 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/tp_margin_large" />
+    <include layout="@layout/categorylist_shimmer" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -21,12 +17,15 @@
             android:id="@+id/recycler_view_coupons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:layout_marginBottom="@dimen/tp_margin_xsmall"
+            android:background="@color/Unify_N0"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <include layout="@layout/layout_tp_network_error_large" />
+    <com.tokopedia.tokopoints.view.customview.ServerErrorView
+        android:id="@+id/server_error_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <include layout="@layout/layout_tp_empty_catalog" />
 

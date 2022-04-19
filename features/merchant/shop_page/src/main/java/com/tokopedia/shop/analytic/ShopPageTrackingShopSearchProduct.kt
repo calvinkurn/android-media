@@ -1,6 +1,12 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TOP_NAV
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_VALUE_PAGEURL
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_NAV
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_PRODUCT
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -8,36 +14,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 class ShopPageTrackingShopSearchProduct(
         trackingQueue: TrackingQueue
 ) : ShopPageTracking(trackingQueue) {
-
-    fun clickCartButton(pageName: String, keyword: String) {
-        sendEvent(
-                CLICK_TOP_NAV,
-                String.format(TOP_NAV, pageName),
-                SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON,
-                keyword,
-                null
-        )
-    }
-
-    fun clickShareButton(pageName: String, keyword: String) {
-        sendEvent(
-                CLICK_TOP_NAV,
-                String.format(TOP_NAV, pageName),
-                SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON,
-                keyword,
-                null
-        )
-    }
-
-    fun clickAutocompleteInternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
-        sendGeneralEvent(
-                CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE, keyword),
-                "",
-                customDimensionShopPage
-        )
-    }
 
     fun clickAutocompleteExternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(
@@ -59,13 +35,4 @@ class ShopPageTrackingShopSearchProduct(
         )
     }
 
-    fun typeSearch(isOwner: Boolean,keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
-        sendEvent(
-                CLICK_SHOP_PAGE,
-                getShopPageCategory(isOwner),
-                SEARCH,
-                keyword,
-                customDimensionShopPage
-        )
-    }
 }

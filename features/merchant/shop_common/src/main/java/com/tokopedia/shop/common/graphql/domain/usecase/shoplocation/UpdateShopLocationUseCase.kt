@@ -43,15 +43,15 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
                 if (!TextUtils.isEmpty(address)) {
                     variables[ADDRESS] = address
                 }
-                val districtId = requestParams.getInt(DISTRICT_ID, 0)
+                val districtId = requestParams.getLong(DISTRICT_ID, 0)
                 if (districtId > 0) {
                     variables[DISTRICT_ID] = districtId
                 }
-                val cityId = requestParams.getInt(CITY_ID, 0)
+                val cityId = requestParams.getLong(CITY_ID, 0)
                 if (cityId > 0) {
                     variables[CITY_ID] = cityId
                 }
-                val stateId = requestParams.getInt(STATE_ID, 0)
+                val stateId = requestParams.getLong(STATE_ID, 0)
                 if (stateId > 0) {
                     variables[STATE_ID] = stateId
                 }
@@ -102,16 +102,16 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         @JvmStatic
         fun createRequestParams(id: String,
                                 name: String?, address: String?,
-                                districtId: Int, cityId: Int,
-                                stateId: Int, postalCode: Int,
+                                districtId: Long, cityId: Long,
+                                stateId: Long, postalCode: Int,
                                 email: String?, phone: String?, fax: String?): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(ID, id)
             requestParams.putString(NAME, name)
             requestParams.putString(ADDRESS, address)
-            requestParams.putInt(DISTRICT_ID, districtId)
-            requestParams.putInt(CITY_ID, cityId)
-            requestParams.putInt(STATE_ID, stateId)
+            requestParams.putLong(DISTRICT_ID, districtId)
+            requestParams.putLong(CITY_ID, cityId)
+            requestParams.putLong(STATE_ID, stateId)
             requestParams.putInt(POSTAL_CODE, postalCode)
             requestParams.putString(EMAIL, email)
             requestParams.putString(PHONE, phone)

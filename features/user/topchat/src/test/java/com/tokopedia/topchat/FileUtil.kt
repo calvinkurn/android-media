@@ -5,7 +5,7 @@ import java.io.File
 import java.lang.reflect.Type
 
 object FileUtil {
-    private fun readFileContent(fileName: String): String {
+    fun readFileContent(fileName: String): String {
         val fileContent = StringBuilder()
         val filePath = javaClass.getResource(fileName)?.path
         File(filePath).forEachLine {
@@ -17,5 +17,9 @@ object FileUtil {
     fun <T> parse(fileName: String, typeOfT: Type): T {
         val stringFile = readFileContent(fileName)
         return CommonUtil.fromJson(stringFile, typeOfT)
+    }
+
+    fun <T> parseContent(content: String, typeOfT: Type): T {
+        return CommonUtil.fromJson(content, typeOfT)
     }
 }

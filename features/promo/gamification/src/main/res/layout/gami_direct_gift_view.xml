@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/GamiDirectView"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/gami_direct_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/gami_direct_view_padding"
+    tools:layout_marginBottom="@dimen/dp_25">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/gami_direct_view_image_w"
+            android:layout_height="@dimen/gami_direct_view_image_w"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/colorPrimary" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/gami_direct_view_title_start_margin"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="@integer/gami_green_gradient_btn_typography"
+            tools:text="Hadiah Langsung" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gami_direct_view_tvMessage_top_margin"
+            android:textColor="@color/gf_white_66"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:typographyType="@integer/gami_direct_view_tvMessage_typography"
+            tools:text="Untuk pengguna baru, aktif dan dikangen yang telah disesuaikan dengan persona kamu. " />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.gamification.giftbox.presentation.views.GreenGradientButton
+        android:id="@+id/greenBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gami_direct_view_cta_top_margin" />
+</LinearLayout>

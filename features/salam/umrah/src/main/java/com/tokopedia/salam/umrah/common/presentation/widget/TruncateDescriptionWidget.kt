@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.salam.umrah.R
 import kotlinx.android.synthetic.main.widget_truncate_desc.view.*
 

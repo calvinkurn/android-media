@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName
  * @author by furqan on 18/02/19
  */
 class TravelTickerAttribute(
-        @SerializedName("Title")
+        @SerializedName("title")
         @Expose
         val title: String = "",
-        @SerializedName("Message")
+        @SerializedName("message")
         @Expose
         val message: String = "",
-        @SerializedName("URL")
+        @SerializedName("url")
         @Expose
         val url: String = "",
         @SerializedName("Type")
@@ -28,7 +28,7 @@ class TravelTickerAttribute(
         @SerializedName("StartTime")
         @Expose
         val startTime: String = "",
-        @SerializedName("Instances")
+        @SerializedName("Instance")
         @Expose
         val instances: Int = 0,
         @SerializedName("Device")

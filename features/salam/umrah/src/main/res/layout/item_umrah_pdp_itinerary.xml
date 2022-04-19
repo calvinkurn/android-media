@@ -10,8 +10,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tg_umrah_pdp_itinerary_title"
         app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_itinerary_title"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="@dimen/spacing_lvl3"
+        android:layout_height="@dimen/spacing_lvl3"
         android:background="@drawable/umrah_ic_pdp_itinerary_bullet"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,8 +24,8 @@
         app:typographyWeight="bold"
         app:typographyType="body_3"
         tools:text="Hari 1"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12" />
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_12" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_umrah_pdp_itinerary_line"
@@ -33,8 +33,8 @@
         app:layout_constraintRight_toRightOf="@+id/ic_umrah_pdp_itinerary_bullet"
         app:layout_constraintTop_toTopOf="@+id/tg_umrah_pdp_itinerary_desc"
         app:layout_constraintBottom_toBottomOf="@+id/tg_umrah_pdp_itinerary_desc"
-        android:layout_width="@dimen/dp_2"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/unify_space_0"
         android:background="@drawable/umrah_img_pdp_itinerary_line" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -44,10 +44,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_pdp_itinerary_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         tools:text="Berkumpul di Bandara Soekarno Hatta Jakarta, kemudian Berangkat dari CGK - JED."
         android:textColor="@color/Neutral_N700_68"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="17dp" />
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingBottom="@dimen/spacing_lvl4" />
 </androidx.constraintlayout.widget.ConstraintLayout>

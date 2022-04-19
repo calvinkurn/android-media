@@ -26,4 +26,17 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="ThemeSpinner">
+        <!-- Color when pressed -->
+        <item name="colorAccent">#ebeae8</item>
+        <!-- Default color for the dropdown arrow and line -->
+        <item name="colorControlNormal">#ebeae8</item>
+    </style>
+    <style name="TextInputLayouts">
+        <item name="colorControlNormal">@color/Neutral_N100</item>
+        <item name="colorControlActivated">@color/Green_G500</item>
+    </style>
+    <style name="TextInputLayoutHintText" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">1sp</item>
+    </style>
 </resources>

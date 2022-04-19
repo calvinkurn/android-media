@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_seller_menu_main_info_loading" />
+
+    <include layout="@layout/setting_shop_status_shimmer" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_divider_thin"
+        android:background="@color/Unify_N0" />
+
+    <include layout="@layout/setting_balance_loading" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_divider_thick" />
+</LinearLayout>

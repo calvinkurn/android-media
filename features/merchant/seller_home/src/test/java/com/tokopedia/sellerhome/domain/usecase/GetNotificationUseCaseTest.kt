@@ -1,12 +1,10 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.utils.TestHelper
-import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
-import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
 import io.mockk.MockKAnnotations
@@ -52,13 +50,13 @@ class GetNotificationUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetNotificationsResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val actualNotification = getNotificationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(getExpectedNotification(), actualNotification)
@@ -69,14 +67,14 @@ class GetNotificationUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetNotificationsResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val actualNotification: NotificationUiModel? = getNotificationUseCase.executeOnBackground()
+        val actualNotification: NotificationUiModel = getNotificationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(actualNotification)
@@ -84,20 +82,11 @@ class GetNotificationUseCaseTest {
 
     private fun getExpectedNotification(): NotificationUiModel {
         return NotificationUiModel(
-                chat = NotificationChatUiModel(
-                        unreads = 3,
-                        unreadsSeller = 0,
-                        unreadsUser = 3
-                ),
-                notifCenterUnread = NotificationCenterUnreadUiModel(
-                        notifUnread = "0",
-                        notifUnreadInt = 0
-                ),
+                chat = 0,
+                notifCenterUnread = 0,
                 sellerOrderStatus = NotificationSellerOrderStatusUiModel(
-                        arriveAtDestination = 0,
                         newOrder = 16,
-                        readyToShip = 10,
-                        shipped = 146
+                        readyToShip = 10
                 )
         )
     }

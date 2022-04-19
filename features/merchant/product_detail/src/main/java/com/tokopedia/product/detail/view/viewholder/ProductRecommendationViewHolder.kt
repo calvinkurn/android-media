@@ -1,66 +1,145 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.databinding.ItemDynamicRecommendationBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.AnnotationFilterDiffUtil
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
-import kotlinx.android.synthetic.main.item_dynamic_recommendation.view.*
+import com.tokopedia.unifyprinciples.Typography
 
-class ProductRecommendationViewHolder(private val view: View,
-                                      private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
+class ProductRecommendationViewHolder(
+      private val view: View,
+      private val listener: DynamicProductDetailListener)
+: AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_dynamic_recommendation
     }
 
+    private val binding = ItemDynamicRecommendationBinding.bind(view)
+
+    private var annotationChipAdapter: AnnotationChipFilterAdapter? = null
+
     override fun bind(element: ProductRecommendationDataModel) {
-        view.rvProductRecom.gone()
-        view.visible()
-        view.loadingRecom.visible()
-        element.recomWidgetData?.run {
+        val tvSubtitleRecom: Typography? = itemView.findViewById(R.id.subtitleRecom)
+        val recomHeaderContainer: ConstraintLayout? = itemView.findViewById(R.id.pdp_recom_header_container)
 
-            view.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
+        if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
+            binding.rvProductRecom.gone()
+            view.visible()
+            binding.loadingRecom.visible()
+        } else {
+            element.recomWidgetData?.run {
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
+                if (annotationChipAdapter == null && element.filterData?.isNotEmpty() == true) {
+                    annotationChipAdapter = AnnotationChipFilterAdapter(object : AnnotationChipListener {
+                        override fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int) {
+                            annotationChipAdapter?.submitList(
+                                    element.filterData?.map {
+                                        it.copy(
+                                                recommendationFilterChip = it.recommendationFilterChip.copy(
+                                                        isActivated =
+                                                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                                                && !annotationChip.recommendationFilterChip.isActivated
+                                                )
+                                        )
+                                    } ?: listOf()
+                            )
+                            listener.onChipFilterClicked(element, annotationChip.copy(
+                                    recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                            isActivated = !annotationChip.recommendationFilterChip.isActivated
+                                    )), adapterPosition, position
+                            )
+                            binding.loadingRecom.show()
+                            binding.rvProductRecom.hide()
+                            binding.rvProductRecom.recycle()
+                        }
+                    })
+                    binding.chipFilterRecyclerview.adapter = annotationChipAdapter
+                }
+                annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                initAdapter(element, this, element.cardModel, getComponentTrackData(element))
 
-            view.loadingRecom.gone()
-            view.titleRecom.text = title
-            view.rvProductRecom.show()
-            if (seeMoreAppLink.isNotEmpty()) {
-                view.seeMoreRecom.show()
-            } else {
-                view.seeMoreRecom.hide()
+                binding.titleRecom.text = title
+                handleSubtitlePosition(
+                    recomSubtitle = subtitle,
+                    channelTitleContainer = recomHeaderContainer,
+                    tvSubtitleRecom = tvSubtitleRecom
+                )
+                if (seeMoreAppLink.isNotEmpty()) {
+                    binding.seeMoreRecom.show()
+                } else {
+                    binding.seeMoreRecom.hide()
+                }
+
+                binding.seeMoreRecom.setOnClickListener {
+                    element.recomWidgetData?.let {
+                        listener.onSeeAllRecomClicked(it, pageName, seeMoreAppLink + (element.filterData?.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip?.value
+                                ?: ""), getComponentTrackData(element))
+                    }
+                }
             }
-            view.seeMoreRecom.setOnClickListener {
-                listener.onSeeAllRecomClicked(pageName, seeMoreAppLink, getComponentTrackData(element))
-            }
-            initAdapter(this, element.cardModel, getComponentTrackData(element))
+            binding.baseRecom.show()
         }
     }
 
-    private fun initAdapter(product: RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
-        view.rvProductRecom.bindCarouselProductCardViewGrid(
+    override fun bind(element: ProductRecommendationDataModel?, payloads: MutableList<Any>) {
+        when ((payloads.firstOrNull() as? Int)) {
+            ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM -> {
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                    annotationChipAdapter?.submitList(element.filterData ?: listOf())
+                    binding.loadingRecom.gone()
+                    binding.rvProductRecom.show()
+                }
+            }
+            ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW -> {
+                element?.recomWidgetData?.let {
+                    initAdapter(element, it, element.cardModel, getComponentTrackData(element))
+                }
+            }
+        }
+    }
+
+    private fun initAdapter(element: ProductRecommendationDataModel, product:RecommendationWidget, cardModel: List<ProductCardModel>?, componentTrackDataModel: ComponentTrackDataModel) {
+
+        binding.rvProductRecom.bindCarouselProductCardViewGrid(
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
+                showSeeMoreCard = product.seeMoreAppLink.isNotBlank(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsClickUrl)
+                            listener.sendTopAdsClick(topAdsClickUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
-                        listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
+                        listener.eventRecommendationClick(productRecommendation, annotationChipAdapter?.getSelectedChip()?.value ?: "", carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
 
                         view.context?.run {
                             RouteManager.route(this,
@@ -78,24 +157,122 @@ class ProductRecommendationViewHolder(private val view: View,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsImageUrl = productRecommendation.trackerImageUrl
                         if (productCardModel.isTopAds) {
-                            listener.sendTopAds(topAdsImageUrl)
+                            listener.sendTopAdsImpression(topAdsImageUrl, productRecommendation.productId.toString(), productRecommendation.name, productRecommendation.imageUrl)
                         }
 
                         listener.eventRecommendationImpression(productRecommendation,
+                                annotationChipAdapter?.getSelectedChip()?.value ?: "",
                                 carouselProductCardPosition,
                                 product.pageName,
                                 product.title, componentTrackDataModel)
                     }
                 },
-                productCardModelList = cardModel?.toMutableList() ?: listOf())
+                carouselSeeMoreClickListener = object : CarouselProductCardListener.OnSeeMoreClickListener{
+                    override fun onSeeMoreClick() {
+                        element.recomWidgetData?.let {
+                            listener.onSeeAllRecomClicked(it, product.pageName, product.seeMoreAppLink, getComponentTrackData(element))
+                        }
+                    }
+                },
+                productCardModelList = cardModel?.toMutableList() ?: listOf(),
+                carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener {
+                    override fun onATCNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, binding.rvProductRecom.getCurrentPosition())
+
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        productRecommendation.onCardQuantityChanged(quantity)
+                        listener.onRecomAddToCartNonVariantQuantityChangedClick(
+                                recomItem = productRecommendation,
+                                quantity = quantity,
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
+                    override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        listener.getRecommendationCarouselSavedState().put(adapterPosition, binding.rvProductRecom.getCurrentPosition())
+
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onRecomAddVariantClick(
+                                recomItem = productRecommendation,
+                                adapterPosition = adapterPosition,
+                                itemPosition = carouselProductCardPosition)
+                    }
+                },
+                finishCalculate = {
+                    binding.rvProductRecom.show()
+                    binding.loadingRecom.gone()
+                })
     }
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
 
+    private fun handleSubtitlePosition(recomSubtitle: String?, channelTitleContainer: ConstraintLayout?, tvSubtitleRecom: Typography?) {
+        if (recomSubtitle?.isNotEmpty() == true) {
+            tvSubtitleRecom?.text = recomSubtitle
+            tvSubtitleRecom?.visible()
+        } else {
+            tvSubtitleRecom?.text = ""
+            tvSubtitleRecom?.gone()
+        }
+
+        if (recomSubtitle?.isEmpty() == true) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.TOP, R.id.titleRecom, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.BOTTOM, R.id.titleRecom, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        } else {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(channelTitleContainer)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.TOP, R.id.subtitleRecom, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.seeMoreRecom, ConstraintSet.BOTTOM, R.id.subtitleRecom, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(channelTitleContainer)
+        }
+    }
+
     override fun onViewRecycled() {
-        listener.getRecommendationCarouselSavedState().put(adapterPosition, view.rvProductRecom.getCurrentPosition())
-        itemView.rvProductRecom?.recycle()
+        listener.getRecommendationCarouselSavedState().put(adapterPosition, binding.rvProductRecom.getCurrentPosition())
+        binding.rvProductRecom.recycle()
         super.onViewRecycled()
+    }
+
+    internal class AnnotationChipFilterAdapter (private val listener: AnnotationChipListener): RecyclerView.Adapter<ProductRecommendationAnnotationChipViewHolder>(){
+        private val annotationList = mutableListOf<AnnotationChip>()
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductRecommendationAnnotationChipViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(ProductRecommendationAnnotationChipViewHolder.LAYOUT, parent, false)
+            return ProductRecommendationAnnotationChipViewHolder(view, listener)
+        }
+
+        override fun getItemCount(): Int = annotationList.size
+
+        override fun onBindViewHolder(holder: ProductRecommendationAnnotationChipViewHolder, position: Int) {
+            holder.bind(annotationList[position])
+        }
+
+        override fun onBindViewHolder(holder: ProductRecommendationAnnotationChipViewHolder, position: Int, payloads: MutableList<Any>) {
+            if(payloads.isNotEmpty()) holder.bind(annotationList[position], payloads)
+            else super.onBindViewHolder(holder, position, payloads)
+        }
+
+        fun submitList(list: List<AnnotationChip>){
+            val diffCallback = AnnotationFilterDiffUtil(annotationList.toMutableList(), list)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+            annotationList.clear()
+            annotationList.addAll(list)
+            diffResult.dispatchUpdatesTo(this)
+        }
+
+        fun getSelectedChip() = annotationList.find { it.recommendationFilterChip.isActivated }?.recommendationFilterChip
+    }
+    interface AnnotationChipListener{
+        fun onFilterAnnotationClicked(annotationChip: AnnotationChip, position: Int)
     }
 }

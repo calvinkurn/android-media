@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
  */
 interface AdapterDelegate<T> {
 
-    fun isForViewType(itemList: List<T>, position: Int): Boolean
+    fun isForViewType(itemList: List<T>, position: Int, isFlexibleType: Boolean): Boolean
 
     fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
 

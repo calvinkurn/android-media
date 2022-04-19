@@ -1,28 +1,22 @@
 package com.tokopedia.buyerorder.detail.view.presenter;
 
 import android.content.Context;
-import android.content.Intent;
-import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
-import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
+import com.tokopedia.buyerorder.detail.data.ConditionalInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
-import com.tokopedia.buyerorder.detail.data.DriverDetails;
-import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
-import com.tokopedia.buyerorder.detail.data.OrderToken;
+import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
+import com.tokopedia.buyerorder.detail.data.PaymentData;
 import com.tokopedia.buyerorder.detail.data.Pricing;
-import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.list.data.ConditionalInfo;
-import com.tokopedia.buyerorder.list.data.PaymentData;
 
 import java.util.List;
 
@@ -33,6 +27,8 @@ import java.util.List;
 public interface OrderListDetailContract {
 
     interface View extends CustomerView {
+        void setDetailsData(OrderDetails details);
+
         void setStatus(Status status);
 
         void setConditionalInfo(ConditionalInfo conditionalInfo);
@@ -41,17 +37,13 @@ public interface OrderListDetailContract {
 
         void setInvoice(Invoice invoice);
 
-        void setOrderToken(OrderToken orderToken);
-
         void setDetail(Detail detail);
 
         void setAdditionalInfo(AdditionalInfo additionalInfo);
 
-        void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url);
+        void setPricing(Pricing pricing, Boolean isCategoryEvent);
 
-        void setPricing(Pricing pricing);
-
-        void setPaymentData(PaymentData paymentData);
+        void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent);
 
         void setContactUs(ContactUs contactUs, String helpLink);
 
@@ -65,19 +57,13 @@ public interface OrderListDetailContract {
 
         void setActionButtonsVisibility(int topBtnVisibility, int bottomBtnVisibility);
 
-        void setItems(List<Items> items, boolean isTradeIn);
-
-        Context getAppContext();
+        void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails);
 
         Context getActivity();
 
-        void setPayMethodInfo(PayMethod payMethod);
+        void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent);
 
         void setButtonMargin();
-
-        void showDropshipperInfo(DropShipper dropShipper);
-
-        void showDriverInfo(DriverDetails driverDetails);
 
         void showProgressBar();
 
@@ -85,39 +71,31 @@ public interface OrderListDetailContract {
 
         void setActionButtons(List<ActionButton> actionButtons);
 
-        void setShopInfo(ShopInfo shopInfo);
-
-        void showReplacementView(List<String> reasons);
-
-        void finishOrderDetail();
-
-        void showSucessMessage(String message);
-
         void showSuccessMessageWithAction(String message);
-
-        void showErrorMessage(String message);
-
-        void clearDynamicViews();
-
-        void askPermission();
 
         void setRecommendation(Object object);
 
+        void setActionButtonLayoutClickable(Boolean isClickable);
+
+        void setActionButtonText(String txt);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString);
+        void setOrderDetailsContent(String orderId, String orderCategory, String upstream);
 
-        void setActionButton(List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
+        void getActionButtonGql(String query, List<ActionButton> actionButtons, ActionInterface view, int position, boolean flag);
 
-        List<ActionButton> getActionList();
+        void hitEventEmail(ActionButton actionButton, String metadata);
 
-        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
+        void onLihatInvoiceButtonClick(String invoiceUrl);
 
-        void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
+        void onCopyButtonClick(String copiedValue);
 
-        void assignInvoiceDataTo(Intent intent);
+        void onActionButtonClick(String buttonId, String buttonName);
 
+        String getOrderCategoryName();
+
+        String getOrderProductName();
     }
 
     interface ActionInterface {

@@ -15,7 +15,8 @@
         android:id="@+id/tv_umrah_home_page_bottom_sheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_marginTop="@dimen/fontSize_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:text="@string/umrah_home_page_search_spinner_price_label"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,13 +27,12 @@
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radio_umrah_home_page_bottom_sheet"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="@dimen/spacing_lvl6"
+        android:layout_height="@dimen/spacing_lvl6"
         android:clickable="false"
         app:layout_constraintBottom_toBottomOf="@+id/tv_umrah_home_page_bottom_sheet"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_umrah_home_page_bottom_sheet" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

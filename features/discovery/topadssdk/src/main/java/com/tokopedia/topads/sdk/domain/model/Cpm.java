@@ -23,6 +23,9 @@ public class Cpm implements Parcelable {
     private static final String KEY_URI = "uri";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_CTA_TEXT = "button_text";
+    private static final String KEY_LAYOUT = "layout";
+    private static final String KEY_POSITION = "position";
+    private static final String KEY_WIDGET_TITLE = "widget_title";
 
     @SerializedName(KEY_TEMPLATE_ID)
     private int templateId;
@@ -42,6 +45,15 @@ public class Cpm implements Parcelable {
     private CpmShop cpmShop;
     @SerializedName(KEY_CTA_TEXT)
     private String cta = "";
+    @SerializedName(KEY_LAYOUT)
+    private int layout = 0;
+    @SerializedName(KEY_POSITION)
+    private int position = 0;
+    @SerializedName(KEY_WIDGET_TITLE)
+    private String widgetTitle = "";
+
+    public Cpm() {
+    }
 
     public Cpm(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TEMPLATE_ID)){
@@ -74,6 +86,15 @@ public class Cpm implements Parcelable {
         if(!object.isNull(KEY_CTA_TEXT)) {
             setCta(object.getString(KEY_CTA_TEXT));
         }
+        if(!object.isNull(KEY_LAYOUT)) {
+            setLayout(object.getInt(KEY_LAYOUT));
+        }
+        if(!object.isNull(KEY_POSITION)) {
+            setPosition(object.getInt(KEY_POSITION));
+        }
+        if(!object.isNull(KEY_WIDGET_TITLE)){
+            setWidgetTitle(object.getString(KEY_WIDGET_TITLE));
+        }
     }
 
     protected Cpm(Parcel in) {
@@ -84,8 +105,11 @@ public class Cpm implements Parcelable {
         promotedText = in.readString();
         uri = in.readString();
         decription = in.readString();
+        widgetTitle = in.readString();
         cpmShop = in.readParcelable(CpmShop.class.getClassLoader());
         cta = in.readString();
+        layout = in.readInt();
+        position = in.readInt();
     }
 
     @Override
@@ -97,8 +121,11 @@ public class Cpm implements Parcelable {
         dest.writeString(promotedText);
         dest.writeString(uri);
         dest.writeString(decription);
+        dest.writeString(widgetTitle);
         dest.writeParcelable(cpmShop, flags);
         dest.writeString(cta);
+        dest.writeInt(layout);
+        dest.writeInt(position);
     }
 
     @Override
@@ -188,5 +215,29 @@ public class Cpm implements Parcelable {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
+    }
+
+    public int getLayout() {
+        return this.layout;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return this.position;
+    }
+
+    public String getWidgetTitle() {
+        return widgetTitle;
+    }
+
+    public void setWidgetTitle(String widgetTitle) {
+        this.widgetTitle = widgetTitle;
     }
 }

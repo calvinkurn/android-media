@@ -1,10 +1,8 @@
 package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.view.MenuItem
-import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
@@ -53,7 +51,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
             deepLinkCategoryName = it
         }
         super.onCreate(savedInstanceState)
-        setupToolbar(toolbarName)
     }
 
     override fun startPerformanceMonitoring() {
@@ -71,20 +68,14 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         getActivityTrackingQueue().sendAll()
     }
 
-    private fun setupToolbar(toolbarTitle: String) {
-        toolbar_top.contentInsetStartWithNavigation = 0
-        val titleStr = SpannableStringBuilder(toolbarTitle)
-        titleStr.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        super.setupLayout(savedInstanceState)
+        toolbar.setNavigationIcon(R.drawable.cat_ic_action_back)
+        updateTitle(toolbarName)
+    }
 
-        setSupportActionBar(toolbar_top)
-
-        supportActionBar?.let {
-            it.setHomeButtonEnabled(true)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back))
-            it.title = titleStr
-        }
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
     }
 
     override fun setupFragment(savedInstance: Bundle?) {

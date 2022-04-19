@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
  * @author : Steven 2019-08-08
  */
 
-@ChatListScope
 @Module
 class ChatListSettingModule {
     @Provides
@@ -24,9 +23,4 @@ class ChatListSettingModule {
     @ChatListScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @ChatListScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
 }

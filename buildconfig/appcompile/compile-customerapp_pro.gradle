@@ -1,0 +1,4 @@
+// Sort alphabetically by name
+includeDynamicFeatureIfEnabled("customerapp_pro")
+includeIfEnabled("customerapp_pro")
+includeIfEnabled("features:common:feedback_form")

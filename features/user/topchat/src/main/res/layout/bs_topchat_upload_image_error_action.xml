@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_topchat_retry_send_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_16"
+        android:text="@string/title_topchat_resend" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_topchat_delete_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_16"
+        android:text="@string/title_topchat_delete" />
+</LinearLayout>

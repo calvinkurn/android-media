@@ -13,6 +13,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.presentation.widget.TruncateDescriptionWidget
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragment.Companion.EXTRA_SLUGNAME
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelInfoViewModel
@@ -66,7 +67,7 @@ class UmrahTravelAgentInfoFragment : BaseDaggerFragment(), TruncateDescriptionWi
     private fun requestData() {
         slugName?.let {
             umrahTravelInfoViewModel.requestTravelData(
-                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
+                    UmrahQuery.UMRAH_TRAVEL_BY_SLUGNAME, it)
         }
     }
 

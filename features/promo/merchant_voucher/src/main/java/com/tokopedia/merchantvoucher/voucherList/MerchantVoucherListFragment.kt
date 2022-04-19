@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,8 +84,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         presenter.getVoucherList(voucherShopId)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        val recyclerView: RecyclerView = super.getRecyclerView(view)
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        val recyclerView: RecyclerView? = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
         }
@@ -212,7 +211,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
             snackbar.setAction(activity!!.getString(R.string.close)) { snackbar.dismiss() }
-            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             snackbar.show()
         }
     }

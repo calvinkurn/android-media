@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/productDetail"
+        layout="@layout/product_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/productInfoShimmer"
+        layout="@layout/product_detail_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/productDetail" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/payLaterBorder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pay_later_divider_height_dp_1"
+        android:background="@color/Unify_NN200"
+        app:layout_constraintTop_toBottomOf="@id/productInfoShimmer" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayLaterSimulation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/pay_later_margin_dp_10"
+        android:paddingEnd="@dimen/pay_later_margin_dp_10"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
+        tools:itemCount="4"
+        tools:listitem="@layout/paylater_simulation_tenure_item" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayLaterOption"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation"
+        tools:itemCount="6"
+        tools:listitem="@layout/paylater_partner_card_item" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/payLaterSimulationGlobalError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterSimulation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

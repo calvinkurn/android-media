@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.notifcenter.widget.NotificationConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_container"
+    style="@style/BaseNotification_Container">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        style="@style/BaseNotification_Icon"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_type"
+        style="@style/BaseNotification_Type"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_icon"
+        tools:text="Promo" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_time"
+        style="@style/BaseNotification_Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="23 Jam" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_title"
+        style="@style/BaseNotification_Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_type"
+        tools:text="Semakin lancar dengan Power Merchant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_notification_desc"
+        style="@style/BaseNotification_Desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintTop_toBottomOf="@+id/txt_notification_title"
+        tools:text="@string/lorem" />
+
+    <com.tokopedia.notifcenter.widget.CarouselProductRecyclerView
+        android:id="@+id/rv_carousel_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/notif_dp_6"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/notif_dp_42"
+        android:paddingEnd="@dimen/notif_dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_notification_desc"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+</com.tokopedia.notifcenter.widget.NotificationConstraintLayout>

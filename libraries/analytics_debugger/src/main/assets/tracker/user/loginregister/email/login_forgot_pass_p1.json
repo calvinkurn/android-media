@@ -1,0 +1,13 @@
+{
+  "readme": "P1#LOGINREGISTER - Login page",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "clickLogin",
+      "eventCategory": "login page",
+      "eventAction": "click on lupa kata sandi",
+      "sessionIris": ".*",
+      "eventLabel": ""
+    }
+  ]
+}

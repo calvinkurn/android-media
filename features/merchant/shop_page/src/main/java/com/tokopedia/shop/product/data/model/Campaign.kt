@@ -23,5 +23,17 @@ data class Campaign(
 
         @SerializedName("original_price_fmt")
         @Expose
-        val originalPriceFmt: String = ""
+        val originalPriceFmt: String = "",
+
+        @SerializedName("is_upcoming")
+        @Expose
+        val isUpcoming: Boolean = false,
+
+        @SerializedName("stock_sold_percentage")
+        @Expose
+        val stockSoldPercentage: Float = 0f,
+
+        @SerializedName("hide_gimmick")
+        @Expose
+        val hideGimmick: Boolean = false
 )

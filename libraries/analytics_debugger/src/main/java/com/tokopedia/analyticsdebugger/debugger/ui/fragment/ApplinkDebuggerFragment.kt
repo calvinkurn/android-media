@@ -1,6 +1,5 @@
 package com.tokopedia.analytics.debugger.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
@@ -81,7 +80,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
         val component = DaggerAnalyticsDebuggerComponent
                 .builder()
                 .baseAppComponent(
-                        (activity!!.application as BaseMainApplication).baseAppComponent
+                        (requireActivity().application as BaseMainApplication).baseAppComponent
                 ).build()
 
         injectToFragment(component)

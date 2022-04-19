@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="travel_subhomepage_shimmering_corner">16</integer>
+    <integer name="section_shimmering_corner">16</integer>
+    <integer name="banner_image_corner">8</integer>
 </resources>

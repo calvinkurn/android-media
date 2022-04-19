@@ -2,20 +2,33 @@ package com.tokopedia.carouselproductcard
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnAddVariantClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemAddToCartListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemThreeDotsClickListener
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnSeeMoreClickListener
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
-import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
-import kotlinx.coroutines.*
+import com.tokopedia.unifycomponents.BaseCustomView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
-class CarouselProductCardView : BaseCustomView, CoroutineScope {
+class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductCardInternalListener {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
@@ -23,8 +36,12 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
     private val masterJob = SupervisorJob()
+    override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
     override val coroutineContext = masterJob + Dispatchers.Main
+    private val carouselProductCardRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.carouselProductCardRecyclerView)
+    }
 
     constructor(context: Context): super(context) {
         init(null)
@@ -75,25 +92,33 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             productCardModelList: List<ProductCardModel>,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             scrollToPosition: Int = 0,
+            showSeeMoreCard: Boolean = false,
             carouselProductCardOnItemClickListener: OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
-            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
+            finishCalculate: (() -> Unit)? = null,
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(true)
+        initBindCarousel(true, recyclerViewPool)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener
+                carouselProductCardOnItemThreeDotsClickListener,
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
+                carouselSeeMoreClickListener
         )
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, scrollToPosition, true)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, showSeeMoreCard, scrollToPosition, true, finishCalculate)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -101,18 +126,23 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun initBindCarousel(isGrid: Boolean) {
+    private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?) {
         initLayoutManager()
 
         if (isGrid) initGridAdapter()
         else initListAdapter()
+        initRecyclerView(recyclerViewPool)
     }
 
     private fun createCarouselProductCardListenerInfo(
             carouselProductCardOnItemClickListener: OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
-            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null)
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
+    )
     : CarouselProductCardListenerInfo {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
@@ -121,6 +151,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
+        carouselProductCardListenerInfo.onSeeMoreClickListener = carouselSeeMoreClickListener
+        carouselProductCardListenerInfo.onATCNonVariantClickListener = carouselProductCardATCNonVariantClickListener
+        carouselProductCardListenerInfo.onAddVariantClickListener = carouselProductCardAddVariantClickListener
 
         return carouselProductCardListenerInfo
     }
@@ -130,39 +163,54 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapter = CarouselProductCardGridAdapter()
+        carouselProductCardAdapter = CarouselProductCardGridAdapter(this)
     }
 
     private fun initListAdapter() {
-        carouselProductCardAdapter = CarouselProductCardListAdapter()
+        carouselProductCardAdapter = CarouselProductCardListAdapter(this)
     }
 
     private suspend fun tryBindCarousel(
             productCardModelList: List<ProductCardModel>,
             carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
-            recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            showSeeMoreCard: Boolean = false,
             scrollToPosition: Int = 0,
-            isGrid: Boolean
+            isGrid: Boolean,
+            finishCalculate: (() -> Unit)? = null
     ) {
-        initRecyclerView(productCardModelList, recyclerViewPool, isGrid)
-        submitList(productCardModelList, carouselProductCardListenerInfo)
+        carouselProductCardRecyclerView?.setHeightBasedOnProductCardMaxHeight(productCardModelList, isGrid)
+        submitList(productCardModelList, showSeeMoreCard, carouselProductCardListenerInfo)
         scrollCarousel(scrollToPosition)
+        finishCalculate?.invoke()
     }
 
     private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        return object: LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
+            override fun requestChildRectangleOnScreen(
+                    parent: RecyclerView,
+                    child: View,
+                    rect: Rect,
+                    immediate: Boolean,
+                    focusedChildVisible: Boolean
+            ): Boolean {
+                return if ((child as? ViewGroup)?.focusedChild is CardView) {
+                    false
+                } else super.requestChildRectangleOnScreen(
+                        parent,
+                        child,
+                        rect,
+                        immediate,
+                        focusedChildVisible
+                )
+            }
+        }
     }
 
-    private suspend fun initRecyclerView(
-            productCardModelList: List<ProductCardModel>,
-            recyclerViewPool: RecyclerView.RecycledViewPool?,
-            isGrid: Boolean
-    ) {
+    private fun initRecyclerView(recyclerViewPool: RecyclerView.RecycledViewPool?) {
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
         carouselProductCardRecyclerView?.itemAnimator = null
         carouselProductCardRecyclerView?.setHasFixedSize(true)
         carouselProductCardRecyclerView?.adapter = carouselProductCardAdapter?.asRecyclerViewAdapter()
-        carouselProductCardRecyclerView?.setHeightBasedOnProductCardMaxHeight(productCardModelList, isGrid)
 
         recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
 
@@ -184,7 +232,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>, isGrid: Boolean): Int {
         return if (isGrid) {
-            val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.carousel_product_card_grid_width)
+            val productCardWidth = context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
             productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
         }
         else {
@@ -192,13 +240,22 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun submitList(productCardModelList: List<ProductCardModel>, carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
-        carouselProductCardAdapter?.submitCarouselProductCardModelList(productCardModelList.map {
+    private fun submitList(
+            productCardModelList: List<ProductCardModel>,
+            showSeeMoreCard: Boolean = false,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
+    ) {
+        val carouselList = productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
-                    carouselProductCardListenerInfo = carouselProductCardListenerInfo
+                    carouselProductCardListenerInfo = carouselProductCardListenerInfo,
             )
-        })
+        }.toMutableList<BaseCarouselCardModel>()
+
+        if (showSeeMoreCard)
+            carouselList.add(CarouselSeeMoreCardModel(carouselProductCardListenerInfo))
+
+        carouselProductCardAdapter?.submitCarouselProductCardModelList(carouselList)
     }
 
     private fun scrollCarousel(scrollToPosition: Int) {
@@ -219,23 +276,30 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
+            carouselProductCardOnItemATCNonVariantClickListener: OnATCNonVariantClickListener? = null,
+            carouselProductCardOnItemAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            showSeeMoreCard: Boolean = false,
             scrollToPosition: Int = 0
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(false)
+        initBindCarousel(false, recyclerViewPool)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener
+                carouselProductCardOnItemThreeDotsClickListener,
+                carouselProductCardOnItemATCNonVariantClickListener,
+                carouselProductCardOnItemAddVariantClickListener,
+                carouselSeeMoreClickListener,
         )
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, scrollToPosition, false)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, showSeeMoreCard, scrollToPosition, false)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()

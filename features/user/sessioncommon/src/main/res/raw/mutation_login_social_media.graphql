@@ -13,5 +13,10 @@ mutation login_social_media($grant_type: String!, $social_type: String!, $access
       message
     }
     event_code
+    popup_error {
+      header
+      body
+      action
+    }
   }
 }

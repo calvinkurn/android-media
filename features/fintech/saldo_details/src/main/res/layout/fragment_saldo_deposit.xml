@@ -8,15 +8,16 @@
         android:id="@+id/sp_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="@dimen/dp_0">
+        app:elevation="@dimen/unify_space_0">
 
-        <include
+        <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/layout_holdwithdrawl_dialog"
-            layout="@layout/layout_holdwithdrawl_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_scrollFlags="scroll" />
+            app:layout_scrollFlags="scroll"
+            app:tickerType="warning"
+            app:tickerShapeType="full" />
 
         <include
             android:id="@+id/deposit_header_layout"
@@ -31,11 +32,9 @@
         android:id="@+id/saldo_history_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dp_1"
-        android:layout_marginLeft="@dimen/dp_1"
-        android:layout_marginEnd="@dimen/dp_1"
-        android:layout_marginRight="@dimen/dp_1"
-        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginStart="@dimen/sd_dp_1"
+        android:layout_marginEnd="@dimen/sd_dp_1"
+        android:layout_marginBottom="@dimen/unify_space_4"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

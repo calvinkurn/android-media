@@ -1,0 +1,84 @@
+{
+  "readme": "Tokopedia NOW Search Broad Match Tracking",
+  "mode": "exact",
+  "query" : [
+    {
+      "event": "view_item_list",
+      "eventAction": "impression - broad match",
+      "eventCategory": "tokonow - search result",
+      "eventLabel": ".+ - .+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/tokonow - broad match",
+      "sessionIris": ".+",
+      "userId": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "item_brand": ".+",
+          "item_category": ".+",
+          "dimension40": "/tokonow - broad match",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "index": "\\d*.\\d*"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - broad match",
+      "eventCategory": "tokonow - search result",
+      "eventLabel": ".+ - .+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".+",
+      "sessionIris": ".+",
+      "item_list": "/tokonow - broad match",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "item_brand": ".+",
+          "item_category": ".+",
+          "dimension40": "/tokonow - broad match",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "index": "\\d*.\\d*"
+        }
+      ]
+    },
+    {
+      "event": "clickTokoNow",
+      "eventAction": "click - broad match lihat semua",
+      "eventCategory": "tokonow - search result",
+      "eventLabel": ".+ - .+",
+      "sessionIris": ".+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace"
+    },
+    {
+      "event": "add_to_cart",
+      "eventAction": "click - tambah ke keranjang",
+      "eventCategory": "tokonow - search result",
+      "eventLabel": ".+ - .+",
+      "userId": ".+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".+",
+      "items": [
+        {
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "item_brand": ".+",
+          "item_category": ".+",
+          "dimension40": "/tokonow - broad match",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "quantity": "\\d*.\\d*",
+          "shop_id": ".+"
+        }
+      ]
+    }
+  ]
+}

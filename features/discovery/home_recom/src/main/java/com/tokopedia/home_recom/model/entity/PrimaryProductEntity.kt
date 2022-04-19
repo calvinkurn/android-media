@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.model.entity
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -40,27 +41,29 @@ data class ProductDetailData(
         @SerializedName("categoryBreadcrumbs")
         val categoryBreadcrumbs: String = "",
         @SerializedName("clickUrl")
-        val clickUrl: String = "",
+        var clickUrl: String = "",
         @SerializedName("countReview")
         val countReview: Int = -1,
         @SerializedName("countReviewFloat")
         val countReviewFloat: Int = -1,
         @SerializedName("departmentId")
         val departmentId: Int = -1,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
-        val id: Int = -1,
+        val id: Long = 0L,
         @SerializedName("status")
         val status: Int = 1,
         @SerializedName("imageUrl")
         val imageUrl: String = "",
         @SerializedName("isTopads")
-        val isTopads: Boolean = false,
+        var isTopads: Boolean = false,
         @SerializedName("IsWishlist")
         val isWishlist: Boolean = false,
         @SerializedName("labels")
         val labels: List<Any> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: String = "",
         @SerializedName("priceInt")
@@ -82,7 +85,7 @@ data class ProductDetailData(
         @SerializedName("minOrder")
         val minOrder: Int = 0,
         @SerializedName("trackerImageUrl")
-        val trackerImageUrl: String = "",
+        var trackerImageUrl: String = "",
         @SerializedName("url")
         val url: String = "",
         @SerializedName("wholesalePrice")
@@ -98,6 +101,7 @@ data class ProductDetailData(
         )
 
 data class Shop(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         val id: Int = -1,
         @SerializedName("name")

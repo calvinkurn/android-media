@@ -9,4 +9,9 @@
     <string name="forbidden_title"><![CDATA[<b>Peringatan</b>]]></string>
     <string name="forbidden_msg"><![CDATA[<p>Kami mendeteksi adanya aktivitas mencurigakan pada perangkat Anda yang melanggar <u><font color=\'#42b549\'>Persyaratan Layanan</font></u> Tokopedia.</p> <p>Anda bisa kembali menggunakan aplikasi Tokopedia setelah aktivitas tersebut dihentikan.</p>]]></string>
     <string name="forbidden_button">Coba Lagi</string>
+
+    <!-- POPUP ADMIN -->
+    <string name="dialog_location_admin_title">Admin lokasi tidak bisa atur toko lewat aplikasi</string>
+    <string name="dialog_location_admin_description">Pengaturan toko untuk admin lokasi hanya bisa dilakukan lewat versi desktop. \n \n Kamu bisa akses website Tokopedia Seller di desktop untuk mengatur tokomu, ya!</string>
+    <string name="dialog_location_admin_primary_cta">Oke, Saya Mengerti</string>
 </resources>

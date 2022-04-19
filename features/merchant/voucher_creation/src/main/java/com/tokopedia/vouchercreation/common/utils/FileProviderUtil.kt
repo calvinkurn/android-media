@@ -8,15 +8,29 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 private const val FILE_DIR = "voucher_images"
+private const val MAXIMUM_FILES_IN_FOLDER = 3
+private const val BITMAP_COMPRESS_OUTPUT_QUALITY = 100
 
 fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
-    val contextWrapper = ContextWrapper(context)
-    val fileDir = contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
-    val filePath = File(fileDir, "${filename}.jpg")
+    val file = getSavedImageDirFile(context, filename, false)
+    return file.toString()
+}
 
+fun Bitmap.getSavedImageDirFile(context: Context, filename: String, isSharing: Boolean = true): File {
+    val fileDir =
+            if (isSharing) {
+                File(context.filesDir, FILE_DIR).also {
+                    it.checkVoucherDirectory()
+                }
+            } else {
+                val contextWrapper = ContextWrapper(context)
+                contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
+            }
+    val filePath = File(fileDir, "${filename}.jpg")
     val fos = FileOutputStream(filePath)
+
     try {
-        compress(Bitmap.CompressFormat.JPEG, 100, fos)
+        compress(Bitmap.CompressFormat.JPEG, BITMAP_COMPRESS_OUTPUT_QUALITY, fos)
     } catch (ex: Exception) {
         ex.printStackTrace()
     } finally {
@@ -26,5 +40,18 @@ fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
             ex.printStackTrace()
         }
     }
-    return filePath.toString()
+    return filePath
+}
+
+private fun File.checkVoucherDirectory() {
+    if (exists() && isDirectory) {
+        val voucherFiles = listFiles()
+        voucherFiles?.run {
+            if (size >= MAXIMUM_FILES_IN_FOLDER) {
+                getOrNull(0)?.delete()
+            }
+        }
+    } else {
+        mkdir()
+    }
 }

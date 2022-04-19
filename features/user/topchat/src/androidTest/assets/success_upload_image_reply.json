@@ -1,0 +1,21 @@
+{
+  "data": {
+    "chatReplyChat": {
+      "msgID": "1305386259",
+      "senderID": 104836278,
+      "msg": "Uploaded Image",
+      "replyTime": "1616030487932",
+      "from": "kelvin",
+      "role": 2,
+      "attachment": {
+        "id": 1,
+        "type": 2,
+        "fallback": {
+          "html": "\u003cdiv\u003ePengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.\u003c/div\u003e",
+          "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar."
+        },
+        "attributes": "{\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/300-square/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg\"}"
+      }
+    }
+  }
+}

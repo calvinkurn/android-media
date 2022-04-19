@@ -9,8 +9,8 @@
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:id="@+id/tg_umrah_travel_agent_established"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,14 +28,14 @@
         android:gravity="center"
         app:typographyType="small"
         tools:text="Jamaah \n1000/tahun"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         app:typographyWeight="reguler"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:id="@+id/tg_umrah_travel_agent_availabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -21,7 +21,7 @@ class BrandlistActivity : BaseSimpleActivity() {
             val uriSegment = uri.pathSegments
             categoryId = uriSegment[uriSegment.size - 1]
         } else {
-            categoryId = bundle.getString(CATEGORY_EXTRA_APPLINK)
+            categoryId = bundle?.getString(CATEGORY_EXTRA_APPLINK, "") ?: ""
         }
         return BrandlistContainerFragment.createInstance(categoryId)
     }

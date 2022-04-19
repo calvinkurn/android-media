@@ -5,13 +5,10 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.createpost.TOKEN
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.common.TOKEN
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import java.lang.Exception
 
 /**
@@ -62,9 +59,6 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         localCacheHandler.putString(cacheKeyFormatted, gson.toJson(viewModel))
         localCacheHandler.applyEditor()
         isAddingProduct = true
-
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.AFFILIATE_EXPLORE)
-        startActivity(intent)
     }
 
     override fun initVar(savedInstanceState: Bundle?) {

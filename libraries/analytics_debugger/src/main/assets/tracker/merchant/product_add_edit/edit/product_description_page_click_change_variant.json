@@ -1,0 +1,13 @@
+{
+  "readme": "click add/change variant on product description page",
+  "mode": "subset",
+  "query": [
+    {
+      "event" : "clickEditProduct",
+      "eventCategory" : "edit product page",
+      "eventAction" : "click add product variant",
+      "eventLabel" : ".*",
+      "shopId" : ".+"
+    }
+  ]
+}

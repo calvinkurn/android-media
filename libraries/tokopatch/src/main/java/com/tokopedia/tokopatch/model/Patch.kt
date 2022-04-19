@@ -13,7 +13,8 @@ data class Patch(
     var tempPath: String = "",
     var md5: String = "",
     var appHash: String = "",
-    var isAppliedSuccess: Boolean = false
+    var isAppliedSuccess: Boolean = false,
+    var debug: Boolean = false
 ) : Cloneable {
 
     fun delete() {
@@ -23,13 +24,11 @@ data class Patch(
 
     @Throws(CloneNotSupportedException::class)
     override fun clone(): Any {
-        var clone: Patch? = null
-        clone = try {
+        try {
             return super.clone()
         } catch (e: CloneNotSupportedException) {
             throw e
         }
-        return clone
     }
 
 }

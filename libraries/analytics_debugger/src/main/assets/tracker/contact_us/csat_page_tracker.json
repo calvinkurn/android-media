@@ -1,0 +1,13 @@
+{
+  "readme": "csat rating page impression tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "inbox pesan bantuan",
+      "event": "viewInboxBantuan",
+      "eventAction": "impression on csat rating",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

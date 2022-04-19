@@ -1,0 +1,36 @@
+{
+  "readme": "Discovery Category Tree impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click arrow to category directory",
+      "eventCategory": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickDiscovery",
+      "userId": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click category inside category tree",
+      "eventCategory": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickDiscovery",
+      "userId": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click close category tree",
+      "eventCategory": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickDiscovery",
+      "userId": ".*",
+      "eventLabel": ".*",
+      "businessUnit": "home & browse",
+      "sessionIris": ".*"
+    }
+  ]
+}

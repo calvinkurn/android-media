@@ -1,0 +1,40 @@
+{
+  "title": "Sembunyikan barang",
+  "search": {
+    "searchable": 0,
+    "placeholder": ""
+  },
+  "template_name": "template_negative_keyword",
+  "options": [
+    {
+      "name": "samsung",
+      "key": "main_keyword",
+      "icon": "",
+      "Description": "",
+      "value": "",
+      "inputType": "selectbox",
+      "totalData": "",
+      "valMax": "",
+      "valMin": "",
+      "isPopular": false,
+      "isNew": false,
+      "hexColor": "",
+      "child": []
+    },
+    {
+      "name": "tv",
+      "key": "negative_keyword",
+      "icon": "",
+      "Description": "",
+      "value": "",
+      "inputType": "selectbox",
+      "totalData": "",
+      "valMax": "",
+      "valMin": "",
+      "isPopular": false,
+      "isNew": false,
+      "hexColor": "",
+      "child": []
+    }
+  ]
+}

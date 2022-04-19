@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.relatedpost.RelatedPostTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostUIViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -16,18 +17,27 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostViewHolder;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder;
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel;
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostDetailViewHolder;
@@ -66,6 +76,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
+    private final TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener;
 
     public KolPostDetailTypeFactoryImpl(KolPostDetailContract.View mainView,
                                         KolComment.View.ViewHolder kolCommentListener,
@@ -80,6 +91,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
                                         RelatedPostAdapter.RelatedPostListener relatedPostListener,
                                         HighlightAdapter.HighlightListener highlightListener,
+                                        TopAdsBannerViewHolder.TopAdsBannerListener topAdsBannerListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -94,6 +106,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.feedMultipleImageViewListener = feedMultipleImageViewListener;
         this.highlightListener = highlightListener;
         this.relatedPostListener = relatedPostListener;
+        this.topAdsBannerListener = topAdsBannerListener;
         this.userSession = userSession;
     }
 
@@ -105,6 +118,10 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(DynamicPostViewModel dynamicPostViewModel) {
         return DynamicPostViewHolder.Companion.getLAYOUT();
+    }
+    @Override
+    public int type(DynamicPostUiModel dynamicPostUiModel) {
+        return DynamicPostUIViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -126,6 +143,16 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(KolCommentHeaderViewModel viewModel) {
         throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
                 + KolCommentHeaderViewModel.class.getSimpleName());
+    }
+
+    @Override
+    public int type(KolCommentNewModel viewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(KolCommentHeaderNewModel viewModel) {
+        return 0;
     }
 
     @Override
@@ -162,7 +189,17 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(@NotNull TopadsShopViewModel topadsShopViewModel) {
+    public int type(@NotNull TopadsShopUiModel topadsShopUIModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull TopadsHeadlineUiModel topadsHeadlineUiModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull TopadsHeadLineV2Model topadsHeadlineUiModel) {
         return 0;
     }
 
@@ -170,6 +207,23 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(@NotNull RelatedPostViewModel relatedPostViewModel) {
         return RelatedPostViewHolder.LAYOUT;
     }
+
+    @Override
+    public int type(@NotNull TopAdsBannerViewModel topAdsBannerViewmodel) {
+        return TopAdsBannerViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
+    public int type(@NotNull CarouselPlayCardViewModel carouselPlayCardViewModel) {
+        return 0;
+    }
+
+    @Override
+    public int type(@NotNull ShimmerUiModel shimmerUiModel) {
+        return 0;
+    }
+
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
@@ -180,7 +234,14 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                     pollOptionListener, gridItemListener, videoViewListener,
                     feedMultipleImageViewListener, userSession
             );
-        } else if (viewType == KolCommentViewHolder.LAYOUT) {
+        }else if (viewType == DynamicPostUIViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new KolPostDetailViewHolder(view,
+                    listener, cardTitleListener, imagePostListener, youtubePostListener,
+                    pollOptionListener, gridItemListener, videoViewListener,
+                    feedMultipleImageViewListener, userSession
+            );
+        }
+        else if (viewType == KolCommentViewHolder.LAYOUT) {
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener, false);
         } else if (viewType == SeeAllCommentsViewHolder.LAYOUT) {
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);
@@ -188,6 +249,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = new EmptyDetailViewHolder(view, mainView);
         } else if(viewType == RelatedPostViewHolder.LAYOUT) {
             abstractViewHolder = new RelatedPostViewHolder(view, relatedPostListener);
+        } else if(viewType == TopAdsBannerViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener);
         } else {
             abstractViewHolder = super.createViewHolder(view, viewType);
         }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shopPenaltyMultiPaneContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSplit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <FrameLayout
+        android:id="@+id/fragmentPenaltyList"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/splitScreenDivider"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/splitScreenDivider"
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/split_view_divider"
+        app:layout_constraintEnd_toEndOf="@id/guidelineSplit"
+        app:layout_constraintStart_toStartOf="@id/guidelineSplit" />
+
+    <FrameLayout
+        android:id="@+id/fragmentPenaltyDetail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/splitScreenDivider" />
+
+    <View
+        android:id="@+id/dummyDetailFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/splitScreenDivider" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivPenaltyDetailWelcomeIllustration"
+        android:layout_width="@dimen/detail_penalty_tablet_welcome_illustration_width"
+        android:layout_height="@dimen/detail_penalty_tablet_welcome_illustration_height"
+        android:layout_marginStart="@dimen/detail_penalty_tablet_welcome_illustration_horizontal_margin"
+        android:layout_marginEnd="@dimen/detail_penalty_tablet_welcome_illustration_horizontal_margin"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@id/tvPenaltyDetailWelcome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/splitScreenDivider"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPenaltyDetailWelcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/title_welcome_shop_penalty_tablet"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/splitScreenDivider"
+        app:layout_constraintTop_toBottomOf="@id/ivPenaltyDetailWelcomeIllustration"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.35"
+        app:typographyType="heading_3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

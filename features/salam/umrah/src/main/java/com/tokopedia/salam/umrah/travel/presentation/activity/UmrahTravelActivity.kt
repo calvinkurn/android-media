@@ -50,7 +50,7 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if(uri != null){
-            slugName = uri.lastPathSegment
+            slugName = uri.lastPathSegment ?: ""
         }else if(savedInstanceState != null){
             slugName = savedInstanceState.getString(EXTRA_SLUG_NAME,"")
         }

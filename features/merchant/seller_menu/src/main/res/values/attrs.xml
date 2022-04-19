@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SellerMenuFeatureCard">
+        <attr name="menuTitle" format="string"/>
+        <attr name="menuDescription" format="string"/>
+        <attr name="menuIcon" format="integer">
+            <enum name="promo" value="0"/>
+            <enum name="play" value="1"/>
+            <enum name="statistics" value="2"/>
+            <enum name="finance" value="3"/>
+        </attr>
+    </declare-styleable>
+</resources>

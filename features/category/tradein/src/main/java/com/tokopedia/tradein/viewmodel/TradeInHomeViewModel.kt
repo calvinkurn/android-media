@@ -7,24 +7,22 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.common_tradein.model.ValidateTradePDP
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein.Constants
-import com.tokopedia.tradein.model.DeviceDiagInputResponse
-import com.tokopedia.tradein.model.DeviceDiagnostics
-import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
-import com.tokopedia.tradein.usecase.ProcessMessageUseCase
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
+import com.tokopedia.tradein.TradeinConstants
+import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
+import com.tokopedia.common_tradein.model.DeviceDiagnostics
+import com.tokopedia.common_tradein.model.HomeResult
+import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
+import com.tokopedia.tradein.view.viewcontrollers.activity.TRADEIN_EXCHANGE
+import com.tokopedia.tradein.viewmodel.liveState.*
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 
 class TradeInHomeViewModel @Inject constructor(
         private val processMessageUseCase: ProcessMessageUseCase,
-        private val checkMoneyInUseCase: CheckMoneyInUseCase,
         private val userSession: UserSessionInterface
 ) : BaseTradeInViewModel(),
         LifecycleObserver, Laku6TradeIn.TradeInListener {
@@ -32,8 +30,13 @@ class TradeInHomeViewModel @Inject constructor(
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams = TradeInParams()
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
+    var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
+    var imei: String? = null
+    var finalPrice: String = "-"
+    var xSessionId: String = "-"
 
-    var tradeInType: Int = TRADEIN_OFFLINE
+    var tradeInType: Int = 0
 
     override fun doOnCreate() {
         super.doOnCreate()
@@ -42,17 +45,20 @@ class TradeInHomeViewModel @Inject constructor(
 
     fun checkLogin() {
         if (!userSession.isLoggedIn)
-            askUserLogin.value = Constants.LOGIN_REQUIRED
+            askUserLogin.value = TradeinConstants.LOGIN_REQUIRED
         else {
-            askUserLogin.value = Constants.LOGEED_IN
+            askUserLogin.value = TradeinConstants.LOGEED_IN
         }
     }
 
     fun processMessage(intent: Intent) {
         val diagnostics = getDiagnosticData(intent)
+        if (diagnostics.imei.isEmpty()) {
+            diagnostics.imei = imei
+        }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(getResource(), tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -63,10 +69,13 @@ class TradeInHomeViewModel @Inject constructor(
         if (response != null && response.deviceDiagInputRepsponse != null) {
             val result = HomeResult()
             result.isSuccess = true
+            if (tradeInParams.newPrice - diagnostics.tradeInPrice >= 0)
+                finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
             if (response.deviceDiagInputRepsponse.isEligible) {
                 if (homeResultData.value?.deviceDisplayName != null) {
-                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName ?: ""
                 }
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
@@ -82,57 +91,10 @@ class TradeInHomeViewModel @Inject constructor(
         return Gson().fromJson(result, DeviceDiagnostics::class.java)
     }
 
-    fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
-        progBarVisibility.value = true
-        launchCatchError(block = {
-            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(getResource(), modelId, tradeInParams, userSession.userId), jsonObject)
-        }, onError = {
-            progBarVisibility.value = false
-            it.printStackTrace()
-            warningMessage.value = it.localizedMessage
-        })
-    }
-
-    private fun checkIfElligible(validateTradePDP: ValidateTradePDP?, jsonObject: JSONObject) {
-        validateTradePDP?.let {
-            it.response?.let { validateResponse ->
-                if (validateResponse.isEligible) {
-                    tradeInParams.isEligible = if (validateResponse.isEligible) 1 else 0
-                    tradeInParams.usedPrice = validateResponse.usedPrice
-                    tradeInParams.isUseKyc = if (validateResponse.isUseKyc) 1 else 0
-                    setHomeResultData(jsonObject)
-                } else {
-                    val result = HomeResult()
-                    result.run {
-                        isSuccess = true
-                        priceStatus = HomeResult.PriceState.MONEYIN_ERROR
-                        displayMessage = validateResponse.message
-                    }
-                    homeResultData.value = result
-                }
-            }
-        }
-    }
-
     override fun onFinished(jsonObject: JSONObject) {
         progBarVisibility.value = false
-        var modelId = 0
-        try {
-            modelId = jsonObject.getInt("model_id")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == checkMoneyInUseCase.fcmDeviceId)) {
-            imeiStateLiveData.value = true
-            setHomeResultData(jsonObject)
-        } else {
-            imeiStateLiveData.value = false
-            if (tradeInType == TRADEIN_MONEYIN) {
-                checkMoneyIn(modelId, jsonObject)
-            } else {
-                setHomeResultData(jsonObject)
-            }
-        }
+        imeiStateLiveData.value = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && tradeInParams.deviceId == null
+        setHomeResultData(jsonObject)
 
     }
 
@@ -152,25 +114,26 @@ class TradeInHomeViewModel @Inject constructor(
         result.isSuccess = true
         result.maxPrice = maxPrice
         result.minPrice = minPrice
+        if (tradeInParams.newPrice - maxPrice >= 0)
+            finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
         if (diagnosedPrice > 0) {
-            if (tradeInType != TRADEIN_MONEYIN) {
-                if (diagnosedPrice > tradeInParams.newPrice) {
-                    result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
-                } else {
-                    result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
-                }
+            if (diagnosedPrice > tradeInParams.newPrice) {
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
-            result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
-
+            if (maxPrice > tradeInParams.newPrice) {
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+            } else {
+                result.displayMessage = String.format("%1\$s",
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
+                result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
+            }
         }
         if (homeResultData.value?.deviceDisplayName != null) {
-            result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+            result.deviceDisplayName = homeResultData.value?.deviceDisplayName ?: ""
         } else {
             result.deviceDisplayName = devicedisplayname
         }
@@ -180,16 +143,26 @@ class TradeInHomeViewModel @Inject constructor(
 
     override fun onError(jsonObject: JSONObject) {
         progBarVisibility.value = false
-        val homeResult = HomeResult()
-        try {
-            homeResult.displayMessage = jsonObject.getString("message")
-        } catch (e: JSONException) {
-            homeResult.displayMessage = ""
-            e.printStackTrace()
-        }
+        if (imei != null) {
+            var errorMessage: String? = null
+            try {
+                errorMessage = jsonObject.getString("message")
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            imeiResponseLiveData.value = errorMessage
+        } else {
+            val homeResult = HomeResult()
+            try {
+                homeResult.displayMessage = jsonObject.getString("message")
+            } catch (e: JSONException) {
+                homeResult.displayMessage = ""
+                e.printStackTrace()
+            }
 
-        homeResult.isSuccess = false
-        homeResultData.value = homeResult
+            homeResult.isSuccess = false
+            homeResultData.value = homeResult
+        }
     }
 
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn, tradeinType: Int) {
@@ -198,7 +171,21 @@ class TradeInHomeViewModel @Inject constructor(
         laku6TradeIn.getMinMaxPrice(this)
     }
 
-    fun setDeviceId(deviceId: String?) {
-        tradeInParams.deviceId = deviceId
+    fun initSessionId(laku6TradeIn: Laku6TradeIn) {
+        xSessionId = laku6TradeIn.xSessionId
     }
+
+    fun getIMEI(laku6TradeIn: Laku6TradeIn, imei: String?) {
+        this.imei = imei
+        laku6TradeIn.checkImeiValidation(this, imei)
+    }
+
+    fun onHargaFinalClick(deviceId: String?, price: String) {
+        tradeInHomeStateLiveData.value = GoToCheckout(deviceId, price)
+    }
+
+    fun onInitialPriceClick(imei: String?) {
+        tradeInHomeStateLiveData.value = GoToHargaFinal(imei)
+    }
+
 }

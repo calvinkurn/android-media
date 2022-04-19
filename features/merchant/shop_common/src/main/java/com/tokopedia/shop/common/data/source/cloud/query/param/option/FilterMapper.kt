@@ -16,7 +16,7 @@ class FilterMapper {
                     is FilterByCondition -> ProductListParam(filter.id, listOf(VALUE_TRUE))
                     is FilterByPage -> ProductListParam(filter.id, listOf(filter.page.toString()))
                     is FilterByKeyword -> ProductListParam(filter.id, listOf(filter.keyword))
-                    is FilterByStatus -> ProductListParam(filter.id, listOf(filter.status))
+                    is FilterByStatus -> ProductListParam(filter.id, listOf(filter.status.name))
                 }
             }
         }

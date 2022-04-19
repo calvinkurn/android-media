@@ -1,0 +1,43 @@
+[
+  {
+    "data": {
+      "crackResult": {
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "success"
+          ],
+          "status": ""
+        },
+        "imageUrl": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/ovo%403x.png",
+        "benefitType": "loyalty_reward_point",
+        "benefits": [
+          {
+            "text": "+10 Points",
+            "color": "#FFDC00",
+            "size": "large",
+            "benefitType": "ovo_points",
+            "templateText": "",
+            "animationType": "",
+            "valueBefore": 0,
+            "valueAfter": 10,
+            "tierInformation": "Classic 1",
+            "multiplier": ""
+          }
+        ],
+        "ctaButton": {
+          "title": "Cek Tokopoints Anda",
+          "url": "https://staging.tokopedia.com/tokopoints",
+          "applink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fm.tokopedia.com%2Ftokopoints%2Fmobile\u0026title\u003dTokoPoints",
+          "type": "redirect"
+        },
+        "returnButton": {
+          "title": "Pecahkan Lucky Egg Lain",
+          "url": "",
+          "applink": "",
+          "type": "dismiss"
+        }
+      }
+    }
+  }
+]

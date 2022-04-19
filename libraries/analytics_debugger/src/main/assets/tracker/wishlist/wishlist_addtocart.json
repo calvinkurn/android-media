@@ -1,0 +1,14 @@
+{
+  "readme": "Wishlist add to cart",
+  "mode": "exact",
+  "query": [
+    {
+      "eventCategory": "wishlist page",
+      "event": "add_to_cart",
+      "eventAction": "click - beli on wishlist",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "items": ".*"
+    }
+  ]
+}

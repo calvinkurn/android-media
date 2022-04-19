@@ -1,0 +1,69 @@
+{
+  "data": {
+    "event_child_category": {
+      "categories": [
+        {
+          "id": "28",
+          "name": "top",
+          "title": "Trending Events",
+          "media_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_c7cc1402-d73e-48d8-8e27-4eff4d6f444f.png",
+          "app_url": "tokopedia://events",
+          "priority": "100000"
+        },
+        {
+          "id": "3",
+          "name": "hiburan",
+          "title": "Taman Bermain Lokal",
+          "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_6f20312d-84be-4d5b-ade7-8bd4578a0ca4.png",
+          "app_url": "tokopedia://events",
+          "priority": "2000"
+        },
+        {
+          "id": "14",
+          "name": "taman Bermain Mancanegara",
+          "title": "Taman Bermain Mancanegara ",
+          "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_693e6b59-3682-4b40-95ab-3be31d78dd02.png",
+          "app_url": "tokopedia://events",
+          "priority": "1500"
+        },
+        {
+          "id": "12",
+          "name": "aktivitas",
+          "title": "Aktivitas",
+          "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_91a31ff2-dcc6-48c6-9c67-edee7fa797a9.png",
+          "app_url": "tokopedia://events",
+          "priority": "1000"
+        },
+        {
+          "id": "4",
+          "name": "festival",
+          "title": "Festival",
+          "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_5887bf79-986b-42f7-b0ee-7b16a93b4349.png",
+          "app_url": "tokopedia://events",
+          "priority": "500"
+        },
+        {
+          "id": "6",
+          "name": "acara",
+          "title": "Events",
+          "media_url": "https://ecs7.tokopedia.net/img/banner/2020/2/14/57551775/57551775_56f5eba8-4a8e-4835-957d-909a4083f8b1.png",
+          "app_url": "tokopedia://events",
+          "priority": "400"
+        },
+        {
+          "id": "5",
+          "name": "kids activity",
+          "title": "Aktivitas Anak",
+          "media_url": "https://ecs7.tokopedia.net/img/event/categories/ic_olahraga_active.png",
+          "app_url": "tokopedia://events",
+          "priority": "6"
+        }
+      ]
+    },
+    "event_search": {
+      "products": [
+      ],
+      "count": "0"
+    }
+  }
+}

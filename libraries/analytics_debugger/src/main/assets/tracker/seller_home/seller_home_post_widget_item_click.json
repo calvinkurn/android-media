@@ -1,0 +1,15 @@
+{
+  "readme": "Seller Home Dashboard - post widget item click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "seller app - home",
+      "eventAction": "click widget post - post",
+      "eventLabel": ".{1,}",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "physical goods",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

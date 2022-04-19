@@ -1,9 +1,0 @@
-query getTopadsDashboardDeposits($shopId:Int!, $shopData:String, $creditData:String){
-    topadsDashboardDeposits(shop_id:$shopId,shop_data:$shopData,credit_data:$creditData){
-    data {
-      ad_usage
-      amount
-      amount_fmt
-    }
-  }
-}

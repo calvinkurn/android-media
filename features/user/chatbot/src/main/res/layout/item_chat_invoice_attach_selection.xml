@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attach_invoice_chat_invoice_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:background="@color/white"
-        android:orientation="horizontal">
+        android:layout_marginLeft="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        tools:itemCount="2"
+        tools:listitem="@layout/invoice_card_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

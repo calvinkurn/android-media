@@ -3,4 +3,6 @@
 
     <string name="live_home_play_char_dot">●</string>
     <string name="live_home_play_text">LIVE</string>
+
+    <string name="content_desc_play_widget">Tokopedia play</string>
 </resources>

@@ -1,0 +1,43 @@
+[
+  {
+    "data": {
+      "crackResult": {
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "success"
+          ],
+          "status": ""
+        },
+        "imageUrl": "https://ecs7.tokopedia.net/img/blog/promo/2020/02/Kupon-OS-960x160-Kamis-Pilihan-Bunda-W1.jpg",
+        "benefitType": "coupon",
+        "benefits": [
+          {
+            "text": "+1 Kupon Testing",
+            "color": "#FFFFFF",
+            "size": "small",
+            "benefitType": "coupon",
+            "templateText": "",
+            "animationType": "",
+            "valueBefore": 0,
+            "valueAfter": 1,
+            "tierInformation": "",
+            "multiplier": ""
+          }
+        ],
+        "ctaButton": {
+          "title": "Lihat Kupon Saya",
+          "url": "https://www.tokopedia.com/tokopoints/kupon-saya?HCKQTUDVAMZTLT-0",
+          "applink": "tokopedia://tokopoints/kupon-saya?HCKQTUDVAMZTLT-0",
+          "type": "redirect"
+        },
+        "returnButton": {
+          "title": "Lihat Kupon Saya",
+          "url": "https://www.tokopedia.com/tokopoints/kupon-saya?HCKQTUDVAMZTLT-0",
+          "applink": "tokopedia://tokopoints/kupon-saya?HCKQTUDVAMZTLT-0",
+          "type": "redirect"
+        }
+      }
+    }
+  }
+]

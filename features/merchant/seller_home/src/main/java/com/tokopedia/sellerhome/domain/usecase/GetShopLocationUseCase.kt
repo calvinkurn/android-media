@@ -1,11 +1,12 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.gqlquery.GqlGetShopLocation
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.usecase.RequestParams
@@ -20,25 +21,15 @@ class GetShopLocationUseCase @Inject constructor(
 
     companion object {
         private const val SHOP_ID = "shopID"
-        private const val QUERY = """query shopInfoByID (${'$'}shopID: Int!){
-            shopInfoByID(input:{shopIDs:[${'$'}shopID], fields:["other-shiploc"]}) {
-                result {
-                    shippingLoc {
-                        provinceID
-                    }
-                }
-            }
-        }
-        """
 
         fun getRequestParams(shopId: String): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID, shopId.toIntOrZero())
+            putLong(SHOP_ID, shopId.toLongOrZero())
         }
     }
 
     override suspend fun executeOnBackground(): ShippingLoc {
-        val gqlRequest = GraphqlRequest(QUERY, ShopInfoLocation::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlRequest = GraphqlRequest(GqlGetShopLocation, ShopInfoLocation::class.java, params.parameters)
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(ShopInfoLocation::class.java)
         if (errors.isNullOrEmpty()) {

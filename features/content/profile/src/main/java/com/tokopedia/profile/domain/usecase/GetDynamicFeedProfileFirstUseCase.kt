@@ -90,7 +90,8 @@ class GetDynamicFeedProfileFirstUseCase
                     profile.isAffiliate,
                     profile.isShowAffiliateContent,
                     profile.isFollowed,
-                    userId.toString() == userSessionInterface.userId
+                    userId.toString() == userSessionInterface.userId,
+                    isCreatePostToggleOn = data.bymeProfileHeader.profileConfig.showPostButton
             )
         }
     }

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.play_common.view.RoundedConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/play_interactive_winning_dialog_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_interactive"
+    app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
+    >
+
+    <com.tokopedia.play_common.view.RemoteImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:scaleType="fitStart"
+        app:cacheStrategy="data"
+        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_decor.png"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        />
+
+    <com.tokopedia.play_common.view.RemoteImageView
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:scaleType="centerCrop"
+        app:cacheStrategy="resource"
+        app:imageUrl="https://images.tokopedia.net/img/android/content/play/ic_play_interactive_confetti_big.png"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <LinearLayout
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_crown"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:src="@drawable/ic_play_interactive_crown_yellow"
+            tools:visibility="visible"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_user"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            app:unify_image_type="circle"
+            tools:src="@tools:sample/avatars"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:textAlignment="center"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="Selamat kamu pemenangnya!"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/play_offset_12"
+            android:textAlignment="center"
+            android:textColor="@color/play_dms_interactive_winning_dialog_subtitle"
+            app:typographyType="body_3"
+            tools:text="Tunggu seller chat kamu untuk konfirmasi."
+            />
+
+    </LinearLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>

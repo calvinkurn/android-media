@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetProduct
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.ProductWareHouse
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -16,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
@@ -48,6 +50,19 @@ class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
     }
 
     @Test
+    fun `when get stock reminder error should set live data fail`() {
+        runBlocking {
+            val error = NullPointerException()
+            onGetStockReminder_thenThrow(error)
+
+            viewModel.getStockReminder(anyString())
+
+            verifyGetStockReminderUseCaseCalled()
+            verifyGetStockReminderFail()
+        }
+    }
+
+    @Test
     fun `when create stock reminder success should return result`() {
         runBlocking {
             val productId = "123"
@@ -68,6 +83,19 @@ class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
 
             verifyCreateStockReminderUseCaseCalled()
             verifyCreateStockReminderResult(expectedResult)
+        }
+    }
+
+    @Test
+    fun `when create stock reminder error should set live data fail`() {
+        runBlocking {
+            val error = NullPointerException()
+            onCreateStockReminder_thenThrow(error)
+
+            viewModel.createStockReminder(anyString(), anyString(), anyString(), anyString())
+
+            verifyCreateStockReminderUseCaseCalled()
+            verifyCreateStockReminderFail()
         }
     }
 
@@ -95,6 +123,19 @@ class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when update stock reminder error should set live data fail`() {
+        runBlocking {
+            val error = NullPointerException()
+            onUpdateStockReminder_thenThrow(error)
+
+            viewModel.updateStockReminder(anyString(), anyString(), anyString(), anyString())
+
+            verifyUpdateStockReminderUseCaseCalled()
+            verifyUpdateStockReminderFail()
+        }
+    }
+
     private suspend fun onGetStockReminder_thenReturn(getStockReminderResponse: GetStockReminderResponse) {
         coEvery { stockReminderDataUseCase.executeGetStockReminder() } returns getStockReminderResponse
     }
@@ -105,6 +146,18 @@ class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
 
     private suspend fun onUpdateStockReminder_thenReturn(updateStockReminderResponse: UpdateStockReminderResponse) {
         coEvery { stockReminderDataUseCase.executeUpdateStockReminder() } returns updateStockReminderResponse
+    }
+
+    private suspend fun onGetStockReminder_thenThrow(ex: Exception) {
+        coEvery { stockReminderDataUseCase.executeGetStockReminder() } throws ex
+    }
+
+    private suspend fun onCreateStockReminder_thenThrow(ex: Exception) {
+        coEvery { stockReminderDataUseCase.executeCreateStockReminder() } throws ex
+    }
+
+    private suspend fun onUpdateStockReminder_thenThrow(ex: Exception) {
+        coEvery { stockReminderDataUseCase.executeUpdateStockReminder() } throws ex
     }
 
     private fun verifyGetStockReminderUseCaseCalled() {
@@ -132,5 +185,17 @@ class StockReminderViewModelTest: StockReminderViewModelTestFixture() {
     private fun verifyUpdateStockReminderResult(expectedResult: Success<UpdateStockReminderResponse>) {
         val actualResult = viewModel.updateStockReminderLiveData.value as Success<UpdateStockReminderResponse>
         assertEquals(expectedResult, actualResult)
+    }
+
+    private fun verifyGetStockReminderFail() {
+        assert(viewModel.getStockReminderLiveData.value is Fail)
+    }
+
+    private fun verifyCreateStockReminderFail() {
+        assert(viewModel.createStockReminderLiveData.value is Fail)
+    }
+
+    private fun verifyUpdateStockReminderFail() {
+        assert(viewModel.updateStockReminderLiveData.value is Fail)
     }
 }

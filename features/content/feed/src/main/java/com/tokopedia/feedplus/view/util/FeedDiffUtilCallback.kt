@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.view.util
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 
 internal class FeedDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -17,28 +17,16 @@ internal class FeedDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel)
+        return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) {
             areFeedItemsTheSame(oldItem, newItem)
-        else
-            oldItem::class == newItem::class
+        } else oldItem::class == newItem::class
     }
 
-    private fun areFeedItemsTheSame(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
-        return oldItem.id == newItem.id
-                && oldItem.footer.like.value == newItem.footer.like.value
-                && oldItem.footer.comment.value == newItem.footer.comment.value
-                && !isVoteItemChanged(oldItem, newItem)
-    }
-
-    private fun isVoteItemChanged(oldItem: DynamicPostViewModel, newItem: DynamicPostViewModel): Boolean {
-        if (oldItem.contentList[0] is PollContentViewModel) {
-            for (pos in 0..oldItem.contentList.size) {
-                if ((oldItem.contentList[pos] as PollContentViewModel).voted != (newItem.contentList[pos] as PollContentViewModel).voted) {
-                    return true
-                }
-            }
-        }
-        return false
+    private fun areFeedItemsTheSame(
+        oldItem: DynamicPostUiModel,
+        newItem: DynamicPostUiModel
+    ): Boolean {
+        return oldItem.feedXCard.id == newItem.feedXCard.id
     }
 
     override fun getOldListSize(): Int {
@@ -56,7 +44,12 @@ internal class FeedDiffUtilCallback(
         val oldItem = oldList[oldPosition]
         val newItem = newList[newPosition]
 
-        return if (oldItem is DynamicPostViewModel && newItem is DynamicPostViewModel) oldItem == newItem
-        else true
+        return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) oldItem == newItem
+        else !(oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel)
+    }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        return if (oldList[oldItemPosition] is CarouselPlayCardViewModel && newList[newItemPosition] is CarouselPlayCardViewModel) Unit
+        else super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }

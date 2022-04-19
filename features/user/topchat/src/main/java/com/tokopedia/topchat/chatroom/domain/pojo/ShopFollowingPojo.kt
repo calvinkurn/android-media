@@ -10,7 +10,9 @@ data class ShopFollowingPojo(
         @SerializedName("shopInfoByID")
         @Expose
         var shopInfoById: ShopInfoById = ShopInfoById()
-)
+) {
+    val isFollow: Boolean get() = shopInfoById.result[0].favoriteData.isFollow
+}
 
 data class ShopInfoById(
         @SerializedName("result")
@@ -28,4 +30,10 @@ data class FavoriteData(
         @SerializedName("alreadyFavorited")
         @Expose
         var alreadyFavorited: Int = 0
-)
+) {
+    val isFollow: Boolean get() = alreadyFavorited == IS_FOLLOW
+
+    companion object {
+        const val IS_FOLLOW = 1
+    }
+}

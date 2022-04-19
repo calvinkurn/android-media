@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.travel.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.usecase.UmrahTravelAgentsUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,7 +23,7 @@ class UmrahTravelListViewModelTest{
 
     @RelaxedMockK
     lateinit var umrahTravelAgentsUseCase : UmrahTravelAgentsUseCase
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var UmrahTravelListViewModel: UmrahTravelListViewModel
 
     @Before

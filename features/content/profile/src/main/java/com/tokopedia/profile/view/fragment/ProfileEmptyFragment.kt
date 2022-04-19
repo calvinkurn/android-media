@@ -65,7 +65,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         activity?.let {
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
 
-            GraphqlClient.init(it)
             DaggerProfileComponent.builder()
                     .baseAppComponent(appComponent)
                     .build()

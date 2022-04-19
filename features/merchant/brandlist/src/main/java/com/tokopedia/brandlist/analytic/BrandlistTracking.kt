@@ -12,30 +12,30 @@ class BrandlistTracking(context: Context) {
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
     private var trackingQueue = TrackingQueue(context)
 
-    private val EVENT = "event"
-    private val EVENT_CATEGORY = "eventCategory"
-    private val EVENT_ACTION = "eventAction"
-    private val EVENT_LABEL = "eventLabel"
+    companion object{
+        private const val EVENT = "event"
+        private const val EVENT_CATEGORY = "eventCategory"
+        private const val EVENT_ACTION = "eventAction"
+        private const val EVENT_LABEL = "eventLabel"
 
-    private val ECOMMERCE = "ecommerce"
-    private val CLICK = "click"
-    private val IMPRESSION = "impression"
-    private val ECOMMERCE_IMPRESSIONS = "impressions"
-    private val ECOMMERCE_CURRENCY_CODE = "currencyCode"
+        private const val ECOMMERCE = "ecommerce"
+        private const val CLICK = "click"
+        private const val IMPRESSION = "impression"
 
-    private val PROMO_CLICK = "promoClick"
-    private val PROMO_VIEW = "promoView"
-    private val PROMOTIONS = "promotions"
-    private val OPEN_SCREEN = "openScreen"
+        private const val PROMO_CLICK = "promoClick"
+        private const val PROMO_VIEW = "promoView"
+        private const val PROMOTIONS = "promotions"
+        private const val OPEN_SCREEN = "openScreen"
 
-    private val EVENT_VALUE = "clickOSAllBrands"
-    private val EVENT_CATEGORY_VALUE = "official store all brands page"
+        private const val EVENT_VALUE = "clickOSAllBrands"
+        private const val EVENT_CATEGORY_VALUE = "official store all brands page"
+    }
 
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/brand/$categoryName"
         val customDimension = java.util.HashMap<String, String>()
-        customDimension["event"] = "openScreen"
+        customDimension["event"] = OPEN_SCREEN
         customDimension["screenName"] = "/official-store/brand/$categoryName"
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
@@ -289,5 +289,9 @@ class BrandlistTracking(context: Context) {
                 )
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun sendAll(){
+        trackingQueue.sendAll()
     }
 }

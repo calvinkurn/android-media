@@ -1,30 +1,48 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.annotation.Nullable
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.CommonNetwork
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
-import com.tokopedia.play.data.network.PlayApi
-import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.play.analytic.CastAnalyticHelper
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.util.PlayCastHelper
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceImpl
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.play_common.util.PlayLifecycleObserver
-import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
+import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
+import com.tokopedia.play_common.player.creator.ExoPlayerCreator
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEImpl
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.constant.VariantConstant
 import dagger.Module
 import dagger.Provides
-import retrofit2.Retrofit
+import okhttp3.OkHttpClient
 import javax.inject.Named
 
 /**
@@ -35,60 +53,21 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context): PlayVideoManager = PlayVideoManager.getInstance(ctx)
+    fun providerExoPlayerCreator(@ApplicationContext ctx: Context): ExoPlayerCreator = DefaultExoPlayerCreator(ctx)
 
     @PlayScope
     @Provides
-    fun providePlayLifecycleObserver(): PlayLifecycleObserver = PlayLifecycleObserver(mContext)
+    fun provideTokopediaPlayPlayerInstance(@ApplicationContext ctx: Context, creator: ExoPlayerCreator): PlayVideoManager = PlayVideoManager.getInstance(ctx, creator)
 
     @PlayScope
     @Provides
-    fun providePlayProcessLifecycleObserver(): PlayProcessLifecycleObserver = PlayProcessLifecycleObserver(mContext)
-
-    @PlayScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
-        return UserSession(context)
-    }
+    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
 
     @PlayScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @PlayScope
-    @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        if (context is NetworkRouter) {
-            return context
-        }
-        throw IllegalStateException("Application must implement NetworkRouter")
-    }
-
-    @PlayScope
-    @Provides
-    fun provideRetrofit(@ApplicationContext context: Context, userSession: UserSession, networkRouter: NetworkRouter): Retrofit {
-         return CommonNetwork.createRetrofit(
-             context,
-             TokopediaUrl.getInstance().PLAY,
-             networkRouter,
-             userSession)
-    }
-
-    @PlayScope
-    @Provides
-    fun providerDispatcherProvider(): CoroutineDispatcherProvider = DefaultCoroutineDispatcherProvider()
-
-    @PlayScope
-    @Provides
-    fun providePlayApi(retrofit: Retrofit): PlayApi {
-        return retrofit.create(PlayApi::class.java)
-    }
-
-    @PlayScope
-    @Provides
-    fun providesGraphqlUsecase(): GraphqlUseCase = GraphqlUseCase()
 
     @PlayScope
     @Provides
@@ -99,7 +78,7 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
-        return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+        return LocalCacheHandler(context, KEY_GROUP_CHAT_PREFERENCES)
     }
 
     @PlayScope
@@ -111,16 +90,17 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    @Named(VariantConstant.QUERY_VARIANT)
+    @Named(QUERY_VARIANT)
     internal fun provideQueryVariant(): String {
         return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }
 
     @Provides
     @PlayScope
-    @Named(AtcConstant.MUTATION_ADD_TO_CART)
-    internal fun provideAddToCartMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
+    internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
+                                         atcMapper: AddToCartDataMapper,
+                                         chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {
+        return AddToCartUseCase(graphqlUseCase, atcMapper, chosenAddressHelper)
     }
 
     @Provides
@@ -128,4 +108,80 @@ class PlayModule(val mContext: Context) {
     fun provideTrackingQueue(): TrackingQueue {
         return TrackingQueue(mContext)
     }
+
+    @Provides
+    @PlayScope
+    fun provideExoPlaybackExceptionParser(): ExoPlaybackExceptionParser {
+        return ExoPlaybackExceptionParser()
+    }
+
+    @PlayScope
+    @Provides
+    fun provideRemoteConfig(): RemoteConfig {
+        return FirebaseRemoteConfigImpl(mContext)
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayChannelStateStorage(): PlayChannelStateStorage {
+        return PlayChannelStateStorage()
+    }
+
+    @PlayScope
+    @Provides
+    fun providePlayVideoWrapperBuilder(@ApplicationContext context: Context): PlayVideoWrapper.Builder {
+        return PlayVideoWrapper.Builder(context)
+    }
+
+    @Provides
+    @PlayScope
+    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
+        return PlayAnalytic(userSession, trackingQueue)
+    }
+
+    @PlayScope
+    @Provides
+    fun provideHtmlTextTransformer(): HtmlTextTransformer {
+        return DefaultHtmlTextTransformer()
+    }
+
+    @Provides
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
+        return PlayWebSocketImpl(
+                OkHttpClient.Builder(),
+                userSession,
+                dispatchers,
+                mContext,
+                localCacheHandler,
+        )
+    }
+
+    @Provides
+    @Nullable
+    fun provideCastContext(@ApplicationContext context: Context): CastContext? = PlayCastHelper.getCastContext(context)
+
+    @Provides
+    @Nullable
+    fun provideCastPlayer(castContext: CastContext?): CastPlayer? = castContext?.let { CastPlayer(it) }
+
+    @PlayScope
+    @Provides
+    fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
+
+
+    /**
+     * SSE
+     */
+    @PlayScope
+    @Provides
+    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+
+    /**
+     * Sharing Experience
+     */
+    @PlayScope
+    @Provides
+    fun providePlayShareExperience(@ApplicationContext context: Context): PlayShareExperience =
+        PlayShareExperienceImpl(context)
 }

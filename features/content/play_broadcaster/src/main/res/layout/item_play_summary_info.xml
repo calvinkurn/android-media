@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_play_summary_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:typographyType="body_3"
+        tools:text="Penonton" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_play_summary_count_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_4"
+        tools:text="123" />
+
+</LinearLayout>

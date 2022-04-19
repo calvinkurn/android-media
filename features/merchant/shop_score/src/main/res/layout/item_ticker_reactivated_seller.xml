@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ticker.Ticker
+    android:id="@+id/tickerReactivatedSeller"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:closeButtonVisibility="visible"
+    app:tickerType="information"
+    app:tickerShapeType="full"
+    app:titleText="@string/title_ticker_reactivated_seller"
+    app:descriptionText="@string/desc_ticker_reactivated_seller"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">voucher_game</string>
 
-    <string name="vg_menu_promo">Promo</string>
-    <string name="vg_menu_help">Tokopedia Care</string>
-    <string name="vg_menu_transaction_list">Daftar Transaksi</string>
-
     <string name="vg_search_bar_label">Search vouchers</string>
     <string name="vg_empty_state_title">Voucher yang kamu cari nggak ketemu</string>
     <string name="vg_empty_state_desc">Pastikan kamu sudah menulis nama voucher dengan benar, ya.</string>
@@ -18,6 +14,7 @@
     <string name="vg_operator_info_desc">Nomor User ID dan Server ID Dapat dilihat di halaman ini.</string>
 
     <string name="vg_product_view_detail">Lihat Detail</string>
-    <string name="vg_product_detail_title">Keterangan</string>
+    <string name="vg_product_detail_title">Detail Produk</string>
     <string name="vg_product_detail_url">Info lebih lanjut</string>
+    <string name="vg_product_label_out_of_stock">Stok Habis</string>
 </resources>

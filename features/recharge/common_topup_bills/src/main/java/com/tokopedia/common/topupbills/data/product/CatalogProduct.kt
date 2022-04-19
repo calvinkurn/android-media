@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.data.product
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -20,6 +21,7 @@ open class CatalogProduct(
                 @SerializedName("desc")
                 @Expose
                 var desc: String = "",
+                @SuppressLint("Invalid Data Type")
                 @SerializedName("price")
                 @Expose
                 var price: String = "",
@@ -43,7 +45,16 @@ open class CatalogProduct(
                 var detailUrl: String = "",
                 @SerializedName("detail_url_text")
                 @Expose
-                var detailUrlText: String = ""
+                var detailUrlText: String = "",
+                @SerializedName("category_id")
+                @Expose
+                val categoryId: String = "0",
+                @SerializedName("operator_id")
+                @Expose
+                val operatorId: String = "0",
+                @SerializedName("status")
+                @Expose
+                val status: Int = 0
         )
 
         class Promo(
@@ -67,6 +78,9 @@ open class CatalogProduct(
                 var terms: String = "",
                 @SerializedName("value_text")
                 @Expose
-                var valueText: String = ""
+                var valueText: String = "",
+                @SerializedName("discount")
+                @Expose
+                var discount: String = "",
         )
 }

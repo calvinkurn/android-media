@@ -2,15 +2,12 @@ package com.tokopedia.explore.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by yoasfs on 2020-01-08
  */
-class ContentExploreAnalytics @Inject constructor(
-        private val userSessionInterface: UserSessionInterface) {
+class ContentExploreAnalytics @Inject constructor() {
 
 
     fun sendScreenName(screenName: String) {
@@ -28,15 +25,6 @@ class ContentExploreAnalytics @Inject constructor(
                         postId,
                         recomId
                 )
-        ))
-    }
-
-    fun eventSubmitSearch(text: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.SEARCH,
-                text
         ))
     }
 

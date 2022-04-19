@@ -27,6 +27,9 @@ open class CatalogProductData(
                 @SerializedName("value")
                 @Expose
                 var value: String = "",
+                @SerializedName("cluster_type")
+                @Expose
+                var clusterType: String = "",
                 @SerializedName("products")
                 @Expose
                 var products: List<CatalogProduct> = listOf()

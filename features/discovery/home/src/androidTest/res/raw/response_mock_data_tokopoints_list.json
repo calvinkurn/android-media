@@ -1,0 +1,118 @@
+[
+  {
+    "data": {
+      "tokopointsDrawerList": {
+        "offFlag": false,
+        "drawerList": [
+          {
+            "type": "Coupon",
+            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/kupon-saya.png",
+            "redirectURL": "https://www.tokopedia.com/rewards/kupon-saya",
+            "redirectAppLink": "tokopedia://rewards/kupon-saya",
+            "sectionContent": [
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "Kupon Saya",
+                  "color": "#31353B",
+                  "isBold": true
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              },
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "19 Kupon Baru",
+                  "color": "#adadad",
+                  "isBold": true
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              }
+            ]
+          },
+          {
+            "type": "BBO",
+            "iconImageURL": "https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
+            "redirectURL": "https://164-staging-feature.tokopedia.com/install-app/bbo",
+            "redirectAppLink": "tokopedia://cart",
+            "sectionContent": [
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "Bebas Ongkir",
+                  "color": "#31353B",
+                  "isBold": true
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              },
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "2 Kuota Baru",
+                  "color": "#adadad",
+                  "isBold": false
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              }
+            ]
+          },
+          {
+            "type": "TokoPoints",
+            "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
+            "redirectURL": "https://staging.tokopedia.com/points-center",
+            "redirectAppLink": "tokopedia://webview?url=https://staging.tokopedia.com/points-center",
+            "sectionContent": [
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "Rp0 (0 Points)",
+                  "color": "#31353B",
+                  "isBold": true
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              },
+              {
+                "type": "text",
+                "textAttributes": {
+                  "text": "Tambah Points",
+                  "color": "#03ac0e",
+                  "isBold": true
+                },
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
+              }
+            ]
+          }
+        ],
+        "coachMarkList": [
+          {
+            "type": "status_matching",
+            "coachMarkContent": [
+              {
+                "title": "Your loyalty levels have been maximized!",
+                "content": "Awesome! You leveled up to Juragan on GoClub because you're Platinum"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

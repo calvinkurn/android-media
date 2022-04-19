@@ -38,7 +38,6 @@ class TravelDestinationActivity : BaseSimpleActivity(), HasComponent<TravelDesti
         supportActionBar?.hide()
 
         initInjector()
-        GraphqlClient.init(this)
     }
 
     override fun getScreenName(): String = TravelDestinationTrackingConstant.TRAVEL_HOMEPAGE_DESTINATION_SCREEN_NAME

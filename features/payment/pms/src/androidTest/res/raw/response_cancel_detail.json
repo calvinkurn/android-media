@@ -1,0 +1,12 @@
+[
+  {
+    "data": {
+      "cancelDetail": {
+        "success": true,
+        "refundWalletAmount": 0,
+        "refundMessage": "Konfirmasi Pembatalan Transaksi Anda",
+        "combineMessage": "Transaksi yang tidak kamu batalkan akan tetap diproses. Tagihan BCA Virtual Account kamu menjadi \u003cb\u003eRp122.000\u003c/b\u003e. "
+      }
+    }
+  }
+]

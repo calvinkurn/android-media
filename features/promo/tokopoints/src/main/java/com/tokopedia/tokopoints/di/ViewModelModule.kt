@@ -4,13 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.tokopoints.view.addPoint.AddPointViewModel
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogViewModel
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingViewModel
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
 import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewModel
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
-import com.tokopedia.tokopoints.view.pointhistory.PointHistoryViewModel
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
 import com.tokopedia.tokopoints.view.sendgift.SendGiftViewModel
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinViewModel
@@ -25,12 +24,6 @@ abstract class ViewModelModule {
     @TokoPointScope
     abstract fun getfactory(tokopointViewModelFactory: ViewModelFactory) : ViewModelProvider.Factory
 
-
-    @IntoMap
-    @Binds
-    @TokoPointScope
-    @ViewModelKey(PointHistoryViewModel::class)
-    abstract fun getHistoryViewModel(viewModel: PointHistoryViewModel) : ViewModel
 
     @IntoMap
     @Binds
@@ -71,12 +64,6 @@ abstract class ViewModelModule {
     @IntoMap
     @Binds
     @TokoPointScope
-    @ViewModelKey(AddPointViewModel::class)
-    abstract fun getAddPoint(viewModel: AddPointViewModel) : ViewModel
-
-    @IntoMap
-    @Binds
-    @TokoPointScope
     @ViewModelKey(ValidateMerchantPinViewModel::class)
     abstract fun getValidatePin(viewModel: ValidateMerchantPinViewModel) : ViewModel
 
@@ -85,5 +72,11 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(SendGiftViewModel::class)
     abstract fun getSendGift(viewModel: SendGiftViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(MerchantCouponViewModel::class)
+    abstract fun getMerchantCouponViewmodel(viewModel: MerchantCouponViewModel) : ViewModel
 
 }

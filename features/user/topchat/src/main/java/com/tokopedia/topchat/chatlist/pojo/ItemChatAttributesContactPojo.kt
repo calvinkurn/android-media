@@ -2,12 +2,11 @@ package com.tokopedia.topchat.chatlist.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 
 /**
  * @author : Steven 2019-08-08
  */
-data class ItemChatAttributesContactPojo(
+data class ItemChatAttributesContactPojo constructor(
         @SerializedName("id")
         @Expose
         var contactId: String = "",
@@ -28,6 +27,12 @@ data class ItemChatAttributesContactPojo(
         var tag: String = "",
         @SerializedName("thumbnail")
         @Expose
-        var thumbnail: String = ""
+        var thumbnail: String = "",
+        @SerializedName("is_auto_reply")
+        @Expose
+        var isAutoReply: Boolean? = false,
+        @SerializedName("to_uid")
+        @Expose
+        var toUid: String? = ""
 
 )

@@ -24,8 +24,6 @@ data class ChatOrderProgress(
         val state: String = "",
         @SerializedName("status")
         val status: String = "",
-        @SerializedName("statusId")
-        val statusId: Int = 0,
         @SerializedName("uri")
         val uri: String = ""
 ) {

@@ -6,5 +6,5 @@
     android:layout_height="wrap_content"
     android:clipToPadding="false"
     android:paddingStart="@dimen/dp_topchat_12"
-    android:paddingEnd="@dimen/dp_topchat_12"
+    android:paddingEnd="@dimen/spacing_lvl3"
     tools:listitem="@layout/item_topchat_product_carousel_attachment" />

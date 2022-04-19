@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.TextView
 
-import com.tokopedia.design.text.DecimalRangeInputView
+import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget.DecimalRangeInputView
 import com.tokopedia.design.text.RangeInputView
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
@@ -70,9 +70,7 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
                 bindWholesaleOptionItem(option)
             }
 
-            if (Option.KEY_PRICE_RANGE_1 == option.key
-                    || Option.KEY_PRICE_RANGE_2 == option.key
-                    || Option.KEY_PRICE_RANGE_3 == option.key) {
+            if (option.isPriceRange) {
                 priceRangeList.add(option)
             }
         }
@@ -129,8 +127,8 @@ class DynamicFilterItemPriceViewHolder(itemView: View, private val dynamicFilter
             pricePillsRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        val spacingBetween = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
-        val edgeMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+        val spacingBetween = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        val edgeMargin = itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
 
         if (pricePillsRecyclerView.itemDecorationCount == 0) {
             pricePillsRecyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin))

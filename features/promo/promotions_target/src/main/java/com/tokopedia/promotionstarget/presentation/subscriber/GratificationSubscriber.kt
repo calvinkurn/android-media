@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
@@ -13,15 +14,18 @@ import com.tokopedia.promotionstarget.data.CouponGratificationParams
 import com.tokopedia.promotionstarget.data.claim.ClaimPayload
 import com.tokopedia.promotionstarget.data.claim.ClaimPopGratificationResponse
 import com.tokopedia.promotionstarget.data.coupon.GetCouponDetailResponse
-import com.tokopedia.promotionstarget.data.di.components.AppModule
 import com.tokopedia.promotionstarget.data.di.components.DaggerPromoTargetComponent
+import com.tokopedia.promotionstarget.data.di.modules.AppModule
 import com.tokopedia.promotionstarget.data.pop.GetPopGratificationResponse
 import com.tokopedia.promotionstarget.domain.presenter.DialogManagerPresenter
 import com.tokopedia.promotionstarget.domain.usecase.ClaimCouponApi
 import com.tokopedia.promotionstarget.domain.usecase.ClaimPopGratificationUseCase
+import com.tokopedia.promotionstarget.presentation.GratifCmInitializer
 import com.tokopedia.promotionstarget.presentation.ui.dialog.TargetPromotionsDialog
 import com.tokopedia.user.session.UserSession
+import dagger.Lazy
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -33,10 +37,10 @@ import javax.inject.Inject
 class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycleCallbacks {
 
     @Inject
-    lateinit var presenter: DialogManagerPresenter
+    lateinit var presenter: Lazy<DialogManagerPresenter>
 
     @Inject
-    lateinit var claimGratificationUseCase: ClaimPopGratificationUseCase
+    lateinit var claimGratificationUseCase: Lazy<ClaimPopGratificationUseCase>
 
     private var job: Job? = null
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
@@ -71,16 +75,17 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         processOnActivityCreated(activity, newIntent)
     }
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        super.onActivityCreated(activity, savedInstanceState)
         if (savedInstanceState != null) {
             val waitingForLogin = savedInstanceState.getBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN)
             val refIdList = savedInstanceState.getIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID)
             if (waitingForLogin) {
-                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
-                activity?.intent?.putExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
+                activity.intent?.putExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+                activity.intent?.putExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
             }
         }
-        processOnActivityCreated(activity, activity?.intent)
+        processOnActivityCreated(activity, activity.intent)
     }
 
     private fun processOnActivityCreated(activity: Activity?, intent: Intent?) {
@@ -97,22 +102,18 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         }
     }
 
-    override fun onActivityDestroyed(activity: Activity?) {
+    override fun onActivityDestroyed(activity: Activity) {
         super.onActivityDestroyed(activity)
-        if (activity != null) {
-            clearMaps(activity)
-        }
+        clearMaps(activity)
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         super.onActivitySaveInstanceState(activity, outState)
-        if (activity != null) {
-            val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
-            val refIdList = activity.intent?.getIntArrayExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID)
-            if (waitingForLogin != null && waitingForLogin) {
-                outState?.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
-                outState?.putIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
-            }
+        val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+        val refIdList = activity.intent?.getIntArrayExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID)
+        if (waitingForLogin != null && waitingForLogin) {
+            outState.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            outState.putIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
         }
     }
 
@@ -124,9 +125,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         mapOfDialogs.remove(activity)
     }
 
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
-        processOnActivityResumed(activity, activity?.intent)
+        processOnActivityResumed(activity, activity.intent)
     }
 
     private fun processOnActivityResumed(activity: Activity?, intent: Intent?) {
@@ -134,51 +135,61 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             val waitingForLogin = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
             if (waitingForLogin) {
                 val isLoggedIn = UserSession(activity).isLoggedIn
-                mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin(isLoggedIn)
+                val handler = Handler()
+                handler.postDelayed({
+                    if(activity?.isFinishing == false && !activity.isDestroyed) {
+                        mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin(isLoggedIn)
+                    }
+                },2000L)
             }
         }
     }
 
     private fun shouldOpenTargetedPromotionsDialog(activity: Activity?, intent: Intent?): GratificationData? {
-        var showGratificationDialog = false
-        var gratificationData: GratificationData? = null
-        if (activity != null && intent != null) {
+        try {
+            var showGratificationDialog = false
+            var gratificationData: GratificationData? = null
+            if (activity != null && intent != null) {
 
-            val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
+                val bundle = intent.extras?.getBundle(RouteManager.QUERY_PARAM)
 
-            var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
-            var page = bundle?.getString(CouponGratificationParams.PAGE)
+                var popSlug = bundle?.getString(CouponGratificationParams.POP_SLUG)
+                var page = bundle?.getString(CouponGratificationParams.PAGE)
 
-            if (page.isNullOrEmpty()) {
-                page = intent.getStringExtra(CouponGratificationParams.PAGE)
-            }
+                if (page.isNullOrEmpty()) {
+                    page = intent.getStringExtra(CouponGratificationParams.PAGE)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
-            }
+                if (popSlug.isNullOrEmpty()) {
+                    popSlug = intent.getStringExtra(CouponGratificationParams.POP_SLUG)
+                }
 
-            if (popSlug.isNullOrEmpty()) {
-                val uri = intent.data
-                if (uri != null) {
-                    popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
-                    page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                if (popSlug.isNullOrEmpty()) {
+                    val uri = intent.data
+                    if (uri != null) {
+                        popSlug = uri.getQueryParameter(CouponGratificationParams.POP_SLUG)
+                        page = uri.getQueryParameter(CouponGratificationParams.PAGE)
+                    }
+                }
+
+                if (page.isNullOrEmpty()) {
+                    page = ""
+                    val activityName = activity?.javaClass?.canonicalName
+                    if (!TextUtils.isEmpty(activityName)) {
+                        page = activityName
+                    }
+                }
+
+                showGratificationDialog = (!TextUtils.isEmpty(popSlug))
+                if (showGratificationDialog) {
+                    gratificationData = GratificationData(popSlug!!, page!!)
                 }
             }
-
-            if (page.isNullOrEmpty()) {
-                page = ""
-                val activityName = activity?.javaClass?.canonicalName
-                if (!TextUtils.isEmpty(activityName)) {
-                    page = activityName
-                }
-            }
-
-            showGratificationDialog = (!TextUtils.isEmpty(popSlug))
-            if (showGratificationDialog) {
-                gratificationData = GratificationData(popSlug!!, page!!)
-            }
+            return gratificationData
+        } catch (ex: Throwable) {
+            Timber.e(ex)
+            return null
         }
-        return gratificationData
     }
 
     private fun showGratificationDialog(activity: Activity, gratificationData: GratificationData, intent: Intent) {
@@ -197,7 +208,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             scope?.launch(Dispatchers.IO + ceh) {
                 supervisorScope {
                     val childJob = launch {
-                        val response = presenter.getGratificationAndShowDialog(gratificationData)
+                        val response = presenter.get().getGratificationAndShowDialog(gratificationData)
                         val canShowDialog = response.popGratification?.isShow
                         var isAutoClaim = response.popGratification?.isAutoClaim
 
@@ -206,14 +217,14 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
                                 //NEW FLOW
 
-                                if (presenter.userSession.isLoggedIn) {
+                                if (presenter.get().userSession.isLoggedIn) {
                                     var claimPopGratificationResponse: ClaimPopGratificationResponse? = null
                                     var couponDetail: GetCouponDetailResponse? = null
                                     try {
                                         val claimPayload = ClaimPayload(gratificationData.popSlug, gratificationData.page)
-                                        claimPopGratificationResponse = presenter.claimGratification(claimPayload)
+                                        claimPopGratificationResponse = presenter.get().claimGratification(claimPayload)
                                         val popBenefits = response.popGratification?.popGratificationBenefits
-                                        couponDetail = presenter.composeApi(popBenefits)
+                                        couponDetail = presenter.get().composeApi(popBenefits)
 
                                     } catch (ex: Exception) {
                                     }
@@ -225,14 +236,14 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                                     }
 
                                 } else {
-                                    val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
+                                    val couponDetail = presenter.get().composeApi(response.popGratification.popGratificationBenefits)
                                     withContext(Dispatchers.Main) {
                                         showNonLoggedIn(weakActivity, response, couponDetail, gratificationData)
                                     }
                                 }
                             } else {
                                 //OLD FLOW
-                                val couponDetail = presenter.composeApi(response.popGratification.popGratificationBenefits)
+                                val couponDetail = presenter.get().composeApi(response.popGratification.popGratificationBenefits)
                                 withContext(Dispatchers.Main) {
                                     if (weakActivity.get() != null && !weakActivity.get()?.isFinishing!!) {
                                         showOld(weakActivity, response, couponDetail, gratificationData, intent)
@@ -302,7 +313,7 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
                 claimApi = weakOldClaimCouponApi?.get()!!
             } else {
                 if (scope != null) {
-                    claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
+                    claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase.get())
                     weakOldClaimCouponApi?.clear()
                     weakOldClaimCouponApi = WeakReference(claimApi)
                 }
@@ -355,7 +366,6 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         } catch (th: Throwable) {
         }
     }
-
 }
 
 data class GratificationData(val popSlug: String, val page: String)

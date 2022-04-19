@@ -1,0 +1,33 @@
+{
+  "notifications": {
+    "total_cart": 8,
+    "chat": {
+      "unreads": 5,
+      "unreadsSeller": 1,
+      "unreadsUser": 4
+    },
+    "inbox_counter": {
+      "all": {
+        "total_int": 12,
+        "notifcenter_int": 30,
+        "chat_int": 5,
+        "talk_int": 2,
+        "review_int": 3
+      },
+      "buyer": {
+        "total_int": 80,
+        "notifcenter_int": 20,
+        "chat_int": 10,
+        "talk_int": 20,
+        "review_int": 20
+      },
+      "seller": {
+        "total_int": 40,
+        "notifcenter_int": 10,
+        "chat_int": 10,
+        "talk_int": 10,
+        "review_int": 10
+      }
+    }
+  }
+}

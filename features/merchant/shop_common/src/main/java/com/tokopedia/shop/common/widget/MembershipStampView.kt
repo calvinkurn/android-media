@@ -5,29 +5,29 @@ import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.stampprogress.ActionButton
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class MembershipStampView : FrameLayout {
 
-    lateinit var txtTitle: TextView
+    lateinit var txtTitle: Typography
     private lateinit var imgStamp1: ImageView
     private lateinit var imgStamp2: ImageView
     private lateinit var imgStamp3: ImageView
     private lateinit var imgStamp4: ImageView
     private lateinit var imgStamp5: ImageView
 
-    private lateinit var txtNumber1: TextView
-    private lateinit var txtNumber2: TextView
-    private lateinit var txtNumber3: TextView
-    private lateinit var txtNumber4: TextView
-    private lateinit var txtNumber5: TextView
+    private lateinit var txtNumber1: Typography
+    private lateinit var txtNumber2: Typography
+    private lateinit var txtNumber3: Typography
+    private lateinit var txtNumber4: Typography
+    private lateinit var txtNumber5: Typography
 
     private lateinit var circleStamp1: FrameLayout
     private lateinit var circleStamp2: FrameLayout
@@ -39,13 +39,13 @@ class MembershipStampView : FrameLayout {
     lateinit var line2: View
     lateinit var line3: View
     lateinit var line4: View
-    lateinit var btnClaim: Button
+    lateinit var btnClaim: UnifyButton
     lateinit var membershipCard: CardView
 
     private var listImage = mutableListOf<ImageView>()
     private var listLine = mutableListOf<View>()
     private var listCircleStamp = mutableListOf<FrameLayout>()
-    private var listTxtNumber = mutableListOf<TextView>()
+    private var listTxtNumber = mutableListOf<Typography>()
 
     constructor(context: Context) : super(context) {
         init()

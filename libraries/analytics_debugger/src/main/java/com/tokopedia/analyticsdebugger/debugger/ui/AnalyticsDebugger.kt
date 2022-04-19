@@ -14,6 +14,8 @@ interface AnalyticsDebugger {
         fun onReloadCompleted(visitables: List<Visitable<*>>)
 
         fun onDeleteCompleted()
+
+        fun showCount(count: Int)
     }
 
     interface Presenter : CustomerPresenter<View> {

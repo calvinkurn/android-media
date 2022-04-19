@@ -3,7 +3,6 @@ package com.tokopedia.digital_deals.view.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -15,18 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 public class DealsAnalytics {
-    public static final int SEE_ALL_BRANDS_HOME = 1;
-    public static final int SEE_ALL_BRANDS_CATEGORY = 2;
     public static final int CLICK_BRANDS_CATEGORY = 1;
     public static final int CLICK_BRANDS_SEARCH = 2;
     public static final int CLICK_BRANDS_HOME = 3;
     public static final int CLICK_BRAND_NATIVE_PAGE = 4;
-    public static final String ACTION_CLICK_BRAND = "click brand";
     public static final String TRENDING_DEALS = "trending deals";
     public static final String CURATED_DEALS = "curated deals";
     public static final String BRAND_DEALS = "brand deals";
@@ -38,14 +33,10 @@ public class DealsAnalytics {
     private static final String PRICE = "price";
     private static final String BRAND = "brand";
     private static final String DEALS = "deals";
-    private static final String PROMO_ID = "promo_id";
-    private static final String PROMO_CODE = "promo_code";
     private static final String KEY_PRODUCTS = "products";
-    private static final String KEY_PRODUCT = "product";
     private static final String KEY_IMPRESSIONS = "impressions";
     private static final String LIST = "list";
     public static final String LIST_DEALS_TRENDING = "/deals - trending";
-    private static final String LIST_DEALS_SEARCH_BY_LOCATION = "/deals - search by location";
     private static final String KEY_PROMOTIONS = "promotions";
     private static final String KEY_OPTIONS = "option";
     private static final String KEY_STEP = "step";
@@ -59,15 +50,21 @@ public class DealsAnalytics {
     private static final String VARIANT = "variant";
     private static final String QUANTITY = "quantity";
     private static final String CART_ID = "cart_id";
+    private static final String BUSINESS_UNIT = "businessUnit";
+    private static final String CURRENT_SITE = "currentSite";
+    private static final String BUSINESS_UNIT_DEALS = "travel & entertainment";
+    private static final String CURRENT_SITE_DEALS = "tokopediadigitaldeals";
+    private static final String EMPTY = "-";
+    private static final String USER_ID = "userId";
+    private static final String SHOP_ID = "shop_id";
+    private static final String SHOP_NAME = "shop_name";
+    private static final String SHOP_TYPE = "shop_type";
     private static final String HASH_CHECKOUT = "checkout";
     private static final String CURRENCY_CODE = "currencyCode";
     private static final String IDR = "IDR";
     private static final String HASH_DETAIL = "detail";
-    private static final String LIST_DEALS_CATEGORY = "/deals - category";
-    private static final String LIST_DEALS_BRAND = "/deals - brand";
     private static final String CREATIVE = "creative";
     private static final String CREATIVE_URL = "creative_url";
-    public static final String LIST_DEALS_TOP_BANNER = "/deals - top banner";
     private static final String HASH_ADD = "add";
     public static final String DEALS_HOME_PAGE = "deals-homepage";
     private static final String EVENT_ACTION_BRANDS_IMPRESSION = "impression brand search result";
@@ -85,29 +82,16 @@ public class DealsAnalytics {
     public static String DIGITAL_DEALS = "digital - deals";
 
 
-    public static String EVENT_QUERY_LOCATION = "cari lokasi";
     public static String EVENT_CLICK_ON_POPULAR_LOCATION = "click on popular location";
     public static String EVENT_CLICK_ON_LOCATION = "click on %s";
-    public static String EVENT_NO_LOCATION = "view no locations found";
-    public static String EVENT_CLICK_SEE_ALL_PROMO = "click see all promo";
-    public static String EVENT_SELECT_VOUCHER_CATEGORY = "select voucher category";
     public static String EVENT_CLICK_SHARE = "click share";
     public static String EVENT_CLICK_LOVE = "click love";
-    public static String EVENT_CLICK_DAFTAR_TRANSAKSI = "click transaction list";
-    public static String EVENT_CLICK_BANTUAN = "click bantuan";
     public static String EVENT_CLICK_PROMO = "click promo";
-    public static String EVENT_SEARCH_VOUCHER_OR_OUTLET = "search voucher or outlet";
-    public static String EVENT_CLICK_SEARCH_BRAND = "click search brand";
-    public static String EVENT_CLICK_SEARCH_BRAND_RESULT = "click search brand result";
-    public static String EVENT_CLICK_POPULAR_BRAND = "click popular brand";
     public static String EVENT_CLICK_SEE_MORE_BRAND_DETAIL = "click selengkapnya - brand detail";
     public static String EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL = "click check location - product detail";
     public static String EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL = "click check term and condition - product detail";
     public static String EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL = "check what you will get - product detail";
     public static String EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL = "check how to redeem - product detail";
-    public static String EVENT_NO_DEALS = "view no deals found";
-    public static String EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION = "view deals not available on your location";
-    public static String EVENT_NO_BRAND_FOUND = "view no brand found";
     public static String EVENT_VIEW_BRAND_DETAIL = "view brand detail";
     public static String EVENT_CLICK_BELI = "click beli";
     public static String EVENT_IMPRESSION_PROMO_BANNER = "impression promo banner";
@@ -125,20 +109,14 @@ public class DealsAnalytics {
     public static String EVENT_CLICK_SEE_ALL_TRENDING_DEALS = "click lihat semua trending deals";
     public static String EVENT_CLICK_SEE_ALL_BRANDS_CATEGORY = "click lihat semua brand on category page";
     public static String EVENT_IMPRESSION_SEARCH_RESULT = "impression deals search result";
-    public static String EVENT_CLICK_SEARCH_RESULT = "click search result";
-    public static String EVENT_CLICK_SEARCH_TRENDING = "click search trending deals click";
     public static String EVENT_IMPRESSION_SEARCH_TRENDING = "impression deals popular suggestion";
     public static String EVENT_VIEW_PRODUCT_BRAND_DETAIL = "view product - brand detail";
-    public static String EVENT_CLICK_PRODUCT_BRAND_DETAIL = "click product - brand detail";
     public static String EVENT_VIEW_RECOMMENDED_PDT_DETAIL = "impression recommended product - product detail";
-    public static String EVENT_CLICK_RECOMMENDED_PDT_DETAIL = "click recommended product - product detail";
     public static String EVENT_VIEW_PRODUCT_CATEGORY_DETAIL = "view product - category detail";
-    public static String EVENT_CLICK_PRODUCT_CATEGORY_DETAIL = "click product - category detail";
     public static String EVENT_VIEW_PRODUCT_DETAILS = "view product detail";
     public static String EVENT_CHECKOUT = "checkout";
     public static String ACTION_CHECKOUT = "view checkout";
     public static String EVENT_CLICK_PROCEED_TO_PAYMENT = "click proceed to payment";
-    public static String EVENT_VIEW_SEARCH_BRAND_RESULT = "view search brand result";
     public static String EVENT_CLICK_DEALS = "clickDeals";
     public static String EVENT_CLICK_SEARCH_DEALS = "click search";
     public static String EVENT_CLICK_BRAND_TAB = "click brand tab";
@@ -183,6 +161,32 @@ public class DealsAnalytics {
         map.put(EVENT_ACTION, action);
         map.put(EVENT_LABEL, label == null ? "" : label.toLowerCase());
         map.put(ECOMMERCE, ecommerce);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+    }
+
+    public void sendEventEcommerceBU(String event, String action, String label,
+                                   HashMap<String, Object> ecommerce, String userId) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(EVENT, event);
+        map.put(EVENT_CATEGORY, DIGITAL_DEALS);
+        map.put(EVENT_ACTION, action);
+        map.put(EVENT_LABEL, label == null ? "" : label.toLowerCase());
+        map.put(BUSINESS_UNIT, BUSINESS_UNIT_DEALS);
+        map.put(CURRENT_SITE, CURRENT_SITE_DEALS);
+        map.put(USER_ID, userId);
+        map.put(ECOMMERCE, ecommerce);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
+    }
+
+    public void sendEventBU(String event, String action, String label, String userId) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(EVENT, event);
+        map.put(EVENT_CATEGORY, DIGITAL_DEALS);
+        map.put(EVENT_ACTION, action);
+        map.put(EVENT_LABEL, label == null ? "" : label.toLowerCase());
+        map.put(BUSINESS_UNIT, BUSINESS_UNIT_DEALS);
+        map.put(CURRENT_SITE, CURRENT_SITE_DEALS);
+        map.put(USER_ID, userId);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
     }
 
@@ -269,36 +273,6 @@ public class DealsAnalytics {
                     , label == null ? "" : label.toLowerCase(), ecommerce);
         } catch (Exception e) {
             Log.d("Naveen", "Error in" + e.getStackTrace());
-        }
-    }
-
-    public void sendBrandsSuggestionImpressionEvent(List<Brand> brandItems, String searchText) {
-        try {
-            String event = null, label = null, action = null;
-            List<HashMap<String, Object>> products = new ArrayList<>();
-            HashMap<String, Object> promotions = new HashMap<>();
-            HashMap<String, Object> promoView = new HashMap<>();
-            HashMap<String, Object> ecommerce = new HashMap<>();
-            event = DealsAnalytics.EVENT_PROMO_VIEW;
-            for (int index = 0; index < brandItems.size(); index++) {
-                promotions.put(POSITION, String.valueOf(index));
-                promotions.put(ID, String.valueOf(brandItems.get(index).getId()));
-                promotions.put(NAME, brandItems.get(index).getTitle());
-                promotions.put(CREATIVE, brandItems.get(index).getTitle());
-                promotions.put(CATEGORY, DEALS);
-                promotions.put(CREATIVE_URL, "none");
-                products.add(promotions);
-            }
-
-            label = searchText;
-            action = DealsAnalytics.EVENT_ACTION_BRANDS_IMPRESSION;
-            promoView.put(KEY_PROMOTIONS, products);
-            ecommerce.put(KEY_PROMOVIEW, promoView);
-            sendEventEcommerce(event
-                    , action
-                    , label == null ? "" : label.toLowerCase(), ecommerce);
-        } catch (Exception e) {
-
         }
     }
 
@@ -409,7 +383,8 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendEcommercePayment(Integer categoryID, int id, int quantity, int salesPrice, String displayName, String brandName, boolean promoApplied) {
+    public void sendEcommercePayment(Integer categoryID, int id, int quantity, int salesPrice,
+                                     String displayName, String brandName, boolean promoApplied, String userId) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put(ID, String.valueOf(id));
@@ -417,6 +392,9 @@ public class DealsAnalytics {
             productMap.put(PRICE, String.valueOf(quantity * salesPrice));
             productMap.put(CATEGORY, "deals");
             productMap.put(CART_ID, "0");
+            productMap.put(SHOP_ID, EMPTY);
+            productMap.put(SHOP_NAME, EMPTY);
+            productMap.put(SHOP_TYPE, EMPTY);
             productMap.put(CATEGORY_ID, String.valueOf(categoryID));
             productMap.put(QUANTITY, quantity);
             HashMap<String, Object> checkout = new HashMap<>();
@@ -432,16 +410,17 @@ public class DealsAnalytics {
                 promo = "promo";
             else
                 promo = "non promo";
-            sendEventEcommerceCurrentSite(DealsAnalytics.EVENT_CHECKOUT
+            sendEventEcommerceBU(DealsAnalytics.EVENT_CHECKOUT
                     , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
                     , String.format("%s - %s", brandName
-                            , promo).toLowerCase(), ecommerce);
+                            , promo).toLowerCase(), ecommerce, userId);
         } catch (Exception e) {
 
         }
     }
 
-    public void sendEcommerceQuantity(int id, int quantity, int salesPrice, String displayName, String brandName, int categoryID) {
+    public void sendEcommerceQuantity(int id, int quantity, int salesPrice, String displayName,
+                                      String brandName, int categoryID, String userId) {
         try {
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put(ID, String.valueOf(id));
@@ -450,6 +429,9 @@ public class DealsAnalytics {
             productMap.put(CATEGORY, DEALS);
             productMap.put(CATEGORY_ID, String.valueOf(categoryID));
             productMap.put(QUANTITY, quantity);
+            productMap.put(SHOP_ID, EMPTY);
+            productMap.put(SHOP_NAME, EMPTY);
+            productMap.put(SHOP_TYPE, EMPTY);
             productMap.put(CART_ID, "0");
             HashMap<String, Object> checkout = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
@@ -459,9 +441,9 @@ public class DealsAnalytics {
             checkout.put(KEY_PRODUCTS, Collections.singletonList(productMap));
             checkout.put(HASH_ACTION_FIELD, actionField);
             ecommerce.put(HASH_CHECKOUT, checkout);
-            sendEventEcommerce(DealsAnalytics.EVENT_CHECKOUT
+            sendEventEcommerceBU(DealsAnalytics.EVENT_CHECKOUT
                     , DealsAnalytics.ACTION_CHECKOUT
-                    , brandName.toLowerCase(), ecommerce);
+                    , brandName.toLowerCase(), ecommerce, userId);
         } catch (Exception e) {
 
         }
@@ -555,59 +537,6 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendOnClickBannerPromoEvent(ProductItem item, int position){
-        try{
-            Map promotion = DataLayer.mapOf(
-                    ID, String.valueOf(item.getId()),
-                    NAME, LIST_SUGGESTED_DEALS,
-                    CREATIVE, item.getDisplayName(),
-                    POSITION, String.valueOf(position),
-                    CATEGORY, DEALS
-            );
-            ArrayList promotions = new ArrayList();
-            promotions.add(promotion);
-
-            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                    EVENT, EVENT_PROMO_CLICK,
-                    EVENT_CATEGORY, DIGITAL_DEALS,
-                    EVENT_ACTION, EVENT_CLICK_PROMO_BANNER,
-                    EVENT_LABEL, String.format(LABEL_FORMAT, item.getDisplayName(), position).toLowerCase(),
-                    ECOMMERCE, DataLayer.mapOf(
-                            EVENT_PROMO_CLICK, DataLayer.mapOf(
-                                    KEY_PROMOTIONS, promotions)
-                    )
-            ));
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
-    public void sendSearchClickedEvent(String searchText) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_SEARCH_DEALS, searchText);
-    }
-
-    public void sendAllBrandsClickEvent(int pageType) {
-        String event = null, action = null;
-        if (pageType == SEE_ALL_BRANDS_HOME) {
-            event = EVENT_CLICK_DEALS;
-            action = EVENT_CLICK_SEE_ALL_BRANDS;
-        } else {
-            event = EVENT_PROMO_VIEW;
-            action = EVENT_CLICK_SEE_ALL_BRANDS_CATEGORY;
-        }
-        TrackApp.getInstance().getGTM().sendGeneralEvent(event, DIGITAL_DEALS, action, "");
-    }
-
-    public void sendSelectedHeaderEvent(String selectedTab) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_BRAND_TAB, selectedTab);
-    }
-
-    public void sendCategoryClickEventHome(String name, int position) {
-        String label = String.format("%s - %s", name, position);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_CATEGORY, label);
-    }
-
     public void sendBrandsSuggestionClickEvent(Brand brand, int position, String searchtext, int pageType) {
         try {
             String action = null, label = null;
@@ -695,41 +624,11 @@ public class DealsAnalytics {
         ecommerce.put(KEY_IMPRESSIONS, products);
         String label = "";
         if (action.equalsIgnoreCase(EVENT_IMPRESSION_CURATED_DEALS)) {
-          label = String.valueOf(dealPosition);;
+            label = String.valueOf(dealPosition);
+            ;
         }
         sendEventEcommerce(event, action, label.toLowerCase(), ecommerce);
 
-    }
-
-    public void sendSeeAllTrendingDeals() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_SEE_ALL_TRENDING_DEALS, "");
-    }
-
-    public void sendPromoImpressionEvent(ProductItem item, int index) {
-        try{
-            Map promotion = DataLayer.mapOf(
-                    ID, String.valueOf(item.getId()),
-                    NAME, DEALS_HOME_PAGE,
-                    CREATIVE, item.getDisplayName(),
-                    POSITION, String.valueOf(index),
-                    CATEGORY, DEALS
-            );
-            ArrayList promotions = new ArrayList();
-            promotions.add(promotion);
-
-            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                    EVENT, EVENT_PROMO_VIEW,
-                    EVENT_CATEGORY, DIGITAL_DEALS,
-                    EVENT_ACTION, EVENT_IMPRESSION_PROMO_BANNER,
-                    EVENT_LABEL, String.format(LABEL_FORMAT, item.getDisplayName(), String.valueOf(index)).toLowerCase(),
-                    ECOMMERCE, DataLayer.mapOf(
-                            EVENT_PROMO_VIEW, DataLayer.mapOf(
-                                    KEY_PROMOTIONS, promotions)
-                    )
-            ));
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public void sendRecommendedDealImpressionEvent(List<ProductItem> items, int index, String categoryName) {
@@ -785,13 +684,20 @@ public class DealsAnalytics {
         }
     }
 
-    public void sendPromoCodeClickEvent(DealsDetailsResponse dealDetails) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_PROMO,
-                String.format("%s - %s -%s", dealDetails.getBrand().getTitle(), dealDetails.getDisplayName(), "promo/non promo").toLowerCase());
+    public void sendPromoCodeClickEvent(DealsDetailsResponse dealDetails, String userId, Boolean promoApplied) {
+        String promo = "";
+        if (promoApplied)
+            promo = "promo";
+        else
+            promo = "non promo";
+        sendEventBU(EVENT_CLICK_DEALS, EVENT_CLICK_PROMO, String.format("%s - %s", dealDetails.getBrand().getTitle(), promo), userId);
     }
 
     public void sendScreenNameEvent(String screenName) {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(BUSINESS_UNIT, BUSINESS_UNIT_DEALS);
+        map.put(CURRENT_SITE, CURRENT_SITE_DEALS);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, map);
     }
 
     public void sendCategoryDealsImpressionEvent(String event, String action, List<ProductItem> items, int index, String categoryName) {

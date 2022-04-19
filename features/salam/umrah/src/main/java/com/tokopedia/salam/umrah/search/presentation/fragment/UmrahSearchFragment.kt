@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
@@ -31,6 +30,8 @@ import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
@@ -109,8 +110,8 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
                 REQUEST_FILTER -> {
                     data?.let {
                         selectedFilter.apply {
-                            departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID)
-                            departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD)
+                            departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID) ?: ""
+                            departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD) ?: ""
                             priceMinimum = it.getIntExtra(EXTRA_PRICE_MIN, 0)
                             priceMaximum = it.getIntExtra(EXTRA_PRICE_MAX, 0)
                             durationDaysMinimum = it.getIntExtra(EXTRA_DURATION_DAYS_MIN, 0)
@@ -215,7 +216,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHideFAB()
-        umrahSearchViewModel.searchResult.observe(this, Observer {
+        umrahSearchViewModel.searchResult.observe(this.viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetResult(it.data)
@@ -231,8 +232,11 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
             }
         })
-        umrah_search_bottom_action_view.setButton1OnClickListener { openSortBottomSheets() }
-        umrah_search_bottom_action_view.setButton2OnClickListener { openFilterFragment() }
+        umrah_search_bottom_action_view.setDefault()
+        umrah_search_bottom_action_view.sortItem.title = context?.getString(
+                com.tokopedia.common.travel.R.string.travel_title_sort_search) ?: "Urutkan"
+        umrah_search_bottom_action_view.sortItem.listener = { openSortBottomSheets() }
+        umrah_search_bottom_action_view.filterItem.listener = { openFilterFragment() }
     }
 
     private fun setHideFAB() {
@@ -263,14 +267,14 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     override fun loadData(page: Int) {
         umrahSearchViewModel.searchUmrahProducts(page,
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_search_product))
+                UmrahQuery.UMRAH_SEARCH_PRODUCT_QUERY)
     }
 
     private fun onSuccessGetResult(data: List<UmrahSearchProduct>) {
         if (!isRVInited) umrah_search_recycler_view.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(searchParam.limit * 2)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_4), RecyclerView.VERTICAL))
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), RecyclerView.VERTICAL))
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -374,11 +378,11 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     private fun openSortBottomSheets() {
         umrahSearchSortAdapter.setSelectedOption(umrahSearchViewModel.getSortValue())
-        sortBottomSheets.show(fragmentManager!!, "")
+        sortBottomSheets.show(requireFragmentManager(), "")
     }
 
     private fun loadSortData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        val searchQuery = UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 

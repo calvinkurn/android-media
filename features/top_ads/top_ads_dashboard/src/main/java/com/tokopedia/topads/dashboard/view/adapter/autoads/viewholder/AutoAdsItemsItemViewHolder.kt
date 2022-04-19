@@ -2,26 +2,27 @@ package com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.model.nongroupItem.WithoutGroupDataItem
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemModel
 import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 
 /**
  * Created by Pika on 2/6/20.
  */
 
-class AutoAdsItemsItemViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAdsItemsItemViewModel>(view) {
+class AutoAdsItemsItemViewHolder(val view: View) : AutoAdsItemsViewHolder<AutoAdsItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    override fun bind(item: AutoAdsItemsItemViewModel, statsData: MutableList<WithoutGroupDataItem>) {
+    override fun bind(item: AutoAdsItemsItemModel, statsData: MutableList<WithoutGroupDataItem>) {
         item.let {
-            ImageLoader.LoadImage(view.product_img, it.data.productImageUri)
+            view.product_img.setImageUrl(it.data.productImageUri)
+            view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             view.product_name.text = it.data.productName
             view.img_menu.visibility = View.GONE
             view.check_box.visibility = View.GONE

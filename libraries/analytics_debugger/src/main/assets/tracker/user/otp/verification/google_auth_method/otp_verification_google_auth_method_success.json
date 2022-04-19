@@ -1,0 +1,44 @@
+{
+  "readme": "Success verification with google_authenticator method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP google_authenticator",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "input otp page",
+      "event": "clickConfirm",
+      "eventAction": "click on verifikasi",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "auto submit otp page",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - google_authenticator"
+    }
+  ]
+}

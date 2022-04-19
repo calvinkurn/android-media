@@ -15,39 +15,47 @@ private const val KEY_DIMENSION_40 = "dimension40"
 
 object ProductTrackingConstant {
 
-        object Category {
-                const val PDP = "product detail page"
-        }
+    object Category {
+        const val PDP = "product detail page"
+    }
 
-        object Tracking {
+    object Tracking {
 
-                const val ID = "id"
-                const val NAME = "name"
-                const val DEFAULT_VALUE = "none / other"
-                const val KEY_PRODUCT_ID = "productId"
-                const val KEY_LAYOUT = "layout"
-                const val KEY_COMPONENT = "component"
+        const val ID = "id"
+        const val NAME = "name"
+        const val DEFAULT_VALUE = "none / other"
+        const val KEY_PRODUCT_ID = "productId"
+        const val KEY_LAYOUT = "layout"
+        const val KEY_COMPONENT = "component"
 
-                const val KEY_DIMENSION_81 = "dimension81"
-                const val KEY_DIMENSION_83 = "dimension83"
-                const val KEY_DIMENSION_54 = "dimension54"
-                const val KEY_DIMENSION_55 = "dimension55"
-                const val KEY_DIMENSION_38 = "dimension38"
-                const val KEY_DIMENSION_98 = "dimension98"
-        }
+        const val KEY_DIMENSION_10 = "dimension10"
+        const val KEY_DIMENSION_12 = "dimension12"
+        const val KEY_DIMENSION_14 = "dimension14"
+        const val KEY_DIMENSION_16 = "dimension16"
+        const val KEY_DIMENSION_38 = "dimension38"
+        const val KEY_DIMENSION_53 = "dimension53"
+        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_55 = "dimension55"
+        const val KEY_DIMENSION_81 = "dimension81"
+        const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_DIMENSION_90 = "dimension90"
+        const val KEY_DIMENSION_98 = "dimension98"
+        const val KEY_DIMENSION_113 = "dimension113"
+        const val KEY_DIMENSION_120 = "dimension120"
+    }
 
 
-        object Label {
-                const val PDP = "pdp"
-        }
+    object Label {
+        const val PDP = "pdp"
+    }
 
-        object MerchantVoucher {
-                const val ACTION = "promo banner"
-        }
+    object MerchantVoucher {
+        const val ACTION = "promo banner"
+    }
 
-        object Message {
-                const val LABEL = "Message Shop"
-        }
+    object Message {
+        const val LABEL = "Message Shop"
+    }
 }
 
 @ErrorHandler(GTMErrorHandlerImpl::class)
@@ -71,9 +79,19 @@ data class Product(
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_10)
+        val dimension10: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_12)
+        val dimension12: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_14)
+        val dimension14: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_16)
+        val dimension16: String,
         @DefaultValueString(ProductTrackingConstant.Tracking.DEFAULT_VALUE)
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_38)
         val dimension38: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_53)
+        val dimension53: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_55)
         val dimension55: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_54)
@@ -82,8 +100,14 @@ data class Product(
         val dimension83: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
         val dimension81: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_90)
+        val dimension90: String?,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
         val dimension98: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_113)
+        val dimension113: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_120)
+        val dimension120: String,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)

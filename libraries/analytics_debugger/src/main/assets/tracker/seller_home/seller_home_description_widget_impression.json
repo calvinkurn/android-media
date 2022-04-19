@@ -1,0 +1,15 @@
+{
+  "readme": "Seller Home Dashboard - description widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewHomepageIris",
+      "eventCategory": "seller app - home",
+      "eventAction": "impression widget description",
+      "eventLabel": "",
+      "currentSite": "tokopediaseller",
+      "businessUnit": "physical goods",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

@@ -22,7 +22,7 @@ class PromoCheckoutListEventFragment : BasePromoCheckoutListFragment(), PromoChe
     @Inject
     lateinit var promoCheckoutListEventPresenter: PromoCheckoutListEventPresenter
 
-    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
+    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
     var eventVerifyBody = EventVerifyBody()
 

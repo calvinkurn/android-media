@@ -29,10 +29,6 @@ public class DynamicLinkHelper {
         return getAvailableLink(item.getApplink(), item.getUrl());
     }
 
-    public static String getActionLink(DynamicHomeChannel.Hero item) {
-        return getAvailableLink(item.getApplink(), item.getUrl());
-    }
-
     private static String getAvailableLink(String applink, String url) {
         if (!TextUtils.isEmpty(applink)) {
             return applink;

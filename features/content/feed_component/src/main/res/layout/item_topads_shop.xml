@@ -19,6 +19,6 @@
     <View
         android:id="@+id/viewPaddingBottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_24"
+        android:layout_height="24dp"
         android:visibility="gone"/>
 </LinearLayout>

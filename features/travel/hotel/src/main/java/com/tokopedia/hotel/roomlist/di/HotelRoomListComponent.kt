@@ -3,7 +3,6 @@ package com.tokopedia.hotel.roomlist.di
 import com.tokopedia.hotel.common.di.component.HotelComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.fragment.HotelRoomListFragment
-import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import dagger.Component
 
 /**

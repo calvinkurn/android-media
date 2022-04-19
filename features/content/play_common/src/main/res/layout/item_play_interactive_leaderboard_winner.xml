@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ContainerUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_winner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:container_color="YELLOW"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl3"
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_winner_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            app:layout_constraintBottom_toBottomOf="@id/img_winner"
+            app:typographyType="heading_5"
+            tools:text="1"
+            />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_crown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:src="@drawable/ic_play_interactive_crown_yellow"
+            app:layout_constraintBottom_toTopOf="@id/img_winner"
+            app:layout_constraintEnd_toEndOf="@id/img_winner"
+            app:layout_constraintStart_toStartOf="@id/img_winner"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_winner"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toEndOf="@id/tv_winner_number"
+            app:layout_constraintTop_toBottomOf="@id/img_crown"
+            app:unify_image_type="circle"
+            tools:src="@tools:sample/avatars"
+            />
+
+        <FrameLayout
+            android:id="@+id/fl_border_img_winner"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:background="@drawable/bg_play_circle_winner"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/img_winner"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            tools:visibility="visible"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_winner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:inputType="textNoSuggestions"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/img_winner"
+            app:layout_constraintStart_toEndOf="@id/img_winner"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            app:typographyType="heading_6"
+            tools:text="@tools:sample/full_names"
+            />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_winner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:visibility="gone"
+            app:labelTitle="@string/play_interactive_winner"
+            app:labelType="highlight_light_green"
+            app:layout_constraintStart_toEndOf="@id/tv_winner_name"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            app:layout_constraintBottom_toBottomOf="@id/img_winner"
+            tools:visibility="visible"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_winner_chat"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:visibility="gone"
+            app:icon_name="CHAT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_winner"
+            app:layout_constraintBottom_toBottomOf="@id/img_winner"
+            tools:visibility="visible"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.ContainerUnify>

@@ -67,33 +67,33 @@ public class Tabs extends TabLayout {
     }
 
     private void mainStyle() {
-        int white = ContextCompat.getColor(getContext(), R.color.white);
-        this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        int white = ContextCompat.getColor(getContext(), R.color.Unify_N0);
+        this.setBackgroundColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
         this.setSelectedTabIndicatorColor(white);
         this.setTabTextColors(white, white);
         this.setTabMode(MODE_FIXED);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.setElevation(10);
-            this.setBackgroundResource(R.color.tkpd_main_green);
+            this.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         } else {
             this.setBackgroundResource(R.drawable.bg_green_toolbar_drop_shadow);
         }
     }
 
     private void secondaryStyle() {
-        int gray = ContextCompat.getColor(getContext(), R.color.font_black_disabled_38);
-        int green = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
-        this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+        int gray = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32);
+        int green = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500);
+        this.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.Unify_N0));
         this.setSelectedTabIndicatorColor(green);
         this.setTabTextColors(gray, green);
         this.setTabMode(MODE_SCROLLABLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.setElevation(10);
-            this.setBackgroundResource(R.color.white);
+            this.setBackgroundResource(R.color.Unify_N0);
         } else {
-            this.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            this.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 

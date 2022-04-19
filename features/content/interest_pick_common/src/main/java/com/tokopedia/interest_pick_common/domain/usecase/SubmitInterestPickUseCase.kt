@@ -12,16 +12,14 @@ import javax.inject.Named
 /**
  * @author by yoasfs on 2019-11-05
  */
+
+private const val PARAM_ACTION = "action"
+private const val PARAM_INTEREST_ID = "interestID"
+
 class SubmitInterestPickUseCase constructor(
         @Named(SubmitInterestPickQuery.MUTATION_SUBMIT_INTEREST_ID) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase
 ): UseCase<SubmitInterestResponse>() {
-
-
-    companion object {
-        const val PARAM_ACTION = "action"
-        const val PARAM_INTEREST_ID = "interestID"
-    }
 
     override suspend fun executeOnBackground(): SubmitInterestResponse = withContext(Dispatchers.IO)  {
         val response = graphqlUseCase.executeOnBackground()

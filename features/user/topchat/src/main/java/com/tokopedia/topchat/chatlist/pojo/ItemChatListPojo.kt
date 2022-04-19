@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder.Companion.BUYER_TAG
@@ -24,17 +25,27 @@ data class ItemChatListPojo(
         @SerializedName("messageKey")
         @Expose
         var messageKey: String = ""
-) : Visitable<ChatListTypeFactory>{
+) : Visitable<ChatListTypeFactory> {
+
+    val label: String get() = attributes?.label ?: ""
     val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTime: Long get() = attributes?.lastReplyTimestamp ?: 0
     val lastReplyTimeStr: String get() = attributes?.lastReplyTimeStr ?: ""
+    val lastReplyTimeMillis: Long get() = lastReplyTimeStr.toLongOrZero()
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
     val name: String get() = attributes?.contact?.contactName ?: ""
     val isPinned: Boolean get() = attributes?.pinStatus == 1
     val totalUnread: String get() = attributes?.unreadReply?.toString() ?: ""
+    var isActive: Boolean = false
+        private set
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun hasLabel(): Boolean {
+        return label.isNotEmpty()
     }
 
     fun hasUnreadItem(): Boolean {
@@ -47,11 +58,16 @@ data class ItemChatListPojo(
     fun ids() = listOf(msgId)
 
     fun isUnread(): Boolean {
-        return attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+        return attributes?.readStatus == STATE_CHAT_UNREAD
+    }
+
+    fun isRead(): Boolean {
+        return attributes?.readStatus == STATE_CHAT_READ
     }
 
     fun markAsRead() {
-        attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_READ
+        attributes?.readStatus = STATE_CHAT_READ
+        attributes?.unreadReply = 0
     }
 
     fun hasTheSameMsgId(state: ChatStateItem): Boolean {
@@ -73,6 +89,23 @@ data class ItemChatListPojo(
             OFFICIAL_TAG -> "OA"
             else -> ""
         }
+    }
+
+    fun isReplyTopBot(): Boolean {
+        return attributes?.isReplyByTopbot == true
+    }
+
+    fun updatePinStatus(isPinChat: Boolean) {
+        val pinStatus = if (isPinChat) 1 else 0
+        attributes?.pinStatus = pinStatus
+    }
+
+    fun markAsActive() {
+        this.isActive = true
+    }
+
+    fun markAsInactive() {
+        this.isActive = false
     }
 
 }

@@ -7,5 +7,6 @@ enum class MerchantVoucherType {
 
     Shipping,
     Discount,
+    Private,
     Unknown
 }

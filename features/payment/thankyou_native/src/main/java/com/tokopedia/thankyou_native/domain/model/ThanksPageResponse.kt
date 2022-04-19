@@ -1,8 +1,10 @@
 package com.tokopedia.thankyou_native.domain.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 
 data class ThanksPageResponse(
@@ -10,9 +12,10 @@ data class ThanksPageResponse(
         val thanksPageData: ThanksPageData
 )
 
+@Parcelize
 data class ThanksPageData(
         @SerializedName("payment_id")
-        val paymentID: Long,
+        val paymentID: String,
         @SerializedName("profile_code")
         val profileCode: String,
         @SerializedName("payment_status")
@@ -27,12 +30,16 @@ data class ThanksPageData(
         val amount: Long,
         @SerializedName("amount_str")
         val amountStr: String,
+        @SerializedName("combine_amount")
+        val combinedAmount: Double,
         @SerializedName("order_list")
         val shopOrder: ArrayList<ShopOrder>,
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
-        val howToPay: String,
+        val howToPay: String?,
+        @SerializedName("how_to_pay_applink")
+        val howToPayAPP : String?,
         @SerializedName("whitelisted_rba")
         val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
@@ -49,6 +56,8 @@ data class ThanksPageData(
         val paymentDetails: ArrayList<PaymentDetail>?,
         @SerializedName("order_amount_str")
         val orderAmountStr: String,
+        @SerializedName("order_amount")
+        val orderAmount: Double,
         @SerializedName("current_site")
         val currentSite: String,
         @SerializedName("business_unit")
@@ -68,85 +77,59 @@ data class ThanksPageData(
         @SerializedName("new_user")
         val isNewUser: Boolean,
         @SerializedName("is_mub")
-        val isMonthlyNewUser: Boolean
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readLong(),
-            parcel.readString() ?: "",
-            parcel.readInt(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readLong(),
-            parcel.readLong(),
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(ShopOrder) ?: arrayListOf(),
-            parcel.readParcelable(AdditionalInfo::class.java.classLoader),
-            parcel.readString() ?: "",
-            parcel.readByte() != 0.toByte(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
-            parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
-            parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readByte() != 0.toByte(),
-            parcel.readString() ?: "",
-            parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte())
+        val isMonthlyNewUser: Boolean,
+        @SerializedName("custom_data")
+        val thanksCustomization: ThanksCustomization?,
+        @SerializedName("config_flag")
+        val configFlag: String?,
+        @SerializedName("config_list")
+        val configList: String?,
+        @SerializedName("gateway_additional_data")
+        val gatewayAdditionalDataList: ArrayList<GatewayAdditionalData>?,
+        @SerializedName("fee_details")
+        val feeDetailList : ArrayList<FeeDetail>?,
+        @SerializedName("thanks_summaries")
+        val thanksSummaryInfo: ArrayList<ThanksSummaryInfo>?,
+        //created and used locally
+        var paymentMethodCount: Int,
+        // parse config flag json
+        var configFlagData: ConfigFlag? = null,
+        ) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeLong(paymentID)
-        parcel.writeString(profileCode)
-        parcel.writeInt(paymentStatus)
-        parcel.writeString(gatewayName)
-        parcel.writeString(gatewayImage)
-        parcel.writeLong(expireTimeUnix)
-        parcel.writeLong(amount)
-        parcel.writeString(amountStr)
-        parcel.writeTypedList(shopOrder)
-        parcel.writeParcelable(additionalInfo, flags)
-        parcel.writeString(howToPay)
-        parcel.writeByte(if (whitelistedRBA) 1 else 0)
-        parcel.writeString(paymentType)
-        parcel.writeString(expireTimeStr)
-        parcel.writeString(pageType)
-        parcel.writeTypedList(paymentItems?.let { it } ?: run { arrayListOf<PaymentItem>() })
-        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>() })
-        parcel.writeTypedList(paymentDetails?.let { it } ?: run { arrayListOf<PaymentDetail>() })
-        parcel.writeString(orderAmountStr)
-        parcel.writeString(currentSite)
-        parcel.writeString(businessUnit)
-        parcel.writeString(event)
-        parcel.writeString(eventCategory)
-        parcel.writeString(eventAction)
-        parcel.writeString(eventLabel)
-        parcel.writeByte(if (pushGtm) 1 else 0)
-        parcel.writeString(merchantCode)
-        parcel.writeByte(if (isNewUser) 1 else 0)
-        parcel.writeByte(if (isMonthlyNewUser) 1 else 0)
-    }
+@Parcelize
+data class ThanksSummaryInfo(
+    @SerializedName("key")
+    val key: String?,
+    @SerializedName("description")
+    val desctiption: String?,
+    @SerializedName("message")
+    val message: String?,
+    @SerializedName("is_cta")
+    val isCta: Boolean?,
+    @SerializedName("cta_link")
+    val ctaLink: String?,
+    @SerializedName("cta_applink")
+    val ctaApplink: String?,
+    @SerializedName("cta_text")
+    val ctaText: String?,
 
-    override fun describeContents(): Int {
-        return 0
-    }
+): Parcelable
 
-    companion object CREATOR : Parcelable.Creator<ThanksPageData> {
-        override fun createFromParcel(parcel: Parcel): ThanksPageData {
-            return ThanksPageData(parcel)
-        }
+@Parcelize
+data class FeeDetail (
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("amount")
+        val amount: Long,
+) : Parcelable
 
-        override fun newArray(size: Int): Array<ThanksPageData?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+@Parcelize
+data class GatewayAdditionalData(
+        @SerializedName("key")
+        val key : String?,
+        @SerializedName("value")
+        val value : String?
+) : Parcelable
 
 
 data class PaymentDetail(
@@ -155,21 +138,29 @@ data class PaymentDetail(
         @SerializedName("gateway_name")
         val gatewayName: String,
         @SerializedName("amount")
-        val amount: Float,
+        val amount: Double,
         @SerializedName("amount_str")
-        val amountStr: String
+        val amountStr: String,
+        @SerializedName("amount_combine")
+        val amountCombine: Double,
+        @SerializedName("amount_combine_str")
+        val amountCombineStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "")
+            parcel.readDouble(),
+            parcel.readString() ?: "",
+            parcel.readDouble(),
+        parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(gatewayCode)
         parcel.writeString(gatewayName)
-        parcel.writeFloat(amount)
+        parcel.writeDouble(amount)
         parcel.writeString(amountStr)
+        parcel.writeDouble(amountCombine)
+        parcel.writeString(amountCombineStr)
     }
 
     override fun describeContents(): Int {
@@ -187,7 +178,7 @@ data class PaymentDetail(
     }
 }
 
-
+@Parcelize
 data class AdditionalInfo(
         @SerializedName("account_number")
         val accountNumber: String,
@@ -202,49 +193,13 @@ data class AdditionalInfo(
         @SerializedName("masked_number")
         val maskedNumber: String,
         @SerializedName("installment_info")
-        val installmentInfo: String,
+        val installmentInfo: String?,
         @SerializedName("interest")
         val interest: Float,
         @SerializedName("revenue")
-        val revenue: Float) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readFloat())
+        val revenue: Float) : Parcelable
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(accountNumber)
-        parcel.writeString(accountDest)
-        parcel.writeString(bankName)
-        parcel.writeString(bankBranch)
-        parcel.writeString(paymentCode)
-        parcel.writeString(maskedNumber)
-        parcel.writeString(installmentInfo)
-        parcel.writeFloat(interest)
-        parcel.writeFloat(revenue)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<AdditionalInfo> {
-        override fun createFromParcel(parcel: Parcel): AdditionalInfo {
-            return AdditionalInfo(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AdditionalInfo?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
-
+@Parcelize
 data class ShopOrder(
         @SerializedName("order_id")
         val orderId: String,
@@ -255,9 +210,13 @@ data class ShopOrder(
         @SerializedName("logistic_type")
         val logisticType: String,
         @SerializedName("store_name")
-        val storeName: String,
+        val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("addon_item")
+        val addOnItemList : ArrayList<AddOnItem>,
+        @SerializedName("bundle_group_data")
+        val bundleGroupList: ArrayList<BundleGroupItem>,
         @SerializedName("shipping_amount")
         val shippingAmount: Float,
         @SerializedName("shipping_amount_str")
@@ -275,59 +234,16 @@ data class ShopOrder(
         @SerializedName("tax")
         val tax: Long,
         @SerializedName("coupon")
-        val coupon: String
+        val coupon: String,
+        @SerializedName("revenue")
+        val revenue: Float,
+        @SerializedName("logistic_duration")
+        val logisticDuration: String?,
+        @SerializedName("logistic_eta")
+        val logisticETA: String?
 
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(PurchaseItem) ?: arrayListOf(),
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.createTypedArrayList(PromoData) ?: arrayListOf(),
-            parcel.readLong(),
-            parcel.readString() ?: "")
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(orderId)
-        parcel.writeString(storeId)
-        parcel.writeString(storeType)
-        parcel.writeString(logisticType)
-        parcel.writeString(storeName)
-        parcel.writeTypedList(purchaseItemList?.let { purchaseItemList }
-                ?: run { arrayListOf<PurchaseItem>() })
-        parcel.writeFloat(shippingAmount)
-        parcel.writeString(shippingAmountStr)
-        parcel.writeString(shippingDesc)
-        parcel.writeFloat(insuranceAmount)
-        parcel.writeString(insuranceAmountStr)
-        parcel.writeString(address)
-        parcel.writeTypedList(promoData?.let { promoData } ?: run { arrayListOf<PromoData>() })
-        parcel.writeLong(tax)
-        parcel.writeString(coupon)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ShopOrder> {
-        override fun createFromParcel(parcel: Parcel): ShopOrder {
-            return ShopOrder(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ShopOrder?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable
 
 data class PromoData(
         @SerializedName("promo_code")
@@ -375,6 +291,7 @@ data class PromoData(
     }
 }
 
+@Parcelize
 data class PurchaseItem(
         @SerializedName("product_id")
         val productId: String,
@@ -382,8 +299,9 @@ data class PurchaseItem(
         val productName: String,
         @SerializedName("product_brand")
         val productBrand: String,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
-        val price: Float,
+        val price: Double,
         @SerializedName("price_str")
         val priceStr: String,
         @SerializedName("quantity")
@@ -407,55 +325,65 @@ data class PurchaseItem(
         @SerializedName("product_plan_protection")
         val productPlanProtection: Double,
         @SerializedName("bebas_ongkir_dimension")
-        val bebasOngkirDimension: String
-) : Parcelable {
+        val bebasOngkirDimension: String,
+        @SerializedName("is_bbi")
+        val isBBIProduct: Boolean,
+        @SerializedName("category_id")
+        val categoryId: String,
+        @SerializedName("bundle_group_id")
+        val bundleGroupId: String,
+        @SerializedName("addon_item")
+        val addOnList: ArrayList<AddOnItem>
+) : Parcelable
+
+@Parcelize
+data class AddOnItem(
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("quantity")
+    val quantity: Int,
+    @SerializedName("price_str")
+    val addOnPrice: String
+): Parcelable
+
+data class BundleGroupItem(
+    @SerializedName("group_id")
+    val groupId: String,
+    @SerializedName("icon")
+    val bundleIcon: String,
+    @SerializedName("title")
+    val bundleTitle: String,
+    @SerializedName("total_price")
+    val totalPrice: Float,
+    @SerializedName("total_price_str")
+    val totalPriceStr: String
+): Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readInt(),
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readDouble(),
-            parcel.readString() ?: "")
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readFloat(),
+        parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(productId)
-        parcel.writeString(productName)
-        parcel.writeString(productBrand)
-        parcel.writeFloat(price)
-        parcel.writeString(priceStr)
-        parcel.writeInt(quantity)
-        parcel.writeFloat(weight)
-        parcel.writeString(weightUnit)
+        parcel.writeString(groupId)
+        parcel.writeString(bundleIcon)
+        parcel.writeString(bundleTitle)
         parcel.writeFloat(totalPrice)
         parcel.writeString(totalPriceStr)
-        parcel.writeString(promoCode)
-        parcel.writeString(category)
-        parcel.writeString(variant)
-        parcel.writeString(thumbnailProduct)
-        parcel.writeDouble(productPlanProtection)
-        parcel.writeString(bebasOngkirDimension)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PurchaseItem> {
-        override fun createFromParcel(parcel: Parcel): PurchaseItem {
-            return PurchaseItem(parcel)
+    companion object CREATOR : Parcelable.Creator<BundleGroupItem> {
+        override fun createFromParcel(parcel: Parcel): BundleGroupItem {
+            return BundleGroupItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<PurchaseItem?> {
+        override fun newArray(size: Int): Array<BundleGroupItem?> {
             return arrayOfNulls(size)
         }
     }
@@ -495,5 +423,73 @@ data class PaymentItem(
         override fun newArray(size: Int): Array<PaymentItem?> {
             return arrayOfNulls(size)
         }
+    }
+}
+
+@Parcelize
+data class ThanksCustomization(
+        @SerializedName("tracking_data")
+        val trackingData: String?,
+        @SerializedName("custom_order_url_app")
+        val customOrderUrlApp: String?,
+        @SerializedName("custom_home_url_app")
+        val customHomeUrlApp: String?,
+        @SerializedName("custom_title")
+        val customTitle: String?,
+        @SerializedName("custom_subtitle")
+        val customSubtitle: String?,
+        @SerializedName("custom_title_order_button")
+        val customTitleOrderButton: String?,
+        @SerializedName("custom_wtv_text")
+        val customWtvText: String?,
+        @SerializedName("custom_title_home_button")
+        val customHomeButtonTitle: String?) : Parcelable
+
+@Parcelize
+data class ConfigFlag(
+        @SerializedName("enable_thanks_widget")
+        val isThanksWidgetEnabled : Boolean,
+        @SerializedName("hide_search_bar")
+        val shouldHideSearchBar: Boolean?,
+        @SerializedName("hide_global_menu")
+        val shouldHideGlobalMenu: Boolean?,
+        @SerializedName("hide_home_button")
+        val shouldHideHomeButton: Boolean?,
+        @SerializedName("hide_feature_recom")
+        val shouldHideFeatureRecom: Boolean?,
+        @SerializedName("hide_pg_recom")
+        val shouldHideProductRecom: Boolean?,
+        @SerializedName("hide_dg_recom")
+        val shouldHideDigitalRecom: Boolean?
+): Parcelable
+
+data class Tickers(
+        @SerializedName("tickers")
+        val tickerDataListStr : String?
+)
+data class ThankPageTopTickerData(
+        @SerializedName("ticker_title")
+        val tickerTitle : String?,
+        @SerializedName("ticker_text")
+        val tickerDescription : String?,
+        @SerializedName("ticker_type")
+        val ticketType : String?,
+        @SerializedName("ticker_cta_url")
+        val tickerCTAUrl : String?,
+        @SerializedName("ticker_cta_title")
+        val tickerCTATitle: String?,
+        @SerializedName("ticker_cta_applink")
+        val tickerCTAApplink: String?
+) {
+    fun getURL(): String? {
+        return if (!tickerCTAApplink.isNullOrEmpty()) {
+            tickerCTAApplink
+        } else {
+            tickerCTAUrl
+        }
+    }
+
+    fun isAppLink() : Boolean{
+        return !tickerCTAApplink.isNullOrEmpty()
     }
 }

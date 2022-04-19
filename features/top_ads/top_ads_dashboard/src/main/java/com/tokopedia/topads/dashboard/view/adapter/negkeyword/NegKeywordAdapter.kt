@@ -4,18 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewholder.NegKeywordViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordViewModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
+import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordModel
 
 
-class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : RecyclerView.Adapter<NegKeywordViewHolder<NegKeywordViewModel>>() {
+class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : RecyclerView.Adapter<NegKeywordViewHolder<NegKeywordModel>>() {
     private var isSelectMode = false
     private var fromSearch = false
+    private var fromHeadline = false
 
-    var items: MutableList<NegKeywordViewModel> = mutableListOf()
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NegKeywordViewHolder<NegKeywordViewModel> {
+
+    var items: MutableList<NegKeywordModel> = mutableListOf()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NegKeywordViewHolder<NegKeywordModel> {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return typeFactory.holder(viewType, view) as NegKeywordViewHolder<NegKeywordViewModel>
+        return typeFactory.holder(viewType, view) as NegKeywordViewHolder<NegKeywordModel>
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -32,14 +34,14 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
         notifyDataSetChanged()
     }
 
-    override fun onBindViewHolder(holder: NegKeywordViewHolder<NegKeywordViewModel>, position: Int) {
-        holder.bind(items[position], isSelectMode, fromSearch)
+    override fun onBindViewHolder(holder: NegKeywordViewHolder<NegKeywordModel>, position: Int) {
+        holder.bind(items[position], isSelectMode, fromSearch, fromHeadline)
     }
 
-    fun getSelectedItems(): MutableList<NegKeywordItemViewModel> {
-        val list: MutableList<NegKeywordItemViewModel> = mutableListOf()
+    fun getSelectedItems(): MutableList<NegKeywordItemModel> {
+        val list: MutableList<NegKeywordItemModel> = mutableListOf()
         items.forEach {
-            if (it is NegKeywordItemViewModel) {
+            if (it is NegKeywordItemModel) {
                 if (it.isChecked) {
                     list.add(it)
                 }
@@ -51,14 +53,15 @@ class NegKeywordAdapter(val typeFactory: NegKeywordAdapterTypeFactory) : Recycle
     private fun clearData(selectedMode: Boolean) {
         if (!selectedMode){
             items.forEach {
-                if (it is NegKeywordItemViewModel) {
+                if (it is NegKeywordItemModel) {
                     it.isChecked = false
                 }
             }
         }
     }
 
-    fun setEmptyView(fromSearch: Boolean) {
+    fun setEmptyView(fromSearch: Boolean,fromHeadline:Boolean = false) {
+        this.fromHeadline = fromHeadline
         this.fromSearch = fromSearch
         notifyDataSetChanged()
     }

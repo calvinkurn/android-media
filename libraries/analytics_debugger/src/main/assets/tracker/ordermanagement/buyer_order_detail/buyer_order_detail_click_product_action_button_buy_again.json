@@ -1,0 +1,16 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on product action button \"Beli Lagi\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPurchaseList",
+      "eventAction": "attempt click beli lagi",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "attempt - order_id: .+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "Marketplace",
+      "userId": "\\d+",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

@@ -95,6 +95,11 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
         notifyDataSetChanged()
     }
 
+    fun hideTabforHeadline(){
+        tabMenus.removeAt(INDEX_CONVERSION)
+        notifyDataSetChanged()
+    }
+
     interface OnRecyclerTabItemClick {
         fun onTabItemClick(position: Int)
     }

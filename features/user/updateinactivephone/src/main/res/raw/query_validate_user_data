@@ -1,8 +1,0 @@
-query validateInactiveNewPhoneQuery($phone: String!, $email: String!, $userId: Int!) {
-    validateInactiveNewPhone(phone: $phone, userId: $userId, email: $email) {
-        is_success
-        user_id
-        error
-        __typename
-    }
-}

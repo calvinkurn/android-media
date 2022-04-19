@@ -1,35 +1,40 @@
 package com.tokopedia.product.addedit.preview.presentation.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.TabletAdaptiveActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_DRAFT_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_IS_PRODUCT_DUPLICATE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.BUNDLE_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_UPLOADING
-import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
+import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSession
 
-
-class AddEditProductPreviewActivity : BaseSimpleActivity() {
+open class AddEditProductPreviewActivity: TabletAdaptiveActivity() {
 
     companion object {
-        fun createInstance(context: Context?): Intent = Intent(context,
-                AddEditProductPreviewActivity::class.java)
+        fun createInstance(context: Context?, draftId: String? = null): Intent {
+            val intent = Intent(context, AddEditProductPreviewActivity::class.java)
+            draftId?.let {
+                intent.putExtra(EXTRA_DRAFT_ID, draftId)
+            }
+            return intent
+        }
 
         fun createInstance(context: Context?, draftId: String, isFromSuccessNotif: Boolean?,
                            isFromNotifEditMode: Boolean?): Intent {
@@ -49,14 +54,13 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var productId = ""
     private var draftId = ""
     private var isDuplicate = false
+    private var mode = ""
 
-    override fun getNewFragment(): Fragment? {
-        return AddEditProductPreviewFragment.createInstance(productId, draftId, isDuplicate)
-    }
+    override fun getNewFragment(): Fragment? = null
 
-    override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_preview
+    override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
 
-    override fun getParentViewResourceID(): Int = com.tokopedia.product.addedit.R.id.parent_view
+    override fun getParentViewResourceID(): Int = R.id.parent_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // get draftId from failed notif
@@ -66,7 +70,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             val uri = toString()
             val params = UriUtil.uriQueryParamsToMap(uri)
             if (params.isNotEmpty()) {
-                val mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
+                mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
                 val id = params[ApplinkConstInternalMechant.QUERY_PARAM_ID].orEmpty()
                 when (mode) {
                     ApplinkConstInternalMechant.MODE_EDIT_PRODUCT -> productId = id
@@ -89,97 +93,47 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+
+        updateActivityToolbar()
+        setupNavController()
+        setupScreenShootGlobalFeedback()
+    }
+
+    private fun setupNavController() {
+        // passing data into fragment
+        val bundle = Bundle().apply {
+            putString(BUNDLE_PRODUCT_ID, productId)
+            putString(BUNDLE_DRAFT_ID, draftId)
+            putBoolean(BUNDLE_IS_PRODUCT_DUPLICATE, isDuplicate)
+        }
+
+        val navController = findNavController(R.id.parent_view)
+        val listener = AppBarConfiguration.OnNavigateUpListener {
+            navController.navigateUp()
+        }
+
+        val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
+        navController.setGraph(R.navigation.product_add_edit_navigation, bundle)
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+        navController.addOnDestinationChangedListener { _, _, _ ->
+            updateActivityToolbar()
         }
     }
 
-    override fun onBackPressed() {
-        onBackPressedHitTracking()
-        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_title_on_dialog))
-            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
-                setDescription(getString(R.string.label_description_on_dialog_edit))
-                setSecondaryCTAClickListener {
-                    setResult(Activity.RESULT_CANCELED)
-                    super.onBackPressed()
-                }
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-            } else {
-                setDescription(getString(R.string.label_description_on_dialog))
-                setSecondaryCTAClickListener {
-                    setResult(Activity.RESULT_CANCELED)
-                    saveProductToDraft()
-                    moveToManageProduct()
-                    onCtaYesPressedHitTracking()
-                }
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                    onCtaNoPressedHitTracking()
-                }
-            }
-        }.show()
-    }
-
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun isEditing(): Boolean {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            return f.isEditing()
-        }
-        return false
-    }
-
-    private fun isDrafting(): Boolean {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            return f.isDrafting()
-        }
-        return false
-    }
-
-    private fun saveProductToDraft() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.saveProductDraft()
+    private fun updateActivityToolbar() {
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
+            setSupportActionBar(it)
         }
     }
 
-    private fun dataBackPressedLoss(): Boolean {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            return f.dataBackPressedLoss()
+    private fun setupScreenShootGlobalFeedback() {
+        val isEditing = mode == ApplinkConstInternalMechant.MODE_EDIT_PRODUCT || mode == ApplinkConstInternalMechant.MODE_EDIT_DRAFT
+        val currentPage = if (isEditing) {
+            SellerFeedbackUtil.EDIT_PRODUCT
+        } else {
+            SellerFeedbackUtil.ADD_PRODUCT
         }
-        return false
-    }
-
-    private fun onCtaYesPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onCtaYesPressed()
-        }
-    }
-
-    private fun onCtaNoPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onCtaNoPressed()
-        }
-    }
-
-    private fun onBackPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductPreviewFragment) {
-            f.onBackPressed()
-        }
+        SellerFeedbackUtil(applicationContext)
+            .setSelectedPage(currentPage)
     }
 }

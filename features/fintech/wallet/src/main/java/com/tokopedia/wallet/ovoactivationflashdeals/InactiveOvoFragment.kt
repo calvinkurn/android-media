@@ -25,6 +25,7 @@ class InactiveOvoFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var tracking: InactiveOvoAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -47,8 +48,8 @@ class InactiveOvoFragment : BaseDaggerFragment() {
         arguments?.let {
             val registerApplink = it.getString(REGISTER_APPLINK)
             val helpApplink = it.getString(HELP_APPLINK)
-            val tncApplink = it.getString(TNC_APPLINK)
-            val productId = it.getString(PRODUCT_ID)
+            val tncApplink = it.getString(TNC_APPLINK, "")
+            val productId = it.getString(PRODUCT_ID, "")
 
             activity?.run {
                 btn_topup_activation.setOnClickListener {
@@ -80,11 +81,11 @@ class InactiveOvoFragment : BaseDaggerFragment() {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(it, com.tokopedia.design.R.color.tkpd_main_green)
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
             }
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
-                    com.tokopedia.design.R.color.tkpd_main_green)), 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                com.tokopedia.unifyprinciples.R.color.Unify_G500)), 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             tnc_ovo.movementMethod = LinkMovementMethod.getInstance()
             tnc_ovo.text = ss

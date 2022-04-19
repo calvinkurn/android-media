@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "registerCheck": {
+        "isExist": false,
+        "isPending": false,
+        "status": 0,
+        "registerType": "email",
+        "userID": 0,
+        "view": "kelvin.saputra+qa99@tokopedia.com",
+        "errors": []
+      }
+    }
+  }
+]

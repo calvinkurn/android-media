@@ -1,10 +1,13 @@
 package com.tokopedia.shop.product.utils.mapper
 
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.data.model.Actions
+import com.tokopedia.shop.common.data.model.RestrictionEngineModel
+import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
@@ -14,33 +17,38 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
-import java.text.ParseException
-import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
 
+    private const val POSTFIX_VIEW_COUNT="%1s orang"
+    private const val PRODUCT_RATING_DIVIDER = 20
+    private const val ZERO_PRODUCT_DISCOUNT = "0"
+
     fun mapToShopProductEtalaseListDataModel(
             listShopEtalaseModel: List<ShopEtalaseModel>
-    ): List<ShopProductEtalaseChipItemViewModel>{
+    ): List<ShopEtalaseItemDataModel>{
         return listShopEtalaseModel.map { mapToShopEtalaseViewModel(it) }
     }
 
-    private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopProductEtalaseChipItemViewModel {
+    private fun mapToShopEtalaseViewModel(shopEtalaseModel: ShopEtalaseModel): ShopEtalaseItemDataModel {
         val id = if (shopEtalaseModel.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) shopEtalaseModel.alias else shopEtalaseModel.id
-        return ShopProductEtalaseChipItemViewModel(
+        return ShopEtalaseItemDataModel(
                 id,
+                shopEtalaseModel.alias,
                 shopEtalaseModel.name,
                 shopEtalaseModel.type,
                 shopEtalaseModel.badge,
                 shopEtalaseModel.count.toLong(),
-                shopEtalaseModel.highlighted
+                shopEtalaseModel.highlighted,
+                shopEtalaseModel.rules
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String): ShopProductViewModel =
+    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductUiModel =
             with(shopProduct) {
-                ShopProductViewModel().also {
+                ShopProductUiModel().also {
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr
@@ -49,7 +57,7 @@ object ShopPageProductListMapper {
                     it.imageUrl = primaryImage.original
                     it.imageUrl300 = primaryImage.resize300
                     it.totalReview = stats.reviewCount.toString()
-                    it.rating = (stats.rating.toDouble() / 20).roundToInt().toDouble()
+                    it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
                     if (cashback.cashbackPercent > 0) {
                         it.cashback = cashback.cashbackPercent.toDouble()
                     }
@@ -64,20 +72,59 @@ object ShopPageProductListMapper {
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                    it.etalaseType = etalaseType
+                    when (it.etalaseType) {
+                        ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
+                            it.isUpcoming  = campaign.isUpcoming
+                            if (!campaign.isUpcoming) {
+                                val viewCount = stats.viewCount
+                                if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                    it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                                it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
+                                    labelGroup.position.isEmpty()
+                                }?.title ?: ""
+                                it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                            }
+                            it.hideGimmick = campaign.hideGimmick
+                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        }
+                        ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
+                            it.isUpcoming  = campaign.isUpcoming
+                            it.hideGimmick = campaign.hideGimmick
+                            if (!campaign.isUpcoming) {
+                                val viewCount = stats.viewCount
+                                if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                    it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                                it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
+                                    labelGroup.position.isEmpty()
+                                }?.title ?: ""
+                                it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                                it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            }
+                            else {
+                                // hide discount percentage when flash sale campaign is upcoming
+                                it.discountPercentage = ZERO_PRODUCT_DISCOUNT
+                                it.displayedPrice = campaign.discountedPriceFmt
+                            }
+                            it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        }
+                    }
                 }
             }
 
-    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
-        return LabelGroupViewModel(
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupUiModel {
+        return LabelGroupUiModel(
                 position = labelGroup.position,
                 title = labelGroup.title,
-                type = labelGroup.type
+                type = labelGroup.type,
+                url = labelGroup.url
         )
     }
 
-    fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductViewModel =
+    fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductUiModel =
             with(shopFeaturedProduct) {
-                ShopProductViewModel().also {
+                ShopProductUiModel().also {
                     it.id = productId.toString()
                     it.name = name
                     it.displayedPrice = price
@@ -86,7 +133,7 @@ object ShopPageProductListMapper {
                     it.imageUrl = imageUri
                     it.totalReview = totalReview
                     if (isRated) {
-                        it.rating = rating.toDoubleOrZero()
+                        it.rating = ratingAverage.toDoubleOrZero()
                     }
                     if (cashback) {
                         it.cashback = cashbackDetail.cashbackPercent.toDouble()
@@ -134,42 +181,67 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
+    fun mapToProductCardModel(
+            shopProductUiModel: ShopProductUiModel,
+            isWideContent: Boolean,
+            isShowThreeDots: Boolean = true
+    ): ProductCardModel {
         val totalReview = try {
-            NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
+            NumberFormat.getInstance().parse(shopProductUiModel.totalReview).toInt()
+        } catch (ignored: Exception) {
             0
         }
 
-        val discountPercentage = if (shopProductViewModel.discountPercentage == "0") {
+        val discountPercentage = if (shopProductUiModel.discountPercentage == "0") {
             ""
         } else {
-            "${shopProductViewModel.discountPercentage}%"
+            "${shopProductUiModel.discountPercentage}%"
         }
 
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon ?: "")
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductUiModel.isShowFreeOngkir, shopProductUiModel.freeOngkirPromoIcon ?: "")
 
         return ProductCardModel(
-                productImageUrl = shopProductViewModel.imageUrl ?: "",
-                productName = shopProductViewModel.name ?: "",
-                discountPercentage = discountPercentage,
-                slashedPrice = shopProductViewModel.originalPrice ?: "",
-                formattedPrice = shopProductViewModel.displayedPrice ?: "",
-                ratingCount = shopProductViewModel.rating.toInt(),
-                reviewCount = totalReview,
+                productImageUrl = shopProductUiModel.imageUrl ?: "",
+                productName = shopProductUiModel.name ?: "",
+                discountPercentage = discountPercentage.takeIf { !shopProductUiModel.hideGimmick } ?: "",
+                slashedPrice = shopProductUiModel.originalPrice.orEmpty().takeIf { !shopProductUiModel.hideGimmick } ?: "",
+                formattedPrice = shopProductUiModel.displayedPrice ?: "",
+                countSoldRating = if (shopProductUiModel.rating != 0.0) shopProductUiModel.rating.toString() else "",
                 freeOngkir = freeOngkirObject,
-                labelGroupList = shopProductViewModel.labelGroupList.map {
+                labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = true
+                hasThreeDots = if (shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_FLASH_SALE) false else isShowThreeDots,
+                pdpViewCount = shopProductUiModel.pdpViewCount,
+                stockBarLabel = shopProductUiModel.stockLabel,
+                stockBarPercentage = shopProductUiModel.stockBarPercentage,
+                isWideContent = isWideContent
         )
     }
 
-    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+    fun mapRestrictionEngineResponseToModel(restrictionEngineResponse: RestrictionEngineDataResponse?): RestrictionEngineModel {
+        return RestrictionEngineModel().apply {
+            status = restrictionEngineResponse?.status ?: ""
+            val list : MutableList<Actions> = mutableListOf()
+            restrictionEngineResponse?.actions?.map {
+                list.add(Actions(
+                        actionType = it.actionType,
+                        title = it.title,
+                        description = it.description,
+                        actionUrl = it.actionUrl,
+                        attributeName = it.attributeName
+                ))
+            }
+            actions = list
+        }
+    }
+
+    private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
-                position = labelGroupViewModel.position,
-                title = labelGroupViewModel.title,
-                type = labelGroupViewModel.type
+                position = labelGroupUiModel.position,
+                title = labelGroupUiModel.title,
+                type = labelGroupUiModel.type,
+                imageUrl = labelGroupUiModel.url
         )
     }
 }

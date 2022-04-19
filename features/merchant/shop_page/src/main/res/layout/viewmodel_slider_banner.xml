@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_marginBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
         app:typographyType="heading_4"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         app:typographyWeight="bold"
         tools:text="Title"
         android:ellipsize="end"
         android:singleLine="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/carousel_shop_page"
         tools:visibility="visible" />
 
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/carousel_shop_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         android:layout_marginLeft="@dimen/dp_minus12"
         android:layout_marginRight="@dimen/dp_minus12"
-        android:layout_marginBottom="@dimen/dp_4" />
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

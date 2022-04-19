@@ -3,24 +3,6 @@ package com.tokopedia.product.detail.data.model.review
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class ReviewResponse(
-        @SerializedName("by")
-        @Expose
-        val userId: Int = 0,
-
-        @SerializedName("createTime")
-        @Expose
-        val createTime: String = "",
-
-        @SerializedName("createTimestamp")
-        @Expose
-        val createTimestamp: String = "",
-
-        @SerializedName("message")
-        @Expose
-        val message: String = ""
-)
-
 data class LikeDislike(
         @SerializedName("likeStatus")
         @Expose
@@ -65,10 +47,6 @@ data class ImageAttachment(
         @SerializedName("attachmentId")
         @Expose
         val attachmentId: Int = 0,
-
-        @SerializedName("description")
-        @Expose
-        val description: String = "",
 
         @SerializedName("imageThumbnailUrl")
         @Expose

@@ -9,6 +9,10 @@ import com.tokopedia.iris.model.Configuration
 class ConfigurationMapper {
 
     fun parse(json: String) : Configuration? {
-        return Gson().fromJson(json, Configuration::class.java)
+        return try{
+            Gson().fromJson(json, Configuration::class.java)
+        } catch (e: Exception) {
+            Configuration()
+        }
     }
 }

@@ -4,154 +4,167 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import android.widget.ImageView
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_GLOBAL
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
-import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.view.activity.PlayActivity
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.play_common.model.result.PageResultState
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updateMargins
+import java.net.ConnectException
+import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-
 
 /**
  * Created by mzennis on 2020-01-10.
  */
-class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
+class PlayErrorFragment @Inject constructor(
+    private val analytic: PlayAnalytic
+): TkpdBaseV4Fragment(), PlayFragmentContract {
 
-    companion object {
-        fun newInstance(channelId: String?): PlayErrorFragment {
-            return PlayErrorFragment().apply {
-                val args = Bundle()
-                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = args
+    private lateinit var parentViewModel: PlayParentViewModel
+    private lateinit var container: View
+    private lateinit var globalError: GlobalError
+    private lateinit var imgBack: View
+
+    override fun getScreenName() = "Play Video"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val theActivity = requireActivity()
+        if (theActivity is PlayActivity) {
+            parentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_play_error, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initView(view)
+        setupView(view)
+        setupInsets(view)
+        setupObserve()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        imgBack.requestApplyInsetsWhenAttached()
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
+    }
+
+    private fun initView(view: View) {
+        with (view) {
+            container = findViewById(R.id.container_global_error)
+            globalError = findViewById(R.id.global_error)
+            imgBack = findViewById(R.id.img_back)
+        }
+    }
+
+    private fun setupView(view: View) {
+        imgBack.setOnClickListener { activity?.onBackPressed() }
+
+        globalError.errorTitle.setTextColor(
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        )
+        globalError.errorDescription.setTextColor(
+                MethodChecker.getColor(requireContext(), R.color.play_dms_error_text_color)
+        )
+    }
+
+    private fun setupInsets(view: View) {
+        imgBack.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+
+            val newTopMargin = margin.top + insets.systemWindowInsetTop
+            if (marginLayoutParams.topMargin != newTopMargin) {
+                marginLayoutParams.updateMargins(top = newTopMargin)
+                v.parent.requestLayout()
             }
         }
     }
 
-    private val job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
-
-    private lateinit var playViewModel: PlayViewModel
-    private lateinit var container: View
-    private lateinit var globalError: GlobalError
-
-    private var channelId: String = ""
-
-    override fun getScreenName() = "Play Video"
-
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_error, container, false)
-        initComponent(view)
-        return view
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun setupObserve() {
         observeErrorChannel()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
-    }
-
-    private fun initComponent(view: View) {
-        container = view.findViewById(R.id.container_global_error)
-        globalError = view.findViewById(R.id.global_error)
-        context?.let {
-            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            globalError.errorDescription.setTextColor(ContextCompat.getColor(it, R.color.play_error_text_color))
-        }
-
-        val imgBack = view.findViewById<AppCompatImageView>(R.id.img_back)
-        imgBack.setOnClickListener { activity?.onBackPressed() }
-    }
-
+    /**
+     * Observe
+     */
     private fun observeErrorChannel() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Fail -> {
-                    showGlobalError(it.throwable)
-                }
-                is Success -> {
-                    container.gone()
-                }
+        parentViewModel.observableChannelIdsResult.observe(viewLifecycleOwner, DistinctObserver {
+            when (val state = it.state) {
+                is PageResultState.Fail -> showGlobalError(state.error)
+                is PageResultState.Success -> container.hide()
             }
         })
     }
 
     private fun showGlobalError(throwable: Throwable) {
-        throwable.message?.let {
-            when(GlobalErrorCodeWrapper.wrap(it)) {
-                is GlobalErrorCodeWrapper.NotFound -> {
-                    globalError.setType(GlobalError.PAGE_NOT_FOUND)
-                    globalError.setActionClickListener {
-                        activity?.let { activity ->
-                            RouteManager.route(activity, ApplinkConst.HOME)
-                        }
-                    }
-                }
-                is GlobalErrorCodeWrapper.PageFull -> {
-                    globalError.setType(GlobalError.PAGE_FULL)
-                    globalError.setActionClickListener {
-                        playViewModel.getChannelInfo(channelId)
-                    }
-                }
-                is GlobalErrorCodeWrapper.ServerError,
-                is GlobalErrorCodeWrapper.Unknown -> {
-                    globalError.setType(GlobalError.SERVER_ERROR)
-                    globalError.setActionClickListener {
-                        playViewModel.getChannelInfo(channelId)
+        if (throwable is MessageErrorException) handleKnownServerError(throwable)
+        else handleUnknownError(throwable)
+
+        analytic.trackGlobalError(globalError.errorDescription.text.toString())
+        container.show()
+    }
+
+    private fun handleKnownServerError(exception: MessageErrorException) {
+        when(GlobalErrorCodeWrapper.wrap(exception.message.orEmpty())) {
+            GlobalErrorCodeWrapper.NotFound -> {
+                globalError.setType(GlobalError.PAGE_NOT_FOUND)
+                globalError.setActionClickListener {
+                    activity?.let { activity ->
+                        RouteManager.route(activity, ApplinkConst.HOME)
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
-            container.visible()
+            GlobalErrorCodeWrapper.PageFull,
+            GlobalErrorCodeWrapper.ServerError,
+            GlobalErrorCodeWrapper.Unknown -> {
+                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setActionClickListener {
+                    parentViewModel.loadNextPage()
+                }
+            }
+        }
+    }
+
+    private fun handleUnknownError(error: Throwable) {
+        when (error) {
+            is ConnectException, is UnknownHostException -> {
+                globalError.setType(GlobalError.NO_CONNECTION)
+                globalError.setActionClickListener {
+                    parentViewModel.loadNextPage()
+                }
+            }
+            else -> {
+                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setActionClickListener {
+                    parentViewModel.loadNextPage()
+                }
+            }
         }
     }
 }

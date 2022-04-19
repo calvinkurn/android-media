@@ -1,0 +1,16 @@
+{
+  "chatAttachments": {
+    "list": [
+      {
+        "id": 216178,
+        "type": 3,
+        "attributes": "{\"product_id\":2147856744,\"product_profile\":{\"name\":\"BuK4N - Biru pastel\",\"parent_id\":0,\"price\":\"Rp 10.000\",\"price_int\":0,\"image_url\":\"https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/7/7/ad924237-2a41-4703-bf55-4408e8709d18.jpg\",\"url\":\"https://staging.tokopedia.com/bcsatu/buk4n-biru-pastel\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":6551357,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"variant\":[{\"identifier\":\"colour\",\"name\":\"warna\",\"option\":{\"id\":280336,\"hex\":\"#1d6cbb\",\"value\":\"Biru pastel\"},\"position\":0,\"unit_name\":\"\"}],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"stock_info\":{}}}",
+        "fallback": {
+          "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+          "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+        },
+        "isActual": true
+      }
+    ]
+  }
+}

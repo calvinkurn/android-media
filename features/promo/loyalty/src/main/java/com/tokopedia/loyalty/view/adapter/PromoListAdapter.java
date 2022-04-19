@@ -96,14 +96,12 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     actionListener.onItemPromoClicked(promoData, position);
-                    actionListener.cachePromoCode(promoData.getPromoCode());
                 }
             });
             itemViewHolder.llPromoInfoLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     actionListener.onItemPromoClicked(promoData, position);
-                    actionListener.cachePromoCode(promoData.getPromoCode());
                 }
             });
         }

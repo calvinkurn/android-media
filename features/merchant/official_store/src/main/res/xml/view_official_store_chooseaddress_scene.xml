@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/motion_chooseaddress_start">
+        <Constraint android:id="@id/widget_choose_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"/>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/motion_chooseaddress_end">
+        <Constraint android:id="@id/widget_choose_address"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
+    </ConstraintSet>
+    <Transition android:id="@+id/transition_chooseaddress"
+        app:autoTransition="none"
+        app:motionInterpolator="easeInOut"
+        app:constraintSetEnd="@id/motion_chooseaddress_end"
+        app:duration="300"
+        app:constraintSetStart="@id/motion_chooseaddress_start">
+    </Transition>
+</MotionScene>

@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "TravelDestinationSummary": {
+        "title": "Bandung, Indonesia",
+        "images": [
+          {
+            "id": "82",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_80b3abd1-51c8-449e-a17e-9ab3b255dbc7.jpeg"
+          },
+          {
+            "id": "83",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_db0aa91a-b8d3-49ea-a639-368b060d3ffc.jpeg"
+          },
+          {
+            "id": "84",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_5264ffae-5423-4fb0-9179-064a3df03b4b.jpeg"
+          },
+          {
+            "id": "85",
+            "imageURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/5512496/5512496_72107d0e-cc37-46e9-9daa-b4d01c67d5c7.jpg"
+          }
+        ],
+        "description": "Kota Bandung merupakan kota metropolitan terbesar di Provinsi Jawa Barat, sekaligus menjadi ibu kota provinsi tersebut. Kota ini terletak 140 km sebelah tenggara Jakarta, dan merupakan kota terbesar di wilayah Pulau Jawa bagian selatan. Sedangkan wilayah Bandung Raya (Wilayah Metropolitan Bandung) merupakan metropolitan terbesar ketiga di Indonesia setelah Jabodetabek dan Gerbangkertosusila.\r\n\r\nDi kota ini tercatat berbagai sejarah penting, di antaranya sebagai tempat berdirinya sebuah perguruan tinggi teknik pertama di Indonesia (Technische Hoogeschool te Bandoeng - TH Bandung, sekarang Institut Teknologi Bandung - ITB)[3], lokasi ajang pertempuran pada masa kemerdekaan[4], serta pernah menjadi tempat berlangsungnya Konferensi Asia-Afrika 1955,[5] suatu pertemuan yang menyuarakan semangat anti kolonialisme, bahkan Perdana Menteri India Jawaharlal Nehru dalam pidatonya mengatakan bahwa Bandung adalah ibu kotanya Asia-Afrika"
+      }
+    }
+  }
+]

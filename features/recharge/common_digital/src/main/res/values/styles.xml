@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="DigitalCheckboxAndRadioButton">
-        <item name="colorControlNormal">#bdbdbd</item>
-        <item name="colorControlActivated">@color/colorPrimary</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlNormal">@color/Unify_N150</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorControlHighlight">@color/Unify_G500</item>
     </style>
 
     <style name="TextProductName">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextProductDescription">
-        <item name="android:textColor">@color/grey_500</item>
+        <item name="android:textColor">@color/Unify_N200</item>
         <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TextProductPrice">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextProductOldPrice">
-        <item name="android:textColor">@color/black_70</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
         <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TextProductPromoPrice">
-        <item name="android:textColor">@color/deep_orange_500</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextProductPromoTag">
-        <item name="android:textColor">@color/deep_orange_500</item>
+        <item name="android:textColor">@color/Unify_Y500</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>

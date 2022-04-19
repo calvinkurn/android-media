@@ -13,7 +13,9 @@ import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
@@ -30,7 +32,9 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -41,25 +45,27 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 20/12/18.
  */
+
+private const val TYPE_CARDRECOM = "cardrecom"
+private const val TYPE_CARDPOST = "cardpost"
+private const val TYPE_CARDBANNER = "cardbanner"
+private const val TYPE_CARDHIGHLIGHT = "cardhighlight"
+private const val TYPE_CARDPLAYCAROUSEL = "cardplaycarousel"
+private const val TYPE_CARD_HEADLINE = "cardheadline"
+
+private const val CONTENT_IMAGE = "image"
+private const val CONTENT_YOUTUBE = "youtube"
+private const val CONTENT_VIDEO = "video"
+private const val CONTENT_VOTE = "vote"
+private const val CONTENT_GRID = "productgrid"
+private const val CONTENT_MULTIMEDIA = "mediagrid"
+
+private const val ACTIVITY_TOPADS = "topads"
+private const val ACTIVITY_TOPADS_BANNER = "topads_banner"
+private const val ACTIVITY_TOPADS_HEADLINE = "topads_headline"
+private const val AUTHOR_TOPADS_SHOP = "topads shop"
+
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
-
-    companion object {
-        private const val TYPE_CARDRECOM = "cardrecom"
-        private const val TYPE_CARDPOST = "cardpost"
-        private const val TYPE_CARDBANNER = "cardbanner"
-        private const val TYPE_CARDHIGHLIGHT = "cardhighlight"
-
-        private const val CONTENT_IMAGE = "image"
-        private const val CONTENT_YOUTUBE = "youtube"
-        private const val CONTENT_VIDEO = "video"
-        private const val CONTENT_VOTE = "vote"
-        private const val CONTENT_GRID = "productgrid"
-        private const val CONTENT_MULTIMEDIA = "mediagrid"
-
-        private const val ACTIVITY_TOPADS = "topads"
-
-        private const val AUTHOR_TOPADS_SHOP = "topads shop"
-    }
 
     var feedType: String = ""
 
@@ -80,7 +86,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 } ?: break
 
                 when (feed.type) {
-                    TYPE_CARDBANNER -> mapCardBanner(posts, feed, templateData.template)
+                    TYPE_CARDBANNER -> {
+                        if (feed.activity == ACTIVITY_TOPADS_BANNER) {
+                            mapTopAdsBannerData(posts, feed, templateData.template)
+                        } else {
+                            mapCardBanner(posts, feed, templateData.template)
+                        }
+                    }
                     TYPE_CARDRECOM -> {
                         if (feed.activity != ACTIVITY_TOPADS) {
                             mapCardRecommendation(posts, feed, templateData.template)
@@ -98,6 +110,16 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             mapCardHighlight(posts, feed, templateData.template)
                         }
                     }
+                    TYPE_CARDPLAYCAROUSEL -> {
+                        if (feed.activity != ACTIVITY_TOPADS) {
+                            mapCardCarousel(posts)
+                        }
+                    }
+                    TYPE_CARD_HEADLINE -> {
+                        if(feed.activity == ACTIVITY_TOPADS_HEADLINE) {
+                            mapCardHeadline(posts, templateData.template)
+                        }
+                    }
                 }
             }
 
@@ -112,6 +134,21 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 firstPageCursor,
                 hasNext
         )
+    }
+
+    private fun mapCardHeadline(posts: MutableList<Visitable<*>>, template: Template) {
+        val topadsHeadlineUiModel = TopadsHeadlineUiModel(template = template, topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        val topadsHeadlineUiModelv2 = TopadsHeadLineV2Model(template = template, topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+
+        posts.add(topadsHeadlineUiModel)
+        posts.add(topadsHeadlineUiModelv2)
+    }
+
+    private fun mapTopAdsBannerData(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
+        val topAdsBannerViewModel = TopAdsBannerViewModel()
+        topAdsBannerViewModel.title = feed.content.cardbanner.title
+        topAdsBannerViewModel.template = template
+        posts.add(topAdsBannerViewModel)
     }
 
     private fun mapCardBanner(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
@@ -156,13 +193,13 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                               template: Template) {
         val trackingRecommendationList = arrayListOf<TrackingRecommendationModel>()
         val trackingList = arrayListOf<TrackingViewModel>()
-         if (feed.content.cardRecommendation.items.isNotEmpty()) {
+        if (feed.content.cardRecommendation.items.isNotEmpty()) {
 
-             val topAdsShopList = feed.tracking.topads.filter {
-                 it.shop != null && it.shopClickUrl != null
-             } as MutableList
+            val topAdsShopList = feed.tracking.topads.filter {
+                it.shop != null && it.shopClickUrl != null
+            } as MutableList
 
-             feed.content.cardRecommendation.items.forEachIndexed { index, card ->
+            feed.content.cardRecommendation.items.forEachIndexed { index, card ->
                 trackingRecommendationList.add(TrackingRecommendationModel(
                         feed.type,
                         feed.activity,
@@ -188,7 +225,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             }
 
             posts.add(
-                    TopadsShopViewModel(
+                    TopadsShopUiModel(
                             feed.content.cardRecommendation.title,
                             topAdsShopList,
                             template,
@@ -350,7 +387,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return VideoViewModel(
                 media.id,
                 media.thumbnail,
-                media.videoList.getOrNull(0)?.url ?: ""
+                media.videoList.getOrNull(0)?.url ?: "",
+                redirectLink = media.appLink
         )
     }
 
@@ -504,4 +542,12 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         list.add(tracking)
         return list
     }
+
+    private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
+        posts.add(CarouselPlayCardViewModel())
+    }
+}
+
+object TopAdsHeadlineActivityCounter {
+    var page: Int = 1
 }

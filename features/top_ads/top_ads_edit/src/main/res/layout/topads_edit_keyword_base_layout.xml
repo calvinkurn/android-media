@@ -5,49 +5,80 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <RadioGroup
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtEditKeywordTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/topads_edit_keyword_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cvBidLayoutEditKeyword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@id/txtEditKeywordTitle">
+
+        <com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
+            android:id="@+id/autoBidSwitchLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/unify_space_12" />
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/autobid_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/unify_space_12"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/cvBidLayoutEditKeyword"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
+    <LinearLayout
         android:id="@+id/keyword_grp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_22"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/autobid_ticker">
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/keyword"
-            style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:text="@string/topads_edit_kata_kunci" />
+            android:layout_marginEnd="4dp"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/topads_edit_kata_kunci"
+            app:chipType="normal" />
 
-        <RadioButton
+        <com.tokopedia.unifycomponents.ChipsUnify
             android:id="@+id/neg_keyword"
-            style="@style/TopadsProductFilterRadioButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/topads_edit_kata_kunci_neg" />
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="@string/topads_edit_kata_kunci_neg"
+            app:chipType="normal" />
+    </LinearLayout>
 
-    </RadioGroup>
-
-    <com.tokopedia.topads.edit.view.CustomViewPager
+    <com.tokopedia.topads.common.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keyword_grp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

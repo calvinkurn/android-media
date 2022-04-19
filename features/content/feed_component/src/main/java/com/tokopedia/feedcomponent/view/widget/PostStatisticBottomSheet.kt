@@ -137,10 +137,6 @@ class PostStatisticBottomSheet : BottomSheetUnify(), PostStatisticAdapter.Listen
     private fun setupListener() {
 
         tvCheckDashboard.setOnClickListener {
-            RouteManager.route(
-                    it.context,
-                    ApplinkConst.AFFILIATE_DASHBOARD
-            )
             dismiss()
         }
     }

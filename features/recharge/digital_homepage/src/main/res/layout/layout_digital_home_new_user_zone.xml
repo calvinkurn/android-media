@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl4">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/digital_homepage_new_user_zone_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        app:cardCornerRadius="@dimen/dp_8">
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:cardCornerRadius="@dimen/spacing_lvl3">
 
         <ImageView
             android:id="@+id/digital_homepage_new_user_zone_image"
@@ -25,8 +25,8 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/digital_homepage_new_user_zone_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_96"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_height="@dimen/layout_lvl8"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:corners="16" />
 
 </LinearLayout>

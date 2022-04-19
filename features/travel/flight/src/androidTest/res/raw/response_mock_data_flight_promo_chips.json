@@ -1,0 +1,42 @@
+{
+    "data": {
+        "flightLowestPrice": {
+            "data": [
+                {
+                    "date": "20211111",
+                    "airlinePrices": [
+                        {
+                            "airlineID": "GA",
+                            "airlineName": "Garuda Indonesia",
+                            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_f8cb0d41-ee3a-452d-b9f4-3df11118ad4c.png",
+                            "price": "Rp 2.585.800",
+                            "priceNumeric": 2585800
+                        },
+                        {
+                            "airlineID": "ID",
+                            "airlineName": "Batik Air",
+                            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_87064c23-f57a-4e51-bc0f-3d2ca6e34ccf.png",
+                            "price": "Rp 1.075.100",
+                            "priceNumeric": 1075100
+                        },
+                        {
+                            "airlineID": "JT",
+                            "airlineName": "Lion Air",
+                            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_dac705fb-9f2b-4e6e-a63c-cbbef9c5e91a.png",
+                            "price": "Rp 819.300",
+                            "priceNumeric": 819300
+                        },
+                        {
+                            "airlineID": "QG",
+                            "airlineName": "Citilink Indonesia",
+                            "logo": "https://ecs7.tokopedia.net/img/attachment/2017/12/20/5512496/5512496_7f755496-e7cd-480d-bcc0-081c84828d37.png",
+                            "price": "Rp 966.700",
+                            "priceNumeric": 966700
+                        }
+                    ]
+                }
+            ],
+            "error": []
+        }
+    }
+}

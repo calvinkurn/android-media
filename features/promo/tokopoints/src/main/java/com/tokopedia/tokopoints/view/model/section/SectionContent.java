@@ -41,6 +41,18 @@ public class SectionContent {
     @Expose
     private LayoutTickerAttr layoutTickerAttr;
 
+    @SerializedName("layoutTopAdsAttr")
+    @Expose
+    private LayoutTopAdsAttr layoutTopAdsAttr;
+
+    @SerializedName("layoutMerchantCouponAttr")
+    @Expose
+    private LayoutMerchantCouponAttr layoutMerchantCouponAttr;
+
+    @SerializedName("layoutQuestWidgetAttr")
+    @Expose
+    private LayoutQuestWidgetAttr layoutQuestWidgetAttr;
+
     public String getBackgroundImgURLMobile() {
         return backgroundImgURLMobile;
     }
@@ -129,4 +141,27 @@ public class SectionContent {
         this.layoutTickerAttr = layoutTickerAttr;
     }
 
+    public LayoutTopAdsAttr getLayoutTopAdsAttr() {
+        return layoutTopAdsAttr;
+    }
+
+    public void setLayoutTopAdsAttr(LayoutTopAdsAttr layoutTopAdsAttr) {
+        this.layoutTopAdsAttr = layoutTopAdsAttr;
+    }
+
+    public LayoutMerchantCouponAttr getLayoutMerchantCouponAttr() {
+        return layoutMerchantCouponAttr;
+    }
+
+    public void setLayoutMerchantCouponAttr(LayoutMerchantCouponAttr layoutMerchantCouponAttr) {
+        this.layoutMerchantCouponAttr = layoutMerchantCouponAttr;
+    }
+
+    public LayoutQuestWidgetAttr getLayoutQuestWidgetAttr() {
+        return layoutQuestWidgetAttr;
+    }
+
+    public void setLayoutQuestWidgetAttr(LayoutQuestWidgetAttr layoutQuestWidgetAttr) {
+        this.layoutQuestWidgetAttr = layoutQuestWidgetAttr;
+    }
 }

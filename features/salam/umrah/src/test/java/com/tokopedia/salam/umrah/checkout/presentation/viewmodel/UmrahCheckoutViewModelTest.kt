@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.checkout.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutMapperEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultEntity
 import com.tokopedia.salam.umrah.checkout.data.UmrahCheckoutResultParams
@@ -28,7 +28,7 @@ class UmrahCheckoutViewModelTest {
     @RelaxedMockK
     lateinit var umrahCheckoutResultUseCase: UmrahCheckoutResultUseCase
 
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahCheckoutViewModel: UmrahCheckoutViewModel
 
     @Before

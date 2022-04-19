@@ -1,285 +1,70 @@
+
 package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
+import com.tokopedia.home.beranda.data.datasource.local.HomeRoomDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
+import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
-import com.tokopedia.home.beranda.data.repository.HomeRepository
-import com.tokopedia.home.beranda.data.usecase.HomeUseCase
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
+import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
+import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
+import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
+import com.tokopedia.home.beranda.di.module.query.WalletBalanceQuery
+import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessWidgetQuery
+import com.tokopedia.home.beranda.di.module.query.BusinessUnitDataQuery
+import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
+import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
+import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
+import com.tokopedia.home.beranda.di.module.query.HomeQuery
+import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
+import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
+import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
+import com.tokopedia.home.beranda.di.module.query.AtfQuery
+import com.tokopedia.home.beranda.di.module.query.CloseChannelQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
+import com.tokopedia.home.beranda.domain.interactor.repository.*
+import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
+import com.tokopedia.home.beranda.domain.model.*
+import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
+import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
+import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
+import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [PlayWidgetModule::class, RecommendationCoroutineModule::class])
 class HomeUseCaseModule {
-
-    val businessWidgetQuery : String = "query HomeWidget() {\n" +
-            "  home_widget {\n" +
-            "    widget_tab {\n" +
-            "      id\n" +
-            "      name\n" +
-            "    }\n" +
-            "    widget_header{\n" +
-            "        back_color\n" +
-            "    }\n" +
-            "  }\n" +
-            "}\n"
-
-    val dismissSuggestedQuery : String = "query productrevDismissSuggestion{\n" +
-            "  productrevDismissSuggestion\n" +
-            "}"
-
-    val suggestedReviewQuery : String = "{\n" +
-            "  suggestedProductReview{\n" +
-            "    title\n" +
-            "    description\n" +
-            "    imageUrl\n" +
-            "    linkURL\n" +
-            "    dismissable\n" +
-            "    dismissURL\n" +
-            "    orderID\n" +
-            "    productID\n" +
-            "  }\n" +
-            "}"
-
-    val stickyLoginQuery : String = "query get_ticker(\$page: String!) {\n" +
-            "  ticker {\n" +
-            "    tickers(page: \$page) {\n" +
-            "      message\n" +
-            "      layout\n" +
-            "    }\n" +
-            "  }\n" +
-            "}"
-
-    val pendingCashBackQuery : String = "query pendingCashback {\n" +
-            "  goalPendingBalance {\n" +
-            "    balance\n" +
-            "    balance_text\n" +
-            "    cash_balance\n" +
-            "    cash_balance_text\n" +
-            "    point_balance\n" +
-            "    point_balance_text\n" +
-            "    wallet_type\n" +
-            "    phone_number\n" +
-            "    errors {\n" +
-            "      title\n" +
-            "      message\n" +
-            "    }\n" +
-            "  }\n" +
-            "}\n"
-
-    val businessUnitDataQuery : String = "query(\$tabId:Int){\n" +
-            "  home_widget {\n" +
-            "    widget_grid(tabID:\$tabId) {\n" +
-            "      id\n" +
-            "      name\n" +
-            "      image_url\n" +
-            "      url\n" +
-            "      applink\n" +
-            "      title_1\n" +
-            "      desc_1\n" +
-            "      title_2\n" +
-            "      desc_2\n" +
-            "      tag_name\n" +
-            "      tag_type\n" +
-            "      price\n" +
-            "      original_price\n" +
-            "      price_prefix\n" +
-            "      template_id\n" +
-            "    }\n" +
-            "  }\n" +
-            "}\n" +
-            "\n"
-
-    val tokopointsQuery : String = "{\n" +
-            "    tokopointsDrawer{\n" +
-            "        iconImageURL\n" +
-            "        redirectURL\n" +
-            "        redirectAppLink\n" +
-            "        sectionContent{\n" +
-            "            type\n" +
-            "            textAttributes{\n" +
-            "                text\n" +
-            "                color\n" +
-            "                isBold\n" +
-            "            }\n" +
-            "            tagAttributes{\n" +
-            "                text\n" +
-            "                backgroundColor\n" +
-            "            }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}"
-
-    val walletBalanceQuery : String = "{\n" +
-            "  wallet {\n" +
-            "    linked\n" +
-            "    balance\n" +
-            "    rawBalance\n" +
-            "    text\n" +
-            "    total_balance\n" +
-            "    raw_total_balance\n" +
-            "    hold_balance\n" +
-            "    raw_hold_balance\n" +
-            "    redirect_url\n" +
-            "    applinks\n" +
-            "    ab_tags {\n" +
-            "      tag\n" +
-            "    }\n" +
-            "    action {\n" +
-            "      text\n" +
-            "      redirect_url\n" +
-            "      applinks\n" +
-            "      visibility\n" +
-            "    }\n" +
-            "    point_balance\n" +
-            "    raw_point_balance\n" +
-            "    cash_balance\n" +
-            "    raw_cash_balance\n" +
-            "    wallet_type\n" +
-            "    help_applink\n" +
-            "    tnc_applink\n" +
-            "    show_announcement\n" +
-            "  }\n" +
-            "}"
-
-    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!){\n" +
-            "    dynamicHomeChannel {\n" +
-            "        channels(groupIDs: \$groupIDs){\n" +
-            "          id\n" +
-            "          group_id\n" +
-            "          galaxy_attribution\n" +
-            "          persona\n" +
-            "          brand_id\n" +
-            "          category_persona\n" +
-            "          name\n" +
-            "          layout\n" +
-            "          type\n" +
-            "          showPromoBadge\n" +
-            "          header {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            subtitle\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            serverTime\n" +
-            "            expiredTime\n" +
-            "            backColor\n" +
-            "            backImage\n" +
-            "          }\n" +
-            "          hero {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            imageUrl\n" +
-            "            attribution\n" +
-            "          }\n" +
-            "          grids {\n" +
-            "            id\n" +
-            "            name\n" +
-            "            url\n" +
-            "            applink\n" +
-            "            price\n" +
-            "            slashedPrice\n" +
-            "            discount\n" +
-            "            imageUrl\n" +
-            "            label\n" +
-            "            soldPercentage\n" +
-            "            attribution\n" +
-            "            productClickUrl\n" +
-            "            impression\n" +
-            "            cashback\n" +
-            "            freeOngkir {\n" +
-            "              isActive\n" +
-            "              imageUrl\n" +
-            "            }\n" +
-            "          }\n" +
-            "          banner {\n" +
-            "            id\n" +
-            "            title\n" +
-            "            description\n" +
-            "            url\n" +
-            "            back_color\n" +
-            "            cta {\n" +
-            "              type\n" +
-            "              mode\n" +
-            "              text\n" +
-            "              coupon_code\n" +
-            "            }\n" +
-            "            applink\n" +
-            "            text_color\n" +
-            "            image_url\n" +
-            "            attribution\n" +
-            "\n" +
-            "          }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}"
-
-    val recommendationQuery : String = "{\n" +
-            "  get_home_recommendation{\n" +
-            "    recommendation_tabs{\n" +
-            "      id\n" +
-            "      name\n" +
-            "      image_url\n" +
-            "    }\n" +
-            "  }\n" +
-            "}"
-
-    val addToCartOneClickCheckout = "mutation add_to_cart_occ(\$param: OneClickCheckoutATCParam) {\n" +
-            "    add_to_cart_occ(param: \$param) {\n" +
-            "        error_message\n" +
-            "        status\n" +
-            "        data {\n" +
-            "            message\n" +
-            "            success\n" +
-            "            data {\n" +
-            "                cart_id\n" +
-            "                customer_id\n" +
-            "                is_scp\n" +
-            "                is_trade_in\n" +
-            "                notes\n" +
-            "                product_id\n" +
-            "                quantity\n" +
-            "                shop_id\n" +
-            "                warehouse_id\n" +
-            "            }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}"
-
-    val closeChannel = "mutation closeChannel(\$channelID: Int!){\n" +
-            "  close_channel(channelID: \$channelID){\n" +
-            "    success\n" +
-            "    message\n" +
-            "  }\n" +
-            "}"
-
     @HomeScope
     @Provides
     fun graphqlUseCase(): GraphqlUseCase {
@@ -293,147 +78,270 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun homeUseCase(homeRepository: HomeRepository, homeDataMapper: HomeDataMapper) = HomeUseCase(homeRepository, homeDataMapper)
+    fun homeRevampUseCase(
+            homeDataMapper: HomeDataMapper,
+            homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
+            homeDataRepository: HomeDataRepository,
+            homeAtfRepository: HomeAtfRepository,
+            homeFlagRepository: HomeFlagRepository,
+            homePageBannerRepository: HomePageBannerRepository,
+            homeIconRepository: HomeIconRepository,
+            homeTickerRepository: HomeTickerRepository,
+            homeRoomDataSource: HomeRoomDataSource,
+            homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+            @ApplicationContext context: Context,
+            remoteConfig: RemoteConfig,
+            homePlayRepository: HomePlayRepository,
+            homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
+            homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
+            homePopularKeywordRepository: HomePopularKeywordRepository,
+            homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
+            homeRecommendationRepository: HomeRecommendationRepository,
+            homeRecommendationChipRepository: HomeRecommendationChipRepository,
+            bestSellerMapper: BestSellerMapper,
+            homeTopadsImageRepository: HomeTopadsImageRepository,
+            homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
+            homeSalamWidgetRepository: HomeSalamWidgetRepository,
+            homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
+            homeChooseAddressRepository: HomeChooseAddressRepository,
+            homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
+            userSession: UserSessionInterface
+    ) = HomeDynamicChannelUseCase(
+            homeDataMapper = homeDataMapper,
+            homeDynamicChannelsRepository = homeDynamicChannelsRepository,
+            homeDataRepository = homeDataRepository,
+            atfDataRepository = homeAtfRepository,
+            homeFlagRepository = homeFlagRepository,
+            homePageBannerRepository = homePageBannerRepository,
+            homeIconRepository = homeIconRepository,
+            homeTickerRepository = homeTickerRepository,
+            getHomeRoomDataSource = homeRoomDataSource,
+            homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
+            applicationContext = context,
+            remoteConfig = remoteConfig,
+            homePlayRepository = homePlayRepository,
+            homeReviewSuggestedRepository = homeReviewSuggestedRepository,
+            homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
+            homePopularKeywordRepository = homePopularKeywordRepository,
+            homeHeadlineAdsRepository = homeHeadlineAdsRepository,
+            homeRecommendationRepository = homeRecommendationRepository,
+            homeRecommendationChipRepository = homeRecommendationChipRepository,
+            bestSellerMapper = bestSellerMapper,
+            homeTopadsImageRepository = homeTopadsImageRepository,
+            homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
+            homeSalamWidgetRepository = homeSalamWidgetRepository,
+            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
+            homeChooseAddressRepository = homeChooseAddressRepository,
+            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
+            userSessionInterface = userSession
+    )
 
-    @Provides
-    fun provideSendGeolocationInfoUseCase(homeRepository: HomeRepository): SendGeolocationInfoUseCase {
-        return SendGeolocationInfoUseCase(homeRepository)
-    }
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
             @ApplicationContext context: Context,
             graphqlRepository: GraphqlRepository,
             homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase{
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed)
+    ): GetHomeRecommendationUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(query)
+        useCase.setGraphqlQuery(HomeFeedQuery())
         return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
     }
 
     @Provides
-    fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
-                                 graphqlUseCase: GraphqlUseCase?,
-                                 feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
-        return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
+    @HomeScope
+    fun provideHomeReviewSuggestedUseCase(graphqlRepository: GraphqlRepository): HomeReviewSuggestedRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>(graphqlRepository)
+        useCase.setGraphqlQuery(SuggestedReviewQuery())
+        return HomeReviewSuggestedRepository(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(stickyLoginQuery)
-        return StickyLoginUseCase(usecase)
+    fun provideDismissHomeReviewUseCase(graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
+        useCase.setGraphqlQuery(DismissSuggestedQuery())
+        return DismissHomeReviewUseCase(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeReviewSuggestedUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetHomeReviewSuggestedUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SuggestedProductReview>(graphqlRepository)
-        usecase.setGraphqlQuery(suggestedReviewQuery)
-        return GetHomeReviewSuggestedUseCase(usecase)
+    fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(TokopoinstListQuery())
+        return GetHomeTokopointsListDataUseCase(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideDismissHomeReviewUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): DismissHomeReviewUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
-        usecase.setGraphqlQuery(dismissSuggestedQuery)
-        return DismissHomeReviewUseCase(usecase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideHomeTokopointsDataUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetHomeTokopointsDataUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerHomeData>(graphqlRepository)
-        usecase.setGraphqlQuery(tokopointsQuery)
-        return GetHomeTokopointsDataUseCase(usecase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
-        return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): HomePlayLiveDynamicRepository {
+        return HomePlayLiveDynamicRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @HomeScope
     @Provides
-    fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): GetKeywordSearchUseCase {
-        return GetKeywordSearchUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
+    fun getKeywordSearchUseCase(graphqlRepository: GraphqlRepository): HomeKeywordSearchRepository {
+        return HomeKeywordSearchRepository(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
     @HomeScope
     @Provides
-    fun getCoroutineWalletBalanceUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
+    fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(walletBalanceQuery)
+        usecase.setGraphqlQuery(WalletBalanceQuery())
         return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
 
     @HomeScope
     @Provides
-    fun getCoroutinePendingCashbackUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
+    fun getCoroutinePendingCashbackUseCase(graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
-        usecase.setGraphqlQuery(pendingCashBackQuery)
+        usecase.setGraphqlQuery(PendingCashbackQuery())
         return GetCoroutinePendingCashbackUseCase(usecase)
     }
 
     @HomeScope
     @Provides
-    fun getBusinessWidgetTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessWidgetTab {
+    fun getBusinessWidgetTabUseCase(graphqlRepository: GraphqlRepository): HomeBusinessUnitTabRepository {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        usecase.setGraphqlQuery(businessWidgetQuery)
-        return GetBusinessWidgetTab(usecase)
+        usecase.setGraphqlQuery(BusinessWidgetQuery())
+        return HomeBusinessUnitTabRepository(usecase)
     }
 
     @HomeScope
     @Provides
-    fun getBusinessUnitDataTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessUnitDataUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
-        usecase.setGraphqlQuery(businessUnitDataQuery)
-        return GetBusinessUnitDataUseCase(usecase)
+    fun getBusinessUnitDataTab(graphqlRepository: GraphqlRepository): HomeBusinessUnitDataRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        useCase.setGraphqlQuery(BusinessUnitDataQuery())
+        return HomeBusinessUnitDataRepository(useCase)
     }
 
     @HomeScope
     @Provides
-    fun getRecommendationTabUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        usecase.setGraphqlQuery(recommendationQuery)
-        return GetRecommendationTabUseCase(usecase)
+    fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
+        useCase.setGraphqlQuery(RecommendationQuery())
+        return GetRecommendationTabUseCase(useCase)
     }
 
     @Provides
     @HomeScope
-    fun providePopularKeywordUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetPopularKeywordUseCase {
-        return GetPopularKeywordUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>)
+    fun providePopularKeywordUseCase(graphqlRepository: GraphqlRepository): HomePopularKeywordRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>(graphqlRepository)
+        useCase.setGraphqlQuery(PopularKeywordGqlQuery())
+        return HomePopularKeywordRepository(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
+        useCase.setGraphqlQuery(DynamicChannelQuery())
+        return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideWalletEligibilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+        return GetWalletEligibilityUseCase(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): HomeDataRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(dynamicChannelQuery)
-        return GetDynamicChannelsUseCase(useCase, homeDataMapper)
+        useCase.setGraphqlQuery(HomeQuery())
+        return HomeDataRepository(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideAddToCartOccUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): AddToCartOccUseCase{
-        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper())
+    fun provideGetHomeFlagUseCase(graphqlRepository: GraphqlRepository): HomeFlagRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFlagData>(graphqlRepository)
+        useCase.setGraphqlQuery(HomeDataRevampQuery())
+        return HomeFlagRepository(useCase)
     }
 
     @Provides
     @HomeScope
-    fun provideCloseChannelUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): CloseChannelUseCase{
+    fun provideGetHomeIconUseCase(graphqlRepository: GraphqlRepository): GetHomeIconUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeIconData>(graphqlRepository)
+        useCase.setGraphqlQuery(HomeIconQuery())
+        return GetHomeIconUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomePageBannerRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
+        useCase.setGraphqlQuery(HomeSlidesQuery())
+        return HomePageBannerRepository(useCase, homeRoomDataSource)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository): HomeTickerRepository {
+        return HomeTickerRepository(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository): HomeIconRepository {
+        return HomeIconRepository(graphqlRepository)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideHomeDynamicChannelRepository(graphqlRepository: GraphqlRepository): HomeDynamicChannelsRepository {
+        return HomeDynamicChannelsRepository(graphqlRepository)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideGetHomeAtfUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomeAtfRepository {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeAtfData>(graphqlRepository)
+        useCase.setGraphqlQuery(AtfQuery())
+        return HomeAtfRepository(useCase, homeRoomDataSource)
+    }
+
+    @Provides
+    @HomeScope
+    fun provideCloseChannelUseCase(graphqlRepository: GraphqlRepository): HomeCloseChannelRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
-        useCase.setGraphqlQuery(closeChannel)
-        return CloseChannelUseCase(useCase)
+        useCase.setGraphqlQuery(CloseChannelQuery())
+        return HomeCloseChannelRepository(useCase)
     }
 
     @Provides
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+    }
+
+    @HomeScope
+    @Provides
+    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+                          mapper: PlayWidgetUiMapper,
+                          connectionUtil: PlayWidgetConnectionUtil
+    ): PlayWidgetTools {
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapper, connectionUtil)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
+
+    @Provides
+    @HomeScope
+    fun provideHomeBeautyFestUseCase(): HomeBeautyFestRepository {
+        return HomeBeautyFestRepository()
     }
 }

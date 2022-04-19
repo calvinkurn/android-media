@@ -4,10 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class Voucher {
-
     @SerializedName("voucher_id")
     @Expose
-    var voucherId: Int = 0
+    var voucherId: String = ""
     @SerializedName("tnc")
     @Expose
     var tnc = ""
@@ -19,7 +18,7 @@ class Voucher {
     var voucherName: String = ""
     @SerializedName("minimum_spend")
     @Expose
-    var minimumSpend: Int = 0
+    var minimumSpend: String = ""
     @SerializedName("valid_thru")
     @Expose
     var validThru: Long = 0
@@ -46,5 +45,12 @@ class Voucher {
     var voucherType: Int = 0
     @SerializedName("owner_id")
     @Expose
-    var ownerId: Int = 0
+    var ownerId: String = ""
+    @SerializedName("is_public")
+    @Expose
+    var isPublic: Int = 1
+    @SerializedName("is_lock_to_product")
+    var isLockToProduct: Int? = 0
+    @SerializedName("applink")
+    var applink: String? = ""
 }

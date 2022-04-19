@@ -19,8 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
-import com.tokopedia.core.deprecated.LocalCacheHandler;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 
 import timber.log.Timber;
 
@@ -37,10 +36,8 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private LocationRequest locationRequest;
     private Context context;
     boolean isConnected;
-    private LocalCacheHandler localCacheHandler;
 
     public LocationUtils(Context ctx) {
-        localCacheHandler = new LocalCacheHandler(ctx, CacheGetFingerprintUseCase.FINGERPRINT_KEY_NAME);
         context = ctx;
     }
 
@@ -67,7 +64,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        localCacheHandler.clearCache(CacheGetFingerprintUseCase.FINGERPRINT_USE_CASE);
+        FingerprintModelGenerator.INSTANCE.expireFingerprint();
         new LocationCache(context).saveLocation(context, location);
         removeLocationUpdates();
     }
@@ -124,7 +121,8 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         if (googleApiClient.isConnected()) {
             // follow the same logic in here: https://github.com/mapbox/mapbox-events-android/pull/184/files
             // fix fabric bug: https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.tkpd/issues/5c305bc7f8b88c29633eef60?time=last-seven-days
-            if (locationPermissionCheck()) {
+            // add locationRequest!= null to "fix Attempt to read from field 'int com.google.android.gms.location.LocationRequest.a' on a null object reference"
+            if (locationPermissionCheck() && locationRequest != null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -18,7 +19,8 @@ class PromoCheckoutListDigitalPresenter(private val checkVoucherUseCase: Digital
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+
+                val checkVoucherData = objects.getSuccessData<CheckVoucherDigital.Response>().response
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromo(checkVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {

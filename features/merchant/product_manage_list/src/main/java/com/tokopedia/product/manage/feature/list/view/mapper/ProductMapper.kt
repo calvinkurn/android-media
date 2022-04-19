@@ -3,14 +3,16 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import androidx.lifecycle.LiveData
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.filter.data.model.Tab
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.*
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
@@ -18,13 +20,20 @@ import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
-    fun mapToViewModels(productList: List<Product>?, multiSelectActive: Boolean): List<ProductViewModel> {
+    private const val BUNDLE_CAMPAIGN_TYPE = "4"
+
+    fun mapToUiModels(
+        productList: List<Product>?,
+        access: ProductManageAccess?,
+        multiSelectActive: Boolean
+    ): List<ProductUiModel> {
         return productList?.map {
             val minPrice = it.price?.min
             val maxPrice = it.price?.max
             val picture = it.pictures?.firstOrNull()
+            val topAdsInfo = TopAdsInfo(it.isTopAds(), it.isAutoAds())
 
-            ProductViewModel(
+            ProductUiModel(
                 id = it.id,
                 title = it.name,
                 imageUrl = picture?.urlThumbnail,
@@ -43,21 +52,31 @@ object ProductMapper {
                 url = it.url,
                 cashBack = it.cashback,
                 multiSelectActive = multiSelectActive,
-                isChecked = false
+                isChecked = false,
+                hasStockReserved = it.hasStockReserved,
+                topAdsInfo = topAdsInfo,
+                access = access,
+                isCampaign = it.isCampaign,
+                campaignTypeList = it.campaignTypeList,
+                isProductBundling = it.getIsProductBundling()
             )
         } ?: emptyList()
     }
 
+    private fun Product.getIsProductBundling(): Boolean {
+        return campaignTypeList?.any { it.id == BUNDLE_CAMPAIGN_TYPE } == true
+    }
+
     private fun mapProductStatus(product: Product): ProductStatus? {
-        return when(product.status) {
-            PENDING, MODERATED -> VIOLATION
-            else -> product.status
+        return if (product.status == MODERATED) {
+            VIOLATION
+        } else {
+            product.status
         }
     }
 
     fun LiveData<Result<GetFilterTabResult>>?.mapToFilterTabResult(filterTabs: List<Tab>): GetFilterTabResult {
-        var totalProductCount = 0
-        val productFilters = mutableListOf<FilterTabViewModel>()
+        val productFilters = mutableListOf<FilterTabUiModel>()
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
@@ -70,25 +89,22 @@ object ProductMapper {
         if(activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
-            totalProductCount += activeFilterCount
         }
 
         if(inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
-            totalProductCount += inActiveFilterCount
         }
 
         if(violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
-            totalProductCount += violationFilterCount
         }
 
         return if(this?.value == null) {
-            ShowFilterTab(productFilters, totalProductCount)
+            ShowFilterTab(productFilters)
         } else {
-            UpdateFilterTab(productFilters, totalProductCount)
+            UpdateFilterTab(productFilters)
         }
     }
 }

@@ -1,8 +1,9 @@
 package com.tokopedia.promocheckout.common.view.uimodel
 
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PromoDigitalModel(
 	var categoryId: Int = 0,
 	var categoryName: String = "",
@@ -10,35 +11,4 @@ data class PromoDigitalModel(
 	var productId: Int = 0,
 	var clientNumber: String = "",
 	var price: Long = 0
-) : Parcelable {
-	constructor(parcel: Parcel) : this(
-			parcel.readInt(),
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readInt(),
-			parcel.readString() ?: "",
-			parcel.readLong())
-
-	override fun writeToParcel(parcel: Parcel, flags: Int) {
-		parcel.writeInt(categoryId)
-		parcel.writeString(categoryName)
-		parcel.writeString(operatorName)
-		parcel.writeInt(productId)
-		parcel.writeString(clientNumber)
-		parcel.writeLong(price)
-	}
-
-	override fun describeContents(): Int {
-		return 0
-	}
-
-	companion object CREATOR : Parcelable.Creator<PromoDigitalModel> {
-		override fun createFromParcel(parcel: Parcel): PromoDigitalModel {
-			return PromoDigitalModel(parcel)
-		}
-
-		override fun newArray(size: Int): Array<PromoDigitalModel?> {
-			return arrayOfNulls(size)
-		}
-	}
-}
+) : Parcelable

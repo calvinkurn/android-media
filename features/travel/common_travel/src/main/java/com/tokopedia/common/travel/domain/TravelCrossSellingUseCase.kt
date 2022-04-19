@@ -28,15 +28,15 @@ class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRe
 
         val params = mapOf(ORDER_ID to orderId, ORDER_CATEGORY to orderCategory)
 
-        try {
+        return try {
             val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
             val travelCrossSelling = useCase.executeOnBackground().getSuccessData<TravelCrossSelling.Response>().response
 
-            return Success(travelCrossSelling)
+            Success(travelCrossSelling)
         } catch (throwable: Throwable) {
-            return Fail(throwable)
+            Fail(throwable)
         }
     }
 

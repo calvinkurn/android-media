@@ -21,4 +21,20 @@ interface CarouselProductCardListener {
     interface OnItemThreeDotsClickListener {
         fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
+
+    interface OnSeeMoreClickListener{
+        fun onSeeMoreClick()
+    }
+
+    interface OnATCNonVariantClickListener {
+        fun onATCNonVariantClick(
+                productCardModel: ProductCardModel,
+                carouselProductCardPosition: Int,
+                quantity: Int,
+        )
+    }
+
+    interface OnAddVariantClickListener {
+        fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+    }
 }

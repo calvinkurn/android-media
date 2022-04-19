@@ -32,7 +32,8 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
                 bundle?.getString(PARAM_MENU_ID) ?: "",
                 bundle?.getString(PARAM_OPERATOR_ID) ?: ""
         )
-        return VoucherGameListFragment.newInstance(voucherGameExtraParam)
+        val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA) ?: ""
+        return VoucherGameListFragment.newInstance(voucherGameExtraParam, rechargeProductFromSlice)
     }
 
     override fun getComponent(): VoucherGameListComponent {
@@ -45,21 +46,12 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return R.layout.vg_activity
     }
 
-    override fun getScreenName(): String {
-        return VOUCHER_GAME_SCREEN_NAME
-    }
-
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar
     }
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        intent?.handleExtra()
     }
 
     override fun shouldShowOptionMenu(): Boolean {
@@ -73,7 +65,6 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         const val PARAM_MENU_ID = "menu_id"
         const val PARAM_OPERATOR_ID = "operator_id"
         const val PARAM_PRODUCT_ID = "product_id"
-        const val VOUCHER_GAME_SCREEN_NAME = "/digital/voucher game"
 
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
 
@@ -91,17 +82,5 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onBackPressed() {
         (fragment as VoucherGameListFragment).onBackPressed()
         super.onBackPressed()
-    }
-
-    /* This Method is use to tracking action click when user click product Voucher Game
-     */
-
-    private fun Intent.handleExtra() {
-        if (intent.data != null) {
-            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            if (trackingClick != null) {
-                Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
-            }
-        }
     }
 }

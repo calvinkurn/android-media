@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/digital_homepage_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    android:descendantFocusability="beforeDescendants"
+    android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/layout_lvl2" />
+
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.digital.home.presentation.customview.RechargeHomepageToolbar
+        android:id="@+id/digital_homepage_toolbar"
+        style="@style/Toolbar.White"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:visibility="gone"
+        app:contentInsetLeft="@dimen/layout_lvl0"
+        app:contentInsetStart="@dimen/layout_lvl0"
+        app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+        app:elevation="@dimen/spacing_lvl2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_action_back"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/spacing_lvl1"
+            android:orientation="horizontal">
+
+            <com.tokopedia.digital.home.widget.RechargeSearchBarWidget
+                android:id="@+id/digital_homepage_search_view"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:layout_weight="1"
+                app:siv_search_hint_subhome="@string/digital_home_search_view_hint" />
+
+            <ImageView
+                android:id="@+id/digital_homepage_order_list"
+                android:layout_width="@dimen/order_list_icon_size"
+                android:layout_height="@dimen/order_list_icon_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:contentDescription="null"
+                app:srcCompat="@drawable/digital_common_ic_tagihan" />
+
+        </LinearLayout>
+
+    </com.tokopedia.digital.home.presentation.customview.RechargeHomepageToolbar>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.discovery.common.State
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.chooseaddress.ChooseAddressDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopCpmDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
+import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.shouldBe
 
 internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = "") {
@@ -20,33 +20,33 @@ internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = 
     }
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveCpmViewModel(0)
-    this.shouldHaveTotalCountViewModel(1, query, true)
+    this.shouldHaveChooseAddressViewModel(0)
+    this.shouldHaveCpmViewModel(1)
     this.shouldHaveShopItemViewModel(2, lastIndex)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutLoadingMoreViewModel(ignored: String) {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveCpmViewModel(0)
-    this.shouldHaveTotalCountViewModel(1, query, true)
+    this.shouldHaveChooseAddressViewModel(0)
+    this.shouldHaveCpmViewModel(1)
     this.shouldHaveShopItemViewModel(2, lastIndex)
 }
 
-internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel(query: String) {
+internal fun State<List<Visitable<*>>>?.shouldHaveCorrectVisitableListWithoutCpmViewModel() {
     val lastIndex = this?.data?.lastIndex ?: 0
 
     this.shouldNotBeNull()
 
-    this.shouldHaveTotalCountViewModel(0, query, false)
+    this.shouldHaveChooseAddressViewModel(0)
     this.shouldHaveShopItemViewModel(1, lastIndex)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
 }
@@ -60,25 +60,7 @@ private fun State<List<Visitable<*>>>?.shouldNotBeNull() {
 private fun State<List<Visitable<*>>>?.shouldHaveCpmViewModel(cpmViewModelPosition: Int) {
     val data = this?.data as List<Visitable<*>>
 
-    data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmViewModel>()
-}
-
-private fun State<List<Visitable<*>>>?.shouldHaveTotalCountViewModel(totalCountViewModelPosition: Int, query: String, isAdsBannerVisible: Boolean) {
-    val data = this?.data as List<Visitable<*>>
-
-    data[totalCountViewModelPosition].shouldBeInstanceOf<ShopTotalCountViewModel>()
-
-    val shopTotalCountViewModel = data[totalCountViewModelPosition] as ShopTotalCountViewModel
-    shopTotalCountViewModel.shouldHaveCorrectQuery(query)
-    shopTotalCountViewModel.shouldHaveCorrectIsAdsBannerVisible(isAdsBannerVisible)
-}
-
-private fun ShopTotalCountViewModel.shouldHaveCorrectQuery(query: String) {
-    return this.query shouldBe query
-}
-
-private fun ShopTotalCountViewModel.shouldHaveCorrectIsAdsBannerVisible(isAdsBannerVisible: Boolean) {
-    return this.isAdsBannerVisible shouldBe isAdsBannerVisible
+    data[cpmViewModelPosition].shouldBeInstanceOf<ShopCpmDataView>()
 }
 
 private fun State<List<Visitable<*>>>?.shouldHaveShopItemViewModel(shopItemStartPosition: Int, shopItemLastPosition: Int) {
@@ -95,26 +77,32 @@ private fun State<List<Visitable<*>>>?.shouldHaveLoadingMoreViewModel(loadingMor
     data[loadingMoreViewModelPosition].shouldBeInstanceOf<LoadingMoreModel>()
 }
 
-internal fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {
-    this.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+internal fun State<List<Visitable<*>>>?.shouldHaveChooseAddressViewModel(chooseAddressViewModelPosition: Int) {
+    val data = this?.data as List<Visitable<*>>
 
-    val shopItem = this as ShopViewModel.ShopItem
+    data[chooseAddressViewModelPosition].shouldBeInstanceOf<ChooseAddressDataView>()
+}
+
+internal fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {
+    this.shouldBeInstanceOf<ShopDataView.ShopItem>()
+
+    val shopItem = this as ShopDataView.ShopItem
     shopItem.shouldHaveCorrectPosition(index + 1)
     shopItem.shouldHaveCorrectProductItemPosition()
 }
 
-internal fun ShopViewModel.ShopItem.shouldHaveCorrectPosition(expectedPosition: Int) {
+internal fun ShopDataView.ShopItem.shouldHaveCorrectPosition(expectedPosition: Int) {
     this.position shouldBe expectedPosition
 }
 
-internal fun ShopViewModel.ShopItem.shouldHaveCorrectProductItemPosition() {
+internal fun ShopDataView.ShopItem.shouldHaveCorrectProductItemPosition() {
     this.productList.forEachIndexed { index, productItem ->
         productItem.position shouldBe index + 1
     }
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
-    this?.data?.count { it is ShopViewModel.ShopItem } shouldBe size
+    this?.data?.count { it is ShopDataView.ShopItem } shouldBe size
 }
 
 internal fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
@@ -123,7 +111,7 @@ internal fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
 
 internal fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.shouldHaveSize(1)
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
 }
 
 internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationAndLoadMore() {
@@ -131,7 +119,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationA
 
     this.shouldNotBeNull()
 
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
     this.shouldHaveRecommendationTitle()
     this.shouldHaveShopItemViewModel(2, lastIndex - 1)
     this.shouldHaveLoadingMoreViewModel(lastIndex)
@@ -142,13 +130,13 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchWithRecommendationW
 
     this.shouldNotBeNull()
 
-    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchViewModel>()
+    this?.data?.first().shouldBeInstanceOf<ShopEmptySearchDataView>()
     this.shouldHaveRecommendationTitle()
     this.shouldHaveShopItemViewModel(2, lastIndex)
 }
 
 private fun State<List<Visitable<*>>>?.shouldHaveRecommendationTitle() {
-    this?.data?.get(1).shouldBeInstanceOf<ShopRecommendationTitleViewModel>()
+    this?.data?.get(1).shouldBeInstanceOf<ShopRecommendationTitleDataView>()
 }
 
 internal fun List<*>.shouldHaveSize(expectedSize: Int) {
@@ -163,7 +151,7 @@ internal fun State<List<Visitable<*>>>?.shouldHaveEmptySearchModelWithExpectedIs
     }
 
     this?.data?.forEach {
-        if (it is ShopEmptySearchViewModel) {
+        if (it is ShopEmptySearchDataView) {
             it.isFilterActive shouldBe expectedIsFilterActive
             return
         }

@@ -1,9 +1,9 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
 
-import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
+import com.tokopedia.logisticCommon.data.repository.OrderCourierRepository;
 import com.tokopedia.logisticorder.view.shipping_confirmation.network.mapper.OrderDetailMapper;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor {
     @Override
     public void onGetCourierList(String selectedCourierId,
                                  Map<String, String> params,
-                                 Subscriber<ListCourierViewModel> subscriber) {
+                                 Subscriber<ListCourierUiModel> subscriber) {
         compositeSubscription.add(repository.onOrderCourierRepository(selectedCourierId, params)
                 .map(courierResponse -> mapper.getCourierServiceModel(courierResponse,
                         selectedCourierId

@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.orderdetail.di.DaggerHotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
@@ -37,9 +36,9 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            orderId = uri.lastPathSegment
-        } else if (intent.extras.containsKey(KEY_ORDER_ID)) {
-            orderId = intent.getStringExtra(KEY_ORDER_ID)
+            orderId = uri.lastPathSegment ?: ""
+        } else if (intent.extras?.containsKey(KEY_ORDER_ID) == true) {
+            orderId = intent.getStringExtra(KEY_ORDER_ID) ?: ""
         }
 
         super.onCreate(savedInstanceState)

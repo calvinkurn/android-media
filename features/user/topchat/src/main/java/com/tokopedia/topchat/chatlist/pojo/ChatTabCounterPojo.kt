@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 
 /**
  * @author : Steven 2019-08-08
@@ -18,11 +17,12 @@ data class ChatNotificationsPojo(
         @Expose
         var chatTabCounter: ChatTabCounterPojo = ChatTabCounterPojo()
 )
+
 data class ChatTabCounterPojo(
         @SerializedName("unreadsSeller")
         @Expose
-        var unreadsSeller: Long = 1,
+        var unreadsSeller: Long = 0,
         @SerializedName("unreadsUser")
         @Expose
-        var unreadsUser: Long = 1
+        var unreadsUser: Long = 0
 )

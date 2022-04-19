@@ -1,6 +1,0 @@
-<resources>
-
-    <style name="PhoneNumberTextInput">
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
-    </style>
-</resources>

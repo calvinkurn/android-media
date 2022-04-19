@@ -4,94 +4,303 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
+import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductBundleParentWidgetViewHolder
+import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
+import com.tokopedia.shop.home.WidgetName.INFO_CARD
+import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
+import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_MULTIPLE
+import com.tokopedia.shop.home.WidgetName.PRODUCT_BUNDLE_SINGLE
+import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REMINDER
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_BIG
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_MEDIUM
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_GRID_SMALL
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_MEDIUM
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_SMALL
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER
-import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
+import com.tokopedia.shop.home.view.adapter.viewholder.CarouselPlayWidgetViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ProductGridListPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCardDonationViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarouselProductPersonalizationViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeLoadingShimmerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeNplCampaignViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductChangeGridSectionViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquarePlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
+import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
+import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ProductGridListPlaceholderUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
+import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
+import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.shop_widget.thematicwidget.typefactory.ThematicWidgetTypeFactory
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
+import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetLoadingStateViewHolder
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
         private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
-        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
-) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
-    var adapter: ShopHomeAdapter? = null
-    private var previousViewHolder: AbstractViewHolder<*>? = null
+        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener,
+        private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+        private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
+        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val shopHomeFlashSaleWidgetListener: ShopHomeFlashSaleWidgetListener,
+        private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
+        private val playWidgetCoordinator: PlayWidgetCoordinator,
+        private val isShowTripleDot: Boolean,
+        private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener,
+        private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener,
+        private val shopHomeCardDonationListener: ShopHomeCardDonationListener,
+        private val multipleProductBundleListener: MultipleProductBundleListener,
+        private val singleProductBundleListener: SingleProductBundleListener,
+        private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener
+) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
+    var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
+    private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        when(baseShopHomeWidgetUiModel.name) {
-            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
-            SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
-            SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
-            VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
-            PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
-            VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
+        return when (baseShopHomeWidgetUiModel.name) {
+            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
+            SLIDER_SQUARE_BANNER -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
+            SLIDER_BANNER -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
+            PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
+            VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
+            RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
+            NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
+            FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
+            PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
+            INFO_CARD -> ShopHomeCardDonationViewHolder.LAYOUT
+            PRODUCT_BUNDLE_SINGLE, PRODUCT_BUNDLE_MULTIPLE -> ShopHomeProductBundleParentWidgetViewHolder.LAYOUT
+            SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            SHOWCASE_SLIDER_TWO_ROWS -> {
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            }
+            SHOWCASE_GRID_SMALL -> {
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_THREE_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            }
+            SHOWCASE_GRID_MEDIUM, SHOWCASE_GRID_BIG -> {
+                showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_VERTICAL
+                showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
+                return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
+            }
+            else -> HideViewHolder.LAYOUT
         }
-        return -1
+    }
+
+    private fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeNplCampaignViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeCarousellProductViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeSliderBannerViewHolder.LAYOUT_RES
+    }
+
+    private fun getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeSliderSquareViewHolder.LAYOUT_RES
+    }
+
+    private fun getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
+    }
+
+    private fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
+        return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
+    }
+
+    private fun isShowThematicWidgetPlaceHolder(model: ThematicWidgetUiModel): Boolean {
+        return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
         return ShopHomeProductEtalaseTitleViewHolder.LAYOUT
     }
 
-    override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
-        return ShopHomeProductViewHolder.LAYOUT
+    override fun type(etalaseLabelViewModel: ShopProductSortFilterUiModel): Int {
+        return ShopProductSortFilterViewHolder.LAYOUT
+    }
+
+    override fun type(carouselPlayCardViewModel: CarouselPlayWidgetUiModel): Int {
+        return CarouselPlayWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: ThematicWidgetUiModel): Int {
+        return if(isShowThematicWidgetPlaceHolder(uiModel))
+            ThematicWidgetLoadingStateViewHolder.LAYOUT
+        else
+            ThematicWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
+        return when(productCardType) {
+            ShopProductViewGridType.SMALL_GRID -> {
+                ShopHomeProductViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.BIG_GRID -> {
+                ShopHomeProductItemBigGridViewHolder.LAYOUT
+            }
+            ShopProductViewGridType.LIST -> {
+                ShopHomeProductItemListViewHolder.LAYOUT
+            }
+        }
     }
 
     override fun type(viewModel: LoadingModel?): Int {
         return ShopHomeLoadingShimmerViewHolder.LAYOUT
     }
 
+    fun type(shopHomeProductChangeGridSectionUiModel: ShopHomeProductChangeGridSectionUiModel): Int {
+        return ShopHomeProductChangeGridSectionViewHolder.LAYOUT
+    }
+
+    fun type(model: ProductGridListPlaceholderUiModel): Int {
+        return ProductGridListPlaceholderViewHolder.LAYOUT
+    }
+
+    fun type(model: ShopHomeCardDonationUiModel): Int =
+        ShopHomeCardDonationViewHolder.LAYOUT
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
-                ShopHomeProductViewHolder(parent, shopPageHomeProductClickListener)
+                ShopHomeProductViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
+            }
+            ShopHomeProductItemBigGridViewHolder.LAYOUT -> {
+                ShopHomeProductItemBigGridViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
+            }
+            ShopHomeProductItemListViewHolder.LAYOUT -> {
+                ShopHomeProductItemListViewHolder(parent, shopHomeEndlessProductListener, isShowTripleDot)
             }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)
             }
             ShopHomeCarousellProductViewHolder.LAYOUT -> {
-                ShopHomeCarousellProductViewHolder(parent, shopPageHomeProductClickListener)
+                ShopHomeCarousellProductViewHolder(parent, shopHomeCarouselProductListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent, adapter?.isOwner ?: false, onMerchantVoucherListWidgetListener)
+                ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
             }
-
+            ShopProductSortFilterViewHolder.LAYOUT -> return ShopProductSortFilterViewHolder(parent, shopProductEtalaseListViewHolderListener)
+            ShopHomeNplCampaignViewHolder.LAYOUT -> {
+                ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
+            }
+            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
+            ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
+            CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator), shopHomePlayWidgetListener)
+            ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
+            ShopHomeProductBundleParentWidgetViewHolder.LAYOUT -> ShopHomeProductBundleParentWidgetViewHolder(parent, multipleProductBundleListener, singleProductBundleListener)
+            ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT -> ShopHomeShowcaseListBaseWidgetViewHolder(
+                    parent,
+                    ShopHomeShowcaseListWidgetAdapter(showcaseListWidgetListener = shopHomeShowcaseListWidgetListener),
+                    showcaseWidgetLayoutType,
+                    showcaseWidgetGridColumnSize
+            )
+            ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)
+            ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT -> ShopHomeNplCampaignPlaceholderViewHolder(parent)
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT -> ShopHomeCarousellProductPlaceholderViewHolder(parent)
+            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
+            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
+            ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
+            ShopHomeCardDonationViewHolder.LAYOUT -> ShopHomeCardDonationViewHolder(parent, shopHomeCardDonationListener)
+            ThematicWidgetViewHolder.LAYOUT -> ThematicWidgetViewHolder(parent, thematicWidgetListener)
+            ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
-        previousViewHolder = viewHolder
         return viewHolder
     }
 }

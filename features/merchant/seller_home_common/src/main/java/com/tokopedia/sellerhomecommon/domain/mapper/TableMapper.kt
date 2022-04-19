@@ -1,0 +1,184 @@
+package com.tokopedia.sellerhomecommon.domain.mapper
+
+import android.graphics.Color
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
+import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
+import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
+import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
+import javax.inject.Inject
+
+/**
+ * Created By @ilhamsuaib on 30/06/20
+ */
+
+class TableMapper @Inject constructor(
+    lastUpdatedSharedPref: WidgetLastUpdatedSharedPrefInterface,
+    lastUpdatedEnabled: Boolean
+) : BaseWidgetMapper(lastUpdatedSharedPref, lastUpdatedEnabled),
+    BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
+
+    companion object {
+        /**
+         * this constants can be seen on https://tokopedia.atlassian.net/wiki/spaces/~354932339/pages/719618522/Version+3
+         * in simple table section
+         * */
+        private const val COLUMN_TEXT = 1
+        private const val COLUMN_IMAGE = 2
+        private const val COLUMN_HTML = 4
+
+        private const val MAX_ROWS_PER_PAGE = 5
+
+        private const val COLOR = "color"
+        private const val BACKGROUND_COLOR = "background-color"
+        private const val APOSTROPHE = "\""
+
+        private const val CONST_ZERO = 0
+        private const val CONST_ONE = 1
+    }
+
+    private var dataKeys: List<DataKeyModel> = emptyList()
+
+    override fun mapRemoteDataToUiData(
+        response: GetTableDataResponse,
+        isFromCache: Boolean
+    ): List<TableDataUiModel> {
+        return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
+            var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
+            maxDisplay = if (maxDisplay == CONST_ZERO) {
+                MAX_ROWS_PER_PAGE
+            } else {
+                maxDisplay
+            }
+
+            return@mapIndexed TableDataUiModel(
+                dataKey = table.dataKey,
+                error = table.errorMsg,
+                dataSet = getTableDataSet(table.data, maxDisplay),
+                isFromCache = isFromCache,
+                showWidget = table.showWidget.orFalse(),
+                lastUpdated = getLastUpdatedMillis(table.dataKey, isFromCache)
+            )
+        }
+    }
+
+    fun setDataKeys(dataKeys: List<DataKeyModel>) {
+        this.dataKeys = dataKeys
+    }
+
+    private fun getTableDataSet(
+        data: TableDataSetModel,
+        maxRowsPerPage: Int
+    ): List<TablePageUiModel> {
+        val headers: List<TableHeaderUiModel> = getHeaders(data.headers)
+        val tablePages = mutableListOf<TablePageUiModel>()
+
+        val tableRows = data.rows
+        var rows = mutableListOf<TableRowsUiModel>()
+        val rowCount = tableRows.size
+
+        val zeroRowCount = CONST_ZERO
+        val oneRowCount = CONST_ONE
+        tableRows.forEachIndexed { i, row ->
+            val firstTextColumn = row.columns.firstOrNull {
+                it.type == COLUMN_TEXT || it.type == COLUMN_HTML
+            }
+            row.columns.forEachIndexed { j, col ->
+                if (j < headers.size) {
+                    val width = headers[j].width
+                    val rowColumn: TableRowsUiModel = when (col.type) {
+                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
+                            col.value,
+                            width,
+                            isLeftAlign = firstTextColumn == col
+                        )
+                        COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
+                        else -> TableRowsUiModel.RowColumnHtml(
+                            col.value,
+                            width,
+                            isLeftAlign = firstTextColumn == col,
+                            getColorFromHtml(col.value)
+                        ) //it's COLUMN_HTML
+                    }
+                    rows.add(rowColumn)
+                }
+            }
+
+            if (i.plus(oneRowCount)
+                    .rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage
+            ) {
+                val tablePage = TablePageUiModel(headers, rows)
+                tablePages.add(tablePage)
+                rows = mutableListOf()
+            } else if (i == rowCount.minus(oneRowCount)) {
+                val tablePage = TablePageUiModel(headers, rows)
+                tablePages.add(tablePage)
+            }
+        }
+
+        return tablePages
+    }
+
+    private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
+        val firstHeader = headers.firstOrNull { it.title.isNotBlank() }
+        val noWidth = CONST_ZERO
+        return headers.map { header ->
+            val headerWidth = if (header.width < noWidth) noWidth else header.width
+            return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
+        }
+    }
+
+    /**
+     * A dumb but feasible way to parse html formatted string and get the text color value.
+     * Make sure that the html string passed should not contain full html documents
+     *
+     * @param   htmlString  Html formatted string
+     * @return  color of the text from html string
+     */
+    private fun getColorFromHtml(htmlString: String): Int? {
+        return try {
+            // Example: <font color = "red">Example Text</font>
+            val colorFromFontTagRegex = "<(.*)font(.+)color*=*(.+)".toRegex()
+            // Example: <span style=color:#the_hex_color;><b>Habis</b></span>
+            val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
+
+            val colorString =
+                when {
+                    htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
+                    htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(
+                        htmlString
+                    )
+                    else -> null
+                }
+
+            if (colorString.isNullOrEmpty()) {
+                null
+            } else {
+                Color.parseColor(colorString)
+            }
+        } catch (ex: Exception) {
+            null
+        }
+    }
+
+    private fun getColorFromFontTag(htmlString: String): String {
+        // If font tag was used, get the value by delimiting between the apostrophes of color value
+        val colorFromFont = htmlString.substringAfter(COLOR)
+        val indexOfFirstApostrophe = colorFromFont.indexOf(APOSTROPHE)
+        val indexOfSecondApostrophe = colorFromFont.indexOf(APOSTROPHE, indexOfFirstApostrophe + 1)
+        return colorFromFont.substring(indexOfFirstApostrophe + CONST_ONE, indexOfSecondApostrophe)
+    }
+
+    private fun getColorFromStyleAttribute(htmlString: String): String {
+        // We remove background-color style attribute to be able to substring the color of the text only
+        val colorWithoutBackgroundColor = htmlString.replace(BACKGROUND_COLOR, "")
+        return colorWithoutBackgroundColor.substringAfter(COLOR)
+            .substringBefore("\"").substringBefore(";")
+            .replace("[^A-Za-z0-9#]+".toRegex(), "")
+    }
+}

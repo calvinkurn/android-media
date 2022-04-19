@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.product.addedit.common.customview.TitleLayoutView
+        android:id="@+id/titleLayoutVariantType"
+        app:titleLayoutViewTitle="@string/label_variant_type"
+        app:titleLayoutViewSubtitle="@string/label_variant_type_desc"
+        app:titleLayoutViewActionText="@string/action_variant_custom_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewVariantType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1" />
+
+    <com.tokopedia.product.addedit.common.customview.AddItemButton
+        android:id="@+id/buttonAddVariantType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:addItemButtonText="@string/action_variant_custom_add" />
+
+</LinearLayout>

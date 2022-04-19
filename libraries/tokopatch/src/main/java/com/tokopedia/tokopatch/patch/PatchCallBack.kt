@@ -26,17 +26,23 @@ interface PatchCallBack {
             patch: Patch
     )
 
+    fun showToaster(context: Context, message: String)
+
     fun logNotify(
             context: Context,
+            debug: Boolean,
             log: String,
             where: String
     )
 
-    fun logMessage(context: Context, log: String)
+    fun logMessage(context: Context, debug: Boolean, log: String)
 
     fun exceptionNotify(
             context: Context,
             throwable: Throwable,
             where: String
     )
+
+    fun onStart()
+    fun onFinish()
 }

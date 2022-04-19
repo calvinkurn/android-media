@@ -3,15 +3,20 @@ package com.tokopedia.explore.view.presenter
 import android.net.Uri
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
-import com.tokopedia.explore.domain.interactor.GetExploreDataUseCase
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.explore.domain.entity.GetExploreData
+import com.tokopedia.explore.domain.interactor.ExploreDataUseCase
 import com.tokopedia.explore.view.listener.ContentExploreContract
-import com.tokopedia.explore.view.subscriber.EmptySubscriber
-import com.tokopedia.explore.view.subscriber.GetExploreDataSubscriber
+import com.tokopedia.explore.view.subscriber.GetExploreDataMapper
+import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
+import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
+import com.tokopedia.explore.view.uimodel.ExploreViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
+import com.tokopedia.network.utils.ErrorHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import rx.Subscriber
-
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -21,7 +26,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class ContentExplorePresenter @Inject constructor(
-        private val getExploreDataUseCase: GetExploreDataUseCase,
+        private val getExploreDataUseCase: ExploreDataUseCase,
         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase
 ) : BaseDaggerPresenter<ContentExploreContract.View>(), ContentExploreContract.Presenter, CoroutineScope {
 
@@ -34,7 +39,7 @@ class ContentExplorePresenter @Inject constructor(
     private val job: Job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
+        get() = Dispatchers.Main + job
 
     private var impressionTrackList: MutableList<String> = mutableListOf()
     private val impressionTrackingChannel: Channel<String> = Channel()
@@ -60,7 +65,7 @@ class ContentExplorePresenter @Inject constructor(
             impressionTrackingChannel.close()
             job.cancel()
         }
-        getExploreDataUseCase.unsubscribe()
+        getExploreDataUseCase.cancelJobs()
     }
 
     override fun getExploreData(clearData: Boolean) {
@@ -69,10 +74,51 @@ class ContentExplorePresenter @Inject constructor(
         } else {
             view.showLoading()
         }
-        getExploreDataUseCase.execute(
-                GetExploreDataUseCase.getVariables(categoryId, cursor, search),
-                GetExploreDataSubscriber(view, clearData)
-        )
+        launchCatchError(
+                block = {
+                    getExploreDataUseCase.setParams(categoryId, cursor, search)
+                    val response = getExploreDataUseCase.executeOnBackground()
+                    onSuccess(response, clearData)
+                },
+                onError = {
+                    onError(it, clearData)
+                })
+    }
+
+    private fun onSuccess(response: GetExploreData, clearData: Boolean) {
+        response.getDiscoveryKolData?.let { discoveryKolData ->
+            if (clearData) {
+                view.clearData()
+                if (discoveryKolData.error.isNotBlank()) {
+                    view.dismissLoading()
+                    view.onErrorGetExploreDataFirstPage(discoveryKolData.error)
+                    return
+                }
+            }
+
+            view.updateCursor(discoveryKolData.lastCursor)
+            val kolPostViewModelList: MutableList<ExploreImageViewModel> = GetExploreDataMapper.convertToKolPostViewModelList(discoveryKolData.postKol)
+            val categoryViewModelList: MutableList<ExploreCategoryViewModel> = GetExploreDataMapper.convertToCategoryViewModelList(discoveryKolData.categories)
+            view.onSuccessGetExploreData(
+                    ExploreViewModel(kolPostViewModelList, categoryViewModelList),
+                    clearData
+            )
+            view.dismissLoading()
+            view.stopTrace()
+        }
+    }
+
+    private fun onError(throwable: Throwable, clearData: Boolean) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            throwable.printStackTrace()
+        }
+        view.dismissLoading()
+        view.stopTrace()
+        if (clearData) {
+            view.onErrorGetExploreDataFirstPage(ErrorHandler.getErrorMessage(view.context, throwable))
+        } else {
+            view.onErrorGetExploreDataMore()
+        }
     }
 
     override fun updateCursor(cursor: String) {
@@ -119,21 +165,24 @@ class ContentExplorePresenter @Inject constructor(
         }
     }
 
-    private fun trackBulkAffiliate(urlList: MutableList<String>) {
+    fun trackBulkAffiliate(urlList: MutableList<String>) {
         if (urlList.isNotEmpty()) {
-           val activityIdListString = urlList
-                    .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_ACTIVITY_ID) }
-                    .joinToString(",")
-            val recomIdListString = urlList
-                    .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
-                    .joinToString(",")
+            var finalUrl = ""
+            try {
+                val activityIdListString = urlList
+                        .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_ACTIVITY_ID) }
+                        .joinToString(",")
+                val recomIdListString = urlList
+                        .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
+                        .joinToString(",")
 
-            var finalUrl =
-                    Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
-            finalUrl =
-                    Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
-            trackAffiliate(
-                    finalUrl)
+                finalUrl = Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
+                finalUrl = Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            }
+            trackAffiliate(finalUrl)
+
         }
     }
 

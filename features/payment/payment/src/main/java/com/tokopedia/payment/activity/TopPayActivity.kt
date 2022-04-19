@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,11 +15,13 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -26,16 +29,24 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
-import com.tokopedia.abstraction.common.utils.network.AuthUtil
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.network.authentication.*
+import com.tokopedia.network.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
 import com.tokopedia.payment.fingerprint.di.FingerprintModule
@@ -44,23 +55,23 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.Constant
-import com.tokopedia.payment.utils.NetworkAuthUtil
-import com.tokopedia.payment.utils.NetworkAuthUtilKey
+import com.tokopedia.payment.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.Constants.GCM_ID
+import com.tokopedia.user.session.Constants.GCM_STORAGE
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.WebViewHelper
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
-import java.net.URLEncoder
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -74,6 +85,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     @Inject
     lateinit var presenter: TopPayPresenter
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     override var paymentPassData: PaymentPassData? = null
         private set
 
@@ -82,9 +96,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
-    private var btnClose: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
+    private var mainContainer: RelativeLayout? = null
 
     private var fingerPrintDialogPayment: FingerPrintDialogPayment? = null
     private var fingerPrintDialogRegister: FingerprintDialogRegister? = null
@@ -93,6 +107,17 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var mJsHciCallbackFuncName: String? = null
 
     private var webChromeWebviewClient: CommonWebViewClient? = null
+
+    // Flag to prevent calling BACK_DIALOG_URL before web view loaded
+    private var hasFinishedFirstLoad: Boolean = false
+
+    private val localCacheHandler by lazy { LocalCacheHandler(this, GCM_STORAGE) }
+
+    private var isPaymentPageLoadingTimeout: Boolean = false
+
+    private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+
+    private var reloadUrl = ""
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -109,12 +134,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
             } else {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
-
         initInjector()
         intent.extras?.let {
             setupBundlePass(it)
@@ -140,15 +164,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initView() {
-        setContentView(R.layout.activity_top_pay_payment_module)
-        tvTitle = findViewById(R.id.tv_title)
-        btnBack = findViewById(R.id.btn_back)
-        btnClose = findViewById(R.id.btn_close)
-        scroogeWebView = findViewById(R.id.scrooge_webview)
-        progressBar = findViewById(R.id.progressbar)
-        progressDialog = ProgressDialog(this)
-        progressDialog?.setMessage(getString(R.string.title_loading))
-        tvTitle?.text = getString(R.string.toppay_title)
+        try {
+            setContentView(R.layout.activity_top_pay_payment_module)
+            mainContainer = findViewById(R.id.activity_topay_container)
+            tvTitle = findViewById(R.id.tv_title)
+            btnBack = findViewById(R.id.btn_back)
+            scroogeWebView = findViewById(R.id.scrooge_webview)
+            progressBar = findViewById(R.id.progressbar)
+            progressDialog = ProgressDialog(this)
+            progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+            tvTitle?.text = getString(R.string.toppay_title)
+            val currentTransactionId = paymentPassData?.transactionId ?: ""
+            tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
+        } catch (e: Exception) {
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                mapOf("type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(LOG_TIMEOUT),
+                    "data" to ""))
+            finish()
+        }
     }
 
     private fun initVar() {
@@ -176,7 +210,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         btnBack?.visibility = View.VISIBLE
         btnBack?.setOnClickListener { onBackPressed() }
-        btnClose?.setOnClickListener { callbackPaymentCanceled() }
     }
 
     private fun setActionVar() {
@@ -185,17 +218,21 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
             scroogeWebView?.let {
-                Toaster.make(it, message)
+                Toaster.build(it, message).show()
             }
         }
     }
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
-        if (isGet) {
+        if (isGet || isInsufficientBookingStockUrl(url)) {
             scroogeWebView?.loadUrl(url)
         } else {
-            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData)
+            scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
+    }
+
+    private fun isInsufficientBookingStockUrl(url: String): Boolean {
+        return url.startsWith(INSUFFICIENT_STOCK_URL, ignoreCase = true)
     }
 
     override fun showToastMessageWithForceCloseView(message: String) {
@@ -204,6 +241,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     fun navigateToActivity(goToIntent: Intent) {
+        startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
+    }
+
+    fun navigateToActivityAndFinish(goToIntent: Intent) {
         startActivity(goToIntent)
         setResult(Activity.RESULT_OK)
         finish()
@@ -211,8 +252,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentCanceled() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
         finish()
     }
@@ -227,8 +273,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun callbackPaymentFailed() {
         hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
         val intent = Intent()
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
         setResult(PaymentConstant.PAYMENT_FAILED, intent)
         finish()
     }
@@ -286,7 +337,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun showProgressDialog() {
-        progressDialog?.show()
+        if (!isFinishing)
+            progressDialog?.show()
     }
 
     override fun onGoToOtpPage(transactionId: String, urlOtp: String) {
@@ -348,7 +400,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     override fun onBackPressed() {
         val url = scroogeWebView?.url
-        if (url != null && url.contains(getBaseUrlDomainPayment())) {
+        if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
@@ -357,8 +409,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
+    private fun isHasFinishedFirstLoad(): Boolean {
+        return hasFinishedFirstLoad
+    }
+
     override fun onDestroy() {
         presenter.detachView()
+        scroogeWebView = null
         super.onDestroy()
     }
 
@@ -366,37 +423,122 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
+        } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == Activity.RESULT_OK) {
+            val redirectionUrl = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
+            if (redirectionUrl.isNotEmpty())
+                scroogeWebView?.loadUrl(redirectionUrl)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
-            if (imagePath != null) {
-                val base64 = encodeToBase64(imagePath)
+            sendKycImagePathToLite(imagePath)
+        } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
+            hideProgressDialog()
+            if(resultCode == Activity.RESULT_OK) {
+                val status = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+                if(status.isNotEmpty()) {
+                    handleStatusMatching(status)
+                }
+                reloadPayment()
+            } else {
+                hideFullLoading()
+            }
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP) {
+            if (reloadUrl.contains(getBaseUrlDomainPayment()))
+                reloadPayment()
+        }
+    }
+
+    private fun sendKycImagePathToLite(imagePath: String?) {
+        if (!imagePath.isNullOrEmpty()) {
+            val base64 = encodeToBase64(imagePath)
+            base64?.let {
                 val jsCallbackBuilder = StringBuilder()
                 jsCallbackBuilder.append("javascript:")
-                        .append(mJsHciCallbackFuncName)
-                        .append("('")
-                        .append(imagePath)
-                        .append("'")
-                        .append(", ")
-                        .append("'")
-                        .append(base64)
-                        .append("')")
+                    .append(mJsHciCallbackFuncName)
+                    .append("('")
+                    .append(imagePath)
+                    .append("'")
+                    .append(", ")
+                    .append("'")
+                    .append(it)
+                    .append("')")
                 scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
         }
     }
 
-    private fun encodeToBase64(imagePath: String?): String {
-        val bm = BitmapFactory.decodeFile(imagePath)
-        val baos = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos)
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
+    private fun handleStatusMatching(status: String) {
+        val message = LinkStatusMatcher.getStatus(status)
+        if(message.isNotEmpty()) {
+            showToaster(message, Toaster.TYPE_NORMAL)
+        }
+    }
+
+    private fun showToaster(message: String, type: Int) {
+        mainContainer?.run {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, type).show()
+        }
+    }
+
+
+    private fun reloadPayment() {
+        // scroogeWebView?.reload() doesn't work
+        scroogeWebView?.loadUrl(reloadUrl)
+    }
+
+    private fun encodeToBase64(imagePath: String?): String? {
+        return try {
+            val bm = BitmapFactory.decodeFile(imagePath)
+            val baos = ByteArrayOutputStream()
+            bm.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos)
+            val b = baos.toByteArray()
+            Base64.encodeToString(b, Base64.DEFAULT)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun showFullLoading() {
+        scroogeWebView?.visibility = View.INVISIBLE
+        showProgressDialog()
+    }
+
+    private fun hideFullLoading() {
+        scroogeWebView?.visibility = View.VISIBLE
+        hideProgressDialog()
+    }
+
+    private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
+        val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
+        if (!overlayUrl.isNullOrEmpty()) intent.putExtra(CUST_OVERLAY_URL, overlayUrl)
+        if (!headerText.isNullOrEmpty()) intent.putExtra(CUST_HEADER, headerText)
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
     }
 
     private inner class TopPayWebViewClient : WebViewClient() {
 
+        fun gotoLinkAccount() {
+            showFullLoading()
+            reloadUrl = scroogeWebView?.url ?: ""
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+        }
+        
+        fun goToAlaCarteKyc(uri: Uri) {
+            val projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID) ?: ""
+            val kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL) ?: ""
+
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl)
+            startActivityForResult(intent, REQUEST_CODE_LIVENESS)
+        }
+
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
+                val uri = Uri.parse(url)
+                if (uri.isOpaque) {
+                    return super.shouldOverrideUrlLoading(view, url)
+                }
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                         getEnableFingerprintPayment()) {
@@ -405,9 +547,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 if (url.isNotEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_LIVE_HELP_URL) || url.contains(Constant.TempRedirectPayment.TOP_PAY_STAGING_HELP_URL))) {
-                    val deepLinkUrl = (ApplinkConst.WEBVIEW_PARENT_HOME + "?url=" + URLEncoder.encode(url))
+                    val deepLinkUrl = (ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME + "?url=" + url)
                     RouteManager.route(this@TopPayActivity, deepLinkUrl)
                     return true
+                }
+
+                if(url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)){
+                        gotoLinkAccount()
+                        return true
                 }
 
                 // success payment
@@ -437,17 +584,19 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
+                val queryParam = uri.getQueryParameter(CUST_OVERLAY_URL)
+                val headerText = uri.getQueryParameter(CUST_HEADER)
                 // hci
                 if (url.contains(HCI_CAMERA_KTP)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText)
                     return true
                 }
                 if (url.contains(HCI_CAMERA_SELFIE)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText)
                     return true
                 }
 
@@ -466,13 +615,27 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
                         data = Uri.parse(url)
                     }
-                    navigateToActivity(intent)
+                    if (isGoPayTopUpLink(url)) {
+                        reloadUrl = scroogeWebView?.url.orEmpty()
+                        navigateToActivity(intent)
+                    } else {
+                        navigateToActivityAndFinish(intent)
+                    }
+                    return true
+                }
+                //applink for link aja...
+                if (isLinkAjaAppLink(url)) {
+                    redirectToLinkAjaApp(url)
                     return true
                 }
 
                 val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
                 if (urlFinal.isNotEmpty()) {
                     view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
+                    return true
+                }
+                if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
+                    goToAlaCarteKyc(uri)
                     return true
                 }
             }
@@ -502,6 +665,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
+            logPaymentPageSuccessAfterTimeOut(url)
+            hasFinishedFirstLoad = true
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
         }
@@ -515,7 +680,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
+            if(isMainPaymentPageTimeOut(request?.url,
+                error?.errorCode?:0)){
+                handleMainPaymentPageTimeOut(request, error)
+            } else {
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                    mapOf("type" to request?.url.toString(),
+                            "error_code" to error?.errorCode.toString(),
+                            "desc" to error?.description?.toString().orEmpty()
+                    ))
+            }
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -550,6 +724,47 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun handleMainPaymentPageTimeOut(request: WebResourceRequest?, error: WebResourceError?) {
+        isPaymentPageLoadingTimeout = true
+        paymentPageTimeOutLogging.logCurrentPaymentPageTimeOut(request?.url.toString(),
+            error?.errorCode.toString(),
+            error?.description?.toString().orEmpty())
+        closePaymentPageOnTimeOut()
+    }
+
+    private fun closePaymentPageOnTimeOut() {
+        hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
+        val intent = Intent()
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
+        intent.putExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, true)
+        setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
+        finish()
+    }
+
+    private fun logPaymentPageSuccessAfterTimeOut(url: String?) {
+        url?.let {
+            if (!isPaymentPageLoadingTimeout
+                    && url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment")) {
+                paymentPageTimeOutLogging.logPaymentPageSuccessAfterTimeOut(url)
+            }
+        }
+    }
+
+    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode: Int): Boolean {
+        if (errorCode == WebViewClient.ERROR_TIMEOUT) {
+            url?.let {
+                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+            }
+        }
+        return false
+    }
+
     private fun getBaseUrlDomainPayment(): String {
         return TokopediaUrl.getInstance().PAY
     }
@@ -558,44 +773,76 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         val originUri = Uri.parse(originUrl)
         val uriBuilder = Uri.parse(originUrl).buildUpon()
         if (!originUri.isOpaque) {
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_FLAG_APP))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                        WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_DEVICE))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                        WEBVIEW_FLAG_PARAM_DEVICE,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                        WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
                 )
             }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(WEBVIEW_FLAG_PARAM_APP_VERSION))) {
                 uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                        WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
                 )
             }
         }
         return uriBuilder.build().toString().trim()
     }
 
-    fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String?, String?>? {
-        val urlQuery = Uri.parse(originUrl).query
-        return NetworkAuthUtil.generateWebviewHeaders(
-                Uri.parse(originUrl).path,
-                urlQuery ?: "",
-                "GET",
-                NetworkAuthUtilKey.KEY_WSV4)
+    fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String, String> {
+        val uri = Uri.parse(originUrl)
+        return generateWebviewHeaders(uri.path ?: "", uri.query ?: "")
+    }
+
+    private fun generateWebviewHeaders(path: String, strParam: String): Map<String, String> {
+        val header = AuthHelper.getDefaultHeaderMapOld(path, strParam, "GET", CONTENT_TYPE, KEY_WSV4, DATE_FORMAT, userSession.userId, userSession)
+        header[HEADER_TKPD_USER_AGENT] = DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+        header[HEADER_TKPD_SESSION_ID] = getRegistrationIdWithTemp()
+        return header
+    }
+
+    private fun getRegistrationIdWithTemp(): String {
+        var id = localCacheHandler.getString(GCM_ID, "")
+        if (id.isEmpty()) {
+            id = UUID.randomUUID().toString()
+            localCacheHandler.putString(GCM_ID, id)
+            localCacheHandler.applyEditor()
+        }
+        return id
     }
 
     fun getEnableFingerprintPayment(): Boolean {
         return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP)
+    }
+
+    private fun isLinkAjaAppLink(url: String): Boolean {
+        return url.contains(LINK_AJA_APP_LINK)
+    }
+
+    private fun isGoPayTopUpLink(url: String) = url.contains(GOPAY_TOP_UP)
+
+    private fun redirectToLinkAjaApp(url: String) {
+        try {
+            val uri = Uri.parse(url)
+            val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
+            val activities = packageManager
+                .queryIntentActivities(linkAjaIntent, 0)
+            val isIntentSafe: Boolean = activities.isNotEmpty()
+            if (isIntentSafe) {
+                startActivity(linkAjaIntent)
+            }
+        } catch (e: ActivityNotFoundException) { }
     }
 
     companion object {
@@ -604,16 +851,29 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         const val CHARSET_UTF_8 = "UTF-8"
 
         const val HCI_CAMERA_REQUEST_CODE = 978
+        private const val REQUEST_CODE_LIVENESS = 1235;
         const val FORCE_TIMEOUT = 90000L
 
+        const val LOG_TIMEOUT = 1000
+
+        private const val IMAGE_COMPRESS_QUALITY = 60
+
+        private const val LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment"
         private const val ACCOUNTS_URL = "accounts.tokopedia.com"
         private const val LOGIN_URL = "login.pl"
         private const val HCI_CAMERA_KTP = "android-js-call://ktp"
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+        private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
+        private val GOPAY_TOP_UP = "${TokopediaUrl.getInstance().WEB}gopay/top-up"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
+        private const val CUST_OVERLAY_URL = "imgurl"
+        private const val CUST_HEADER = "header_text"
+
+        private const val REQUEST_CODE_LINK_ACCOUNT = 101
+        private const val REQUEST_CODE_GOPAY_TOP_UP = 102
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

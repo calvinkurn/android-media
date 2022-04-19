@@ -1,48 +1,47 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
-import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew.Companion.REQUEST_FROM_TP_NOTIFICATION
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
-    private var mUserSession: UserSession? = null
-    private var initialLoggedInState = false
+    private var mUserSession: UserSessionInterface? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
-        initialLoggedInState = mUserSession!!.isLoggedIn
         toolbar.visibility = View.GONE
-        updateTitle(getString(R.string.tp_title_tokopoints))
+        try {
+            updateTitle(getString(R.string.tp_title_tokopoints))
+        } catch (e: Exception) {
+        }
     }
 
-    override fun getNewFragment(): Fragment {
-        val loginStatusBundle = Bundle()
-        val isLogin = mUserSession!!.isLoggedIn
+    override fun getNewFragment(): Fragment? {
         val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
-        return if (isLogin) {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
+        return if (mUserSession?.isLoggedIn == true) {
             tokoPointsHomeFragmentNew
         } else {
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, isLogin)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            tokoPointsHomeFragmentNew
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            null
         }
     }
 
@@ -50,43 +49,34 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         return tokoPointComponent
     }
 
-    private fun initInjector() : TokopointBundleComponent {
+    private fun initInjector(): TokopointBundleComponent {
         return DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .tokopointsQueryModule(TokopointsQueryModule(this))
                 .build()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN) {
-            inflateFragment()
-        }
-    }
-
-    protected fun openApplink(applink: String?) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(this, applink)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (mUserSession!!.isLoggedIn != initialLoggedInState) {
-            inflateFragment()
-        }
-    }
-
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = resources.getDimension(com.tokopedia.design.R.dimen.dp_4)
+            toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
         }
     }
 
     override fun hideToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = resources.getDimension(com.tokopedia.design.R.dimen.dp_0)
+            toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK ) {
+            inflateFragment()
+        }
+        if (requestCode == REQUEST_FROM_TP_NOTIFICATION) {
+            fragment?.onActivityResult(requestCode,requestCode,data)
+        }
+        else finish()
     }
 
     companion object {

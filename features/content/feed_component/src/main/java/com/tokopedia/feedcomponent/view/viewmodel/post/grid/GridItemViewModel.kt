@@ -14,5 +14,6 @@ data class GridItemViewModel(
         val redirectLink: String = "",
         val thumbnail: String = "",
         val tagsList: MutableList<TagsItem> = ArrayList(),
-        val trackingList: MutableList<TrackingViewModel> = ArrayList()
+        val trackingList: MutableList<TrackingViewModel> = ArrayList(),
+        val index: Int = 0
 )

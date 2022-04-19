@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="horizontal">
 
         <com.tokopedia.feedcomponent.view.custom.MentionEditText
@@ -24,11 +24,11 @@
             android:hint="@string/write_comment"
             android:inputType="textVisiblePassword|textMultiLine"
             android:maxLines="5"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingStart="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
+            android:paddingEnd="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingStart="12dp"
+            android:textSize="14sp"
             android:textStyle="normal"
             android:dropDownWidth="match_parent"/>
 
@@ -37,8 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/dp_10"
-            app:srcCompat="@drawable/ic_send_24dp_green"/>
+            android:padding="10dp"
+            android:contentDescription="null"
+            app:srcCompat="@drawable/kol_ic_send_24dp_green"/>
 
     </LinearLayout>
 
@@ -47,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@id/view_comment"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 
     <include
         android:id="@+id/kol_comment_product"
@@ -63,13 +64,13 @@
         android:layout_height="match_parent"
         android:layout_above="@id/view_comment"/>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:indeterminate="true"
         android:visibility="invisible"/>
 </RelativeLayout>

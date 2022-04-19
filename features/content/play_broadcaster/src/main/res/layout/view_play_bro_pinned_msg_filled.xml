@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="@color/Unify_Static_Black_32"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_pinned"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:icon_color_light_enable="@color/Unify_Y300"
+        app:icon_color_night_enable="@color/Unify_Y300"
+        app:icon_name="PUSH_PIN_FILLED"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pinned_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_6"
+        android:textColor="@color/Unify_Static_White"
+        app:typographyType="body_3"
+        tools:text="Kunjungi koleksi baru kami di sini"
+        />
+
+</LinearLayout>

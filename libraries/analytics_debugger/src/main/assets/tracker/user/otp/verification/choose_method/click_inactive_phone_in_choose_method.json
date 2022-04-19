@@ -1,0 +1,24 @@
+{
+  "readme": "Click inactive phone in choose method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "event": "clickOtp",
+      "eventCategory": "choose otp page",
+      "eventAction": "click nomor saya sudah tidak aktif",
+      "eventLabel": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}

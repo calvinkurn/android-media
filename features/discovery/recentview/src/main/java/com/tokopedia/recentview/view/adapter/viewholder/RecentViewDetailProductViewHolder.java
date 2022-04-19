@@ -12,16 +12,18 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.recentview.R;
 import com.tokopedia.recentview.view.adapter.LabelsAdapter;
 import com.tokopedia.recentview.view.listener.RecentView;
-import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel;
 
 /**
  * @author by nisie on 7/4/17.
  */
 
-public class RecentViewDetailProductViewHolder extends AbstractViewHolder<RecentViewDetailProductViewModel> {
+public class RecentViewDetailProductViewHolder extends AbstractViewHolder<RecentViewDetailProductDataModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_product_detail;
@@ -71,25 +73,13 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
     }
 
     @Override
-    public void bind(final RecentViewDetailProductViewModel element) {
+    public void bind(final RecentViewDetailProductDataModel element) {
 
         ImageHandler.LoadImage(productImage, element.getImageSource());
-
-//        if (element.isWishlist()) {
-//            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist_faved);
-//        } else {
-//            ImageHandler.loadImageWithId(wishlist, R.drawable.wishlist);
-//        }
-
         productName.setText(MethodChecker.fromHtml(element.getName()));
         productPrice.setText(element.getPrice());
 
-        if (element.getRating() > 0) {
-            productRating.setRating(element.getRating());
-            productRating.setVisibility(View.VISIBLE);
-        } else {
-            productRating.setVisibility(View.GONE);
-        }
+        productRating.setVisibility(View.GONE);
 
         if (!element.getLabels().isEmpty()) {
             labels.setVisibility(View.VISIBLE);
@@ -102,16 +92,6 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             freeReturn.setVisibility(View.VISIBLE);
         else
             freeReturn.setVisibility(View.GONE);
-//
-//        wishlist.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                viewListener.onWishlistClicked(
-//                        getAdapterPosition(),
-//                        element.getContentId(),
-//                        element.isWishlist());
-//            }
-//        });
 
         if (element.isOfficial()) {
             officialStore.setVisibility(View.VISIBLE);
@@ -127,24 +107,16 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
         shopName.setText(MethodChecker.fromHtml(element.getShopName()));
 
         if (element.isOfficial()) {
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_badge_authorize));
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.resources.common.R.drawable.ic_badge_authorize));
             shopLocation.setText(itemView.getContext().getString(R.string.title_badge_authorized));
         } else {
             shopLocation.setText(element.getShopLocation());
-            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_icon_location_grey));
+            iconLocation.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.resources.common.R.drawable.ic_icon_location_grey));
         }
 
-        mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(
-                        String.valueOf(element.getProductId()),
-                        element.getName(),
-                        element.getPrice(),
-                        element.getImageSource()
-                );
-                viewListener.sendRecentViewClickTracking(element);
-            }
+        mainView.setOnClickListener(v -> {
+            viewListener.sendRecentViewClickTracking(element);
+            RouteManager.route(v.getContext(), element.getProductLink());
         });
     }
 

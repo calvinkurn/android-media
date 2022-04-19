@@ -6,11 +6,9 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
-import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
-import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 
 interface PromoCheckoutDetailContract {
-    interface View : CustomerView{
+    interface View : CustomerView {
         fun onErroGetDetail(e: Throwable)
         fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel?)
         fun onSuccessCheckPromo(data: DataUiModel)
@@ -25,7 +23,7 @@ interface PromoCheckoutDetailContract {
         fun hideProgressLoading()
     }
 
-    interface Presenter : CustomerPresenter<View>{
+    interface Presenter : CustomerPresenter<View> {
         fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean/*, promo: Promo?*/)
         fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean)
         fun cancelPromo(codeCoupon: String)

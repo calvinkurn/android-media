@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/containerContentOrderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_N50"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
+                app:tickerShapeType="full"
+                app:tickerType="warning" />
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
+                android:id="@+id/flightOrderDetailHeaderStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
+                android:id="@+id/flightOrderDetailJourney"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailPassengerView
+                android:id="@+id/flightOrderDetailPassenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <LinearLayout
+                android:id="@+id/containerFlightOrderDetailCancellationDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:background="@color/Unify_N0"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_lvl4">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:srcCompat="@drawable/ic_flight_order_detail_cancel_detail" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_weight="1"
+                    android:text="@string/flight_order_detail_cancellation_detail_label"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_4" />
+
+                <View
+                    android:layout_width="@dimen/layout_lvl1"
+                    android:layout_height="@dimen/layout_lvl1"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/flight_circle_red_fill" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:icon_name="CHEVRON_RIGHT" />
+
+            </LinearLayout>
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
+                android:id="@+id/flightOrderDetailInsurance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
+                android:id="@+id/flightOrderDetailCheckIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.common.travel.widget.TravelCrossSellWidget
+                android:id="@+id/flightOrderDetailCrossSell"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lvl4">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tgFlightOrderContactUs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/flight_search_airport_arrival_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    tools:text="Butuh bantuan? Kami siap membantu 24/7. Hubungi Tokopedia Care " />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerLoaderOrderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_centerInParent="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:id="@+id/containerFlightOrderError"
+        android:padding="@dimen/spacing_lvl4"
+        tools:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivFlightOrderErrorImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toTopOf="@id/tgFlightOrderErrorTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@drawable/unify_globalerrors_connection" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgFlightOrderErrorTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/tgFlightOrderErrorMessage"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivFlightOrderErrorImage"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="heading_4"
+            tools:text="Error" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgFlightOrderErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/btnFlightOrderError"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgFlightOrderErrorTitle"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="body_3"
+            tools:text="Error" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnFlightOrderError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/flight_booking_action_retry"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgFlightOrderErrorMessage"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
+

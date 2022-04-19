@@ -4,11 +4,12 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.info.data.model.ShopStatisticsResp
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -35,9 +36,21 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
+    fun when_get_shop_info_error_shop_info_value_should_be_null() {
+        runBlocking {
+            onGetShopInfo_thenReturn_Error()
+
+            viewModel.getShopInfo("1")
+
+            verifyGetShopInfoUseCaseCalled()
+            verifyShopInfoNull()
+        }
+    }
+
+    @Test
     fun when_get_shop_notes_success__should_return_shop_notes_view_model() {
         runBlocking {
-            val shopNoteModel = ShopNoteModel()
+            val shopNoteModel = ShopNoteModel(id = "123")
             val shopNotes = listOf(shopNoteModel)
 
             onGetShopNotes_thenReturn(shopNotes)
@@ -53,23 +66,81 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
-    fun when_get_shop_statistics_success__should_concat_shop_reputation_to_shop_statistics() {
+    fun `check whether shopNoteId is 0 if id from response is null`() {
         runBlocking {
-            val shopBadge = ShopBadge()
-            val shopStatistics = ShopStatisticsResp()
+            val shopNoteModel = ShopNoteModel(
+                    id = null
+            )
+            val shopNotes = listOf(shopNoteModel)
 
-            onGetShopStatistics_thenReturn(shopStatistics)
-            onGetShopReputation_thenReturn(shopBadge)
+            onGetShopNotes_thenReturn(shopNotes)
 
-            viewModel.getShopStats("1")
+            viewModel.getShopNotes("1")
 
-            val expectedShopStatistics = shopStatistics
-                    .concatWith(shopBadge)
-
-            verifyGetShopStatisticsCalled()
-            verifyGetShopReputationCalled()
-            verifyShopStatisticsEquals(expectedShopStatistics)
+            val shopNoteId = (viewModel.shopNotesResp.value as Success).data.getOrNull(0)?.shopNoteId
+            assert(shopNoteId == 0L)
         }
+    }
+
+    @Test
+    fun `check whether shopNoteId is 0 if id from response is string`() {
+        runBlocking {
+            val shopNoteModel = ShopNoteModel(
+                    id = "asd"
+            )
+            val shopNotes = listOf(shopNoteModel)
+
+            onGetShopNotes_thenReturn(shopNotes)
+
+            viewModel.getShopNotes("1")
+
+            val shopNoteId = (viewModel.shopNotesResp.value as Success).data.getOrNull(0)?.shopNoteId
+            assert(shopNoteId == 0L)
+        }
+    }
+
+    @Test
+    fun when_get_shop_notes_error__should_post_fail() {
+        runBlocking {
+
+            onGetShopNotes_thenReturn_Error()
+
+            viewModel.getShopNotes("1")
+
+            verifyGetShopNotesUseCaseCalled()
+            verifyShopNotesResponseIsFail()
+        }
+    }
+
+    @Test
+    fun when_call_is_my_shop_should_return_true() {
+        val shopId = "2913"
+        onGetShopId_thenReturn(shopId)
+        verifyShopIdEquals(shopId)
+    }
+
+    @Test
+    fun `check whether shopBadgeReputation value is success`() {
+        val shopId = "2913"
+        onGetShopReputation_thenReturn(ShopBadge())
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value is Success)
+    }
+
+    @Test
+    fun `check whether shopBadgeReputation value is error`() {
+        val shopId = "2913"
+        onGetShopReputation_thenThrowError()
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value is Fail)
+    }
+
+    @Test
+    fun `check whether userId should return mocked value`() {
+        val mockUserId = "753348464"
+        onGetUserId_thenReturn(mockUserId)
+        val userId =  viewModel.userId()
+        assert(userId == mockUserId)
     }
 
     //region stub
@@ -77,16 +148,32 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
     }
 
+    private suspend fun onGetShopInfo_thenReturn_Error() {
+        coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
+    }
+
     private suspend fun onGetShopNotes_thenReturn(shopNotes: List<ShopNoteModel>) {
         coEvery { getShopNotesUseCase.executeOnBackground() } returns shopNotes
     }
+    private suspend fun onGetShopNotes_thenReturn_Error() {
+        coEvery { getShopNotesUseCase.executeOnBackground() } throws Exception()
+    }
+
 
     private fun onGetShopReputation_thenReturn(shopBadge: ShopBadge) {
         coEvery { getShopReputationUseCase.executeOnBackground() } returns shopBadge
     }
 
-    private fun onGetShopStatistics_thenReturn(shopStatistics: ShopStatisticsResp) {
-        coEvery { getShopStatisticsUseCase.executeOnBackground() } returns shopStatistics
+    private fun onGetShopReputation_thenThrowError() {
+        coEvery { getShopReputationUseCase.executeOnBackground() } throws Exception()
+    }
+
+    private fun onGetShopId_thenReturn(shopId: String) {
+        every { userSessionInterface.shopId } returns shopId
+    }
+
+    private fun onGetUserId_thenReturn(userId: String) {
+        every { userSessionInterface.userId } returns userId
     }
     //endregion
 
@@ -99,27 +186,29 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         coVerify { getShopNotesUseCase.executeOnBackground() }
     }
 
-    private fun verifyGetShopReputationCalled() {
-        coVerify { getShopReputationUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetShopStatisticsCalled() {
-        coVerify { getShopStatisticsUseCase.executeOnBackground() }
-    }
-
     private fun verifyShopInfoEquals(expectedShopInfo: ShopInfoData) {
         val actualShopInfo = viewModel.shopInfo.value
         assertEquals(expectedShopInfo, actualShopInfo)
     }
 
-    private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteViewModel>>) {
-        val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteViewModel>>)
+    private fun verifyShopInfoNull() {
+        val actualShopInfo = viewModel.shopInfo.value
+        assertEquals(actualShopInfo, null)
+    }
+
+    private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteUiModel>>) {
+        val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteUiModel>>)
         assertShopNoteEquals(expectedShopNotes, actualShopNotes)
     }
 
+    private fun verifyShopNotesResponseIsFail() {
+        val shopNotesResponse = viewModel.shopNotesResp.value
+        assert(shopNotesResponse is Fail)
+    }
+
     private fun assertShopNoteEquals(
-            expectedShopNotes: Success<List<ShopNoteViewModel>>,
-            actualShopNotes: Success<List<ShopNoteViewModel>>
+            expectedShopNotes: Success<List<ShopNoteUiModel>>,
+            actualShopNotes: Success<List<ShopNoteUiModel>>
     ) {
         expectedShopNotes.data.forEachIndexed { index, expectedShopNote ->
             val actualShopNote = actualShopNotes.data[index]
@@ -131,9 +220,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         }
     }
 
-    private fun verifyShopStatisticsEquals(expectedShopStatistics: ShopStatisticsResp) {
-        val actualShopStatistics = viewModel.shopStatisticsResp.value
-        assertEquals(expectedShopStatistics, actualShopStatistics)
+    private fun verifyShopIdEquals(shopId: String) {
+        assertEquals(viewModel.isMyShop(shopId), true)
     }
     //endregion
 
@@ -150,13 +238,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
                 goldOS.isOfficial,
                 goldOS.isGold,
                 createdInfo.openSince,
-                emptyList()
+                emptyList(),
+                shopSnippetUrl
         )
     }
 
-    private fun List<ShopNoteModel>.toViewModel(): List<ShopNoteViewModel> {
+    private fun List<ShopNoteModel>.toViewModel(): List<ShopNoteUiModel> {
         return map {
-            ShopNoteViewModel().apply {
+            ShopNoteUiModel().apply {
                 shopNoteId = it.id?.toLongOrNull() ?: 0
                 title = it.title
                 position = it.position.toLong()
@@ -166,8 +255,5 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         }
     }
 
-    private fun ShopStatisticsResp.concatWith(shopBadge: ShopBadge): ShopStatisticsResp {
-        return copy(shopReputation = shopBadge)
-    }
     // endregion
 }

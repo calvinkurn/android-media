@@ -15,7 +15,7 @@ class HotelContactDataActivity: BaseSimpleActivity(), HasComponent<HotelBookingC
 
     override fun getNewFragment(): Fragment =
             HotelContactDataFragment.getInstance(
-                    intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA)
+                    intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA) ?: TravelContactData()
             )
 
     override fun getComponent(): HotelBookingComponent =

@@ -3,36 +3,27 @@ package com.tokopedia.flight.search.domain
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.search.data.api.single.response.Amenity
-import com.tokopedia.flight.search.data.api.single.response.Info
-import com.tokopedia.flight.search.data.api.single.response.Route
-import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity
-import com.tokopedia.flight.search.data.db.JourneyAndRoutes
-import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.data.FlightSearchRepository
+import com.tokopedia.flight.search.data.cache.db.JourneyAndRoutes
+import com.tokopedia.flight.search.data.cloud.single.Amenity
+import com.tokopedia.flight.search.data.cloud.single.Info
+import com.tokopedia.flight.search.data.cloud.single.Route
+import com.tokopedia.flight.search.data.cloud.single.StopDetailEntity
 import com.tokopedia.flight.search.presentation.model.FlightFareModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
 import javax.inject.Inject
 
 /**
- * Created by Rizky on 26/09/18.
+ * @author by furqan on 13/04/2020
  */
-class FlightSortAndFilterUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<@JvmSuppressWildcards FlightJourneyModel>>() {
+class FlightSortAndFilterUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
 
-    private val PARAM_SORT = "PARAM_SORT"
-    private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
-
-    override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyModel>> {
-        val sortOption = requestParams.getInt(PARAM_SORT, TravelSortOption.CHEAPEST)
-        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
-
-        return flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                .map { mapToFlightJourneyViewModel(it.journeyAndRoutes, it.specialTag) }
-    }
+    suspend fun execute(@TravelSortOption flightSortOption: Int,
+                        flightFilterModel: FlightFilterModel): List<FlightJourneyModel> =
+            flightSearchRepository.getSearchFilter(flightSortOption, flightFilterModel).let {
+                mapToFlightJourneyViewModel(it.journeyAndRoutes, it.specialTag)
+            }
 
     private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>, specialTag: String): List<FlightJourneyModel> {
         val gson = Gson()
@@ -91,6 +82,8 @@ class FlightSortAndFilterUseCase @Inject constructor(
                 FlightJourneyModel(
                         term,
                         id,
+                        freeRapidTestLabel,
+                        seatDistancingLabel,
                         departureAirport,
                         departureAirportName,
                         departureAirportCity,
@@ -116,20 +109,12 @@ class FlightSortAndFilterUseCase @Inject constructor(
                         isReturn,
                         fare,
                         routes,
-                        flightAirlineDBS,
+                        flightAirlineDBS ?: arrayListOf(),
                         comboId,
                         specialTag
                 )
             }
         }
-    }
-
-    fun createRequestParams(@TravelSortOption flightSortOption: Int,
-                            flightFilterModel: FlightFilterModel): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putObject(PARAM_SORT, flightSortOption)
-        requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel)
-        return requestParams
     }
 
 }

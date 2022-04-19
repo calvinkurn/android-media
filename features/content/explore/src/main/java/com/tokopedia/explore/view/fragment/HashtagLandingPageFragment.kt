@@ -1,19 +1,16 @@
 package com.tokopedia.explore.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.explore.R
@@ -24,10 +21,18 @@ import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_content_hashtag_landing_page.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapter.OnHashtagPostClick {
@@ -67,7 +72,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)[HashtagLandingPageViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory).get(HashtagLandingPageViewModel::class.java)
         arguments?.let {
             searchTag = it.getString(ARG_HASHTAG, "")
             viewModel.hashtag = searchTag
@@ -76,7 +81,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.postResponse.observe(this, Observer {
+        viewModel.getPostResponse().observe(viewLifecycleOwner, Observer {
             hideLoading()
             endlessScrollListener.setHasNextPage(viewModel.canLoadMore)
             endlessScrollListener.updateStateAfterGetData()
@@ -97,21 +102,73 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     private fun onFailGetData(throwable: Throwable) {
         val message = ErrorHandler.getErrorMessage(context, throwable)
-        if (isInitialLoad){
-            adapter.showError(message){ loadData(true) }
+        if (isInitialLoad) {
+            when (throwable) {
+                is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                    view?.let {
+                        showGlobalError(GlobalError.NO_CONNECTION)
+                    }
+                }
+                is RuntimeException -> {
+                    when (throwable.localizedMessage.toIntOrNull()) {
+                        ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                            GlobalError.NO_CONNECTION
+                        )
+                        ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                        ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                        else -> {
+                            view?.let {
+                                showGlobalError(GlobalError.SERVER_ERROR)
+                                Toaster.build(
+                                    it,
+                                    message,
+                                    Toaster.LENGTH_SHORT,
+                                    type = Toaster.TYPE_ERROR
+                                ).show()
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    view?.let {
+                        showGlobalError(GlobalError.SERVER_ERROR)
+                        Toaster.build(
+                            it, throwable.message
+                                ?: message, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
         } else {
-            view?.let { Toaster.showErrorWithAction(it, message, Snackbar.LENGTH_LONG,
-                    getString(R.string.retry_label), View.OnClickListener { loadData(false) }) }
+            view?.let {
+                Toaster.build(
+                    it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.retry_label)
+                ) { loadData(false) }
+            }?.show()
         }
     }
 
+    private fun showGlobalError(type: Int) {
+        error_hashtag?.setType(type)
+        error_hashtag?.setActionClickListener {
+            loadData(true)
+
+        }
+        error_hashtag?.show()
+        recycler_view?.gone()
+    }
+
+
     private fun onSuccessGetData(data: List<PostKolUiModel>) {
+        recycler_view?.show()
         if (isInitialLoad)
             adapter.updateList(data)
         else
             adapter.addData(data)
 
-        if (adapter.itemCount == 0){
+        if (adapter.itemCount == 0) {
             adapter.showEmpty()
         }
     }
@@ -173,12 +230,6 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     override fun onPause() {
         super.onPause()
         feedAnalytics.sendPendingAnalytics()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.postResponse.removeObservers(this)
-        viewModel.flush()
     }
 
     private fun loadData(isForceRefresh: Boolean = false){

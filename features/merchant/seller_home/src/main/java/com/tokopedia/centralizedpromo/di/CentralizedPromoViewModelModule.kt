@@ -8,7 +8,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@SellerHomeScope
 @Module
 abstract class CentralizedPromoViewModelModule {
     @Binds

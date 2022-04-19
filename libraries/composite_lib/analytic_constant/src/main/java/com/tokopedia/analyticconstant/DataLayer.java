@@ -13,7 +13,7 @@ public class DataLayer {
         if (var0.length % 2 != 0) {
             throw new IllegalArgumentException("expected even number of key-value pairs");
         } else {
-            HashMap var1 = new HashMap();
+            HashMap<String, Object> var1 = new HashMap<String, Object>();
 
             for(int var2 = 0; var2 < var0.length; var2 += 2) {
                 if (!(var0[var2] instanceof String)) {
@@ -22,6 +22,26 @@ public class DataLayer {
                 }
 
                 var1.put((String)var0[var2], var0[var2 + 1]);
+            }
+
+            return var1;
+        }
+    }
+
+    @VisibleForTesting
+    public static HashMap<String, String> mapStringsOf(String... var0) {
+        if (var0.length % 2 != 0) {
+            throw new IllegalArgumentException("expected even number of key-value pairs");
+        } else {
+            HashMap<String, String> var1 = new HashMap<>();
+
+            for (int var2 = 0; var2 < var0.length; var2 += 2) {
+                if (var0[var2] == null) {
+                    String var3 = String.valueOf(var0[var2]);
+                    throw new IllegalArgumentException("key is not a string: " + var3);
+                }
+
+                var1.put(var0[var2], var0[var2 + 1]);
             }
 
             return var1;

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 /**
  * Created by jegul on 2019-10-02.
  */
-abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
+abstract class BaseDiffUtilAdapter<T: Any>(isFlexibleType: Boolean = false) : BaseAdapter<T>(isFlexibleType) {
 
     abstract fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 

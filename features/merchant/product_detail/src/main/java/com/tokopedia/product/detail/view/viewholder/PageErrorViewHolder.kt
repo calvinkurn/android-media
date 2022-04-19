@@ -2,16 +2,16 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
+import com.tokopedia.product.detail.databinding.ItemDynamicGlobalErrorBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
-import kotlinx.android.synthetic.main.item_dynamic_global_error.view.*
 
 class PageErrorViewHolder(val view: View,
                           val listener: DynamicProductDetailListener) : AbstractViewHolder<PageErrorDataModel>(view) {
@@ -22,6 +22,8 @@ class PageErrorViewHolder(val view: View,
         private const val TNC_BANNED_PRODUCT = "https://m.tokopedia.com/terms"
     }
 
+    private val binding = ItemDynamicGlobalErrorBinding.bind(view)
+
     override fun bind(element: PageErrorDataModel) {
         if (element.shouldShowTobacoError) {
             renderTobacoError(element.tobacoErrorData ?: TobacoErrorData())
@@ -29,7 +31,7 @@ class PageErrorViewHolder(val view: View,
             if (element.errorCode == ProductDetailErrorHelper.CODE_PRODUCT_ERR_BANNED) {
                 renderBannedProductError()
             } else {
-                view.global_error_pdp.setType(element.errorCode.toInt())
+                binding.globalErrorPdp.setType(element.errorCode.toInt())
             }
         }
 
@@ -37,23 +39,23 @@ class PageErrorViewHolder(val view: View,
          * If error code is product not found, button would be "Go To Homepage"
          */
         when {
-            element.errorCode == GlobalError.PAGE_NOT_FOUND.toString() -> view.global_error_pdp.setActionClickListener {
+            element.errorCode == GlobalError.PAGE_NOT_FOUND.toString() -> binding.globalErrorPdp.setActionClickListener {
                 listener.goToHomePageClicked()
             }
-            element.errorCode == ProductDetailErrorHelper.CODE_PRODUCT_ERR_BANNED -> view.global_error_pdp.setActionClickListener {
+            element.errorCode == ProductDetailErrorHelper.CODE_PRODUCT_ERR_BANNED -> binding.globalErrorPdp.setActionClickListener {
                 listener.goToWebView(TNC_BANNED_PRODUCT)
             }
-            element.shouldShowTobacoError -> view.global_error_pdp.setActionClickListener {
+            element.shouldShowTobacoError -> binding.globalErrorPdp.setActionClickListener {
                 listener.goToWebView(element.tobacoErrorData?.url ?: "")
             }
-            else -> view.global_error_pdp.setActionClickListener {
+            else -> binding.globalErrorPdp.setActionClickListener {
                 listener.onRetryClicked(true)
             }
         }
     }
 
     private fun renderBannedProductError() {
-        view.global_error_pdp.run {
+        binding.globalErrorPdp.run {
             clearView()
             errorTitle.show()
             errorTitle.text = getString(R.string.banned_product_title)
@@ -61,7 +63,7 @@ class PageErrorViewHolder(val view: View,
             errorDescription.text = getString(R.string.banned_product_description)
             errorDescription.show()
 
-            ImageHandler.LoadImage(errorIllustration, IMG_URL_ERROR_TOBACCO)
+            errorIllustration.loadImage(IMG_URL_ERROR_TOBACCO)
             errorIllustration.adjustViewBounds = true
             errorIllustration.show()
 
@@ -71,7 +73,7 @@ class PageErrorViewHolder(val view: View,
     }
 
     private fun renderTobacoError(tobacoErrorData: TobacoErrorData) {
-        view.global_error_pdp.run {
+        binding.globalErrorPdp.run {
             clearView()
             errorTitle.show()
             errorTitle.text = tobacoErrorData.title
@@ -79,7 +81,7 @@ class PageErrorViewHolder(val view: View,
             errorDescription.text = tobacoErrorData.messages
             errorDescription.show()
 
-            ImageHandler.LoadImage(errorIllustration, IMG_URL_ERROR_TOBACCO)
+            errorIllustration.loadImage(IMG_URL_ERROR_TOBACCO)
             errorIllustration.adjustViewBounds = true
             errorIllustration.show()
 

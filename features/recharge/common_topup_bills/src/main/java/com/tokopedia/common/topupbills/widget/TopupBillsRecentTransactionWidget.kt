@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,6 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import org.jetbrains.annotations.NotNull
@@ -18,43 +18,43 @@ import org.jetbrains.annotations.NotNull
 /**
  * Created by nabillasabbaha on 25/04/19.
  */
-class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                                  defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
+                                                                       defStyleAttr: Int = 0)
+    : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val recyclerView: RecyclerView
-    private val titleWidget: TextView
-    private val topupBillsRecentNumbersAdapter: TopupBillsRecentNumbersAdapter
-    private val recentNumbers = mutableListOf<TopupBillsRecommendation>()
-    private lateinit var listener: ActionListener
-    private val digitalTrackRecentPrev = mutableListOf<TopupBillsTrackRecentTransaction>()
+    protected val recyclerView: RecyclerView
+    protected val titleWidget: TextView
+
+    private lateinit var listener: TopupBillsRecentNumberListener
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
-        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView = view.findViewById(R.id.recycler_view_menu_component)
         titleWidget = view.findViewById(R.id.title_component)
-
-        topupBillsRecentNumbersAdapter = TopupBillsRecentNumbersAdapter(recentNumbers)
-        recyclerView.adapter = topupBillsRecentNumbersAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    fun setListener(listener: ActionListener) {
-        this.listener = listener
+    fun setListener(listenerBills: TopupBillsRecentNumberListener) {
+        this.listener = listenerBills
     }
 
     fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
         titleWidget.text = context.getString(R.string.common_topup_title_recent_transaction_widget)
-        topupBillsRecentNumbersAdapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
+        initAdapterWithData(recentNumbers)
+    }
+
+    open fun initAdapterWithData(recentNumbers: List<TopupBillsRecommendation>) {
+        val adapter = TopupBillsRecentNumbersAdapter(recentNumbers)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        adapter.setListener(object : TopupBillsRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, position: Int) {
                 listener.onClickRecentNumber(topupBillsRecommendation, topupBillsRecommendation.categoryId,
                         position)
             }
         })
-        this.recentNumbers.addAll(recentNumbers)
-        topupBillsRecentNumbersAdapter.notifyDataSetChanged()
 
         getVisibleRecentItemsToUsersTracking(recentNumbers)
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -77,22 +77,12 @@ class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull conte
                         recentNumbers[i].categoryId, i))
             }
         }
-        if (digitalTrackRecentList.size > 0 &&
-                digitalTrackRecentList.size != digitalTrackRecentPrev.size &&
-                digitalTrackRecentList != digitalTrackRecentPrev) {
+        if (digitalTrackRecentList.size > 0) {
             listener.onTrackImpressionRecentList(digitalTrackRecentList)
-
-            digitalTrackRecentPrev.clear()
-            digitalTrackRecentPrev.addAll(digitalTrackRecentList)
         }
     }
 
-    override fun toggleTitle(value: Boolean) {
+    fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
-    }
-
-    interface ActionListener {
-        fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int, position: Int)
-        fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>)
     }
 }

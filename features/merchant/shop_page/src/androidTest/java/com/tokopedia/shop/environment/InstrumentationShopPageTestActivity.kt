@@ -5,33 +5,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.test.R
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 
-class InstrumentationShopPageTestActivity : AppCompatActivity(),
-        ShopPageHeaderPerformanceMonitoringListener,
-        ShopPageHomeTabPerformanceMonitoringListener,
-        ShopPageProductTabPerformanceMonitoringListener {
+class InstrumentationShopPageTestActivity : AppCompatActivity(), ShopPagePerformanceMonitoringListener {
 
-    private var shopPageHeaderLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
-    private var shopPageHomeTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
-    private var shopPageProductTabLoadTimePerformanceCallback: PageLoadTimePerformanceInterface? = null
-
-    companion object{
-        private const val SAMPLE_SHOP_ID = "3418893"
-    }
+    private var performanceMonitoringShop: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
-        initShopPageHeaderPerformanceMonitoring()
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instrumentation_shop_page_test)
 
-        val shopPageFragment: Fragment = ShopPageFragment()
+        val shopPageFragment: Fragment = NewShopPageFragment()
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
         fragmentTransaction
@@ -40,50 +28,26 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
         fragmentTransaction.commit()
     }
 
-    override fun initShopPageHeaderPerformanceMonitoring() {
-        shopPageHeaderLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
+    private fun initPerformanceMonitoring() {
+        performanceMonitoringShop = PageLoadTimePerformanceCallback(
                 "prepare",
                 "network",
                 "render"
         )
-        shopPageHeaderLoadTimePerformanceCallback?.startMonitoring("start monitoring")
-        shopPageHeaderLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
+        performanceMonitoringShop?.startMonitoring("mp_shop")
+        performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
+        performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
     }
 
-    override fun getShopPageHeaderLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
-        return shopPageHeaderLoadTimePerformanceCallback
+    override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
+        return performanceMonitoringShop
     }
 
-    override fun initShopPageHomeTabPerformanceMonitoring() {
-        shopPageHomeTabLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
-                "prepare",
-                "network",
-                "render"
-        )
-        shopPageHomeTabLoadTimePerformanceCallback?.startMonitoring("start monitoring")
-        shopPageHomeTabLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
-    }
-
-    override fun getShopPageHomeTabLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
-        return shopPageHomeTabLoadTimePerformanceCallback
-    }
-
-    override fun initShopPageProductTabPerformanceMonitoring() {
-        shopPageProductTabLoadTimePerformanceCallback = PageLoadTimePerformanceCallback(
-                "prepare",
-                "network",
-                "render"
-        )
-        shopPageProductTabLoadTimePerformanceCallback?.startMonitoring("start monitoring")
-        shopPageProductTabLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
-    }
-
-    override fun getShopPageProductTabLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
-        return shopPageProductTabLoadTimePerformanceCallback
+    override fun stopMonitoringPltPreparePage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
     }
 
     override fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
-        pageLoadTimePerformanceInterface.stopPreparePagePerformanceMonitoring()
         pageLoadTimePerformanceInterface.startNetworkRequestPerformanceMonitoring()
     }
 
@@ -97,4 +61,15 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
         pageLoadTimePerformanceInterface.stopMonitoring()
     }
 
+    override fun invalidateMonitoringPlt(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface) {
+        pageLoadTimePerformanceInterface.invalidate()
+    }
+
+    override fun startCustomMetric(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface, tag: String) {
+        pageLoadTimePerformanceInterface.startCustomMetric(tag)
+    }
+
+    override fun stopCustomMetric(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface, tag: String) {
+        pageLoadTimePerformanceInterface.stopCustomMetric(tag)
+    }
 }

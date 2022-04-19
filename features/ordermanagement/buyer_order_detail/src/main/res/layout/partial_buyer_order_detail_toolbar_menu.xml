@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layoutDescription="@xml/partial_buyer_order_detail_toolbar_menu_scene">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/buyerOrderDetailChatMenu"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:tag="@string/tag_buyer_order_detail_chat_icon_menu"
+        app:icon_name="CHAT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu>

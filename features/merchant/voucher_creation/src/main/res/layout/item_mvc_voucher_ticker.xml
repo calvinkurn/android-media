@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Neutral_N0"
+    android:background="@color/transparent"
     android:paddingBottom="@dimen/layout_lvl4">
 
     <com.tokopedia.vouchercreation.common.view.voucherticker.VoucherTickerView

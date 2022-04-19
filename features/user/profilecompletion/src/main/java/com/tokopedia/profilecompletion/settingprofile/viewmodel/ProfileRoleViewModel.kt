@@ -7,10 +7,10 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
-import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -19,29 +19,28 @@ import javax.inject.Inject
  */
 
 class ProfileRoleViewModel @Inject constructor(
-        private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
-        private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher
+    private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
+    private val rawQueries: Map<String, String>,
+    dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val mutableUserProfileRole = MutableLiveData<Result<ProfileRoleData>>()
     val userProfileRole: LiveData<Result<ProfileRoleData>>
-        get() = mutableUserProfileRole
+	get() = mutableUserProfileRole
 
-    fun getUserProfileRole(){
-        val rawQuery = rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]
-        if(!rawQuery.isNullOrEmpty()){
-            userProfileRoleUseCase.run {
-                setGraphqlQuery(rawQuery)
-                execute(
-                        {
-                            mutableUserProfileRole.postValue(Success(it.profileRoleData))
-                        },
-                        {
-                            mutableUserProfileRole.postValue(Fail(it))
-                        }
-                )
-            }
-        }
+    fun getUserProfileRole() {
+	rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]?.let { query ->
+	    userProfileRoleUseCase.run {
+		setGraphqlQuery(query)
+		execute(
+		    {
+			mutableUserProfileRole.postValue(Success(it.profileRoleData))
+		    },
+		    {
+			mutableUserProfileRole.postValue(Fail(it))
+		    }
+		)
+	    }
+	}
     }
 }

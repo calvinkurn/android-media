@@ -10,8 +10,8 @@ dependencies {
 sourceCompatibility = "7"
 targetCompatibility = "7"
 buildscript {
-
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
@@ -35,7 +35,7 @@ compileTestKotlin {
 project.ext {
     artifactId = 'param'
     groupId = 'com.tokopedia.analytic'
-    versionName = "0.0.2"
+    versionName = "0.0.3"
     artifactName = "analytic_param"
 }
 

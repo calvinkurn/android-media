@@ -4,12 +4,11 @@ import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.logisticaddaddress.data.repository.ShopAddressRepository
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import org.json.JSONObject
 import rx.Observable
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class GetDistrictRecomToken @Inject constructor(val repository: ShopAddressRepository)

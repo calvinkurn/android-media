@@ -12,6 +12,9 @@ class CatalogPrefixSelect(
         @SerializedName("text")
         @Expose
         val text: String = "",
+        @SerializedName("validations")
+        @Expose
+        val validations: List<Validation> = listOf(),
         @SerializedName("prefixes")
         @Expose
         val prefixes: List<CatalogPrefixs> = listOf()
@@ -32,7 +35,7 @@ class CatalogPrefixs(
 class CatalogOperator(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("attributes")
         @Expose
         val attribute: CatalogPrefixAttributes = CatalogPrefixAttributes()
@@ -44,5 +47,20 @@ class CatalogPrefixAttributes(
         val imageUrl: String = "",
         @SerializedName("default_product_id")
         @Expose
-        val defaultProductId: Int = 0
+        val defaultProductId: String = "",
+        @SerializedName("name")
+        @Expose
+        val name: String = ""
+)
+
+class Validation(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
+        @SerializedName("message")
+        @Expose
+        val message: String = "",
+        @SerializedName("rule")
+        @Expose
+        val rule: String = ""
 )

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:id="@+id/hidden"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_ilustration"
             android:layout_width="194dp"
             android:layout_height="194dp"
@@ -28,14 +30,13 @@
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ill_iklan_otomatis" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="@string/hidden_trial_title"
             android:textColor="@color/topads_heading_color"
@@ -45,7 +46,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ic_ilustration"
             app:typographyType="heading_4" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icon1"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
@@ -60,8 +61,8 @@
             android:id="@+id/desc_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="@dimen/dp_26"
             android:gravity="left"
             android:text="@string/hidden_trial_desc1"
@@ -70,7 +71,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:typographyType="body_3" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icon2"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
@@ -78,15 +79,14 @@
             android:layout_marginLeft="@dimen/dp_26"
             app:layout_constraintBottom_toBottomOf="@+id/desc_2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/desc_2"
-            app:srcCompat="@drawable/ic_people" />
+            app:layout_constraintTop_toTopOf="@+id/desc_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="@dimen/dp_26"
             android:gravity="left"
             android:text="@string/hidden_trial_desc2"
@@ -95,7 +95,7 @@
             app:layout_constraintTop_toBottomOf="@+id/desc_1"
             app:typographyType="body_3" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icon3"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
@@ -103,15 +103,14 @@
             android:layout_marginLeft="@dimen/dp_26"
             app:layout_constraintBottom_toBottomOf="@+id/desc_3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/desc_3"
-            app:srcCompat="@drawable/ic_product" />
+            app:layout_constraintTop_toTopOf="@+id/desc_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="@dimen/dp_26"
             android:gravity="left"
             android:text="@string/hidden_trial_desc3"

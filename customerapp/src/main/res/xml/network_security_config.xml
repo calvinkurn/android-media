@@ -9,14 +9,16 @@
     </debug-overrides>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>
-        <domain includeSubdomains="false">10.0.2.2</domain>
-        <domain includeSubdomains="false">10.0.3.2</domain>
         <domain includeSubdomains="true">172.31.2.144</domain>
         <domain includeSubdomains="true">gjk.io</domain>
-        <domain includeSubdomains="false">ecs.tokopedia.com</domain>
-        <domain includeSubdomains="false">cdn.tokopedia.com</domain>
-        <domain includeSubdomains = "true">wst.laku6.com</domain>
+        <domain includeSubdomains="true">wst.laku6.com</domain>
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
+
+        <!--    Need to be whitelisted for silent verification    -->
+        <domain includeSubdomains="false">wso2am-prod-gdhsi-h3g.dhubckh.com</domain>
+        <domain includeSubdomains="false">mi-id.dnlsrv.com</domain>
+        <domain includeSubdomains="false">xl.co.id</domain>
+        <domain includeSubdomains="false">apigw.xl.co.id</domain>
     </domain-config>
 </network-security-config>

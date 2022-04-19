@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.pdp.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
 import com.tokopedia.salam.umrah.pdp.presentation.usecase.UmrahPdpGetAvailabilityUseCase
 import io.mockk.MockKAnnotations
@@ -24,7 +24,7 @@ class UmrahPdpDetailViewModelTest{
 
     @RelaxedMockK
     lateinit var mUmrahPdpUseCase: UmrahPdpGetAvailabilityUseCase
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahPdpViewModel: UmrahPdpDetailViewModel
 
     @Before

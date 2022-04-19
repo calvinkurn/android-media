@@ -38,7 +38,7 @@ class UmrahHomepageDreamFundProgressWidget @JvmOverloads constructor(context: Co
             }
             else if(umrahHomepageDreamFundProgressWidgetModel.progress==MIN_PROGRESS){
                 tg_widget_umrah_dream_fund_progress_percentage.text = resources.getString(R.string.umrah_dream_fund_progress_not_started_yet)
-                tg_widget_umrah_dream_fund_progress_percentage.setTextColor(resources.getColor(com.tokopedia.design.R.color.unify_N700_44))
+                tg_widget_umrah_dream_fund_progress_percentage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_44))
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 tg_widget_umrah_dream_fund_progress_target_progress.text = Html.fromHtml(umrahHomepageDreamFundProgressWidgetModel.textProgress, Html.FROM_HTML_MODE_COMPACT)

@@ -101,6 +101,7 @@ public class DefaultShare implements ShareCallback {
 
     @Override
     public void urlCreated(LinkerShareResult linkerShareData) {
+        if (TextUtils.isEmpty(linkerShareData.getUrl())) return;
         Intent intent = getIntent(linkerShareData.getShareContents(), linkerShareData.getUrl());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);

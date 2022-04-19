@@ -1,13 +1,16 @@
 package com.tokopedia.play.data.mapper
 
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
 /**
@@ -15,15 +18,14 @@ import java.lang.reflect.Type
  */
 
 class PlaySocketMapper(
-        private val webSocketResponse: WebSocketResponse
+        private val webSocketResponse: WebSocketResponse,
+        private val gson: Gson,
 ) {
 
     private companion object {
         const val TAG = "PlaySocketMapper"
         val voucherListType: Type = object: TypeToken<List<Voucher>>(){}.type
     }
-
-    private val gson = Gson()
 
     fun mapping(): Any? {
         if (webSocketResponse.type.isEmpty() || webSocketResponse.jsonElement == null) return null
@@ -53,6 +55,21 @@ class PlaySocketMapper(
             }
             PlaySocketType.MerchantVoucher.value -> {
                 return MerchantVoucher(mapToMerchantVoucher())
+            }
+            PlaySocketType.ChannelInteractiveStatus.value -> {
+                return mapToChannelInteractiveStatus()
+            }
+            PlaySocketType.ChannelInteractive.value -> {
+                return mapToChannelInteractive()
+            }
+            PlaySocketType.RealTimeNotification.value -> {
+                return mapToRealTimeNotification()
+            }
+            PlaySocketType.UpdateConfigMultipleLike.value -> {
+                return mapToUpdateMultipleLikeConfig()
+            }
+            PlaySocketType.UserWinnerStatus.value -> {
+                return mapToUserWinnerStatus()
             }
         }
         return null
@@ -86,12 +103,32 @@ class PlaySocketMapper(
         return convertToModel(webSocketResponse.jsonObject, BannedFreeze::class.java)
     }
 
-    private fun mapToProductTag(): ProductTag? {
-        return convertToModel(webSocketResponse.jsonObject, ProductTag::class.java)
+    private fun mapToProductTag(): ProductSection? {
+        return convertToModel(webSocketResponse.jsonObject, ProductSection::class.java)
     }
 
     private fun mapToMerchantVoucher(): List<Voucher> {
         return convertToModel(webSocketResponse.jsonArray, voucherListType)?: listOf()
+    }
+
+    private fun mapToChannelInteractiveStatus(): ChannelInteractiveStatus? {
+        return convertToModel(webSocketResponse.jsonObject, ChannelInteractiveStatus::class.java)
+    }
+
+    private fun mapToChannelInteractive(): ChannelInteractive? {
+        return convertToModel(webSocketResponse.jsonObject, ChannelInteractive::class.java)
+    }
+
+    private fun mapToRealTimeNotification(): RealTimeNotification? {
+        return convertToModel(webSocketResponse.jsonObject, RealTimeNotification::class.java)
+    }
+
+    private fun mapToUpdateMultipleLikeConfig(): UpdateMultipleLikeConfig? {
+        return convertToModel(webSocketResponse.jsonObject, UpdateMultipleLikeConfig::class.java)
+    }
+
+    private fun mapToUserWinnerStatus(): UserWinnerStatus? {
+        return convertToModel(webSocketResponse.jsonObject, UserWinnerStatus::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
@@ -99,7 +136,7 @@ class PlaySocketMapper(
             return gson.fromJson(jsonElement, classOfT)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, TAG, e.localizedMessage)
+                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
             }
         }
         return null
@@ -110,7 +147,7 @@ class PlaySocketMapper(
             return gson.fromJson(jsonElement, typeOfT)
         } catch (e: Exception) {
             if (!GlobalConfig.DEBUG) {
-                Crashlytics.log(0, TAG, e.localizedMessage)
+                FirebaseCrashlytics.getInstance().log("E/${TAG}: ${e.localizedMessage}")
             }
         }
         return null

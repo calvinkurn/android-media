@@ -1,8 +1,0 @@
-query GetJarvisRecommendation($productName: String) {
-  getJarvisRecommendation(product_name: $productName) {
-    categories {
-      id
-      name
-    }
-  }
-}

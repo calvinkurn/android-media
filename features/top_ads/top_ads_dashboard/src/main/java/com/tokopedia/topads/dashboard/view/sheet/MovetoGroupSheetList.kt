@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapter
 import com.tokopedia.topads.dashboard.view.adapter.movetogroup.MovetoGroupAdapterTypeFactoryImpl
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemViewModel
-import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupViewModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupItemModel
+import com.tokopedia.topads.dashboard.view.adapter.movetogroup.viewmodel.MovetoGroupModel
 import kotlinx.android.synthetic.main.topads_dash_layout_common_searchbar_layout.*
 import kotlinx.android.synthetic.main.topads_dash_moveto_group_bottom_sheet.*
 
@@ -42,10 +44,13 @@ class MovetoGroupSheetList {
                     behavior.isHideable = false
                 }
             }
+            it.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
             it.btn_close.setOnClickListener { dismissDialog() }
             it.submit_butt.setOnClickListener {
                 if (groupId.toString() == "0") {
-                    groupId = (adapter?.items?.get(0) as MovetoGroupItemViewModel).result.groupId
+                    adapter?.items?.firstOrNull()?.let { model ->
+                        groupId = (model as MovetoGroupItemModel).result.groupId.toInt()
+                    }
                 }
                 onItemClick?.invoke()
                 dismissDialog()
@@ -58,7 +63,7 @@ class MovetoGroupSheetList {
     }
 
     private fun itemSelected(pos: Int) {
-        groupId = (adapter?.items?.get(pos) as MovetoGroupItemViewModel).result.groupId
+        groupId = (adapter?.items?.get(pos) as MovetoGroupItemModel).result.groupId.toInt()
         adapter?.setLastSelected(pos)
     }
 
@@ -93,8 +98,12 @@ class MovetoGroupSheetList {
         searchTextField?.text?.clear()
     }
 
-    fun updateData(data: MutableList<MovetoGroupViewModel>) {
+    fun updateData(data: MutableList<MovetoGroupModel>) {
         adapter?.updateData(data)
+    }
+
+    fun updateKeyCount(data: List<CountDataItem>) {
+        adapter?.setItemCount(data)
     }
 
     fun getSelectedFilter(): String {
@@ -109,7 +118,7 @@ class MovetoGroupSheetList {
 
         fun newInstance(context: Context): MovetoGroupSheetList {
             val fragment = MovetoGroupSheetList()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_moveto_group_bottom_sheet)
             fragment.setupView(context)
             return fragment

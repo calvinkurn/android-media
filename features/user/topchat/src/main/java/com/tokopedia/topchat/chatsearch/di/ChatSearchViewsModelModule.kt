@@ -4,14 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.topchat.chatsearch.viewmodel.ChatContactLoadMoreViewModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ChatSearchScope
 abstract class ChatSearchViewsModelModule {
+
+    @Binds
+    @ChatSearchScope
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
@@ -19,7 +23,8 @@ abstract class ChatSearchViewsModelModule {
     abstract fun provideChatSearchViewModel(viewModel: ChatSearchViewModel): ViewModel
 
     @Binds
-    @ChatSearchScope
-    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    @IntoMap
+    @ViewModelKey(ChatContactLoadMoreViewModel::class)
+    abstract fun provideChatSearchContactDetailViewModel(viewModel: ChatContactLoadMoreViewModel): ViewModel
 
 }

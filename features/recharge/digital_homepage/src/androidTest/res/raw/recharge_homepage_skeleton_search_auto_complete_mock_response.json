@@ -1,0 +1,52 @@
+[
+  {
+    "data": {
+      "rechargeGetDynamicPageSkeleton": {
+        "search_bar_screen_name": "/top-up-tagihan",
+        "search_bar_redirection": "tnb",
+        "sections": [
+          {
+            "id": 1,
+            "template": "TOP_BANNER"
+          },
+          {
+            "id": 2,
+            "template": "TOP_ICONS"
+          },
+          {
+            "id": 3,
+            "template": "DYNAMIC_ICONS"
+          },
+          {
+            "id": 4,
+            "template": "DUAL_ICONS"
+          },
+          {
+            "id": 5,
+            "template": "URGENCY_WIDGET"
+          },
+          {
+            "id": 6,
+            "template": "DUAL_BANNERS"
+          },
+          {
+            "id": 7,
+            "template": "LEGO_BANNERS"
+          },
+          {
+            "id": 8,
+            "template": "PRODUCT_CARD_ROW"
+          },
+          {
+            "id": 9,
+            "template": "COUNTDOWN_SINGLE_BANNER"
+          },
+          {
+            "id": 10,
+            "template": "COUNTDOWN_PRODUCT_BANNER"
+          }
+        ]
+      }
+    }
+  }
+]

@@ -11,48 +11,55 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.banner.Indicator
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightUrl
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
+import com.tokopedia.flight.databinding.FragmentFlightHomepageBinding
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
+import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
+import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
+import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_homepage.*
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import java.util.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.FlightSearchFormListener {
+class FlightHomepageFragment : BaseDaggerFragment(),
+        FlightSearchFormView.FlightSearchFormListener, TravelVideoBannerWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -64,6 +71,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private var applinkErrorTextResource = -1
     private var isSearchFromWidget: Boolean = false
     private var bannerWidthInPixels = 0
+    private var mbinding: FragmentFlightHomepageBinding? = null
+    private val binding get() = mbinding
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -79,7 +88,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         val displayMetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toInt()
         bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
 
         activity?.run {
@@ -104,8 +113,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     )
                 }
             }
-
-            flightHomepageViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
+            flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
         }
     }
@@ -114,8 +122,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         super.onActivityCreated(savedInstanceState)
 
         flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
+            flightHomepageViewModel.fetchVideoBannerData()
             when (it) {
                 is Success -> {
+                    renderBannerTitle(it.data.meta.label)
                     renderBannerView(it.data.banners)
                 }
                 is Fail -> {
@@ -125,7 +135,18 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             stopTrace()
         })
 
-        flightHomepageViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
+        flightHomepageViewModel.videoBanner.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderVideoBannerView(it.data)
+                }
+                is Fail -> {
+                    hideVideoBannerView()
+                }
+            }
+        })
+
+        flightHomepageViewModel.homepageData.observe(viewLifecycleOwner, Observer {
             renderSearchForm(it)
         })
 
@@ -147,26 +168,29 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
             if (it) {
                 isSearchFromWidget = true
-                flightHomepageSearchForm.autoSearch()
+                binding?.flightHomepageSearchForm?.autoSearch()
             }
         })
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_homepage, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mbinding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        flightHomepageSearchForm.listener = this
+        binding?.flightHomepageSearchForm?.listener = this
+        binding?.flightHomepageSearchForm?.setDate(false)
 
         if (applinkErrorTextResource != -1) {
             showMessageErrorInSnackbar(applinkErrorTextResource)
         }
 
         if (::flightHomepageViewModel.isInitialized)
-            flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalytics.Screen.HOMEPAGE)
+            flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalyticsScreenName.HOMEPAGE)
     }
 
     override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
@@ -200,6 +224,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         }
     }
 
+    override fun onReverseAirportClicked(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel) {
+        flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
+    }
+
     override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                         departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
@@ -210,22 +238,25 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     departureDate,
                     minMaxDate.second,
                     getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
-                    TAG_DEPARTURE_CALENDAR
-            )
-        } else {
-            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
-                    FlightDateUtil.dateToString(minMaxDate.first, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(minMaxDate.second, FlightDateUtil.DEFAULT_FORMAT),
-                    FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT),
+                    TAG_DEPARTURE_CALENDAR,
                     departureAirport,
                     arrivalAirport,
                     flightClassId
             )
-            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+        } else {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    minMaxDate.first.toString(DateUtil.YYYY_MM_DD),
+                    minMaxDate.second.toString(DateUtil.YYYY_MM_DD),
+                    departureDate.toString(DateUtil.YYYY_MM_DD),
+                    departureAirport,
+                    arrivalAirport,
+                    flightClassId
+            )
+            flightCalendarDialog.setListener(object : SinglePickCalendarWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
-                        flightHomepageSearchForm.setDepartureDate(dateSelected)
+                        binding?.flightHomepageSearchForm?.setDepartureDate(dateSelected)
                     } else {
                         showMessageErrorInSnackbar(errorResourceId)
                     }
@@ -236,13 +267,17 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         }
     }
 
-    override fun onReturnDateClicked(departureDate: Date, returnDate: Date) {
+    override fun onReturnDateClicked(departureDate: Date, returnDate: Date,
+                                     departureAirport: String, arrivalAirport: String, flightClassId: Int) {
         val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
         setCalendarDatePicker(null,
                 minMaxDate.first,
                 minMaxDate.second,
                 getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
-                TAG_RETURN_CALENDAR
+                TAG_RETURN_CALENDAR,
+                departureAirport,
+                arrivalAirport,
+                flightClassId
         )
     }
 
@@ -282,55 +317,99 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SEARCH) {
-            flightHomepageSearchForm.init()
+            binding?.flightHomepageSearchForm?.init()
         }
 
+    }
+
+    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
+        flightHomepageViewModel.sendTrackingVideoBannerClick(bannerData)
+    }
+
+    private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
+        binding?.flightHomepageVideoBanner?.listener = this
+        binding?.flightHomepageVideoBanner?.setData(bannerData)
+        binding?.flightHomepageVideoBanner?.build()
+        binding?.flightHomepageVideoBanner?.getData()?.let {
+            flightHomepageViewModel.sendTrackingVideoBannerImpression(
+                it
+            )
+        }
+    }
+
+    private fun hideVideoBannerView() {
+        binding?.flightHomepageVideoBanner?.hideTravelVideoBanner()
+    }
+
+    private fun renderBannerTitle(title: String) {
+        if (title.isNotEmpty()) {
+            binding?.flightHomepageBannerTitle?.text = title
+            binding?.flightHomepageBannerTitle?.visibility = View.VISIBLE
+        } else {
+            binding?.flightHomepageBannerTitle?.visibility = View.GONE
+        }
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
         if (bannerList.isNotEmpty()) {
             showBannerView()
-            flightHomepageBanner.customWidth = if (bannerWidthInPixels > 0) {
-                bannerWidthInPixels
-            } else {
-                resources.getDimensionPixelSize(R.dimen.banner_width)
-            }
-            flightHomepageBanner.customHeight = resources.getDimensionPixelSize(R.dimen.banner_height)
-            flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
-            flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
-            flightHomepageBanner.setOnPromoScrolledListener { position ->
-                flightHomepageViewModel.sendTrackingPromoScrolled(position)
-            }
-            flightHomepageBanner.setOnPromoClickListener { position -> onBannerClicked(position) }
-            flightHomepageBanner.setOnPromoAllClickListener { onAllBannerClicked() }
+            binding?.flightHomepageAllPromo?.setOnClickListener { onAllBannerClicked() }
+            binding?.flightHomepageBanner?.apply {
+                freeMode = false
+                centerMode = true
+                slideToScroll = 1
+                indicatorPosition = CarouselUnify.INDICATOR_BL
 
-            val bannerUrls = arrayListOf<String>()
-            for (banner in bannerList) {
-                bannerUrls.add(banner.attribute.imageUrl)
+                if (bannerList.size == 1) {
+                    autoplay = false
+                    infinite = false
+                    slideToShow = 1.0f
+                    setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
+                } else {
+                    slideToShow = BANNER_SHOW_SIZE
+                    autoplay = true
+                    infinite = true
+                }
+                onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                    override fun onActiveIndexChanged(prev: Int, current: Int) {
+                        flightHomepageViewModel.sendTrackingPromoScrolled(current)
+                    }
+                }
+
+                val itemParam = { view: View, data: Any ->
+                    data as TravelCollectiveBannerModel.Banner
+
+                    val image = view.findViewById<ImageUnify>(R.id.flightHomepagePromoImageCarousel)
+                    if (bannerWidthInPixels > 0) {
+                        image.layoutParams.height = measureBannerHeightBasedOnRatio()
+                        image.layoutParams.width = bannerWidthInPixels
+                    } else {
+                        image.layoutParams.height = resources.getDimensionPixelSize(R.dimen.banner_height)
+                        image.layoutParams.width = resources.getDimensionPixelSize(R.dimen.banner_width)
+                    }
+                    image.loadImage(data.attribute.imageUrl)
+                    image.setOnClickListener {
+                        onBannerClicked(data.position)
+                    }
+                }
+                bannerList.forEachIndexed { index, banner -> banner.position = index }
+                addItems(R.layout.flight_homepage_carousel_item, ArrayList(bannerList), itemParam)
             }
-            flightHomepageBanner.setPromoList(bannerUrls)
-            flightHomepageBanner.buildView()
-            KeyboardHandler.hideSoftKeyboard(requireActivity())
-            KeyboardHandler.DropKeyboard(requireContext(), requireView())
-        } else {
-            hideBannerView()
         }
     }
 
     private fun showBannerView() {
-        flightHomepageBannerLayout.visibility = View.VISIBLE
-        flightHomepageBanner.visibility = View.VISIBLE
+        binding?.flightHomepageBannerLayout?.visibility = View.VISIBLE
     }
 
     private fun hideBannerView() {
-        flightHomepageBannerLayout.visibility = View.GONE
-        flightHomepageBanner.visibility = View.GONE
+        binding?.flightHomepageBannerLayout?.visibility = View.GONE
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        flightHomepageTicker.setHtmlDescription(travelTickerModel.message)
-        flightHomepageTicker.tickerType = Ticker.TYPE_WARNING
-        flightHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+        binding?.flightHomepageTicker?.setTextDescription(travelTickerModel.message)
+        binding?.flightHomepageTicker?.tickerType = Ticker.TYPE_WARNING
+        binding?.flightHomepageTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl.isNotEmpty()) {
                     RouteManager.route(context, linkUrl.toString())
@@ -341,7 +420,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         })
         if (travelTickerModel.url.isNotEmpty()) {
-            flightHomepageTicker.setOnClickListener {
+            binding?.flightHomepageTicker?.setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
@@ -350,11 +429,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun showTickerView() {
-        flightHomepageTicker.visibility = View.VISIBLE
+        binding?.flightHomepageTicker?.visibility = View.VISIBLE
     }
 
     private fun hideTickerView() {
-        flightHomepageTicker.visibility = View.GONE
+        binding?.flightHomepageTicker?.visibility = View.GONE
     }
 
     private fun onBannerClicked(position: Int) {
@@ -380,46 +459,54 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun onAllBannerClicked() {
-        RouteManager.route(context, ApplinkConst.PROMO_LIST)
+        RouteManager.route(context, FlightUrl.FLIGHT_PROMO_APPLINK)
     }
 
-    private fun renderSearchForm(dashboardData: FlightDashboardModel) {
-        dashboardData.departureAirport?.let {
-            flightHomepageSearchForm.setOriginAirport(it)
+    private fun renderSearchForm(homepageData: FlightHomepageModel) {
+        homepageData.departureAirport?.let {
+            binding?.flightHomepageSearchForm?.setOriginAirport(it)
         }
-        dashboardData.arrivalAirport?.let {
-            flightHomepageSearchForm.setDestinationAirport(it)
+        homepageData.arrivalAirport?.let {
+            binding?.flightHomepageSearchForm?.setDestinationAirport(it)
         }
-        dashboardData.flightPassengerViewModel?.let {
-            flightHomepageSearchForm.setPassengerView(it)
+        homepageData.flightPassengerViewModel?.let {
+            binding?.flightHomepageSearchForm?.setPassengerView(it)
         }
-        dashboardData.flightClass?.let {
-            flightHomepageSearchForm.setClassView(it)
+        homepageData.flightClass?.let {
+            binding?.flightHomepageSearchForm?.setClassView(it)
         }
     }
 
-    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String) {
-        val minDateStr = FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_FORMAT)
-        val selectedDateStr = if (selectedDate != null) FlightDateUtil.dateToString(selectedDate, FlightDateUtil.DEFAULT_FORMAT) else null
+    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String,
+                                      departureCode: String, arrivalCode: String,
+                                      classFlight: Int) {
+        val minDateStr = minDate.toString(DateUtil.YYYY_MM_DD)
+        val maxDateStr = maxDate.toString(DateUtil.YYYY_MM_DD)
 
-        val flightCalendarDialog = SelectionRangeCalendarWidget.getInstance(
+        val selectedDateStr = selectedDate?.toString(DateUtil.YYYY_MM_DD)
+
+        val flightCalendarDialog = FlightCalendarRoundTripWidget.getInstance(
                 minDateStr, selectedDateStr,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
                 getString(R.string.flight_min_date_label),
                 getString(R.string.flight_max_date_label),
                 SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
-                true
+                true,
+                departureCode,
+                arrivalCode,
+                classFlight,
+                maxDateStr
         )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 val departureErrorResourceId = flightHomepageViewModel.validateDepartureDate(dateIn)
                 if (departureErrorResourceId == -1) {
-                    flightHomepageSearchForm.setDepartureDate(dateIn)
+                    binding?.flightHomepageSearchForm?.setDepartureDate(dateIn)
 
                     val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
                     if (returnErrorResourceId == -1) {
-                        flightHomepageSearchForm.setReturnDate(dateOut)
+                        binding?.flightHomepageSearchForm?.setReturnDate(dateOut)
                     } else {
                         showMessageErrorInSnackbar(returnErrorResourceId)
                     }
@@ -433,11 +520,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
         view?.let {
-            Toaster.make(it,
+            Toaster.build(it,
                     getString(resourceId),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_ERROR,
-                    getString(R.string.flight_booking_action_okay))
+                    getString(R.string.flight_booking_action_okay)).show()
         }
     }
 
@@ -489,17 +576,26 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        val newSearchEnabledStatus = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)
-        if (newSearchEnabledStatus) {
-            startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
-                    REQUEST_CODE_SEARCH)
-        } else {
-            startActivityForResult(com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.getCallingIntent(requireContext(),
-                    flightSearchData), REQUEST_CODE_SEARCH)
-        }
+        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
+                REQUEST_CODE_SEARCH)
+    }
+
+    private fun measureBannerHeightBasedOnRatio(): Int =
+        (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+
+
+    override fun onDestroyView() {
+        binding?.flightHomepageBanner?.timer?.cancel()
+        super.onDestroyView()
+        mbinding = null
     }
 
     companion object {
+        // Banner Ratio = 414 : 139
+        private const val BANNER_WIDTH_RATIO = 414f
+        private const val BANNER_HEIGHT_RATIO = 139f
+        private const val BANNER_SHOW_SIZE = 1.1f
+
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
 

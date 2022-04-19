@@ -1,20 +1,23 @@
 package com.tokopedia.search.result
 
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.*
 
-internal fun UseCase<*>.stubExecute(): MockKStubScope<Any?, Any?> {
+internal fun UseCase<*>.stubExecute(
+        requestParamsSlot: CapturingSlot<RequestParams> = slot()
+): MockKStubScope<Any?, Any?> {
     val it = this
 
-    stubExecuteToCallExecuteOnBackground()
+    stubExecuteToCallExecuteOnBackground(requestParamsSlot)
 
     return coEvery { it.executeOnBackground() }
 }
 
-private fun UseCase<*>.stubExecuteToCallExecuteOnBackground() {
+private fun UseCase<*>.stubExecuteToCallExecuteOnBackground(requestParamsSlot: CapturingSlot<RequestParams>) {
     val useCase = this
 
-    every { useCase.execute(any(), any(), any()) } coAnswers {
+    every { useCase.execute(any(), any(), capture(requestParamsSlot)) } coAnswers {
         coAnswerExecute(useCase)
     }
 }

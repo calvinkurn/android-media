@@ -44,8 +44,6 @@ class DealDetailsContract {
 
         fun hideProgressBar()
 
-        fun hideShareButton()
-
         fun showShareButton()
 
         fun hideCollapsingHeader()

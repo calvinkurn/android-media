@@ -1,5 +1,5 @@
-mutation addWishlist($productID: Int!, $userID: Int!) {
-    wishlist_add(productID: $productID, userID: $userID) {
+mutation addWishlist($productID: SuperInteger!, $userID: SuperInteger!) {
+    wishlist_add_v2(productID: $productID, userID: $userID) {
         id
         success
         __typename

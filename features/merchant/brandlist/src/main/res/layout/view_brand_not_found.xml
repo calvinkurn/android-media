@@ -29,7 +29,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_header"
             android:text="@string/title_brand_not_found"
-            android:textColor="@color/defaultText"
+            android:textColor="@color/Unify_N700_96"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/layout_lvl1"
@@ -42,7 +42,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_subtitle"
             android:text="@string/subtitle_brand_not_found"
-            android:textColor="@color/charcoal_grey_68"
+            android:textColor="@color/Unify_N700_68"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-16dp"

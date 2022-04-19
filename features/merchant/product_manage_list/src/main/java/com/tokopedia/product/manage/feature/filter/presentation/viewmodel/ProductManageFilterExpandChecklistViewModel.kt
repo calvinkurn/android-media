@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import javax.inject.Inject
 
@@ -53,7 +54,8 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
     }
 
     private fun updateDataSize(counter: Int) {
-        _dataSize.value = dataSize.value?.plus(counter)
+        val dataSize = dataSize.value.orZero()
+        _dataSize.value = dataSize.plus(counter)
     }
 
 }

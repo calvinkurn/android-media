@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.analytics.posttag
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -109,7 +110,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                             getProductList(
                                     item.id.toIntOrZero(),
                                     item.text,
-                                    formatPriceToInt(item.price),
+                                    item.price.toIntOrZero(),
                                     "",
                                     "",
                                     "",
@@ -121,6 +122,45 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 )
         )
     }
+
+
+    private fun getBasicViewFeedXProductEvent(screenName: String,
+                                         category: String,
+                                         label: String,
+                                         postItemList: List<FeedXProduct>,
+                                         trackingModel: TrackingPostModel,
+                                         listSource: String,
+                                         action: String = String.format(FORMAT_EVENT_ACTION,
+                                                 if (listSource.equals(ListSource.FEED)) Action.IMPRESSION else Action.IMPRESSION_PRODUCT,
+                                                 trackingModel.templateType,
+                                                 trackingModel.activityName,
+                                                 Action.PRODUCT
+                                         )) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getEventEcommerceView(
+                        screenName,
+                        category,
+                        action,
+                        label,
+                        postItemList.mapIndexed { pos, item ->
+                            getProductList(
+                                    item.id.toIntOrZero(),
+                                    item.name,
+                                    item.price,
+                                    "",
+                                    "",
+                                    "",
+                                    listSource,
+                                    pos
+                            )
+                        }.flatten(),
+                        userSessionInterface.userId.toIntOrZero()
+                )
+        )
+    }
+
+
+
 
     private fun getBasicClickPostTagEvent(screenName: String,
                                           category: String,
@@ -267,10 +307,10 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     //docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeed(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
-            author: String,
+            postTagItemList: List<FeedXProduct>,
+            author: Int,
             trackingModel: TrackingPostModel) {
-        getBasicViewPostTagEvent(
+        getBasicViewFeedXProductEvent(
                 Screen.FEED,
                 Category.CONTENT_FEED_TIMELINE,
                 String.format(FORMAT_2_VALUE, postId, trackingModel.recomId),
@@ -372,9 +412,9 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailSelf(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
+            postTagItemList: List<FeedXProduct>,
             trackingModel: TrackingPostModel) {
-        getBasicViewPostTagEvent(
+        getBasicViewFeedXProductEvent(
                 Screen.MY_PROFILE_DETAIL,
                 Category.MY_PROFILE_SOCIALCOMMERCE_DETAIL,
                 postId.toString(),
@@ -400,10 +440,10 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     fun trackViewPostTagProfileDetailOther(
             postId: Int,
-            postTagItemList: List<PostTagItem>,
-            author: String,
+            postTagItemList: List<FeedXProduct>,
+            author: Int,
             trackingModel: TrackingPostModel) {
-        getBasicViewPostTagEvent(
+        getBasicViewFeedXProductEvent(
                 Screen.PROFILE_DETAIL,
                 Category.USER_PROFILE_SOCIALCOMMERCE_DETAIL,
                 postId.toString(),

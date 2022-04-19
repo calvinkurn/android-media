@@ -9,7 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.manage.R
-import kotlinx.android.synthetic.main.product_manage_empty_state.view.*
+import com.tokopedia.product.manage.databinding.ProductManageEmptyStateBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemView) {
 
@@ -18,10 +19,14 @@ class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemV
         val LAYOUT = R.layout.product_manage_empty_state
     }
 
+    private val binding by viewBinding<ProductManageEmptyStateBinding>()
+
     override fun bind(data: EmptyModel) {
         setupEmptyStateContainer(data)
-        itemView.title.text = getString(data.contentRes)
-        ImageHandler.LoadImage(itemView.image, data.urlRes)
+        binding?.title?.text = getString(data.contentRes)
+        binding?.image?.let { iv ->
+            ImageHandler.LoadImage(iv, data.urlRes)
+        }
     }
 
     private fun setupEmptyStateContainer(data: EmptyModel) {
@@ -30,6 +35,6 @@ class EmptyStateViewHolder(itemView: View): AbstractViewHolder<EmptyModel>(itemV
         } else {
             LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         }
-        itemView.container.layoutParams = layoutParams
+        binding?.container?.layoutParams = layoutParams
     }
 }

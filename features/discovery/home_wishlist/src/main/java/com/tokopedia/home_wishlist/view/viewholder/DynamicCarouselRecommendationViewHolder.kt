@@ -3,6 +3,7 @@ package com.tokopedia.home_wishlist.view.viewholder
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
@@ -14,6 +15,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
+import kotlinx.android.synthetic.main.layout_dynamic_recommendation_carousel.view.*
 
 class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractViewHolder<RecommendationCarouselDataModel>(view)  {
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
@@ -22,6 +24,7 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
     private val disabledView: View by lazy { view.findViewById<View>(R.id.disabled_view) }
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener) {
+        itemView.dynamic_recommendation_container?.visibility = if(element.list.isEmpty()) View.GONE else View.VISIBLE
         title.text = element.title
         seeMore.visibility = if(element.seeMoreAppLink.isEmpty()) View.GONE else View.VISIBLE
         seeMore.setOnClickListener{
@@ -33,7 +36,10 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val wishlistDataModel = element.list.getOrNull(carouselProductCardPosition) ?: return
 
-                        (listener as WishlistListener).onProductClick(wishlistDataModel, adapterPosition, carouselProductCardPosition)
+                        // to prevent ArrayIndexOutOfBoundsException
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            (listener as WishlistListener).onProductClick(wishlistDataModel, adapterPosition, carouselProductCardPosition)
+                        }
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{
@@ -83,7 +89,8 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                         ProductCardModel.LabelGroup(
                                 position = recommendationLabel.position,
                                 title = recommendationLabel.title,
-                                type = recommendationLabel.type
+                                type = recommendationLabel.type,
+                                imageUrl = recommendationLabel.imageUrl
                         )
                     }
             )

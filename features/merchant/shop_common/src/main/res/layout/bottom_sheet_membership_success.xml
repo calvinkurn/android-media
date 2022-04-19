@@ -10,9 +10,10 @@
         android:id="@+id/img_membership_success"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_14"
-        android:layout_marginLeft="@dimen/dp_14"
-        android:src="@drawable/img_frame_id"
+        android:layout_marginRight="14dp"
+        android:layout_marginLeft="14dp"
+        android:contentDescription="@string/membership_success"
+        android:src="@drawable/img_frame"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -21,7 +22,7 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         android:gravity="center"
         android:text="@string/bs_membership_title"/>
 
@@ -29,21 +30,20 @@
         android:id="@+id/desc_bs_membership"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:gravity="center"
         android:minLines="2"
         android:text="@string/bs_membership_desc"
         app:typographyType="body_3"
-        android:layout_marginBottom="@dimen/dp_40"/>
+        android:layout_marginBottom="40dp"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_check_my_coupon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        style="@style/Button.Submit.Green"
         android:text="@string/bs_button_txt"
-        android:layout_marginBottom="@dimen/dp_16"/>
+        android:layout_marginBottom="16dp"/>
 
 </LinearLayout>

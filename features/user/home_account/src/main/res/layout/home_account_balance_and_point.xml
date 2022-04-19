@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_view_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_account_balance_and_point_view_more"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintBottom_toBottomOf="@+id/home_account_balance_and_point_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/home_account_balance_and_point_title"
+        app:srcCompat="@drawable/ic_arrow_forward_24"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_balance_and_point_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_account_balance_and_point_title"
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="@dimen/fontSize_lvl4"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/home_account_balance_and_point_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        android:layout_marginEnd="@dimen/card_view_padding_normalizer"
+        android:visibility="visible"
+        app:card_type="shadow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_balance_and_point_title"
+        tools:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_account_balance_and_point_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/home_account_balance_and_point_local_load"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_account_dp_90"
+        android:layout_marginStart="@dimen/card_view_padding_normalizer"
+        android:layout_marginTop="@dimen/home_account_dp_8"
+        android:layout_marginEnd="@dimen/card_view_padding_normalizer"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_balance_and_point_title"
+        app:unify_local_load_description="@string/new_home_account_local_load_desc"
+        app:unify_local_load_title="@string/new_home_account_local_load_title"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

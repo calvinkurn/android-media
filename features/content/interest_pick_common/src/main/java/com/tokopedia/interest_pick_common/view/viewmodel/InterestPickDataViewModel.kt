@@ -12,6 +12,6 @@ data class InterestPickDataViewModel (
          var isClickable: Boolean = true
 ) {
     companion object {
-        val defaultLihatSemuaText: String = "Lihat Semua"
+        const val defaultLihatSemuaText: String = "Lihat Semua"
     }
 }

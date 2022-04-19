@@ -28,6 +28,8 @@
         app:layout_constraintTop_toBottomOf="@id/partialSuccess"
         tools:targetApi="lollipop" />
 
-    <include layout="@layout/centralized_promo_partial_creation_shimmering" />
+    <include
+        android:id="@+id/centralizedPromoCreationShimmering"
+        layout="@layout/centralized_promo_partial_creation_shimmering" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

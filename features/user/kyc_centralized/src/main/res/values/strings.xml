@@ -20,7 +20,7 @@
 
     <string name="kyc_intro_title">Mari verifikasi data dirimu</string>
     <string name="kyc_intro_text">Kamu hanya perlu upload foto KTP dan\n verifikasi wajah.</string>
-    <string name="kyc_intro_button">Mulai</string>
+    <string name="kyc_intro_button">Mulai Verifikasi</string>
 
     <string name="kyc_pending_title">Dokumen sedang kami proses</string>
     <string name="kyc_pending_text">Tunggu hasil prosesnya lewat e-mail\ndalam 1x24 jam ya.</string>
@@ -28,7 +28,8 @@
 
     <string name="kyc_failed_title">Gagal Verifikasi</string>
     <string name="kyc_failed_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.\n\nSilakan unggah ulang dokumen Anda. Pastikan foto tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
-    <string name="kyc_failed_button">Verifikasi Ulang</string>
+    <string name="kyc_failed_text_with_reason">Sistem kami tidak bisa memproses foto identitasmu karena:</string>
+    <string name="kyc_failed_button">Upload Ulang</string>
 
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan\ndan terlindungi dengan aman di dalam\nsistem Tokopedia.</string>
@@ -47,18 +48,22 @@
     <string name="ktp_protection">Kerahasiaan data kamu dijamin sistem Tokopedia</string>
 
     <string name="face_title">Scan wajah kamu</string>
-    <string name="face_subtitle">Sistem kami akan mendeteksi wajahmu untuk mencocokan data di KTP. Ikuti instruksi kami, ya.</string>
-    <string name="face_button">Mulai Verifikasi Wajah"</string>
+    <string name="face_subtitle">Kami akan scan wajahmu untuk cocokkan data di KTP. Ikuti instruksi ini:</string>
+    <string name="face_subtitle_body_1">Jangan pakai aksesoris yang menutupi wajahmu.</string>
+    <string name="face_subtitle_body_2">Pastikan wajahmu terkena pencahayaan yang cukup dan terlihat jelas.</string>
+    <string name="face_button">Mulai Verifikasi Wajah</string>
 
-    <string name="face_title_kyc">Foto Diri Bersama KTP</string>
-    <string name="face_subtitle_kyc">Tunjukkan bagian depan KTP dengan posisi di bawah dagu tanpa menutupi wajah.</string>
-    <string name="face_button_kyc">Ambil Foto Diri Bersama KTP</string>
+    <string name="face_title_kyc">Foto wajah dan kartu identitas</string>
+    <string name="face_subtitle_kyc">Tunjukkan bagian depan kartu identitas dengan posisi di bawah dagu tanpa menutupi wajah.</string>
+    <string name="face_button_kyc">Mulai Foto</string>
 
-    <string name="camera_ktp_title">Verifikasi Data Diri</string>
-    <string name="camera_ktp_subtitle">Posisikan KTP di dalam bingkai,\npastikan informasi di foto terlihat jelas</string>
+    <string name="camera_ktp_title">Foto KTP</string>
+    <string name="camera_ktp_subtitle">Pastikan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_ktp_subtitle_preview">Pastikan informasi di foto ini sudah terlihat jelas, ya.</string>
 
-    <string name="camera_face_title">Ambil Foto Diri Bersama KTP</string>
-    <string name="camera_face_subtitle">Pastikan wajah Anda dan KTP berada dalam area panduan.</string>
+    <string name="camera_face_title">Foto Wajah &amp; KTP</string>
+    <string name="camera_face_subtitle">Pastikan wajah dan KTP kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="camera_face_subtitle_preview">Pastikan wajah dan KTP kamu sudah terlihat jelas, ya.</string>
 
     <string name="change_button">Ubah</string>
     <string name="form_final_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>
@@ -73,10 +78,12 @@
     <string name="form_final_subtitle_fail">Foto KTP belum terlihat jelas.\nAmbil ulang foto sekarang.</string>
 
     <string name="title_kyc_info">Verifikasi Data Diri</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
     <string name="error_text_liveness_image_cant_be_accessed">Foto tidak dapat diakses</string>
+    <string name="error_text_image_fail_to_encrypt">Foto tidak dapat disimpan</string>
 
     <string name="title_kyc_form_ktp">1. Foto KTP</string>
     <string name="title_kyc_form_selfie">2. Foto Diri &amp; KTP</string>
@@ -129,5 +136,42 @@
     <string name="kyc_ktp_ok_face_fail_button">Verifikasi Ulang Wajah</string>
     <string name="kyc_ktp_face_fail_button">Coba Lagi</string>
     <string name="kyc_ktp_fail_face_ok_button">Foto Ulang KTP</string>
+
+    <string name="user_identification_default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <string name="kyc_upload_retry" translatable="false">Coba Lagi</string>
+
+    <string name="kyc_failed_image">Failed Image</string>
+    <string name="kyc_upload_failed_reason_general_title" translatable="false">Ada gangguan di rumah Toped</string>
+    <string name="kyc_upload_failed_reason_general">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+
+    <string name="kyc_upload_failed_title" translatable="false">Terjadi kesalahan</string>
+    <string name="kyc_upload_failed_reason_encrypt">Mohon untuk mengulangi kembali proses verifikasi.</string>
+
+    <string name="kyc_upload_failed_reason_bad_network_title" translatable="false">Koneksi internetmu terganggu!</string>
+    <string name="kyc_upload_failed_reason_bad_network">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    
+    <string name="kyc_desc_foto_ktp">Foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah">Verifikasi wajah</string>
+    <string name="kyc_desc_foto_ktp_result">Result foto KTP</string>
+    <string name="kyc_desc_verifikasi_wajah_result">Result verifikasi wajah</string>
+
+    <string name="kyc_benefit_onboarding_title">Verifikasi datamu, yuk!</string>
+    <string name="kyc_benefit_onboarding_subtitle">Upload foto KTP dan wajah biar dapat keuntungan ini:</string>
+
+    <string name="kyc_benefit_one_title">Akunmu makin aman</string>
+    <string name="kyc_benefit_one_desc">Datamu akan digunakan untuk mengamankan akses ke akun atau tokomu.</string>
+
+    <string name="kyc_benefit_two_title">Akses semua fitur di Tokopedia</string>
+    <string name="kyc_benefit_two_desc">Bisa dapat hadiah Referral, beli produk khusus, dan nikmatin fitur lainnya secara lengkap.</string>
+
+    <string name="kyc_benefit_three_title">Dapatkan manfaat Power Merchant</string>
+    <string name="kyc_benefit_three_desc">Dapatkan fitur-fitur khusus yang bisa menaikkan penjualan dan kepercayaan pembeli.</string>
+
+    <string name="uii_simple_title">Silakan lanjut ke pengisian formulir</string>
+    <string name="uii_simple_desc">Dokumen KTPmu sedang kami proses</string>
+    <string name="uii_simple_button">Lanjut Isi Formulir</string>
+
+    <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
 
 </resources>

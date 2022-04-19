@@ -11,16 +11,16 @@
         android:orientation="horizontal">
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/dp_4" />
+            android:layout_marginRight="@dimen/unify_space_4" />
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dp_4" />
+            android:layout_marginLeft="@dimen/unify_space_4" />
 
     </LinearLayout>
 
@@ -30,16 +30,16 @@
         android:orientation="horizontal">
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/dp_4" />
+            android:layout_marginRight="@dimen/unify_space_4" />
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dp_4" />
+            android:layout_marginLeft="@dimen/unify_space_4" />
 
     </LinearLayout>
 
@@ -49,16 +49,16 @@
         android:orientation="horizontal">
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/dp_4" />
+            android:layout_marginRight="@dimen/unify_space_4" />
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dp_4" />
+            android:layout_marginLeft="@dimen/unify_space_4" />
 
     </LinearLayout>
 
@@ -68,16 +68,16 @@
         android:orientation="horizontal">
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/dp_4" />
+            android:layout_marginRight="@dimen/unify_space_4" />
 
         <include layout="@layout/item_voucher_game_detail_shimmering_product"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dp_4" />
+            android:layout_marginLeft="@dimen/unify_space_4" />
 
     </LinearLayout>
 

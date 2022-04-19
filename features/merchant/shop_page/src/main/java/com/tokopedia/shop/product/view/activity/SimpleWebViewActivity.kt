@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class SimpleWebViewActivity: BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment = BaseSessionWebViewFragment.newInstance(intent.getStringExtra(ARG_URL))
+    override fun getNewFragment(): Fragment = BaseSessionWebViewFragment.newInstance(intent.getStringExtra(ARG_URL) ?: "")
 
     companion object{
         private const val ARG_URL = "arg_url"

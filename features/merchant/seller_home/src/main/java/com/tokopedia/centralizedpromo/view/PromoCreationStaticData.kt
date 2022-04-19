@@ -1,61 +1,122 @@
 package com.tokopedia.centralizedpromo.view
 
-import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.centralizedpromo.constant.CentralizedPromoUrl
+import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
+import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 
 
 object PromoCreationStaticData {
     fun provideStaticData(
-        context: Context,
+        resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
         broadcastChatUrl: String,
-        freeShippingEnabled: Boolean
-    ): PromoCreationListUiModel = with(context) {
+        freeShippingEnabled: Boolean,
+        isVoucherCashbackEligible: Boolean,
+        isTopAdsOnBoardingEnable: Boolean,
+        isVoucherCashbackFirstTime: Boolean,
+        isProductCouponFirstTime: Boolean,
+        isTokopediaPlayFirstTime: Boolean,
+        isProductCouponEnabled: Boolean,
+    ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
-                R.drawable.sh_ic_top_ads_color,
-                getString(R.string.centralized_promo_promo_creation_topads_title),
-                getString(R.string.centralized_promo_promo_creation_topads_description),
+                R.drawable.ic_tokopedia_play,
+                resourceProvider.getPromoCreationTitleTokopediaPlay(),
+                resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
                 "",
-                ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                if (isTokopediaPlayFirstTime) {
+                    getFirstTimeApplink(SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY)
+                } else {
+                    ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+                }
+            ),
+            PromoCreationUiModel(
+                R.drawable.sh_ic_top_ads_color,
+                resourceProvider.getPromoCreationTitleTopAds(),
+                resourceProvider.getPromoCreationDescriptionTopAds(),
+                "",
+                if (isTopAdsOnBoardingEnable){
+                    ApplinkConst.SellerApp.TOPADS_ONBOARDING
+                }else{
+                    ApplinkConst.CustomerApp.TOPADS_DASHBOARD
+                }
+
             ),
             PromoCreationUiModel(
                 R.drawable.ic_broadcast_chat,
-                getString(R.string.centralized_promo_promo_creation_broadcast_chat_title),
-                getString(R.string.centralized_promo_promo_creation_broadcast_chat_description),
+                resourceProvider.getPromoCreationTitleBroadcastChat(),
+                resourceProvider.getPromoCreationDescriptionBroadcastChat(),
                 broadcastChatExtra,
                 String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
             ),
             PromoCreationUiModel(
-                    R.drawable.ic_voucher_cashback,
-                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_cashback_title),
-                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_description),
-                    "",
-                    ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                R.drawable.ic_voucher_cashback,
+                resourceProvider.getPromoCreationTitleMerchantVoucher(),
+                resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
+                "",
+                if (isVoucherCashbackEligible) {
+                    if (isVoucherCashbackFirstTime) {
+                        getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
+                    } else {
+                        ApplinkConstInternalSellerapp.CREATE_VOUCHER
+                    }
+                } else {
+                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                }
             )
         )
 
-        if(freeShippingEnabled) {
-            val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                CentralizedPromoUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+        if (freeShippingEnabled) {
+            val applink = String.format(
+                "%s?url=%s", ApplinkConst.WEBVIEW,
+                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+            )
 
-            promoItems.add(PromoCreationUiModel(
-                R.drawable.ic_sah_free_shipping,
-                getString(R.string.centralized_promo_promo_creation_free_shipping_title),
-                getString(R.string.centralized_promo_promo_creation_free_shipping_description),
-                "",
-                applink
-            ))
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_free_shipping,
+                    resourceProvider.getPromoCreationTitleFreeShipping(),
+                    resourceProvider.getPromoCreationDescriptionFreeShipping(),
+                    "",
+                    applink
+                )
+            )
         }
 
-        PromoCreationListUiModel(
-                items = promoItems,
-                errorMessage = ""
+        if (isProductCouponEnabled) {
+            val productCouponApplink =
+                if (isProductCouponFirstTime) {
+                    getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT)
+                } else {
+                    ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
+                }
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_voucher_product,
+                    resourceProvider.getPromoCreationTitleVoucherProduct(),
+                    resourceProvider.getPromoCreationDescriptionVoucherProduct(),
+                    "",
+                    productCouponApplink
+                )
+            )
+        }
+
+        return PromoCreationListUiModel(
+            items = promoItems,
+            errorMessage = ""
         )
     }
+
+    private fun getFirstTimeApplink(promoType: String): String =
+        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
+            .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, promoType)
+            .build().toString()
+
 }

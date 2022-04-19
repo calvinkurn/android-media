@@ -1,58 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <!-- Drop Shadow Stack -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!--Drop Shadow Stack-->
     <item>
         <shape>
-            <padding
-                android:top="1dp"
-                android:bottom="2dp"/>
-
-            <solid android:color="@color/shadow_color_1" />
+            <padding android:top="1dp" android:bottom="2dp"/>
+            <solid android:color="@color/Unify_N150"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                android:top="1dp"
-                android:bottom="2dp"/>
-
-            <solid android:color="@color/shadow_color_2" />
+            <padding android:top="1dp" android:bottom="2dp"/>
+            <solid android:color="@color/Unify_N150"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                android:top="1dp"
-                android:bottom="2dp"/>
-
-            <solid android:color="@color/shadow_color_3" />
+            <padding android:top="1dp" android:bottom="2dp"/>
+            <solid android:color="@color/Unify_N150"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                android:top="1dp"
-                android:bottom="2dp"/>
-
-            <solid android:color="@color/shadow_color_4" />
+            <padding android:top="1dp" android:bottom="2dp"/>
+            <solid android:color="@color/Unify_N150"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                android:top="1dp"
-                android:bottom="2dp"/>
-
-            <solid android:color="@color/shadow_color_5" />
+            <padding android:top="1dp" android:bottom="2dp"/>
+            <solid android:color="@color/Unify_N150"/>
         </shape>
     </item>
-
-    <!-- Background -->
+<!--Background-->
     <item>
         <shape>
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/Unify_N0"/>
         </shape>
     </item>
-
 </layer-list>

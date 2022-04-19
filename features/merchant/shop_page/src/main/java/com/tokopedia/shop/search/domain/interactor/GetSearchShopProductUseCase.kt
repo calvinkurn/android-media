@@ -2,16 +2,12 @@ package com.tokopedia.shop.search.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shop.search.ShopSearchProductConstant
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetSearchShopProductUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(ShopSearchProductConstant.UNIVERSE_SEARCH_QUERY)
-        private val query: String
 ) : UseCase<UniverseSearchResponse>() {
 
     companion object {
@@ -19,7 +15,28 @@ class GetSearchShopProductUseCase @Inject constructor(
         private const val VALUE_NAV_SOURCE = "shoppagenav"
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_SEARCH_QUERY = "q"
-
+        private const val QUERY = """
+            query universe_search(${'$'}navsource: String , ${'$'}shopID: Int, ${'$'}q: String ){
+                universe_search(navsource: ${'$'}navsource, shopID : ${'$'}shopID,q: ${'$'}q){
+                        data{
+                            id
+                            name
+                            items {
+                                location
+                                imageURI
+                                applink
+                                url
+                                keyword
+                                recom
+                                sc
+                                isOfficial
+                                post_count
+                                affiliate_username
+                            }
+                        }
+                   }
+            }
+        """
         fun createRequestParam(
                 shopID: Int,
                 searchQuery: String
@@ -33,7 +50,7 @@ class GetSearchShopProductUseCase @Inject constructor(
     var requestParams = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): UniverseSearchResponse {
-        val gqlRequest = GraphqlRequest(query, UniverseSearchResponse::class.java, requestParams)
+        val gqlRequest = GraphqlRequest(QUERY, UniverseSearchResponse::class.java, requestParams)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         return graphqlUseCase.executeOnBackground().run {

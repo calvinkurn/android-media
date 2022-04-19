@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_loader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_ic_uoh_vertical"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_tv_uoh_categories"
+            android:layout_width="55dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/loader_ic_uoh_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_label_status_and_three_dots"
+            android:layout_width="@dimen/dp_128"
+            android:layout_height="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_uoh_product_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/loader_ic_uoh_vertical"
+            app:layout_constraintLeft_toLeftOf="@id/cl_loader"
+            app:layout_constraintStart_toStartOf="@id/cl_loader"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="12dp">
+
+            <com.tokopedia.unifycomponents.CardUnify
+                android:id="@+id/cv_uoh_product_loader"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="0dp">
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/loader_iv_uoh_product"
+                    android:layout_width="@dimen/dp_45"
+                    android:layout_height="@dimen/dp_45"
+                    app:loader_type="rect" />
+                
+            </com.tokopedia.unifycomponents.CardUnify>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_product_name"
+                android:layout_width="185dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/cv_uoh_product_loader"
+                app:loader_type="rect"/>
+            
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_product_desc"
+                android:layout_width="68dp"
+                android:layout_height="@dimen/dp_13"
+                android:layout_below="@id/loader_product_name"
+                android:layout_alignStart="@id/loader_product_name"
+                android:layout_marginTop="4dp"
+                app:loader_type="rect"/>
+
+        </RelativeLayout>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_label_total_harga"
+            android:layout_width="55dp"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/rl_uoh_product_loader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:loader_type="rect"/>
+        
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_value_total_harga"
+            android:layout_width="111dp"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/loader_label_total_harga"
+            app:layout_constraintStart_toStartOf="parent"
+            app:loader_type="rect"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

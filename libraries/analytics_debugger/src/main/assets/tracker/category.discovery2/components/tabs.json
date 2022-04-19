@@ -1,0 +1,21 @@
+{
+  "readme": "Discovery Tabs impression and click Tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "eventCategory": ".*",
+      "eventAction": "click mega tab",
+      "event": "select_content",
+      "eventLabel": ".*",
+      "promotions": [
+        {
+          "item_id": ".*",
+          "creative_name": ".*",
+          "item_name": ".*",
+          "creative_slot": ".*"
+        }
+      ]
+    }
+  ]
+}

@@ -17,5 +17,5 @@ interface Constant {
     }
 }
 
-typealias NetworkAuthUtil = com.tokopedia.core.network.retrofit.utils.AuthUtil
-typealias NetworkAuthUtilKey = com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY
+val HEADER_TKPD_USER_AGENT = "tkpd-useragent"
+val HEADER_TKPD_SESSION_ID = "tkpd-sessionid"

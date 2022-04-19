@@ -13,7 +13,6 @@ import dagger.multibindings.IntoMap
  * @author by resakemal on 13/05/19
  */
 @Module
-@HotelBookingScope
 abstract class HotelBookingViewModelModule {
 
     @HotelBookingScope

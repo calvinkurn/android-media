@@ -26,16 +26,23 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     var stickerMenu: ChatMenuStickerView? = null
     private var previousSelectedMenu: ViewGroup? = null
     private var selectedMenu: ViewGroup? = null
+    private var visibilityListener: VisibilityListener? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
         initViewLayout()
         bindViewId()
+    }
+
+    interface VisibilityListener {
+        fun onShow()
+        fun onHide()
     }
 
     private fun initViewLayout() {
@@ -48,7 +55,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
     }
 
     override fun closeMenu() {
-        hide()
+        hideMenu()
     }
 
     fun setupAttachmentMenu(attachmentMenuListener: AttachmentMenu.AttachmentMenuListener) {
@@ -90,6 +97,7 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
             attachmentMenu?.hide()
             stickerMenu?.hide()
             hide()
+            visibilityListener?.onHide()
         }
     }
 
@@ -108,9 +116,10 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
         showDelayed = false
         isVisible = true
         show()
+        visibilityListener?.onShow()
     }
 
-    private fun hideKeyboard() {
+    fun hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
@@ -136,6 +145,10 @@ class ChatMenuView : FrameLayout, AttachmentItemViewHolder.AttachmentViewHolderL
 
     fun setStickerListener(listener: StickerViewHolder.Listener) {
         stickerMenu?.stickerListener = listener
+    }
+
+    fun setVisibilityListener(visibilityListener: VisibilityListener) {
+        this.visibilityListener = visibilityListener
     }
 
     companion object {

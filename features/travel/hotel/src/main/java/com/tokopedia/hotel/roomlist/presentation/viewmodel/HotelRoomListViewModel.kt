@@ -2,7 +2,7 @@ package com.tokopedia.hotel.roomlist.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -19,10 +19,10 @@ import javax.inject.Inject
  */
 
 class HotelRoomListViewModel @Inject constructor(
-        dispatcher: TravelDispatcherProvider,
+        dispatcher: CoroutineDispatchers,
         private val useCase: GetHotelRoomListUseCase,
         private val addToCartUsecase: HotelAddToCartUseCase)
-    : BaseViewModel(dispatcher.io()) {
+    : BaseViewModel(dispatcher.io) {
 
     var roomList: List<HotelRoom> = listOf()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()

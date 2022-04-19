@@ -1,9 +1,33 @@
 package com.tokopedia.vouchercreation.common.analytics
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.track.TrackApp
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.ADD_PRODUCT
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_CANCEL
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_CHANGE
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_DETAIL
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_DOWNLOAD
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_DUPLICATE
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_FILL_COUPON_PRODUCT
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_SAVE
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.CLICK_STOP
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_ETALASE
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_LOCATION
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_PRODUCT_CATEGORY
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_STATUS
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_TARGET
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.FILTER_VOUCHER_TYPE
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.SEARCH_PRODUCT
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.SELECT_PRODUCT
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventAction.Click.SORT_PRODUCT
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.CREATION
+import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant.EventCategory.VoucherList.VOUCHER_LIST
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
-import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
+import com.tokopedia.vouchercreation.product.list.domain.model.response.ProductData
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
+import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.SocmedType
 
 /**
  * docs: https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=1732582873
@@ -150,6 +174,30 @@ object VoucherCreationTracking {
                 label = "",
                 screenName = "",
                 userId = userId,
+                currentSite = when(socmedType) {
+                    SocmedType.COPY_LINK -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.INSTAGRAM -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.FACEBOOK -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.FACEBOOK_MESSENGER -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.WHATSAPP -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.LINE -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.TWITTER -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.LAINNYA -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER
+                    SocmedType.BROADCAST -> VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER_APP
+                    else -> ""
+                },
+                businessUnit = when(socmedType) {
+                    SocmedType.COPY_LINK -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.INSTAGRAM -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.FACEBOOK -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.FACEBOOK_MESSENGER -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.WHATSAPP -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.LINE -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.TWITTER -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.LAINNYA -> VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                    SocmedType.BROADCAST -> VoucherCreationAnalyticConstant.Values.COMMUNICATION
+                    else -> ""
+                },
                 pageSource =
                         when {
                             socmedType != SocmedType.COPY_LINK -> null
@@ -245,12 +293,173 @@ object VoucherCreationTracking {
         )
     }
 
-    private fun sendGeneralTracking(event: String,
-                                    category: String,
-                                    action: String,
-                                    label: String,
-                                    screenName: String,
-                                    userId: String,
+    fun sendVoucherRecommendationStatus(label: String, shopId: String, userId: String) {
+        val map = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_MERCHANT_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to VoucherCreationAnalyticConstant.EventCategory.VoucherCreation.CREATE,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to VoucherCreationAnalyticConstant.EventAction.Click.CREATE_VOUCHER,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId,
+                VoucherCreationAnalyticConstant.Key.USER_ID to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun sendBroadCastChatClickTracking(category: String, shopId: String) {
+        sendGeneralTracking(
+            event = VoucherCreationAnalyticConstant.Event.CLICK_MERCHANT_VOUCHER,
+            action = VoucherCreationAnalyticConstant.EventAction.Click.BROADCAST_CREATION,
+            category = category,
+            label = shopId,
+            currentSite = VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+            businessUnit = VoucherCreationAnalyticConstant.Values.COMMUNICATION
+        )
+    }
+
+    // no 8
+    fun clickFillCouponProduct(shopId: String, voucherType: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_FILL_COUPON_PRODUCT, label = "", category = CREATION)
+    }
+
+    // no 9
+    fun clickSaveInfo(shopId: String, voucherType: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_SAVE, label = "", category = CREATION)
+    }
+
+    // no 28
+    fun clickFilterVoucherStatus(shopId: String, voucherStatus: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_VOUCHER_STATUS, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 41
+    fun clickFilterVoucherType(shopId: String, voucherType: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_VOUCHER_TYPE, label = voucherType, category = VOUCHER_LIST)
+    }
+
+    // no 42
+    fun clickFilterVoucherTarget(shopId: String, voucherType: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_VOUCHER_TARGET, label = voucherType, category = VOUCHER_LIST)
+    }
+
+    // no 14
+    fun clickSearchProduct(shopId: String, productName: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = SEARCH_PRODUCT, label = productName, category = CREATION)
+    }
+
+    // no 15
+    fun clickFilterLocation(shopId: String, location: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_LOCATION, label = location, category = CREATION)
+    }
+
+    // no 16
+    fun clickFilterProductCategory(shopId: String, categoryName: List<String>) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_PRODUCT_CATEGORY, label = categoryName, category = CREATION)
+    }
+
+    // no 17
+    fun clickFilterEtalase(shopId: String, etalaseName: List<String>) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = FILTER_ETALASE, label = etalaseName, category = CREATION)
+    }
+
+    // no 18
+    fun clickSortProductLabel(shopId: String, productLabel: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = SORT_PRODUCT, label = productLabel, category = CREATION)
+    }
+
+    // no 19
+    fun clickSelectProduct(shopId: String, productId: String) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = SELECT_PRODUCT, label = productId, category = CREATION)
+    }
+
+    // no 20
+    fun clickAddProduct(shopId: String, products: List<ProductUiModel>) {
+        val selectedProductIds = mapSelectedProductIds(products)
+        val dataLayer = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_PG,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to ADD_PRODUCT,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to CREATION,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to selectedProductIds,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    // no 30
+    fun clickDownloadOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DOWNLOAD, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 31
+    fun clickCancelOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CANCEL, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 32
+    fun clickChangeOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_CHANGE, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 33
+    fun clickStopOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_STOP, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 34
+    fun clickDuplicateOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DUPLICATE, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    // no 35
+    fun clickDetailOnBottomsheet(shopId: String, voucherStatus: Int) {
+        sendGeneralClickProductListTracking(shopId = shopId, action = CLICK_DETAIL, label = getVoucherStatus(voucherStatus), category = VOUCHER_LIST)
+    }
+
+    private fun mapSelectedProductIds(products: List<ProductUiModel>): List<String> {
+        val list: MutableList<String> = mutableListOf()
+        products.map { productUiModel ->
+            list.add(productUiModel.id)
+        }
+        return list
+    }
+
+    private fun sendGeneralClickProductListTracking(shopId: String, action: String, label: String, category: String) {
+        val dataLayer = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_PG,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to category,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    private fun sendGeneralClickProductListTracking(shopId: String, action: String, label: List<String>, category: String) {
+        val dataLayer = mutableMapOf<String, Any>(
+                VoucherCreationAnalyticConstant.Key.EVENT to VoucherCreationAnalyticConstant.Event.CLICK_PG,
+                VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
+                VoucherCreationAnalyticConstant.Key.EVENT_CATEGORY to category,
+                VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_MARKETPLACE,
+                VoucherCreationAnalyticConstant.Key.SHOP_ID to shopId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    private fun sendGeneralTracking(event: String = "",
+                                    category: String = "",
+                                    action: String = "",
+                                    label: String = "",
+                                    screenName: String = "",
+                                    userId: String = "",
+                                    currentSite: String = VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
+                                    businessUnit: String = VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS,
                                     pageSource: String? = null) {
         val map = mutableMapOf<String, Any>(
                 VoucherCreationAnalyticConstant.Key.EVENT to event,
@@ -258,14 +467,36 @@ object VoucherCreationTracking {
                 VoucherCreationAnalyticConstant.Key.EVENT_ACTION to action,
                 VoucherCreationAnalyticConstant.Key.EVENT_LABEL to label,
                 VoucherCreationAnalyticConstant.Key.SCREEN_NAME to screenName,
-                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to VoucherCreationAnalyticConstant.Values.TOKOPEDIA_SELLER,
+                VoucherCreationAnalyticConstant.Key.CURRENT_SITE to currentSite,
                 VoucherCreationAnalyticConstant.Key.USER_ID to userId,
-                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to VoucherCreationAnalyticConstant.Values.PHYSICAL_GOODS
+                VoucherCreationAnalyticConstant.Key.BUSINESS_UNIT to businessUnit
         )
         pageSource?.run {
             map.put(VoucherCreationAnalyticConstant.Key.PAGE_SOURCE, this)
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun getVoucherStatus(voucherStatus: Int): String {
+        return when {
+            voucherStatus == VoucherStatusConst.DELETED -> "DELETED"
+            voucherStatus == VoucherStatusConst.ENDED -> "ENDED"
+            voucherStatus == VoucherStatusConst.NOT_STARTED -> "NOT_STARTED"
+            voucherStatus == VoucherStatusConst.ONGOING -> "ONGOING"
+            voucherStatus == VoucherStatusConst.PROCESSING -> "PROCESSING"
+            voucherStatus == VoucherStatusConst.STOPPED -> "STOPPED"
+            else -> ""
+        }
+    }
+
+    private fun getVoucherStatus(voucherStatus: String): String {
+        return when {
+            voucherStatus == VoucherStatus.NOT_STARTED -> "NOT_STARTED"
+            voucherStatus == VoucherStatus.ONGOING -> "ONGOING"
+            voucherStatus == VoucherStatus.HISTORY -> "HISTORY"
+            voucherStatus == VoucherStatus.NOT_STARTED_AND_ONGOING -> "NOT_STARTED_AND_ONGOING"
+            else -> ""
+        }
     }
 
 }

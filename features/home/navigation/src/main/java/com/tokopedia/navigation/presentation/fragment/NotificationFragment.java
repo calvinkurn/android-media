@@ -1,17 +1,18 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -22,6 +23,8 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
@@ -46,11 +49,19 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Inject NotificationPresenter presenter;
     @Inject GlobalNavAnalytics globalNavAnalytics;
 
+    private RemoteConfig remoteConfig;
+
     private boolean isHasAdded = false;
 
     @Override
     public int resLayout() {
         return R.layout.fragment_notification;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     private void initInjector() {
@@ -71,7 +82,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
 
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
@@ -155,25 +166,25 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN,
                 getString(R.string.menunggu_pembayaran), ApplinkConst.PMS));
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
 
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
-                    getString(R.string.pesanan_diproses), ApplinkConst.MARKETPLACE_ORDER_PROCESSED));
+                    getString(R.string.pesanan_diproses_uoh), ApplinkConst.MARKETPLACE_ORDER_PROCESSED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
-                    getString(R.string.sedang_dikirim), ApplinkConst.MARKETPLACE_SENT));
+                    getString(R.string.sedang_dikirim_uoh), ApplinkConst.MARKETPLACE_SENT));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
-                    getString(R.string.sampai_tujuan), ApplinkConst.MARKETPLACE_DELIVERED));
+                    getString(R.string.sampai_tujuan_uoh), ApplinkConst.MARKETPLACE_DELIVERED));
         }else {
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.PURCHASE_CONFIRMED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(PESANAN_DIPROSES,
-                    getString(R.string.pesanan_diproses), ApplinkConst.PURCHASE_PROCESSED));
+                    getString(R.string.pesanan_diproses_uoh), ApplinkConst.PURCHASE_PROCESSED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SEDANG_DIKIRIM,
-                    getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
+                    getString(R.string.sedang_dikirim_uoh), ApplinkConst.PURCHASE_SHIPPED));
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
-                    getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+                    getString(R.string.sampai_tujuan_uoh), ApplinkConst.PURCHASE_DELIVERED));
         }
 
         buyer.setChilds(childBuyer);
@@ -256,8 +267,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private boolean shouldAddUserInfo() {
         return getActivity()!= null
-                && getActivity().getApplicationContext() instanceof GlobalNavRouter
-                && ((GlobalNavRouter) getActivity().getApplicationContext())
-                .getBooleanRemoteConfig(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
+                && remoteConfig.getBoolean(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
     }
 }

@@ -2,18 +2,16 @@ package com.tokopedia.tokopoints.view.catalogdetail
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
-import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,7 +24,10 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -37,15 +38,17 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConst
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CatalogDetailPlt.Companion.CATALOGDETAIL_TOKOPOINT_PLT_RENDER_METRICS
 import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM_MESSAGE
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.webview.TkpdWebView
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
+import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -60,16 +63,32 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var serverErrorView: ServerErrorView? = null
     private val mSubscriptionCouponTimer: Subscription? = null
     private var mSubscriptionCatalogTimer: Subscription? = null
+    private var progressBar: TimerUnifySingle? = null
     private val mRefreshRepeatCount = 0
     private var mCouponName: String? = null
-    var mTimer: CountDownTimer? = null
-    var mUserSession: UserSession? = null
+    private var mTimer: CountDownTimer? = null
+    private var mUserSession: UserSession? = null
     private var catalogsValueEntity: CatalogsValueEntity? = null
     private var pointValueText: TextView? = null
-    var pointValue: Typography? = null
-    var textUserPoint: Typography? = null
-    var code: String? = null
-    var userPoints: String? = null
+    private var pointValue: Typography? = null
+    private var code: String? = null
+    private var menu:Menu?=null
+    private var quotaContainer:LinearLayout ? =null
+    private var timerContainer:ConstraintLayout?=null
+    private var minUsageLabel: Typography?=null
+    private var minUsageValue :Typography?=null
+    private var transactionContainer : ConstraintLayout?=null
+    private var quota: Typography? = null
+    private var description: Typography? = null
+    private var disabledError: Typography? = null
+    private var giftSectionMainLayout: ConstraintLayout? = null
+    private var giftImage: Typography? = null
+    private var giftButton: Typography? = null
+    private var bottomSeparator: View? = null
+    private var btnAction2: Typography? = null
+    private var imgBanner: ImageView? = null
+    private var labelPoint: Typography? = null
+    private var textDiscount: Typography? = null
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -92,6 +111,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        this.menu=menu
         inflater.inflate(R.menu.menu_coupon_catalog, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -102,7 +122,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (id == R.id.action_menu_share) {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE))
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL +"/"+requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE))
             startActivity(Intent.createChooser(sharingIntent, null))
             return true
         }
@@ -114,11 +134,11 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         initListener()
         if (arguments == null) {
             if (activity != null) {
-                activity!!.finish()
+                requireActivity().finish()
             }
             return
         }
-        code = arguments!!.getString(CommonConstant.EXTRA_CATALOG_CODE)
+        code = requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE)
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
         mViewModel.getCatalogDetail(code ?: "")
@@ -128,46 +148,31 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private fun initObserver() {
         addCatalogDetailObserver()
         addSendGiftDialogObserver()
-        addValidationDialogObserver()
         addLatestStatusObserver()
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
-        addPointQueryObserver()
     }
 
-    private fun addPointQueryObserver() = mViewModel.pointQueryLiveData.observe(this, androidx.lifecycle.Observer {
-        when (it) {
-            is Success -> onSuccessPoints(it.data)
-            is ErrorMessage -> onErrorPoint(null)
-        }
-    })
-
-    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addRedeemCouponObserver() = mViewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
-            is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description, it.data.redeemMessage)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
-                    showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+                    showErrorDialog(it.data.desc, it.data.messageCode)
                 }
             }
         }
     })
 
-    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it) }
     })
 
-    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let {
-            showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
-        }
-    })
-
-    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Success -> gotoSendGiftPage(it.data.id, it.data.title, it.data.pointStr, it.data.banner)
             is ValidationError<*, *> -> {
@@ -177,12 +182,17 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addCatalogDetailObserver() = mViewModel.catalogDetailLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
             is Loading -> showLoader()
             is ErrorMessage -> {
                 hideLoader()
-                showError(NetworkDetector.isConnectedToInternet(context))
+                val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                if (!internetStatus) {
+                    showError(internetStatus)
+                } else {
+                    showCouponError()
+                }
             }
             is Success -> {
                 stopNetworkRequestPerformanceMonitoring()
@@ -194,6 +204,390 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             }
         }
     })
+
+    private fun initViews(view: View) {
+
+        mContainerMain = view.findViewById(R.id.container)
+        serverErrorView = view.findViewById(R.id.server_error_view)
+        quotaContainer = view.findViewById(R.id.quota_container)
+        timerContainer = view.findViewById(R.id.timer_container)
+        progressBar = view.findViewById(R.id.timer_unify)
+        minUsageLabel = view.findViewById(R.id.tv_min_txn_label)
+        minUsageValue = view.findViewById(R.id.tv_min_txn_value)
+        transactionContainer = view.findViewById(R.id.container_transaksi)
+        quota = view.findViewById(R.id.text_quota_count)
+        description = view.findViewById(R.id.text_description)
+        disabledError = view.findViewById(R.id.text_disabled_error)
+        giftSectionMainLayout = view.findViewById(R.id.gift_section_main_layout)
+        giftImage = view.findViewById(R.id.gift_image)
+        giftButton = view.findViewById(R.id.gift_btn)
+        bottomSeparator = view.findViewById(R.id.tp_bottom_separator)
+        btnAction2 = view.findViewById(R.id.button_action_2)
+        imgBanner = view.findViewById(R.id.img_banner)
+        labelPoint = view.findViewById(R.id.text_point_label)
+        textDiscount = view.findViewById(R.id.text_point_discount)
+        pointValueText = view.findViewById(R.id.text_point_value_label)
+
+    }
+
+    private fun initListener() {
+        if (view == null) {
+            return
+        }
+        serverErrorView?.setErrorButtonClickListener (View.OnClickListener {
+            mViewModel.getCatalogDetail(code ?: "")
+
+        })
+    }
+
+    override fun openWebView(url: String) {
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+    }
+
+    override fun redeemCoupon(cta: String?, code: String?, title: String?, description: String?, redeemMessage: String?) {
+        val intent = RouteManager.getIntent(context,cta)
+        intent.putExtra(CATALOG_CLAIM_MESSAGE,redeemMessage)
+        startActivity(intent)
+    }
+
+    private fun showErrorDialog( message: String, resCode: Int) {
+        val dialogUnify: DialogUnify?
+        val dialogUnifyType = DialogUnify.SINGLE_ACTION
+        val labelPositive: String = getString(R.string.tp_label_ok)
+        dialogUnify = context?.let { DialogUnify(it, dialogUnifyType, DialogUnify.NO_IMAGE) }
+        dialogUnify?.setTitle(getString(R.string.tp_label_exchange_failed))
+        dialogUnify?.setDescription(MethodChecker.fromHtml(message))
+        if (labelPositive.isNotEmpty()) {
+            dialogUnify?.setPrimaryCTAText(labelPositive)
+            dialogUnify?.setPrimaryCTAClickListener {
+                when (resCode) {
+                    CommonConstant.CouponRedemptionCode.LOW_POINT -> {
+                        dialogUnify.dismiss()
+                        AnalyticsTrackerUtil.sendEvent(
+                            context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
+                            ""
+                        )
+                    }
+                    CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
+                        dialogUnify.dismiss()
+                        AnalyticsTrackerUtil.sendEvent(
+                            context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
+                            ""
+                        )
+                    }
+                    else -> dialogUnify.dismiss()
+                }
+            }
+        }
+        dialogUnify?.show()
+    }
+
+    override fun onRealCodeReFresh(realCode: String) {
+        if (view == null || mSubscriptionCouponTimer == null) {
+            return
+        }
+        if (realCode != null && !realCode.isEmpty()) {
+            btnAction2?.setText(R.string.tp_label_use)
+            btnAction2?.isEnabled = true
+            mSubscriptionCouponTimer.unsubscribe()
+            return
+        }
+        if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
+            btnAction2?.setText(R.string.tp_label_refresh_repeat)
+            btnAction2?.isEnabled = true
+            setButtonTextColor(btnAction2)
+            mSubscriptionCouponTimer.unsubscribe()
+        }
+    }
+
+    override fun onRealCodeReFreshError() {
+        if (view == null || mSubscriptionCouponTimer == null) {
+            return
+        }
+        btnAction2?.setText(R.string.tp_label_refresh_repeat)
+        btnAction2?.isEnabled = true
+        mSubscriptionCouponTimer.unsubscribe()
+    }
+
+    override fun refreshCatalog(data: CatalogStatusItem) {
+        if (view == null) {
+            return
+        }
+        btnAction2?.isEnabled = !data.isDisabledButton
+        if (data.isDisabledButton) {
+            btnAction2?.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        } else {
+            setButtonTextColor(btnAction2)
+        }
+        updateQuotaValue(data.upperTextDesc)
+        //disabling the coupons if not eligible for current membership
+        if (data.isDisabled) {
+            ImageUtil.dimImage(imgBanner)
+        } else {
+            ImageUtil.unDimImage(imgBanner)
+        }
+        pointValue?.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+    }
+
+    override fun onPreValidateError(title: String, message: String) {
+        val dialogUnify = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION,DialogUnify.NO_IMAGE) }
+        dialogUnify?.setTitle(title)
+        dialogUnify?.setDescription(message)
+        context?.let {
+            dialogUnify?.setPrimaryCTAText(it?.getString(R.string.tp_label_ok))
+        }
+        dialogUnify?.setPrimaryCTAClickListener {
+            dialogUnify.dismiss()
+        }
+        dialogUnify?.show()
+    }
+
+    //setting catalog values to ui
+    private fun setCatalogToUi(data: CatalogsValueEntity) {
+        if (view == null) {
+            return
+        }
+        if (data.id == 0) {
+            showCouponError()
+            return
+        }
+        mCouponName = data.title
+        giftImage?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
+        btnAction2?.show()
+        btnAction2?.isEnabled = !data.isDisabledButton
+        description?.text = data.title
+        btnAction2?.text = data.buttonStr
+        btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
+        ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
+        val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
+        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
+        if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
+            tvTnc.text = HtmlUrlHelper(
+                data.tnc?:"",tvTnc.context).spannedString
+            tvTnc.movementMethod = getMovementMethod()
+        } else {
+            view?.findViewById<Typography>(R.id.tnc)?.hide()
+            view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
+            tvTnc.hide()
+        }
+        if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
+            tvHowToUse.text = HtmlUrlHelper(
+                data.howToUse?:"",tvTnc.context).spannedString
+            tvHowToUse.movementMethod = getMovementMethod()
+        } else {
+            view?.findViewById<Typography>(R.id.how_to_use)?.hide()
+            tvHowToUse.hide()
+        }
+        val pointValue: Typography = requireView().findViewById(R.id.text_point_value_coupon)
+        pointValue.text = "Gratis"
+        updateQuotaValue(data.upperTextDesc as MutableList<String>?)
+        handleQuotaColor()
+        //Quota text handling
+        if (data.disableErrorMessage.isNullOrEmpty()) {
+            disabledError?.hide()
+        } else {
+            quotaContainer?.show()
+            disabledError?.show()
+            disabledError?.text = data.disableErrorMessage
+        }
+
+        handleTimerTransactionVisibility(data)
+        //disabling the coupons if not eligible for current membership
+        if (data.isDisabled) {
+            ImageUtil.dimImage(imgBanner)
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        } else {
+            ImageUtil.unDimImage(imgBanner)
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        }
+        if (data.isDisabledButton) {
+            giftSectionMainLayout?.hide()
+            btnAction2?.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
+        } else {
+            giftSectionMainLayout?.show()
+            setButtonTextColor(btnAction2)
+        }
+        if (data.pointsSlash <= 0) {
+            labelPoint?.hide()
+        } else {
+            labelPoint?.show()
+            labelPoint?.text = data.pointsSlashStr
+            labelPoint?.apply {
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            }
+        }
+        if (data.discountPercentage <= 0) {
+            textDiscount?.hide()
+        } else {
+            textDiscount?.show()
+            textDiscount?.text = data.discountPercentageStr
+        }
+        if (data.isGift == 1) {
+            if (data.isDisabledButton) {
+                giftSectionMainLayout?.hide()
+                bottomSeparator?.hide()
+            } else {
+                giftSectionMainLayout?.show()
+                bottomSeparator?.show()
+                giftButton?.setText(R.string.tp_label_send_now)
+                giftButton?.setOnClickListener { view: View? -> mViewModel.startSendGift(data.id, data.title, data.pointsStr, data.imageUrlMobile) }
+            }
+        } else {
+            giftSectionMainLayout?.hide()
+            bottomSeparator?.hide()
+        }
+        //hide gift section when user is in public page
+        if (!mUserSession!!.isLoggedIn) {
+            giftSectionMainLayout?.hide()
+            bottomSeparator?.hide()
+        }
+        btnAction2?.setOnClickListener { v: View? ->
+            //call validate api the show dialog
+            if (mUserSession?.isLoggedIn == true) {
+                mViewModel.startSaveCoupon(data)
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            }
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    mCouponName)
+        }
+        if (!mUserSession!!.isLoggedIn) {
+            pointValueText?.text = context?.resources?.getString(R.string.tp_masuk_tukar_point)
+        }
+        //start catalog status timer
+        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(),
+            CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Long?>() {
+                    override fun onCompleted() {}
+                    override fun onError(e: Throwable) {}
+                    override fun onNext(aLong: Long?) {
+                        mViewModel.fetchLatestStatus(Arrays.asList(data.id))
+                    }
+                })
+        //Coupon impression ga
+        AnalyticsTrackerUtil.sendEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
+                mCouponName)
+    }
+
+    private fun showTimer(item: CatalogsValueEntity) {
+        progressBar?.timer?.cancel()
+        val flipTimer = view?.findViewById<ViewFlipper>(R.id.flip_timer)
+        val couponExpire = view?.findViewById<Typography>(R.id.text_timer_value)
+
+        progressBar?.apply {
+            onFinish = {
+                flipTimer?.displayedChild = CONTAINER_DATE
+                couponExpire?.text = resources.getString(R.string.tp_catalog_timer_expire)
+            }
+            timerTextWidth= TimerUnifySingle.TEXT_WRAP
+        }
+        if (item.activePeriod != null && item.activePeriod != "0" && item.activePeriod!!.toLong() > 0) {
+            flipTimer?.displayedChild = CONTAINER_TIMER
+            val timeToExpire = item.activePeriod?.toLong()?.let { convertSecondsToHrMmSs(it) }
+            progressBar?.targetDate = timeToExpire
+        } else {
+            flipTimer?.displayedChild = CONTAINER_DATE
+            couponExpire?.text = item.activePeriodDate
+        }
+    }
+
+    private fun updateQuotaValue(data: MutableList<String>?){
+
+        if (data.isNullOrEmpty()) {
+            quota?.visibility = View.GONE
+        } else {
+            quotaContainer?.show()
+            handleQuotaColor()
+            quota?.visibility = View.VISIBLE
+            val upperText = StringBuilder()
+            for (i in data.indices) {
+                if (i == 1) { //exclusive case for handling font color of second index.
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString
+                        (activityContext,com.tokopedia.unifyprinciples.R.color.Unify_RN500)}'>" + data[i] + "</font>")
+                } else {
+                    upperText.append(data[i]).append(" ")
+                }
+            }
+            quota?.text = MethodChecker.fromHtml(upperText.toString())
+        }
+    }
+
+    private fun handleQuotaColor(){
+        if (context.isDarkMode()){
+            quota?.background?.setColorFilter(
+                ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_R700),
+                PorterDuff.Mode.SRC_IN
+            )
+            quota?.setTextColor(ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_N100))
+        }
+    }
+
+    private fun handleTimerTransactionVisibility(data: CatalogsValueEntity){
+        if (data.minimumUsageLabel.isNullOrEmpty()) {
+            transactionContainer?.hide()
+        } else {
+            transactionContainer?.show()
+            minUsageLabel?.show()
+            minUsageLabel?.text = data.minimumUsageLabel
+        }
+
+        if (data.minimumUsage.isNullOrEmpty()) {
+            minUsageValue?.hide()
+        } else {
+            minUsageValue?.show()
+            minUsageValue?.text = data.minimumUsage
+        }
+        if ((!data.activePeriod.isNullOrEmpty() && data.activePeriod?.toLong()!! > 0) || !data.activePeriodDate.isNullOrEmpty()) {
+            timerContainer?.show()
+            showTimer(data)
+        } else {
+            timerContainer?.hide()
+        }
+    }
+
+    override fun gotoSendGiftPage(id: Int, title: String?, pointStr: String?, banner: String?) {
+        val bundle = Bundle()
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id)
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title)
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr)
+        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner)
+        val sendGiftFragment = SendGiftFragment()
+        sendGiftFragment.arguments = bundle
+        sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    fun setButtonTextColor(btnContinue : Typography?){
+        context?.let {
+            if (isDarkMode(it) || !isDarkMode(it)){
+                btnContinue?.setTextColor(ContextCompat.getColor(btnContinue.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            }
+        }
+    }
+
+    private fun setMenuVisibility(menu: Menu , isMenuVisible: Boolean){
+            val menuItem = menu.findItem(R.id.action_menu_share)
+            menuItem?.isVisible = isMenuVisible
+    }
+
+    override fun onDestroyView() {
+        progressBar?.timer?.cancel()
+        progressBar?.timer = null
+        super.onDestroyView()
+    }
 
     override fun onDestroy() {
         if (mTimer != null) {
@@ -215,20 +609,33 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun showLoader() {
-        mContainerMain!!.displayedChild = CONTAINER_LOADER
+        mContainerMain?.displayedChild = CONTAINER_LOADER
     }
 
     override fun showError(hasInternet: Boolean) {
-        mContainerMain!!.displayedChild = CONTAINER_ERROR
-        serverErrorView!!.showErrorUi(hasInternet)
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
+        mContainerMain?.displayedChild = CONTAINER_ERROR
+        serverErrorView?.showErrorUi(hasInternet)
+    }
+
+    private fun showCouponError() {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
     }
 
     override fun hideLoader() {
-        mContainerMain!!.displayedChild = CONTAINER_DATA
+        mContainerMain?.displayedChild = CONTAINER_DATA
     }
 
     override fun populateDetail(data: CatalogsValueEntity) {
@@ -237,7 +644,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getScreenName(): String {
@@ -255,455 +662,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     }
 
-    private fun initViews(view: View) {
-        mContainerMain = view.findViewById(R.id.container)
-        serverErrorView = view.findViewById(R.id.server_error_view)
-    }
-
-    private fun initListener() {
-        if (view == null) {
-            return
-        }
-        serverErrorView!!.setErrorButtonClickListener { view: View? ->
-            mViewModel.getCatalogDetail(code ?: "")
-        }
-    }
-
-    override fun openWebView(url: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-    }
-
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(R.string.tp_label_use_coupon)
-        val messageBuilder = StringBuilder()
-                .append(getString(R.string.tp_label_coupon))
-                .append(" ")
-                .append("<strong>")
-                .append(title)
-                .append("</strong>")
-                .append(" ")
-                .append(getString(R.string.tp_mes_coupon_part_2))
-        adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-        adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            //Call api to validate the coupon
-            mViewModel.redeemCoupon(code, cta)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setNegativeButton(R.string.tp_label_later) { dialogInterface: DialogInterface?, i: Int ->
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                    title)
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    override fun showConfirmRedeemDialog(cta: String, code: String, title: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setNegativeButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            showRedeemCouponDialog(cta, code, title)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setPositiveButton(R.string.tp_label_view_coupon
-        ) { dialogInterface: DialogInterface?, i: Int ->
-            startActivity(getCallingIntent(activityContext))
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
-                    "")
-        }
-        adb.setTitle(R.string.tp_label_successful_exchange)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title)
-    }
-
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String, message: String, resCode: Int) {
-        val adb = AlertDialog.Builder(activityContext)
-        val labelPositive: String
-        var labelNegative: String? = null
-        when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
-            CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
-            }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
-        if (title == null || title.isEmpty()) {
-            adb.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            adb.setTitle(title)
-        }
-        adb.setMessage(MethodChecker.fromHtml(message))
-        if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative) { dialogInterface: DialogInterface?, i: Int ->
-                when (resCode) {
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title)
-                    else -> {
-                    }
-                }
-            }
-        }
-        adb.setPositiveButton(labelPositive) { dialogInterface: DialogInterface, i: Int ->
-            when (resCode) {
-                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    mViewModel.startSaveCoupon(item)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
-                }
-                else -> dialogInterface.cancel()
-            }
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    override fun onSuccessPoints(point: String) {
-        if (view == null) {
-            return
-        }
-        userPoints = point
-        textUserPoint = view!!.findViewById(R.id.text_point_value)
-        textUserPoint?.setText(point)
-    }
-
-    override fun onErrorPoint(errorMessage: String?) { //TODO @lavekush need to handle it
-    }
-
-    override fun onRealCodeReFresh(realCode: String) {
-        if (view == null || mSubscriptionCouponTimer == null) {
-            return
-        }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        if (realCode != null && !realCode.isEmpty()) {
-            btnAction2.setText(R.string.tp_label_use)
-            btnAction2.isEnabled = true
-            mSubscriptionCouponTimer.unsubscribe()
-            return
-        }
-        if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
-            btnAction2.setText(R.string.tp_label_refresh_repeat)
-            btnAction2.isEnabled = true
-            btnAction2.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.design.R.color.white))
-            mSubscriptionCouponTimer.unsubscribe()
-        }
-    }
-
-    override fun onRealCodeReFreshError() {
-        if (view == null || mSubscriptionCouponTimer == null) {
-            return
-        }
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        btnAction2.setText(R.string.tp_label_refresh_repeat)
-        btnAction2.isEnabled = true
-        mSubscriptionCouponTimer.unsubscribe()
-    }
-
-    override fun refreshCatalog(data: CatalogStatusItem) {
-        if (view == null) {
-            return
-        }
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        pointValue = view!!.findViewById(R.id.text_point_value_coupon)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        btnAction2.isEnabled = !data.isDisabledButton
-        if (data.isDisabledButton) {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, R.color.disabled_color))
-        } else {
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
-        }
-        //Quota text handling
-        if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
-            quota.visibility = View.GONE
-        } else {
-            quota.visibility = View.VISIBLE
-            val upperText = StringBuilder()
-            for (i in data.upperTextDesc.indices) {
-                if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
-                } else {
-                    upperText.append(data.upperTextDesc[i]).append(" ")
-                }
-            }
-            quota.text = MethodChecker.fromHtml(upperText.toString())
-        }
-        //disabling the coupons if not eligible for current membership
-        if (data.isDisabled) {
-            ImageUtil.dimImage(imgBanner)
-        } else {
-            ImageUtil.unDimImage(imgBanner)
-        }
-        pointValue?.setTextColor(ContextCompat.getColor(pointValue!!.getContext(), com.tokopedia.design.R.color.unify_Y500))
-    }
-
-    override fun onPreValidateError(title: String, message: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(title)
-        adb.setMessage(message)
-        adb.setPositiveButton(R.string.tp_label_ok
-        ) { dialogInterface: DialogInterface?, i: Int -> }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    private fun decorateDialog(dialog: AlertDialog) {
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.tkpd_main_green))
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
-        }
-        if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.design.R.color.grey_warm))
-        }
-    }
-
-    //setting catalog values to ui
-    private fun setCatalogToUi(data: CatalogsValueEntity) {
-        if (view == null) {
-            return
-        }
-        mCouponName = data.title
-        val quota: Typography = view!!.findViewById(R.id.text_quota_count)
-        val description: Typography = view!!.findViewById(R.id.text_description)
-        val disabledError: Typography = view!!.findViewById(R.id.text_disabled_error)
-        val giftSectionMainLayout: ConstraintLayout = view!!.findViewById(R.id.gift_section_main_layout)
-        val giftImage: Typography = view!!.findViewById(R.id.gift_image)
-        val giftButton: Typography = view!!.findViewById(R.id.gift_btn)
-        val bottomSeparator = view!!.findViewById<View>(R.id.tp_bottom_separator)
-        giftImage.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.ic_catalog_gift_btn), null, null, null)
-        val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        val labelPoint: Typography = view!!.findViewById(R.id.text_point_label)
-        val textDiscount: Typography = view!!.findViewById(R.id.text_point_discount)
-        btnAction2.visibility = View.VISIBLE
-        btnAction2.isEnabled = !data.isDisabledButton
-        description.text = data.title
-        btnAction2.text = data.buttonStr
-        btnAction2.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
-        ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
-        val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
-        val tncSeeMore: Typography = view!!.findViewById(R.id.tnc_see_more)
-        val howToUseSeeMore: Typography = view!!.findViewById(R.id.how_to_use_see_more)
-        tvTnc.loadData(getLessDisplayData(data.tnc, tncSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tvHowToUse.loadData(getLessDisplayData(data.howToUse, howToUseSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tncSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.tnc, getString(R.string.tnc_coupon_catalog)) }
-        howToUseSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.howToUse, getString(R.string.how_to_use_coupon_catalog)) }
-        val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
-        if (data.pointsStr == null || data.pointsStr.isEmpty()) {
-            pointValue.visibility = View.GONE
-        } else {
-            pointValue.visibility = View.VISIBLE
-            pointValue.text = data.pointsStr
-        }
-        //Quota text handling
-        if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
-            quota.visibility = View.GONE
-        } else {
-            quota.visibility = View.VISIBLE
-            val upperText = StringBuilder()
-            for (i in data.upperTextDesc.indices) {
-                if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
-                } else {
-                    upperText.append(data.upperTextDesc[i]).append(" ")
-                }
-            }
-            quota.text = MethodChecker.fromHtml(upperText.toString())
-        }
-        //Quota text handling
-        if (data.disableErrorMessage == null || data.disableErrorMessage.isEmpty()) {
-            disabledError.visibility = View.GONE
-        } else {
-            disabledError.visibility = View.VISIBLE
-            disabledError.text = data.disableErrorMessage
-        }
-        //disabling the coupons if not eligible for current membership
-        if (data.isDisabled) {
-            ImageUtil.dimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
-        } else {
-            ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.orange_red))
-        }
-        if (data.isDisabledButton) {
-            giftSectionMainLayout.visibility = View.GONE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.abstraction.R.color.black_12))
-        } else {
-            giftSectionMainLayout.visibility = View.VISIBLE
-            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.context, com.tokopedia.design.R.color.white))
-        }
-        if (data.pointsSlash <= 0) {
-            labelPoint.visibility = View.GONE
-        } else {
-            labelPoint.visibility = View.VISIBLE
-            labelPoint.text = data.pointsSlashStr
-            labelPoint.paintFlags = labelPoint.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-        if (data.discountPercentage <= 0) {
-            textDiscount.visibility = View.GONE
-        } else {
-            textDiscount.visibility = View.VISIBLE
-            textDiscount.text = data.discountPercentageStr
-        }
-        if (data.isGift == 1) {
-            if (data.isDisabledButton) {
-                giftSectionMainLayout.visibility = View.GONE
-                bottomSeparator.visibility = View.GONE
-            } else {
-                giftSectionMainLayout.visibility = View.VISIBLE
-                bottomSeparator.visibility = View.VISIBLE
-                giftButton.setText(R.string.tp_label_send_now)
-                giftButton.setOnClickListener { view: View? -> mViewModel.startSendGift(data.id, data.title, data.pointsStr, data.imageUrlMobile) }
-            }
-        } else {
-            giftSectionMainLayout.visibility = View.GONE
-            bottomSeparator.visibility = View.GONE
-        }
-        //hide gift section when user is in public page
-        if (!mUserSession!!.isLoggedIn) {
-            giftSectionMainLayout.visibility = View.GONE
-            bottomSeparator.visibility = View.GONE
-        }
-        btnAction2.setOnClickListener { v: View? ->
-            //call validate api the show dialog
-            if (mUserSession!!.isLoggedIn) {
-                mViewModel.startValidateCoupon(data)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            }
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                    mCouponName)
-        }
-        pointValueText = view!!.findViewById(R.id.text_point_value_label)
-        if (!mUserSession!!.isLoggedIn) {
-            pointValueText!!.setText("Masuk untuk tukar Points")
-        }
-        //start catalog status timer
-        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<Long?>() {
-                    override fun onCompleted() {}
-                    override fun onError(e: Throwable) {}
-                    override fun onNext(aLong: Long?) {
-                        mViewModel.fetchLatestStatus(Arrays.asList(data.id))
-                    }
-                })
-        //Coupon impression ga
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
-                mCouponName)
-    }
-
-    private fun loadWebViewInBottomsheet(data: String, title: String) {
-        val bottomSheet = BottomSheetUnify()
-        bottomSheet.setShowListener {
-            val sideMargin = 16.toPx()
-            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
-            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
-        }
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
-        val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        bottomSheet.apply {
-            setChild(view)
-            setTitle(title)
-            showCloseIcon = true
-            isDragable = true
-            isHideable = true
-        }
-        bottomSheet.show(childFragmentManager, "")
-    }
-
-    override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {
-        val bundle = Bundle()
-        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id)
-        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title)
-        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr)
-        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner)
-        val sendGiftFragment = SendGiftFragment()
-        sendGiftFragment.arguments = bundle
-        sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             pointValueText!!.text = resources.getString(R.string.points_saya)
             mViewModel.getCatalogDetail(code ?: "")
             val item = catalogsValueEntity
-            item?.let { if (it.isDisabled) mViewModel.startValidateCoupon(it) }
+            item?.let { if (it.isDisabled) mViewModel.startSaveCoupon(it) }
         }
     }
 
@@ -712,6 +677,9 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         private const val REQUEST_CODE_LOGIN = 1
+        private const val CONTAINER_COUPON_ERROR = 3
+        private const val CONTAINER_TIMER = 0
+        private const val CONTAINER_DATE = 1
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CouponCatalogFragment()

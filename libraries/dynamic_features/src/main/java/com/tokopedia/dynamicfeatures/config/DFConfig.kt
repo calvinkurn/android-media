@@ -53,7 +53,11 @@ data class DFConfig(
 
     @SerializedName("dl_in_bg_show_fallback_time")
     @Expose
-    val timeout: Long = 120
+    val timeout: Long = 30,
+
+    @SerializedName("cancel_dl_before_install")
+    @Expose
+    val cancelDownloadBeforeInstallInPage: Boolean = true
 
 ) {
     fun allowRunningServiceFromActivity(moduleName: String): Boolean {

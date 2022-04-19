@@ -24,12 +24,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -53,6 +54,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
+    private static final String EXTRA_UPDATED_TITLE = "UPDATED_TITLE";
     @Inject
     QrScannerPresenter presenter;
     private QRComponent qrComponent;
@@ -82,7 +84,6 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                 mNeedResult = param.equals(PARAM_NEED_RESULT);
             }
         }
-
         progressBar = findViewById(R.id.progress_bar_scanner);
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(
@@ -200,6 +201,17 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         });
     }
 
+    @Override
+    public void updateTitle(String title) {
+        if (getIntent() == null) super.updateTitle(title);
+        else {
+            String modifiedTitle = getIntent().getStringExtra(EXTRA_UPDATED_TITLE);
+            if (modifiedTitle != null && !modifiedTitle.isEmpty()) {
+                super.updateTitle(modifiedTitle);
+            } else super.updateTitle(title);
+        }
+    }
+
     private Drawable iconQr(boolean isTorchOn) {
         return (!isTorchOn) ?
                 AppCompatResources.getDrawable(this, R.drawable.qr_ic_flash_turn_on) :
@@ -283,6 +295,31 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
                         animateScannerLaser();
                     }
                 }).showRetrySnackbar();
+    }
+
+    @Override
+    public void goToEventRedeemPage(String url){
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_REDEEM);
+        intent.putExtra("EXTRA_URL_REDEEM", url);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean getRemoteConfigPeduliLindungi() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PEDULI_LINDUNGI_SCANQR, true);
+    }
+
+
+    @Override
+    public String getCallbackUrlFromPeduliLindungi() {
+        Uri uri = getIntent().getData();
+       if(uri != null && uri.getQueryParameter("redirect") != null){
+           return uri.getQueryParameter("redirect");
+       }
+       else {
+           return "";
+       }
     }
 
     @Override

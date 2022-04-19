@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="play_widget_dms_info_container">#AD31353B</color>
+
+    <color name="play_widget_dms_upcoming_date_text">#FFC400</color>
+    <color name="play_widget_dms_author_label">#ADFFFFFF</color>
+
+</resources>

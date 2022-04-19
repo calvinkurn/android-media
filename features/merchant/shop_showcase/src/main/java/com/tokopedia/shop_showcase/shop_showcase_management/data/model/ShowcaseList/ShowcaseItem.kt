@@ -2,7 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_management.data.model.Showcase
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShowcaseItem(
@@ -25,8 +25,6 @@ data class ShowcaseItem(
         @SerializedName("uri")
         var uri: String = "",
         @SerializedName("useAce")
-        var useAce: Boolean = false
-): Parcelable {
-
-}
-
+        var useAce: Boolean = false,
+        var isChecked: Boolean = false
+): Parcelable

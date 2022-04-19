@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import android.text.TextUtils
 import android.view.View
@@ -20,11 +21,14 @@ import com.tokopedia.notifications.model.Grid
 class GridNotification internal constructor(context: Context, baseNotificationModel: BaseNotificationModel) : BaseNotification(context, baseNotificationModel) {
 
     override fun createNotification(): Notification {
-        val builder = notificationBuilder
-        val collapsedView = RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
+        val builder = noLargeIconNotificationBuilder
+        val collapsedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed)
+        else RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_collapsed_pre_dark_mode)
         setCollapseData(collapsedView, baseNotificationModel)
-        val expandedView = RemoteViews(context.applicationContext.packageName,
-                R.layout.cm_layout_grid_expand)
+        val expandedView = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_grid_expand)
+        else RemoteViews(context.applicationContext.packageName, R.layout.cm_layout_grid_expand_pre_dark_mode)
         setGridData(expandedView)
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setCustomContentView(collapsedView)

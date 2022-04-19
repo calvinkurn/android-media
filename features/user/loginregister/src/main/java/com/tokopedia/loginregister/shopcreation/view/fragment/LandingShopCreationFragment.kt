@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -16,26 +15,29 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
-import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,11 +52,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private lateinit var toolbarShopCreation: Toolbar
     private lateinit var buttonOpenShop: UnifyButton
-    private lateinit var landingImage: ImageView
+    private lateinit var landingImage: ImageUnify
     private lateinit var loading: LoaderUnify
     private lateinit var mainView: View
     private lateinit var baseView: View
     private lateinit var sharedPrefs: SharedPreferences
+    private var btnDeletedShop: Typography? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -81,6 +84,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         landingImage = view.findViewById(R.id.landing_shop_creation_image)
         loading = view.findViewById(R.id.loading)
         mainView = view.findViewById(R.id.main_view)
+        btnDeletedShop = view.findViewById(R.id.deletedShopInfo2)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -129,7 +133,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         if (GlobalConfig.isSellerApp()) {
             activity?.let {
                 if (userSession.isLoggedIn) {
-                    RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+                    RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
                     it.finish()
                 } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
                     RouteManager.route(it, ApplinkConst.LOGIN)
@@ -153,6 +157,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+
+        btnDeletedShop?.setOnClickListener {
+            RouteManager.route(context, URL_DELETED_SHOP)
+        }
     }
 
     private fun initButtonListener() {
@@ -172,7 +180,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.getUserProfileResponse.observe(this, Observer {
+        shopCreationViewModel.getUserProfileResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetProfileInfo(it.data)
@@ -182,7 +190,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.getUserInfoResponse.observe(this, Observer {
+        shopCreationViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetUserInfo()
@@ -192,7 +200,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.getShopInfoResponse.observe(this, Observer {
+        shopCreationViewModel.getShopInfoResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetShopInfo(it.data)
@@ -315,7 +323,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            baseView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 
@@ -344,6 +352,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+        private const val URL_DELETED_SHOP = "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

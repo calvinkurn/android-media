@@ -3,23 +3,23 @@ package com.tokopedia.notifications.common
 import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import com.tokopedia.notifications.model.BaseNotificationModel
+import com.tokopedia.notifications.utils.CMDeviceConfig
+import com.tokopedia.track.TrackApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.net.MalformedURLException
-import java.net.UnknownHostException
+import java.net.URLDecoder
 import java.util.*
+import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -33,8 +33,11 @@ object CMNotificationUtils {
     internal val STATE_LOGGED_IN = "LOGGED_IN"
 
     val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
+    val CUSTOMER_APP_NAME = "Tokopedia"
     val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
+    val SELLER_APP_NAME = "seller"
     val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
+    val MITRA_APP_NAME = "mitra"
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
@@ -42,9 +45,7 @@ object CMNotificationUtils {
     val sdkVersion: Int
         get() = Build.VERSION.SDK_INT
 
-
-    fun tokenUpdateRequired(context: Context, newToken: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun tokenUpdateRequired(newToken: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldToken = cacheHandler.getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
         if (TextUtils.isEmpty(oldToken)) {
             return true
@@ -55,35 +56,52 @@ object CMNotificationUtils {
         return true
     }
 
-    fun getUserStatus(context: Context, userId: String): String {
+    fun isTokenExpired(cacheHandler: CMNotificationCacheHandler, newToken: String, userId: String, gAdId: String, appVersionName: String): Boolean {
+        return tokenUpdateRequired(newToken, cacheHandler) ||
+                mapTokenWithUserRequired(userId, cacheHandler) ||
+                mapTokenWithGAdsIdRequired(gAdId, cacheHandler) ||
+                mapTokenWithAppVersionRequired(appVersionName, cacheHandler)
+    }
+
+    fun getUserIdAndStatus(context: Context, userId: String): Pair<String, Int> {
         val cacheHandler = CMNotificationCacheHandler(context)
         val oldUserId = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY)
         return if (TextUtils.isEmpty(userId)) {
             if (TextUtils.isEmpty(oldUserId)) {
-                ""
+                Pair("", getUserIdAsInt(userId))
             } else {
-                STATE_LOGGED_OUT
+                Pair(STATE_LOGGED_OUT, getUserIdAsInt(oldUserId ?: "0"))
             }
         } else {
-            STATE_LOGGED_IN
+            Pair(STATE_LOGGED_IN, getUserIdAsInt(userId))
         }
     }
 
-    fun mapTokenWithUserRequired(context: Context, newUserId: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+
+    private fun getUserIdAsInt(userId: String): Int {
+        var userIdInt = 0
+        if (!TextUtils.isEmpty(userId)) {
+            try {
+                userIdInt = Integer.parseInt(userId.trim { it <= ' ' })
+            } catch (e: NumberFormatException) {
+            }
+        }
+        return userIdInt
+    }
+
+    private fun mapTokenWithUserRequired(newUserId: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldUserID = cacheHandler.getStringValue(CMConstant.USERID_CACHE_KEY)
         if (TextUtils.isEmpty(oldUserID)) {
             return !TextUtils.isEmpty(newUserId)
-        } else if (!TextUtils.isEmpty(oldUserID)) {
-            return TextUtils.isEmpty(newUserId)
         } else if (!TextUtils.isEmpty(newUserId)) {
             return newUserId != oldUserID
+        } else if (!TextUtils.isEmpty(oldUserID)) {
+            return TextUtils.isEmpty(newUserId)
         }
         return false
     }
 
-    fun mapTokenWithGAdsIdRequired(context: Context, gAdsId: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
+    private fun mapTokenWithGAdsIdRequired(gAdsId: String, cacheHandler: CMNotificationCacheHandler): Boolean {
         val oldGAdsId = cacheHandler.getStringValue(CMConstant.GADSID_CACHE_KEY)
         if (TextUtils.isEmpty(gAdsId)) {
             return false
@@ -94,16 +112,20 @@ object CMNotificationUtils {
         return true
     }
 
-    fun mapTokenWithAppVersionRequired(context: Context, appVersionName: String): Boolean {
-        val cacheHandler = CMNotificationCacheHandler(context)
-        val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+    private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: CMNotificationCacheHandler): Boolean {
+        val oldAppVersionName = try {
+            cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        } catch (e: ClassCastException) {
+            try {
+                cacheHandler.remove(CMConstant.APP_VERSION_CACHE_KEY)
+                ""
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
-        return if (TextUtils.isEmpty(oldAppVersionName))
-            true
-        else if (oldAppVersionName.equals(appVersionName, ignoreCase = true)) {
-            false
-        } else
-            false
+        return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
     }
 
     fun getUniqueAppId(context: Context): String {
@@ -121,8 +143,7 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
-    fun getToken(context: Context): String?
-            = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
+    fun getToken(context: Context): String? = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
 
 
     fun saveUserId(context: Context, userId: String) {
@@ -130,8 +151,7 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.USERID_CACHE_KEY, userId)
     }
 
-    fun getUserId(context: Context) : String?
-            = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
+    fun getUserId(context: Context): String? = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)
@@ -153,32 +173,6 @@ object CMNotificationUtils {
         }
 
         return "NA"
-    }
-
-    fun loadBitmapFromUrl(imageUrl: String?): Bitmap? {
-        if (imageUrl == null || imageUrl.length == 0) {
-            return null
-        }
-        var bitmap: Bitmap? = null
-        try {
-            val inputStream = java.net.URL(imageUrl).openStream()
-            bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
-        } catch (e: OutOfMemoryError) {
-            Log.e(TAG, String.format("Out of Memory Error in image bitmap download for Url: %s.", imageUrl))
-            return null
-        } catch (e: UnknownHostException) {
-            Log.e(TAG, String.format("Unknown Host Exception in image bitmap download for Url: %s. Device " + "may be offline.", imageUrl))
-            return null
-        } catch (e: MalformedURLException) {
-            Log.e(TAG, String.format("Malformed URL Exception in image bitmap download for Url: %s. Image " + "Url may be corrupted.", imageUrl))
-            return null
-        } catch (e: Exception) {
-            Log.e(TAG, String.format("Exception in image bitmap download for Url: %s", imageUrl))
-            return null
-        }
-
-        return bitmap
     }
 
     fun hasActionButton(baseNotificationModel: BaseNotificationModel): Boolean {
@@ -210,12 +204,12 @@ object CMNotificationUtils {
         if (context != null) {
             val packageName = context.packageName
             if (CUSTOMER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "Tokopedia"
+                appName = CUSTOMER_APP_NAME
             } else if (SELLER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "seller"
+                appName = SELLER_APP_NAME
             }
             if (MITRA_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "mitra"
+                appName = MITRA_APP_NAME
             }
         }
         return appName
@@ -225,6 +219,68 @@ object CMNotificationUtils {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    private fun isValidCampaignUrl(uri: Uri): Boolean {
+        val maps: Map<String, String>? = splitQuery(uri)
+        maps?.let {
+            return it.containsKey(CMConstant.UTMParams.UTM_GCLID) ||
+                    it.containsKey(CMConstant.UTMParams.UTM_SOURCE) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_MEDIUM) &&
+                    it.containsKey(CMConstant.UTMParams.UTM_CAMPAIGN)
+        } ?: return false
+
+    }
+
+
+    private fun splitQuery(url: Uri): MutableMap<String, String>? {
+        val queryPairs: MutableMap<String, String> = LinkedHashMap()
+        val query = url.query
+        if (!TextUtils.isEmpty(query)) {
+            val pairs = query!!.split("&|\\?".toRegex()).toTypedArray()
+            for (pair in pairs) {
+                val indexKey = pair.indexOf("=")
+                if (indexKey > 0 && indexKey + 1 <= pair.length) {
+                    try {
+                        queryPairs[URLDecoder.decode(pair.substring(0, indexKey), "UTF-8")] = URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8")
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        }
+        return queryPairs
+    }
+
+    fun sendUTMParamsInGTM(appLink: String?) {
+        val uri = Uri.parse(appLink)
+        if (!isValidCampaignUrl(uri))
+            return
+
+        val campaign = splitQuery(uri)
+        campaign?.let {
+            if (!it.containsKey(CMConstant.UTMParams.UTM_TERM) || it[CMConstant.UTMParams.UTM_TERM] == null)
+                it[CMConstant.UTMParams.UTM_TERM] = ""
+            if (!it.containsKey(CMConstant.UTMParams.SCREEN_NAME) || it[CMConstant.UTMParams.SCREEN_NAME] == null)
+                it[CMConstant.UTMParams.SCREEN_NAME] = CMConstant.UTMParams.SCREEN_NAME_VALUE
+        }
+        TrackApp.getInstance().gtm.sendCampaign(campaign as Map<String, Any>?)
+    }
+
+
+    fun checkTokenValidity(token: String): Boolean {
+        return token.length <= 36
+    }
+
+
+    fun getWifiMacAddress(context: Context): String {
+        val cacheHandler = CMNotificationCacheHandler(context)
+        var macAddress = cacheHandler.getStringValue(CMConstant.CMPrefKeys.KEY_WIFI_MAC_ADDRESS)
+        if(macAddress.isNullOrBlank() || macAddress == CMDeviceConfig.UNKNOWN){
+            macAddress = CMDeviceConfig.getCMDeviceConfig().getWifiMAC()
+            cacheHandler.saveStringValue(CMConstant.CMPrefKeys.KEY_WIFI_MAC_ADDRESS, macAddress)
+        }
+        return macAddress
     }
 }
 

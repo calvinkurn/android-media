@@ -26,7 +26,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,10 +43,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingLeft="@dimen/spacing_lvl2"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/spacing_lvl3"
-        android:paddingRight="@dimen/spacing_lvl3"
         app:srcCompat="@drawable/ic_close_history" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

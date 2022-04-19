@@ -9,17 +9,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.utils.image.ImageProcessingUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +38,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     private List<String> imagePathList;
     private List<Integer> placeholderDrawableResList;
     private int maxSize;
-    private @StringRes
-    int primaryImageStringRes;
+    private boolean usePrimaryString;
     private int grayColor;
     private int whiteColor;
     private boolean canReorder;
@@ -59,10 +60,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         this.imagePathList = imagePathList;
         this.placeholderDrawableResList = placeholderDrawableResList;
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
-        roundedSize = context.getResources().getDimension(R.dimen.dp_6);
-        thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
-        grayColor = ContextCompat.getColor(context, R.color.grey_100);
-        whiteColor = ContextCompat.getColor(context, R.color.white);
+        roundedSize = context.getResources().getDimension(com.tokopedia.abstraction.R.dimen.dp_6);
+        thumbnailSize = context.getResources().getDimensionPixelOffset((com.tokopedia.abstraction.R.dimen.dp_72));
+        grayColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+        whiteColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0);
     }
 
     public void setCanReorder(boolean canReorder) {
@@ -85,7 +86,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (canReorder && onImageEditThumbnailAdapterListener!= null) {
+                    if (canReorder && onImageEditThumbnailAdapterListener != null) {
                         int position = getAdapterPosition();
                         String imagePath = imagePathList.get(position);
                         onImageEditThumbnailAdapterListener.onPickerThumbnailItemLongClicked(imagePath, position);
@@ -108,12 +109,21 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bind(String imagePath, int position) {
-            Glide.with(context)
+            File file = new File(imagePath);
+            boolean loadFitCenter = false;
+            if (file.exists()) {
+                loadFitCenter = ImageProcessingUtil.shouldLoadFitCenter(file);
+            }
+            RequestBuilder<Bitmap> requestBuilder = Glide.with(context)
                     .asBitmap()
                     .load(imagePath)
-                    .override(thumbnailSize, thumbnailSize)
-                    .centerCrop()
-                    .into(new BitmapImageViewTarget(imageView) {
+                    .override(thumbnailSize, thumbnailSize);
+            if (loadFitCenter) {
+                requestBuilder = requestBuilder.fitCenter();
+            } else {
+                requestBuilder = requestBuilder.centerCrop();
+            }
+            requestBuilder.into(new BitmapImageViewTarget(imageView) {
                         @Override
                         protected void setResource(Bitmap resource) {
                             RoundedBitmapDrawable circularBitmapDrawable =
@@ -122,8 +132,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if (position == 0 && primaryImageStringRes != -1 && primaryImageStringRes != 0) {
-                tvCounterPrimary.setText(primaryImageStringRes);
+            if (position == 0 && usePrimaryString) {
+                tvCounterPrimary.setText(R.string.label_primary);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);
             } else {
@@ -135,7 +145,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
+    public static class PlaceholderThumbnailViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPlaceholder;
         ImageView vFrameImage;
 
@@ -147,14 +157,14 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(@DrawableRes int drawableRes, int backgroundColor) {
             vFrameImage.setBackgroundColor(backgroundColor);
-            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(),drawableRes));
+            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(), drawableRes));
         }
     }
 
-    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+    public void setData(List<String> imagePathList, boolean usePrimaryString,
                         List<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
-        this.primaryImageStringRes = primaryImageStringRes;
+        this.usePrimaryString = usePrimaryString;
         this.placeholderDrawableResList = placeholderDrawableList;
         notifyDataSetChanged();
     }

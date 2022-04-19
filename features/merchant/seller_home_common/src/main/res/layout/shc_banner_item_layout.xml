@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/imgCarouselBanner"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_lvl1"
+    android:layout_marginLeft="@dimen/layout_lvl1"
+    android:layout_marginEnd="@dimen/layout_lvl1"
+    android:layout_marginRight="@dimen/layout_lvl1"
+    android:adjustViewBounds="true"
+    android:contentDescription="@null"
+    android:focusable="true"
+    android:minHeight="@dimen/shc_dimen_210dp"
+    app:srcCompat="@drawable/bannerview_image_placeholder" />

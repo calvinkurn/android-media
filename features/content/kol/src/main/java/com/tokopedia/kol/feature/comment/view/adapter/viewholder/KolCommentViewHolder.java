@@ -27,7 +27,7 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
     private KolCommentCardView.Listener commentViewListener = new KolCommentCardView.Listener() {
         @Override
         public void onAvatarClicked(@NotNull String profileUrl) {
-            viewListener.onGoToProfile(profileUrl);
+            viewListener.onGoToProfile(profileUrl, "");
         }
 
         @Override

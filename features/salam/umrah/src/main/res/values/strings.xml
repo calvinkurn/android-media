@@ -275,7 +275,6 @@
 </string>
     <string name="umrah_travel_empty_gallery_sub_title">Kamu tetap bisa cek informasi tentang penyelenggara umroh ini di menu Info.</string>
     <string name="umrah_travel_gallery_next_images">+%s</string>
-    <string name="UMRAH_GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
     <string name="umrah_agen_link_share">https://m.tokopedia.com/s/umroh/agen/%s</string>
     <string name="umrah_agen_deeplink_share">tokopedia://s/umroh/agen/%s</string>
     <string name="umrah_youtube_link">https://www.youtube.com/watch?v=%s</string>

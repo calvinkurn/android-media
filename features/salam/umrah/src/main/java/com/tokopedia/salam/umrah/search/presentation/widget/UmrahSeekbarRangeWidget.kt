@@ -1,11 +1,7 @@
 package com.tokopedia.salam.umrah.search.presentation.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Rect
-import android.os.Build
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +9,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSeekbarRangeWidgetAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.widget_umrah_seekbar_range.view.*
 
 /**
@@ -23,14 +20,10 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private var isMinThumbDragging = false
-    private var isMaxThumbDragging = false
     private var seekBarThumbSize = 0
 
     private var seekBarThumbMaxPosition = 0
     private var seekBarThumbMinPosition = 0
-    private var minValue = 0
-    private var maxValue = 0
     var rangeValue = 0
     private var separatorSize = 0f
     private var selectedFilter = mutableListOf<Int>()
@@ -43,7 +36,9 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
 
     init {
         val view = View.inflate(context, R.layout.widget_umrah_seekbar_range, this)
-        seekBarThumbSize = resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_30)
+        seekBarThumbSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6)
+        view.dbs_background.activeRailColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
+        view.dbs_background.backgroundRailColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N100)
         if (seekBarWidth == 0F) {
             view.afterMeasured {
                 seekBarLeftOffset = this@UmrahSeekbarRangeWidget.dbs_background.x
@@ -66,15 +61,16 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
         })
     }
 
-    fun getMinValue() = seekBarThumbMinPosition + minValue
+    fun getMinValue() = seekBarThumbMinPosition
 
-    fun getMaxValue() = seekBarThumbMaxPosition + minValue
+    fun getMaxValue() = seekBarThumbMaxPosition
 
     fun setRange(range: PriceRangeLimit) {
-        minValue = range.minimum
-        maxValue = range.maximum
-        rangeValue = maxValue - minValue
-        for (i in minValue..maxValue) {
+        seekBarThumbMinPosition = range.minimum
+        seekBarThumbMaxPosition = range.maximum
+        dbs_background.updateValue(range.minimum, range.maximum)
+        rangeValue = seekBarThumbMaxPosition - seekBarThumbMinPosition
+        for (i in seekBarThumbMinPosition..seekBarThumbMaxPosition) {
             seekbarNumbers.add(i)
             selectedFilter.add(i)
         }
@@ -83,15 +79,24 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
 
     private fun initSeekbarNumbersAdapter() {
         filterSeekbarRangeWidgetAdapter.items = seekbarNumbers
-        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, RecyclerView.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16))
+        val spanningLinearLayoutManager = SpanningLinearLayoutManager(context, RecyclerView.HORIZONTAL, false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4))
         rv_umrah_seekbar_range.layoutManager = spanningLinearLayoutManager
     }
 
     fun setData(minThumbPosition: Int, maxThumbPosition: Int) {
-        this@UmrahSeekbarRangeWidget.minThumbPosition = minThumbPosition
-        this@UmrahSeekbarRangeWidget.maxThumbPosition = maxThumbPosition
+        dbs_background.updateValue(minThumbPosition, maxThumbPosition)
+        seekBarThumbMinPosition = minThumbPosition
+        seekBarThumbMaxPosition = maxThumbPosition
         getTypographyView()
         refreshTypographyDay()
+        dbs_background.onSliderMoveListener = object: RangeSliderUnify.OnSliderMoveListener {
+            override fun onSliderMove(p0: Pair<Int, Int>) {
+                val(start, end) = p0
+                seekBarThumbMaxPosition = end
+                seekBarThumbMinPosition = start
+                refreshTypographyDay()
+            }
+        }
     }
 
     private fun getTypographyView() {
@@ -115,7 +120,6 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
                 discretePositions.add((i * spanWidth) + initMargin - (seekBarThumbSize.toFloat() / 4))
             }
             separatorSize = halfSpanWidth
-            refreshThumbPosition(minThumbPosition, maxThumbPosition)
         }
     }
 
@@ -128,123 +132,13 @@ class UmrahSeekbarRangeWidget @JvmOverloads constructor(
         }
     }
 
-    private fun refreshThumbPosition(minThumbPosition: Int, maxThumbPosition: Int) {
-        val realMinThumbPosition = minThumbPosition - minValue
-        val realMaxThumbPosition = maxThumbPosition - minValue
-        thumb_min.x = discretePositions[realMinThumbPosition]
-        thumb_max.x = discretePositions[realMaxThumbPosition]
-
-        seekBarThumbMinPosition = discretePositions.indexOf(thumb_min.x)
-        seekBarThumbMaxPosition = discretePositions.indexOf(thumb_max.x)
-        refreshSeekbarBackground()
-    }
-
-    private fun refreshSeekbarBackground() {
-        dbs_background.setFirstPointPercentage((thumb_min.x - seekBarLeftOffset) / seekBarWidth)
-        dbs_background.setSecondPointPercentage((thumb_max.x - seekBarLeftOffset) / seekBarWidth)
-        dbs_background.invalidate()
-    }
-
-    private fun isPointInsideView(x: Float, y: Float, view: View): Boolean {
-        val viewArea = Rect()
-        view.getGlobalVisibleRect(viewArea)
-        return viewArea.contains(x.toInt(), y.toInt())
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            0 -> {
-                if (isPointInsideView(event.rawX, event.rawY, thumb_min)) {
-                    isMinThumbDragging = true
-                    isMaxThumbDragging = false
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        thumb_min.elevation = 0.0f
-                    }
-                } else if (isPointInsideView(event.rawX, event.rawY, thumb_max)) {
-                    isMaxThumbDragging = true
-                    isMinThumbDragging = false
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        thumb_max.elevation = 0.0f
-                    }
-                }
-            }
-            1 -> {
-                isMinThumbDragging = false
-                isMaxThumbDragging = false
-                if (Build.VERSION.SDK_INT >= 21) {
-                    thumb_max.elevation = 8.0f
-                    thumb_min.elevation = 8.0f
-                }
-            }
-            2 -> {
-                val targetX = event.rawX - seekBarThumbSize.toFloat()
-                val position: Float
-                when {
-                    isMinThumbDragging -> {
-                        position = normalizeMinThumbPosition(targetX)
-                        thumb_min.x = position
-                        seekBarThumbMinPosition = discretePositions.indexOf(position)
-                        refreshSeekbarBackground()
-                        refreshTypographyDay()
-                        requestDisallowInterceptTouchEvent(true)
-                    }
-                    isMaxThumbDragging -> {
-                        position = normalizeMaxThumbPosition(targetX)
-                        thumb_max.x = position
-                        seekBarThumbMaxPosition = discretePositions.indexOf(position)
-                        refreshSeekbarBackground()
-                        refreshTypographyDay()
-                        requestDisallowInterceptTouchEvent(true)
-                    }
-                    else -> requestDisallowInterceptTouchEvent(false)
-                }
-            }
-        }
-        return true
-    }
-
     private fun refreshTypographyDay() {
         selectedFilter.clear()
-        for (i in minValue..maxValue) {
-            if (i >= seekBarThumbMinPosition + minValue && i <= seekBarThumbMaxPosition + minValue) {
+        for (i in seekBarThumbMinPosition..seekBarThumbMaxPosition) {
                 selectedFilter.add(i)
-            }
         }
         filterSeekbarRangeWidgetAdapter.updateSelectedItems(selectedFilter.map { it }.toSet())
     }
-
-    private fun normalizeMinThumbPosition(x: Float): Float {
-        val zeroPosition = discretePositions[0]
-        val rightThumb = discretePositions[seekBarThumbMaxPosition - 1]
-        var xInDiscrete = -1f
-        for (index in discretePositions.size - 2 downTo 0) {
-            if (x < discretePositions[index] + separatorSize / 2) xInDiscrete = discretePositions[index]
-        }
-        if (xInDiscrete > rightThumb) xInDiscrete = rightThumb
-        return if (x < zeroPosition) {
-            zeroPosition
-        } else {
-            if (x > rightThumb) rightThumb else xInDiscrete
-        }
-    }
-
-    private fun normalizeMaxThumbPosition(x: Float): Float {
-        val fullPosition = discretePositions[discretePositions.size - 1]
-        val leftThumb = discretePositions[seekBarThumbMinPosition + 1]
-        var xInDiscrete = -1f
-        for (index in discretePositions.size - 1 downTo 1) {
-            if (x < discretePositions[index] + separatorSize / 2) xInDiscrete = discretePositions[index]
-        }
-        if (xInDiscrete < leftThumb) xInDiscrete = leftThumb
-        return if (x > fullPosition) {
-            fullPosition
-        } else {
-            if (x < leftThumb) return leftThumb
-            else xInDiscrete
-        }
-    }
-
 
     companion object {
         private var seekBarLeftOffset = 0F

@@ -1,0 +1,105 @@
+[
+  {
+    "data": {
+      "status": "OK",
+      "propertyGetCart": {
+        "cartID": "hotelX85972108e24f6ef262655cac9459e7dee721fdbc",
+        "cart": {
+          "adult": 2,
+          "checkIn": "2020-09-23",
+          "checkOut": "2020-09-24",
+          "rooms": [
+            {
+              "roomID": "2687421ef4b9b40c3f07521728563406",
+              "numOfRooms": 1
+            }
+          ],
+          "guestName": "",
+          "specialRequest": "",
+          "totalPrice": "Rp 4.172.597",
+          "totalPriceAmount": 4172597,
+          "currency": "IDR",
+          "localTotalPrice": "",
+          "localTotalPriceAmount": 0,
+          "localCurrency": "",
+          "fares": [
+            {
+              "type": "base_price",
+              "description": "1 Kamar x 1 malam",
+              "priceAmount": 4172597,
+              "price": "Rp 4.172.597",
+              "localPriceAmount": 0,
+              "localPrice": ""
+            },
+            {
+              "type": "tax",
+              "description": "Pajak",
+              "priceAmount": 0,
+              "price": "Sudah termasuk",
+              "localPriceAmount": 0,
+              "localPrice": "Sudah termasuk"
+            }
+          ],
+          "contact": {
+            "name": "Jessica Sean",
+            "email": "jessica.sean01@tokopedia.com",
+            "phone": "81511045993",
+            "phoneCode": 62
+          },
+          "roomContent": "1 kamar, 2 tamu per kamar"
+        },
+        "property": {
+          "propertyID": 488573,
+          "name": "The Royal Purnama",
+          "type": "Resor",
+          "address": "Jalan Pantai Purnama, Ketewel, Indonesia, 80582",
+          "propertyImage": {
+            "urlSquare60": "https://q-xx.bstatic.com/xdata/images/hotel/square60/127248815.jpg?k\u003d1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443\u0026o\u003d",
+            "urlOriginal": "https://q-xx.bstatic.com/xdata/images/hotel/max1280x900/127248815.jpg?k\u003d1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443\u0026o\u003d",
+            "urlMax300": "https://q-xx.bstatic.com/xdata/images/hotel/840x460/127248815.jpg?k\u003d1d0137fdacaa3f617ac0343e72318d689788726cb48d4c381002eff1fc578443\u0026o\u003d"
+          },
+          "star": 5,
+          "paymentNote": "",
+          "checkInFrom": "Mulai 14:00",
+          "checkInTo": "",
+          "checkOutFrom": "",
+          "checkOutTo": "Sampai 12:00",
+          "isDirectPayment": true,
+          "room": [
+            {
+              "roomID": "2687421ef4b9b40c3f07521728563406",
+              "isBreakFastIncluded": true,
+              "maxOccupancy": 2,
+              "roomName": "Suite 1 Kamar Tidur dengan Bathtub Air Panas dan Pemandangan Samudera",
+              "isNeedDeposit": false,
+              "isRefundAble": false,
+              "isCCRequired": true,
+              "paymentTerms": {
+                "name": "Fleksibel 1 hari – Tanpa uang muka",
+                "cancellationDescription": "Anda bisa membatalkan secara gratis sampai 1 hari sebelum kedatangan. Anda dikenakan biaya total harga reservasi jika Anda membatalkan dalam 1 hari sebelum kedatangan.",
+                "prepaymentDescription": "Pembayaran di muka tidak diperlukan."
+              },
+              "roomPolicies": [],
+              "cancellationPolicies": {
+                "title": "Non-refundable",
+                "content": "Setelah 22 Sep 2020, 00:00, Biaya yang sudah dibayarkan tidak bisa dikembalikan",
+                "isClickable": false,
+                "details": []
+              }
+            }
+          ]
+        },
+        "appliedVoucher": {
+          "code": "",
+          "discount": "Rp 0",
+          "discountAmount": 0,
+          "cashback": "",
+          "cashbackAmount": 0,
+          "message": "",
+          "titleDescription": "",
+          "isCoupon": 0
+        }
+      }
+    }
+  }
+]

@@ -13,7 +13,7 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Nomor Pelanggan"
-        android:layout_marginBottom="@dimen/dp_8" />
+        android:layout_marginBottom="@dimen/spacing_lvl3" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/rv_enquiry_data"

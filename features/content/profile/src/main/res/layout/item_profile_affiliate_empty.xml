@@ -1,7 +1,7 @@
 <FrameLayout android:id="@+id/layout_empty_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_16"
+    android:layout_margin="16dp"
     android:background="@color/white"
     android:orientation="vertical"
     android:layout_gravity="center"
@@ -20,7 +20,7 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:textColor="@color/black_70"
             android:lineSpacingExtra="6dp"
             android:textStyle="bold"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/black_54"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:text="@string/profile_empty_subtitle"
             android:layout_gravity="center"
             android:gravity="center"/>
@@ -42,8 +42,8 @@
             android:id="@+id/card_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            app:cardCornerRadius="@dimen/dp_20">
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp">
 
             <ImageView
                 android:id="@+id/image"
@@ -56,9 +56,9 @@
             android:id="@+id/tv_see_more_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:textColor="@color/tkpd_main_green"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:textStyle="bold"
             android:text="@string/profile_empty_button"
             android:layout_gravity="center"

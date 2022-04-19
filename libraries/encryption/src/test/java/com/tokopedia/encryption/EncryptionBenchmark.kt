@@ -1,6 +1,7 @@
 package com.tokopedia.encryption
 
 import com.tokopedia.encryption.security.*
+import com.tokopedia.encryption.utils.Constants
 import com.tokopedia.encryption.utils.Utils
 import org.junit.Before
 import org.junit.Test
@@ -87,7 +88,8 @@ class EncryptionBenchmark {
     fun `RSA encryption test`() {
         val time = measureTimeMillis {
             repeat(n) {
-                rsaEncryptor.encrypt(dummy_data, rsaEncryptor.publicKey, Utils::byteToHex)
+                rsaEncryptor.encrypt(dummy_data, rsaEncryptor.publicKey,
+                        Constants.RSA_ALGORITHM, Utils::byteToHex)
             }
         }
         println("RSA encryption: $n runs took $time ms")
@@ -95,7 +97,8 @@ class EncryptionBenchmark {
 
     @Test
     fun `RSA decryption test`() {
-        val encrypted = rsaEncryptor.encrypt(dummy_data, rsaEncryptor.publicKey, Utils::byteToHex)
+        val encrypted = rsaEncryptor.encrypt(dummy_data, rsaEncryptor.publicKey,
+                Constants.RSA_ALGORITHM, Utils::byteToHex)
         val time = measureTimeMillis {
             repeat(n) {
                 rsaEncryptor.decrypt(encrypted, rsaEncryptor.privateKey, Utils::decodeHex)
@@ -192,6 +195,5 @@ class EncryptionBenchmark {
         println("DESede decryption: $n runs took $time ms")
         assert(DESedeEncryptor.decrypt(encrypted, DESedeKey) == dummy_data)
     }
-
 
 }

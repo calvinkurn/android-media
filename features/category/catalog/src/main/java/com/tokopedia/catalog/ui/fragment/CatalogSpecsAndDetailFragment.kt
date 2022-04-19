@@ -2,21 +2,21 @@ package com.tokopedia.catalog.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.buyerorder.common.view.DoubleTextView
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification
+import com.tokopedia.catalog.model.raw.FullSpecificationsComponentData
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DoubleTextView
 import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment.*
 
 class CatalogSpecsAndDetailFragment : Fragment() {
     private var type: Int = -1
+    private var jumpToFullSpecIndex : Int = 0
 
     companion object {
         const val SPECIFICATION_TYPE = 0
@@ -24,13 +24,18 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         const val TYPE = "TYPE"
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
-
-        fun newInstance(type: Int, description: String?, specifications: ArrayList<Specification>?): CatalogSpecsAndDetailFragment {
+        private const val CATALOG_SPECS_TEXT_SIZE = 14.0f
+        private const val CATALOG_BOTTOM_LINEAR_WEIGHT = 0.5f
+        private const val JUMP_TO_FULL_SPEC_INDEX = "JUMP_TO_FULL_SPEC_INDEX"
+        private const val SETTLING_MILLIS = 100L
+        fun newInstance(type: Int, description: String?, specifications: ArrayList<FullSpecificationsComponentData>?,
+        jumpTo :Int = 0): CatalogSpecsAndDetailFragment {
             return CatalogSpecsAndDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(TYPE, type)
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
+                    putInt(JUMP_TO_FULL_SPEC_INDEX, jumpTo)
                 }
             }
         }
@@ -44,12 +49,13 @@ class CatalogSpecsAndDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var description: String? = null
-        var specifications: ArrayList<Specification>? = null
+        var specifications: ArrayList<FullSpecificationsComponentData>? = null
 
         if (arguments != null) {
-            type = arguments!!.getInt(TYPE, 0)
+            type = requireArguments().getInt(TYPE, 0)
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
+            jumpToFullSpecIndex = arguments?.getInt(JUMP_TO_FULL_SPEC_INDEX) ?: 0
         }
 
         if (type == SPECIFICATION_TYPE) {
@@ -60,45 +66,73 @@ class CatalogSpecsAndDetailFragment : Fragment() {
         }
     }
 
-    private fun setSpecificationView(specifications: ArrayList<Specification>) {
+    private fun setSpecificationView(specifications: ArrayList<FullSpecificationsComponentData>) {
         linear_layout.removeAllViews()
-        for(specs in specifications){
-            val headerView = TextView(context)
-            headerView.text = specs.name
-            headerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f)
-            headerView.typeface = Typeface.DEFAULT_BOLD
-            headerView.setTextColor(MethodChecker.getColor(context,R.color.grey_796))
-            linear_layout.addView(headerView)
-            for(row in specs.row){
-                val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
-                doubleTextView.setTopText(MethodChecker.fromHtml(row.key).toString())
-                doubleTextView.setTopTextSize(14.0f)
-                doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.unify_N700_44))
-                doubleTextView.setBottomTextSize(14.0f)
-                doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.grey_796))
-                doubleTextView.setBottomTextStyle("")
-                doubleTextView.setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
-                linear_layout.addView(doubleTextView)
+        var jumpToView : View? = null
+        specifications.forEachIndexed { specsIndex, specs ->
+            if(specs.specificationsRow == null){
+                return
             }
-            val lineView = View(context)
-            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            lineView.minimumHeight = 3
-            lineView.setBackgroundColor(MethodChecker.getColor(context, R.color.grey_line))
-            params.setMargins(0, resources.getDimensionPixelOffset(R.dimen.dp_16), 0, resources.getDimensionPixelOffset(R.dimen.dp_16))
-            lineView.layoutParams = params
-            linear_layout.addView(lineView)
+            context?.let { context ->
+                val headerView = Typography(context)
+                headerView.apply {
+                    text = specs.name
+                    setType(Typography.BODY_2)
+                    typeface = Typeface.DEFAULT_BOLD
+                }
+                linear_layout.addView(headerView)
+                specs.specificationsRow.forEachIndexed { index, row ->
+                    val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
+                    doubleTextView.apply {
+                        setTopText(MethodChecker.fromHtml(row.key).toString())
+                        setTopTextSize(CATALOG_SPECS_TEXT_SIZE)
+                        setBottomLinearLayoutWeight(CATALOG_BOTTOM_LINEAR_WEIGHT)
+                        setTopTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                        setBottomTextSize(CATALOG_SPECS_TEXT_SIZE)
+                        setBottomTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                        doubleTextView.setBottomTextStyle("")
+                        setBottomText(MethodChecker.fromHtml(row.value))
+                    }
+                    if(0 == index){
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_16))
+                    }else {
+                        doubleTextView.setMainLayoutTopMargin(resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8))
+                    }
+                    linear_layout.addView(doubleTextView)
+                    val lineView = View(context)
+                    val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lineView.minimumHeight = 2
+                    lineView.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
+                    if(specs.specificationsRow.size - 1 == index){
+                        params.setMargins(0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
+                    }else {
+                        params.setMargins(0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8), 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_0))
+                    }
+                    lineView.layoutParams = params
+                    linear_layout.addView(lineView)
+                }
+                if(specsIndex == jumpToFullSpecIndex){
+                    jumpToView = headerView
+                }
+            }
         }
-
+        if(jumpToView != null  && jumpToFullSpecIndex != 0){
+            specs_scroll_view.postDelayed({
+                specs_scroll_view.scrollTo(0, jumpToView?.top ?: 0)
+            },SETTLING_MILLIS)
+        }
     }
 
     private fun setDescriptionView(description: String?) {
-        val headerView = TextView(context)
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        headerView.layoutParams = params
-        headerView.text = MethodChecker.fromHtml(description).toString()
-        headerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f)
-        headerView.setTextColor(MethodChecker.getColor(context,R.color.grey_796))
-        linear_layout.addView(headerView)
+        context?.let { context ->
+            val headerView = Typography(context)
+            val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
+            headerView.apply {
+                layoutParams = params
+                text = MethodChecker.fromHtml(description).toString()
+                setType(Typography.BODY_2)
+            }
+            linear_layout.addView(headerView)
+        }
     }
-
 }

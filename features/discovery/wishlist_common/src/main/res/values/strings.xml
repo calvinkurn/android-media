@@ -5,4 +5,5 @@
     <string name="msg_success_add_wishlist">Sukses menambah wishlist</string>
     <string name="msg_success_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_error_remove_wishlist">Gagal menghapus wishlist</string>
+    <string name="lihat_label">Lihat</string>
 </resources>

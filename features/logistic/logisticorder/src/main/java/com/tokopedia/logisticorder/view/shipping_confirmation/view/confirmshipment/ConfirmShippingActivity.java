@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,15 +28,16 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.logisticdata.data.analytics.SalesShippingAnalytics;
-import com.tokopedia.logisticdata.data.analytics.listener.IConfirmShippingAnalyticsActionListener;
+import com.tokopedia.logisticCommon.data.analytics.SalesShippingAnalytics;
+import com.tokopedia.logisticCommon.data.analytics.listener.IConfirmShippingAnalyticsActionListener;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticorder.view.shipping_confirmation.di.OrderCourierComponent;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.unifyprinciples.Typography;
+import com.tokopedia.utils.permission.PermissionCheckerHelper;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderShipmentTypeDef;
@@ -69,7 +69,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     private OrderDetailShipmentModel editableModel;
     private String mMode;
 
-    private TextView courierName;
+    private Typography courierName;
     private EditText barcodeEditText;
     private ProgressDialog progressDialog;
     private PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
@@ -128,8 +128,8 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void receiveShipmentData(ListCourierViewModel model) {
-        if (model.getCourierViewModelList().size() == 0) {
+    public void receiveShipmentData(ListCourierUiModel model) {
+        if (model.getCourierUiModelList().size() == 0) {
             NetworkErrorHelper.showSnackbar(
                     ConfirmShippingActivity.this,
                     getString(R.string.error_no_courier_available_logistic_module)
@@ -384,7 +384,7 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
-        TextView confirmButton = findViewById(R.id.confirm_button);
+        Typography confirmButton = findViewById(R.id.confirm_button);
         if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
             toolbar.setTitle(getString(R.string.button_order_detail_change_courier_logistic_module));
         courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));

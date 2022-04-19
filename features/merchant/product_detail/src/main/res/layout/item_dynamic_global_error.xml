@@ -8,7 +8,7 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error_pdp"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"

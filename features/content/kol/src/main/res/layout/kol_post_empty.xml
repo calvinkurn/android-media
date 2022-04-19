@@ -26,7 +26,7 @@
             app:srcCompat="@drawable/ic_empty_state_cactus"
             android:adjustViewBounds="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="24dp"
             android:layout_marginLeft="@dimen/dp_32" android:layout_marginStart="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"/>
 
@@ -39,8 +39,8 @@
             android:textSize="@dimen/sp_16"
             android:gravity="center"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_24"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
             android:layout_marginLeft="@dimen/dp_32" android:layout_marginStart="@dimen/dp_32"
             android:layout_marginRight="@dimen/dp_32" android:layout_marginEnd="@dimen/dp_32"/>
     </LinearLayout>

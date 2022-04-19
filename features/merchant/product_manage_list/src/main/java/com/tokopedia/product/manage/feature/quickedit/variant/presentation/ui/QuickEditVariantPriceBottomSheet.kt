@@ -5,28 +5,32 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
-import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
+import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantBottomSheet
+import com.tokopedia.product.manage.common.feature.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.*
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.ProductVariantListener
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 
 class QuickEditVariantPriceBottomSheet(
-    private val onSaveVariantsPrice: (EditVariantResult) -> Unit
+    private val onSaveVariantsPrice: (EditVariantResult) -> Unit = {}
 ): QuickEditVariantBottomSheet(), ProductVariantListener {
 
     companion object {
-        private const val EXTRA_PRODUCT_ID = "extra_product_id"
         val TAG: String = QuickEditVariantPriceBottomSheet::class.java.simpleName
 
         fun createInstance(
             productId: String,
+            isBundling: Boolean = false,
+            isMultiLocationShop: Boolean = false,
             onSaveVariantsPrice: (EditVariantResult) -> Unit
         ): QuickEditVariantPriceBottomSheet {
             return QuickEditVariantPriceBottomSheet(onSaveVariantsPrice).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
+                bundle.putBoolean(EXTRA_IS_BUNDLING, isBundling)
+                bundle.putBoolean(EXTRA_IS_MULTILOCATION, isMultiLocationShop)
                 arguments = bundle
             }
         }
@@ -40,7 +44,7 @@ class QuickEditVariantPriceBottomSheet(
         return ProductVariantAdapter(ProductVariantPriceAdapterFactoryImpl(this))
     }
 
-    override fun onPriceChanged(variantId: String, price: Int) {
+    override fun onPriceChanged(variantId: String, price: Double) {
         viewModel.setVariantPrice(variantId, price)
     }
 
@@ -54,7 +58,7 @@ class QuickEditVariantPriceBottomSheet(
 
     private fun isVariantsPriceValid(result: EditVariantResult): Boolean {
         result.variants.forEach {
-            if(it.price < MINIMUM_PRICE) {
+            if(it.price < MINIMUM_PRICE.toDouble()) {
                 return false
             }
         }

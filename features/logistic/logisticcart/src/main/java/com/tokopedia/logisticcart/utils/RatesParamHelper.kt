@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.utils
 import com.google.gson.Gson
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 internal object RatesParamHelper {
 
@@ -18,9 +19,9 @@ internal object RatesParamHelper {
 
     fun generateOrigin(input: ShippingParam): String {
         val result: MutableList<String> = mutableListOf()
-        result.add(input.originDistrictId)
+        result.add(input.originDistrictId ?: "")
         if (!input.originPostalCode.isNullOrEmpty()) {
-            result.add(input.originPostalCode)
+            result.add(input.originPostalCode ?: "0")
         } else {
             result.add("0")
         }
@@ -32,9 +33,9 @@ internal object RatesParamHelper {
 
     fun generateDestination(input: ShippingParam): String {
         val result: MutableList<String> = mutableListOf()
-        result.add(input.destinationDistrictId)
+        result.add(input.destinationDistrictId ?: "")
         if (!input.destinationPostalCode.isNullOrEmpty()) {
-            result.add(input.destinationPostalCode)
+            result.add(input.destinationPostalCode ?: "0")
         } else {
             result.add("0")
         }
@@ -56,4 +57,12 @@ internal object RatesParamHelper {
         return json.replace("\n", "")
     }
 
+    fun generateBoMetadata(boMetadata: BoMetadata?): String {
+        if (boMetadata != null) {
+            val gson = Gson()
+            val json = gson.toJson(mapOf("bo_metadata" to boMetadata))
+            return json.replace("\n", "")
+        }
+        return ""
+    }
 }

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_32"
+        android:paddingTop="4dp"
+        android:paddingStart="@dimen/dp_19"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:paddingTop="@dimen/dp_13"
+        android:visibility="gone"
+        android:background="@color/Unify_N50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/choose_address_widget"
+        tools:visibility="visible"/>
+    <!--     Can add layout for CustomView here-->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/header_comp_holder"
+        app:layout_constraintBottom_toTopOf="@id/discovery_recyclerView"
+        app:layout_constraintTop_toBottomOf="@id/divider_view"/>
+
+    <com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
+        android:id="@+id/discovery_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
+        app:layout_constraintTop_toBottomOf="@id/header_comp_holder" />
+
+    <com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
+        android:id="@+id/fab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintBottom_toTopOf="@id/toTopImg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/toTopImg"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        app:srcCompat="@drawable/ic_to_top"
+        android:visibility="gone"
+        android:padding="8dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/circular_view"
+        app:layout_constraintBottom_toTopOf="@id/bottomBarrier"
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="@string/discovery_top_to_bottom"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visbility="visible" />
+
+    <com.tokopedia.minicart.common.widget.MiniCartWidget
+        android:id="@+id/miniCartWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/bottomNav"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="bottom"
+        app:tabBackground="@color/Unify_N0"
+        android:visibility="gone"
+        app:tabPaddingEnd="0dp"
+        app:tabMode="fixed"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottomBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="bottomNav,miniCartWidget"
+        app:barrierDirection="top"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

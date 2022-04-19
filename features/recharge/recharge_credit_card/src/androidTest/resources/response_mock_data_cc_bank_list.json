@@ -1,0 +1,115 @@
+[
+  {
+    "data": {
+      "rechargePCIDSSSignature": {
+        "bank_list": [
+          {
+            "name": "Artha Graham Bell",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/2/31997636/31997636_2ca9351e-7291-44f4-abb5-9e268003ef9c.png"
+          },
+          {
+            "name": "BII",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/31997636/31997636_c6b42f73-ed66-4574-b737-d695c5d6b870.png"
+          },
+          {
+            "name": "BNI",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/bni.png"
+          },
+          {
+            "name": "BRI",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/bri-bank.png"
+          },
+          {
+            "name": "BTN",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/9/26/31997636/31997636_098463c0-594e-4090-978c-faefe8a423a5.jpg"
+          },
+          {
+            "name": "BUKOPIN",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/bukopin.png"
+          },
+          {
+            "name": "CIMB NIAGA",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/cimbniaga.png"
+          },
+          {
+            "name": "CITIBANK",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/citibank.png"
+          },
+          {
+            "name": "DANAMON",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/danamon.png"
+          },
+          {
+            "name": "DIGIBANK",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/digibank.png"
+          },
+          {
+            "name": "Ekonomi Raharja",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/10/31997636/31997636_4209554f-ac5c-4010-b8eb-7d65eddc5c27.jpg"
+          },
+          {
+            "name": "HSBC",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/hsbc.png"
+          },
+          {
+            "name": "ICBC",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/9/26/31997636/31997636_ca01d7fb-1253-45bc-a212-2a049c9c5179.png"
+          },
+          {
+            "name": "MANDIRI",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2020/5/20/31997636/31997636_73295b8a-bc76-42a1-b3b0-95c32e6b6223.png"
+          },
+          {
+            "name": "MAYAPADA",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/mayapada.png"
+          },
+          {
+            "name": "MAYBANK",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/maybank.png"
+          },
+          {
+            "name": "MEGA",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/mega.png"
+          },
+          {
+            "name": "MNC Bank",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/2/31997636/31997636_94d1f9c8-2be8-4d91-87f5-3263b4067538.png"
+          },
+          {
+            "name": "OCBC NISP",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/ocbc-nisp.png"
+          },
+          {
+            "name": "PANIN",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/paninbank.png"
+          },
+          {
+            "name": "PERMATA",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/permatabank.png"
+          },
+          {
+            "name": "QNB KESAWAN",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/qnb.png"
+          },
+          {
+            "name": "Shinhan ",
+            "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/9/26/31997636/31997636_025960ff-dd34-4234-b46d-56661bc90fbd.jpg"
+          },
+          {
+            "name": "SINARMAS",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/sinarmas.png"
+          },
+          {
+            "name": "STANDARD CHARTERED",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/standardchartered.png"
+          },
+          {
+            "name": "UOB",
+            "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/uob.png"
+          }
+        ],
+        "message_error": ""
+      }
+    }
+  }
+]

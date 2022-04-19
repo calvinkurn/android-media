@@ -2,10 +2,12 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ProductItemViewModel
+import com.tokopedia.search.databinding.SearchResultProductCardListBinding
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.android.synthetic.main.search_result_product_card_list.view.productCardView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ListProductItemViewHolder(
     itemView: View,
@@ -18,32 +20,39 @@ class ListProductItemViewHolder(
         val LAYOUT = R.layout.search_result_product_card_list
     }
 
-    override fun bind(productItem: ProductItemViewModel?) {
-        if (productItem == null) return
+    private var binding: SearchResultProductCardListBinding? by viewBinding()
 
-        itemView.productCardView?.setProductModel(productItem.toProductCardModel(false))
+    override val productCardView: IProductCardView?
+        get() = binding?.productCardView
 
-        itemView.productCardView?.setThreeDotsOnClickListener {
-            productListener.onThreeDotsClick(productItem, adapterPosition)
+    override fun bind(productItemData: ProductItemDataView?) {
+        if (productItemData == null) return
+
+        val productCardView = binding?.productCardView ?: return
+        val productCardModel =
+            productItemData.toProductCardModel(productItemData.imageUrl, true)
+        this.productCardModel = productCardModel
+
+        registerLifecycleObserver(productCardModel)
+
+        productCardView.setProductModel(productCardModel)
+
+        productCardView.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClick(productItemData, adapterPosition)
         }
 
-        itemView.productCardView?.setOnLongClickListener {
-            productListener.onThreeDotsClick(productItem, adapterPosition)
+        productCardView.setOnLongClickListener {
+            productListener.onThreeDotsClick(productItemData, adapterPosition)
             true
         }
 
-        itemView.productCardView?.setOnClickListener {
-            productListener.onItemClicked(productItem, adapterPosition)
+        productCardView.setOnClickListener {
+            productListener.onItemClicked(productItemData, adapterPosition)
         }
 
-        itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
-    }
-
-    override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {
-        payloads.getOrNull(0) ?: return
-
-        itemView.productCardView?.setThreeDotsOnClickListener {
-            productListener.onThreeDotsClick(productItem, adapterPosition)
-        }
+        productCardView.setImageProductViewHintListener(
+            productItemData,
+            createImageProductViewHintListener(productItemData)
+        )
     }
 }

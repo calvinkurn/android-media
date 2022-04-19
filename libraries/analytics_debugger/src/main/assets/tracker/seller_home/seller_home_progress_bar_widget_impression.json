@@ -1,0 +1,15 @@
+{
+  "readme": "Seller Home Dashboard - progress bar widget impression",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "viewHomepageIris",
+      "eventCategory": "seller app - home",
+      "eventAction": "impression widget progress bar",
+      "eventLabel": ".{1,}",
+      "businessUnit": "physical goods",
+      "currentSite": "tokopediaseller",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

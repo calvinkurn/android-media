@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsEmptyViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsItemViewHolder
 import com.tokopedia.topads.dashboard.view.adapter.autoads.viewholder.AutoAdsItemsViewHolder
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyViewModel
-import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemViewModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsEmptyModel
+import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItemsItemModel
 
 /**
  * Created by Pika on 2/6/20.
@@ -13,8 +13,8 @@ import com.tokopedia.topads.dashboard.view.adapter.autoads.viewmodel.AutoAdsItem
 
 class AutoAdsItemsAdapterTypeFactoryImpl : AutoAdsItemsAdapterTypeFactory {
 
-    override fun type(model: AutoAdsItemsEmptyViewModel): Int = AutoAdsItemsEmptyViewHolder.LAYOUT
-    override fun type(model: AutoAdsItemsItemViewModel): Int = AutoAdsItemsItemViewHolder.LAYOUT
+    override fun type(model: AutoAdsItemsEmptyModel): Int = AutoAdsItemsEmptyViewHolder.LAYOUT
+    override fun type(model: AutoAdsItemsItemModel): Int = AutoAdsItemsItemViewHolder.LAYOUT
 
     override fun holder(type: Int, view: View): AutoAdsItemsViewHolder<*> {
         return when (type) {

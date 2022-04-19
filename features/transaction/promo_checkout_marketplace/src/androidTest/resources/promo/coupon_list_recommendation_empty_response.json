@@ -1,0 +1,25 @@
+[
+  {
+    "data": {
+      "coupon_list_recommendation": {
+        "message": [],
+        "error_code": "200",
+        "status": "OK",
+        "data": {
+          "result_status": {
+            "code": "42050",
+            "message": [
+              "Anda belum memiliki promo"
+            ],
+            "reason": "Empty promo"
+          },
+          "empty_state": {
+            "title": "Anda belum memiliki promo!",
+            "description": "Belanja lagi untuk mendapatkan promo",
+            "image_url": "https://ecs7.tokopedia.net/microsite-production/tokopoints/noHp@3x.png"
+          }
+        }
+      }
+    }
+  }
+]

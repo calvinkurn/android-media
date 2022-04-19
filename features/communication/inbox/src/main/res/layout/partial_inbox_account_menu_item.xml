@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_seller_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingVertical="@dimen/dp_inbox_12"
+    android:paddingStart="@dimen/dp_inbox_12"
+    android:paddingEnd="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_photo_profile"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/unread_counter"
+        style="@style/BadgeCounter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/iv_photo_profile"
+        app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
+        tools:text="10"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iv_small_icon"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/dp_inbox_12"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
+        app:layout_constraintStart_toEndOf="@+id/iv_photo_profile"
+        app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
+        app:srcCompat="@drawable/ic_inbox_shop_icon"
+        tools:text="Dominicus Dennis Pratama " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_inbox_6"
+        android:layout_marginEnd="@dimen/dp_inbox_18"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
+        app:layout_constraintEnd_toStartOf="@+id/iv_checkmark"
+        app:layout_constraintStart_toEndOf="@+id/iv_small_icon"
+        app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Dominicus Dennis Pratama " />
+
+    <ImageView
+        android:id="@+id/iv_checkmark"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_photo_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_photo_profile"
+        app:srcCompat="@drawable/ic_inbox_check_mark"
+        tools:text="Dominicus Dennis Pratama "
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

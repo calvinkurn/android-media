@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,17 +15,19 @@ import androidx.interpolator.view.animation.FastOutLinearInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadIcon
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
-
 
 class AddToCartDoneRecommendationCarouselViewHolder(
         itemView: View,
@@ -47,8 +48,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val adapter = RecommendationCarouselAdapter()
 
     // animation
-    private val slideLeftOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, -100f)
-    private val slideLeftIn = ObjectAnimator.ofFloat(containerContent, "translationX", -100f, 0f)
+    private val slideLeftOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, TRANSLATION_100_MINUS)
+    private val slideLeftIn = ObjectAnimator.ofFloat(containerContent, "translationX", TRANSLATION_100_MINUS, 0f)
     private val slideRightIn = ObjectAnimator.ofFloat(containerContent, "translationX", 100f, 0f)
     private val slideRightOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, 100f)
     private val alphaOut = ObjectAnimator.ofFloat(containerContent, "alpha", 1f, 0f)
@@ -59,7 +60,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback? = null
     private val itemDecoration = HorizontalMarginItemDecoration(
             itemView.context,
-            R.dimen.viewpager_current_item_horizontal_margin
+            com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin
     )
 
     private var previousPosition = -1
@@ -68,13 +69,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
-        const val ATC_LOADING = "atc_loading"
+
+        private const val TRANSLATION_100_MINUS = -100f
+        private const val ANIMATION_DURATION_200 = 200L
+        private const val ANIMATION_DELAY_180 = 180L
+        private const val ANIMATION_VALUE_QUARTER_FLOAT = 0.25f
+        private const val ANIMATION_VALUE_HALF_FLOAT = 0.5f
+        private const val PAGE_LIMIT = 3
     }
 
     init {
         configAnimation()
     }
 
+    @SuppressLint("WrongConstant")
     override fun bind(element: AddToCartDoneRecommendationCarouselDataModel) {
         try{
             with(itemView) {
@@ -88,7 +96,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 with(viewPager) {
                     clipToPadding = false
                     clipChildren = false
-                    offscreenPageLimit = 3
+                    offscreenPageLimit = PAGE_LIMIT
                 }
                 if(viewPager2PageChangeCallback == null){
                     viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -107,13 +115,13 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         }
     }
 
-    private fun configViewVisibility(recommendation: RecommendationItem){
+    private fun configViewVisibility(dataModel: AddToCartDoneRecommendationItemDataModel){
         productName.show()
         shopLocation.show()
         reviewCount.show()
         ratingCount.show()
-        freeOngkirImage.visibility = if (recommendation.isFreeOngkirActive) View.VISIBLE else View.GONE
-        shopBadges.visibility = if (recommendation.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
+        freeOngkirImage.visibility = if (dataModel.recommendationItem.isFreeOngkirActive) View.VISIBLE else View.GONE
+        shopBadges.visibility = if (dataModel.recommendationItem.badgesUrl.isNotEmpty()) View.VISIBLE else View.GONE
         ticker.visibility = if (model?.shopId != -1) View.VISIBLE else View.GONE
     }
 
@@ -138,24 +146,24 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     }
 
     private fun configAnimation(){
-        slideLeftOut.duration = 200
+        slideLeftOut.duration = ANIMATION_DURATION_200
         slideLeftOut.interpolator = FastOutLinearInInterpolator()
-        slideLeftIn.duration = 200
+        slideLeftIn.duration = ANIMATION_DURATION_200
         slideLeftIn.interpolator = FastOutLinearInInterpolator()
 
-        slideRightOut.duration = 200
+        slideRightOut.duration = ANIMATION_DURATION_200
         slideRightOut.interpolator = FastOutLinearInInterpolator()
-        slideRightIn.duration = 200
+        slideRightIn.duration = ANIMATION_DURATION_200
         slideRightIn.interpolator = FastOutLinearInInterpolator()
 
-        alphaOut.duration = 200
-        alphaIn.duration = 200
+        alphaOut.duration = ANIMATION_DURATION_200
+        alphaIn.duration = ANIMATION_DURATION_200
 
         animatorSet.play(slideLeftOut).with(alphaOut)
-        animatorSet.play(slideRightIn).with(alphaIn).after(180)
+        animatorSet.play(slideRightIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         reversedAnimatorSet.play(slideRightOut).with(alphaOut)
-        reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(180)
+        reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         animationListener = object : Animator.AnimatorListener{
             override fun onAnimationRepeat(animation: Animator?) {}
@@ -179,20 +187,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         slideRightOut.addListener(animationListener)
     }
 
-    private fun setRecommendationItemToView(recommendation: RecommendationItem){
-        productName.text = recommendation.name
-        shopLocation.text = recommendation.location
-        reviewCount.text = "(${recommendation.countReview})"
-        ratingCount.text = recommendation.rating.toString()
-        shopBadges.loadImage(recommendation.badgesUrl.firstOrNull() ?: "")
-        freeOngkirImage.loadImage(recommendation.freeOngkirImageUrl)
-        ticker.tickerType = if(recommendation.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
-        ticker.setTextDescription(getString(if(recommendation.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
-        addToCartDoneAddedProductListener.onRecommendationItemSelected(recommendation, recommendation.position)
+    private fun setRecommendationItemToView(dataModel: AddToCartDoneRecommendationItemDataModel){
+        productName.text = dataModel.recommendationItem.name
+        shopLocation.text = dataModel.recommendationItem.location
+        reviewCount.text = "(${dataModel.recommendationItem.countReview})"
+        ratingCount.text = dataModel.recommendationItem.rating.toString()
+        shopBadges.loadIcon(dataModel.recommendationItem.badgesUrl.firstOrNull() ?: "")
+        freeOngkirImage.loadIcon(dataModel.recommendationItem.freeOngkirImageUrl)
+        ticker.tickerType = if(dataModel.recommendationItem.shopId == model?.shopId) Ticker.TYPE_INFORMATION else Ticker.TYPE_ANNOUNCEMENT
+        ticker.setTextDescription(getString(if(dataModel.recommendationItem.shopId == model?.shopId) R.string.ticker_atc_done_some_store else R.string.ticker_atc_done_different_store))
+        addToCartDoneAddedProductListener.onRecommendationItemSelected(dataModel, dataModel.recommendationItem.position)
     }
 
     inner class RecommendationCarouselAdapter : RecyclerView.Adapter<RecommendationCarouselImageViewHolder>(){
-        private var list: List<RecommendationItem> = listOf()
+        private var list: List<AddToCartDoneRecommendationItemDataModel> = listOf()
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationCarouselImageViewHolder {
             return RecommendationCarouselImageViewHolder(parent)
         }
@@ -205,7 +213,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
             holder.bind(list[position])
         }
 
-        fun setItem(list: List<RecommendationItem>){
+        fun setItem(list: List<AddToCartDoneRecommendationItemDataModel>){
             this.list = list
             notifyDataSetChanged()
         }
@@ -213,11 +221,9 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     inner class RecommendationCarouselImageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         constructor(parent: ViewGroup) : this(LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_done_recommendation_carousel_image_item, parent, false))
-        fun bind(recommendation: RecommendationItem){
-            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(
-                    recommendation.imageUrl,
-                    16f
-            )
+        fun bind(dataModel: AddToCartDoneRecommendationItemDataModel){
+            val recommendation = dataModel.recommendationItem
+            itemView.findViewById<ImageView>(R.id.carousel_image)?.loadImageRounded(recommendation.imageUrl)
             if(!itemView.hasOnClickListeners()){
                 itemView.setOnClickListener {
                     recommendationListener.onProductClick(
@@ -251,21 +257,21 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     inner class ViewPager2PageTransformation : ViewPager2.PageTransformer {
         override fun transformPage(page: View, position: Float) {
-            val nextItemVisiblePx = itemView.resources.getDimension(R.dimen.viewpager_next_item_visible)
-            val currentItemHorizontalMarginPx = itemView.resources.getDimension(R.dimen.viewpager_current_item_horizontal_margin)
+            val nextItemVisiblePx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_next_item_visible)
+            val currentItemHorizontalMarginPx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin)
             val pageTranslationX = nextItemVisiblePx + currentItemHorizontalMarginPx
             page.apply {
                 page.translationX = -pageTranslationX * position
-                page.scaleY = 1 - (0.25f * abs(position))
-                page.alpha = 0.25f + (1 - abs(position))
+                page.scaleY = 1 - (ANIMATION_VALUE_QUARTER_FLOAT * abs(position))
+                page.alpha = ANIMATION_VALUE_QUARTER_FLOAT + (1 - abs(position))
             }
             when {
                 position < -1 ->
-                    page.alpha = 0.5f
+                    page.alpha = ANIMATION_VALUE_HALF_FLOAT
                 position <= 1 -> {
-                    page.alpha = Math.max(0.5f, 1 - Math.abs(position))
+                    page.alpha = Math.max(ANIMATION_VALUE_HALF_FLOAT, 1 - Math.abs(position))
                 }
-                else -> page.alpha = 0.5f
+                else -> page.alpha = ANIMATION_VALUE_HALF_FLOAT
             }
         }
     }

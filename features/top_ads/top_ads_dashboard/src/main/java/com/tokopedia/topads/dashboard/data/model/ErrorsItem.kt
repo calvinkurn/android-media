@@ -1,7 +1,10 @@
 package com.tokopedia.topads.dashboard.data.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ErrorsItem(
 
 	@field:SerializedName("code")
@@ -12,4 +15,4 @@ data class ErrorsItem(
 
 	@field:SerializedName("title")
 	val title: String? = null
-)
+):Parcelable

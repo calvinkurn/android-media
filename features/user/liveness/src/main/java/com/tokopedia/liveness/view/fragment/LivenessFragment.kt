@@ -19,33 +19,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.imagepicker.common.util.FileUtils
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.utils.LivenessErrorCodeUtil
 import com.tokopedia.liveness.view.BackgroundOverlay
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.activity.LivenessActivity
 import com.tokopedia.liveness.view.activity.LivenessFailedActivity
-import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.utils.file.FileUtil
+import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import java.io.FileOutputStream
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, LivenessCallback, OnBackListener {
@@ -53,28 +44,23 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private var livenessView: LivenessView? = null
     private var tipLottieAnimationView: LottieAnimationView? = null
     private var tipTextView: TextView? = null
-    private var loader: View? = null
     private var initProgressDialog: ProgressDialog? = null
-    private var loadingLayout: View? = null
     private var mainLayout: View? = null
     private var bgOverlay: BackgroundOverlay? = null
     private var livenessWarnState: Detector.WarnCode? = null
     private var livenessActionState: Detector.DetectionType? = null
-    private var tkpdProjectId: String? = null
-    private var ktpPath: String = ""
     private var facePath: String = ""
+    private var projectId = ""
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val livenessDetectionViewModel by lazy { viewModelProvider.get(LivenessDetectionViewModel::class.java) }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            projectId = it.getString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_liveness, container, false)
@@ -83,65 +69,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         findViews()
-        initData()
-        initObserver()
         livenessView?.startDetection(this)
     }
 
-    private fun initData() {
-        arguments?.let {
-            ktpPath = it.getString(ApplinkConstInternalGlobal.PARAM_KTP_PATH, "")
-            tkpdProjectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1).toString()
-            facePath = it.getString(ApplinkConstInternalGlobal.PARAM_FACE_PATH, "")
-
-            if (isFileExists(facePath)) {
-                loadingLayout?.visibility = View.VISIBLE
-                mainLayout?.visibility = View.GONE
-                livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
-                        ?: DEFAULT_ID)
-            }
-        }
-    }
-
-    private fun initObserver() {
-        livenessDetectionViewModel.livenessResponseLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    val intent = Intent()
-                    intent.putExtra(ApplinkConst.Liveness.EXTRA_IS_SUCCESS_REGISTER, it.data.isSuccessRegister)
-                    if (!it.data.isSuccessRegister) {
-                        if (!it.data.listRetake.contains(FACE_RETAKE)) {
-                            intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
-                            FileUtils.deleteFileInTokopediaFolder(ktpPath)
-                        } else {
-                            FileUtils.deleteFileInTokopediaFolder(facePath)
-                        }
-                        intent.putIntegerArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_RETAKE, it.data.listRetake)
-                        intent.putStringArrayListExtra(ApplinkConst.Liveness.EXTRA_LIST_MESSAGE, it.data.listMessage)
-                        intent.putExtra(ApplinkConst.Liveness.EXTRA_TITLE, it.data.apps.title)
-                        intent.putExtra(ApplinkConst.Liveness.EXTRA_SUBTITLE, it.data.apps.subtitle)
-                        intent.putExtra(ApplinkConst.Liveness.EXTRA_BUTTON, it.data.apps.button)
-                    } else {
-                        FileUtils.deleteFileInTokopediaFolder(ktpPath)
-                        FileUtils.deleteFileInTokopediaFolder(facePath)
-                    }
-                    activity?.setResult(RESULT_OK, intent)
-                    activity?.finish()
-                }
-                is Fail -> {
-                    Timber.w("P2#LIVENESS_UPLOAD_RESULT#'ErrorUpload';ktpPath='$ktpPath';facePath='$facePath';tkpdProjectId='$tkpdProjectId';stack_trace='${it.throwable.printStackTrace()}'")
-                    val errorCode = LivenessErrorCodeUtil.getErrorCode(it.throwable)
-                    when (it.throwable) {
-                        is SocketTimeoutException -> {
-                            setFailedResultData(Detector.DetectionFailedType.BADNETWORK, errorCode)
-                        }
-                        else -> {
-                            setFailedResultData(Detector.DetectionFailedType.GENERAL, errorCode)
-                        }
-                    }
-                }
-            }
-        })
+    private fun onSuccessLiveness() {
+        val intent = Intent()
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, facePath)
+        activity?.setResult(RESULT_OK, intent)
+        activity?.finish()
     }
 
     private fun findViews() {
@@ -149,9 +84,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             livenessView = findViewById(R.id.liveness_view)
             tipLottieAnimationView = findViewById(R.id.tip_lottie_animation_view)
             tipTextView = findViewById(R.id.tip_text_view)
-            loadingLayout = findViewById(R.id.loading_layout)
             mainLayout = findViewById(R.id.main_layout)
-            loader = findViewById(R.id.loader)
             bgOverlay = findViewById(R.id.background_overlay)
             val mBackView = findViewById<View>(R.id.back_view_camera_activity)
             mBackView.setOnClickListener { onBackPressed() }
@@ -175,18 +108,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (warnCode != null) {
             when (warnCode) {
                 Detector.WarnCode.FACEMISSING -> {
-                    analytics.eventViewFaceInCenter()
+                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_no_people_face))
                     changeTipTextView(R.string.liveness_no_people_face)
                 }
                 Detector.WarnCode.FACESMALL -> {
-                    analytics.eventViewCloserFaceToScreen()
+                    analytics.eventViewCloserFaceToScreen(projectId, false, getString(R.string.liveness_tip_move_closer))
                     changeTipTextView(R.string.liveness_tip_move_closer)
                 }
                 Detector.WarnCode.FACELARGE -> {
                     changeTipTextView(R.string.liveness_tip_move_furthre)
                 }
                 Detector.WarnCode.FACENOTCENTER -> {
-                    analytics.eventViewFaceInCenter()
+                    analytics.eventViewFaceInCenter(projectId, false, getString(R.string.liveness_move_face_center))
                     changeTipTextView(R.string.liveness_move_face_center)
                 }
                 Detector.WarnCode.FACENOTFRONTAL -> {
@@ -196,7 +129,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     changeTipTextView(R.string.liveness_still)
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
-                    analytics.eventViewMultipleFaces()
+                    analytics.eventViewMultipleFaces(projectId, false, getString(R.string.liveness_failed_reason_multipleface))
                     changeTipTextView(R.string.liveness_failed_reason_multipleface)
                 }
                 Detector.WarnCode.FACEINACTION -> {
@@ -215,15 +148,15 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             var detectionNameId = 0
             when (currentDetectionType) {
                 Detector.DetectionType.POS_YAW -> {
-                    analytics.eventViewHeadDetection()
+                    analytics.eventViewHeadDetection(projectId, true)
                     detectionNameId = R.string.liveness_pos_raw
                 }
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventViewMouthDetection()
+                    analytics.eventViewMouthDetection(projectId, true)
                     detectionNameId = R.string.liveness_mouse
                 }
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventViewBlinkDetection()
+                    analytics.eventViewBlinkDetection(projectId, true)
                     detectionNameId = R.string.liveness_blink
                 }
                 else -> {}
@@ -311,10 +244,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (livenessActionState != null) {
             when (livenessActionState) {
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventSuccessdBlinkDetection()
+                    analytics.eventSuccessBlinkDetection(projectId, true)
                 }
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventSuccessdMouthDetection()
+                    analytics.eventSuccessMouthDetection(projectId, true)
                 }
                 else -> {
                 }
@@ -323,13 +256,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     override fun onDetectionSuccess() {
-        analytics.eventSuccessdHeadDetection()
+        analytics.eventSuccessHeadDetection(projectId, true)
         livenessView?.getLivenessData(object : LivenessGetFaceDataCallback {
 
-            override fun onGetFaceDataStart() {
-                loadingLayout?.visibility = View.VISIBLE
-                mainLayout?.visibility = View.GONE
-            }
+            override fun onGetFaceDataStart() {}
 
             override fun onGetFaceDataSuccess(entity: BaseResultEntity) {
                 setSuccessResultData()
@@ -337,7 +267,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
             override fun onGetFaceDataFailed(entity: BaseResultEntity) {
                 if (!entity.success && LivenessView.NO_RESPONSE == entity.code) {
-                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK, null)
+                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
                 }
             }
         })
@@ -347,30 +277,21 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         activity?.run {
             val mImageBitmap = LivenessResult.livenessBitmap
             facePath = saveToFile(mImageBitmap)
-            when {
-                !isFileExists(facePath) -> {
-                    setResult(LivenessConstants.KYC_LIVENESS_FILE_NOT_FOUND)
-                    finish()
-                }
-                !isFileExists(ktpPath) -> {
-                    setResult(LivenessConstants.KYC_FILE_NOT_FOUND)
-                    finish()
-                }
-                else -> {
-                    livenessDetectionViewModel.uploadImages(ktpPath, facePath, tkpdProjectId
-                            ?: DEFAULT_ID)
-                }
+            if(!isFileExists(facePath)) {
+                setResult(LivenessConstants.KYC_LIVENESS_FILE_NOT_FOUND)
+                finish()
+            } else {
+                onSuccessLiveness()
             }
         }
     }
 
-    private fun setFailedResultData(failedType: Detector.DetectionFailedType, errorCode: Int?) {
+    private fun setFailedResultData(failedType: Detector.DetectionFailedType) {
         if (activity != null) {
             val intent = Intent(activity, LivenessFailedActivity::class.java)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+
             when (failedType) {
-                Detector.DetectionFailedType.GENERAL -> {
-                    intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_GENERAL)
-                }
                 Detector.DetectionFailedType.BADNETWORK -> {
                     intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
                 }
@@ -379,9 +300,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 }
                 else -> {
                 }
-            }
-            errorCode?.let {
-                intent.putExtra(LivenessConstants.ARG_ERROR_CODE, errorCode)
             }
             activity?.startActivityForResult(intent, RESULT_CANCELED)
         }
@@ -394,13 +312,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                 if (cameraResultFile.exists()) {
                     return cameraResultFile.absolutePath
                 } else {
-                    Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageFileNotFound';absolutePath='${cameraResultFile.absolutePath}'")
+                    ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "FailedImageFileNotFound", "absolutePath" to cameraResultFile.absolutePath))
                 }
             } else {
-                Timber.w("P2#LIVENESS_IMAGE_ERROR#'FailedImageNull'")
+                ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "FailedImageNull"))
             }
         } catch (error: Throwable) {
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchSaveToFile';stack_trace='${error.printStackTrace()}'")
+            ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf("type" to "TryCatchSaveToFile", "stack_trace" to "$error"))
         }
         return ""
     }
@@ -411,8 +329,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     private fun writeImageToTkpdPath(bitmap: Bitmap): File {
-        val cacheDir = File(context?.externalCacheDir, FileUtils.generateUniqueFileName() + ImageUtils.JPG_EXT)
-        val cachePath = cacheDir.absolutePath
+        val cacheDir = getTkpdCacheDir()
+        val fileName = FileUtil.generateUniqueFileName() + ImageProcessingUtil.JPG_EXT
+        val cacheFile = File(cacheDir,  fileName)
+        val cachePath = cacheFile.absolutePath
         val file = File(cachePath)
         if (file.exists()) {
             file.delete()
@@ -424,9 +344,18 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             out.close()
         } catch (e: Throwable) {
             e.printStackTrace()
-            Timber.w("P2#LIVENESS_IMAGE_ERROR#'TryCatchWriteImageToTkpdPath';cacheDir='$cacheDir;cachePath'=$cachePath;fileExists='${file.exists()}';stack_trace='${e.printStackTrace()}'")
+            ServerLogger.log(Priority.P2, "LIVENESS_IMAGE_ERROR",
+                    mapOf("type" to "TryCatchWriteImageToTkpdPath", "cachePath" to cachePath, "fileExists" to "${file.exists()}", "stack_trace" to "$e"))
         }
         return file
+    }
+
+    private fun getTkpdCacheDir(): File {
+        val cacheDir = File(context?.externalCacheDir, FILE_NAME_KYC)
+        if(!cacheDir.exists()) {
+            cacheDir.mkdirs()
+        }
+        return cacheDir
     }
 
     override fun onDetectionFrameStateChanged(warnCode: Detector.WarnCode) {
@@ -445,8 +374,8 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     override fun onDetectionFailed(failedType: Detector.DetectionFailedType, detectionType: Detector.DetectionType) {
         if (isAdded) {
             when (failedType) {
-                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT, null)
-                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION, null)
+                Detector.DetectionFailedType.TIMEOUT -> setFailedResultData(Detector.DetectionFailedType.TIMEOUT)
+                Detector.DetectionFailedType.MUCHMOTION -> setFailedResultData(Detector.DetectionFailedType.MUCHMOTION)
                 else -> {
                 }
             }
@@ -457,13 +386,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (livenessWarnState != null) {
             when (livenessWarnState) {
                 Detector.WarnCode.FACESMALL -> {
-                    analytics.eventClickBackCloserFaceToScreen()
+                    analytics.eventClickBackCloserFaceToScreen(projectId)
                 }
                 Detector.WarnCode.FACENOTCENTER, Detector.WarnCode.FACEMISSING -> {
-                    analytics.eventClickBackFaceInCenter()
+                    analytics.eventClickBackFaceInCenter(projectId)
                 }
                 Detector.WarnCode.WARN_MULTIPLEFACES -> {
-                    analytics.eventClickBackMultipleFaces()
+                    analytics.eventClickBackMultipleFaces(projectId)
                 }
                 else -> {
                 }
@@ -471,13 +400,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         } else if (livenessActionState != null) {
             when (livenessActionState) {
                 Detector.DetectionType.MOUTH -> {
-                    analytics.eventClickBackMouthDetection()
+                    analytics.eventClickBackMouthDetection(projectId)
                 }
                 Detector.DetectionType.BLINK -> {
-                    analytics.eventClickBackBlinkDetection()
+                    analytics.eventClickBackBlinkDetection(projectId)
                 }
                 Detector.DetectionType.POS_YAW -> {
-                    analytics.eventClickBackHeadDetection()
+                    analytics.eventClickBackHeadDetection(projectId)
                 }
                 else -> {
                 }
@@ -486,16 +415,11 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     }
 
     companion object {
-
+        private const val FILE_NAME_KYC = "/KYC"
         fun newInstance(bundle: Bundle): LivenessFragment {
             val fragment = LivenessFragment()
             fragment.arguments = bundle
             return fragment
         }
-
-        const val FACE_RETAKE = 2
-        const val DEFAULT_ID = "1"
     }
-
-
 }

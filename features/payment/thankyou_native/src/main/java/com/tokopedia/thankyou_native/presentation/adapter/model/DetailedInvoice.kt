@@ -1,35 +1,42 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.thankyou_native.presentation.adapter.InvoiceTypeFactory
+import com.tokopedia.thankyou_native.domain.model.AddOnItem
+import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
 
 data class InvoiceSummery(
-        val totalItemCount: String,
-        val totalPriceStr: String,
-        val totalItemDiscountStr: String?,
-        val totalProductProtectionStr: String?,
-        val totalShippingChargeStr: String?,
-        val totalShippingDiscountStr: String?,
-        val totalShippingInsuranceStr: String?,
-        val donationAmountStr: String?,
-        val eGoldPriceStr: String?
+        val totalPriceStr : String,
+        val totalCount : Int,
+        val invoiceSummaryMapList: ArrayList<InvoiceSummaryMap>
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
-data class BillDetail(val totalBillAmountStr: String,
-                      val tokoPointDeduction: String?,
-                      val serviceFee: String?
+data class InvoiceSummaryMap(
+        val title : String,
+        val value : String,
+        var isDiscounted : Boolean = false
+)
+
+data class TotalFee(
+        val totalBillAmountStr : String,
+        val feeDetailList : ArrayList<FeeDetail>
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
-data class ObtainedAfterTransaction(
-        val benefitMapList: ArrayList<BenefitMap>
+data class FeeDetail(
+        val feeTitle : String,
+        val feeAmountStr : String
+)
+
+data class CashBackEarned(
+        val benefitMapList: ArrayList<CashBackMap>,
+        val cashBackOVOPoint: Boolean
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
@@ -46,22 +53,20 @@ data class PaymentInfo(
     }
 }
 
-data class BenefitMap(
+data class CashBackMap(
         val benefitName: String,
-        val benefitAmount: String
+        val benefitAmount: String,
+        val cashBackDescription : String?,
+        var isBBICashBack: Boolean = false,
+        var isStackedCashBack: Boolean = false
 )
 
 data class PaymentModeMap(
         val paymentModeStr: String,
-        val paidAmountStr: String
+        val paidAmountStr: String,
+        val gatewayCode: String?
 )
 
-data class PaymentMethodModel(val paymentMethodStr : String) : Visitable<InvoiceTypeFactory>{
-    override fun type(typeFactory: InvoiceTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-}
 
 class PurchasedProductTag : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
@@ -77,15 +82,16 @@ class ShopDivider : Visitable<InvoiceTypeFactory>{
 }
 
 data class ShopInvoice(
-        val shopName: String,
+        val shopName: String?,
         val orderedItem: List<OrderedItem>,
         val itemDiscountStr: String?,
         val productProtectionStr: String?,
         val shippingPriceStr: String?,
-        val shippingTypeStr: String?,
+        val shippingInfo: String?,
         val discountOnShippingStr: String?,
         val shippingInsurancePriceStr: String?,
-        val shippingAddress: String?
+        val shippingAddress: String?,
+        val orderLevelAddOn: ArrayList<AddOnItem>
 ) : Visitable<InvoiceTypeFactory> {
     override fun type(typeFactory: InvoiceTypeFactory): Int {
         return typeFactory.type(this)
@@ -96,5 +102,13 @@ data class OrderedItem(
         val itemName: String,
         val itemCount: Int?,
         val itemPrice: String,
-        val itemTotalPriceStr: String
+        val itemTotalPriceStr: String,
+        val isBBIProduct : Boolean,
+        val orderItemType: OrderItemType,
+        val productLevelAddOn: ArrayList<AddOnItem>?
 )
+enum class OrderItemType {
+    BUNDLE,
+    SINGLE_PRODUCT,
+    BUNDLE_PRODUCT
+}
