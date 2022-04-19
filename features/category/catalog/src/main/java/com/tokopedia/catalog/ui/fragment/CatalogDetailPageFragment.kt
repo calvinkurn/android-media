@@ -92,6 +92,8 @@ class CatalogDetailPageFragment : Fragment(),
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
+    private val widgetTrackingSet =  HashSet<String>()
+
     private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
@@ -628,8 +630,6 @@ class CatalogDetailPageFragment : Fragment(),
                 "$catalogName - $catalogId",userSession.userId,catalogId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
-
-    private val widgetTrackingSet =  HashSet<String>()
 
     override fun sendWidgetImpressionEvent(
         widgetImpressionActionName: String,
