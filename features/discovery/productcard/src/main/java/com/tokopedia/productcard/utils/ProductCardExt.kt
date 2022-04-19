@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -444,3 +445,13 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
         else ->
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
+
+fun <T: View?> View.findViewByIdInViewStub(viewStubId: Int, viewId: Int): T {
+    val viewStub = findViewById<ViewStub?>(viewStubId)
+    if (viewStub == null) {
+        return findViewById<T>(viewId)
+    } else {
+        viewStub.inflate()
+    }
+    return findViewById<T>(viewId)
+}

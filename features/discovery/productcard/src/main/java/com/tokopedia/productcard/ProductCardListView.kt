@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Space
@@ -14,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
@@ -115,9 +115,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
     private val spaceCampaignBestSeller: Space? by lazy(NONE) {
         findViewById(R.id.spaceCampaignBestSeller)
-    }
-    private val buttonAddToCartStub: ViewStub? by lazy(NONE) {
-        findViewById(R.id.buttonAddToCartStub)
     }
 
     constructor(context: Context): super(context) {
@@ -318,10 +315,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     private fun renderButtonAddToCart(isVisible: Boolean) {
-        if (isVisible) {
-            buttonAddToCartStub?.inflate()
-        }
-        val buttonAddToCart = findViewById<UnifyButton>(R.id.buttonAddToCart)
+        val buttonAddToCart = findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
         buttonAddToCart?.showWithCondition(isVisible)
     }
 }

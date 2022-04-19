@@ -1,7 +1,6 @@
 package com.tokopedia.productcard
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.iconunify.IconUnify
@@ -21,6 +20,7 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.productcard.utils.findViewByIdInViewStub
 import rx.Subscription
 
 internal class ProductCardCartExtension(private val productCardView: View) {
@@ -52,14 +52,12 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
         when {
             productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
-                findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
-                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
+                val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
             }
 
             productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
-                findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
-                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
+                val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCart()
             }
 
@@ -130,8 +128,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun deleteCartClick(productCardModel: ProductCardModel) {
-        findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
-        val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
+        val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
         buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
         buttonDeleteCart?.gone()
@@ -246,10 +243,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
-        if(productCardModel.hasVariant()) {
-            findView<ViewStub?>(R.id.buttonAddVariantStub)?.inflate()
-        }
-        val buttonAddVariant = findView<UnifyButton?>(R.id.buttonAddVariant)
+        val buttonAddVariant = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddVariantStub, R.id.buttonAddVariant)
         buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
