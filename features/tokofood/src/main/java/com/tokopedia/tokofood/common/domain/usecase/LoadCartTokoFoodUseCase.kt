@@ -9,6 +9,8 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -76,6 +78,11 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     products = listOf(
                         CheckoutTokoFoodProduct(price = 10000.0),
                         CheckoutTokoFoodProduct(price = 20000.0)
+                    )
+                ),
+                shoppingSummary = CheckoutTokoFoodShoppingSummary(
+                    total = CheckoutTokoFoodShoppingTotal(
+                        costFmt = "Rp 10.000"
                     )
                 )
             )

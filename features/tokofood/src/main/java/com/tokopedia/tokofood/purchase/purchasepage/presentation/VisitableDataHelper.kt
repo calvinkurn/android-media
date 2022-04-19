@@ -1,6 +1,8 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object VisitableDataHelper {
@@ -16,10 +18,11 @@ object VisitableDataHelper {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+    fun MutableList<Visitable<*>>.getProductById(productId: String, cartId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId -> {
+                // TODO: Check if that is the product according to variants
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId && data.cartId == cartId -> {
                     return Pair(index, data)
                 }
                 data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
@@ -28,6 +31,25 @@ object VisitableDataHelper {
             }
         }
         return null
+    }
+
+    fun MutableList<Visitable<*>>.getProductByUpdateParam(updateParam: UpdateProductParam): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
+        loop@ for ((index, data) in this.withIndex()) {
+            when {
+                // TODO: Check if that is the product according to variants
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isMatchingProduct(updateParam) -> {
+                    return Pair(index, data)
+                }
+                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
+                    break@loop
+                }
+            }
+        }
+        return null
+    }
+
+    private fun TokoFoodPurchaseProductTokoFoodPurchaseUiModel.isMatchingProduct(updateParam: UpdateProductParam): Boolean {
+        return this.id == updateParam.productId && this.cartId == updateParam.cartId
     }
 
     fun MutableList<Visitable<*>>.getAccordionUiModel(): Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>? {

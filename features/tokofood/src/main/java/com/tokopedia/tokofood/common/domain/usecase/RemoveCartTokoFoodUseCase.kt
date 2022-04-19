@@ -17,6 +17,8 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers
 ): FlowUseCase<CartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
 
+    private val isDebug = true
+
     companion object {
         private const val PARAMS_KEY = "params"
 
@@ -47,12 +49,15 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: CartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
-//        val param = generateParams(params)
-//        val response =
-//            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-//        emit(response)
-        kotlinx.coroutines.delay(1000)
-        emit(getDummyResponse(params.carts.getOrNull(0)?.productId.orEmpty()))
+        if (isDebug) {
+            kotlinx.coroutines.delay(1000)
+            emit(getDummyResponse(params.carts.getOrNull(0)?.productId.orEmpty()))
+        } else {
+            val param = generateParams(params)
+            val response =
+                repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
+            emit(response)
+        }
     }
 
     private fun getDummyResponse(productId: String): CartTokoFoodResponse {

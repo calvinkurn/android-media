@@ -41,8 +41,10 @@ import com.tokopedia.tokofood.TestMerchantFragment
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
@@ -50,6 +52,7 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragm
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseGlobalErrorBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
@@ -314,12 +317,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         showLoadingDialog()
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
-                        val productIds = (it.data as? CartTokoFoodData)?.carts?.map { product ->
-                            product.productId
-                        }
-                        // TODO: Create delete multiple products method to be safe
-                        productIds?.getOrNull(0)?.let { productId ->
-                            viewModel.deleteProduct(productId)
+                        (it.data as? Pair<*, *>)?.let { pair ->
+                            (pair.first as? String)?.let { previousCartId ->
+                                (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
+                                    viewModel.deleteProduct(product.productId, previousCartId)
+                                }
+                            }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
@@ -327,23 +330,32 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? String)?.let { productId ->
-                                (pair.second as? String)?.let { notes ->
-                                    viewModel.updateNotes(productId, notes)
-                                    view?.let {
-                                        Toaster.build(
-                                            view = it,
-                                            text = "Sip! Catatan berhasil disimpan.",
-                                            duration = Toaster.LENGTH_SHORT,
-                                            type = Toaster.TYPE_NORMAL,
-                                            actionText = "Oke"
-                                        ).show()
+                            (pair.first as? UpdateParam)?.productList?.firstOrNull()?.cartId?.let { cartId ->
+                                (pair.second as? CartTokoFoodData)?.let { cartTokoFoodData ->
+                                    cartTokoFoodData.carts.firstOrNull()?.let { product ->
+                                        if (viewModel.isDebug) {
+                                            (pair.first as? UpdateParam)?.productList?.firstOrNull()?.notes?.let { notes ->
+                                                viewModel.updateNotesDebug(product, cartId, notes)
+                                            }
+                                        } else {
+                                            viewModel.updateNotes(product, cartId)
+                                        }
+                                        view?.let {
+                                            Toaster.build(
+                                                view = it,
+                                                text = "Sip! Catatan berhasil disimpan.",
+                                                duration = Toaster.LENGTH_SHORT,
+                                                type = Toaster.TYPE_NORMAL,
+                                                actionText = "Oke"
+                                            ).show()
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                        // TODO: update cart id
                         viewModel.refreshPartialCartInformation()
                         view?.let {
                             Toaster.build(
@@ -547,14 +559,18 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(element.id)
+        activityViewModel?.deleteProduct(element.id, element.cartId)
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(element.notes,
                 object : TokoFoodPurchaseNoteBottomSheet.Listener {
                     override fun onSaveNotesClicked(notes: String) {
-                        activityViewModel?.updateNotes(element.id, notes)
+                        val updateParam =
+                            TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(
+                                listOf(element.copy(notes = notes))
+                            )
+                        activityViewModel?.updateNotes(updateParam)
                     }
                 }
         )

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
+import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutWidgetPurchaseMiniCartBinding
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -22,26 +23,55 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var viewBinding: LayoutWidgetPurchaseMiniCartBinding? = null
     private var viewModel: MultipleFragmentsViewModel? = null
 
+    private var onButtonClickAction: () -> Unit = {}
+
     // Function to initialize the widget
     fun initialize(sharedViewModel: MultipleFragmentsViewModel, lifecycleScope: LifecycleCoroutineScope) {
         viewModel = sharedViewModel
-        lifecycleScope.launchWhenResumed {
-            viewModel?.miniCartFlow?.collect {
-                renderTotalAmount(it)
+        lifecycleScope.launchWhenStarted {
+            viewModel?.miniCartFlow?.collect { result ->
+                when(result) {
+                    is Result.Success -> {
+                        renderTotalAmount(result.data)
+                    }
+                    is Result.Loading -> {
+                        renderLoading()
+                    }
+                    else -> {
+                        renderError()
+                    }
+                }
             }
         }
         viewModel?.loadCartList()
     }
 
+    fun setOnATCClickListener(action: () -> Unit) {
+        onButtonClickAction = action
+    }
+
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
         viewBinding?.totalAmountMiniCart?.apply {
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartUiModel.totalPrice, false).removeDecimalSuffix())
-            setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
+            isTotalAmountDisabled = false
+            isTotalAmountLoading = false
             setLabelTitle(miniCartUiModel.shopName)
+            setAmount(miniCartUiModel.totalPriceFmt)
+            setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
             amountCtaView.setOnClickListener {
                 viewModel?.updateAndValidateCart()
+                onButtonClickAction()
             }
         }
+    }
+
+    private fun renderLoading() {
+        viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = false
+        viewBinding?.totalAmountMiniCart?.isTotalAmountLoading = true
+    }
+
+    private fun renderError() {
+        viewBinding?.totalAmountMiniCart?.isTotalAmountLoading = false
+        viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = true
     }
 
     override fun onAttachedToWindow() {

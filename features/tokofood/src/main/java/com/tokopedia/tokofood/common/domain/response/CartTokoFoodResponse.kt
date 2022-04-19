@@ -1,7 +1,9 @@
 package com.tokopedia.tokofood.common.domain.response
 
+import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
 
 data class CartTokoFoodResponse(
     @SerializedName("success")
@@ -46,4 +48,9 @@ data class CartTokoFood(
     @SerializedName("metadata")
     @Expose
     val metadata: String = ""
-)
+) {
+    fun getMetadata(): CartMetadataTokoFood {
+        return Gson().fromJson(metadata, CartMetadataTokoFood::class.java)
+    }
+
+}

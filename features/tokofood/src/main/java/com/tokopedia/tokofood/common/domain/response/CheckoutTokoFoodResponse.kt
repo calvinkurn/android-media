@@ -302,7 +302,7 @@ data class CheckoutTokoFoodShoppingCostBreakdownItem(
     @SerializedName("original_amount_fmt")
     @Expose
     val originalAmountFmt: String = "",
-    @SerializedName("amoung")
+    @SerializedName("amount")
     @Expose
     val amount: Double = 0.0,
     @SerializedName("amount_fmt")

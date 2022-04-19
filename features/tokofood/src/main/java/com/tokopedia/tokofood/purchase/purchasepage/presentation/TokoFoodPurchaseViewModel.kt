@@ -8,19 +8,21 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
+import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByProductId
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByUpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getTickerErrorShopLevelUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
@@ -68,11 +70,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>?> =
         MutableSharedFlow()
 
-    private val _updateQuantityStateFlow: MutableStateFlow<CartTokoFoodParam?> = MutableStateFlow(null)
+    private val _updateQuantityStateFlow: MutableStateFlow<UpdateParam?> = MutableStateFlow(null)
     val updateQuantityStateFlow = _updateQuantityStateFlow.asStateFlow()
 
     private val _shouldRefreshCartData = MutableSharedFlow<Boolean>()
     val shouldRefreshCartData = _shouldRefreshCartData.asSharedFlow()
+
+    val isDebug = true
 
     init {
         viewModelScope.launch {
@@ -82,7 +86,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     flow {
                         productList?.let {
                             showPartialLoading()
-                            emit(convertProductListToUpdateParam(it))
+                            emit(TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(it))
                         }
                     }
                 }
@@ -200,10 +204,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun deleteProduct(productId: String) {
+    fun deleteProduct(productId: String, previousCartId: String) {
         refreshPartialCartInformation()
-        // Todo : hit API to remove product, once it's success, perform below code to remove local data
-        val toBeDeletedProduct = getVisitablesValue().getProductByProductId(productId)
+        val toBeDeletedProduct = getVisitablesValue().getProductById(productId, previousCartId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
             val dataList = getVisitablesValue()
@@ -371,16 +374,36 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateNotes(productId: String, notes: String) {
-        val productData = getVisitablesValue().getProductByProductId(productId)
-        productData?.let {
-            val dataList = getVisitablesValue()
-            val newProductData = it.second.copy()
-            newProductData.notes = notes
-            dataList[it.first] = newProductData
+    fun updateNotes(product: CartTokoFood, previousCartId: String) {
+        launchCatchError(block = {
+            val productData = getVisitablesValue().getProductById(product.productId, previousCartId)
+            productData?.let {
+                val dataList = getVisitablesValue()
+                val newProductData = it.second.copy()
+                newProductData.notes = product.getMetadata().notes
+                newProductData.cartId = product.cartId
+                dataList[it.first] = newProductData
+                _visitables.value = dataList
+            }
+        }, onError = {
+            // TODO: Add Error
+        })
+    }
 
-            _visitables.value = dataList
-        }
+    fun updateNotesDebug(product: CartTokoFood, previousCartId: String, notes: String) {
+        launchCatchError(block = {
+            val productData = getVisitablesValue().getProductById(product.productId, previousCartId)
+            productData?.let {
+                val dataList = getVisitablesValue()
+                val newProductData = it.second.copy()
+                newProductData.notes = notes
+                newProductData.cartId = product.cartId
+                dataList[it.first] = newProductData
+                _visitables.value = dataList
+            }
+        }, onError = {
+            // TODO: Add Error
+        })
     }
 
     fun triggerEditQuantity() {

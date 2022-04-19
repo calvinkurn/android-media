@@ -4,22 +4,33 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
-import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
+import com.tokopedia.tokofood.common.presentation.mapper.UpdateProductMapper
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UpdateCartTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
-): FlowUseCase<CartTokoFoodParam, CartTokoFoodResponse>(dispatchers.io) {
+): FlowUseCase<UpdateParam, CartTokoFoodResponse>(dispatchers.io) {
+
+    private val isDebug = true
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(params: CartTokoFoodParam): Map<String, Any> {
-            return mapOf(PARAMS_KEY to params)
+        private fun generateParams(param: UpdateParam,
+                                   additionalAttr: String): Map<String, Any> {
+            val cartParam = UpdateProductMapper.getProductParamById(
+                param.productList,
+                additionalAttr,
+                param.shopId
+            )
+            return mapOf(PARAMS_KEY to cartParam)
         }
     }
 
@@ -46,13 +57,16 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: CartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
-//        val param = generateParams(params)
-//        val response =
-//            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-//        emit(response)
-        kotlinx.coroutines.delay(1000)
-        emit(getDummyResponse())
+    override suspend fun execute(params: UpdateParam): Flow<CartTokoFoodResponse> = flow {
+        if (isDebug) {
+            kotlinx.coroutines.delay(1000)
+            emit(getDummyResponse())
+        } else {
+            val param = generateParams(params, chosenAddressRequestHelper.getChosenAddress().generateString())
+            val response =
+                repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
+            emit(response)
+        }
     }
 
     private fun getDummyResponse(): CartTokoFoodResponse {

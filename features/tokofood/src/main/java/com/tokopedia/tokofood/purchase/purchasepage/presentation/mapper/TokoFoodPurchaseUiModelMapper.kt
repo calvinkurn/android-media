@@ -15,6 +15,9 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingDis
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTickerInfo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
@@ -96,6 +99,20 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
+    fun mapUiModelToUpdateParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): UpdateParam {
+        return UpdateParam(
+            productList = uiModels.map { uiModel ->
+                UpdateProductParam(
+                    productId = uiModel.id,
+                    cartId = uiModel.cartId,
+                    notes = uiModel.notes,
+                    quantity = uiModel.quantity,
+                    variants = uiModel.variants
+                )
+            }
+        )
+    }
+
     private fun mapGeneralTickerUiModel(ticker: CheckoutTokoFoodTickerInfo): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
             // TODO: It is always no error
@@ -174,31 +191,35 @@ object TokoFoodPurchaseUiModelMapper {
     private fun mapProductUiModel(product: CheckoutTokoFoodProduct,
                                   isEnabled: Boolean,
                                   mIsAvailable: Boolean): TokoFoodPurchaseProductTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseProductTokoFoodPurchaseUiModel().apply {
-            isAvailable = mIsAvailable
-            id = product.productId
-            name = product.productName
-            imageUrl = product.imageUrl
+        val addOnsAndParamPair = getAddOnsAndParamPairList(product.variants)
+        return TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
+            isAvailable = mIsAvailable,
+            id = product.productId,
+            name = product.productName,
+            imageUrl = product.imageUrl,
             // TODO: Change price to fmt
-            price = product.price.toLong()
-            // TODO: Add quantity in pojo
-            quantity = 1
+            price = product.price.toLong(),
+            // TODO: Add quantity in pojo,
+            quantity = 1,
             // TODO: Check for min/max quantity
-            minQuantity = 1
-            maxQuantity = 10
-            notes = product.notes
-            addOns = getAddOnsList(product.variants)
+            minQuantity = 1,
+            maxQuantity = 10,
+            notes = product.notes,
+            addOns = addOnsAndParamPair.map { it.first },
             // TODO: Change original price to fmt
-            originalPrice = product.originalPrice.toLong()
-            discountPercentage = product.discountPercentage
+            originalPrice = product.originalPrice.toLong(),
+            discountPercentage = product.discountPercentage,
+            cartId = product.cartId,
+            variants = addOnsAndParamPair.map { it.second }
+        ).apply {
             this.isEnabled = isEnabled
         }
     }
 
-    private fun getAddOnsList(variants: List<CheckoutTokoFoodProductVariant>): List<String> {
+    private fun getAddOnsAndParamPairList(variants: List<CheckoutTokoFoodProductVariant>): List<Pair<String, UpdateProductVariantParam>> {
         return variants.flatMap { variant ->
             variant.options.map { option ->
-                "${variant.name}: ${option.name}"
+                "${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId)
             }
         }
     }

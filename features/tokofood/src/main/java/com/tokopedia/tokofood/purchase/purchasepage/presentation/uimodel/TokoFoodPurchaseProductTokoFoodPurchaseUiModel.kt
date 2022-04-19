@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
@@ -16,7 +17,9 @@ data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         var notes: String = "",
         var quantity: Int = 0,
         var minQuantity: Int = 0,
-        var maxQuantity: Int = 0
+        var maxQuantity: Int = 0,
+        var cartId: String = "",
+        val variants: List<UpdateProductVariantParam> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
