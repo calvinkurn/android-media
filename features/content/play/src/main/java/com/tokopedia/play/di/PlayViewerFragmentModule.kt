@@ -66,11 +66,6 @@ abstract class PlayViewerFragmentModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(PlayInteractiveQuizFragment::class)
-    abstract fun getQuizDialogFragment(fragment: PlayInteractiveQuizFragment): Fragment
-
-    @Binds
-    @IntoMap
     @FragmentKey(InteractiveDialogFragment::class)
     abstract fun getGiveawayWidgetDialogFragment(fragment: InteractiveDialogFragment): Fragment
 
