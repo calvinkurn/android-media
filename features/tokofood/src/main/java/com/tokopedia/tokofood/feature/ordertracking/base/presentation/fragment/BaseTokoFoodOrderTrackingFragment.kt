@@ -93,11 +93,7 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onDestroy() {
-        removeObservers(
-            viewModel.orderDetailResult,
-            viewModel.orderDetailResult,
-            viewModel.orderCompletedLiveTracking
-        )
+        removeObservers(viewModel.orderDetailResult, viewModel.orderCompletedLiveTracking)
         toolbarHandler?.activity?.clear()
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
