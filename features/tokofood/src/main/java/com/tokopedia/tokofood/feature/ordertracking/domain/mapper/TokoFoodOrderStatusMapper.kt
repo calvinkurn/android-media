@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.domain.mapper
 
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import javax.inject.Inject
 
 class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon() {
@@ -19,6 +20,21 @@ class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon
         invoiceOrderNumberUiModel = mapToInvoiceOrderNumberUiModel(
             tokofoodOrderDetail.invoice,
             tokofoodOrderDetail.payment.paymentDate
-        )
+        ),
+        toolbarLiveTrackingUiModel = mapToToolbarLiveTrackingUiModel(tokofoodOrderDetail)
+    )
+
+    private fun mapToToolbarLiveTrackingUiModel(
+        tokofoodOrderDetail: TokoFoodOrderStatusResponse.TokofoodOrderDetail
+    ) = ToolbarLiveTrackingUiModel(
+        merchantName = "",
+        orderStatusTitle = tokofoodOrderDetail.orderStatus.title,
+        composeEstimation = if (tokofoodOrderDetail.eta != null) {
+            StringBuilder().apply {
+                append(tokofoodOrderDetail.eta.label)
+                append(" ")
+                append(tokofoodOrderDetail.eta.time)
+            }.toString()
+        } else ""
     )
 }

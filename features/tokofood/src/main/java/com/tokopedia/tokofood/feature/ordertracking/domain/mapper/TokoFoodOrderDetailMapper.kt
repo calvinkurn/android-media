@@ -19,11 +19,8 @@ class TokoFoodOrderDetailMapper @Inject constructor(
 
         val orderStatus = orderDetailResponse.orderStatus.status
 
-        val isOrderCompleted =
-            orderStatus in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED)
-
-        val orderDetailList = when {
-            isOrderCompleted -> {
+        val orderDetailList = when (orderStatus) {
+            in listOf(OrderStatusType.CANCELLED, OrderStatusType.COMPLETED) -> {
                 orderCompletedMapper.mapToOrderDetailList(orderDetailResponse)
             }
             else -> {
@@ -37,7 +34,6 @@ class TokoFoodOrderDetailMapper @Inject constructor(
             orderDetailList,
             foodItems,
             orderStatus,
-            isOrderCompleted,
             mapToActionButtons(orderDetailResponse),
             mapToToolbarLiveTrackingUiModel(orderDetailResponse)
         )

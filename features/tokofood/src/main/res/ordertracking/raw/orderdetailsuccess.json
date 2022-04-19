@@ -96,20 +96,7 @@
       "name": "Pria Kusumawardana",
       "photoUrl": "https://images.tokopedia.net/img/product-1/2020/2/10/5511683/5511683_98da12b1-2985-459d-946e-275c2e592865_1000_1000?ect=4g",
       "licensePlateNumber": "B 1234 ABC",
-      "karma": [
-        {
-          "icon": "enum_vaksin",
-          "message": "Drivermu sudah divaksin!"
-        },
-        {
-          "icon": "enum_termometer",
-          "message": "Suhu tubuh normal"
-        },
-        {
-          "icon": "enum_telepon",
-          "message": "Telp. untuk diantar tanpa kontak fisik"
-        }
-      ]
+      "karma": null
     },
     "invoice": {
       "invoiceNumber": "INV/20181011/XVI/X/55069657",

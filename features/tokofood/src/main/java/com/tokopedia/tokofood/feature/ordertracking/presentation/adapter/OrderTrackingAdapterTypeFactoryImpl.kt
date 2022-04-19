@@ -52,7 +52,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.Thin
 class OrderTrackingAdapterTypeFactoryImpl(
     private val recyclerViewPollerListener: RecyclerViewPollerListener,
     private val orderTrackingListener: OrderTrackingListener
-): BaseAdapterTypeFactory(), OrderTrackingTypeFactory {
+) : BaseAdapterTypeFactory(), OrderTrackingTypeFactory {
 
     override fun type(viewModel: LoadingModel): Int {
         return OrderTrackingLoadingViewHolder.LAYOUT
@@ -143,16 +143,22 @@ class OrderTrackingAdapterTypeFactoryImpl(
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             OrderTrackingLoadingViewHolder.LAYOUT -> OrderTrackingLoadingViewHolder(parent)
             OrderTrackingErrorViewHolder.LAYOUT -> OrderTrackingErrorViewHolder(parent)
-            OrderTrackingTickerViewHolder.LAYOUT -> OrderTrackingTickerViewHolder(parent, orderTrackingListener)
+            OrderTrackingTickerViewHolder.LAYOUT -> OrderTrackingTickerViewHolder(
+                parent,
+                orderTrackingListener
+            )
             RestaurantUserAddressViewHolder.LAYOUT -> RestaurantUserAddressViewHolder(parent)
             ShippingDetailHeaderViewHolder.LAYOUT -> ShippingDetailHeaderViewHolder(parent)
             OrderDetailHeaderViewHolder.LAYOUT -> OrderDetailHeaderViewHolder(parent)
             CompletedStatusViewHolder.LAYOUT -> CompletedStatusViewHolder(parent)
             ShippingDetailViewHolder.LAYOUT -> ShippingDetailViewHolder(parent)
-            OrderDetailToggleCtaViewHolder.LAYOUT -> OrderDetailToggleCtaViewHolder(parent, orderTrackingListener)
+            OrderDetailToggleCtaViewHolder.LAYOUT -> OrderDetailToggleCtaViewHolder(
+                parent,
+                orderTrackingListener
+            )
             DriverSectionViewHolder.LAYOUT -> DriverSectionViewHolder(parent)
             OrderTrackingStatusInfoViewHolder.LAYOUT -> OrderTrackingStatusInfoViewHolder(parent)
             OrderTrackingEstimationViewHolder.LAYOUT -> OrderTrackingEstimationViewHolder(parent)
@@ -162,7 +168,10 @@ class OrderTrackingAdapterTypeFactoryImpl(
             PaymentMethodViewHolder.LAYOUT -> PaymentMethodViewHolder(parent)
             PaymentAmountViewHolder.LAYOUT -> PaymentAmountViewHolder(parent)
             PaymentHeaderViewHolder.LAYOUT -> PaymentHeaderViewHolder(parent)
-            TemporaryFinishOrderViewHolder.LAYOUT -> TemporaryFinishOrderViewHolder(parent)
+            TemporaryFinishOrderViewHolder.LAYOUT -> TemporaryFinishOrderViewHolder(
+                parent,
+                orderTrackingListener
+            )
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             ThinDividerMarginViewHolder.LAYOUT -> ThinDividerMarginViewHolder(parent)

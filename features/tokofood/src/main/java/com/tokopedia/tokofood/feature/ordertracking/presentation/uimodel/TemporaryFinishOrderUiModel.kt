@@ -4,7 +4,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 
 class TemporaryFinishOrderUiModel(
-    val temporaryFinishUrl: String
+    val orderDetailResultUiModel: OrderDetailResultUiModel
 ): BaseOrderTrackingTypeFactory {
 
     override fun type(typeFactory: OrderTrackingAdapterTypeFactoryImpl): Int {

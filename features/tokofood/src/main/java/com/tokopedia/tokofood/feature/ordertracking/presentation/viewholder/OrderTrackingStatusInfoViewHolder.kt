@@ -39,6 +39,11 @@ class OrderTrackingStatusInfoViewHolder(
         }
     }
 
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        clearStatusLottie()
+    }
+
     private fun updateStatusLottieUrl(
         oldItem: OrderTrackingStatusInfoUiModel,
         newItem: OrderTrackingStatusInfoUiModel
@@ -46,6 +51,10 @@ class OrderTrackingStatusInfoViewHolder(
         if (oldItem.lottieUrl != newItem.lottieUrl) {
             binding.orderStatusInfoWidget.updateLottie(newItem.statusKey, newItem.lottieUrl)
         }
+    }
+
+    private fun clearStatusLottie() {
+        binding.orderStatusInfoWidget.clearLottie()
     }
 
     private fun updateStatusTitle(
@@ -62,7 +71,7 @@ class OrderTrackingStatusInfoViewHolder(
         newItem: OrderTrackingStatusInfoUiModel
     ) {
         if (oldItem.orderStatusSubTitle != newItem.orderStatusSubTitle) {
-            binding.orderStatusInfoWidget.setOrderTrackingStatusTitle(newItem.orderStatusSubTitle)
+            binding.orderStatusInfoWidget.setOrderTrackingStatusSubTitle(newItem.orderStatusSubTitle)
         }
     }
 

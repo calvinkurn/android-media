@@ -5,5 +5,6 @@ data class OrderStatusLiveTrackingUiModel(
     val orderTrackingStatusInfoUiModel: OrderTrackingStatusInfoUiModel,
     val orderStatusKey: String,
     val estimationUiModel: OrderTrackingEstimationUiModel? = null,
-    val invoiceOrderNumberUiModel: InvoiceOrderNumberUiModel? = null
+    val invoiceOrderNumberUiModel: InvoiceOrderNumberUiModel? = null,
+    val toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel
 )

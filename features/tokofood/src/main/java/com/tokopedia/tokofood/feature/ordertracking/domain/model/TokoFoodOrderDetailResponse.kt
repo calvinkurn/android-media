@@ -92,7 +92,7 @@ data class TokoFoodOrderDetailResponse(
         data class DriverDetails(
             @SerializedName("karma")
             @Expose
-            val karma: List<Karma> = listOf(),
+            val karma: List<Karma>? = listOf(),
             @SerializedName("licensePlateNumber")
             @Expose
             val licensePlateNumber: String = "",
@@ -170,13 +170,13 @@ data class TokoFoodOrderDetailResponse(
         data class OrderStatus(
             @SerializedName("iconName")
             @Expose
-            val iconName: String = "",
+            val iconName: String? = "",
             @SerializedName("status")
             @Expose
             val status: String = "",
             @SerializedName("subtitle")
             @Expose
-            val subtitle: String = "",
+            val subtitle: String? = "",
             @SerializedName("title")
             @Expose
             val title: String = ""

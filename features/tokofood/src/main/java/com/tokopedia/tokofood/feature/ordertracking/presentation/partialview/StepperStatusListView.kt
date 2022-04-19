@@ -56,7 +56,7 @@ class StepperStatusListView : LinearLayout {
                 ) {
                     newStepperStatusList.getOrNull(index)?.let {
                         val icOrderTrackingStatus: IconUnify? =
-                            (getChildAt(index) as? ViewGroup)?.getChildAt(0) as? IconUnify
+                            (getChildAt(index) as? ViewGroup)?.getChildAt(Int.ZERO) as? IconUnify
                         updateStepperIcon(icOrderTrackingStatus, it)
                     }
                 }
@@ -65,7 +65,7 @@ class StepperStatusListView : LinearLayout {
                 ) {
                     newStepperStatusList.getOrNull(index)?.let {
                         val viewOrderTrackingStatusLine: ImageUnify? =
-                            (getChildAt(index) as? ViewGroup)?.getChildAt(1) as? ImageUnify
+                            (getChildAt(index) as? ViewGroup)?.getChildAt(Int.ONE) as? ImageUnify
                         updateStepperLine(viewOrderTrackingStatusLine, it)
                     }
                 }

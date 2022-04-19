@@ -77,7 +77,7 @@ abstract class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
         if (driverDetails != null) {
             add(
                 DriverSectionUiModel(
-                    driverInformationList = mapToDriverInformationList(driverDetails.karma),
+                    driverInformationList = mapToDriverInformationList(driverDetails.karma.orEmpty()),
                     name = driverDetails.name,
                     photoUrl = driverDetails.photoUrl,
                     phone = phoneNumber,

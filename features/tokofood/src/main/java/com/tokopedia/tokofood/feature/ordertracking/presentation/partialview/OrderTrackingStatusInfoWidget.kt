@@ -53,29 +53,40 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
                 setComposition(result)
                 show()
                 addAnimatorListener(lottieStatusInfoAnimationListener)
-                playAnimation()
                 repeatCount = LottieDrawable.INFINITE
+                post {
+                    playAnimation()
+                }
             }
         }
     }
 
     fun updateLottie(statusKey: String, animationUrl: String) {
-        val cacheKey = when (statusKey) {
-            SEARCHING_DRIVER -> CONFIRMATION_STATUS_INFO_KEY
-            ON_PROCESS -> ON_PROCESS_STATUS_INFO_KEY
-            DELIVERY -> DELIVERY_STATUS_INFO_KEY
-            else -> ""
+        if (animationUrl.isNotEmpty()) {
+            val cacheKey = when (statusKey) {
+                SEARCHING_DRIVER -> CONFIRMATION_STATUS_INFO_KEY
+                ON_PROCESS -> ON_PROCESS_STATUS_INFO_KEY
+                DELIVERY -> DELIVERY_STATUS_INFO_KEY
+                else -> ""
+            }
+            if (cacheKey.isBlank()) {
+                binding?.lottieOrderTrackingStatus?.run {
+                    setAnimationFromUrl(animationUrl)
+                    resumeAnimation()
+                }
+            } else {
+                binding?.lottieOrderTrackingStatus?.run {
+                    setAnimationFromUrl(animationUrl, cacheKey)
+                    resumeAnimation()
+                }
+            }
         }
-        if (cacheKey.isBlank()) {
-            binding?.lottieOrderTrackingStatus?.run {
-                setAnimationFromUrl(animationUrl)
-                resumeAnimation()
-            }
-        } else {
-            binding?.lottieOrderTrackingStatus?.run {
-                setAnimationFromUrl(animationUrl, cacheKey)
-                resumeAnimation()
-            }
+    }
+
+    fun clearLottie() {
+        binding?.lottieOrderTrackingStatus?.run {
+            cancelAnimation()
+            (drawable as? LottieDrawable)?.clearComposition()
         }
     }
 

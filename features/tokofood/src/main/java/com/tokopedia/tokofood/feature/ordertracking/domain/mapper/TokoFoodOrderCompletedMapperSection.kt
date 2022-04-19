@@ -19,7 +19,7 @@ class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetai
             addInvoiceOrderNumberUiModel(tokoFoodOrderDetail.invoice, tokoFoodOrderDetail.payment.paymentDate)
             addThickDividerUiModel()
             addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails, "081234567890")
-            addThinDividerMarginUiModel()
+            addThinDividerUiModel(MARGIN_TOP_TWENTY)
             addShippingHeaderUiModel()
             addShippingDetailUiModel(tokoFoodOrderDetail.merchant, tokoFoodOrderDetail.destination)
             addThickDividerUiModel()

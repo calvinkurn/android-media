@@ -114,7 +114,7 @@ abstract class OrderDetailSectionCommon {
         stepperStatusList = mapToStepperStatusList(orderStatus.status),
         statusKey = orderStatus.status,
         orderStatusTitle = orderStatus.title,
-        orderStatusSubTitle = orderStatus.subtitle,
+        orderStatusSubTitle = orderStatus.subtitle.orEmpty(),
         lottieUrl = getOrderStatusLottieUrl(orderStatus.status)
     )
 
