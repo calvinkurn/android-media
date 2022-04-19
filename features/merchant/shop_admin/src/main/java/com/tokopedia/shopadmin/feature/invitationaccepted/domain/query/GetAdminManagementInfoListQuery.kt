@@ -5,36 +5,38 @@ import com.tokopedia.usecase.RequestParams
 
 object GetAdminManagementInfoListQuery: GqlQueryInterface {
 
-    private const val OPERATION_NAME = "getAdminInfo"
+    private const val OPERATION_NAME = "GetAdminManagementInfoList"
 
-    private const val SHOP_ID_KEY = "shop_id"
-    private const val SOURCE_KEY = "source"
-    private const val SOURCE = "admin-info-permission-android"
+    private const val SHOP_ID_KEY = "shopId"
 
-    private val GQL_QUERY = """
-        query $OPERATION_NAME(${'$'}source: String!, ${'$'}shop_id: Int!) {
-              $OPERATION_NAME(source: ${'$'}source, shop_id: ${'$'}shop_id) {
-                    admin_data {
-                      permission_list {  
-                          permission_name
-                          icon_url
-                      }
-                   }
-                }
+    private val ADMIN_MANAGEMENT_INFO_LIST_QUERY = """
+        query $OPERATION_NAME(${'$'}shopId: String!) {
+          getAdminManagementInfoList(shop_id: ${'$'}shopId, source: "admin-management-ui", lang: "id", device: "android") {
+            allPermissionList {
+              permissionId
+              permissionName
+              description
+              iconURL
+              permissionRecursive {
+                permissionId
+                permissionName
+                description
+                iconURL
+              }
             }
+          }
+        }
     """.trimIndent()
 
-    fun createRequestParams(shopId: Long): Map<String, Any> {
+    fun createRequestParams(shopId: String): Map<String, Any> {
         return RequestParams.create().apply {
-            putLong(SHOP_ID_KEY, shopId)
-            putString(SOURCE_KEY, SOURCE)
+            putString(SHOP_ID_KEY, shopId)
         }.parameters
     }
 
-
     override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
 
-    override fun getQuery(): String = GQL_QUERY
+    override fun getQuery(): String = ADMIN_MANAGEMENT_INFO_LIST_QUERY
 
     override fun getTopOperationName(): String = OPERATION_NAME
 }

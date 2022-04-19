@@ -15,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -39,7 +37,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -63,7 +61,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         ViewModelProvider(
             this,
             viewModelFactory
-        ).get(AdminInvitationConfirmationViewModel::class.java)
+        ).get(InvitationConfirmationViewModel::class.java)
     }
 
     private val navigator by lazy {
@@ -216,7 +214,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun loadAdminInfo() {
-        viewModel.getAdminInfo()
+        viewModel.fetchAdminInfo()
     }
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
@@ -231,7 +229,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         when (adminStatus) {
             AdminStatus.ACTIVE -> navigator.goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
-                viewModel.getShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
+                viewModel.fetchShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
             }
             AdminStatus.REJECT -> inflateInvitationRejected()
             AdminStatus.EXPIRED -> inflateInvitationExpired()

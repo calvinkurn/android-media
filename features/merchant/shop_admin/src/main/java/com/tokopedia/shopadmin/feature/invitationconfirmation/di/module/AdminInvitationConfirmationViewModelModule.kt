@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.scope.AdminInvitationConfirmationScope
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,6 +19,6 @@ abstract class AdminInvitationConfirmationViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(AdminInvitationConfirmationViewModel::class)
-    abstract fun adminConfirmationInvitationViewModel(adminInvitationConfirmationViewModel: AdminInvitationConfirmationViewModel): ViewModel
+    @ViewModelKey(InvitationConfirmationViewModel::class)
+    abstract fun adminConfirmationInvitationViewModel(invitationConfirmationViewModel: InvitationConfirmationViewModel): ViewModel
 }

@@ -22,17 +22,14 @@ import dagger.Lazy
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AdminInvitationConfirmationViewModel @Inject constructor(
+class InvitationConfirmationViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getAdminTypeUseCaseCase: Lazy<GetAdminTypeUseCaseCase>,
     private val getShopAdminInfoUseCase: Lazy<GetShopAdminInfoUseCase>,
@@ -62,7 +59,7 @@ class AdminInvitationConfirmationViewModel @Inject constructor(
         fetchValidateAdminEmail()
     }
 
-    fun getAdminInfo() {
+    fun fetchAdminInfo() {
         launchCatchError(block = {
             val adminInfoData = withContext(coroutineDispatchers.io) {
                 getAdminTypeUseCaseCase.get().execute()
@@ -73,7 +70,7 @@ class AdminInvitationConfirmationViewModel @Inject constructor(
         })
     }
 
-    fun getShopAdminInfo(shopId: Long) {
+    fun fetchShopAdminInfo(shopId: Long) {
         launchCatchError(block = {
             val shopAdminInfoData = withContext(coroutineDispatchers.io) {
                 getShopAdminInfoUseCase.get().execute(shopId)

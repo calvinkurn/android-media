@@ -31,8 +31,6 @@
     <string name="btn_go_to_shop">Masuk Toko</string>
     
     <string name="title_tnc_header">Syarat dan Ketentuan Admin</string>
-    <string name="title_tnc_summary">Ringkasan Syarat dan Ketentuan</string>
-
 
     <!-- Invitation Confirmation Reject-->
     <string name="title_admin_confirmation_reject">Yakin tolak akses admin?</string>
@@ -44,5 +42,7 @@
 
     <!-- Invitation Confirmation -->
     <string name="error_message_email_has_been_registered">E-mail ini sudah terdaftar, masukkan e-mail lain.</string>
+    
+    <string name="error_message_article_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
 </resources>

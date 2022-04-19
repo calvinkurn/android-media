@@ -16,7 +16,6 @@ import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
@@ -31,7 +30,7 @@ import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvi
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.bottomsheet.TncAdminBottomSheet
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.AdminPermissionUiModel
-import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.viewmodel.AdminInvitationAcceptedViewModel
+import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.viewmodel.InvitationAcceptedViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,7 +47,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(AdminInvitationAcceptedViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(InvitationAcceptedViewModel::class.java)
     }
 
     private var binding by autoClearedNullable<FragmentAdminInvitationAcceptedBinding>()
@@ -109,7 +108,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     private fun loadAdminPermission() {
         showLoading()
-        viewModel.getAdminPermission(userSession.shopId.toLongOrZero())
+        viewModel.fetchAdminPermission(userSession.shopId)
     }
 
     private fun setupViews(item: List<AdminPermissionUiModel>) {
