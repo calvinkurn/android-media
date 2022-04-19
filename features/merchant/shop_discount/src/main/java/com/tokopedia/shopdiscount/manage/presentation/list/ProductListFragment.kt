@@ -624,11 +624,11 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val title = if (discountStatusId == DiscountStatus.PAUSED) {
             getString(R.string.sd_no_paused_discount_title)
         } else {
-            getString(R.string.sd_no_paused_discount_description)
+            getString(R.string.sd_no_discount_title)
         }
 
         val description = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_discount_title)
+            getString(R.string.sd_no_paused_discount_description)
         } else {
             getString(R.string.sd_no_discount_description)
         }
