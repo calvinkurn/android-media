@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
@@ -27,6 +28,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
@@ -454,4 +456,12 @@ fun <T: View?> View.findViewByIdInViewStub(viewStubId: Int, viewId: Int): T {
         viewStub.inflate()
     }
     return findViewById<T>(viewId)
+}
+
+fun <T: View?> View.showViewInViewStubWithConditional(viewStubId: Int, viewId: Int, isShow: Boolean) {
+    if (isShow) {
+        findViewByIdInViewStub<T>(viewStubId, viewId)?.show()
+    } else {
+        findViewById<T>(viewId)?.gone()
+    }
 }

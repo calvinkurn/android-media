@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.productcard.utils.findViewByIdInViewStub
+import com.tokopedia.productcard.utils.showViewInViewStubWithConditional
 import rx.Subscription
 
 internal class ProductCardCartExtension(private val productCardView: View) {
@@ -29,7 +30,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         return productCardView.findViewById(id)
     }
 
-    val buttonAddToCart by lazy { findView<UnifyButton?>(R.id.buttonAddToCart) }
+    val buttonAddToCart by lazy { productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart) }
     val buttonDeleteCart by lazy { findView<IconUnify?>(R.id.buttonDeleteCart) }
     val quantityEditorNonVariant by lazy {
         findView<QuantityEditorUnify?>(R.id.quantityEditorNonVariant)
@@ -52,12 +53,10 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
         when {
             productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
-                val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
             }
 
             productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
-                val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCart()
             }
 
@@ -83,6 +82,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
         buttonDeleteCart?.show()
+        val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
         buttonAddToCart?.gone()
 
         quantityEditorDebounce?.onQuantityChanged(newValue)
@@ -128,7 +128,6 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun deleteCartClick(productCardModel: ProductCardModel) {
-        val buttonAddToCart = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
         buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
         buttonDeleteCart?.gone()
@@ -243,8 +242,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
-        val buttonAddVariant = productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddVariantStub, R.id.buttonAddVariant)
-        buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
+        productCardView.showViewInViewStubWithConditional<UnifyButton?>(R.id.buttonAddVariantStub, R.id.buttonAddVariant, productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
             productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }

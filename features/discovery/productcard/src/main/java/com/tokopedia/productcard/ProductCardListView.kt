@@ -84,19 +84,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         findViewById(R.id.imageProduct)
     }
     private val buttonAddVariant: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonAddVariant)
+        findViewByIdInViewStub(R.id.buttonAddVariantStub, R.id.buttonAddVariant)
     }
     private val buttonNotify: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonNotify)
+        findViewByIdInViewStub(R.id.buttonNotifyStub, R.id.buttonNotify)
     }
     private val buttonThreeDotsWishlist: FrameLayout? by lazy(NONE) {
         findViewById(R.id.buttonThreeDotsWishlist)
     }
     private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonAddToCartWishlist)
+        findViewByIdInViewStub(R.id.buttonAddToCartWishlistStub, R.id.buttonAddToCartWishlist)
     }
     private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonSeeSimilarProductWishlist)
+        findViewByIdInViewStub(R.id.buttonSeeSimilarProductWishlistStub, R.id.buttonSeeSimilarProductWishlist)
     }
     private val imageShopBadge: ImageView? by lazy(NONE) {
         findViewById(R.id.imageShopBadge)
@@ -105,10 +105,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         findViewById(R.id.imageFreeOngkirPromo)
     }
     private val buttonAddToCart: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonAddToCart)
+        findViewByIdInViewStub(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
     }
     private val buttonDeleteProduct: UnifyButton? by lazy(NONE) {
-        findViewById(R.id.buttonDeleteProduct)
+        findViewByIdInViewStub(R.id.buttonDeleteProductStub, R.id.buttonDeleteProduct)
     }
     private val buttonRemoveFromWishlist: FrameLayout? by lazy(NONE) {
         findViewById(R.id.buttonRemoveFromWishlist)
@@ -288,7 +288,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
      * Special cases for specific pages
      * */
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
-        renderButtonAddToCart(isVisible)
+        buttonAddToCart?.showWithCondition(isVisible)
         buttonRemoveFromWishlist?.showWithCondition(isVisible)
         progressBarStock?.showWithCondition(!isVisible)
         textViewStockLabel?.showWithCondition(!isVisible)
@@ -312,10 +312,5 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart.isEnabled = false
         buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
-    }
-
-    private fun renderButtonAddToCart(isVisible: Boolean) {
-        val buttonAddToCart = findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
-        buttonAddToCart?.showWithCondition(isVisible)
     }
 }
