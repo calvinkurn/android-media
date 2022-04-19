@@ -70,7 +70,7 @@ interface ICartListView : CustomerView {
 
     fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
-    fun stopCartPerformanceTrace()
+    fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean)
 
     fun stopAllCartPerformanceTrace()
 

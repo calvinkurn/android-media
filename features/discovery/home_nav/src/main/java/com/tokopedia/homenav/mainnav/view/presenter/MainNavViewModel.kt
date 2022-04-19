@@ -24,6 +24,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLI
 import com.tokopedia.homenav.common.util.Event
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
@@ -56,7 +57,8 @@ class MainNavViewModel @Inject constructor(
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
-        private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
+        private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>,
+        private val getAffiliateUserUseCase: Lazy<GetAffiliateUserUseCase>
 ): BaseViewModel(baseDispatcher.get().io) {
 
     companion object {
@@ -289,7 +291,7 @@ class MainNavViewModel @Inject constructor(
         })
     }
 
-    fun getProfileDataCached() {
+    private fun getProfileDataCached() {
         try {
             mainNavProfileCache?.let {
                 val accountHeaderModel = AccountHeaderDataModel(
@@ -304,6 +306,9 @@ class MainNavViewModel @Inject constructor(
                     state = NAV_PROFILE_STATE_SUCCESS,
                     profileSellerDataModel = ProfileSellerDataModel(
                         isGetShopLoading = true
+                    ),
+                    profileAffiliateDataModel = ProfileAffiliateDataModel(
+                        isGetAffiliateLoading = true
                     )
                 )
                 updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
@@ -313,7 +318,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateProfileData() {
+    private suspend fun updateProfileData() {
         try {
             val accountHeaderModel = async { getProfileDataUseCase.get().executeOnBackground() }
             val adminData = async { getAdminData() }
@@ -539,6 +544,53 @@ class MainNavViewModel @Inject constructor(
             }){
                 updateWidget(accountModel.copy(
                     profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopError = true, isGetShopLoading = false)
+                ), INDEX_MODEL_ACCOUNT)
+            }
+        }
+    }
+
+    fun refreshUserAffiliateData() {
+        val newAccountData = _mainNavListVisitable.find {
+            it is AccountHeaderDataModel
+        } as? AccountHeaderDataModel
+        newAccountData?.let { accountModel ->
+            //set shimmering before getting the data
+            updateWidget(accountModel.copy(
+                profileAffiliateDataModel = accountModel.profileAffiliateDataModel.copy(isGetAffiliateLoading = true, isGetAffiliateError = true)
+            ), INDEX_MODEL_ACCOUNT)
+
+            launchCatchError(coroutineContext, block = {
+                val call = async {
+                    withContext(baseDispatcher.get().io) {
+                        getAffiliateUserUseCase.get().executeOnBackground()
+                    }
+                }
+                val response = call.await()
+                val result = (response.takeIf { it is Success } as? Success<AffiliateUserDetailData>)?.data
+                result?.let {
+                    accountModel.run {
+                        setAffiliate(
+                            isRegistered = it.affiliateUserDetail.isRegistered,
+                            affiliateName = it.affiliateUserDetail.title,
+                            affiliateAppLink = it.affiliateUserDetail.redirection.android,
+                            isLoading = false
+                        )
+                    }
+                    accountModel.profileAffiliateDataModel.isGetAffiliateError = false
+                    updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
+                    return@launchCatchError
+                }
+
+                val fail = (response.takeIf { it is Fail } )
+                fail?.let {
+                    updateWidget(accountModel.copy(
+                        profileAffiliateDataModel = accountModel.profileAffiliateDataModel.copy(isGetAffiliateError = true, isGetAffiliateLoading = false)
+                    ), INDEX_MODEL_ACCOUNT)
+                    return@launchCatchError
+                }
+            }){
+                updateWidget(accountModel.copy(
+                    profileAffiliateDataModel = accountModel.profileAffiliateDataModel.copy(isGetAffiliateError = true, isGetAffiliateLoading = false)
                 ), INDEX_MODEL_ACCOUNT)
             }
         }

@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.model.homeresponse
 
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.tokopoints.notification.model.popupnotif.Tokopoints
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
 import com.tokopedia.tokopoints.view.model.section.SectionContent
@@ -16,7 +17,8 @@ data class TokopointSuccess(
 data class TopSectionResponse(
     val tokopediaRewardTopSection: TokopediaRewardTopSection,
     val userSavingResponse: TokopointsUserSaving?,
-    val rewardTickerResponse: RewardTickerListResponse?
+    val rewardTickerResponse: RewardTickerListResponse?,
+    var popupNotification: Tokopoints?
 )
 
 data class RewardsRecommendation(

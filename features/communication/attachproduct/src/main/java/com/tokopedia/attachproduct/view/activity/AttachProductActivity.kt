@@ -27,7 +27,7 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
     private val hiddenProducts: ArrayList<String> = arrayListOf()
 
     companion object {
-        const val MAX_CHECKED_DEFAULT = 5
+        const val MAX_CHECKED_DEFAULT = 3
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
         const val SOURCE_TALK = "talk"
     }

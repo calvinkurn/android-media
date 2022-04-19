@@ -216,7 +216,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
             it.renderLoadGetCartDataFinish()
             it.renderErrorInitialGetCartListData(throwable)
-            it.stopCartPerformanceTrace()
+            it.stopCartPerformanceTrace(false)
             CartLogger.logOnErrorLoadCartPage(throwable)
             CartIdlingResource.decrement()
         }
@@ -237,7 +237,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
-            it.stopCartPerformanceTrace()
+            it.stopCartPerformanceTrace(true)
             CartIdlingResource.decrement()
         }
     }
@@ -1664,6 +1664,18 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     view?.updateCartBoAffordability(cartShopHolderData)
                 }
             }
+        }
+    }
+
+    override fun getPromoFlag(): Boolean {
+        val cartListData = cartListData
+        val lastValidateUseResponse = lastValidateUseResponse
+        return if (isLastApplyResponseStillValid && cartListData != null) {
+            cartListData.promo.lastApplyPromo.lastApplyPromoData.additionalInfo.pomlAutoApplied
+        } else if (!isLastApplyResponseStillValid && lastValidateUseResponse != null) {
+            lastValidateUseResponse.promoUiModel.additionalInfoUiModel.pomlAutoApplied
+        } else {
+            false
         }
     }
 }

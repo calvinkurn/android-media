@@ -91,6 +91,21 @@
         tools:textColor="@color/Unify_RN500"/>
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_sah_new_other_status_eligible_pm"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:icon_name="BADGE_PM_FILLED"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_sah_new_other_shop_status_os"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

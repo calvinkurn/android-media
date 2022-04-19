@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".mvc_locked_to_product.view.activity.MvcLockedToProductPageActivity"
+            android:screenOrientation="portrait"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -36,6 +37,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".note.view.activity.ShopNoteDetailActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

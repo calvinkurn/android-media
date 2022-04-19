@@ -27,7 +27,6 @@ class GetCalendarDataUseCase(
     gqlRepository,
     calendarMapper,
     dispatchers,
-    GetCalendarDataResponse::class.java,
     GqlGetCalendarData.GQL_QUERY,
     false
 ) {
@@ -51,6 +50,9 @@ class GetCalendarDataUseCase(
             }
         }
     }
+
+    override val classType: Class<GetCalendarDataResponse>
+        get() = GetCalendarDataResponse::class.java
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }

@@ -288,11 +288,12 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
     private fun setupButtonAddProduct(binding: FragmentMvcAddProductBinding?) {
         binding?.buttonAddProduct?.setOnClickListener {
             val selectedProducts = viewModel.getSelectedProducts()
-            if (viewModel.isMaxProductLimitReached(selectedProducts.size)) {
+            val totalSize = viewModel.getSelectedProductIds().size + selectedProducts.size
+            if (viewModel.isMaxProductLimitReached(totalSize)) {
                 binding.tickerMaxProductWording.show()
                 adapter?.isProductListEnabled(false)
                 binding.buttonAddProduct.isEnabled = false
-                updateTickerWording(selectedProducts.size, viewModel.getMaxProductLimit())
+                updateTickerWording(totalSize, viewModel.getMaxProductLimit())
             } else {
                 binding.tickerMaxProductWording.hide()
                 val extraSelectedProducts = ArrayList<ProductUiModel>()
@@ -529,7 +530,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 //        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
-    override fun onRemoveButtonClicked() {
+    override fun onRemoveButtonClicked(position: Int) {
         // No implementation
     }
 

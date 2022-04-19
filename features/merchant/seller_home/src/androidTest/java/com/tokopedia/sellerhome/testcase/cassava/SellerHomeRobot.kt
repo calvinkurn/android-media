@@ -65,7 +65,7 @@ class SellerHomeRobot {
                         expectedMatchesCount.getOrNull(
                             index
                         ).orZero()
-                    } times, but it match for $resultMatchCount times"
+                    } times at index $index, but it match for $resultMatchCount times"
                 }
             } catch (e: AssertionError) {
                 "\n${e.localizedMessage.orEmpty().replace(Regex("\\s{2,}"), " ").replace("\n", "")}"
