@@ -63,7 +63,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val produkBerpotensiAdapter = TopadsImageRvAdapter()
     private val summaryRvAdapter = TopAdsBerandaSummaryRvAdapter()
     private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        LatestReadingTopAdsDashboardRvAdapter(context)
+        LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
 
     companion object {

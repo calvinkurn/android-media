@@ -1,17 +1,15 @@
 package com.tokopedia.topads.dashboard.view.adapter.beranda
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.beranda.TopAdsLatestReading
-import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class LatestReadingTopAdsDashboardRvAdapter(private val context: Context?) :
+class LatestReadingTopAdsDashboardRvAdapter(private val itemClick : (String) -> Unit) :
     RecyclerView.Adapter<LatestReadingTopAdsDashboardRvAdapter.LatestReadingViewHolder>() {
 
     private val list = mutableListOf<TopAdsLatestReading.TopAdsLatestReadingItem.Article>()
@@ -29,7 +27,7 @@ class LatestReadingTopAdsDashboardRvAdapter(private val context: Context?) :
             txtDescription.text = item.description
             creditHistoryImage.setImageUrl(item.thumbnail)
 
-            itemView.setOnClickListener { context?.openWebView(item.slug) }
+            itemView.setOnClickListener { itemClick.invoke(item.slug) }
         }
     }
 
