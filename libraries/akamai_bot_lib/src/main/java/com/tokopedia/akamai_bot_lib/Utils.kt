@@ -58,8 +58,9 @@ val registeredGqlFunctions = mapOf(
     "playInteractiveUserTapSession" to "PlayTap",
     "ValidateInactivePhoneResponse" to "rgsc",
     "GetStatusInactivePhoneNumber" to "rgsc",
+    "createAffiliateCookie" to "cac",
     "playInteractiveAnswerQuiz" to "playInteractiveAnswerQuizquery",
-)
+    )
 
 fun getAkamaiQuery(query: String): String? {
     return getAkamaiQuery(getQueryListFromQueryString(query))

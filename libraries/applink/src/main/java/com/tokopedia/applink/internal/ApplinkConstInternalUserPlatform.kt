@@ -16,6 +16,9 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_GOOGLE = "google"
     const val METHOD_LOGIN_FACEBOOK = "facebook"
     const val METHOD_LOGIN_FINGERPRINT = "fingerprint"
+    const val PAGE_EDIT_INFO_PROFILE_BIO = "bio"
+    const val PAGE_EDIT_INFO_PROFILE_USERNAME = "username"
+    const val PAGE_EDIT_INFO_PARAM = "page"
 
     const val PARAM_IS_RETURN_HOME = "return_to_home"
     const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
@@ -37,6 +40,7 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_PIN_COMPLETE = "${NEW_INTERNAL_USER}/add-pin-complete"
 
     // SettingFingerprintActivity
+
     const val BIOMETRIC_SETTING = "${NEW_INTERNAL_USER}/biometric-setting"
 
     // VerifyFingerprintActivity
@@ -67,4 +71,10 @@ object ApplinkConstInternalUserPlatform {
     // tokopedia-android-internal://user/link-acc-reminder
     const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
 
+
+    const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
+    const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
+
+    // SettingProfileActivity
+    const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
 }

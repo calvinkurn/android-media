@@ -8,13 +8,13 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -175,9 +175,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val bottomSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_BOTTOMSHEET_HEIGHT).toInt()
-
-    private val bottomSheetMenuMaxHeight: Int
-        get() = (requireView().height * PERCENT_MENU_BOTTOMSHEET_HEIGHT).toInt()
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -382,8 +379,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(CopyLinkAction)
     }
 
-    override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
-        playViewModel.submitAction(ClickPartnerNameAction)
+    override fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String) {
+        playViewModel.submitAction(ClickPartnerNameAction(applink))
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
@@ -921,6 +918,10 @@ class PlayUserInteractionFragment @Inject constructor(
                             requireActivity().classLoader
                         ).dismiss()
                     }
+                    OpenKebabEvent -> {
+                        playViewModel.onShowKebabMenuSheet()
+                        showMoreActionBottomSheet()
+                    }
                 }
             }
         }
@@ -1012,6 +1013,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubStarted() {
+        productFeaturedView?.setTransparent(true)
+        pinnedView?.setTransparent(true)
+
         if (!orientation.isLandscape) return
 
         cancelAllAnimations()
@@ -1019,6 +1023,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubEnded() {
+        productFeaturedView?.setTransparent(false)
+        pinnedView?.setTransparent(false)
+
         if (!orientation.isLandscape) return
 
         cancelAllAnimations()
@@ -1056,7 +1063,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showMoreActionBottomSheet() {
-        getBottomSheetInstance().show(childFragmentManager)
+        if (!bottomSheet.isVisible) getBottomSheetInstance().show(childFragmentManager)
     }
 
     private fun doClickChatBox() {
@@ -1112,13 +1119,15 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
-        if (!::bottomSheet.isInitialized) {
-            bottomSheet = PlayMoreActionBottomSheet.newInstance(requireContext(), this)
+        if(!::bottomSheet.isInitialized){
+            bottomSheet = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+            bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         }
+
         return bottomSheet
     }
 
-    private fun hideBottomSheet() {
+    fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
         if (bottomSheet.isVisible) bottomSheet.dismiss()
     }
@@ -1351,15 +1360,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.CouponSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.LeaderboardSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
-        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown
-                && bottomInsets[BottomInsetsType.UserReportSubmissionSheet] is BottomInsetsState.Hidden)
+        sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
 
     private fun immersiveBoxViewOnStateChanged(
@@ -1718,7 +1723,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
-        playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+        playViewModel.submitAction(OpenKebabAction)
     }
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
@@ -1731,7 +1736,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
-        private const val PERCENT_MENU_BOTTOMSHEET_HEIGHT = 0.2
 
         private const val VISIBLE_ALPHA = 1f
 
