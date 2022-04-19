@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital_product_detail.data.mapper.DigitalMenuDetailUiMapper
 import com.tokopedia.digital_product_detail.domain.repository.RechargeCatalogMenuDetailRepository
 import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeCatalogMenuDetailUseCase
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

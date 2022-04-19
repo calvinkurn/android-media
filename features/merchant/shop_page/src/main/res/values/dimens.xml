@@ -22,10 +22,8 @@
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_82">82dp</dimen>
-    <dimen name="sp_6">6sp</dimen>
     <dimen name="sp_8">8sp</dimen>
     <dimen name="sp_16">16sp</dimen>
-    <dimen name="sp_12">12sp</dimen>
     <dimen name="width_product_empty_state_buyer">133dp</dimen>
     <dimen name="play_widget_seller_action_divider_height">0.5dp</dimen>
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>
