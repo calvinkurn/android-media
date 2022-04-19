@@ -20,6 +20,7 @@ import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
 import com.tokopedia.play.view.uimodel.action.ClickRetryInteractiveAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -123,7 +124,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         partner: PlayPartnerInfo,
     ) {
         val giveawayStatus = giveaway.status
-        if (partner.status == PlayPartnerFollowStatus.Followable(false)) {
+        if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)) {
             setChildView { ctx ->
                 val view = InteractiveFollowView(ctx)
                 view.setListener(followViewListener)
@@ -153,7 +154,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
     ) {
         val status = quiz.status
         when {
-            partner.status == PlayPartnerFollowStatus.Followable(false) -> {
+            partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) -> {
                 setChildView { ctx ->
                     val view = InteractiveFollowView(ctx)
                     view.setListener(followViewListener)

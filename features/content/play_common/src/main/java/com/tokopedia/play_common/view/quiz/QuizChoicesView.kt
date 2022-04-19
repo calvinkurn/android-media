@@ -127,7 +127,7 @@ class QuizChoicesView : ConstraintLayout {
         isDefault?.let {
             if(it)
                 shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_N0))
-                shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_stroke_quiz))
+                shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_dms_stroke_quiz))
         }
 
         isCorrect?.let {
