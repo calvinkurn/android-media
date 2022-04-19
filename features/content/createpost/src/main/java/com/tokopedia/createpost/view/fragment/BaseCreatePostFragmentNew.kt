@@ -92,10 +92,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     private fun setUpConnectionListener(){
         val connectionLiveData = context?.let { ConnectionLiveData(it) }
         if (!(::sheet.isInitialized)) {
-            val bundle = Bundle().also {
-                it.putBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, true)
-            }
-            sheet = FeedNetworkErrorBottomSheet.newInstance(bundle)
+            sheet = FeedNetworkErrorBottomSheet.newInstance(true)
         }
         connectionLiveData?.observe(context as AppCompatActivity) {
             if (!it) {
@@ -195,10 +192,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
 
     private fun showNoConnectionBottomSheet(context: Context) {
-        val bundle = Bundle().also {
-            it.putBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, true)
-        }
-        sheet = FeedNetworkErrorBottomSheet.newInstance(bundle)
+        sheet = FeedNetworkErrorBottomSheet.newInstance(true)
         sheet.onRetry = {
             fetchContentForm()
         }

@@ -15,12 +15,14 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
 
 
     companion object {
-        private var shouldShowRetryBtn = false
-        val EXTRA_SHOULD_SHOW_RETRY_BUTTON = "ShouldShowRetryButton"
-        fun newInstance(bundle: Bundle): FeedNetworkErrorBottomSheet {
-            val fragment = FeedNetworkErrorBottomSheet()
-            fragment.arguments = bundle
-            return fragment
+        private const val EXTRA_SHOULD_SHOW_RETRY_BUTTON = "ShouldShowRetryButton"
+        fun newInstance(shouldShowRetryButton: Boolean = false): FeedNetworkErrorBottomSheet {
+            val bundle = Bundle().also {
+                it.putBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, shouldShowRetryButton)
+            }
+            return FeedNetworkErrorBottomSheet().apply {
+                arguments = bundle
+            }
         }
     }
 
@@ -38,7 +40,7 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         showCloseIcon = true
         isDragable = false
-        shouldShowRetryBtn = arguments?.getBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, false) ?: false
+        val shouldShowRetryBtn = arguments?.getBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, false) ?: false
         if (shouldShowRetryBtn)
         globalError.errorAction.visibility = View.VISIBLE
         else

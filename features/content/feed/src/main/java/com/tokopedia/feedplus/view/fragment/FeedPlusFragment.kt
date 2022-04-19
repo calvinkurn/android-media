@@ -3311,8 +3311,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun showNoInterNetDialog(context: Context) {
-        val bundle = Bundle()
-        val sheet = FeedNetworkErrorBottomSheet.newInstance(bundle)
+        val sheet = FeedNetworkErrorBottomSheet.newInstance(false)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
 
     }
