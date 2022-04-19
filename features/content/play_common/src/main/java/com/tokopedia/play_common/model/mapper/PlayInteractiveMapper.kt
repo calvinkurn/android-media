@@ -51,7 +51,7 @@ class PlayInteractiveMapper @Inject constructor() {
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
                     endTime = Calendar.getInstance().apply {
-                        add(Calendar.MILLISECOND, data.countdownEnd)
+                        add(Calendar.SECOND, data.countdownEnd)
                     }
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished

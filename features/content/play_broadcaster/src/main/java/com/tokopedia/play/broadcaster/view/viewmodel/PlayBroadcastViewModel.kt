@@ -1169,20 +1169,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleSelectQuizDuration(duration: Long) {
         needUpdateQuizForm(false) {
             updateQuizEligibleDuration()
-            _quizFormData.setValue { copy(duration = duration) }
+            _quizFormData.setValue { copy(durationInMs = duration) }
         }
     }
 
     private fun handleSubmitQuizForm() {
         viewModelScope.launchCatchError(block = {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
-
             val quizData = _quizFormData.value
+            val durationInSecond = TimeUnit.MILLISECONDS.toSeconds(quizData.durationInMs)
             repo.createInteractiveQuiz(
                 channelId = channelId,
                 question = quizData.title,
                 prize = quizData.gift,
-                runningTime = quizData.duration,
+                runningTime = durationInSecond,
                 choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
             )
 
@@ -1218,7 +1218,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _quizFormData.setValue {
                 QuizFormDataUiModel(
-                    duration = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
                     options = initialOptions
                 )
             }

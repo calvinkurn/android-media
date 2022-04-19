@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
@@ -20,7 +19,6 @@ import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
-import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
@@ -168,7 +166,7 @@ class QuizFormView : ConstraintLayout {
             binding.viewQuizGift.gift = quizFormData.gift
 
             /** Update Quiz Duration */
-            val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+            val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.durationInMs)
             if(timePickerBinding.puTimer.activeIndex != idx) {
                 timePickerBinding.puTimer.apply {
                     if(idx != -1) goToPosition(idx)
