@@ -137,6 +137,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
             resources.getLayout(R.layout.topads_dash_fragment_headline_group_list),
             container, false
         )
+        initViews(view)
         setAdapter()
         return view
     }
@@ -325,7 +326,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
+
         fetchFirstPage()
         btnFilter?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
