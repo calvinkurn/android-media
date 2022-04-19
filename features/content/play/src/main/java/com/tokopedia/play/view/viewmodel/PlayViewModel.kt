@@ -65,6 +65,7 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
@@ -157,6 +158,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
+    private var _winnerStatus: MutableStateFlow<PlayUserWinnerStatusUiModel?> = MutableStateFlow(null)
     /***
      * User Report
      */
@@ -841,8 +843,6 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
 
-            InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
-            InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
@@ -1361,33 +1361,23 @@ class PlayViewModel @AssistedInject constructor(
     private fun checkInteractive(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-//            _interactive.value = PlayInteractiveUiState.Loading
-
             val interactive = repo.getCurrentInteractive(channelId)
-            handleInteractiveFromNetwork(interactive)
+            setupInteractive(interactive)
         }) {
-//            _interactive.value = PlayInteractiveUiState.Error
+            _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
-//    private fun mapInteractiveToState(interactive: PlayCurrentInteractiveModel): PlayInteractiveUiState {
-//        return when (val status = interactive.timeStatus) {
-//            is PlayInteractiveTimeStatus.Scheduled -> PlayInteractiveUiState.PreStart(status.timeToStartInMs, interactive.title)
-//            is PlayInteractiveTimeStatus.Live -> PlayInteractiveUiState.Ongoing(status.remainingTimeInMs)
-//            else -> PlayInteractiveUiState.NoInteractive
-//        }
-//    }
-
-    private suspend fun handleInteractiveFromNetwork(interactive: InteractiveUiModel) {
+    private suspend fun setupInteractive(interactive: InteractiveUiModel) {
         if (!isInteractiveAllowed) return
         repo.save(interactive)
         when (interactive) {
-            is InteractiveUiModel.Giveaway -> handleGiveawayFromNetwork(interactive)
+            is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             else -> {}
         }
     }
 
-    private suspend fun handleGiveawayFromNetwork(giveaway: InteractiveUiModel.Giveaway) {
+    private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
         _interactive.update {
             it.copy(interactive = giveaway)
         }
@@ -1405,31 +1395,6 @@ class PlayViewModel @AssistedInject constructor(
                 }
             } catch (e: Throwable) {}
         }
-    }
-
-    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
-//        if (!isInteractiveAllowed) return
-//        val interactiveUiState = mapInteractiveToState(interactive)
-//        repo.setDetail(interactive.id.toString(), interactive)
-//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
-//            repo.setActive(interactive.id.toString())
-//        } else {
-//            repo.setFinished(interactive.id.toString())
-//        }
-//
-//        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
-//
-//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
-//            val channelId = mChannelData?.id ?: return
-//
-//            try {
-//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-//                setLeaderboardBadgeState(interactiveLeaderboard)
-//
-//                _interactive.value = PlayInteractiveUiState.NoInteractive
-//            } catch (e: Throwable) {}
-//        }
     }
 
     private fun prepareSelfLikeBubbleIcon() {
@@ -1591,7 +1556,7 @@ class PlayViewModel @AssistedInject constructor(
             }
             is GiveawayResponse -> {
                 val interactive = playSocketToModelMapper.mapInteractive(result)
-                handleInteractiveFromNetwork(interactive)
+                setupInteractive(interactive)
             }
             is RealTimeNotification -> withContext(dispatchers.computation) {
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
@@ -1610,14 +1575,20 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is UserWinnerStatus -> {
-//                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
-//
-//                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
-//                _observableUserWinnerStatus.value = winnerStatus
-//
-//                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
-//                    handleUserWinnerStatus(winnerStatus)
-//                }
+                val isFinished = when (val interactive = _interactive.value.interactive) {
+                    is InteractiveUiModel.Giveaway -> {
+                        interactive.status == InteractiveUiModel.Giveaway.Status.Finished
+                    }
+                    is InteractiveUiModel.Quiz -> {
+                        interactive.status == InteractiveUiModel.Quiz.Status.Finished
+                    }
+                    InteractiveUiModel.Unknown -> false
+                }
+
+                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
+                _winnerStatus.value = winnerStatus
+
+                if(isFinished) processWinnerStatus(winnerStatus)
             }
         }
     }
@@ -1701,16 +1672,32 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleGiveawayOngoingEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.update {
+            val interactive = _interactive.getAndUpdate {
                 if (it.interactive !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
-                val interactive = it.interactive.copy(
+                val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Giveaway.Status.Finished
                 )
                 it.copy(
-                    interactive = interactive,
+                    interactive = newInteractive,
                     isPlaying = false,
                 )
             }
+
+            suspend fun checkWinnerStatus(): Boolean {
+                val winnerStatus = _winnerStatus.value
+                return if (winnerStatus != null) {
+                    processWinnerStatus(winnerStatus)
+                    true
+                } else false
+            }
+
+            if (!checkWinnerStatus() && interactive.interactive is InteractiveUiModel.Giveaway) {
+                delay(interactive.interactive.waitingDuration)
+                checkWinnerStatus()
+            }
+
+            _interactive.value = InteractiveStateUiModel.Empty
+
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
@@ -1730,6 +1717,28 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
+
+        val interactive = _interactive.updateAndGet {
+            InteractiveStateUiModel.Empty
+        }
+
+        if (status.interactiveId == interactive.interactive.id &&
+            repo.hasJoined(interactive.interactive.id)) {
+            _uiEvent.emit(
+                if(status.userId.toString() == userId) {
+                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText)
+                }
+                else {
+                    ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
+                }
+            )
+        }
+    }
+
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
         _interactive.update {
             val isOngoing = when (it.interactive) {
@@ -1742,84 +1751,6 @@ class PlayViewModel @AssistedInject constructor(
                 else -> false
             }
             it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
-        }
-    }
-
-    private fun handleInteractivePreStartFinished() {
-//        viewModelScope.launch {
-//            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launch
-//            val interactiveDetail = repo.getDetail(activeInteractiveId) ?: return@launch
-//            if (!interactiveDetail.timeStatus.isScheduled()) return@launch
-//
-//            _interactive.value = PlayInteractiveUiState.Ongoing(
-//                    timeRemainingInMs = (interactiveDetail.timeStatus as PlayInteractiveTimeStatus.Scheduled).interactiveDurationInMs
-//            )
-//        }
-    }
-
-    private fun handleInteractiveOngoingFinished() {
-//        suspend fun waitingForSocketOrDuration(activeInteractive: PlayCurrentInteractiveModel, activeInteractiveId: String) {
-//            delay(activeInteractive.endGameDelayInMs)
-//            repo.setFinished(activeInteractiveId)
-//            handleUserWinnerStatus(null)
-//        }
-//
-//        viewModelScope.launchCatchError(block = {
-//            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
-//            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
-//
-//            _interactive.value = PlayInteractiveUiState.Finished(
-//                info = R.string.play_interactive_finish_initial_text,
-//            )
-//            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
-//
-//            _interactive.value = PlayInteractiveUiState.Finished(
-//                info = R.string.play_interactive_finish_loading_winner_text,
-//            )
-//            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
-//
-//            val winnerStatus = _observableUserWinnerStatus.value
-//            if(winnerStatus != null && winnerStatus.interactiveId.toString() == activeInteractiveId){
-//                handleUserWinnerStatus(winnerStatus)
-//            }
-//            else {
-//                waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
-//            }
-//        }) {}
-    }
-
-    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
-        fun setNoInteractive() {
-//            if(_interactive.value is PlayInteractiveUiState.Finished)
-//                _interactive.value = PlayInteractiveUiState.NoInteractive
-        }
-
-        _leaderboardUserBadgeState.setValue {
-            copy(showLeaderboard = true, shouldRefreshData = true)
-        }
-
-        winnerStatus?.let {
-            val activeInteractiveId = repo.getActiveInteractiveId() ?: return
-            val isUserJoined = repo.hasJoined(activeInteractiveId)
-
-            if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
-                setNoInteractive()
-                repo.setFinished(activeInteractiveId)
-
-                _uiEvent.emit(
-                    if(winnerStatus.userId.toString() == userId){
-                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
-                    }
-                    else {
-                        ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
-                    }
-                )
-            }
-            else {
-                setNoInteractive()
-            }
-        } ?: run {
-            setNoInteractive()
         }
     }
 

@@ -5,6 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -13,14 +14,15 @@ import javax.inject.Inject
 class PlayInteractiveMapper @Inject constructor() {
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
+        val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong()),
         return when (data.meta.active) {
-            TYPE_GIVEAWAY -> mapGiveaway(data.giveaway)
-            TYPE_QUIZ -> mapQuiz(data.quiz)
+            TYPE_GIVEAWAY -> mapGiveaway(data.giveaway, waitingDuration)
+            TYPE_QUIZ -> mapQuiz(data.quiz, waitingDuration)
             else -> InteractiveUiModel.Unknown
         }
     }
 
-    private fun mapGiveaway(data: GiveawayResponse): InteractiveUiModel.Giveaway {
+    fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
             title = data.title,
@@ -40,11 +42,12 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
-            }
+            },
+            waitingDuration = waitingDurationInMillis,
         )
     }
 
-    private fun mapQuiz(data: QuizResponse): InteractiveUiModel.Quiz {
+    private fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
             title = data.question,
@@ -56,7 +59,8 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown
-            }
+            },
+            waitingDuration = waitingDurationInMillis,
         )
     }
 

@@ -1490,7 +1490,7 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractiveDialogFragment.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader
-            ).show(childFragmentManager)
+            ).showNow(childFragmentManager)
         } else if (InteractiveDialogFragment.get(childFragmentManager)?.isAdded == true){
             InteractiveDialogFragment.getOrCreate(
                 childFragmentManager,
