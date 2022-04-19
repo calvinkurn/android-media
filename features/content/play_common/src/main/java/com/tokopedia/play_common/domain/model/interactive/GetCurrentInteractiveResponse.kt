@@ -79,6 +79,9 @@ data class QuizResponse(
 
     @SerializedName("user_choice")
     val userChoice: String = "",
+
+    @SerializedName("waiting_duration")
+    val waitingDuration: Long = 0L,
 ) {
 
     data class Choice(
