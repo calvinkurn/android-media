@@ -153,9 +153,6 @@ class PhoneCodePickerViewModelTest {
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = ""
-        val countryList = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
-            TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
-            TravelCountryPhoneCode(countryId = "JP", countryName = "Jepang", countryPhoneCode = 81))
         coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Fail(Throwable(message = "failed to fetch"))
 
         phoneCodePickerViewModel.getCountryList(rawQuery)
@@ -176,39 +173,5 @@ class PhoneCodePickerViewModelTest {
         assertEquals("failed to fetch", (dataForFiltered as Fail).throwable.message)
 
         coVerify { travelCountryCodeUseCase.execute(rawQuery) }
-    }
-
-    @Test
-    fun convertKeywordToInt_isSuccess(){
-        //given
-        val keyword = "62"
-        val expected = keyword.toInt()
-        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
-        method.isAccessible = true
-        val param = arrayOfNulls<String>(1)
-        param[0] = keyword
-
-        //when
-        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
-
-        //then
-        assertEquals(result, expected)
-    }
-
-    @Test
-    fun convertKeywordToInt_isFailed(){
-        //given
-        val keyword = "*(&"
-        val expected = 0
-        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
-        method.isAccessible = true
-        val param = arrayOfNulls<String>(1)
-        param[0] = keyword
-
-        //when
-        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
-
-        //then
-        assertEquals(result, expected)
     }
 }
