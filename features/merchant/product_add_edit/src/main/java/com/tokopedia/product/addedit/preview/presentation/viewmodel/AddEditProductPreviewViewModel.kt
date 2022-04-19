@@ -75,7 +75,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
-        (!id.isNullOrBlank() || productInputModel.getValueOrDefault(ProductInputModel()).productId.isZero()) && !isDuplicate
+        (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
     val isAdding: Boolean get() = getProductId().isBlank()
     var isDuplicate: Boolean = false
