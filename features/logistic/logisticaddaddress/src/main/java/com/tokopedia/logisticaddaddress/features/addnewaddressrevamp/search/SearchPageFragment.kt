@@ -151,6 +151,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 Handler().postDelayed ({getLocation()}, 1000)
             }
         } else {
+            if (requestCode == GPS_REQUEST) {
+                bottomSheetLocUndefined?.dismiss()
+            }
             showInitialLoadMessage()
         }
     }
