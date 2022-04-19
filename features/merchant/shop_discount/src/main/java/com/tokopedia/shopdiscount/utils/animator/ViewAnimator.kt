@@ -39,7 +39,6 @@ class ViewAnimator @Inject constructor() {
                 }
             })
             view.startAnimation(animate)
-
         }
     }
 
@@ -63,8 +62,6 @@ class ViewAnimator @Inject constructor() {
                 }
             })
             view.startAnimation(animate)
-
-
         }
     }
 }

@@ -167,7 +167,6 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
             }
             btnManage.setOnClickListener {
-                showLoaderDialog()
                 val selectedProductIds = viewModel.getSelectedProductIds()
                 reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
@@ -213,18 +212,18 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
-            binding?.btnManage?.isLoading = false
             when (it) {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
                         redirectToUpdateDiscountPage()
                     } else {
+                        binding?.btnManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
                 is Fail -> {
-                    dismissLoaderDialog()
+                    binding?.btnManage?.isLoading = false
                     binding?.root showError it.throwable
                 }
             }
@@ -539,7 +538,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
-            dismissLoaderDialog()
+            binding?.btnManage?.isLoading = false
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
                 viewModel.getRequestId(),
