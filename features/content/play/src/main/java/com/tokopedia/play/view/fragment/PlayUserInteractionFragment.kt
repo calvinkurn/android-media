@@ -819,6 +819,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderKebabMenuView(state.kebabMenu)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
+                renderGameResult(state = state.winnerBadge)
 
                 handleStatus(state.status)
 
@@ -1507,6 +1508,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 requireActivity().classLoader
             ).dismiss()
         }
+    }
+
+    private fun renderGameResult(state: PlayWinnerBadgeUiState){
+        if (state.shouldShow) interactiveResultView?.show()
+        else interactiveResultView?.hide()
     }
 
     private fun renderToolbarView(title: PlayTitleUiState) {
