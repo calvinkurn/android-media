@@ -402,8 +402,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Like View Component Listener
      */
     override fun onLikeClicked(view: LikeViewComponent) {
-//        playViewModel.submitAction(ClickLikeAction)
-        playViewModel.submitAction(ClickRetryInteractiveAction)
+        playViewModel.submitAction(ClickLikeAction)
     }
 
     /**
