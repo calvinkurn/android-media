@@ -1772,7 +1772,7 @@ class PlayViewModel @AssistedInject constructor(
             _uiEvent.emit(QuizAnsweredEvent)
         }) {
             _uiEvent.emit(
-                ShowInfoEvent(message = UiString.Text(it.message ?: "Oops, terjadi kesalahan. Coba lagi, ya."))
+                ShowErrorEvent(it)
             )
             _uiEvent.emit(QuizAnsweredEvent)
         }
