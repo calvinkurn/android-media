@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeTypeFactory
 
 data class TokoFoodHomeFakeTabUiModel (
     val id: String,
-    val fakeTab: TokoFoodFakeTab,
+    val fakeTab: TokoFoodFakeTab?,
     @TokoFoodHomeLayoutState val state: Int
 ): TokoFoodHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoFoodHomeTypeFactory): Int {

@@ -122,6 +122,10 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         viewModel.getHomeLayout()
     }
 
+    private fun getLayoutComponentData(){
+        viewModel.getLayoutComponentData()
+    }
+
     private fun loadLayout(){
         viewModel.getLoadingState()
     }
@@ -200,6 +204,7 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     private fun onShowHomeLayout(data: TokoFoodHomeListUiModel) {
         showHomeLayout(data)
+        getLayoutComponentData()
     }
 
     private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {

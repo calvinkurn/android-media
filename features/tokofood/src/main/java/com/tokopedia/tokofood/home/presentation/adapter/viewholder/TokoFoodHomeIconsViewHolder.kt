@@ -35,7 +35,7 @@ class TokoFoodHomeIconsViewHolder(
     private fun setupTokoFoodIcon(element: TokoFoodHomeIconsUiModel){
         val icons = element.listIcons
         iconRecyclerView = itemView.findViewById(R.id.tokofood_icon_recycler_view)
-        if (icons.isNotEmpty()){
+        if (!icons.isNullOrEmpty()){
             adapter.submitList(element)
         }
         iconRecyclerView?.adapter = adapter
@@ -62,8 +62,10 @@ class TokoFoodHomeIconsViewHolder(
         }
 
         fun submitList(list: TokoFoodHomeIconsUiModel) {
-            iconList.clear()
-            iconList.addAll(list.listIcons)
+            list.listIcons?.let {
+                iconList.clear()
+                iconList.addAll(list.listIcons)
+            }
         }
     }
 

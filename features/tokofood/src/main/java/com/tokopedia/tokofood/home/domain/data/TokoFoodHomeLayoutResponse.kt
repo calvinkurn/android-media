@@ -4,13 +4,15 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class GetTokoFoodHomeLayoutResponse(
+data class TokoFoodHomeLayoutResponse(
     @SerializedName("dynamicHomeChannel")
+    @Expose
     val response: DynamicHomeChannelResponse
 )
 
 data class DynamicHomeChannelResponse(
     @SerializedName("channels")
+    @Expose
     val data: List<HomeLayoutResponse>
 )
 

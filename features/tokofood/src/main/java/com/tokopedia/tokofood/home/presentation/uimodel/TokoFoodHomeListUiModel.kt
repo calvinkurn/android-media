@@ -4,6 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 
 data class TokoFoodHomeListUiModel(
-    val items: List<Visitable<*>> = emptyList(),
+    val items: List<Visitable<*>>,
     @TokoFoodHomeLayoutState val state: Int = 0
 )

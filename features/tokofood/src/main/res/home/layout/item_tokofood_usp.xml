@@ -113,7 +113,7 @@
             <ImageView
                 android:id="@+id/img_gofood"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/spacing_lvl3"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 app:layout_constraintBottom_toBottomOf="@id/tg_powered"
                 app:layout_constraintStart_toEndOf="@+id/tg_powered"

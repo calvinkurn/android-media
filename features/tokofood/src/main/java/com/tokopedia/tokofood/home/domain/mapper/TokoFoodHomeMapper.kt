@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.home.domain.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelBanner
 import com.tokopedia.home_component.model.ChannelBenefit
 import com.tokopedia.home_component.model.ChannelConfig
@@ -13,6 +14,7 @@ import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.BANNER_CAROUSEL
@@ -22,14 +24,14 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
+import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodFakeTab
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIcon
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodUSPModel
 
 object TokoFoodHomeMapper {
 
@@ -55,6 +57,32 @@ object TokoFoodHomeMapper {
                  add(item)
              }
          }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.mapUSPData(
+        item: TokoFoodHomeUSPUiModel,
+        uspResponse: TokoFoodHomeUSPResponse
+    ){
+        updateItemById(item.visitableId) {
+            val usp = TokoFoodHomeUSPUiModel(
+                item.visitableId,
+                uspResponse,
+                TokoFoodHomeLayoutState.SHOW
+            )
+            TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.setStateToLoading(item: TokoFoodHomeItemUiModel) {
+        item.layout?.let { layout ->
+            updateItemById(layout.getVisitableId()) {
+                TokoFoodHomeItemUiModel(layout, TokoFoodHomeLayoutItemState.LOADING)
+            }
+        }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.removeItem(id: String?) {
+        getItemIndex(id)?.let { removeAt(it) }
     }
 
     private fun mapToHomeUiModel(
@@ -99,26 +127,28 @@ object TokoFoodHomeMapper {
     }
 
     private fun mapUSPWidgetModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
-        val uspWidgetDataModel = TokoFoodHomeUSPUiModel("id", TokoFoodUSPModel(), TokoFoodHomeLayoutState.LOADING)
+        val uspWidgetDataModel = TokoFoodHomeUSPUiModel(
+            id = response.id,
+            uspModel = null,
+            TokoFoodHomeLayoutState.LOADING
+        )
         return TokoFoodHomeItemUiModel(uspWidgetDataModel, state)
     }
 
     private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
-        val dynamicIconModel = TokoFoodHomeIconsUiModel("id", listOf(
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Terdekat"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Terlaris"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Promo"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Sehat"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Most Loved"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "24 Jam"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Bugdet"),
-            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Sehat"),
-        ), TokoFoodHomeLayoutState.LOADING)
+        val dynamicIconModel = TokoFoodHomeIconsUiModel(
+            id = response.id,
+            listIcons = null,
+            TokoFoodHomeLayoutState.LOADING
+        )
         return TokoFoodHomeItemUiModel(dynamicIconModel, state)
     }
 
     private fun mapFakeTabModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
-        val fakeTabModel = TokoFoodHomeFakeTabUiModel("id", TokoFoodFakeTab(), TokoFoodHomeLayoutState.LOADING)
+        val fakeTabModel = TokoFoodHomeFakeTabUiModel(
+            id = response.id,
+            fakeTab = null,
+            state = TokoFoodHomeLayoutState.LOADING)
         return TokoFoodHomeItemUiModel(fakeTabModel, state)
     }
 
@@ -225,5 +255,26 @@ object TokoFoodHomeMapper {
                 )
             }
         )
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.updateItemById(id: String?, block: () -> TokoFoodHomeItemUiModel?) {
+        getItemIndex(id)?.let { index ->
+            block.invoke()?.let { item ->
+                removeAt(index)
+                add(index, item)
+            }
+        }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.getItemIndex(visitableId: String?): Int? {
+        return firstOrNull { it.layout?.getVisitableId() == visitableId }?.let { indexOf(it) }
+    }
+
+    fun Visitable<*>.getVisitableId(): String? {
+        return when (this) {
+            is TokoFoodHomeLayoutUiModel -> visitableId
+            is HomeComponentVisitable -> visitableId()
+            else -> null
+        }
     }
 }

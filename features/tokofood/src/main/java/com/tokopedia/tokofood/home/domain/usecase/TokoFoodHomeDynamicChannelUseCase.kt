@@ -3,22 +3,22 @@ package com.tokopedia.tokofood.home.domain.usecase
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokofood.home.domain.data.GetTokoFoodHomeLayoutResponse
+import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.query.TokoFoodHomeDynamicChannelQuery
 import com.tokopedia.tokofood.home.presentation.viewmodel.DummyData
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class TokoFoodHomeDynamicChannelUseCase @Inject constructor(graphqlRepository: GraphqlRepository):
-    GraphqlUseCase<GetTokoFoodHomeLayoutResponse>(graphqlRepository) {
+    GraphqlUseCase<TokoFoodHomeLayoutResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(TokoFoodHomeDynamicChannelQuery)
-        setTypeClass(GetTokoFoodHomeLayoutResponse::class.java)
+        setTypeClass(TokoFoodHomeLayoutResponse::class.java)
     }
 
-    suspend fun execute(): GetTokoFoodHomeLayoutResponse {
+    suspend fun execute(): TokoFoodHomeLayoutResponse {
         delay(1000)
-        return Gson().fromJson(DummyData.dummyHomeData, GetTokoFoodHomeLayoutResponse::class.java)
+        return Gson().fromJson(DummyData.dummyHomeData, TokoFoodHomeLayoutResponse::class.java)
     }
 }

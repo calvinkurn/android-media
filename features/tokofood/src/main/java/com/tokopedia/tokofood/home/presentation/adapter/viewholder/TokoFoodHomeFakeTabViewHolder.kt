@@ -28,8 +28,8 @@ class TokoFoodHomeFakeTabViewHolder(
         imgNyam = itemView.findViewById(R.id.img_nyam_tab)
         imgTokoFood = itemView.findViewById(R.id.img_tokofood_tab)
 
-        imgNyam?.loadImage(element.fakeTab.imgNyam)
-        imgTokoFood?.loadImage(element.fakeTab.imgTokoFood)
+        imgNyam?.loadImage(element.fakeTab?.imgNyam)
+        imgTokoFood?.loadImage(element.fakeTab?.imgTokoFood)
 
         imgNyam?.setOnClickListener {
 

@@ -1145,4 +1145,33 @@ object DummyData {
       }
     }
    """
+
+   val dummyUSP = """
+      {
+          "tokofoodGetUSP": {
+            "list": [
+              {
+                "iconURL": "https://img.icons8.com/ios-glyphs/344/albatross.png",
+                "title": "Main Benefit Satu",
+                "description": "Terima belanjaan dalam 2 jam. Bisa nikmati gratis ongkir juga!",
+                "formatted": "<b>Main Benefit Satu</b>. Terima belanjaan dalam 2 jam. Bisa nikmati gratis ongkir juga!"
+              },
+              {
+                "iconURL": "https://img.icons8.com/ios-glyphs/344/albatross.png",
+                "title": "Main Benefit Dua",
+                "description": "Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.",
+                "formatted": "<b>Main Benefit Dua</b>. Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia."
+              },
+              {
+                "iconURL": "https://img.icons8.com/ios-glyphs/344/albatross.png",
+                "title": "Main Benefit Tiga",
+                "description": "Nantikan pelayanan 24 jam yang akan tersedia <b>setelah masa PPKM Jawa-Bali</b>. Tunggu, ya!",
+                "formatted": "<b>Main Benefit 3</b>. Nantikan pelayanan 24 jam yang akan tersedia <b>setelah masa PPKM Jawa-Bali</b>. Tunggu, ya!"
+              }
+            ],
+            "footer": "Dengan belanja, kamu menyetujui <a href=\"https://tokopedia.com\">syarat & ketentuan</a>.",
+            "imageURL": "https://png.pngitem.com/pimgs/s/216-2161876_pepe-meme-rarepepe-gun-delete-pepe-cheers-hd.png"
+          }
+        }
+   """.trimIndent()
 }
