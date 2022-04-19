@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -98,6 +99,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun resetValues() {
         viewModelScope.launch {
             _updateQuantityStateFlow.value = null
+            _visitables.value = mutableListOf(LoadingModel())
+            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel()
             _shouldRefreshCartData.emit(false)
         }
     }

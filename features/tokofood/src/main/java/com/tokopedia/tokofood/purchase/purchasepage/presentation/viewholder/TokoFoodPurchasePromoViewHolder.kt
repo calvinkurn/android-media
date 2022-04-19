@@ -17,17 +17,23 @@ class TokoFoodPurchasePromoViewHolder(private val viewBinding: ItemPurchasePromo
 
     override fun bind(element: TokoFoodPurchasePromoTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            if (element.isLoading) {
-                usePromoAppliedButton.state = ExplorePromo.STATE_LOADING
-                itemView.setOnClickListener(null)
-            } else {
-                usePromoAppliedButton.run {
-                    state = element.state
-                    title.text = element.title
-                    description.text = element.description
+            itemView.setOnClickListener {
+                listener.onPromoWidgetClicked()
+            }
+            when {
+                element.isLoading -> {
+                    usePromoAppliedButton.state = ExplorePromo.STATE_LOADING
+                    itemView.setOnClickListener(null)
                 }
-                itemView.setOnClickListener {
-                    listener.onPromoWidgetClicked()
+                element.title.isEmpty() || element.description.isEmpty() -> {
+                    usePromoAppliedButton.state = ExplorePromo.STATE_DEFAULT
+                }
+                else -> {
+                    usePromoAppliedButton.run {
+                        state = ExplorePromo.STATE_APPLIED
+                        title.text = element.title
+                        description.text = element.description
+                    }
                 }
             }
         }

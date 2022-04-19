@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchasePromoTokoFoodPurchaseUiModel(
-        var state: Int = 0,
         var title: String = "",
         var description: String = ""
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {

@@ -29,6 +29,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils

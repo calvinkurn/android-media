@@ -36,7 +36,7 @@ class TokoFoodPromoViewModel @Inject constructor(val dispatcher: CoroutineDispat
     fun loadData() {
         // Todo : Load from API, if success then map to UiModel, if error show global error
         launch {
-            delay(3000) // Simulate hit API
+            delay(500) // Simulate hit API
             val isSuccess = true
             if (isSuccess) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)

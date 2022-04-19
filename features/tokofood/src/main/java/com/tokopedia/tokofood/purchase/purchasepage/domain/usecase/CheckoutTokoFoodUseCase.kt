@@ -348,7 +348,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     priceFmt = "Rp0"
                 ),
                 promo = CheckoutTokoFoodPromo(
-                    title = "Kamu bisa hemat Rp12.000",
+                    title = "",
                     subtitle = "1 promo dipakai"
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(

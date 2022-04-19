@@ -205,7 +205,6 @@ object TokoFoodPurchaseUiModelMapper {
 
     private fun mapPromoUiModel(promo: CheckoutTokoFoodPromo): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
         return TokoFoodPurchasePromoTokoFoodPurchaseUiModel().apply {
-            state = ExplorePromo.STATE_APPLIED
             title = promo.title
             description = promo.subtitle
         }
