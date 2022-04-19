@@ -19,7 +19,8 @@
           "creative_name": ".* - .*",
           "creative_slot": ".*",
           "item_id": ".*_.*_.*_.*",
-          "item_name": "/ - p.* - dynamic channel campaign - banner - .*"
+          "item_name": "/ - p.* - dynamic channel campaign - banner - .*",
+          "creative_url": ""
         }
       ],
       "shopId": ".*",
