@@ -2,7 +2,6 @@ package com.tokopedia.chat_common.view.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.parentreply.ParentReply
 
 /**
  * @author by nisie on 10/12/18.
@@ -20,7 +19,7 @@ interface BaseChatViewState {
     fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit)
 
     fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
-                         startTime: String,parentReply: ParentReply?)
+                         startTime: String)
 
     fun removeDummyIfExist(successVisitable: Visitable<*>)
 

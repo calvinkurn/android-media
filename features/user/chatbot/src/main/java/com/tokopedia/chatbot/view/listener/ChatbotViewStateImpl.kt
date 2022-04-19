@@ -15,7 +15,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
@@ -28,7 +30,6 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -108,6 +109,41 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun onSendingMessage(it: MessageUiModel) {
         getAdapter().addElement(it)
         scrollDownWhenInBottom()
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    ) {
+        val localId = IdentifierUtil.generateLocalId()
+        val message = MessageUiModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatUiModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .withParentReply(parentReply)
+            .build()
+        getAdapter().addElement(message)
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun loadAvatar(avatarUrl: String) {

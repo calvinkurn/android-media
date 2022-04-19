@@ -488,19 +488,6 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
-    fun sendMessage(messageId: String, sendMessage: String,
-                    startTime: String, opponentId: String, parentReply: ParentReply?){
-        if(parentReply==null){
-            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
-                startTime, opponentId),
-                listInterceptor)
-        }else{
-            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
-                messageId,sendMessage,startTime, parentReply
-            ),listInterceptor)
-        }
-    }
-
 
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String

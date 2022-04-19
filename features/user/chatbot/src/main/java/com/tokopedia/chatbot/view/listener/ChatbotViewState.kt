@@ -6,6 +6,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -14,7 +15,6 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
@@ -75,5 +75,8 @@ interface ChatbotViewState : BaseChatViewState {
     fun handleReplyBox(isEnable: Boolean)
 
     fun onSendingMessage(it: MessageUiModel)
+
+    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
+                         startTime: String,parentReply: ParentReply?)
 
 }

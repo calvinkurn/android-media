@@ -169,7 +169,7 @@ abstract class BaseChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
-    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String,parentReply: ParentReply?) {
+    override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
         val localId = IdentifierUtil.generateLocalId()
         val message = MessageUiModel.Builder()
             .withMsgId(messageId)
@@ -182,7 +182,6 @@ abstract class BaseChatViewStateImpl(
             .withIsDummy(true)
             .withIsSender(true)
             .withIsRead(false)
-            .withParentReply(parentReply)
             .build()
         getAdapter().addElement(message)
     }
