@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,7 +51,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
 
     private lateinit var adapter: TopAdsEditPagerAdapter
 
-    private var viewPager: ViewPager? = null
+    private var viewPager: TouchViewPager? = null
     private var tabLayout: TabsUnify? = null
     private var submitButton: UnifyButton? = null
     private var loaderUnify: LoaderUnify? = null
@@ -69,8 +70,9 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_edit_headline_activity)
-        submitButton = findViewById(R.id.btn_submit)
-        loaderUnify = findViewById(R.id.loader_unify)
+
+        initView()
+
         component.inject(this)
         setUpToolbar()
         showLoader()
@@ -81,6 +83,13 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
         submitButton?.setOnClickListener {
             saveData()
         }
+    }
+
+    private fun initView() {
+        submitButton = findViewById(R.id.btn_submit)
+        loaderUnify = findViewById(R.id.loader_unify)
+        viewPager = findViewById(R.id.view_pager)
+        tabLayout = findViewById(R.id.tab_layout)
     }
 
     private fun saveData() {
