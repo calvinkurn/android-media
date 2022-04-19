@@ -32,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.*
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
-import com.tokopedia.applink.FragmentDFUtil.invokeMethodThroughReflection
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -111,6 +110,10 @@ import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_HIDE
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SETUP
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFeedTabSharedViewModel.Companion.FAB_ACTION_SHOW
 import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
@@ -296,6 +299,7 @@ class NewShopPageFragment :
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
+    private var shopPageFeedTabSharedViewModel: ShopPageFeedTabSharedViewModel? = null
     private var sharedPreferences: SharedPreferences? = null
     private var isGeneralShareBottomSheet = false
     var selectedPosition = -1
@@ -373,6 +377,8 @@ class NewShopPageFragment :
         shopViewModel?.shopPageShopShareData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
+        shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.removeObservers(this)
+        shopPageFeedTabSharedViewModel?.shopPageFab?.removeObservers(this)
         shopViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
         UniversalShareBottomSheet.clearState(screenShotDetector)
@@ -854,6 +860,7 @@ class NewShopPageFragment :
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(NewShopPageViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
+        shopPageFeedTabSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFeedTabSharedViewModel::class.java)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -911,6 +918,7 @@ class NewShopPageFragment :
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
+            observeShopPageFeedTabSharedViewModel()
             getInitialData()
             inflateViewStub()
             initViews(view)
@@ -942,6 +950,23 @@ class NewShopPageFragment :
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
             shopPageFragmentHeaderViewHolder?.updateFollowStatus(it)
             isFollowing = it.isFollowing == true
+        })
+    }
+
+    private fun observeShopPageFeedTabSharedViewModel() {
+        // observe seller migration bottomsheet
+        shopPageFeedTabSharedViewModel?.sellerMigrationBottomSheet?.observe(viewLifecycleOwner, Observer { isShow ->
+            if (isShow) showBottomSheetSellerMigration()
+            else hideBottomSheetSellerMigration()
+        })
+
+        // observe shop page fab
+        shopPageFeedTabSharedViewModel?.shopPageFab?.observe(viewLifecycleOwner, Observer { fabAction ->
+            when (fabAction) {
+                FAB_ACTION_SETUP -> setupShopPageFab(shopPageFeedTabSharedViewModel?.shopPageFabConfig ?: ShopPageFabConfig())
+                FAB_ACTION_SHOW -> showShopPageFab()
+                FAB_ACTION_HIDE -> hideShopPageFab()
+            }
         })
     }
 
@@ -1711,14 +1736,8 @@ class NewShopPageFragment :
             shopProductListFragment.clearCache()
         }
 
-        val feedShopFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-        invokeMethodThroughReflection(
-                parentFragment,
-                feedShopFragmentClassName,
-                targetedMethod = {
-                    feedShopFragmentClassName.getDeclaredMethod("clearCache").invoke(feedShopFragment)
-                }
-        )
+        // clear cache feed tab
+        shopPageFeedTabSharedViewModel?.clearCache()
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
@@ -1986,18 +2005,10 @@ class NewShopPageFragment :
         }
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
-     * since this method its call via reflection
-     */
     fun showBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
-     * since this method its call via reflection
-     */
     fun hideBottomSheetSellerMigration() {
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
@@ -2528,10 +2539,6 @@ class NewShopPageFragment :
         screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
-     * since this method its call via reflection
-     */
     fun setupShopPageFab(config: ShopPageFabConfig) {
         shopPageFab?.let { fab ->
             fab.color = config.color
@@ -2543,18 +2550,10 @@ class NewShopPageFragment :
         }
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
-     * since this method its call via reflection
-     */
     fun showShopPageFab() {
         shopPageFab?.show()
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in FeedShopFragment.kt too
-     * since this method its call via reflection
-     */
     fun hideShopPageFab() {
         shopPageFab?.hide()
     }

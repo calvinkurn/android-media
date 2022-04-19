@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -23,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.FragmentDFUtil.invokeMethodThroughReflection
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -81,6 +81,8 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
+import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -144,14 +146,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     @Inject
     override lateinit var userSession: UserSessionInterface
-    private val viewBinding: FragmentFeedShopBinding? by viewBinding()
 
-    private val newShopPageFragmentClassName = Class.forName(NEW_SHOP_PAGE_FRAGMENT_CLASS_PATH)
+    private val viewBinding: FragmentFeedShopBinding? by viewBinding()
+    private val shopFeedTabSharedViewModel: ISharedViewModel by lazy {
+        ((activity as HasSharedViewModel).getSharedViewModel() as ISharedViewModel)
+    }
 
     companion object {
-        // class path for invoke public method in other module
-        private const val NEW_SHOP_PAGE_FRAGMENT_CLASS_PATH = "com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment"
-
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TEXT_PLAIN = "text/plain"
         private const val CREATE_POST = 888
@@ -209,6 +210,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         initVar()
         super.onViewCreated(view, savedInstanceState)
         isLoadingInitialData = true
+        observeSharedLiveData()
     }
 
     override fun onPause() {
@@ -231,6 +233,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun getShopPageFabConfig(): ShopPageFabConfig? {
         return fabConfig
+    }
+
+    private fun observeSharedLiveData() {
+        shopFeedTabSharedViewModel.feedTabClearCache.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                clearCache()
+            }
+        })
     }
 
     private fun initVar() {
@@ -948,43 +958,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun showBottomSheetSellerMigration() {
-        invokeMethodThroughReflection(
-                parentFragment,
-                newShopPageFragmentClassName,
-                targetedMethod = {
-                    newShopPageFragmentClassName.getDeclaredMethod("showBottomSheetSellerMigration").invoke(parentFragment)
-                }
-        )
+        shopFeedTabSharedViewModel.showSellerMigrationBottomSheet()
     }
 
     private fun hideBottomSheetSellerMigration() {
-        invokeMethodThroughReflection(
-                parentFragment,
-                newShopPageFragmentClassName,
-                targetedMethod = {
-                    newShopPageFragmentClassName.getDeclaredMethod("hideBottomSheetSellerMigration").invoke(parentFragment)
-                }
-        )
+        shopFeedTabSharedViewModel.hideSellerMigrationBottomSheet()
     }
 
     private fun hideFloatingActionButton() {
-        invokeMethodThroughReflection(
-                parentFragment,
-                newShopPageFragmentClassName,
-                targetedMethod = {
-                    newShopPageFragmentClassName.getDeclaredMethod("hideShopPageFab").invoke(parentFragment)
-                }
-        )
+        shopFeedTabSharedViewModel.hideShopPageFab()
     }
 
     private fun showFloatingActionButton() {
-        invokeMethodThroughReflection(
-                parentFragment,
-                newShopPageFragmentClassName,
-                targetedMethod = {
-                    newShopPageFragmentClassName.getDeclaredMethod("showShopPageFab").invoke(parentFragment)
-                }
-        )
+        shopFeedTabSharedViewModel.showShopPageFab()
     }
 
     private fun getSellerApplink(): String {
@@ -1115,10 +1101,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    /**
-     * Please be aware for change this function name, make sure to change it in NewShopPageFragment.kt too
-     * since this method its call via reflection
-     */
+    private fun getSharedViewModel(): Any {
+        return ((activity as HasSharedViewModel).getSharedViewModel())
+    }
+
     fun clearCache() {
         if(::presenter.isInitialized)
             presenter.clearCache()
@@ -1180,16 +1166,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setupShopPageFab() {
-        invokeMethodThroughReflection(
-                parentFragment,
-                newShopPageFragmentClassName,
-                targetedMethod = {
-                    newShopPageFragmentClassName.getDeclaredMethod(
-                            "setupShopPageFab",
-                            ShopPageFabConfig::class.java
-                    ).invoke(parentFragment, fabConfig)
-                }
-        )
+        shopFeedTabSharedViewModel.setupShopPageFab(fabConfig)
     }
 
     override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
