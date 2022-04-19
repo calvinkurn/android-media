@@ -185,8 +185,8 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
             onEmptyResult()
         } else if (groupIds.isNotEmpty()) {
             presenter.getGroupStatisticsData(
-                1, ",", "", 0, "",
-                "", groupIds, ::onSuccessStatistics
+                1, ",", "", 0, Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate),
+                Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate), groupIds, ::onSuccessStatistics
             )
             presenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }

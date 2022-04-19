@@ -41,6 +41,10 @@ class PinnedViewComponent(
         }
     }
 
+    fun setTransparent(isTransparent: Boolean) {
+        rootView.alpha = if (isTransparent) 0f else 1f
+    }
+
     private fun constructPinnedMessage(message: String, hasAppLink: Boolean): CharSequence {
         val spanBuilder = SpannableStringBuilder()
         spanBuilder.append(message)
