@@ -1,32 +1,27 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
 import android.content.Context
+import android.util.Log
 
 abstract class MockModelConfig {
     companion object {
         const val FIND_BY_CONTAINS = 0
         const val FIND_BY_QUERY_NAME = 1
-        /* Proto #1 & #2 */
-        const val FIND_BY_CONTAINS_ALL = 2
+        const val FIND_BY_QUERY_AND_VARIABLES = 2
     }
 
-    private val responseList = mutableListOf<MockModel>()
+    private val responseList = mutableMapOf<String, MockModel>()
 
     abstract fun createMockModel(context: Context): MockModelConfig
 
     fun addMockResponse(key: String, value: String, findType: Int) {
-        responseList.add(MockModel(listOf(key), value, findType))
+        responseList[key] = MockModel(listOf(key), value, findType)
     }
 
-    /* Proto #1 */
-    fun addMockResponse(keys: List<String>, value: String, findType: Int) {
-        responseList.add(MockModel(keys, value, findType))
+    fun addMockResponse(key: MockKey, value: String, findType: Int) {
+        // key.toString() => MockKey(query=rechargeCatalogDynamicInput, variables={operator=18})
+        responseList[key.toString()] = MockModel(key.inList(), value, findType)
     }
 
-    /* Proto #2 */
-    fun addMockResponse(keys: MockKey, value: String, findType: Int) {
-        responseList.add(MockModel(keys.inList(), value, findType))
-    }
-
-    fun getResponseList() = responseList.toList()
+    fun getResponseList() = responseList
 }
