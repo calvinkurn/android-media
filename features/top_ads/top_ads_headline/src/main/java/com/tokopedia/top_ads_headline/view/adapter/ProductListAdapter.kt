@@ -16,9 +16,9 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_layout_topads_category_shimmer.view.*
 
 private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
@@ -27,9 +27,11 @@ private const val MAX_DEPARTMENT_NAME_LENGTH = 20
 const val MAX_PRODUCT_SELECTION = 10
 const val SINGLE_SELECTION = 1
 
-class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
-                         private var selectedProductMap: HashMap<Category, ArrayList<TopAdsProductModel>>,
-                         private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ProductListAdapter(
+    var list: ArrayList<TopAdsProductModel>,
+    private var selectedProductMap: HashMap<Category, ArrayList<TopAdsProductModel>>,
+    private val productListAdapterListener: ProductListAdapterListener? = null,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showShimmer = true
     private val departmentLengthRange = 0..17
@@ -49,11 +51,13 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_CATEGORY -> {
-                val v = LayoutInflater.from(parent.context).inflate(ProductListViewHolder.Layout, parent, false)
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(ProductListViewHolder.Layout, parent, false)
                 ProductListViewHolder(v)
             }
             else -> {
-                val v = LayoutInflater.from(parent.context).inflate(ShimmerViewHolder.Layout, parent, false)
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(ShimmerViewHolder.Layout, parent, false)
                 return ShimmerViewHolder(v)
             }
         }
@@ -67,20 +71,24 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
             viewHolder.productPrice.text = product.productPrice
             viewHolder.productImage.loadImage(product.productImage)
             viewHolder.checkBox.isChecked = selectedProductMap[category]?.contains(product) ?: false
-            setProductRating(product.productRating, product.productReviewCount, viewHolder.ratingView)
+            setProductRating(product.productRating,
+                product.productReviewCount,
+                viewHolder.ratingView)
             viewHolder.recommendationTag.text = getDepartmentName(holder.itemView.context, product)
             viewHolder.itemView.setOnClickListener {
                 val checked = selectedProductMap[category]?.contains(product) ?: false
                 onItemSelection(checked, category, product)
                 viewHolder.checkBox.isChecked = selectedProductMap[category]?.contains(product)
-                        ?: false
+                    ?: false
             }
             setMarginBottomIfLast(holder, position)
             product.isSingleSelect = checkIfSingleSelect(category, product)
             if (product.isSingleSelect) {
-                holder.productCard.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.Red_R100))
+                holder.productCard.setBackgroundColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.Red_R100))
             } else {
-                holder.productCard.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.white))
+                holder.productCard.setBackgroundColor(
+                    ContextCompat.getColor(holder.itemView.context, R.color.white))
             }
             product.positionInRv = position
         }
@@ -97,7 +105,10 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
 
     private fun setMarginBottomIfLast(holder: ProductListViewHolder, position: Int) {
         if (list.size - 1 == position) {
-            holder.itemView.setMargin(0, 0, 0, holder.itemView.context.resources.getDimensionPixelSize(R.dimen.dp_72))
+            holder.itemView.setMargin(0,
+                0,
+                0,
+                holder.itemView.context.resources.getDimensionPixelSize(R.dimen.dp_72))
         } else {
             holder.itemView.setMargin(0, 0, 0, 0)
         }
@@ -127,7 +138,11 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
         }
     }
 
-    private fun onItemSelection(isAlreadyChecked: Boolean, category: Category, product: TopAdsProductModel) {
+    private fun onItemSelection(
+        isAlreadyChecked: Boolean,
+        category: Category,
+        product: TopAdsProductModel,
+    ) {
         if (isAlreadyChecked) {
             selectedProductMap[category]?.remove(product)
         } else {
@@ -192,9 +207,10 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
         }
 
         init {
-            itemView.topadsShimmer.run {
+            itemView.findViewById<LoaderUnify>(R.id.topadsShimmer)?.run {
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.topads_headline_item_product_card_height)
+                layoutParams.height =
+                    context.resources.getDimensionPixelSize(R.dimen.topads_headline_item_product_card_height)
             }
         }
     }
@@ -204,33 +220,53 @@ class ProductListAdapter(var list: ArrayList<TopAdsProductModel>,
         when (i) {
             1 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating1)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             2 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating2)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             3 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating3)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             4 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating4)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
             5 -> {
                 if (show)
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
                 else
-                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5).setImageDrawable(AppCompatResources.getDrawable(ratingView.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
+                    ratingView.findViewById<ImageUnify>(R.id.imageViewRating5)
+                        .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
+                            com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
         }
     }
