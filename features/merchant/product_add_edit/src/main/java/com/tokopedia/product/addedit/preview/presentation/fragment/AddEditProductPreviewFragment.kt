@@ -1644,11 +1644,11 @@ class AddEditProductPreviewFragment :
         val primaryClickAction: () -> Unit
         when (stockStatus) {
             VariantStockStatus.ALL_EMPTY -> {
+                titleText = getString(R.string.title_dialog_desc_activate_variant_status_all_empty_mainapp)
                 if (GlobalConfig.isSellerApp()) {
                     descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty)
                     primaryClickAction = { showVariantDetailActivity() }
                 } else {
-                    titleText = getString(R.string.title_dialog_desc_activate_variant_status_all_empty_mainapp)
                     descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty_mainapp)
                     primaryClickAction = { goToSellerAppEditProduct(viewModel.getProductId()) }
                 }

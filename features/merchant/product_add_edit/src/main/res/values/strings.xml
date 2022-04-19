@@ -87,6 +87,10 @@
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas min. Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
+    <string name="title_edit_price_at_variant_detail_page">Yakin ingin keluar ke halaman varian?</string>
+    <string name="description_edit_price_at_variant_detail_page">Datamu tidak akan tersimpan jika kamu keluar dari halaman ini.</string>
+    <string name="label_cancel_edit_price_at_variant_detail_page">Batal</string>
+    <string name="label_agree_edit_price_at_variant_detail_page">Ya, Keluar</string>
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
