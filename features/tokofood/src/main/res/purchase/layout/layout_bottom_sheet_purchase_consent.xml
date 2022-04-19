@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_consent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_consent_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/image_consent"
+        app:typographyType="heading_2"
+        tools:layout_editor_absoluteX="16dp"
+        android:text="Pesanan TokoFood kamu disediakan oleh Partner GoFood" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_consent_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_consent_title"
+        app:typographyType="body_2"
+        android:text="Biar pengirimanmu lancar, sambungin akun Gojek kamu dulu. Kalau belum punya akun, kami akan buatkan untukmu." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dotted_line_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxLines="1"
+        android:text="------------------------------------------------------------------------------------------"
+        android:textColor="@color/Unify_NN300"
+        app:layout_constraintTop_toBottomOf="@+id/text_consent_description"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_consent_agreement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dotted_line_top" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_consent_agreement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_consent_agreement"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_consent_agreement"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_consent_agreement"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:text="Saya setuju untuk kasih kontak saya" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dotted_line_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:text="------------------------------------------------------------------------------------------"
+        android:textColor="@color/Unify_NN300"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_consent_agreement" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Lanjut"
+        app:layout_constraintTop_toBottomOf="@+id/dotted_line_bottom"
+        tools:layout_editor_absoluteX="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
