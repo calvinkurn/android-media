@@ -17,34 +17,37 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        var oldName = ""
-        var chances = ""
+	val bundle = Bundle()
+	if (intent.extras != null) {
+	    bundle.putAll(intent.extras)
+	}
+	var oldName = ""
+	var chances = ""
 
-        try {
-            oldName = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
-            chances = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
-        } finally {
-            bundle.putString(ApplinkConstInternalGlobal.PARAM_FULL_NAME, oldName)
-            bundle.putString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME, chances)
-        }
+	try {
+	    oldName = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_FULL_NAME)
+		.toString()
+	    chances =
+		intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME)
+		    .toString()
+	} finally {
+	    bundle.putString(ApplinkConstInternalGlobal.PARAM_FULL_NAME, oldName)
+	    bundle.putString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME, chances)
+	}
 
-        return ChangeNameFragment.createInstance(bundle)
+	return ChangeNameFragment.createInstance(bundle)
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                    .build()
+	return DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        ChangeNameTracker().back()
+	super.onBackPressed()
+	ChangeNameTracker().back()
     }
 
 }

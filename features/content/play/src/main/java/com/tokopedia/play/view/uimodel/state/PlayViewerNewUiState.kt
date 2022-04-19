@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.uimodel.state
 
-import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
@@ -10,7 +9,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
@@ -71,3 +69,10 @@ data class PlayTitleUiState(
 data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
+
+enum class KebabMenuType{
+    ThreeDots,
+    UserReportList,
+    UserReportSubmission
+}
+

@@ -1,7 +1,5 @@
 package com.tokopedia.homenav.mainnav.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -140,6 +138,12 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetAffiliateUserUseCase(graphqlRepository: GraphqlRepository): GetAffiliateUserUseCase{
+        return GetAffiliateUserUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
@@ -148,7 +152,8 @@ class MainNavUseCaseModule {
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
             getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
-            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
+            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase,
+            getAffiliateUserUseCase: GetAffiliateUserUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
@@ -158,7 +163,8 @@ class MainNavUseCaseModule {
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
                 getWalletEligibilityUseCase = getWalletEligibilityUseCase,
-                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+                getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
     @MainNavScope
@@ -168,16 +174,14 @@ class MainNavUseCaseModule {
             userInfoUseCase: GetUserInfoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getShopInfoUseCase: GetShopInfoUseCase,
-            userSession: UserSessionInterface,
-            @ApplicationContext context: Context
+            getAffiliateUserUseCase: GetAffiliateUserUseCase
     ): GetProfileDataCacheUseCase {
         return GetProfileDataCacheUseCase(
                 accountHeaderMapper = accountHeaderMapper,
                 getUserInfoUseCase = userInfoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getShopInfoUseCase = getShopInfoUseCase,
-                userSession = userSession,
-                context = context
+                getAffiliateUserUseCase = getAffiliateUserUseCase
         )
     }
 }

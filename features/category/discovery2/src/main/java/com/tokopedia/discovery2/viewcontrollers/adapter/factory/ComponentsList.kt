@@ -68,6 +68,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductListEmptyState(R.layout.product_list_state, ComponentNames.ProductListEmptyState.componentName),
     SaleEndState(R.layout.sale_end_state, ComponentNames.SaleEndState.componentName),
 
+    MixLeftEmptyItem(R.layout.disco_mix_left_empty_item,ComponentNames.MixLeftEmptyItem.componentName),
+
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
