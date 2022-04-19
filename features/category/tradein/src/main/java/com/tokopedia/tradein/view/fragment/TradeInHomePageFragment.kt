@@ -2,9 +2,11 @@ package com.tokopedia.tradein.view.fragment
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -49,6 +51,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import com.tokopedia.utils.view.DoubleTextView
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -292,9 +295,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             setUpLogisticOptions(tradeInDetail.logisticOptions, tradeInDetail.logisticMessage)
             view?.apply {
                 (findViewById<ImageUnify>(R.id.banner_image)).setImageUrl(tradeInDetail.bannerURL)
-                findViewById<Typography>(R.id.model_text).text = tradeInDetail.deviceAttribute.model
-                findViewById<Typography>(R.id.imei_text).text =
-                    tradeInDetail.deviceAttribute.imei.firstOrNull() ?: "-"
                 tradeInDetail.activePromo.let { code ->
                     findViewById<Typography>(R.id.promo_title).text = code.title
                     findViewById<Typography>(R.id.promo_detail).text = code.subtitle
@@ -462,6 +462,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
         tradeInAnalytics.openTradeInStartPage(logistic.is3PL, tradeInHomePageVM.imei, logistic.isDiagnosed)
         view?.apply {
             tradeInHomePageVM.campaginTagId = logistic.campaignTagId
+            setUpDiagnosticReviewData(logistic.diagnosticReview)
             findViewById<IconUnify>(R.id.iv_info).setOnClickListener {
                 val bottomSheet = TradeInDiagnosticReviewBS.newInstance(logistic.diagnosticReview)
                 bottomSheet.show(childFragmentManager, "")
@@ -486,8 +487,6 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(logistic.finalPrice.minus(tradeInHomePageVM.data?.productPrice ?: 0.0), true)
                 )
             }
-            findViewById<Typography>(R.id.phone_detail_estimated_price).text =
-                logistic.diagnosticPriceFmt.ifEmpty { "-" }
 
             findViewById<Label>(R.id.label_discount).text = logistic.discountPercentageFmt
             findViewById<TimerUnifySingle>(R.id.tradein_count_down).let { countDownView ->
@@ -509,6 +508,37 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     findViewById<Typography>(R.id.tradein_product_info_text).show()
                     countDownView?.hide()
                 }
+            }
+        }
+    }
+
+    private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
+        val textSize = 14.0f
+        if(diagnosticReview.size>=3) {
+            for (i in 0..2) {
+                val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
+                doubleTextView.apply {
+                    setTopText(diagnosticReview[i].field)
+                    setTopTextSize(textSize)
+                    setTopTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        )
+                    )
+                    setBottomTextSize(textSize)
+                    setBottomTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        )
+                    )
+                    setBottomTextStyle("bold")
+                    setBottomText(diagnosticReview[i].value)
+                    setBottomGravity(Gravity.END)
+                }
+                view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)
+                    ?.addView(doubleTextView)
             }
         }
     }
