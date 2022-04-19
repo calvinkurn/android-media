@@ -4,17 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.otp.common.idling_resource.TkpdIdlingResource
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetPinStatusUseCase
@@ -22,7 +25,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -253,7 +255,16 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            var params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
+            if(mode == OtpConstant.OtpMode.PIN) {
+                if(isNeedHash(msisdn.ifEmpty { email }, if(msisdn.isNotEmpty()) "phone" else "email")) {
+                    val keyData = getPublicKey()
+                    val encryptedPin = RsaUtils.encryptWithSalt(code, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+                    if(encryptedPin.isNotEmpty()) {
+                        params = otpValidateUseCase.getParams("", otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
+                    }
+                }
+            }
             val data = otpValidateUseCase.getData(params).data
             when {
                 data.success -> {
@@ -275,16 +286,18 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
-    fun getPinStatus(id: String, type: String) {
-        launch {
-            try {
-                val param = PinStatusParam(id = id, type = type)
-                val result = getPinStatusUseCase(param)
-
-            } catch (e: Exception) {
-
-            }
+    private suspend fun isNeedHash(id: String, type: String): Boolean {
+        return try {
+            val param = PinStatusParam(id = id, type = type)
+            getPinStatusUseCase(param).data.isNeedHash
+        } catch (e: Exception) {
+            false
         }
+    }
+
+    private suspend fun getPublicKey(): KeyData {
+        generatePublicKeyUseCase.setParams("pinv2")
+        return generatePublicKeyUseCase.executeOnBackground().keyData
     }
 
     public override fun onCleared() {

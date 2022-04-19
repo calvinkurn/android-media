@@ -1,10 +1,5 @@
 package com.tokopedia.encryption.security
 
-/**
- * Created by Yoris Prayogo on 16/02/21.
- * Copyright (c) 2021 PT. Tokopedia All rights reserved.
- */
-
 import android.util.Base64
 import java.security.KeyFactory
 import java.security.interfaces.RSAPublicKey
@@ -32,6 +27,28 @@ object RsaUtils {
                 convertedPublicKey?.run {
                     return encryptWithRSA(finalMsg, convertedPublicKey)
                 }
+            }
+        } catch (e: Exception){
+            e.printStackTrace()
+            return ""
+        }
+        return ""
+    }
+
+    fun encryptWithSalt(message: String, publicKey: String, salt: String): String {
+        try {
+            if (message.isNotEmpty()) {
+                val finalMsg = (message + salt).sha256()
+                val decodedPublicKey: ByteArray = Base64.decode(
+                    publicKey.toByteArray(),
+                    Base64.DEFAULT
+                )
+                val cleanedPublicKey = cleanKey(String(decodedPublicKey))
+                val decodedCleanKey = Base64.decode(cleanedPublicKey, Base64.DEFAULT)
+                val keySpec = X509EncodedKeySpec(decodedCleanKey)
+                val keyFactory = KeyFactory.getInstance(RSA_ALGORITHM)
+                val finalPublicKey = keyFactory.generatePublic(keySpec) as RSAPublicKey
+                return encryptWithRSA(finalMsg, finalPublicKey)
             }
         } catch (e: Exception){
             e.printStackTrace()

@@ -17,7 +17,7 @@ class GetPinStatusUseCase @Inject constructor(@ApplicationContext val repository
     }
 
     override fun graphqlQuery(): String = """
-	mutation pin_v2_check(${'$'}id: String!, ${'$'}type: String!) {
+	query pin_v2_check(${'$'}id: String!, ${'$'}type: String!) {
 	  pinV2Check(id: ${'$'}id, type:${'$'}type) {
 	    uh
 	    error_message
