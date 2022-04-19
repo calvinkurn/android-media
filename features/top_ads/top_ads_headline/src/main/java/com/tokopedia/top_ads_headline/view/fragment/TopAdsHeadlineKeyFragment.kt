@@ -37,8 +37,9 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -56,16 +57,16 @@ private const val CLICK_LANJUTKAN = "click - lanjutkan on pilih kata kunci page"
 
 class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
-    private lateinit var editText: com.tokopedia.unifycomponents.TextFieldUnify
-    private lateinit var div: com.tokopedia.unifycomponents.DividerUnify
-    private lateinit var addBtn: com.tokopedia.unifycomponents.UnifyButton
-    private lateinit var selectedTitle: Typography
-    private lateinit var rvSelectedKeywordList: androidx.recyclerview.widget.RecyclerView
-    private lateinit var recomTitle: Typography
-    private lateinit var rvKeywordList: androidx.recyclerview.widget.RecyclerView
-    private lateinit var tipBtn: com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-    private lateinit var btnNext: com.tokopedia.unifycomponents.UnifyButton
-    private lateinit var selectKeyInfo: Typography
+    private var editText: TextFieldUnify?= null
+    private var div: DividerUnify?= null
+    private var addBtn: UnifyButton?= null
+    private var selectedTitle: Typography ?= null
+    private var rvSelectedKeywordList: RecyclerView?= null
+    private var recomTitle: Typography ?= null
+    private var rvKeywordList: RecyclerView ?= null
+    private var tipBtn: FloatingButtonUnify?= null
+    private var btnNext: UnifyButton ?= null
+    private var selectKeyInfo: Typography ?= null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -164,7 +165,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                editText.textFiedlLabelText.text =
+                editText?.textFiedlLabelText?.text =
                     getString(R.string.topads_headline_enter_keyword_hint)
                 if (s?.trim()?.isNotEmpty() == true) {
                     val errMax = checkMaxSelectedValue()
@@ -174,7 +175,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                         editText?.setError(false)
                         editText?.setMessage("")
                     } else {
-                        addBtn.isEnabled = false
+                        addBtn?.isEnabled = false
                         editText?.setError(true)
                         if (error != null)
                             editText?.setMessage(error.toString())
@@ -186,7 +187,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 }
             }
         })
-        btnNext.setOnClickListener {
+        btnNext?.setOnClickListener {
             gotoNextPage()
         }
     }
@@ -217,7 +218,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                     imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tipBtn?.addItem(tooltipView)
-        tipBtn.setOnClickListener {
+        tipBtn?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS,
                 "{${userSession.shopId} - {${stepperModel?.groupName}}",
                 userSession.userId)
@@ -330,22 +331,22 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setAdapter() {
-        rvKeywordList.adapter = keywordListAdapter
-        rvKeywordList.layoutManager = LinearLayoutManager(context)
-        rvSelectedKeywordList.adapter = keywordSelectedAdapter
-        rvSelectedKeywordList.layoutManager = LinearLayoutManager(context)
+        rvKeywordList?.adapter = keywordListAdapter
+        rvKeywordList?.layoutManager = LinearLayoutManager(context)
+        rvSelectedKeywordList?.adapter = keywordSelectedAdapter
+        rvSelectedKeywordList?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun addManualKeywords() {
         if (keywordSelectedAdapter.items.find {
-                it.keyword.trim() == editText.textFieldInput.text.toString().trim()
+                it.keyword.trim() == editText?.textFieldInput?.text.toString().trim()
             } == null) {
             if (keywordListAdapter.items.find {
-                    it.keyword.trim() == editText.textFieldInput.text.toString().trim()
+                    it.keyword.trim() == editText?.textFieldInput?.text.toString().trim()
                 } == null) {
-                selectedTitle.visibility = View.VISIBLE
+                selectedTitle?.visibility = View.VISIBLE
                 val item = KeywordDataItem()
-                item.keyword = editText.textFieldInput.text.toString()
+                item.keyword = editText?.textFieldInput?.text.toString()
                 item.totalSearch = SEARCH_NOT_AVAILABLE
                 item.fromSearch = true
                 item.bidSuggest = minSuggestedBid.toString()
@@ -379,8 +380,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun onEmptySuggestion() {
-        recomTitle.visibility = View.GONE
-        rvKeywordList.visibility = View.GONE
+        recomTitle?.visibility = View.GONE
+        rvKeywordList?.visibility = View.GONE
     }
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
@@ -425,11 +426,11 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setCount() {
-        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count),
+        selectedTitle?.text = String.format(getString(R.string.topads_common_selected_list_count),
             keywordSelectedAdapter.itemCount)
-        selectedTitle.visibility =
+        selectedTitle?.visibility =
             if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
-        selectKeyInfo.text =
+        selectKeyInfo?.text =
             String.format(getString(R.string.format_selected_keyword), getSelectedKeywords().size)
     }
 
