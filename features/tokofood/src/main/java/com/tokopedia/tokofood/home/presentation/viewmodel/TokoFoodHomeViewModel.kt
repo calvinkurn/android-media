@@ -11,14 +11,17 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.data.GetTokoFoodHomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
+import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoFoodHomeViewModel @Inject constructor(dispatchers: CoroutineDispatchers):
-    BaseViewModel(dispatchers.main) {
+class TokoFoodHomeViewModel @Inject constructor(
+    private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
+    dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     val homeLayoutList: LiveData<Result<TokoFoodHomeListUiModel>>
         get() = _homeLayoutList
@@ -42,8 +45,9 @@ class TokoFoodHomeViewModel @Inject constructor(dispatchers: CoroutineDispatcher
 
             homeLayoutItemList.clear()
 
-            val homeLayoutMockResponse = Gson().fromJson(DummyData.dummyHomeData, GetTokoFoodHomeLayoutResponse::class.java)
-            homeLayoutItemList.mapHomeLayoutList(homeLayoutMockResponse.response.data)
+            val homeLayoutResponse = tokoFoodDynamicChanelUseCase.execute()
+
+            homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
 
             val data = TokoFoodHomeListUiModel(
                 items = getHomeVisitableList(),

@@ -1,9 +1,12 @@
 package com.tokopedia.tokofood.home.domain.query
 
-internal object TokoFoodHomeDynamicChannel {
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
-    val QUERY = """
-       query getDynamicHomeChannel(
+object TokoFoodHomeDynamicChannelQuery: GqlQueryInterface {
+
+    private const val OPERATION_NAME = "getDynamicHomeChannel"
+    private val QUERY = """
+       query $OPERATION_NAME(
          ${'$'}token: String, 
          ${'$'}numOfChannel: Int, 
          ${'$'}location: String
@@ -111,4 +114,11 @@ internal object TokoFoodHomeDynamicChannel {
          }
        }
     """.trimIndent()
+
+    @JvmStatic
+    fun createRequestParams() = HashMap<String, Any>()
+
+    override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
+    override fun getQuery(): String = QUERY
+    override fun getTopOperationName(): String = OPERATION_NAME
 }

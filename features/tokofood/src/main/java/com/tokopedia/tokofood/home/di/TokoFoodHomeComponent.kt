@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [TokoFoodHomeViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [TokoFoodHomeViewModelModule::class, TokoFoodHomeModule::class], dependencies = [BaseAppComponent::class])
 interface TokoFoodHomeComponent {
     fun inject(fragment: TokoFoodHomeFragment)
 }
