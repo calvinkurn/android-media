@@ -21,10 +21,11 @@
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/view_game_reward"
         app:layout_constraintEnd_toEndOf="@+id/quiz_header"
         app:layout_constraintStart_toStartOf="@+id/quiz_header"
         app:layout_constraintTop_toBottomOf="@+id/quiz_header"
+        android:layout_marginBottom="@dimen/play_dp_12"
         app:rll_bottomLeftRadius="@dimen/play_dp_12"
         app:rll_bottomRightRadius="@dimen/play_dp_12">
 
@@ -46,12 +47,16 @@
             android:visibility="visible"
             tools:listitem="@layout/item_quiz_option" />
 
-        <include
-            android:id="@+id/view_game_reward"
-            layout="@layout/view_game_reward"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            tools:visibility="visible" />
     </com.tokopedia.play_common.view.RoundedLinearLayout>
+
+    <include
+        android:id="@+id/view_game_reward"
+        layout="@layout/view_game_reward"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ll_quiz_content"
+        app:layout_constraintStart_toStartOf="@+id/ll_quiz_content"
+        tools:visibility="visible" />
 </merge>

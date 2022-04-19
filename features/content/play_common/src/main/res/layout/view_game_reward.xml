@@ -26,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_6"
-        app:typographyType="heading_3"
+        app:typographyType="heading_5"
         app:layout_constraintBottom_toBottomOf="@+id/iv_game_reward"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
