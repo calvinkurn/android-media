@@ -8,7 +8,7 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
+    android:layout_margin="4dp"
     android:foreground="?attr/selectableItemBackground"
     tools:layout_height="wrap_content">
 
