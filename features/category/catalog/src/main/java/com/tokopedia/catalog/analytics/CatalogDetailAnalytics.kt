@@ -194,7 +194,7 @@ object CatalogDetailAnalytics {
         eventModel.key = impressionUniqueKey
         val customDimensionMap = HashMap<String, Any>()
         customDimensionMap[EventKeys.KEY_CATALOG_ID] = catalogId
-        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE_CATALOG
+        customDimensionMap[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         customDimensionMap[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         customDimensionMap[EventKeys.KEY_USER_ID] = userId
 
