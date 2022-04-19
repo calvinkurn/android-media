@@ -174,4 +174,38 @@ class PhoneCodePickerViewModelTest {
 
         coVerify { travelCountryCodeUseCase.execute(rawQuery) }
     }
+
+    @Test
+    fun convertKeywordToInt_isSuccess(){
+        //given
+        val keyword = "62"
+        val expected = keyword.toInt()
+        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
+        method.isAccessible = true
+        val param = arrayOfNulls<String>(1)
+        param[0] = keyword
+
+        //when
+        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
+
+        //then
+        assertEquals(result, expected)
+    }
+
+    @Test
+    fun convertKeywordToInt_isFailed(){
+        //given
+        val keyword = "*(&"
+        val expected = 0
+        val method = phoneCodePickerViewModel.javaClass.getDeclaredMethod("convertKeywordToInt", String::class.java)
+        method.isAccessible = true
+        val param = arrayOfNulls<String>(1)
+        param[0] = keyword
+
+        //when
+        val result: Int = method.invoke(phoneCodePickerViewModel, *param) as Int
+
+        //then
+        assertEquals(result, expected)
+    }
 }
