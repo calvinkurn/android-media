@@ -49,6 +49,7 @@ class QuizWidgetView : ConstraintLayout {
 
     init {
         binding.rvQuizQuestion.apply {
+            itemAnimator = null
             adapter = quizAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(QuizOptionItemDecoration(context))
