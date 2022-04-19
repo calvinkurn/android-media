@@ -41,7 +41,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_headline_keyword_list_fragment.*
 import javax.inject.Inject
 
 /**
@@ -57,8 +56,20 @@ private const val CLICK_LANJUTKAN = "click - lanjutkan on pilih kata kunci page"
 
 class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>() {
 
+    private lateinit var editText: com.tokopedia.unifycomponents.TextFieldUnify
+    private lateinit var div: com.tokopedia.unifycomponents.DividerUnify
+    private lateinit var addBtn: com.tokopedia.unifycomponents.UnifyButton
+    private lateinit var selectedTitle: Typography
+    private lateinit var rvSelectedKeywordList: androidx.recyclerview.widget.RecyclerView
+    private lateinit var recomTitle: Typography
+    private lateinit var rvKeywordList: androidx.recyclerview.widget.RecyclerView
+    private lateinit var tipBtn: com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+    private lateinit var btnNext: com.tokopedia.unifycomponents.UnifyButton
+    private lateinit var selectKeyInfo: Typography
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
     private var minSuggestedBid = "0"
@@ -101,7 +112,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         totalKeywordList.clear()
         totalKeywordList.addAll(getManualAddedKeywords())
         totalKeywordList.addAll(getSelectedKeywords())
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", totalKeywordList, userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordCLickEvent(
+            CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+            totalKeywordList, userSession.userId)
     }
 
     private fun getManualAddedKeywords(): MutableList<KeywordDataItem> {
@@ -117,11 +130,11 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                     TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
                         action = ACTION_CREATE,
                         keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
-                                type = POSITIVE_PHRASE,
-                                status = ACTIVE_STATUS,
-                                priceBid = it.bidSuggest.toLong(),
-                                tag = it.keyword)
-                ))
+                            type = POSITIVE_PHRASE,
+                            status = ACTIVE_STATUS,
+                            priceBid = it.bidSuggest.toLong(),
+                            tag = it.keyword)
+                    ))
             }
         }
     }
@@ -151,7 +164,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                editText.textFiedlLabelText.text = getString(R.string.topads_headline_enter_keyword_hint)
+                editText.textFiedlLabelText.text =
+                    getString(R.string.topads_headline_enter_keyword_hint)
                 if (s?.trim()?.isNotEmpty() == true) {
                     val errMax = checkMaxSelectedValue()
                     val error = Utils.validateKeyword(context, s)
@@ -193,28 +207,41 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setToolTip() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_keyword_bottomsheet_title1)
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
-        }
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText?.text =
+                        getString(R.string.topads_headline_keyword_bottomsheet_title1)
+                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(this.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
         tipBtn?.addItem(tooltipView)
         tipBtn.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS, "{${userSession.shopId} - {${stepperModel?.groupName}}", userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS,
+                "{${userSession.shopId} - {${stepperModel?.groupName}}",
+                userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title1))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc4, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc4,
+                    R.drawable.topads_create_ic_checklist))
                 add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title2))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc5, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc5,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
         }
     }
@@ -234,14 +261,31 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         return TopAdsHeadlineKeyFragment::class.java.simpleName
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_headline_keyword_list_fragment, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view =
+            inflater.inflate(R.layout.topads_headline_keyword_list_fragment, container, false)
+        editText = view.findViewById(R.id.editText)
+        div = view.findViewById(R.id.div)
+        addBtn = view.findViewById(R.id.addBtn)
+        selectedTitle = view.findViewById(R.id.selectedTitle)
+        rvSelectedKeywordList = view.findViewById(R.id.rvSelectedKeywordList)
+        recomTitle = view.findViewById(R.id.recomTitle)
+        rvKeywordList = view.findViewById(R.id.rvKeywordList)
+        tipBtn = view.findViewById(R.id.tipBtn)
+        btnNext = view.findViewById(R.id.btnNext)
+        selectKeyInfo = view.findViewById(R.id.selectKeyInfo)
+        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
-        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onKeywordBidChange, stepperModel?.selectedKeywords)
+        keywordSelectedAdapter =
+            TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onKeywordBidChange)
+        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked,
+            ::onKeywordBidChange,
+            stepperModel?.selectedKeywords)
         getLatestBid()
     }
 
@@ -249,7 +293,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         super.onViewCreated(view, savedInstanceState)
         if (stepperModel?.selectedProductIds?.isEmpty() == false) {
             val list: MutableList<String>? = stepperModel?.selectedProductIds
-            viewModel.getSuggestionKeyword(list?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+            viewModel.getSuggestionKeyword(list?.joinToString(","),
+                0,
+                ::onSuccessSuggestionKeywords,
+                ::onEmptySuggestion)
         } else
             onEmptySuggestion()
     }
@@ -269,12 +316,14 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
             it
         }
         val suggestions = DataSuggestions(TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
-        viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
+        viewModel.getBidInfo(listOf(suggestions),
+            this::onSuccessSuggestion,
+            this::onEmptySuggestion)
     }
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
-                data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
+            data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: "0")
         stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: "0"
         minSuggestedBid = data.firstOrNull()?.minBid ?: "0"
@@ -288,8 +337,12 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun addManualKeywords() {
-        if (keywordSelectedAdapter.items.find { it.keyword.trim() == editText.textFieldInput.text.toString().trim() } == null) {
-            if (keywordListAdapter.items.find { it.keyword.trim() == editText.textFieldInput.text.toString().trim() } == null) {
+        if (keywordSelectedAdapter.items.find {
+                it.keyword.trim() == editText.textFieldInput.text.toString().trim()
+            } == null) {
+            if (keywordListAdapter.items.find {
+                    it.keyword.trim() == editText.textFieldInput.text.toString().trim()
+                } == null) {
                 selectedTitle.visibility = View.VISIBLE
                 val item = KeywordDataItem()
                 item.keyword = editText.textFieldInput.text.toString()
@@ -299,7 +352,10 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
                 if (!addedKeywords.contains(item)) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TAMBAH, "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${item.keyword}}", userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
+                        CLICK_TAMBAH,
+                        "{${userSession.shopId}} - {${stepperModel?.groupName}} - {${item.keyword}}",
+                        userSession.userId)
                     addedKeywords.add(item)
                 }
                 setCount()
@@ -314,8 +370,11 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun showAlreadyExistError() {
         view?.let { it1 ->
             Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
-            Toaster.build(it1, getString(R.string.topads_headline_keyword_already_exist), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                    getString(R.string.topads_headline_oke_button)).show()
+            Toaster.build(it1,
+                getString(R.string.topads_headline_keyword_already_exist),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.topads_headline_oke_button)).show()
         }
     }
 
@@ -326,10 +385,14 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
         keywordListAdapter.setList(list, list.firstOrNull()?.minBid?.toIntOrZero()
-                ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
+            ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
         list.forEachIndexed { index, keywordData ->
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(VIEW_PILIH_KATA_KUNCI, "{${userSession.shopId}} - {${stepperModel?.groupName}}", keywordData.keywordData, userSession.userId)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(
+                VIEW_PILIH_KATA_KUNCI,
+                "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+                keywordData.keywordData,
+                userSession.userId)
         }
     }
 
@@ -362,13 +425,17 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setCount() {
-        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count), keywordSelectedAdapter.itemCount)
-        selectedTitle.visibility = if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
-        selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), getSelectedKeywords().size)
+        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count),
+            keywordSelectedAdapter.itemCount)
+        selectedTitle.visibility =
+            if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
+        selectKeyInfo.text =
+            String.format(getString(R.string.format_selected_keyword), getSelectedKeywords().size)
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 }
