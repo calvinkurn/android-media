@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/spacing_lvl4"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -25,7 +25,7 @@
         android:id="@+id/timer_quiz_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:timer_unify_single_type="minute_digit"
         app:timer_unify_single_variant="main"
         tools:timer_unify_single_remainingMinutes="10" />

@@ -26,10 +26,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/iconUnify"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_interactive"
         app:layout_constraintEnd_toEndOf="@+id/tv_quiz_leaderboard_title"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iconUnify"
+        app:layout_constraintStart_toEndOf="@+id/iv_interactive"
         app:layout_constraintTop_toTopOf="@+id/iv_interactive"
         tools:text="Album Seventeen: Hengg:rae" />
 
@@ -37,7 +37,7 @@
         android:id="@+id/iv_interactive"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintStart_toStartOf="@+id/tv_quiz_leaderboard_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_quiz_leaderboard_title"
         tools:icon_name="GIFT" />
@@ -46,7 +46,7 @@
         android:id="@+id/rv_response"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="@id/tv_quiz_leaderboard_title"
         app:layout_constraintHorizontal_bias="0.0"

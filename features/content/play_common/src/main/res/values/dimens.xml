@@ -60,5 +60,6 @@
 
     <!-- Giveaway -->
     <dimen name="play_giveaway_tap_bg_size">72dp</dimen>
+    <dimen name="play_quiz_option_loader_size">21dp</dimen>
 
 </resources>
