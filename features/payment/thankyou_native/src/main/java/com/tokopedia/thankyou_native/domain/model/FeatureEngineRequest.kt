@@ -31,7 +31,13 @@ data class FeatureEngineRequestParameters(
         @SerializedName("donation")
         val donation : String,
         @SerializedName("user_id")
-        val userId : String
+        val userId : String,
+        @SerializedName("is_RM")
+        val isRM : String,
+        @SerializedName("is_PM")
+        val isPM : String,
+        @SerializedName("is_OS")
+        val isOS : String
 )
 
 class FeatureEngineRequestOperators
