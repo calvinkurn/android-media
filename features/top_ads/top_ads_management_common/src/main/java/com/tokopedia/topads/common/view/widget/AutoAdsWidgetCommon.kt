@@ -39,10 +39,10 @@ import com.tokopedia.topads.common.di.module.TopAdsCommonModule
 import com.tokopedia.topads.common.view.AutoAdsWidgetViewModelCommon
 import com.tokopedia.topads.common.view.sheet.ManualAdsConfirmationCommonSheet
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_common_auto_edit_status_active_widget.view.*
 import javax.inject.Inject
 
 /**
@@ -241,9 +241,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             }
         }
         spannableText.setSpan(clickableSpan,
-            startIndex,
-            endIndex,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         desc.movementMethod = LinkMovementMethod.getInstance()
         desc.append(spannableText)
     }
@@ -343,7 +341,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             it.findViewById<Typography>(R.id.progress_status2)?.text =
                 String.format(view.context.resources.getString(R.string.topads_dash_group_item_progress_status),
                     currentBudget)
-            it.progress_bar.setValue(dailyUsage, true)
+            it.findViewById<ProgressBarUnify>(R.id.progress_bar)?.setValue(dailyUsage, true)
             setSwitchAction(view)
         }
     }
@@ -355,11 +353,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun switchToManual() {
         widgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-            TOGGLE_OFF,
-            CHANNEL,
-            currentBudget,
-            userSession.shopId.toInt(),
-            SOURCE))
+            TOGGLE_OFF, CHANNEL, currentBudget, userSession.shopId.toInt(), SOURCE))
         )
     }
 
