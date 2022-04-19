@@ -15,7 +15,7 @@ class GetProductEducationalUseCase @Inject constructor(graphqlRepository: Graphq
     companion object {
         private const val TYPE_KEY = "type"
         const val QUERY = """
-            query PdpGetEducationalBottomsheet(${'$'}type: String!) {
+            query PdpGetEducationalBottomsheet(${'$'}type: String) {
                 pdpGetEducationalBottomsheet(type: ${'$'}type){
               	title
               	description
@@ -27,6 +27,7 @@ class GetProductEducationalUseCase @Inject constructor(graphqlRepository: Graphq
             		webLink
             	}
             }
+        }
         """
 
         fun createParams(type: String) = mutableMapOf<String, Any>().apply {

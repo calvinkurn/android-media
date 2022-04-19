@@ -117,6 +117,10 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     private fun goToApplinkOrWebView(applink: String, webLink: String) {
         context?.let {
+            if (applink.isEmpty() && webLink.isEmpty()) {
+                dismiss()
+                return@let
+            }
             if (applink.isNotEmpty()) {
                 route(applink)
             } else {
