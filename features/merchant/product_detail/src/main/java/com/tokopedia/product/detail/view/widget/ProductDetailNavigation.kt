@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.widget
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -104,6 +103,7 @@ class ProductDetailNavigation(
             smoothScroller.targetPosition = position
             enableScrollUpListener = false
             enableContentChangeListener = false
+            enableTouchScroll(false)
             layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
@@ -129,6 +129,10 @@ class ProductDetailNavigation(
         isVisibile = show
     }
 
+    private fun enableTouchScroll(isEnable: Boolean) {
+        recyclerView?.suppressLayout(!isEnable)
+    }
+
     data class Item(
         val label: String,
         var position: Int
@@ -139,6 +143,7 @@ class ProductDetailNavigation(
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 enableScrollUpListener = true
+                enableTouchScroll(true)
 
                 showJob?.cancel()
                 val firstPosition = getFirstVisibleItemPosition(recyclerView)

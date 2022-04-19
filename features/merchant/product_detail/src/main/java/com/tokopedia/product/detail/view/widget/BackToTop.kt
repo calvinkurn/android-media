@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -22,6 +23,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     private var recyclerView: RecyclerView? = null
     private var listener: DynamicProductDetailListener? = null
 
+    private val linearSmoothScroller = LinearSmoothScroller(context)
     private val onScrollListener = OnScrollListener()
 
     private var impressNavigation = false
@@ -30,8 +32,8 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     init {
         addView(view)
         view.setOnClickListener {
-            recyclerView?.smoothScrollToPosition(0)
             listener?.onClickProductDetailnavigation(BUTTON_POSITION, BUTTON_LABEL)
+            smoothScrollToTop()
         }
     }
 
@@ -63,7 +65,25 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         }
     }
 
+    private fun enableTouchScroll(isEnabled: Boolean) {
+        recyclerView?.suppressLayout(!isEnabled)
+    }
+
+    private fun smoothScrollToTop() {
+        recyclerView?.apply {
+            linearSmoothScroller.targetPosition = 0
+            enableTouchScroll(false)
+            layoutManager?.startSmoothScroll(linearSmoothScroller)
+        }
+    }
+
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                enableTouchScroll(true)
+            }
+        }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             resolveButtonVisibility(recyclerView)
