@@ -49,14 +49,10 @@ open class OtpValidateUseCase @Inject constructor(
 	    PARAM_SIGNATURE to signature,
 	    PARAM_TIME_UNIX to timeUnix,
 	    PARAM_USERID to userId,
+	    PARAM_PIN to hashedPin,
+	    PARAM_PIN_HASH to hash,
+	    PARAM_USE_PIN_HASH to usePinHash
 	)
-
-	/* For hash PIN only */
-	if(hashedPin.isNotEmpty() && hash.isNotEmpty() && usePinHash) {
-	    param[PARAM_PIN] = hashedPin
-	    param[PARAM_PIN_HASH] = hash
-	    param[PARAM_USE_PIN_HASH] = usePinHash
-	}
 	return param
     }
 
