@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_minus12"
     android:layout_marginRight="@dimen/dp_minus12"
+    android:layout_marginTop="12dp"
     android:layout_marginBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -13,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:ellipsize="end"
@@ -52,7 +52,8 @@
         app:layout_constraintBottom_toBottomOf="@id/text_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_title"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Lihat Semua" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -58,7 +58,6 @@
     <string name="shop_product_showcase_empty_state_btn_primary">Kembali</string>
 
     <string name="favorited_shop_title">Followers Toko</string>
-    <string name="note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="see_label">Lihat</string>
@@ -68,7 +67,6 @@
     <string name="shop_info_label_manage_note">Atur</string>
     <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>
-    <string name="read">Baca</string>
     <string name="shop_page_label_follow">Follow</string>
     <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
@@ -80,7 +78,6 @@
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_shop_name">di %1s</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
-    <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
     <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang, <b>jutaan mimpi</b> berawal dari satu langkah kecil.Tambah produk pertamamu]]></string>
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_seller">Belum ada produk terjual nih</string>

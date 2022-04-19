@@ -137,7 +137,7 @@
                 android:layout_height="@dimen/tp_dp_20"
                 android:layout_gravity="center|end"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="-2dp"
+                android:layout_marginEnd="-4dp"
                 android:elevation="@dimen/unify_space_2" />
 
         </FrameLayout>

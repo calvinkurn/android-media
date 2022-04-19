@@ -48,7 +48,9 @@
         }
       ],
       "eventLabel": "",
-      "checkout_option": "view cart page"
+      "checkout_option": "view cart page",
+      "userId": ".+",
+      "promoFlag": "true|false"
     },
     {
       "eventCategory": "cart",
@@ -85,7 +87,9 @@
         }
       ],
       "eventLabel": "success - (.*)",
-      "checkout_option": "cart page loaded"
+      "checkout_option": "cart page loaded",
+      "userId": ".+",
+      "promoFlag": "true|false"
     }
   ],
   "readme": "Cart Page Tracking"

@@ -1,19 +1,12 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * Created by Yehezkiel on 06/05/21
@@ -23,19 +16,24 @@ class ItemVariantChipViewHolder(val view: View,
 
     companion object {
         val LAYOUT = R.layout.atc_variant_chip_viewholder
+
+        private const val ELLIPSIZE_VARIANT_NAME = 15
     }
 
-    private val txtChipVariant = view.findViewById<Typography>(R.id.txt_chip_variant)
-    private val promoChipVariant = view.findViewById<NotificationUnify>(R.id.promo_chip_variant)
-    private val containerChipVariant = view.findViewById<LinearLayout>(R.id.container_chip_variant)
+    private val chipVariant = view.findViewById<ChipsUnify>(R.id.atc_variant_chip)
 
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
     }
 
-    override fun bind(element: VariantOptionWithAttribute) = with(view) {
-        txtChipVariant.contentDescription = context.getString(R.string.atc_content_desc_txtChipVariant, element.variantName)
-        txtChipVariant.text = element.variantName
+    override fun bind(element: VariantOptionWithAttribute) = with(chipVariant) {
+        val image100 = element.image100
+        chip_image_icon.showIfWithBlock(image100.isNotEmpty()) {
+            loadImageFitCenter(image100)
+        }
+
+        chipText = ellipsize(element.variantName, ELLIPSIZE_VARIANT_NAME)
+
         setState(element)
     }
 
@@ -47,33 +45,32 @@ class ItemVariantChipViewHolder(val view: View,
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
-                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_disabled)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                chipVariant.chipType = ChipsUnify.TYPE_NORMAL
+                chipVariant.isDashed = true
             }
-            VariantConstant.STATE_SELECTED, VariantConstant.STATE_SELECTED_EMPTY -> {
-                if (context.isDarkMode()) {
-                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_dark)
-                } else {
-                    containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_selected_light)
-                }
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            VariantConstant.STATE_SELECTED_EMPTY -> {
+                chipVariant.chipType = ChipsUnify.TYPE_SELECTED
+                chipVariant.isDashed = true
+            }
+            VariantConstant.STATE_SELECTED -> {
+                chipVariant.chipType = ChipsUnify.TYPE_SELECTED
+                chipVariant.isDashed = false
                 setViewListener(element, element.currentState)
             }
             VariantConstant.STATE_UNSELECTED -> {
-                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_chip_unselected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                chipVariant.chipType = ChipsUnify.TYPE_NORMAL
+                chipVariant.isDashed = false
+            }
+            else -> {
+                chipVariant.chipType = ChipsUnify.TYPE_DISABLE
+                chipVariant.isDashed = false
             }
         }
     }
 
     private fun renderFlashSale(shouldRender: Boolean, isCampaignActive: Boolean) {
-        val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
-        if (shouldRender && isCampaignActive) {
-            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 6.toPx(), chipMargin.bottomMargin)
-            promoChipVariant.show()
-        } else {
-            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 12.toPx(), chipMargin.bottomMargin)
-            promoChipVariant.hide()
+        chipVariant.chip_new_notification.showIfWithBlock(shouldRender && isCampaignActive){
+            text = resources.getString(R.string.atc_variant_promo)
         }
     }
 
@@ -81,5 +78,11 @@ class ItemVariantChipViewHolder(val view: View,
         view.setOnClickListener {
             listener.onVariantClicked(element, state)
         }
+    }
+
+    private fun ellipsize(text: String, maxChar: Int): String{
+        return if(text.length > maxChar){
+            "${text.substring(0, maxChar)}..."
+        } else text
     }
 }

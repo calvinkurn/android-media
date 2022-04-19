@@ -1666,4 +1666,16 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             }
         }
     }
+
+    override fun getPromoFlag(): Boolean {
+        val cartListData = cartListData
+        val lastValidateUseResponse = lastValidateUseResponse
+        return if (isLastApplyResponseStillValid && cartListData != null) {
+            cartListData.promo.lastApplyPromo.lastApplyPromoData.additionalInfo.pomlAutoApplied
+        } else if (!isLastApplyResponseStillValid && lastValidateUseResponse != null) {
+            lastValidateUseResponse.promoUiModel.additionalInfoUiModel.pomlAutoApplied
+        } else {
+            false
+        }
+    }
 }

@@ -677,7 +677,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatlist.activity.ChatListActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT"
      }, 
      {
           "destination_activity": "com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity", 
@@ -687,7 +687,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat/.*\\", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT_ROOM"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT_ROOM"
      }, 
      {
           "destination_activity": "com.tokopedia.onboarding.view.activity.OnboardingActivity", 
