@@ -1,16 +1,13 @@
 package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.TimeBar
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.R.color as mediaColorR
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -18,11 +15,10 @@ import com.tokopedia.unifycomponents.ContainerUnify
 class VideoControlView(context: Context, attributeSet: AttributeSet) :
     PlayerControlView(context, attributeSet) {
 
-    private val centerControlButton: ImageView = findViewById(R.id.video_center_player_button)
-    private val scrubber: DefaultTimeBar = findViewById<DefaultTimeBar>(R.id.exo_progress)
+    private val scrubber: DefaultTimeBar = findViewById(R.id.exo_progress)
 
-    private var playIconDrawable: Drawable? = null
-    private var pauseIconDrawable: Drawable? = null
+    private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
+    private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
 
     init {
         val controllerContainer = findViewById<ContainerUnify>(R.id.nav_container)
@@ -36,22 +32,17 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun updateCenterButton(isPlaying: Boolean) {
-        centerControlButton.setImageDrawable(if (isPlaying) {
-            centerControlButton.show()
-            playIconDrawable ?: loadDrawableAsset(R.drawable.picker_ic_video_play_bg).also {
-                playIconDrawable = it
-            }
-        } else {
-            centerControlButton.hide()
-            pauseIconDrawable ?: loadDrawableAsset(R.drawable.picker_ic_video_pause_bg).also {
-                pauseIconDrawable = it
-            }
-        })
+        centerPlayButton.showWithCondition(!isPlaying)
+//        centerPauseButton.showWithCondition(isPlaying)
     }
 
     fun setListener(listener: Listener) {
-        centerControlButton.setOnClickListener {
-            listener.onCenterControlButtonClicked()
+        centerPlayButton.setOnClickListener {
+            listener.onCenterPlayButtonClicked()
+        }
+
+        centerPauseButton.setOnClickListener {
+            listener.onCenterPauseButtonClicked()
         }
 
         scrubber.addListener(object : TimeBar.OnScrubListener {
@@ -69,12 +60,9 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         })
     }
 
-    private fun loadDrawableAsset(resId: Int): Drawable? {
-        return MethodChecker.getDrawable(context, resId)
-    }
-
     interface Listener {
-        fun onCenterControlButtonClicked()
+        fun onCenterPlayButtonClicked()
+        fun onCenterPauseButtonClicked()
         fun onScrubStart()
         fun onScrubStop()
         fun onScrubMove(position: Long)

@@ -12,10 +12,25 @@
 
     <ImageView
         style="@style/ExoMediaButton.Play"
-        android:id="@+id/video_center_player_button"
+        android:id="@+id/video_center_play_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/nav_container"
+        android:src="@drawable/picker_ic_video_play_bg"
+        android:visibility="gone"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        tool:visibility="visible" />
+
+    <ImageView
+        style="@style/ExoMediaButton.Play"
+        android:id="@+id/video_center_pause_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/picker_ic_video_pause_bg"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/nav_container"
         android:layout_width="48dp"
         android:layout_height="48dp" />

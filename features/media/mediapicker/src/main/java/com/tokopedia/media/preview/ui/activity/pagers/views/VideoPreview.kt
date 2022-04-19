@@ -43,7 +43,7 @@ class VideoPreview(
 
             videoPlayer.listener = object : PickerVideoPlayer.Listener {
                 override fun onPlayStateChanged(isPlaying: Boolean) {
-                    videoControl.updateCenterButton(!videoPlayer.isPlaying())
+                    videoControl.updateCenterButton(videoPlayer.isPlaying())
 
                     if(videoPlayer.isPlaying()){
                         hideJob()
@@ -64,11 +64,15 @@ class VideoPreview(
     fun hideJob(){
         handler.postDelayed({
             videoControl.hide()
-        }, 3000)
+        }, HIDE_DELAY_SCRUBBER)
     }
 
-    override fun onCenterControlButtonClicked() {
-        if(videoPlayer.isPlaying()) videoPlayer.pause() else videoPlayer.resume()
+    override fun onCenterPauseButtonClicked() {
+        videoPlayer.pause()
+    }
+
+    override fun onCenterPlayButtonClicked() {
+        videoPlayer.resume()
     }
 
     override fun onScrubStart() {
@@ -80,10 +84,15 @@ class VideoPreview(
         hideJob()
         Handler(Looper.getMainLooper()).postDelayed({
             videoPlayer.resume()
-        },1000)
+        }, PLAY_DELAY_SCRUBBER)
     }
 
     override fun onScrubMove(position: Long) {
         videoPlayer.player().seekTo(position)
+    }
+
+    companion object {
+        private const val PLAY_DELAY_SCRUBBER = 1000L
+        private const val HIDE_DELAY_SCRUBBER = 3000L
     }
 }
