@@ -63,4 +63,6 @@ interface CatalogDetailListener {
 
     fun getWindowHeight() : Int { return 0 }
 
+    fun setLastDetachedItemPosition(adapterPosition: Int) {}
+
 }

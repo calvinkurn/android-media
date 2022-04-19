@@ -3,10 +3,15 @@ package com.tokopedia.catalog.ui.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -15,6 +20,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -35,7 +42,10 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.*
+import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.ComparisionModel
+import com.tokopedia.catalog.model.raw.TopSpecificationsComponentData
+import com.tokopedia.catalog.model.raw.VideoComponentData
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
@@ -120,11 +130,17 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     var isBottomSheetOpen = false
+    private var lastVisibleItemPosition: Int = 0
+    private var userPressedLastTopPosition : Int  = 0
+    private var lastDetachedItemPosition : Int = 0
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-
+        const val MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL = 250f
+        const val MILLI_SECONDS_PER_INCH_TOP_SCROLL = 250f
+        const val MILLI_SECONDS_FOR_UI_THREAD = 100L
+        const val OFFSET_FOR_PRODUCT_SECTION_SNAP = 300
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -161,6 +177,96 @@ class CatalogDetailPageFragment : Fragment(),
         setupRecyclerView(view)
         setObservers()
         setUpUniversalShare()
+        setUpAnimationViews(view)
+    }
+
+    private var smoothScrollerToTop: RecyclerView.SmoothScroller? = null
+
+    private var smoothScrollerToBottom: RecyclerView.SmoothScroller? = null
+
+    private fun initSmoothScroller() {
+        smoothScrollerToBottom =  object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                return if (displayMetrics != null) {
+                    return MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL/displayMetrics.densityDpi
+                } else
+                    super.calculateSpeedPerPixel(displayMetrics)
+            }
+        }
+
+        smoothScrollerToTop =  object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+            override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                return if (displayMetrics != null) {
+                    return MILLI_SECONDS_PER_INCH_TOP_SCROLL/displayMetrics.densityDpi
+                } else
+                    super.calculateSpeedPerPixel(displayMetrics)
+            }
+        }
+    }
+
+    private fun setUpAnimationViews(view : View) {
+        view.findViewById<LinearLayout>(R.id.toBottomLayout).apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                userPressedLastTopPosition = if(lastVisibleItemPosition != RecyclerView.NO_POSITION)
+                    (lastVisibleItemPosition)
+                else
+                    lastDetachedItemPosition
+                scrollToBottom()
+                visibility = View.GONE
+                view.findViewById<ImageView>(R.id.toTopImg).visibility = View.VISIBLE
+            }
+        }
+        view.findViewById<ImageView>(R.id.toTopImg).apply {
+            setOnClickListener {
+                scrollToTop()
+                visibility = View.GONE
+                view.findViewById<LinearLayout>(R.id.toBottomLayout).visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private val animationHandler = Handler(Looper.getMainLooper())
+
+    private val scrollToTopPositionRunnable = Runnable {
+        if(userPressedLastTopPosition == RecyclerView.NO_POSITION){
+            userPressedLastTopPosition = lastDetachedItemPosition
+        }
+        (catalogPageRecyclerView?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(userPressedLastTopPosition, -OFFSET_FOR_PRODUCT_SECTION_SNAP)
+        animationHandler.postDelayed(smoothScrollToTopPositionRunnable,MILLI_SECONDS_FOR_UI_THREAD)
+    }
+
+    private val smoothScrollToTopPositionRunnable = Runnable {
+        smoothScrollerToTop?.targetPosition = userPressedLastTopPosition
+        catalogPageRecyclerView?.layoutManager?.startSmoothScroll(smoothScrollerToTop)
+    }
+
+    private fun scrollToTop() {
+        animationHandler.postDelayed(scrollToTopPositionRunnable,MILLI_SECONDS_FOR_UI_THREAD)
+    }
+
+    private fun scrollToBottom() {
+        animationHandler.postDelayed(scrollToBottomPositionRunnable,MILLI_SECONDS_FOR_UI_THREAD)
+    }
+
+    private val scrollToBottomPositionRunnable = Runnable {
+        (catalogPageRecyclerView?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(getLastComponentIndex(), OFFSET_FOR_PRODUCT_SECTION_SNAP)
+        animationHandler.postDelayed(smoothScrollToBottomPositionRunnable,MILLI_SECONDS_FOR_UI_THREAD)
+    }
+
+    private val smoothScrollToBottomPositionRunnable = Runnable {
+        smoothScrollerToBottom?.targetPosition = getLastComponentIndex()
+        catalogPageRecyclerView?.layoutManager?.startSmoothScroll(smoothScrollerToBottom)
+    }
+
+    private fun getLastComponentIndex() : Int {
+        return catalogUiUpdater.mapOfData.size - 1
     }
 
     private fun initViews() {
@@ -169,6 +275,7 @@ class CatalogDetailPageFragment : Fragment(),
             cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
         }
         initNavToolbar()
+        initSmoothScroller()
     }
 
     private fun setUpUniversalShare() {
@@ -315,11 +422,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun updateUi() {
         if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
-            setUpBottomSheet()
+            //setUpBottomSheet()
         }
         hideShimmer()
         catalogPageRecyclerView?.show()
-        bottom_sheet_fragment_container.show()
+        bottom_sheet_fragment_container.hide()
         val newData = catalogUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -339,6 +446,12 @@ class CatalogDetailPageFragment : Fragment(),
                 addItemDecoration(DividerItemDecorator(it))
             }
             adapter = catalogDetailAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                }
+            })
         }
     }
 
@@ -609,11 +722,14 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun hideFloatingLayout() {
-        bottom_sheet_fragment_container.hide()
+        //TODO Remove findview calls
+        view?.findViewById<LinearLayout>(R.id.toBottomLayout)?.visibility = View.GONE
+        view?.findViewById<ImageView>(R.id.toTopImg)?.visibility = View.VISIBLE
     }
 
     override fun showFloatingLayout() {
-        bottom_sheet_fragment_container.show()
+        view?.findViewById<LinearLayout>(R.id.toBottomLayout)?.visibility = View.VISIBLE
+        view?.findViewById<ImageView>(R.id.toTopImg)?.visibility = View.GONE
     }
 
     override fun onViewMoreDescriptionClick() {
@@ -640,5 +756,18 @@ class CatalogDetailPageFragment : Fragment(),
         } else {
             0
         }
+    }
+
+    override fun setLastDetachedItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastDetachedItemPosition = adapterPosition
+    }
+
+    override fun onPause() {
+        super.onPause()
+        animationHandler.removeCallbacks(scrollToBottomPositionRunnable)
+        animationHandler.removeCallbacks(scrollToTopPositionRunnable)
+        animationHandler.removeCallbacks(smoothScrollToBottomPositionRunnable)
+        animationHandler.removeCallbacks(smoothScrollToTopPositionRunnable)
     }
 }
