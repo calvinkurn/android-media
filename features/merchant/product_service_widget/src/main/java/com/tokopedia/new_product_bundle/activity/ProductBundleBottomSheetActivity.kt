@@ -7,7 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.new_product_bundle.bottomsheet.ProductBundleBottomSheet
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.oldproductbundle.activity.ProductBundleActivity
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey

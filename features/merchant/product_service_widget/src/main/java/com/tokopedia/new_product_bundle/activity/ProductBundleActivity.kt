@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.oldproductbundle.activity.ProductBundleActivity
 import com.tokopedia.new_product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

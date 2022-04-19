@@ -29,7 +29,7 @@
         app:unify_image_corner_radius="8"
         app:unify_image_type="rect" />
 
-    <com.tokopedia.product_bundle.common.customview.ErrorLabelView
+    <com.tokopedia.oldproductbundle.common.customview.ErrorLabelView
         android:id="@+id/old_tv_variant_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         app:typographyType="body_2"
         tool:text="Women’s Breathable Low-cut Short Socks Cotton Blend" />
 
-    <com.tokopedia.product_bundle.common.customview.SpinnerView
+    <com.tokopedia.oldproductbundle.common.customview.SpinnerView
         android:id="@+id/old_spinner_item_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/old_tv_item_title"
         app:spinner_placeholder_text="Pilih Varian" />
 
-    <com.tokopedia.product_bundle.common.customview.DiscountPriceView
+    <com.tokopedia.oldproductbundle.common.customview.DiscountPriceView
         android:id="@+id/old_discountview_item"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

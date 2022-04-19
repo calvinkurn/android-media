@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
+            android:name="com.tokopedia.oldproductbundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
