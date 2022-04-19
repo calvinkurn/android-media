@@ -169,13 +169,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                     onScrollDown = {
                         onDelayFinished {
                             onScrollDown()
-                            hideView()
+                            handleScrollDownEvent()
                         }
                     },
                     onScrollUp = {
                         onDelayFinished {
                             onScrollUp()
-                            showView()
+                            handleScrollUpEvent()
                         }
                     }
                 )
@@ -316,18 +316,21 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
 
-    private fun hideView() {
-        viewAnimator.showWithAnimation(binding?.imgScrollUp)
+    private fun handleScrollDownEvent() {
         viewAnimator.hideWithAnimation(binding?.searchBar)
 
-        if (!viewModel.isOnMultiSelectMode()) {
+        if (viewModel.isOnMultiSelectMode()) {
+            viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+        } else {
+            viewAnimator.showWithAnimation(binding?.imgScrollUp)
             viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
         }
     }
 
-    private fun showView() {
-        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+    private fun handleScrollUpEvent() {
         viewAnimator.showWithAnimation(binding?.searchBar)
+        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+
         if (!viewModel.isOnMultiSelectMode()) {
             viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
         }
@@ -399,6 +402,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 enableMultiSelect()
                 binding?.tpgTotalProduct?.text =
                     String.format(getString(R.string.sd_selected_product_counter), ZERO)
+                binding?.imgScrollUp?.gone()
             }
             tpgCancelMultiSelect.setOnClickListener {
                 viewModel.removeAllProductFromSelection()
@@ -411,7 +415,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun enableMultiSelect() {
-        binding?.cardViewCreateDiscount?.gone()
+        viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.visible()
 
@@ -428,7 +432,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardViewMultiSelect?.gone()
-        binding?.cardViewCreateDiscount?.visible()
+        viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
     }
 
     private fun disableProductSelection(products : List<Product>) {
@@ -647,7 +651,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun hideEmptyState() {
-        binding?.searchBar?.visible()
+        viewAnimator.showWithAnimation(binding?.searchBar)
         binding?.emptyState?.gone()
     }
 
