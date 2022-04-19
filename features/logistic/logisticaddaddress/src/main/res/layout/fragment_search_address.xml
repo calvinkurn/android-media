@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.SearchBarUnify
@@ -20,7 +20,6 @@
         android:id="@+id/map_search_divider_1"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginBottom="@dimen/dp_18"
         android:background="@color/Unify_N100" />
 
     <RelativeLayout
@@ -28,9 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="@dimen/dp_18">
+        android:paddingTop="18dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="@dimen/dp_18">
 
         <ImageView
             android:id="@+id/iv_search_current_location"

@@ -84,6 +84,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var distrcitId: Long? = null
 
     private var isEdit: Boolean = false
+    private var isAccessAppPermissionFromSettings: Boolean = false
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -193,7 +194,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onResume() {
         super.onResume()
-        getLastLocationClient()
+        if (isAccessAppPermissionFromSettings) {
+            getLastLocationClient()
+        }
     }
 
     override fun onDestroy() {
@@ -343,6 +346,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
         intent.data = uri
+        isAccessAppPermissionFromSettings = true
         activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
     }
 
@@ -464,13 +468,25 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun getLastLocationClient() {
+        isAccessAppPermissionFromSettings = false
         if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            bottomSheetLocUndefined?.dismiss()
+            binding.loaderCurrentLocation.visibility = View.VISIBLE
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
+                    binding.loaderCurrentLocation.visibility = View.GONE
                     currentLat = data.latitude
                     currentLong = data.longitude
+                    goToPinpointPage(null, data.latitude, data.longitude,
+                        isFromAddressForm = false,
+                        isPositiveFlow = true
+                    )
+                } else {
+                    fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
+                        createLocationCallback(), null)
                 }
             }
         }
