@@ -162,9 +162,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun addSeparator(menus: List<Visitable<*>>) : List<Visitable<*>> {
         val listResult = mutableListOf<Visitable<*>>()
-//        if (menus.size>2)
-//            listResult.addAll(menus.subList(0,6))
-        listResult.addAll(menus)
+//        if (menus.size>1) {
+//            val submenu = menus.subList(0,3)
+//            listResult.addAll(submenu)
+//        }
+//        else
+            listResult.addAll(menus)
+        val submenu =
         listResult.add(SeparatorDataModel())
 //        listResult.add(SeparatorDataModel())
 //        listResult.add(SeparatorDataModel())

@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -109,7 +110,7 @@ class MainNavViewModel @Inject constructor(
     val allCategoriesLiveData: LiveData<List<Visitable<*>>>
         get() = _allCategoriesLiveData
     private val _allCategoriesLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
-    private lateinit var allCategories : HomeNavExpandableDataModel
+    private var allCategoriesCache = listOf<Visitable<*>>()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -196,8 +197,10 @@ class MainNavViewModel @Inject constructor(
                 onlyForLoggedInUser { getProfileDataCached() }
                 getBuListMenuCached()
             }
+            else {
+                getBuListMenu()
+            }
             //update cached data with cloud data
-            getBuListMenu()
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
             onlyForLoggedInUser { getOngoingTransaction() }
@@ -233,9 +236,9 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuListMenuCached() {
-        _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
-        withContext(coroutineContext, block = {
+        viewModelScope.launch {
             try {
+                _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
                 getCategoryGroupUseCase.get().setStrategyCache()
                 val result = getCategoryGroupUseCase.get().executeOnBackground()
@@ -243,54 +246,41 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
 
+                allCategoriesCache = result
                 _allCategoriesLiveData.postValue(result)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        })
+            getBuListMenu()
+        }
     }
 
     private suspend fun getBuListMenu() {
-        _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
-        withContext(coroutineContext, block = {
+        viewModelScope.launch {
             try {
+                _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
                 getCategoryGroupUseCase.get().setStrategyCloudThenCache()
                 val result = getCategoryGroupUseCase.get().executeOnBackground()
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-//                allCategory.menus = result
                 _allCategoriesLiveData.postValue(result)
             } catch (e: Exception) {
-                //if bu cache is already exist in list
-                //then error state is not needed
-                val isBuExist = findExistingEndBuIndexPosition()
-                if (isBuExist == null) {
-//                    allCategory.menus = listOf(ErrorStateBuDataModel())
-
-
-//                    findBuStartIndexPosition()?.let {
-//
-//                        updateWidget(ErrorStateBuDataModel(), it)
-//                    }
-                }
-
                 val buShimmering = allCategoriesLiveData.value?.find {
                     it is InitialShimmerDataModel
                 }
-//                _allCategoryLiveData.postValue(listOf(ErrorStateBuDataModel()))
-//                allCategory.menus = listOf(ErrorStateBuDataModel())
                 buShimmering?.let {
-                    _allCategoriesLiveData.postValue(listOf(ErrorStateBuDataModel()))
-//                    allCategory.menus = listOf(ErrorStateBuDataModel())
-//                    updateWidget(ErrorStateBuDataModel(),
-//                            _mainNavListVisitable.indexOf(it)
-//                    )
+                    if (allCategoriesCache.isNotEmpty()) {
+                        _allCategoriesLiveData.postValue(allCategoriesCache)
+                    }
+                    else {
+                        _allCategoriesLiveData.postValue(listOf(ErrorStateBuDataModel()))
+                    }
                 }
                 e.printStackTrace()
             }
-        })
+        }
     }
 
     private fun getProfileDataCached() {
@@ -321,7 +311,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun updateProfileData() {
-        withContext(coroutineContext, block = {
+        viewModelScope.launch {
             try {
                 val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
                 val adminData = getAdminData()
@@ -351,7 +341,7 @@ class MainNavViewModel @Inject constructor(
                 }
                 e.printStackTrace()
             }
-        })
+        }
     }
 
     fun refreshBuListdata() {

@@ -15,6 +15,7 @@ import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.databinding.HolderHomeNavExpandableBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
@@ -43,6 +44,9 @@ class HomeNavExpandableViewHolder (
         recyclerView.layoutParams =
             ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         initAdapter(recyclerView)
+        recyclerView.setOnClickListener {
+            recyclerView.gone()
+        }
         val title = itemView.context.getString(R.string.title_category_section)
         val accordionData = AccordionDataUnify(title, DESCRIPTION, ICON_ACCORDION, ICON_ACCORDION, recyclerView, IS_EXPANDED)
         accordionData.borderBottom = false
