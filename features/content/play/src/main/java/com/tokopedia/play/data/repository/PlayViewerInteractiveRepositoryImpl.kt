@@ -1,7 +1,5 @@
 package com.tokopedia.play.data.repository
 
-import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.interactive.AnswerQuizUseCase
@@ -9,16 +7,11 @@ import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
-import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.domain.usecase.interactive.InteractiveViewerGetLeaderboardWithSlotUseCase
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -35,46 +28,9 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
-//        val response = getCurrentInteractiveUseCase.apply {
-//            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-//        }.executeOnBackground()
-        val data = """
-                {
-                "playInteractiveGetCurrentInteractive": {
-                  "meta": {
-                    "active": "QUIZ", 
-                    "waitingDuration": 10
-                  },
-                  "quiz": {
-                    "interactiveID": 2,
-                    "status": 1,
-                    "question": "Kapan Tokopedia IPO?",
-                    "prize": "sepasang sepatu",
-                    "countdownEnd": 12,
-                    "choices": [
-                      {
-                        "id": "3",
-                        "text": "23 Juni 2022"
-                      },
-                      {
-                        "id": "4",
-                        "text": "11 Agustus 2022"
-                      }
-                    ],
-                    "user_choice": "" 
-                  }
-                }
-              }
-        """.trimIndent()
-        try {
-            Gson().fromJson(data, GetCurrentInteractiveResponse::class.java)
-        }
-        catch (
-            e:Exception
-        ){
-            Log.d("sukses ff", e.toString())
-        }
-        val response = Gson().fromJson(data, GetCurrentInteractiveResponse::class.java)
+        val response = getCurrentInteractiveUseCase.apply {
+            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+        }.executeOnBackground()
         return@withContext mapper.mapInteractive(response.data)
     }
 
@@ -88,76 +44,10 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {
-//        val response = getInteractiveLeaderboardUseCase.execute(channelId)
-        val data = """
-          {
-              "slots": [
-                {
-                  "__typename": "PlayInteractiveViewerLeaderboardGiveaway",
-                  "title": "Bagi-bagi sembako",
-                  "winners":[
-                    {
-                      "userName": "Jokowi",
-                      "imageURL": "http://google.com"
-                    },
-                    {
-                      "userName": "Emak",
-                      "imageURL": "http://google.com"
-                    },
-                    {
-                      "userName": "Bapak",
-                      "imageURL": "http://google.com"
-                    }
-                  ],
-                  "otherParticipantCountText": "Dari 101 peserta",
-                  "otherParticipantCount": 101,
-                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini. [Giveaway]"
-                },
-                {
-                  "__typename": "PlayInteractiveViewerLeaderboardQuiz",
-                  "question": "Siapa aku?",
-                  "reward": "500 perak",
-                  "user_choice": "1",
-                  "choices": [
-                    {
-                      "id": "1",
-                      "text": "Aku",
-                      "isCorrect" : false
-                    }, 
-                    {
-                      "id": "2",
-                      "text": "Kamu",
-                      "isCorrect" : true
-                    }, 
-                    {
-                      "id": "3",
-                      "text": "Dirinya",
-                      "isCorrect" : false
-                    }
-                  ],
-                  "winners":[
-                    {
-                      "userName": "Jokowi",
-                      "imageURL": "http://google.com"
-                    },
-                    {
-                      "userName": "Emak",
-                      "imageURL": "http://google.com"
-                    },
-                    {
-                      "userName": "Bapak",
-                      "imageURL": "http://google.com"
-                    }
-                  ],
-                  "otherParticipantCountText": "Dari 101 peserta",
-                  "otherParticipantCount": 101,
-                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini.[Quiz]"
-                }
-              ]
-            }
-        """.trimIndent()
-        val response = try { Gson().fromJson(data, GetLeaderboardSlotResponse::class.java) }catch (e: Exception){ }
-        return@withContext mapper.mapInteractiveLeaderboard(response as GetLeaderboardSlotResponse)
+        val response = getInteractiveLeaderboardUseCase.apply {
+            setRequestParams(getInteractiveLeaderboardUseCase.createParams(channelId))
+        }.executeOnBackground()
+        return@withContext mapper.mapInteractiveLeaderboard(response)
     }
 
     override suspend fun answerQuiz(interactiveId: String, choiceId: String): String = withContext(dispatchers.io) {

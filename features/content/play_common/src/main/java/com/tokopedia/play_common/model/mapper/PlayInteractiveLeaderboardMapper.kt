@@ -51,6 +51,9 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         }
     }
 
+    /***
+     * mapChoices for Bro is quite different, use Result isCorrect true when the option is correct and use Default for the rest
+     */
     fun mapChoices(choices: List<QuizResponse.Choice>, userPicksId: String): List<QuizChoicesUiModel> {
         return choices.map { item: QuizResponse.Choice ->
             QuizChoicesUiModel(

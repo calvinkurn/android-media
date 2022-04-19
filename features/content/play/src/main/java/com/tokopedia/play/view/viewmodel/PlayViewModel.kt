@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -1346,15 +1345,13 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun checkLeaderboard(channelId: String) {
-//        if (!isInteractiveAllowed) return
+        if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(block = {
-            Log.d("sukses","masuk")
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 
             setLeaderboardBadgeState(interactiveLeaderboard)
         }) {
-            Log.d("sukses", it.toString())
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
         }
     }
@@ -1366,7 +1363,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
-//        if (!isInteractiveAllowed) return
+        if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
 //            _interactive.value = PlayInteractiveUiState.Loading
 
@@ -1386,7 +1383,7 @@ class PlayViewModel @AssistedInject constructor(
 //    }
 
     private suspend fun handleInteractiveFromNetwork(interactive: InteractiveUiModel) {
-//        if (!isInteractiveAllowed) return
+        if (!isInteractiveAllowed) return
         repo.save(interactive)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> handleGiveawayFromNetwork(interactive)
@@ -1615,7 +1612,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is ChannelInteractiveStatus -> {
-//                if (result.isExist) checkInteractive(channelId)
+                if (result.isExist) checkInteractive(channelId)
             }
             is GiveawayResponse -> {
                 val interactive = playSocketToModelMapper.mapInteractive(result)

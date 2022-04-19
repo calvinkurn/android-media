@@ -12,11 +12,3 @@ data class QuizChoicesUiModel(
     val isLoading: Boolean = false,
 )
 
-sealed class QuizInteractiveUiModel {
-    data class Ongoing(
-        val question: String,
-        val reward: String = "", //in leaderboard it won't be empty (opt)
-        val userPicks: String = "", //if user is participated won't be empty
-        val listOfOption: List<QuizChoicesUiModel>
-    )
-}
