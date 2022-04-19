@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
 import com.tokopedia.profilecompletion.addpin.data.CheckPinData
 import com.tokopedia.profilecompletion.addpin.data.SkipOtpPinData
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
@@ -65,7 +64,9 @@ open class AddPinFragment : BaseDaggerFragment() {
     private var isConfirmPin = false
     private var isSkipOtp: Boolean = false
     private var validateToken: String = ""
+
     private var pin = ""
+    private var confirmPin = ""
 
     private var inputPin: PinUnify? = null
     private var methodIcon: ImageUnify? = null
@@ -81,6 +82,10 @@ open class AddPinFragment : BaseDaggerFragment() {
 	methodIcon = view.findViewById(R.id.method_icon)
 	mainView = view.findViewById(R.id.container)
 	return view
+    }
+
+    private fun isUsePinV2(): Boolean {
+        return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +109,9 @@ open class AddPinFragment : BaseDaggerFragment() {
 		if (s?.length == PIN_LENGTH) {
 		    if (isConfirmPin) {
 			if (s.toString() == pin) {
+			    confirmPin = s.toString()
+			    pin = s.toString()
+
 			    if (isSkipOtp) {
 				addChangePinViewModel.checkSkipOtpPin(validateToken)
 			    } else {
@@ -115,7 +123,11 @@ open class AddPinFragment : BaseDaggerFragment() {
 			    displayErrorPin(errorMessage)
 			}
 		    } else {
-			addChangePinViewModel.checkPin(s.toString())
+		        if(isUsePinV2()) {
+		            addChangePinViewModel.checkPinV2(s.toString())
+			} else {
+			    addChangePinViewModel.checkPin(s.toString())
+			}
 		    }
 		} else {
 		    hideErrorPin()
@@ -152,7 +164,14 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun initObserver() {
 	addChangePinViewModel.addPinResponse.observe(viewLifecycleOwner, Observer {
 	    when (it) {
-		is Success -> onSuccessAddPin(it.data)
+		is Success -> onSuccessAddPin(it.data.success)
+		is Fail -> onErrorAddPin(it.throwable)
+	    }
+	})
+
+	addChangePinViewModel.mutatePin.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessAddPin(it.data.success)
 		is Fail -> onErrorAddPin(it.throwable)
 	    }
 	})
@@ -191,9 +210,9 @@ open class AddPinFragment : BaseDaggerFragment() {
 	startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
-    open fun onSuccessAddPin(addChangePinData: AddChangePinData) {
+    open fun onSuccessAddPin(isSuccess: Boolean) {
 	dismissLoading()
-	if (addChangePinData.success) {
+	if (isSuccess) {
 	    trackingPinUtil.trackSuccessInputConfirmationPin()
 	    val intent =
 		RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
@@ -224,7 +243,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     private fun onSuccessSkipOtp(skipOtpPinData: SkipOtpPinData) {
 	if (skipOtpPinData.skipOtp && skipOtpPinData.validateToken.isNotEmpty()) {
 	    showLoading()
-	    addChangePinViewModel.addPin(skipOtpPinData.validateToken)
+	    addPinMediator(skipOtpPinData.validateToken, pin = pin, confirmPin = confirmPin)
 	} else {
 	    goToVerificationActivity()
 	}
@@ -265,7 +284,7 @@ open class AddPinFragment : BaseDaggerFragment() {
 		val uuid = this.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
 		if (uuid.isNotEmpty()) {
 		    showLoading()
-		    addChangePinViewModel.addPin(uuid)
+		    addPinMediator(uuid, pin = pin, confirmPin = confirmPin)
 		}
 	    }
 	} else {
@@ -287,8 +306,8 @@ open class AddPinFragment : BaseDaggerFragment() {
 	inputPin?.pinTitle = getString(R.string.confirm_create_pin)
 	inputPin?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
 	isConfirmPin = true
-	if (inputPin?.pinTextField?.text.toString().isNotEmpty()) pin =
-	    inputPin?.pinTextField?.text.toString()
+	if (inputPin?.pinTextField?.text.toString().isNotEmpty())
+	    pin = inputPin?.pinTextField?.text.toString()
 	inputPin?.value = ""
 	inputPin?.pinMessage = ""
     }
@@ -349,6 +368,25 @@ open class AddPinFragment : BaseDaggerFragment() {
 	addChangePinViewModel.checkPinResponse.removeObservers(this)
 	addChangePinViewModel.validatePinResponse.removeObservers(this)
 	addChangePinViewModel.flush()
+    }
+
+    private fun addPinMediator(validateToken: String, pin: String, confirmPin: String) {
+        if(isUsePinV2()) {
+            if(pin.isNotEmpty() && confirmPin.isNotEmpty()) {
+                if(pin == confirmPin) {
+		    addChangePinViewModel.addPinV2(
+			pin = pin,
+			confirmPin = confirmPin,
+			validateToken = validateToken
+		    )
+		} else {
+		    val errorMessage = getString(R.string.error_wrong_pin)
+		    displayErrorPin(errorMessage)
+		}
+	    }
+	} else {
+	    addChangePinViewModel.addPin(validateToken)
+	}
     }
 
     companion object {

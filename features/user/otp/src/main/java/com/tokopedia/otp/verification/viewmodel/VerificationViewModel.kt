@@ -19,8 +19,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetPinStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,18 +32,18 @@ import javax.inject.Inject
  */
 
 open class VerificationViewModel @Inject constructor(
-        private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
-        private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
-        private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
-        private val getPinStatusUseCase: GetPinStatusUseCase,
-        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        private val otpValidateUseCase: OtpValidateUseCase,
-        private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
-        private val sendOtpUseCase: SendOtpUseCase,
-        private val sendOtpUseCase2FA: SendOtp2FAUseCase,
-        private val userSession: UserSessionInterface,
-        private val remoteConfig: RemoteConfig,
-        dispatcherProvider: CoroutineDispatchers
+    private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
+    private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
+    private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
+    private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    private val otpValidateUseCase: OtpValidateUseCase,
+    private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
+    private val sendOtpUseCase: SendOtpUseCase,
+    private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+    private val userSession: UserSessionInterface,
+    private val remoteConfig: RemoteConfig,
+    dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getVerificationMethodResult = MutableLiveData<Result<OtpModeListData>>()
@@ -289,7 +289,7 @@ open class VerificationViewModel @Inject constructor(
     private suspend fun isNeedHash(id: String, type: String): Boolean {
         return try {
             val param = PinStatusParam(id = id, type = type)
-            getPinStatusUseCase(param).data.isNeedHash
+            checkPinHashV2UseCase(param).data.isNeedHash
         } catch (e: Exception) {
             false
         }

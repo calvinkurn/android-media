@@ -11,8 +11,8 @@ import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetPinStatusUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -52,7 +52,7 @@ class OtpModule (val context: Context) {
 
     @OtpScope
     @Provides
-    fun providePinStatusUseCase(graphqlRepository: GraphqlRepository): GetPinStatusUseCase {
-        return GetPinStatusUseCase(graphqlRepository)
+    fun providePinStatusUseCase(graphqlRepository: GraphqlRepository): CheckPinHashV2UseCase {
+        return CheckPinHashV2UseCase(graphqlRepository)
     }
 }

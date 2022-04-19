@@ -11,8 +11,13 @@ import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.changepin.data.usecase.ResetPinV2UseCase
+import com.tokopedia.profilecompletion.changepin.data.usecase.UpdatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.query.ResetPin2FAQuery
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.data.pin.PinStatusParam
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -30,10 +35,14 @@ class ChangePinViewModel @Inject constructor(
     private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
     private val checkPin2FAUseCase: GraphqlUseCase<CheckPinPojo>,
     private val resetPinUseCase: GraphqlUseCase<ResetPinResponse>,
+    private val resetPinV2UseCase: ResetPinV2UseCase,
     private val resetPin2FAUseCase: GraphqlUseCase<ResetPin2FaPojo>,
     private val changePinUseCase: GraphqlUseCase<ChangePinPojo>,
+    private val updatePinV2UseCase: UpdatePinV2UseCase,
     private val userSession: UserSessionInterface,
     private val rawQueries: Map<String, String>,
+    private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -211,7 +220,19 @@ class ChangePinViewModel @Inject constructor(
 	}
     }
 
+    private suspend fun isNeedHash(id: String, type: String): Boolean {
+	return try {
+	    val param = PinStatusParam(id = id, type = type)
+	    checkPinHashV2UseCase(param).data.isNeedHash
+	} catch (e: Exception) {
+	    false
+	}
+    }
+
     fun changePin(pin: String, pinConfirm: String, pinOld: String) {
+//	val isNeedHash = withContext(Dispatchers.IO) {
+//	    isNeedHash("", "")
+//	}
 	rawQueries[ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN]?.let { query ->
 	    val params = mapOf(
 		ProfileCompletionQueryConstant.PARAM_PIN to pin,

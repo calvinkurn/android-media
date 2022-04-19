@@ -9,7 +9,7 @@ import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class GetPinStatusUseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
+class CheckPinHashV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
 : CoroutineUseCase<PinStatusParam, PinStatusResponse>(Dispatchers.IO){
 
     override suspend fun execute(params: PinStatusParam): PinStatusResponse {
@@ -17,9 +17,9 @@ class GetPinStatusUseCase @Inject constructor(@ApplicationContext val repository
     }
 
     override fun graphqlQuery(): String = """
-	query pin_v2_check(${'$'}id: String!, ${'$'}type: String!) {
-	  pinV2Check(id: ${'$'}id, type:${'$'}type) {
-	    uh
+	query checkPinV2(${'$'}id: String!, ${'$'}type: String!) {
+	  check_pin_v2(id: ${'$'}id, type:${'$'}type) {
+	    valid
 	    error_message
 	  }
 	}""".trimIndent()
