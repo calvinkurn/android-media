@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.reviewcommon.R
@@ -35,6 +36,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -181,7 +183,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             reviewVideoPlayerViewModel.videoPlayerUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlayerUiState.Initial -> {
-                        trackImpression()
                         videoPlayer.initializeVideoPlayer(it.videoUri, true)
                         reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
                     }
@@ -206,7 +207,21 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     private fun trackImpression() {
         if (listener != null && !reviewVideoPlayerViewModel.getImpressHolder().isInvoke) {
             reviewVideoPlayerViewModel.getImpressHolder().invoke()
-            listener?.onVideoImpressed(getVideoUri())
+            listener?.onVideoImpressed(getVideoUri(), videoPlayer.getVideoDurationSecond())
+        }
+    }
+
+    private fun trackPlaying() {
+        if (listener != null) {
+            listener?.onVideoPlaying(getVideoUri(), videoPlayer.getVideoDurationSecond())
+        }
+    }
+
+    private fun trackStopped(watchingDurationSecond: Int) {
+        if (listener != null && watchingDurationSecond.isMoreThanZero()) {
+            listener?.onVideoStopped(
+                getVideoUri(), videoPlayer.getVideoDurationSecond(), watchingDurationSecond
+            )
         }
     }
 
@@ -225,6 +240,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             reviewVideoPlayerViewModel.videoPlaybackUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
+                        trackStopped(TimeUnit.MILLISECONDS.toSeconds(it.currentPosition).toInt())
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.showVideoThumbnail()
@@ -238,12 +254,23 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                     }
                     is ReviewVideoPlaybackUiState.Buffering,
                     is ReviewVideoPlaybackUiState.Preloading -> {
+                        trackImpression()
                         binding?.loaderReviewVideoPlayer?.show()
                         binding?.overlayReviewVideoPlayerLoading?.show()
                         reviewVideoPlayerViewModel.hideVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
-                    else -> {
+                    is ReviewVideoPlaybackUiState.Playing -> {
+                        trackImpression()
+                        trackPlaying()
+                        binding?.loaderReviewVideoPlayer?.gone()
+                        binding?.overlayReviewVideoPlayerLoading?.gone()
+                        reviewVideoPlayerViewModel.hideVideoThumbnail()
+                        reviewVideoPlayerViewModel.hideVideoError()
+                    }
+                    is ReviewVideoPlaybackUiState.Paused,
+                    is ReviewVideoPlaybackUiState.Ended -> {
+                        trackStopped(TimeUnit.MILLISECONDS.toSeconds(it.currentPosition).toInt())
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.hideVideoThumbnail()
@@ -329,6 +356,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     }
 
     interface Listener {
-        fun onVideoImpressed(videoUri: String)
+        fun onVideoImpressed(videoUri: String, videoDurationSecond: Int)
+        fun onVideoPlaying(videoUri: String, videoDurationSecond: Int)
+        fun onVideoStopped(videoUri: String, videoDurationSecond: Int, watchingDurationSecond: Int)
     }
 }

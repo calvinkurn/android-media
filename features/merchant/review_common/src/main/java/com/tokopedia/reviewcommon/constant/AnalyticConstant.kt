@@ -17,6 +17,7 @@ object AnalyticConstant {
     const val EVENT_CLICK_PDP = "clickPDP"
     const val EVENT_CATEGORY = "product detail page - review - review image"
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
+    const val EVENT_CATEGORY_REVIEW_GALLERY_IMAGE_DETAIL = "product detail page - review - review gallery - image detail"
 
     const val BUSINESS_UNIT = "product detail page"
     const val PHYSICAL_GOODS = "physical goods"

@@ -1,13 +1,20 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.base.analytic
 
 object ReviewMediaGalleryTrackerConstant {
-    const val EVENT_PROMO_VIEW = "promoView"
+    const val EVENT_NAME_CLICK_PG = "clickPG"
+    const val EVENT_NAME_PROMO_VIEW = "promoView"
     const val EVENT_ACTION_IMPRESS_IMAGE = "impression - review image"
     const val EVENT_ACTION_CLICK_SWIPE = "click - swipe review image"
     const val EVENT_ACTION_CLICK_SEE_MORE = "click - lihat semua image preview"
+    const val EVENT_ACTION_VIEW_VIDEO = "view - review video attachment"
+    const val EVENT_ACTION_CLICK_PLAY_VIDEO = "click - play review video attachment"
+    const val EVENT_ACTION_CLICK_STOP_VIDEO = "click - stop review video attachment"
     const val EVENT_LABEL_CLICK_SWIPE = "feedback_id:%s;direction:%s;image_position:%d;total_image:%d;"
     const val EVENT_LABEL_IMPRESS_IMAGE = "count_attachment:%d;"
     const val EVENT_LABEL_CLICK_SEE_MORE = "product_id:%s;"
+    const val EVENT_LABEL_CLICK_PLAY_VIDEO = "feedback_id:%s;attachment_id:%s;video_duration:%d;"
+    const val EVENT_LABEL_CLICK_STOP_VIDEO = "feedback_id:%s;attachment_id:%s;video_duration:%d;watching_duration:%d;"
+    const val EVENT_CREATIVE_NAME_VIEW_VIDEO = "feedback_id:%s;video_duration:%d;"
     const val SWIPE_DIRECTION_RIGHT = "right"
     const val SWIPE_DIRECTION_LEFT = "left"
 }
