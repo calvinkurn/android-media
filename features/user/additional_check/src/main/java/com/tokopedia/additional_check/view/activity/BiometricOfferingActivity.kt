@@ -54,7 +54,6 @@ class BiometricOfferingActivity: BaseActivity() {
 		startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
 	    }
 
-	    bottomSheetBiometricOfferingToolbar.isShowBackButton = true
 	    bottomSheetBiometricOfferingToolbar.setOnClickListener {
 	        onBackPressed()
 	    }
