@@ -235,6 +235,11 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         setBottomSheetActionBold()
     }
 
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
     override fun onOptionClick(option: Option, isChecked: Boolean, position: Int) {
         processOptionClick(option, isChecked)
 
