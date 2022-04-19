@@ -190,7 +190,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 SelectProductActivity.start(requireActivity(), discountStatusId)
             }
             btnBulkManage.setOnClickListener {
-                showLoaderDialog()
                 val selectedProductIds = viewModel.getSelectedProductIds()
                 reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
@@ -234,18 +233,20 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
-            binding?.btnBulkManage?.isLoading = false
             when (it) {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
                         redirectToUpdateDiscountPage()
                     } else {
+                        dismissLoaderDialog()
+                        binding?.btnBulkManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
                 is Fail -> {
                     dismissLoaderDialog()
+                    binding?.btnBulkManage?.isLoading = false
                     binding?.root showError it.throwable
                 }
             }
@@ -598,6 +599,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            binding?.btnBulkManage?.isLoading = false
             dismissLoaderDialog()
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
