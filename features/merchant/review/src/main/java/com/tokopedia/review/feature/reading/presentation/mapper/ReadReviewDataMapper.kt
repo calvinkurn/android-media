@@ -13,14 +13,14 @@ object ReadReviewDataMapper {
     fun mapReadReviewDataToReviewMediaPreviewData(productReview: ProductReview, shopId: String): ProductrevGetReviewMedia {
         val mappedReviewMediaVideoData = productReview.videoAttachments.mapIndexed { index, videoAttachment ->
             ReviewMedia(
-                videoId = videoAttachment.url,
+                videoId = videoAttachment.attachmentID,
                 feedbackId = productReview.feedbackID,
                 mediaNumber = index.plus(1)
             )
         }
         val mappedReviewMediaImageData = productReview.imageAttachments.mapIndexed { index, imageAttachment ->
             ReviewMedia(
-                imageId = imageAttachment.uri,
+                imageId = imageAttachment.attachmentID,
                 feedbackId = productReview.feedbackID,
                 mediaNumber = index.plus(1).plus(mappedReviewMediaVideoData.size)
             )
@@ -48,14 +48,14 @@ object ReadReviewDataMapper {
         )
         val mappedReviewVideoData = productReview.videoAttachments.map {
             ReviewGalleryVideo(
-                attachmentId = it.url,
+                attachmentId = it.attachmentID,
                 url = it.url,
                 feedbackId = productReview.feedbackID,
             )
         }
         val mappedReviewImageData = productReview.imageAttachments.map {
             ReviewGalleryImage(
-                attachmentId = it.uri,
+                attachmentId = it.attachmentID,
                 thumbnailURL = it.imageThumbnailUrl,
                 fullsizeURL = it.uri,
                 feedbackId = productReview.feedbackID,
