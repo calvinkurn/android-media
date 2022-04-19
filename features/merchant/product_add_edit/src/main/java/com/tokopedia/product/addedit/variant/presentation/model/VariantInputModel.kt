@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
 import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
@@ -56,7 +57,7 @@ data class ProductVariantInputModel(
         var stock: Int? = null,
         var isPrimary: Boolean = false,
         var weight: Int? = null,
-        var weightUnit: String = ""
+        var weightUnit: String = UNIT_GRAM_STRING
 ) : Parcelable
 
 @Parcelize
