@@ -116,6 +116,8 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
             handleResponseOfferingData(activity, it)
         }, {
+            //REVERT
+//            handleResponseOfferingData(activity, mutableListOf())
             it.printStackTrace()
         })
     }
@@ -126,6 +128,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
 
     private fun handleResponseOfferingData(activity: Activity?, offeringList: MutableList<OfferingData>){
+        //REVERT
 //        val newOfferingList = mutableListOf(
 //            OfferingData(name = "phone", false),
 //            OfferingData(name = "biometric", false),

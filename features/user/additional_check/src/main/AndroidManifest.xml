@@ -42,7 +42,7 @@
         </activity>
 
         <activity
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.AdditionalCheck"
+            android:theme="@style/Theme.WhiteUnify"
             android:name=".view.activity.BiometricOfferingActivity"
             android:exported="false">
             <intent-filter>

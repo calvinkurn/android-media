@@ -115,10 +115,21 @@ class TwoFactorTracker {
             TrackAppUtils.gtmData(
                 Event.CLICK_ACCOUNT,
                 Category.BIOMETRIC_SUCCESS_MLU,
+                Action.CLICK_ON_BTN_LANJUT_BELANJA,
+                Label.EMPTY)
+        )
+    }
+
+    fun clickCloseWhenSuccess() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_SUCCESS_MLU,
                 Action.CLICK_ON_BTN_CLOSE,
                 Label.EMPTY)
         )
     }
+
 
     private fun track(map: MutableMap<String, Any>) {
         map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
@@ -163,6 +174,7 @@ class TwoFactorTracker {
             const val CLICK_ON_BTN_CLOSE = "click on button close"
 
             const val SUCCESS_ADD_BIOMETRIC = "auto pop up 2fa mlu success add biometrics page"
+            const val CLICK_ON_BTN_LANJUT_BELANJA = "click on button lanjut belanja"
 
         }
 
