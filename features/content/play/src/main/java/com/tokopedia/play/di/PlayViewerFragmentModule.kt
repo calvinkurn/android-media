@@ -3,7 +3,9 @@ package com.tokopedia.play.di
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.di.key.FragmentKey
+import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
 import com.tokopedia.play.view.fragment.*
 import com.tokopedia.play.view.fragment.factory.PlayViewerFragmentFactory
 import dagger.Binds
@@ -61,4 +63,14 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(InteractiveWinningDialogFragment::class)
     abstract fun getWinningDialogFragment(fragment: InteractiveWinningDialogFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InteractiveDialogFragment::class)
+    abstract fun getGiveawayWidgetDialogFragment(fragment: InteractiveDialogFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayMoreActionBottomSheet::class)
+    abstract fun getThreeDotsFragment(fragment: PlayMoreActionBottomSheet): Fragment
 }

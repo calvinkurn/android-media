@@ -9,22 +9,22 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class SkipOtpPinPojo(
-        @SerializedName("OTPSkipValidation")
-        @Expose
-        var data: SkipOtpPinData = SkipOtpPinData()
+    @SerializedName("OTPSkipValidation")
+    @Expose
+    var data: SkipOtpPinData = SkipOtpPinData()
 )
 
 data class SkipOtpPinData(
-        @SerializedName("skip_otp")
-        @Expose
-        var skipOtp: Boolean = false,
-        @SerializedName("validate_token")
-        @Expose
-        var validateToken: String = "",
-        @SerializedName("message")
-        @Expose
-        var message: String = "",
-        @SerializedName("error_message")
-        @Expose
-        var errorMessage: String = ""
+    @SerializedName("skip_otp")
+    @Expose
+    var skipOtp: Boolean = false,
+    @SerializedName("validate_token")
+    @Expose
+    var validateToken: String = "",
+    @SerializedName("message")
+    @Expose
+    var message: String = "",
+    @SerializedName("error_message")
+    @Expose
+    var errorMessage: String = ""
 )

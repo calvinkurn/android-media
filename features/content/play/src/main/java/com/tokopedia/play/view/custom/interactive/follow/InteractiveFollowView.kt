@@ -53,6 +53,7 @@ class InteractiveFollowView : LinearLayout {
 
     fun setLoading(isLoading: Boolean) {
         binding.btnFollow.isLoading = isLoading
+        binding.btnFollow.isClickable = !isLoading
     }
 
     fun setListener(listener: Listener?) {

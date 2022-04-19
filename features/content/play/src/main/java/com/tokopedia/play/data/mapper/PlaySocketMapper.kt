@@ -9,7 +9,7 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
@@ -115,8 +115,8 @@ class PlaySocketMapper(
         return convertToModel(webSocketResponse.jsonObject, ChannelInteractiveStatus::class.java)
     }
 
-    private fun mapToChannelInteractive(): ChannelInteractive? {
-        return convertToModel(webSocketResponse.jsonObject, ChannelInteractive::class.java)
+    private fun mapToChannelInteractive(): GiveawayResponse? {
+        return convertToModel(webSocketResponse.jsonObject, GiveawayResponse::class.java)
     }
 
     private fun mapToRealTimeNotification(): RealTimeNotification? {

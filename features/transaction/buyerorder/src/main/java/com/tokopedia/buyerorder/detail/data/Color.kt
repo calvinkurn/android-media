@@ -6,13 +6,13 @@ import com.google.gson.annotations.Expose
 data class Color(
     @SerializedName("border")
     @Expose
-    val border: String? = null,
+    val border: String = "",
 
     @SerializedName("background")
     @Expose
-    val background: String? = null,
+    val background: String = "",
 
     @SerializedName("textColor")
     @Expose
-    val textColor: String? = null
+    val textColor: String = ""
 )
