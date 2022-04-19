@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
@@ -92,7 +93,11 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onDestroy() {
-        viewModel.orderDetailResult.removeObservers(this)
+        removeObservers(
+            viewModel.orderDetailResult,
+            viewModel.orderDetailResult,
+            viewModel.orderCompletedLiveTracking
+        )
         toolbarHandler?.activity?.clear()
         orderLiveTrackingFragment?.let {
             lifecycle.removeObserver(it)
