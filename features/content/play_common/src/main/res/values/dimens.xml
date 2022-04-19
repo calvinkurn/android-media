@@ -57,6 +57,7 @@
     <dimen name="interactive_widget_radius">8dp</dimen>
     <dimen name="interactive_finish_width">82dp</dimen>
     <dimen name="interactive_finish_min_height">64dp</dimen>
+    <item name="play_anchor_size" type="dimen" format="float">0.1dp</item>
 
     <!-- Giveaway -->
     <dimen name="play_giveaway_tap_bg_size">72dp</dimen>

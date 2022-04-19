@@ -924,6 +924,13 @@ class PlayUserInteractionFragment @Inject constructor(
                         playViewModel.onShowKebabMenuSheet()
                         showMoreActionBottomSheet()
                     }
+                    is ShowCoachMarkWinnerEvent -> {
+                        if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
+                        interactiveResultView?.showCoachMark(event.title, event.subtitle)
+                    }
+                    HideCoachMarkWinnerEvent -> {
+                        interactiveResultView?.hideCoachMark()
+                    }
                 }
             }
         }
@@ -990,6 +997,7 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) {
+                    interactiveResultView?.hideCoachMark()
                     playFullscreenManager.onEnterFullscreen()
                 }
                 else playFullscreenManager.onExitFullscreen()
@@ -1069,6 +1077,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doClickChatBox() {
+        interactiveResultView?.hideCoachMark()
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
@@ -1139,6 +1148,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
+        interactiveResultView?.hideCoachMark()
         playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 

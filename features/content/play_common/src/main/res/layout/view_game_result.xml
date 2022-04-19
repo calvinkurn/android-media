@@ -1,49 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/l_game_result"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl2"
-    android:background="@drawable/bg_game_result">
+    android:orientation="vertical">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_game_result"
-        android:layout_width="@dimen/play_dp_14"
-        android:layout_height="@dimen/play_dp_14"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="GAME"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tv_game_result"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_game_result"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/spacing_lvl2"
-        android:layout_marginRight="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:layout_height="@dimen/layout_lvl4"
+        android:background="@drawable/bg_game_result"
         android:gravity="center_vertical"
-        android:includeFontPadding="false"
-        android:text="@string/play_interactive_game_result"
-        android:textColor="@color/Unify_Static_White"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_game_result"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
-        app:typographyWeight="bold" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="horizontal"
+        android:padding="@dimen/play_dp_6">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_game_result"
+            android:layout_width="@dimen/play_dp_14"
+            android:layout_height="@dimen/play_dp_14"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GAME"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_game_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:text="@string/play_interactive_game_result"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="small"
+            app:typographyWeight="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_anchor_bottom"
+        android:layout_width="@dimen/play_anchor_size"
+        android:layout_height="@dimen/play_anchor_size"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>
