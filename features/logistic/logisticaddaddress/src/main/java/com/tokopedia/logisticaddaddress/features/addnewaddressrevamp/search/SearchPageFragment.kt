@@ -167,33 +167,30 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        var isAllowed = false
+        var isAllowed: Boolean? = null
         for (permission in permissions) {
 //            if (!isPermissionAccessed) {
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
                     //no-op
                 } else {
-                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        isAllowed = true
-                    } else {
-                        isAllowed = false
-                        showBottomSheetLocUndefined(true)
-                    }
+                    isAllowed = activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED
                 }
 //            }
         }
 
-        if (isAllowed) {
+        if (isAllowed == true) {
             if (!isUndefinedWithoutPermission) {
                 getLocation()
             } else {
                 isUndefinedWithoutPermission = false
             }
             isPermissionAccessed = true
+        } else if (isAllowed == false) {
+            showBottomSheetLocUndefined(true)
         }
 
         if (!isEdit) {
-            if (isAllowed) {
+            if (isAllowed == true) {
                 AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
             } else {
                 AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
@@ -204,6 +201,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onResume() {
         super.onResume()
         if (isAccessAppPermissionFromSettings) {
+            bottomSheetLocUndefined?.dismiss()
             getLastLocationClient()
         }
     }
@@ -482,7 +480,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun getLastLocationClient() {
         isAccessAppPermissionFromSettings = false
         if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            bottomSheetLocUndefined?.dismiss()
             binding?.loaderCurrentLocation?.visibility = View.VISIBLE
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
