@@ -41,8 +41,8 @@ class EditAdCostFragment : BaseDaggerFragment() {
 
     private var advertisingCost: TextFieldUnify? = null
     private var keyword: ChipsUnify? = null
-    private var neg_keyword: ChipsUnify? = null
-    private var view_pager: CustomViewPager? = null
+    private var negKeyword: ChipsUnify? = null
+    private var viewPager: CustomViewPager? = null
     private var tooltipBtn: FloatingButtonUnify? = null
 
     private var sharedEditHeadlineViewModel: SharedEditHeadlineViewModel? = null
@@ -95,7 +95,13 @@ class EditAdCostFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_edit_ad_cost, container, false)
+        val view = inflater.inflate(R.layout.fragment_edit_ad_cost, container, false)
+        advertisingCost = view.findViewById(R.id.advertisingCost)
+        keyword = view.findViewById(R.id.keyword)
+        negKeyword = view.findViewById(R.id.neg_keyword)
+        viewPager = view.findViewById(R.id.view_pager)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -159,16 +165,16 @@ class EditAdCostFragment : BaseDaggerFragment() {
         keyword?.chipType = ChipsUnify.TYPE_SELECTED
         keyword?.setOnClickListener {
             keyword?.chipType = ChipsUnify.TYPE_SELECTED
-            neg_keyword?.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager?.currentItem = POSITION_KEYWORD
+            negKeyword?.chipType = ChipsUnify.TYPE_NORMAL
+            viewPager?.currentItem = POSITION_KEYWORD
         }
-        neg_keyword?.setOnClickListener {
-            neg_keyword?.chipType = ChipsUnify.TYPE_SELECTED
+        negKeyword?.setOnClickListener {
+            negKeyword?.chipType = ChipsUnify.TYPE_SELECTED
             keyword?.chipType = ChipsUnify.TYPE_NORMAL
-            view_pager?.currentItem = POSITION_NEGATIVE_KEYWORD
+            viewPager?.currentItem = POSITION_NEGATIVE_KEYWORD
         }
-        view_pager?.adapter = getViewPagerAdapter()
-        view_pager?.disableScroll(true)
+        viewPager?.adapter = getViewPagerAdapter()
+        viewPager?.disableScroll(true)
     }
 
     private fun getViewPagerAdapter(): KeywordEditPagerAdapter? {
@@ -211,7 +217,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
     }
 
     fun onClickSubmit() {
-        val fragments = (view_pager?.adapter as? KeywordEditPagerAdapter)?.list
+        val fragments = (viewPager?.adapter as? KeywordEditPagerAdapter)?.list
         stepperModel?.keywordOperations?.clear()
         stepperModel?.minBid = advertisingCost?.textFieldInput?.text.toString().removeCommaRawString()
         if (fragments != null) {
