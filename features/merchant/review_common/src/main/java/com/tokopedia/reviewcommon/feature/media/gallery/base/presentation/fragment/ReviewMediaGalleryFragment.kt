@@ -156,7 +156,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         }
     }
 
-    override fun onVideoImpressed(videoUri: String, videoDurationSecond: Int) {
+    override fun onVideoImpressed(videoUri: String, videoDurationSecond: Long) {
         galleryAdapter.getItemByUri(videoUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressVideo(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
@@ -177,7 +177,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         }
     }
 
-    override fun onVideoPlaying(videoUri: String, videoDurationSecond: Int) {
+    override fun onVideoPlaying(videoUri: String, videoDurationSecond: Long) {
         galleryAdapter.getItemByUri(videoUri)?.let { (_, media) ->
             reviewMediaGalleryTracker.trackPlayVideo(
                 media.feedbackId,
@@ -190,8 +190,8 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun onVideoStopped(
         videoUri: String,
-        videoDurationSecond: Int,
-        watchingDurationSecond: Int
+        videoDurationSecond: Long,
+        watchingDurationSecond: Long
     ) {
         galleryAdapter.getItemByUri(videoUri)?.let { (_, media) ->
             reviewMediaGalleryTracker.trackStopVideo(

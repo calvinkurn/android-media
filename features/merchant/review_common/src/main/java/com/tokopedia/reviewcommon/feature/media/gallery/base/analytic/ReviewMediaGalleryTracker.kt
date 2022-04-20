@@ -120,7 +120,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
         attachmentId: String,
         position: Int,
         userId: String,
-        videoDurationSecond: Int
+        videoDurationSecond: Long
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewMediaGalleryTrackerConstant.EVENT_NAME_PROMO_VIEW,
@@ -144,7 +144,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
         feedbackID: String,
         productID: String,
         attachmentID: String,
-        videoDurationSecond: Int
+        videoDurationSecond: Long
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewMediaGalleryTrackerConstant.EVENT_NAME_CLICK_PG,
@@ -164,8 +164,8 @@ class ReviewMediaGalleryTracker @Inject constructor(
         feedbackID: String,
         productID: String,
         attachmentID: String,
-        videoDurationSecond: Int,
-        watchingDurationSecond: Int
+        videoDurationSecond: Long,
+        watchingDurationSecond: Long
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewMediaGalleryTrackerConstant.EVENT_NAME_CLICK_PG,

@@ -196,8 +196,8 @@ class ReviewVideoPlayer(
         volume = 1f
     }
 
-    fun getVideoDurationSecond(): Int {
-        return TimeUnit.MILLISECONDS.toSeconds(exoPlayer?.duration.orZero()).toInt()
+    fun getVideoDurationSecond(): Long {
+        return TimeUnit.MILLISECONDS.toSeconds(exoPlayer?.duration.orZero())
     }
 }
 

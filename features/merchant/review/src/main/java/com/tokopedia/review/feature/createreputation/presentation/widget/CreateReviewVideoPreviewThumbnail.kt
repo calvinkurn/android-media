@@ -1,18 +1,15 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.AccelerateInterpolator
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.databinding.WidgetCreateReviewMediaPreviewVideoThumbnailBinding
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
@@ -22,8 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -85,6 +80,7 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
 
     override fun onReviewVideoPlayerIsPaused() {
         binding.loaderCreateReviewVideoPreviewThumbnail.gone()
+        binding.setupVideoDuration(reviewVideoPlayer.getVideoDurationSecond())
     }
 
     override fun onReviewVideoPlayerIsPreloading() {
@@ -96,14 +92,14 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     }
 
     override fun onReviewVideoPlayerError() {
-        // noop
+        binding.tvCreateReviewVideoPreviewDuration.gone()
+        binding.loaderCreateReviewVideoPreviewDuration.gone()
     }
 
     fun bind(element: CreateReviewMediaUiModel.Video) {
         supervisorJob.cancelChildren()
         with(binding) {
             setupVideoThumbnail(element.uri)
-            setupVideoDuration(element.uri)
             setupVideoState(element.state)
         }
     }
@@ -131,42 +127,26 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
         )
     }
 
-    private fun WidgetCreateReviewMediaPreviewVideoThumbnailBinding.setupVideoDuration(uri: String) {
-        launchCatchError(context = Dispatchers.IO, block = {
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(uri)
-            ensureActive()
-            val durationString = retriever.extractMetadata(
-                MediaMetadataRetriever.METADATA_KEY_DURATION
-            )
-            val durationMillis = durationString.toLongOrZero()
-            val minute = TimeUnit.MILLISECONDS.toMinutes(durationMillis)
-            val second = TimeUnit.MILLISECONDS.toSeconds(
-                durationMillis - TimeUnit.MINUTES.toMillis(minute)
-            )
-            ensureActive()
-            withContext(Dispatchers.Main) {
-                if (minute.isMoreThanZero() && second.isMoreThanZero()) {
-                    tvCreateReviewVideoPreviewDuration.run {
-                        text = buildString {
-                            append(if (minute < 10) "0" else "")
-                            append(minute)
-                            append(":")
-                            append(if (second < 10) "0" else "")
-                        }
-                        show()
-                    }
-                } else {
-                    tvCreateReviewVideoPreviewDuration.gone()
+    private fun WidgetCreateReviewMediaPreviewVideoThumbnailBinding.setupVideoDuration(
+        videoDurationSecond: Long
+    ) {
+        val minute = TimeUnit.SECONDS.toMinutes(videoDurationSecond)
+        val second = videoDurationSecond - TimeUnit.MINUTES.toSeconds(minute)
+        if (minute.isMoreThanZero() || second.isMoreThanZero()) {
+            tvCreateReviewVideoPreviewDuration.run {
+                text = buildString {
+                    append(if (minute < 10) "0" else "")
+                    append(minute)
+                    append(":")
+                    append(if (second < 10) "0" else "")
+                    append(second)
                 }
-                loaderCreateReviewVideoPreviewDuration.gone()
+                show()
             }
-        }, onError = {
-            withContext(Dispatchers.Main) {
-                tvCreateReviewVideoPreviewDuration.gone()
-                loaderCreateReviewVideoPreviewDuration.gone()
-            }
-        })
+        } else {
+            tvCreateReviewVideoPreviewDuration.gone()
+        }
+        loaderCreateReviewVideoPreviewDuration.gone()
     }
 
     private fun setupVideoState(state: CreateReviewMediaUiModel.State) {

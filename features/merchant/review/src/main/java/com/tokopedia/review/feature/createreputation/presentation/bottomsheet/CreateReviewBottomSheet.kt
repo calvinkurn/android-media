@@ -83,6 +83,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         private const val TEXT_AREA_MAX_MIN_LINE = 4
         private const val MAX_VIDEO_COUNT = 1
         private const val MAX_IMAGE_COUNT = 4
+        private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
         private const val MEDIA_PICKER_APP_LINK = "tokopedia-android-internal://global/media-picker?start=1"
 
         fun createInstance(
@@ -1001,7 +1002,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
                         maxMediaItem(MAX_IMAGE_COUNT)
                         maxVideoItem(MAX_VIDEO_COUNT)
                         includeMedias(viewModel.getSelectedMediaFiles())
-                        maxVideoFileSize()
+                        maxVideoFileSize(MAX_VIDEO_SIZE_BYTE)
                     }
                 } else {
                     val builder = ImagePickerBuilder.getSquareImageBuilder(it)
