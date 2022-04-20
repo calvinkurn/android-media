@@ -59,6 +59,12 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+
 }
 
 project.ext {
