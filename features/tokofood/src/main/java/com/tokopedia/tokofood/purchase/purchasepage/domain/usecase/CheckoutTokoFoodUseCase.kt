@@ -1,8 +1,11 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
@@ -27,20 +30,26 @@ import javax.inject.Inject
 
 class CheckoutTokoFoodUseCase @Inject constructor(
     private val repository: GraphqlRepository,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     dispatchers: CoroutineDispatchers
-): FlowUseCase<CheckoutTokoFoodParam, CheckoutTokoFoodResponse>(dispatchers.io) {
+): FlowUseCase<String, CheckoutTokoFoodResponse>(dispatchers.io) {
+
+    private val isDebug = true
 
     companion object {
         private const val PARAMS_KEY = "params"
 
-        private fun generateParams(params: CheckoutTokoFoodParam): Map<String, Any> {
+        private fun generateParams(additionalAttributes: String): Map<String, Any> {
+            val params = CheckoutTokoFoodParam(
+                additionalAttributes = additionalAttributes
+            )
             return mapOf(PARAMS_KEY to params)
         }
     }
 
     override fun graphqlQuery(): String = """
         query LoadCartTokofood($$PARAMS_KEY: CheckoutTokoFoodParam!) {
-          checkout_page_tokofood(params: $$PARAMS_KEY) {
+          cart_list_tokofood(params: $$PARAMS_KEY) {
             message
             status
             data {
@@ -210,13 +219,20 @@ class CheckoutTokoFoodUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: CheckoutTokoFoodParam): Flow<CheckoutTokoFoodResponse> = flow {
-//        val param = generateParams(params)
-//        val response =
-//            repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
-//        emit(response)
-        kotlinx.coroutines.delay(1000)
-        emit(getDummyResponse())
+    override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
+        if (isDebug) {
+            kotlinx.coroutines.delay(1000)
+            emit(getDummyResponse())
+        } else {
+            val additionalAttributes = CartAdditionalAttributesTokoFood(
+                chosenAddressRequestHelper.getChosenAddress(),
+                params
+            )
+            val param = generateParams(additionalAttributes.generateString())
+            val response =
+                repository.request<Map<String, Any>, CheckoutTokoFoodResponse>(graphqlQuery(), param)
+            emit(response)
+        }
     }
 
     private fun getDummyResponse(): CheckoutTokoFoodResponse {

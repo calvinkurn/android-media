@@ -20,6 +20,15 @@
         app:layout_constraintTop_toBottomOf="@id/testQuantity"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/testAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="ATC"
+        app:layout_constraintTop_toBottomOf="@id/testDelete"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
         android:id="@+id/testMiniCart"
         android:layout_width="match_parent"

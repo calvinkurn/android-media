@@ -25,8 +25,12 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
 
     private var onButtonClickAction: () -> Unit = {}
 
+    private var source: String = ""
+
     // Function to initialize the widget
-    fun initialize(sharedViewModel: MultipleFragmentsViewModel, lifecycleScope: LifecycleCoroutineScope) {
+    fun initialize(sharedViewModel: MultipleFragmentsViewModel,
+                   lifecycleScope: LifecycleCoroutineScope,
+                   source: String) {
         viewModel = sharedViewModel
         lifecycleScope.launchWhenStarted {
             viewModel?.miniCartFlow?.collect { result ->
@@ -43,7 +47,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
                 }
             }
         }
-        viewModel?.loadCartList()
+        viewModel?.loadCartList(source)
     }
 
     fun setOnATCClickListener(action: () -> Unit) {
@@ -53,7 +57,9 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
         viewBinding?.totalAmountMiniCart?.apply {
             isTotalAmountDisabled = false
-            isTotalAmountLoading = false
+            if (isTotalAmountLoading) {
+                isTotalAmountLoading = false
+            }
             setLabelTitle(miniCartUiModel.shopName)
             setAmount(miniCartUiModel.totalPriceFmt)
             setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
@@ -65,12 +71,14 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderLoading() {
-        viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = false
-        viewBinding?.totalAmountMiniCart?.isTotalAmountLoading = true
+        viewBinding?.totalAmountMiniCart?.let { totalAmount ->
+            if (!totalAmount.isTotalAmountLoading) {
+                totalAmount.isTotalAmountLoading = true
+            }
+        }
     }
 
     private fun renderError() {
-        viewBinding?.totalAmountMiniCart?.isTotalAmountLoading = false
         viewBinding?.totalAmountMiniCart?.isTotalAmountDisabled = true
     }
 

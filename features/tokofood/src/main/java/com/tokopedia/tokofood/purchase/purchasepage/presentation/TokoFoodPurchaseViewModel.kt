@@ -49,6 +49,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
+    companion object {
+        private const val SOURCE = "checkout_page"
+    }
+
     private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
     val purchaseUiEvent: LiveData<PurchaseUiEvent>
         get() = _uiEvent
@@ -125,9 +129,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
-            val param = CheckoutTokoFoodParam()
-            checkoutTokoFoodUseCase(param).collect {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+            checkoutTokoFoodUseCase(SOURCE).collect {
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
+                    data = it
+                )
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 // TODO: Check for success status
@@ -144,10 +150,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadDataPartial() {
         launchCatchError(block = {
-            val param = CheckoutTokoFoodParam()
-            checkoutTokoFoodUseCase(param).collect {
-                // TODO: Load partial data only from query
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+            checkoutTokoFoodUseCase(SOURCE).collect {
+                // TODO: Improvement Load partial data only from query
+                _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
+                    data = it
+                )
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 // TODO: Check for success status

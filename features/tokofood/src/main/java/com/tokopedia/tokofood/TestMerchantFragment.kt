@@ -14,10 +14,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentTokofoodMerchantTestBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -46,8 +48,8 @@ class TestMerchantFragment: BaseMultiFragment() {
     private val activityViewModel: MultipleFragmentsViewModel?
         get() = parentActivity?.viewModel()
 
-    private val _updateQuantityState: MutableStateFlow<Int> =
-        MutableStateFlow(0)
+    private val _updateQuantityState: MutableStateFlow<Int?> =
+        MutableStateFlow(null)
 
     override fun getFragmentToolbar(): Toolbar? = null
 
@@ -70,8 +72,8 @@ class TestMerchantFragment: BaseMultiFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectValue()
-        setupDebounceTest()
         setupView()
+        setupDebounceTest()
     }
 
     override fun onResume() {
@@ -85,7 +87,9 @@ class TestMerchantFragment: BaseMultiFragment() {
                 .debounce(1000)
                 .flatMapConcat { count ->
                     flow {
-                        emit(count)
+                        if (count != null) {
+                            emit(count)
+                        }
                     }
                 }
                 .collect {
@@ -115,6 +119,14 @@ class TestMerchantFragment: BaseMultiFragment() {
             testMiniCart.setOnATCClickListener {
                 goToPurchasePage()
             }
+
+            testDelete.setOnClickListener {
+                activityViewModel?.deleteProduct("", "", "tes")
+            }
+
+            testAdd.setOnClickListener {
+                activityViewModel?.addToCart(UpdateParam(), "")
+            }
         }
     }
 
@@ -125,6 +137,21 @@ class TestMerchantFragment: BaseMultiFragment() {
                     UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
                         goToPurchasePage()
                     }
+//                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+//                        view?.let {
+//                            Toaster.build(it, "success delete", Toaster.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                    UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+//                        view?.let {
+//                            Toaster.build(it, "success update quantity", Toaster.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                    UiEvent.EVENT_SUCCESS_ADD_TO_CART -> {
+//                        view?.let {
+//                            Toaster.build(it, "success atc", Toaster.LENGTH_SHORT).show()
+//                        }
+//                    }
                 }
             }
         }
@@ -132,7 +159,7 @@ class TestMerchantFragment: BaseMultiFragment() {
 
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
-            binding?.testMiniCart?.initialize(it, viewLifecycleOwner.lifecycleScope)
+            binding?.testMiniCart?.initialize(it, viewLifecycleOwner.lifecycleScope, "tes")
         }
     }
 

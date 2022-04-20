@@ -29,7 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -41,7 +40,7 @@ import com.tokopedia.tokofood.TestMerchantFragment
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
@@ -95,6 +94,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
         const val REQUEST_CODE_CHANGE_ADDRESS = 111
         const val REQUEST_CODE_SET_PINPOINT = 112
+
+        private const val SOURCE = "checkout_page"
 
         fun createInstance(): TokoFoodPurchaseFragment {
             return TokoFoodPurchaseFragment()
@@ -287,8 +288,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
-
-                    // Todo : update cart data on shared viewmodel
+                    (it.data as? CheckoutTokoFoodResponse)?.let { response ->
+                        activityViewModel?.loadCartList(response)
+                    }
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
@@ -380,7 +382,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             viewModel.updateQuantityStateFlow
                 .collect { param ->
                     param?.let {
-                        activityViewModel?.updateCart(it)
+                        activityViewModel?.updateQuantity(it, SOURCE)
                     }
                 }
         }
@@ -442,7 +444,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 setPrimaryCTAText("Hapus")
                 setSecondaryCTAText("Kembali")
                 setPrimaryCTAClickListener {
-                    activityViewModel?.deleteUnavailableProducts()
+                    activityViewModel?.deleteUnavailableProducts(SOURCE)
                     dismiss()
                 }
                 setSecondaryCTAClickListener {
@@ -559,7 +561,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(element.id, element.cartId)
+        activityViewModel?.deleteProduct(element.id, element.cartId, SOURCE)
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
@@ -570,7 +572,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             TokoFoodPurchaseUiModelMapper.mapUiModelToUpdateParam(
                                 listOf(element.copy(notes = notes))
                             )
-                        activityViewModel?.updateNotes(updateParam)
+                        activityViewModel?.updateNotes(updateParam, SOURCE)
                     }
                 }
         )
