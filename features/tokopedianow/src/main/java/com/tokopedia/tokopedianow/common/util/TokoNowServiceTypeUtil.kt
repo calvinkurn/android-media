@@ -24,7 +24,7 @@ object TokoNowServiceTypeUtil {
     * Create the key to access and wrap resourceId into TokoNowStringResource data class
     * Properties explanation :
     * 1. formattedResourceId -> Put resourceId here if there is something (variable or color) we want to put into the string resource.
-    * 2. resourceId2h and resourceId15m -> Put here only if we want to get the resourceId of string in either 15 min or 2 hr delivery duration.
+    * 2. resourceId2h and resourceId20m -> Put here only if we want to get the resourceId of string in either 20 min or 2 hr delivery duration.
     */
     private val resourceIdsMap = mutableMapOf(
         EDU_BOTTOM_SHEET_RESOURCE_ID to TokoNowStringResource(
@@ -38,7 +38,7 @@ object TokoNowServiceTypeUtil {
         ),
         REPURCHASE_EMPTY_RESOURCE_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_repurchase_no_result_description_two_hours,
-            resourceId20m = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes
+            resourceId20m = R.string.tokopedianow_repurchase_no_result_description_twenty_minutes
         ),
         SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID to TokoNowStringResource(
             formattedResourceId = R.string.tokopedianow_search_category_subtitle

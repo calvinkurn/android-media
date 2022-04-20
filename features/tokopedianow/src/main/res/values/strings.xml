@@ -71,7 +71,7 @@
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>
     <string name="tokopedianow_repurchase_no_result_title">Belum pernah belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_no_result_description_two_hours">Belanja sekarang, pesanan tiba dalam 2 jam!</string>
-    <string name="tokopedianow_repurchase_no_result_description_fifteen_minutes">Belanja sekarang, pesanan tiba dalam 20 menit!</string>
+    <string name="tokopedianow_repurchase_no_result_description_twenty_minutes">Belanja sekarang, pesanan tiba dalam 20 menit!</string>
 
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
@@ -125,8 +125,8 @@
     <string name="tokopedianow_20m_coachmark_description">Lebih cepat, tetap gratis ongkir!</string>
 
     <string name="tokopedianow_search_category_title">Belum nemu yang kamu cari?</string>
-    <string name="tokopedianow_search_category_description_fifteen_minutes"><![CDATA[Masih banyak produk lainnya yang bisa <b>20 menit tiba</b>, lho.]]></string>
-    <string name="tokopedianow_search_category_title_fifteen_minutes">Jelajahi Sekarang</string>
+    <string name="tokopedianow_search_category_description_twenty_minutes"><![CDATA[Masih banyak produk lainnya yang bisa <b>20 menit tiba</b>, lho.]]></string>
+    <string name="tokopedianow_search_category_title_twenty_minutes">Jelajahi Sekarang</string>
     <string name="tokopedianow_search_category_description_two_hours"><![CDATA[Atau cek Tokopedia NOW! <b>2 jam tiba</b>, pilihan lebih lengkap!]]></string>
     <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
     <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
