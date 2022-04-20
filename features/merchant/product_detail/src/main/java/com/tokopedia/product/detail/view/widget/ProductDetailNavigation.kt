@@ -47,7 +47,7 @@ class ProductDetailNavigation(
     private var enableScrollUpListener = true
     private var enableContentChangeListener = true
     private var impressNavigation = false
-    private var isVisibile = false
+    private var isVisible = false
 
     init {
         addView(view)
@@ -91,25 +91,8 @@ class ProductDetailNavigation(
         }
     }
 
-    private fun scrollToContent(tabPosition: Int) {
-        val position = items.getOrNull(tabPosition)?.position ?: -1
-        smoothScrollToPosition(position)
-    }
-
-    private fun smoothScrollToPosition(position: Int) {
-        if (position == -1) return
-
-        recyclerView?.apply {
-            smoothScroller.targetPosition = position
-            enableScrollUpListener = false
-            enableContentChangeListener = false
-            enableTouchScroll(false)
-            layoutManager?.startSmoothScroll(smoothScroller)
-        }
-    }
-
     private fun toggle(show: Boolean) {
-        if (isVisibile == show) return
+        if (isVisible == show) return
 
         val showY = 0f
         val hideY = -1f * view.height
@@ -126,7 +109,7 @@ class ProductDetailNavigation(
 
         val y = if (show) showY else hideY
         view.animate().translationY(y).duration = 300
-        isVisibile = show
+        isVisible = show
     }
 
     private fun enableTouchScroll(isEnable: Boolean) {
@@ -143,13 +126,7 @@ class ProductDetailNavigation(
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 enableScrollUpListener = true
-                enableTouchScroll(true)
-
-                showJob?.cancel()
-                val firstPosition = getFirstVisibleItemPosition(recyclerView)
-                if (firstPosition == 0) {
-                    toggle(false)
-                } else delayedShow()
+                showHide(recyclerView)
             }
         }
 
@@ -176,8 +153,15 @@ class ProductDetailNavigation(
                 }
             }
         }
-    }
 
+        private fun showHide(recyclerView: RecyclerView) {
+            showJob?.cancel()
+            val firstPosition = getFirstVisibleItemPosition(recyclerView)
+            if (firstPosition == 0) {
+                toggle(false)
+            } else if (!isVisible) delayedShow()
+        }
+    }
 
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
 
@@ -197,6 +181,21 @@ class ProductDetailNavigation(
             trackOnClickTab(position)
         }
 
+        private fun scrollToContent(tabPosition: Int) {
+            val position = items.getOrNull(tabPosition)?.position ?: -1
+            smoothScrollToPosition(position)
+        }
+
+        private fun smoothScrollToPosition(position: Int) {
+            if (position == -1) return
+
+            recyclerView?.apply {
+                enableTouchScroll(false)
+                smoothScroller.targetPosition = position
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
+
         private fun trackOnClickTab(position: Int) {
             val label = items.getOrNull(position)?.label ?: ""
             listener?.onClickProductDetailnavigation(position, label)
@@ -208,6 +207,7 @@ class ProductDetailNavigation(
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 enableContentChangeListener = true
+                enableTouchScroll(true)
             }
         }
 
@@ -252,6 +252,8 @@ class ProductDetailNavigation(
 
     private inner class SmoothScroller(context: Context) : LinearSmoothScroller(context) {
 
+        private var isScroll = false
+
         override fun calculateDyToMakeVisible(view: View, snapPreference: Int): Int {
             return super.calculateDyToMakeVisible(
                 view,
@@ -261,6 +263,23 @@ class ProductDetailNavigation(
 
         override fun getVerticalSnapPreference(): Int {
             return SNAP_TO_START
+        }
+
+        override fun onStart() {
+            super.onStart()
+            enableScrollUpListener = false
+            enableContentChangeListener = false
+        }
+
+        override fun onSeekTargetStep(dx: Int, dy: Int, state: RecyclerView.State, action: Action) {
+            super.onSeekTargetStep(dx, dy, state, action)
+            isScroll = true
+        }
+
+        override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
+            super.onTargetFound(targetView, state, action)
+            if(!isScroll) enableTouchScroll(true)
+            isScroll = false
         }
     }
 

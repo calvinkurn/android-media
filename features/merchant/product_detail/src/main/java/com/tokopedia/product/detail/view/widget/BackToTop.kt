@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -23,7 +24,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     private var recyclerView: RecyclerView? = null
     private var listener: DynamicProductDetailListener? = null
 
-    private val linearSmoothScroller = LinearSmoothScroller(context)
+    private val smoothScroller = SmoothScroller(context)
     private val onScrollListener = OnScrollListener()
 
     private var impressNavigation = false
@@ -71,9 +72,9 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
 
     private fun smoothScrollToTop() {
         recyclerView?.apply {
-            linearSmoothScroller.targetPosition = 0
+            smoothScroller.targetPosition = 0
             enableTouchScroll(false)
-            layoutManager?.startSmoothScroll(linearSmoothScroller)
+            layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
@@ -97,5 +98,22 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
                 toggle(false)
             } else toggle(true)
         }
+    }
+
+    private inner class SmoothScroller(context: Context) : LinearSmoothScroller(context) {
+
+        private var isScroll = false
+
+        override fun onSeekTargetStep(dx: Int, dy: Int, state: RecyclerView.State, action: Action) {
+            super.onSeekTargetStep(dx, dy, state, action)
+            isScroll = true
+        }
+
+        override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
+            super.onTargetFound(targetView, state, action)
+            if (!isScroll) enableTouchScroll(true)
+            isScroll = false
+        }
+
     }
 }
