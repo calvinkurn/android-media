@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget
 import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
@@ -90,7 +91,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var oldMiniCart: MiniCartWidget? = null
 
     init {
-        view = inflate(context, R.layout.widget_mini_cart, this)
+        view = LayoutInflater.from(context).inflate(R.layout.widget_mini_cart, this, false)
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
         textCannotProcess = view?.findViewById(R.id.text_cannot_process)
@@ -104,6 +105,7 @@ class MiniCartWidget @JvmOverloads constructor(
     fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
         val application = fragment.activity?.application
         initializeInjector(application)
+        removeAllViews()
 
         if (remoteConfig.isNewMiniCartEnabled()) {
             if (viewModel == null) {
@@ -119,23 +121,13 @@ class MiniCartWidget @JvmOverloads constructor(
             } else {
                 updateData(shopIds)
             }
+            addView(view)
         } else {
-            initializeOldMiniCart(shopIds, fragment, listener, autoInitializeData, pageName)
+            val page = mapToOldPageName(pageName)
+            oldMiniCart = MiniCartWidget(context)
+            oldMiniCart?.initialize(shopIds, fragment, listener, autoInitializeData, page)
+            addView(oldMiniCart)
         }
-    }
-
-    private fun initializeOldMiniCart(
-        shopIds: List<String>,
-        fragment: Fragment,
-        listener: MiniCartWidgetListener,
-        autoInitializeData: Boolean = true,
-        pageName: MiniCartAnalytics.Page
-    ) {
-        val page = mapToOldPageName(pageName)
-        oldMiniCart = MiniCartWidget(context)
-        oldMiniCart?.initialize(shopIds, fragment, listener, autoInitializeData, page)
-        removeAllViews()
-        addView(oldMiniCart)
     }
 
     private fun initializeListener(listener: MiniCartWidgetListener) {
