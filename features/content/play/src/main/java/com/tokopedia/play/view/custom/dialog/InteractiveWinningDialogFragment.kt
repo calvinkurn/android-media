@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.view.loadImage
@@ -75,12 +76,12 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     fun setInteractive(interactive: InteractiveUiModel){
         val backgroundType = when (interactive){
             is InteractiveUiModel.Giveaway -> {
-                com.tokopedia.play_common.R.drawable.bg_play_interactive
+                commonR.drawable.bg_play_interactive
             }
             is InteractiveUiModel.Quiz -> {
-                com.tokopedia.play_common.R.drawable.bg_play_quiz_widget
+                commonR.drawable.bg_play_quiz_widget
             }
-            else -> com.tokopedia.play_common.R.drawable.bg_play_interactive
+            else -> commonR.drawable.bg_play_interactive
         }
         rootV.background = MethodChecker.getDrawable(context, backgroundType)
     }

@@ -28,7 +28,6 @@ class InteractiveViewerGetLeaderboardWithSlotUseCase @Inject constructor(
     companion object {
         private const val PARAM_CHANNEL_ID = "channelID"
 
-        const val QUERY_NAME = "InteractiveViewerGetLeaderboardWithSlotUseCase"
         const val QUERY = """
             query getLeaderboardViewer(${"$${PARAM_CHANNEL_ID}"}: String!){
               playInteractiveViewerGetLeaderboardWithSlot(req:{

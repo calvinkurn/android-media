@@ -1346,7 +1346,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 
