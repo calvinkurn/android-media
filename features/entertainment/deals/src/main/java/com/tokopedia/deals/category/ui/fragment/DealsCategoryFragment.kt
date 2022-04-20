@@ -41,6 +41,7 @@ import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -50,6 +51,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoCleared
+import timber.log.Timber
 import javax.inject.Inject
 
 class DealsCategoryFragment : DealsBaseFragment(),
@@ -71,6 +73,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var categoryID: String = ""
     private var filterBottomSheet: DealsCategoryFilterBottomSheet? = null
     private var chips: List<ChipDataView> = listOf()
+    private var categories: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +126,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, {
             onBaseLocationChanged(it)
         })
+
+        dealCategoryViewModel.observableCategories.observe(viewLifecycleOwner, { categories = it })
 
         handleRecycler()
     }
@@ -251,6 +256,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
         }
     }
 
+    private fun showOrNotFilter(categories: List<Category>){
+        val category = categories.single { it.id == categoryID }
+        val isShowFilter = category.isCard == 1 && category.isHidden == 0
+        Timber.d(isShowFilter.toString())
+        binding.container.root.showWithCondition(isShowFilter)
+    }
+
     override fun enableLoadMore() {
         val layoutManager = GridLayoutManager(context, PRODUCT_SPAN_COUNT)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -374,6 +386,13 @@ class DealsCategoryFragment : DealsBaseFragment(),
         val errorModel = ErrorNetworkModel()
         errorModel.onRetryListener = ErrorNetworkModel.OnRetryListener { loadData(1) }
         return errorModel
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (categories.isNotEmpty()){
+            showOrNotFilter(categories)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
