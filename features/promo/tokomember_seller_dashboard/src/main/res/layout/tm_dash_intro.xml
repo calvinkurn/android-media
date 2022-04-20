@@ -44,35 +44,32 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/tm_intro_bg" />
 
-                <com.tokopedia.unifycomponents.CardUnify
+               <View
+                    android:id="@+id/viewBgSelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="184dp"
+                    android:layout_below="@id/ivBg"
+                    android:visibility="visible"
+                    android:layout_marginTop="-80dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:alpha="0.2"
+                    android:background="@drawable/tm_video_selector"
+                   />
+
+                <com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
                     android:id="@+id/frame_video"
                     android:layout_width="match_parent"
                     android:layout_height="184dp"
                     android:layout_below="@id/ivBg"
-                    android:layout_marginStart="@dimen/unify_space_16"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="-80dp"
-                    android:layout_marginEnd="@dimen/unify_space_16"
+                    android:layout_marginEnd="16dp"
                     android:visibility="visible"
-                    app:card_type="shadow"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ivBg">
 
-                    <com.google.android.exoplayer2.ui.PlayerView
-                        android:id="@+id/layoutVideo"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:resize_mode="zoom"
-                        app:show_timeout="3000"
-                        app:shutter_background_color="@android:color/transparent"
-                        app:surface_type="texture_view"
-                        app:use_controller="false" />
-
-                </com.tokopedia.unifycomponents.CardUnify>
+                </com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView>
 
             </RelativeLayout>
 
@@ -154,9 +151,13 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="@id/cardTokmemberParent"
-                app:layout_constraintTop_toBottomOf="@+id/containerBgvideo" />
+                app:layout_constraintTop_toBottomOf="@+id/containerBgvideo"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -169,19 +170,9 @@
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnContinue"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tm_dash_daftar_gratis"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnWebview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/tm_dash_selengkapnya"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"

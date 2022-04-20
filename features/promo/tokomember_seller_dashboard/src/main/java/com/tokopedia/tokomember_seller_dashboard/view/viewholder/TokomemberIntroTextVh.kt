@@ -11,25 +11,24 @@ import kotlinx.android.synthetic.main.tm_dash_intro_text_item.view.*
 
 class TokomemberIntroTextVh(val listener: TokomemberIntroAdapterListener, view: View)
     : AbstractViewHolder<TokomemberIntroTextItem>(view) {
+    private var  lastPosition = -1
 
     private val tvSectionText = itemView.tvSection
-    private var  lastPosition = -1
 
     override fun bind(element: TokomemberIntroTextItem?) {
         element?.apply {
             tvSectionText.text = element.text
-            setAnimation()
+        }
+        if (element != null) {
+            listener.onItemDisplayed(element,adapterPosition)
         }
     }
 
-    private fun setAnimation() {
-        if (adapterPosition > lastPosition) {
+     fun setAnimation() {
             val animType = getAnimationLeftOrRight()
             val animation: Animation =
                 AnimationUtils.loadAnimation(itemView.context, animType)
             this@TokomemberIntroTextVh.itemView.startAnimation(animation)
-            lastPosition = adapterPosition
-        }
     }
 
     private fun getAnimationLeftOrRight(): Int {

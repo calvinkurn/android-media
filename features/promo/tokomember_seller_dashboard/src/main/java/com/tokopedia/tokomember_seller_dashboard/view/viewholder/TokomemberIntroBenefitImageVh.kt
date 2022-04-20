@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -19,8 +20,8 @@ class TokomemberIntroBenefitImageVh(val view: View)
 
     override fun bind(element: TokomemberIntroBenefitImageItem?) {
         element?.apply {
-            tmIntroVideoView?.loadImage(element.imgUrl?:"")
-            setAnimation()
+            tmIntroVideoView?.loadImage("https://images.tokopedia.net/img/retention/tokomember/sellerapp/introductorypage/cards/Card@3x.png")
+         //   setAnimation()
         }
     }
 
@@ -43,11 +44,14 @@ class TokomemberIntroBenefitImageVh(val view: View)
     //7 position image L->R
 
     private fun setAnimation() {
+        if (lastPosition<adapterPosition) {
             val animType = getAnimationLeftOrRight()
             val animation: Animation =
                 AnimationUtils.loadAnimation(itemView.context, animType)
-            this@TokomemberIntroBenefitImageVh.itemView.startAnimation(animation)
+            this.itemView.parentcon.layoutAnimation = LayoutAnimationController(animation)
+            // this@TokomemberIntroBenefitImageVh.itemView.startAnimation(animation)
             lastPosition = adapterPosition
+        }
     }
 
     private fun getAnimationLeftOrRight(): Int {

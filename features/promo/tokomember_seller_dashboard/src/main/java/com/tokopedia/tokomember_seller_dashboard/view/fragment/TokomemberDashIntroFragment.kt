@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
@@ -40,8 +41,9 @@ import javax.inject.Inject
 import androidx.recyclerview.widget.PagerSnapHelper
 
 import androidx.recyclerview.widget.SnapHelper
-
-
+import com.tokopedia.tokomember_seller_dashboard.view.animation.TokomemberIntroItemAnimator
+import android.view.ViewTreeObserver
+import kotlinx.android.synthetic.main.tm_dash_intro_button_item.*
 
 
 private const val ARG_OPEN_BS = "openBS"
@@ -148,64 +150,45 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
             AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
         buttonContainer.startAnimation(animation1)
 
-        val animation2: Animation =
-            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
-        frame_video.startAnimation(animation2)
 
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
         headerData?.let {
             tvTitle.text = it.title?.getOrNull(0)
             tvSubtitle.text = it.subTitle?.getOrNull(0)
         }
-
-        frame_video.addView(
-            setVideoView(
-                membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:"",
-                "1:1"
-            )
+         setVideoView(
+            membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:"",
+            "1:1"
         )
 
-        btnContinue.setOnClickListener {
-            startActivity(Intent(requireActivity(), TokomemberDashCreateCardActivity::class.java))
-        }
+        val animation2: Animation =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
+        frame_video.startAnimation(animation2)
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun renderSectionBenefit(data: TokomemberIntroItem) {
-
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-            }
-        })
         adapter.addItems(data.tokoVisitable)
-        adapter.notifyDataSetChanged()
+
     }
 
     private fun setVideoView(
         url: String,
         ratio: String,
-    ): View? {
-
-        return context?.let {
-            val tmVideoView =
-                TokomemberVideoView(it)
-            tmVideoView.playVideo("")
-            tmVideoView
+    ) {
+        context?.let {
+            frame_video?.setVideoPlayer(url)
         }
     }
 
     override fun onItemDisplayed(tokoIntroItem: Visitable<*>, position: Int) {
 
     }
+
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")
     private fun hideStatusBar() {

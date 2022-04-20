@@ -12,19 +12,6 @@ open class TokomemberIntroModel {
     var isVisited: Boolean = false
 }
 
-data class TokomemberIntroHeaderItem(
-    @SerializedName("title")
-    val title: String?,
-    @SerializedName("desc")
-    val description: String?,
-
-    ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
-
-    override fun type(typeFactory: TokomemberIntroFactory): Int {
-        return typeFactory.type(this)
-    }
-}
-
 data class TokomemberIntroTextItem(
     @SerializedName("text")
     val text: String?,
@@ -38,9 +25,11 @@ data class TokomemberIntroTextItem(
     }
 }
 
-data class TokomemberIntroBenefitImageItem(
-    @SerializedName("imgUrl")
-    val imgUrl: String?,
+data class TokomemberIntroButtonItem(
+    @SerializedName("text")
+    val text: String?,
+    @SerializedName("url")
+    val url: String?,
 
     ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
 
@@ -49,11 +38,9 @@ data class TokomemberIntroBenefitImageItem(
     }
 }
 
-data class TokomemberIntroVideoItem(
-    @SerializedName("url")
-    val url: String?,
-    @SerializedName("type")
-    val type: String?,
+data class TokomemberIntroBenefitImageItem(
+    @SerializedName("imgUrl")
+    val imgUrl: String?,
 
     ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
 

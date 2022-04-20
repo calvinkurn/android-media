@@ -12,30 +12,14 @@ object TokomemberIntroMapper {
         val arrayListOfIntroData = arrayListOf<Visitable<*>>()
         val sellerOnboarding = membershipData.membershipGetSellerOnboarding
         val sellerBenefit = sellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit
-     //   arrayListOfIntroData.add(getIntroHeaderData(sellerOnboarding))
-      //  arrayListOfIntroData.add(getIntroVideoData(sellerOnboarding))
         if (!sellerBenefit.isNullOrEmpty()) {
             for (item in sellerOnboarding.sellerHomeContent.sellerHomeText.sellerHomeTextBenefit) {
                 arrayListOfIntroData.add(getIntroTextData(item))
                 arrayListOfIntroData.add(getIntroImageData(item))
-                arrayListOfIntroData.add(getIntroTextData(item))
-                arrayListOfIntroData.add(getIntroImageData(item))
-                arrayListOfIntroData.add(getIntroTextData(item))
-                arrayListOfIntroData.add(getIntroImageData(item))
-                arrayListOfIntroData.add(getIntroTextData(item))
-                arrayListOfIntroData.add(getIntroImageData(item))
             }
+            arrayListOfIntroData.add(getIntroButtonData())
         }
         return TokomemberIntroItem(tokoVisitable = arrayListOfIntroData)
-
-    }
-
-    private fun getIntroHeaderData(sellerOnboarding: MembershipGetSellerOnboarding?): TokomemberIntroHeaderItem {
-        return TokomemberIntroHeaderItem(
-            title = sellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.getOrNull(0) ?: "",
-            description = sellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.getOrNull(0)
-                ?: ""
-        )
     }
 
     private fun getIntroTextData(sellerHomeTextBenefit: SellerHomeTextBenefitItem?): TokomemberIntroTextItem {
@@ -51,10 +35,10 @@ object TokomemberIntroMapper {
         )
     }
 
-    private fun getIntroVideoData(sellerOnboarding: MembershipGetSellerOnboarding?): TokomemberIntroVideoItem {
-        return TokomemberIntroVideoItem(
-            url = sellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL,
-            type = sellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.type
+    private fun getIntroButtonData(): TokomemberIntroButtonItem {
+        return TokomemberIntroButtonItem(
+            text = "Daftar Gratis",
+            url = ""
         )
     }
 }

@@ -73,7 +73,7 @@ class TokomemberDashVideoPlayer(val context: Context) {
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
         toggleVideoVolume(isMute)
-        exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
+        exoPlayer.repeatMode = Player.REPEAT_MODE_OFF
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
     }
@@ -82,11 +82,11 @@ class TokomemberDashVideoPlayer(val context: Context) {
         reset()
         exoPlayer.playWhenReady = true
     }
+
     fun replay() {
         if (exoPlayer.playbackState == ExoPlayer.STATE_ENDED) reset()
         exoPlayer.playWhenReady = true
     }
-
 
     fun stop() {
         exoPlayer.playWhenReady = false
@@ -112,6 +112,8 @@ class TokomemberDashVideoPlayer(val context: Context) {
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
 
     fun isMute(): Boolean = exoPlayer.volume == MUTE_VOLUME
+
+    fun isPlaying(): Boolean = exoPlayer.isPlaying
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory =

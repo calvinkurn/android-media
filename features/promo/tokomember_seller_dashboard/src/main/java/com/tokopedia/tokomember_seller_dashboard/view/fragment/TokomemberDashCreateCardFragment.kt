@@ -229,8 +229,11 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
 
             carouselCard.apply {
                 indicatorPosition = CarouselUnify.INDICATOR_BC
-                slideToShow = 1F
+                slideToShow = 1f
+                slideToScroll = 1
+                freeMode = false
                 centerMode = true
+                autoplay = false
                 addItem(shopViewPremium!!)
                 addItem(shopViewVip!!)
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {

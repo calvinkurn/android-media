@@ -31,19 +31,47 @@ class TokomemberVideoView @JvmOverloads constructor(
     private var videoPlayer: TokomemberDashVideoPlayer? = null
     private var productVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
+    private var iconPlay = false
 
     init {
         View.inflate(context, R.layout.tm_dash_video_view, this)
         setClicks()
     }
 
-    fun playVideo(url: String) {
+    fun setVideoPlayer(url: String) {
+        ic_play?.apply {
+            setOnClickListener {
+                iconPlay = if (!iconPlay) {
+                    playVideo(url)
+                    ic_play.gone()
+                    true
+                } else {
+                    setVideoPlayerStop()
+                    false
+                }
+            }
+        }
+    }
+
+    private fun setVideoPlayerStop(){
+        videoPlayer?.let{
+            it.stop()
+        }
+    }
+
+    fun releaseVideoPlayer(){
+        videoPlayer?.let {
+            it.destroy()
+        }
+    }
+
+    private fun playVideo(url: String) {
         if (videoPlayer == null) {
             context?.let {
                 productVideoJob = scope.launch {
                     videoPlayer = TokomemberDashVideoPlayer(it)
                     layout_video?.player = videoPlayer?.getExoPlayer()
-                    videoPlayer?.start("https://vod.tokopedia.net/956dbf4f21834399a24926874064e2bd/1cfe279a2e2b454391a7a7ae2e780170-c76ce7414a3e828c29aab17379bef6fe-sd.mp4")
+                    videoPlayer?.start(url)
 
                     videoPlayer?.setVideoStateListener(object : VideoStateListener {
                         override fun onInitialStateLoading() {
