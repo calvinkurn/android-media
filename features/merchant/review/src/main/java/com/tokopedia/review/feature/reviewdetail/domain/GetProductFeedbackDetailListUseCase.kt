@@ -36,6 +36,10 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
                         thumbnailURL
                         fullsizeURL
                     }
+                    videoAttachments {
+                      attachmentID
+                      videoUrl
+                    }
                     variantName
                     reviewerName
                     isKejarUlasan
