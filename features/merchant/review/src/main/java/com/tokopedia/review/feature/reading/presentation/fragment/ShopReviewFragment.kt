@@ -69,26 +69,6 @@ class ShopReviewFragment : ReadReviewFragment() {
         hideHeaderOnScrolled()
     }
 
-    private fun hideHeaderOnScrolled() {
-        view?.let {
-            val recyclerView = getRecyclerView(it) ?: return
-
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
-                    if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                        reviewHeader?.hideRatingContainer()
-                    } else if (!canScrollVertically){
-                        reviewHeader?.showRatingContainer()
-                    }
-                }
-            })
-        }
-    }
-
     override fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         super.onSuccessGetRatingAndTopic(ratingAndTopics)
         val isRatingAndTopicsAvailable = !(ratingAndTopics.rating.totalRatingTextAndImage == 0L && ratingAndTopics.rating.totalRatingWithImage == 0L)
@@ -125,4 +105,24 @@ class ShopReviewFragment : ReadReviewFragment() {
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = false
+
+    private fun hideHeaderOnScrolled() {
+        view?.let {
+            val recyclerView = getRecyclerView(it) ?: return
+
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
+                    if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                        reviewHeader?.hideRatingContainer()
+                    } else if (!canScrollVertically){
+                        reviewHeader?.showRatingContainer()
+                    }
+                }
+            })
+        }
+    }
 }
