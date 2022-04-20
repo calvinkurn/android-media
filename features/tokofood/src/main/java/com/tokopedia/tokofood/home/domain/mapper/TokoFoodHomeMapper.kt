@@ -25,8 +25,6 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodFakeTab
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
@@ -99,7 +97,6 @@ object TokoFoodHomeMapper {
             // endregion
 
             // region data got from other gql
-            TABS_TOKOFOOD -> mapFakeTabModel(response, notLoadedState)
             USP_TOKOFOOD -> mapUSPWidgetModel(response, notLoadedState)
             ICON_TOKOFOOD -> mapDynamicIconModel(response, notLoadedState)
             // endregion
@@ -142,14 +139,6 @@ object TokoFoodHomeMapper {
             TokoFoodHomeLayoutState.LOADING
         )
         return TokoFoodHomeItemUiModel(dynamicIconModel, state)
-    }
-
-    private fun mapFakeTabModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
-        val fakeTabModel = TokoFoodHomeFakeTabUiModel(
-            id = response.id,
-            fakeTab = null,
-            state = TokoFoodHomeLayoutState.LOADING)
-        return TokoFoodHomeItemUiModel(fakeTabModel, state)
     }
 
     fun mapToChannelModel(response: HomeLayoutResponse): ChannelModel {

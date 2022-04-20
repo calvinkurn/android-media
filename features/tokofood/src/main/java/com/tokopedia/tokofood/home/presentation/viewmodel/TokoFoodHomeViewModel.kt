@@ -17,7 +17,6 @@ import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeItem
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.setStateToLoading
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
@@ -99,7 +98,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         when (item) {
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
             is TokoFoodHomeIconsUiModel -> {}
-            is TokoFoodHomeFakeTabUiModel -> {}
             else -> removeUnsupportedLayout(item)
         }
     }
