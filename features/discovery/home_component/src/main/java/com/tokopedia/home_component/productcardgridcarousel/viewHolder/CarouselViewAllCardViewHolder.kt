@@ -11,6 +11,7 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselVi
 import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.viewallcard.ViewAllCard
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_COLOR
 import com.tokopedia.viewallcard.ViewAllCard.Companion.MODE_INVERT
@@ -44,6 +45,7 @@ class CarouselViewAllCardViewHolder(
         val outValue = TypedValue()
         itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
         card.cardView.foreground = itemView.context.getDrawable(outValue.resourceId)
+        card.cardView.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
 
         card.setOnClickListener {
             element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)
