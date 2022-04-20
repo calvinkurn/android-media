@@ -79,7 +79,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private lateinit var listOfGateway: PaylaterGetOptimizedModel
     private var selectedTenurePosition = 0
     var quantity = 1
-    var isDisabled = false
+    var isDisabledPartner = false
+    var isDisableTenure = false
     private var variantName = ""
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
@@ -250,7 +251,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun sendOccImpressionEvent() {
         try {
             payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
-                if (!isDisabled) {
+                if (!isDisabledPartner) {
                     sendAnalyticEvent(
                         PdpSimulationEvent.OccImpressionEvent(
                             payLaterActivationViewModel.selectedProductId,
@@ -291,17 +292,24 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTickerVisibility(it: CheckoutData) {
-        if (isDisabled) {
-            gatewayDetailLayout.errorTicker.visibility = View.VISIBLE
-            gatewayDetailLayout.errorTicker.setTextDescription(it.reason_long.orEmpty())
-            proceedToCheckout.isEnabled = false
-            priceBreakdown.visibility = View.GONE
+        when {
+            isDisabledPartner -> {
+                gatewayDetailLayout.errorTicker.visibility = View.VISIBLE
+                gatewayDetailLayout.errorTicker.setTextDescription(it.reason_long.orEmpty())
+                proceedToCheckout.isEnabled = false
+                priceBreakdown.visibility = View.GONE
 
-        } else {
-            gatewayDetailLayout.errorTicker.visibility = View.GONE
-            proceedToCheckout.isEnabled = true
-            priceBreakdown.visibility = View.VISIBLE
-            priceBreakdown.isEnabled = true
+            }
+            isDisableTenure -> {
+                proceedToCheckout.isEnabled = false
+                priceBreakdown.visibility = View.GONE
+            }
+            else -> {
+                gatewayDetailLayout.errorTicker.visibility = View.GONE
+                proceedToCheckout.isEnabled = true
+                priceBreakdown.visibility = View.VISIBLE
+                priceBreakdown.isEnabled = true
+            }
         }
     }
 
@@ -349,13 +357,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun checkDisableLogic(disable: Boolean) {
-        isDisabled = disable
+        isDisabledPartner = disable
         this.isDisable()
     }
 
 
     private fun setSelectedTenure() {
-        var maxEnabledTenure = -1
+
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
             if (checkoutData.tenureDetail.isNotEmpty()) {
                 checkoutData.tenureDetail.map {
@@ -368,37 +376,51 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     }
                 }
                 if (checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
-                    for (i in 0 until checkoutData.tenureDetail.size) {
-                        if (!checkoutData.tenureDetail[i].tenureDisable) {
-                            if (maxEnabledTenure < checkoutData.tenureDetail[i].tenure) {
-                                maxEnabledTenure = checkoutData.tenureDetail[i].tenure
-                                selectedTenurePosition = i
-                            }
-                        }
-                    }
+                    setSelectToMax(checkoutData)
                 }
 
-                if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty()) {
+                if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty() && !checkoutData.tenureDetail[0].tenureDisable) {
                     checkoutData.tenureDetail[0].isSelectedTenure = true
                     selectedTenurePosition = 0
                 } else
                     checkoutData.tenureDetail[selectedTenurePosition].isSelectedTenure = true
-                val tenureSelectedModel =
-                    DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition])
-                setTenureData(tenureSelectedModel)
+                setBottomDetailData(checkoutData)
+
+            }
+        }
+    }
+
+    private fun setBottomDetailData(checkoutData: CheckoutData)
+    {
+        if (!checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
+            isDisableTenure = false
+            setTenureData(DataMapper.mapToInstallationDetail(checkoutData.tenureDetail[selectedTenurePosition]))
+        } else
+            isDisableTenure = true
+    }
+
+    private fun setSelectToMax(checkoutData: CheckoutData)
+    {
+        var maxEnabledTenure = -1
+        for (i in 0 until checkoutData.tenureDetail.size) {
+            if (!checkoutData.tenureDetail[i].tenureDisable) {
+                if (maxEnabledTenure < checkoutData.tenureDetail[i].tenure && checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
+                    maxEnabledTenure = checkoutData.tenureDetail[i].tenure
+                    selectedTenurePosition = i
+                }
             }
         }
     }
 
     private fun setTenureData(tenureSelectedModel: TenureSelectedModel?) {
-        tenureSelectedModel?.also { tenureSelectedModel ->
-            tenureSelectedModel.installmentDetails?.let { installmentDetails ->
+        tenureSelectedModel?.also { tenureSelectedDetail ->
+            tenureSelectedDetail.installmentDetails?.let { installmentDetails ->
                 this.installmentModel = installmentDetails
             }
-            tenureSelectedModel.tenure?.let { tenure ->
+            tenureSelectedDetail.tenure?.let { tenure ->
                 paymentDuration.text = "x$tenure"
             }
-            amountToPay.text = tenureSelectedModel.priceText.orEmpty()
+            amountToPay.text = tenureSelectedDetail.priceText.orEmpty()
         }
     }
 
@@ -427,7 +449,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 gatewayDetailLayout.additionalDetail.text = ""
                 removeBottomDetailForError()
             }
-            if (isDisabled)
+            if (isDisabledPartner || isDisableTenure)
                 removeBottomDetailForError()
             if (payLaterActivationViewModel.gatewayToChipMap.size <= 1)
                 gatewayDetailLayout.changePayLaterPartner.visibility = View.GONE
@@ -786,7 +808,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     override fun isDisable(): Boolean {
-        return isDisabled
+        return isDisabledPartner
     }
 
     override fun selectedTenure(
