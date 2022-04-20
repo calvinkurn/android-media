@@ -265,7 +265,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             val lastProductItem = productIndex == productsCount - 1
             val actionList = removeBundleDeleteAction(bundleDetail, action, lastProductItem)
 
-            cartId = cartDetail.cartId
+            cartId = product.cartId
             productId = product.productId
             parentId = product.parentId
             cartString = cartStringId
@@ -402,10 +402,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
     }
 
     fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
-        if (miniCartListUiModel == null) {
-            return MiniCartSimplifiedData()
+        return if (miniCartListUiModel == null) {
+            MiniCartSimplifiedData()
         } else {
-            return MiniCartSimplifiedData().apply {
+            MiniCartSimplifiedData().apply {
                 val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()

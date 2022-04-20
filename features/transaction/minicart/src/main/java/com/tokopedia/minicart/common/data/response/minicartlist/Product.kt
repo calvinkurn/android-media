@@ -3,6 +3,8 @@ package com.tokopedia.minicart.common.data.response.minicartlist
 import com.google.gson.annotations.SerializedName
 
 data class Product(
+        @SerializedName("cart_id")
+        val cartId: String = "",
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("product_weight")
