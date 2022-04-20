@@ -217,7 +217,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         this.add(HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES))
-//        this.add(SeparatorDataModel())
+        this.add(SeparatorDataModel())
     }
 
     private fun removeHomeBackButtonMenu() {

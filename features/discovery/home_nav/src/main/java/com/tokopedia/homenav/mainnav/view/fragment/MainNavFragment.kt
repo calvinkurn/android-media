@@ -46,6 +46,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
+import com.tokopedia.homenav.mainnav.view.datamodel.ErrorStateBuDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.SeparatorDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
@@ -160,16 +161,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
+    var listResult = mutableListOf<Visitable<*>>()
     private fun addSeparator(menus: List<Visitable<*>>) : List<Visitable<*>> {
-        val listResult = mutableListOf<Visitable<*>>()
+
 //        if (menus.size>1) {
 //            val submenu = menus.subList(0,3)
 //            listResult.addAll(submenu)
 //        }
 //        else
-            listResult.addAll(menus)
+            listResult= menus.toMutableList()
         val submenu =
-        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
 //        listResult.add(SeparatorDataModel())
 //        listResult.add(SeparatorDataModel())
 //        listResult.add(SeparatorDataModel())
@@ -273,20 +275,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
-                        RouteManager.route(context, homeNavMenuDataModel.applink)
-                    }
-                } else {
-                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
-                }
-                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
-            } else {
-                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
-            }
+            populateCategoryAdapterData(listOf(ErrorStateBuDataModel()))
+
+//            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+//                if(homeNavMenuDataModel.applink.isNotEmpty()){
+//                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+//                        RouteManager.route(context, homeNavMenuDataModel.applink)
+//                    }
+//                } else {
+//                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+//                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
+//                }
+//                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
+//            } else {
+//                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+//                hitClickTrackingBasedOnId(homeNavMenuDataModel)
+//            }
         }
     }
 
@@ -375,10 +379,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
+
+
     private fun populateCategoryAdapterData(menus: List<Visitable<*>>) {
         val categoryViewHolder = recyclerView.findViewHolderForAdapterPosition(viewModel.findBuStartIndexPosition()?: 0)
         (categoryViewHolder as? HomeNavExpandableViewHolder)?.let {
-            it.adapter?.submitList(menus)
+//            it.adapter?.submitList(menus)
+            it.submitList(menus)
         }
     }
 
