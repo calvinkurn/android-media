@@ -243,7 +243,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         emptyImage = view.findViewById(R.id.emptyImage)
         title_empty = view.findViewById(R.id.title_empty)
         desc_empty = view.findViewById(R.id.desc_empty)
-        emptyLayout = view.findViewById(R.id.linearLayout2)
+        emptyLayout = view.findViewById(R.id.emptyLayout)
         ic_tip = emptyLayout?.findViewById(R.id.ic_tip)
         imageView2 = emptyLayout?.findViewById(R.id.imageView2)
         imageView3 = emptyLayout?.findViewById(R.id.imageView3)

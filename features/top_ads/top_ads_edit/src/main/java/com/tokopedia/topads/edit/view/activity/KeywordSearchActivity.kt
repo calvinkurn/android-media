@@ -145,7 +145,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         tip_btn = findViewById(R.id.tip_btn)
         btn_next = findViewById(R.id.btn_next)
         selected_info = findViewById(R.id.selected_info)
-        emptyLayout = findViewById(R.id.empty_view_keword_search_list)
+        emptyLayout = findViewById(R.id.emptyLayout)
     }
 
     private fun initInjector() {

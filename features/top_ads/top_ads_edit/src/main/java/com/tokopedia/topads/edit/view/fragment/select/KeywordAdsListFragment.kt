@@ -332,7 +332,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         tipBtn = view.findViewById(R.id.tip_btn)
         btnNext = view.findViewById(R.id.btn_next)
         selectedInfo = view.findViewById(R.id.selected_info)
-        emptyLayout = view.findViewById(R.id.empty_layout_topads_commom_keyword_empty)
+        emptyLayout = view.findViewById(R.id.emptyLayout)
         return view
     }
 
