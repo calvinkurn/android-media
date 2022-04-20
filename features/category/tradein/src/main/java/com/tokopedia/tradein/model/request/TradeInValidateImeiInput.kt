@@ -13,5 +13,7 @@ data class TradeInValidateImeiInput(
     @SerializedName("SessionId")
     var sessionId: String,
     @SerializedName("TraceId")
-    var traceId: String
+    var traceId: String,
+    @SerializedName("DeviceSignature")
+    var deviceSignature: String
 )

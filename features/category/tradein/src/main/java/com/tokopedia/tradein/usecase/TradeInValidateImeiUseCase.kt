@@ -32,7 +32,8 @@ class TradeInValidateImeiUseCase @Inject constructor(
                         appDeviceId = userSession.deviceId,
                         traceId = laku6DeviceModel.traceId,
                         modelInfo = laku6DeviceModel.modelInfoBase64,
-                        imei = imei
+                        imei = imei,
+                        deviceSignature = laku6DeviceModel.deviceSignature
                     )
         )
     }
