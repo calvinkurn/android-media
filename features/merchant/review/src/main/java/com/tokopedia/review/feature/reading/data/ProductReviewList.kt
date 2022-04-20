@@ -96,9 +96,6 @@ data class ProductReviewUser(
 )
 
 data class ProductReviewImageAttachments(
-    @SerializedName("attachmentID")
-    @Expose
-    val attachmentID: String = "",
     @SerializedName("imageThumbnailUrl")
     @Expose
     val imageThumbnailUrl: String = "",
@@ -108,9 +105,6 @@ data class ProductReviewImageAttachments(
 )
 
 data class ProductReviewVideoAttachments(
-    @SerializedName("attachmentID")
-    @Expose
-    val attachmentID: String = "",
     @SerializedName("videoUrl")
     @Expose
     val url: String = ""
