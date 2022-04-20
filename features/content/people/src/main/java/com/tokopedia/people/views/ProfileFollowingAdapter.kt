@@ -63,8 +63,10 @@ open class ProfileFollowingAdapter(
         args[0]?.let { viewModel.getFollowings(it, cursor, PAGE_COUNT) }
     }
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
-        items[position].isFollow = isFollowed
-        notifyItemChanged(position)
+        if (position >= 0 && position < items.size) {
+            items[position].isFollow = isFollowed
+            notifyItemChanged(position)
+        }
     }
 
     fun onSuccess(data: ProfileFollowingListBase) {

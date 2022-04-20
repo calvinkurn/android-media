@@ -177,8 +177,10 @@ open class ProfileFollowersAdapter(
         }
     }
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
-        items[position].isFollow = isFollowed
-        notifyItemChanged(position)
+        if (position >= 0 && position < items.size) {
+            items[position].isFollow = isFollowed
+            notifyItemChanged(position)
+        }
     }
 
     private fun updateToFollowUi(btnAction: UnifyButton) {
