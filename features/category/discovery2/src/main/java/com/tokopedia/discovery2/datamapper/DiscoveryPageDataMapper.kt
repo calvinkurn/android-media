@@ -119,9 +119,13 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         when (component.name) {
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
-            ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.ProductCardSprintSale.componentName -> {
+                shouldAddRecomSingleProduct(component)
+                listComponents.addAll(parseProductVerticalList(component))
+            }
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
+                shouldAddRecomSingleProduct(component)
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }

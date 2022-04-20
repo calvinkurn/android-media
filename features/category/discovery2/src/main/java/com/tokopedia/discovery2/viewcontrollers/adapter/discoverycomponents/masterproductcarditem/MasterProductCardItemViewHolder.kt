@@ -55,7 +55,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             masterProductCardListView?.setAddToCartNonVariantClickListener(this)
             masterProductCardListView?.setAddToCartWishlistOnClickListener {
-                addToCartWishlist()
+                handleATC(
+                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    true
+                )
             }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
@@ -73,23 +76,6 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
         productCardView.setOnClickListener {
             handleUIClick(it)
-        }
-    }
-
-    private fun addToCartWishlist() {
-        if (masterProductCardItemViewModel.isUserLoggedIn()) {
-            masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-                if (!productItem.productId.isNullOrEmpty())
-                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
-                        masterProductCardItemViewModel.getParentPositionForCarousel(),
-                        masterProductCardItemViewModel.position,
-                        productItem.productId!!,
-                        productItem.minQuantity,
-                        productItem.shopId
-                    )
-            }
-        } else {
-            (fragment as DiscoveryFragment).openLoginScreen()
         }
     }
 
@@ -168,18 +154,20 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
-        if(dataItem?.hasThreeDotsWishlist == true)
-        masterProductCardListView?.setThreeDotsWishlistOnClickListener {
-            showProductCardOptions(itemView.context as FragmentActivity,
-                masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
-            )
-        }
+        if (dataItem?.hasThreeDotsWishlist == true)
+            masterProductCardListView?.setThreeDotsWishlistOnClickListener {
+                showProductCardOptions(
+                    itemView.context as FragmentActivity,
+                    masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+                )
+            }
     }
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
-            showProductCardOptions(itemView.context as FragmentActivity,
-                    masterProductCardItemViewModel.getProductCardOptionsModel()
+            showProductCardOptions(
+                itemView.context as FragmentActivity,
+                masterProductCardItemViewModel.getProductCardOptionsModel()
             )
         }
     }
@@ -260,6 +248,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun onQuantityChanged(quantity: Int) {
+        handleATC(quantity,false)
+    }
+
+    private fun handleATC(quantity: Int, useProductShopID: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
             masterProductCardItemViewModel.components,
@@ -268,16 +260,17 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 if (!productItem.productId.isNullOrEmpty())
-                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                    fragment.addOrUpdateItemCart(
                         masterProductCardItemViewModel.getParentPositionForCarousel(),
                         masterProductCardItemViewModel.position,
                         productItem.productId!!,
-                        quantity
+                        quantity,
+                        if (useProductShopID) productItem.shopId else null
                     )
             }
         } else {
             masterProductCardItemViewModel.handleATCFailed()
-            (fragment as DiscoveryFragment).openLoginScreen()
+            fragment.openLoginScreen()
         }
     }
 }
