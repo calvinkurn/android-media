@@ -24,10 +24,12 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review reason checkbox"
     const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review reason checkbox"
     const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - cta on bottomsheet postsubmit review"
+    const val EVENT_ACTION_VISIT_CAMERA = "visit camera"
 
     const val EVENT_CATEGORY = "product review detail page"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
         "product review detail page - create review form bottomsheet"
+    const val EVENT_CATEGORY_MEDIA_CAMERA = "media camera"
 
     const val EVENT_LABEL_ORDER_ID_PRODUCT_ID = "order id:%s; product id:%s;"
     const val EMPTY_LABEL = ""
@@ -50,6 +52,7 @@ object CreateReviewTrackingConstants {
         "reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
     const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_OPEN_MEDIA_PICKER = "%s - %s - %s;"
 
     const val SCREEN_NAME = "/create-review-form"
     const val SCREEN_NAME_BOTTOM_SHEET = "create-review-form"
@@ -64,8 +67,11 @@ object CreateReviewTrackingConstants {
     const val KEY_CREATIVE = "creative"
     const val KEY_NAME = "name"
     const val KEY_POSITION = "position"
+    const val KEY_PAGE_PATH = "pagePath"
+    const val KEY_PAGE_TYPE = "pageType"
 
     const val BUSINESS_UNIT = "product detail page"
+    const val BUSINESS_UNIT_MEDIA = "media"
     const val CURRENT_SITE = "tokopediamarketplace"
 
     const val EVENT_PROMO_VIEW = "promoView"
@@ -77,4 +83,6 @@ object CreateReviewTrackingConstants {
     const val EVENT_KEY_EE_ITEM_NAME = "item_name"
 
     const val EVENT_KEY_EE_PROMOTIONS = "promotions"
+
+    const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
 }

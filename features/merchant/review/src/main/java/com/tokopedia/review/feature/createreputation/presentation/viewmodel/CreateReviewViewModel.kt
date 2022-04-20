@@ -1574,6 +1574,10 @@ class CreateReviewViewModel @Inject constructor(
         return userSessionInterface.userId
     }
 
+    fun getShopId(): String {
+        return shopId.value
+    }
+
     fun getSelectedMediasUrl(): ArrayList<String> {
         return ArrayList(mediaUris.value)
     }

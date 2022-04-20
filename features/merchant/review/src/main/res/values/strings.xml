@@ -117,7 +117,7 @@
     <string name="review_form_progress_bar_new_flow_need_review_only">Ceritain lebih lengkap, ya 🙏</string>
     <string name="review_form_progress_bar_bad_need_bad_rating_reason">Pilih dulu alasanmu, yuk</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
-    <string name="review_form_add_media">Kasih liat foto/video barang</string>
+    <string name="review_form_add_media">Kasih liat foto atau video barang</string>
     <string name="review_form_send_rating_only_dialog_title">Mau coba kasih rating dulu?</string>
     <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu bisa ubah &amp; lengkapi ulasanmu di halaman Riwayat.</string>
     <string name="review_form_send_rating_only_exit">Keluar Halaman</string>

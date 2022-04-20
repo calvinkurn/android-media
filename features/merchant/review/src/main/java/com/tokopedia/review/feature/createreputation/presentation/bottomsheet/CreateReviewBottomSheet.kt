@@ -84,7 +84,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         private const val MAX_VIDEO_COUNT = 1
         private const val MAX_IMAGE_COUNT = 4
         private const val MAX_VIDEO_SIZE_BYTE = 250L * 1024L * 1024L
-        private const val MEDIA_PICKER_APP_LINK = "tokopedia-android-internal://global/media-picker?start=1"
 
         fun createInstance(
             rating: Int,
@@ -648,6 +647,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
                 viewModel.getFeedbackId()
             )
         }
+
+        fun trackOpenUniversalMediaPicker() {
+            CreateReviewTracking.trackOpenUniversalMediaPicker(
+                viewModel.getUserId(),
+                viewModel.getShopId()
+            )
+        }
     }
 
     private inner class UiStateHandler {
@@ -996,7 +1002,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         private fun goToMediaPicker() {
             context?.let {
                 val intent = if (true) { // TODO: Implement rollence here
-                    MediaPicker.intent(it, MEDIA_PICKER_APP_LINK) {
+                    trackingHandler.trackOpenUniversalMediaPicker()
+                    MediaPicker.intent(it) {
                         pageSource(PageSource.Review)
                         modeType(ModeType.COMMON)
                         maxMediaItem(MAX_IMAGE_COUNT)

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
@@ -818,6 +819,16 @@ object CreateReviewTracking {
         return this
     }
 
+    private fun MutableMap<String, Any>.appendPagePath(pagePath: String): MutableMap<String, Any> {
+        put(CreateReviewTrackingConstants.KEY_PAGE_PATH, pagePath)
+        return this
+    }
+
+    private fun MutableMap<String, Any>.appendPageType(pageType: String): MutableMap<String, Any> {
+        put(CreateReviewTrackingConstants.KEY_PAGE_TYPE, pageType)
+        return this
+    }
+
     private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
         putString(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
         return this
@@ -852,5 +863,22 @@ object CreateReviewTracking {
 
     private fun Bundle.sendEnhancedEcommerce(eventName: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, this)
+    }
+
+    fun trackOpenUniversalMediaPicker(userId: String, shopId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            CreateReviewTrackingConstants.EVENT_NAME_CLICK_COMMUNICATION,
+            CreateReviewTrackingConstants.EVENT_CATEGORY_MEDIA_CAMERA,
+            CreateReviewTrackingConstants.EVENT_ACTION_VISIT_CAMERA,
+            String.format(
+                CreateReviewTrackingConstants.EVENT_LABEL_OPEN_MEDIA_PICKER,
+                PageSource.Review, userId, shopId
+            )
+        ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT_MEDIA)
+            .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
+            .appendPagePath("")
+            .appendPageType("")
+            .appendUserId(userId)
+            .sendGeneralEvent()
     }
 }
