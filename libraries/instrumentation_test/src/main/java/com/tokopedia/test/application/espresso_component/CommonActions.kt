@@ -1,18 +1,25 @@
 package com.tokopedia.test.application.espresso_component
 
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
+import org.assertj.core.description.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -112,6 +119,74 @@ object CommonActions {
         }
     }
 
+    /**
+     * Display on specified child view inside of item recycler view
+     *
+     * example:
+     * onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+     * .check(matches(displayChildViewWithId(index,id)))
+     *
+     * @param position index of list
+     * @param id resource id of item
+     */
+
+    fun displayChildViewWithId(
+        position: Int,
+        targetViewId: Int,
+    ): Matcher<View?> {
+        return object : BoundedMatcher<View?, RecyclerView?>(
+            RecyclerView::class.java
+        ) {
+
+
+            override fun describeTo(description: org.hamcrest.Description) {
+                description.appendText("has view id display at position $position")
+            }
+
+            override fun matchesSafely(item: RecyclerView?): Boolean {
+                val viewHolder = item?.findViewHolderForAdapterPosition(position)
+                val targetView = viewHolder?.itemView?.findViewById<View>(targetViewId)
+                return isDisplayed().matches(targetView)
+            }
+
+        }
+    }
+
+    /**
+     * Display on specified child view inside of item recycler view
+     *
+     * example:
+     * onView(withId(R.id.recycler_view)).check(matches(ViewMatchers.isDisplayed()))
+     *  .check(matches(displayChildViewWithIdAndText(index,id,text)))
+     *
+     * @param position index of list
+     * @param id resource id of item
+     * @param text
+
+     */
+
+    fun displayChildViewWithIdAndText(
+        position: Int,
+        targetViewId: Int,
+        text:String
+    ): Matcher<View?> {
+        return object : BoundedMatcher<View?, RecyclerView?>(
+            RecyclerView::class.java
+        ) {
+
+
+            override fun describeTo(description: org.hamcrest.Description) {
+                description.appendText("has view id display at position $position")
+            }
+
+            override fun matchesSafely(item: RecyclerView?): Boolean {
+                val viewHolder = item?.findViewHolderForAdapterPosition(position)
+                val targetView = viewHolder?.itemView?.findViewById<View>(targetViewId)
+                return withText(text).matches(targetView) && isDisplayed().matches(targetView)
+            }
+
+        }
+    }
     /**
      * Use for screenshot entire recyclerview into one image
      * @param startPosition determine in start position it will start screenshot

@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.common.feature.list.data.model
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
@@ -26,6 +28,7 @@ data class ProductUiModel(
     val isCampaign: Boolean,
     val campaignTypeList: List<ProductCampaignType>?,
     val isProductBundling: Boolean,
+    val suspendLevel: Int
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
@@ -46,4 +49,8 @@ data class ProductUiModel(
     fun hasEditProductAccess() = access?.editProduct == true
 
     fun getCampaignTypeCount() = campaignTypeList?.count().orZero()
+    fun isSuspend() : Boolean = suspendLevel!=0
+    fun isSuspendLevelTwoUntilFour () : Boolean = suspendLevel>1
+    fun isNotSuspendLevelTwoUntilFour () : Boolean = !(isSuspendLevelTwoUntilFour())
+
 }

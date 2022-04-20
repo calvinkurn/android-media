@@ -148,6 +148,7 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
+import com.tokopedia.product.manage.feature.suspend.view.bottomsheet.SuspendReasonBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -192,7 +193,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
         ProductCampaignInfoListener, SellerHomeFragmentListener,
-        ViolationReasonBottomSheet.Listener {
+        ViolationReasonBottomSheet.Listener, SuspendReasonBottomSheet.Listener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -607,6 +608,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     type = Toaster.TYPE_ERROR,
                     text = errorMessage,
                     duration = Toaster.LENGTH_LONG,
+            ).show()
+        }
+    }
+
+    override fun onSuspendError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        binding?.root?.let {
+            Toaster.build(
+                it,
+                type = Toaster.TYPE_ERROR,
+                text = errorMessage,
+                duration = Toaster.LENGTH_LONG,
             ).show()
         }
     }
@@ -1642,6 +1655,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
             product.isPending() -> {
                 showViolationReasonBottomSheet(product.id)
+            }
+            product.isSuspend() -> {
+                showSuspendReasonBottomSheet(product.id)
             }
         }
         ProductManageTracking.eventContactCs(product.id)
@@ -2738,7 +2754,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun showViolationReasonBottomSheet(productId: String) {
         ViolationReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
-
+    open fun showSuspendReasonBottomSheet(productId: String) {
+        SuspendReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
+    }
     private fun showToaster(message: String) {
         constraintLayout?.let {
             Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -2769,5 +2787,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         private const val TICKER_MARGIN_TOP = 8
     }
+
+
 
 }

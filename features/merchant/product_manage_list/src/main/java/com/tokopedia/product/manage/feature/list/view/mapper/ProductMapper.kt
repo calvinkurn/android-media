@@ -58,7 +58,8 @@ object ProductMapper {
                 access = access,
                 isCampaign = it.isCampaign,
                 campaignTypeList = it.campaignTypeList,
-                isProductBundling = it.getIsProductBundling()
+                isProductBundling = it.getIsProductBundling(),
+                suspendLevel = it.suspendLevel
             )
         } ?: emptyList()
     }

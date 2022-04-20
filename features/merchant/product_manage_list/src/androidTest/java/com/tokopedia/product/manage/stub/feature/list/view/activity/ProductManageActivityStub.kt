@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActi
 import com.tokopedia.product.manage.stub.feature.list.di.ProductManageListStubInstance
 import com.tokopedia.product.manage.stub.feature.list.view.fragment.ProductManageSellerFragmentStub
 
-class ProductManageActivityStub: ProductManageActivity() {
+class  ProductManageActivityStub: ProductManageActivity() {
 
     companion object {
         private const val FILTER_ID_KEY = "filter_id"
