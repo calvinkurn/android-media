@@ -43,7 +43,6 @@ import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -398,8 +397,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         super.onViewCreated(view, savedInstanceState)
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
         getRecyclerView(view).tag = arguments?.getString(EXTRA_TAB_NAME, "") ?: ""
-
-        binding.container.root.gone()
 
         (activity as DealsBaseActivity).searchBarActionListener = this
 

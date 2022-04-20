@@ -64,7 +64,13 @@ class DealCategoryViewModel @Inject constructor(
     private fun onGetCategorySuccess(): (CuratedData) -> Unit {
         return {
             privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(it.eventChildCategory.categories)
-            privateObservableCategories.value = it.eventChildCategory.categories
+            privateObservableCategories.value = it.eventChildCategory.categories.map { category ->
+                return@map if (category.id == CATEGORY_ID){
+                    category.copy(isCard = 1)
+                }else{
+                    category
+                }
+            }
         }
     }
 
@@ -131,5 +137,6 @@ class DealCategoryViewModel @Inject constructor(
     companion object {
         const val BRAND_POPULAR = 0
         const val PRODUCT_LIST = 1
+        const val CATEGORY_ID = "25"
     }
 }
