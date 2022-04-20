@@ -2,10 +2,14 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder
 
 import android.view.LayoutInflater
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
@@ -34,6 +38,7 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
                     if (it.defaultValueForZero != TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_HIDE) {
                         val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(itemView.context))
                         summaryTransactionItem.textTransactionTitle.text = it.title
+                        summaryTransactionItem.iconTransactionSurgePrice.setSurgePrice(it.surgePriceInfo)
                         if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO) {
                             summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
                             containerTransactionItem.addView(summaryTransactionItem.root)
@@ -55,6 +60,18 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
                 containerTransactionItem.show()
             }
             tickerCancellationInfo.setHtmlDescription("Pesanan dari resto ini ga bisa dibatalkan.")
+        }
+    }
+
+    private fun IconUnify.setSurgePrice(surgeBottomsheet: CheckoutTokoFoodShoppingSurgeBottomsheet?) {
+        if (surgeBottomsheet == null) {
+            hide()
+            setOnClickListener(null)
+        } else {
+            show()
+            setOnClickListener {
+                listener.onSurgePriceIconClicked(surgeBottomsheet.title, surgeBottomsheet.description)
+            }
         }
     }
 

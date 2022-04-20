@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
@@ -22,7 +23,8 @@ data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
     data class Transaction(
             var title: String = "",
             var value: Long = 0L,
-            var defaultValueForZero: Int = DEFAULT_HIDE
+            var defaultValueForZero: Int = DEFAULT_HIDE,
+            var surgePriceInfo: CheckoutTokoFoodShoppingSurgeBottomsheet? = null
     ) {
         companion object {
             const val DEFAULT_HIDE = 0

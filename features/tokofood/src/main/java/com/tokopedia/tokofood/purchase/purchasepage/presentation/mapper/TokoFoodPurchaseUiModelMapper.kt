@@ -12,6 +12,8 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdown
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingDiscountBreakdown
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurge
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTickerInfo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
@@ -249,7 +251,8 @@ object TokoFoodPurchaseUiModelMapper {
             TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                 title = deliveryFee.title,
                 value = deliveryFee.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO),
+                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO,
+                surgePriceInfo = getSurgePriceInfo(deliveryFee.surge)),
             TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                 title = takeAwayFee.title,
                 value = takeAwayFee.amount.toLong(),
@@ -263,6 +266,14 @@ object TokoFoodPurchaseUiModelMapper {
                 value = parkingFee.amount.toLong(),
                 defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_HIDE)
         )
+    }
+
+    private fun getSurgePriceInfo(surge: CheckoutTokoFoodShoppingSurge): CheckoutTokoFoodShoppingSurgeBottomsheet? {
+        return if (surge.isSurgePrice) {
+            surge.bottomsheet
+        } else {
+            null
+        }
     }
 
     private fun CheckoutTokoFoodShoppingDiscountBreakdown.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {

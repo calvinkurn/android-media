@@ -20,6 +20,8 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCos
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdownItem
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingDiscountBreakdown
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurge
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTicker
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTickerInfo
@@ -387,7 +389,14 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                         ),
                         deliveryFee = CheckoutTokoFoodShoppingCostBreakdownItem(
                             title = "Total Ongkos Kirim",
-                            amount = 16000.00
+                            amount = 16000.00,
+                            surge = CheckoutTokoFoodShoppingSurge(
+                                isSurgePrice = true,
+                                bottomsheet = CheckoutTokoFoodShoppingSurgeBottomsheet(
+                                    title = "Ongkos kirim kamu naik, ya",
+                                    description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
+                                )
+                            )
                         ),
                         parkingFee = CheckoutTokoFoodShoppingCostBreakdownItem(
                             title = "Biaya Parkir",

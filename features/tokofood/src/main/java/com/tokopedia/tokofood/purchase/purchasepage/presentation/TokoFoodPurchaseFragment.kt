@@ -54,6 +54,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseGlobalErrorBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseNoteBottomSheet
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseSurgeBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
@@ -622,4 +623,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
         bottomSheet.show(parentFragmentManager, "")
     }
+
+    override fun onSurgePriceIconClicked(title: String, desc: String) {
+        TokoFoodPurchaseSurgeBottomSheet.createInstance(title, desc).show(childFragmentManager)
+    }
+
 }
