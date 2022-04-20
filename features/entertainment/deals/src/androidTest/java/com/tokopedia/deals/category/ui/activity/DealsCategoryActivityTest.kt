@@ -18,7 +18,11 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_ONE
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_FILTER_CHIPS_TWO
+import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_FIRST_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
+import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -66,6 +70,7 @@ class DealsCategoryActivityTest {
         swipeUpOnCategoryTab()
         clickOnSearchBar()
         actionOnBrandViewHolder()
+        filterProducts()
 
         assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_CATEGORY_PAGE), hasAllSuccess())
     }
@@ -112,6 +117,23 @@ class DealsCategoryActivityTest {
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         Thread.sleep(2000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
+    }
+
+    private fun filterProducts() {
+        Thread.sleep(5000)
+        onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText(DUMMY_RESPONSE_FIRST_CATEGORY_TITLE))).perform(click())
+
+        Thread.sleep(3000)
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_ONE))).perform(click())
+
+        Thread.sleep(2000)
+        onView(CommonMatcher.firstView(withText(FILTERS_CHIP_TITLE))).perform(click())
+        Thread.sleep(1000)
+        onView(CommonMatcher.firstView(withText(DUMMY_FILTER_CHIPS_TWO))).perform(click())
+        Thread.sleep(1000)
+        onView(CommonMatcher.firstView(withText(context.getString(R.string.deals_filter_submit)))).perform(click())
+
+        Thread.sleep(1000)
     }
 
     companion object {
