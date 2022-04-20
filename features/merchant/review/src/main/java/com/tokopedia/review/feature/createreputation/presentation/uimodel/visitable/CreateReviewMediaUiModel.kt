@@ -55,7 +55,8 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         override val uploadId: String = "",
         override val uploadBatchNumber: Int,
         override val finishUploadTimestamp: Long = 0L,
-        override val state: State
+        override val state: State,
+        val remoteUrl: String = ""
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
             return other is Video && uri == other.uri

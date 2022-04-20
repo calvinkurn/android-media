@@ -22,13 +22,16 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         const val PARAM_REVIEW_TEXT = "reviewText"
         const val PARAM_IS_ANONYMOUS = "isAnonymous"
         const val PARAM_ATTACHMENT_ID = "attachmentIDs"
+        const val PARAM_VIDEO_ATTACHMENT = "videoAttachments"
+        const val PARAM_VIDEO_ATTACHMENT_UPLOAD_ID = "uploadID"
+        const val PARAM_VIDEO_ATTACHMENT_URL = "url"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val PARAM_BAD_RATING_CATEGORY_IDS = "badRatingCategoryIDs"
         const val SUBMIT_REVIEW_QUERY_CLASS_NAME = "SubmitReview"
         const val SUBMIT_REVIEW_MUTATION =
             """
-                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: [String]) {
-                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, utmSource: ${'$'}utmSource, badRatingCategoryIDs: ${'$'}badRatingCategoryIDs) {
+                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}videoAttachments: [productrevVideoAttachment], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: [String]) {
+                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, videoAttachments: ${'$'}videoAttachments, utmSource: ${'$'}utmSource, badRatingCategoryIDs: ${'$'}badRatingCategoryIDs) {
                     success
                     feedbackID
                   }
@@ -54,6 +57,7 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         val reviewText: String,
         val isAnonymous: Boolean,
         val attachmentIds: List<String> = emptyList(),
+        val videoAttachments: List<VideoAttachment> = emptyList(),
         val utmSource: String,
         val badRatingCategoryIds: List<String>
     ) {
@@ -67,9 +71,22 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
                 PARAM_REVIEW_TEXT to reviewText,
                 PARAM_IS_ANONYMOUS to isAnonymous,
                 PARAM_ATTACHMENT_ID to attachmentIds,
+                PARAM_VIDEO_ATTACHMENT to videoAttachments.map { it.toRequestParamMap() },
                 PARAM_UTM_SOURCE to utmSource,
                 PARAM_BAD_RATING_CATEGORY_IDS to badRatingCategoryIds
             )
+        }
+
+        data class VideoAttachment(
+            val uploadId: String,
+            val videoUrl: String
+        ) {
+            fun toRequestParamMap(): Map<String, Any> {
+                return mapOf(
+                    PARAM_VIDEO_ATTACHMENT_UPLOAD_ID to uploadId,
+                    PARAM_VIDEO_ATTACHMENT_URL to videoUrl
+                )
+            }
         }
     }
 }

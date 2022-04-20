@@ -878,9 +878,18 @@ class CreateReviewViewModel @Inject constructor(
                 rating = rating,
                 reviewText = reviewText.text,
                 isAnonymous = anonymous,
-                attachmentIds = mediaPickerUiState.mediaItems.mapNotNull { media ->
-                    media.uploadId.takeIf { uploadId -> uploadId.isNotBlank() }
-                },
+                attachmentIds = mediaPickerUiState.mediaItems.filterIsInstance<CreateReviewMediaUiModel.Image>()
+                    .mapNotNull { media ->
+                        media.uploadId.takeIf { uploadId -> uploadId.isNotBlank() }
+                    },
+                videoAttachments = mediaPickerUiState.mediaItems.filterIsInstance<CreateReviewMediaUiModel.Video>()
+                    .mapNotNull { media ->
+                        if (media.uploadId.isNotBlank() && media.remoteUrl.isNotBlank()) {
+                            ProductrevSubmitReviewUseCase.SubmitReviewRequestParams.VideoAttachment(
+                                media.uploadId, media.remoteUrl
+                            )
+                        } else null
+                    },
                 utmSource = utmSource,
                 badRatingCategoryIds = badRatingCategoriesUiState.badRatingCategories.mapNotNull { category ->
                     category.uiState.takeIf {
@@ -929,6 +938,7 @@ class CreateReviewViewModel @Inject constructor(
                             } else if (it is CreateReviewMediaUiModel.Video) {
                                 it.copy(
                                     uploadId = uploadResult.uploadId,
+                                    remoteUrl = uploadResult.videoUrl,
                                     finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
                                         it.isMoreThanZero()
                                     } ?: System.currentTimeMillis(),
@@ -939,6 +949,7 @@ class CreateReviewViewModel @Inject constructor(
                             CreateReviewMediaUiModel.Video(
                                 uri = uri,
                                 uploadId = uploadResult.uploadId,
+                                remoteUrl = uploadResult.videoUrl,
                                 uploadBatchNumber = uploadBatchNumber,
                                 finishUploadTimestamp = System.currentTimeMillis(),
                                 state = CreateReviewMediaUiModel.State.UPLOADED
