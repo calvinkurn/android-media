@@ -1561,7 +1561,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         ))
         shopProductAdapter.refreshSticky()
         initialProductListData = null
-        if(!isOnViewCreated && shopProductAdapter.shopProductUiModelList.isNotEmpty()) {
+        if(!isOnViewCreated) {
             shopProductAdapter.clearProductList()
             loadNewProductData()
         }

@@ -3192,7 +3192,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
+        if (!isLoadInitialData && !shopHomeAdapter.isProductGridListPlaceholderExists())
             refreshProductList()
     }
 
