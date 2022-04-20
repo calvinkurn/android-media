@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
@@ -64,27 +65,24 @@ class GroupDetailViewModel @Inject constructor(
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val userSession: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
-    fun getGroupProductData(page: Int, groupId: Int, search: String, sort: String, status: Int?, startDate: String,
-                            endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
+    fun getGroupProductData(
+        page: Int, groupId: Int, search: String,
+        sort: String, status: Int?, startDate: String, endDate: String, goalId: Int,
+        onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
+    ) {
+        launchCatchError(block = {
+            val param = topAdsGetGroupProductDataUseCase.setParams(
+                groupId, page, search, sort, status, startDate, endDate, goalId = goalId
+            )
+            val nonGroupResponse =
+                topAdsGetGroupProductDataUseCase.execute(param).topadsDashboardGroupProducts
+            if (nonGroupResponse.data.isEmpty()) {
+                onEmpty.invoke()
+            } else {
+                onSuccess.invoke(nonGroupResponse)
             }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if (nonGroupResponse.data.isEmpty()) {
-                    onEmpty()
-                } else {
-                    onSuccess(nonGroupResponse)
-                }
-            }
+        }, onError = {
+            onEmpty.invoke()
         })
     }
 
@@ -285,7 +283,6 @@ class GroupDetailViewModel @Inject constructor(
     public override fun onCleared() {
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsKeywordsActionUseCase.cancelJobs()
         topAdsProductActionUseCase.unsubscribe()
         topAdsGetGroupListUseCase.unsubscribe()

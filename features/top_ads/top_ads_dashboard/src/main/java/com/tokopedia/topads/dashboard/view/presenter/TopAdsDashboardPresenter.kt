@@ -13,6 +13,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -43,12 +44,16 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
 import timber.log.Timber
 import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -82,8 +87,9 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
             private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
             private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
-            private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
+            private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
+    private val job = SupervisorJob()
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
 
@@ -255,27 +261,24 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
 
-    fun getGroupProductData(page: Int, groupId: Int?, search: String,
-                            sort: String, status: Int?, startDate: String, endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+    fun getGroupProductData(
+        page: Int, groupId: Int?, search: String, sort: String,
+        status: Int?, startDate: String, endDate: String, goalId: Int,
+        onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
+    ) {
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search,
+            sort, status, startDate, endDate, goalId = goalId)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
+        launchCatchError(block = {
+            val nonGroupResponse =
+                topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
+            if (nonGroupResponse.data.isEmpty()) {
+                onEmpty()
+            } else {
+                onSuccess(nonGroupResponse)
             }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                if (nonGroupResponse.data.isEmpty()) {
-                    onEmpty()
-                } else {
-                    onSuccess(nonGroupResponse)
-                }
-            }
+        }, onError = {
+            onEmpty()
         })
     }
 
@@ -506,12 +509,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsGetDeletedAdsUseCase.execute(onSuccess, onEmptyResult)
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
+
     override fun detachView() {
         super.detachView()
+        job.cancel()
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetGroupDataUseCase.unsubscribe()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetGroupStatisticsUseCase.unsubscribe()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()

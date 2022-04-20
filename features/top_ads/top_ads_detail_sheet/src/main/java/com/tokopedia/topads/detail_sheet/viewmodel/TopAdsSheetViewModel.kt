@@ -19,6 +19,7 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUs
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetPromoUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
 import java.lang.reflect.Type
@@ -53,24 +54,13 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun getGroupProductData(groupId: Int, onSuccess: (List<WithoutGroupDataItem>) -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
-        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
-                val nonGroupResponse = response.data.topadsDashboardGroupProducts
-                onSuccess(nonGroupResponse.data)
-
-            }
-        })
+        val requestParams =
+            topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
+        launchCatchError(block = {
+            val nonGroupResponse =
+                topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
+            onSuccess(nonGroupResponse.data)
+        }, onError = {})
     }
 
     fun getGroupId(shopId: String, adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
@@ -118,7 +108,6 @@ class TopAdsSheetViewModel @Inject constructor(
 
     public override fun onCleared() {
         super.onCleared()
-        topAdsGetGroupProductDataUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetGroupIdUseCase.cancelJobs()
         topAdsProductActionUseCase.unsubscribe()
