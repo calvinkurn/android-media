@@ -20,4 +20,8 @@
     <string name="thematic_widget_see_all">Lihat Semua</string>
     <string name="thematic_widget_subtitle">Berakhir dalam</string>
     <string name="thematic_widget_see_all_desc">Masih banyak barang lainnya, lho!</string>
+
+    <!-- Shop Note Detail -->
+    <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
+    <string name="shop_note_title">Catatan Toko</string>
 </resources>

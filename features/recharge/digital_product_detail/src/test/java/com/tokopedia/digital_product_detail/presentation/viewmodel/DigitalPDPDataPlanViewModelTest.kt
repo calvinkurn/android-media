@@ -4,6 +4,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import kotlinx.coroutines.CancellationException
@@ -21,6 +22,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     private val dataFactory = DataPlanDataFactory()
     private val mapperFactory = DigitalDenomMapper()
+    private val persoMapperFactory = DigitalPersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
@@ -89,53 +91,30 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
-        onGetFavoriteNumber_thenReturn(response)
+        val response = dataFactory.getFavoriteNumberData(true)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give success fail`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberFail()
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
-
-    @Test
-    fun `given autoComplete loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setAutoCompleteLoading()
-        verifyGetAutoCompleteLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting autoComplete should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
-            val response = dataFactory.getFavoriteNumberData()
-            onGetAutoComplete_thenReturn(response)
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-        }
-
-    @Test
-    fun `when getting autoComplete should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
-            onGetAutoComplete_thenReturn(NullPointerException())
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteFail()
-        }
 
     @Test
     fun `given catalogPrefixSelect loading state then should get loading state`() {
@@ -329,6 +308,25 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
         viewModel.onResetSelectedProduct()
         verifySelectedFullProductEmpty()
+    }
+
+    @Test
+    fun `given selectedFullProduct position default when updateSelectedPositionId should update position `() {
+        viewModel.selectedFullProduct = SelectedProduct()
+        val newPosition = 2
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(newPosition)
+    }
+
+    @Test
+    fun `given selectedFullProduct position null default when updateSelectedPositionId should not update position `() {
+        viewModel.selectedFullProduct = SelectedProduct()
+        val newPosition = null
+        val defaultPosition = -1
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(defaultPosition)
     }
 
     @Test
@@ -705,6 +703,36 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
         viewModel.resetFilter()
         verifyGetFilterTagComponentSuccess(initialFilter)
+    }
+
+    @Test
+    fun `when filter not changed not return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(initialFilter)
+        verifyFilterIsNotChanged(result)
+    }
+
+    @Test
+    fun `when filter changed return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList()
+        changedFilter[0].filterTagDataCollections[0].isSelected = true
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(changedFilter)
+        verifyFilterIsChanged(result)
+    }
+
+    @Test
+    fun `when filter changed size return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter = listOf(dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList().removeAt(1))
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(changedFilter)
+        verifyFilterIsChanged(result)
     }
 
     companion object {

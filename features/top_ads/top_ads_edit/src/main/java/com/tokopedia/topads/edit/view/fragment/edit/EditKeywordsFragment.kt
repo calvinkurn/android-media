@@ -419,7 +419,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun actionEnable(isEnable: Boolean) {
-        callBack.buttonDisable(isEnable)
+        callBack.buttonDisable(!budgetInput.isTextFieldError && !budgetInputRekomendasi.isTextFieldError)
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean, forRekommendedBid: Boolean) {

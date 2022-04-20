@@ -10,7 +10,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
@@ -26,7 +25,6 @@ interface ProductListSectionContract {
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(startRow: Int, throwable: Throwable?)
-        val filterParamString: String
         val queryKey: String
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
@@ -90,9 +88,6 @@ interface ProductListSectionContract {
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
         fun switchSearchNavigationLayoutTypeToBigGridView(position: Int)
         fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
-        val isChooseAddressWidgetEnabled: Boolean
-        val chooseAddressData: LocalCacheModel?
-        fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
         fun trackDynamicProductCarouselImpression(
