@@ -52,13 +52,11 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
         when {
-            productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
+            productCardModel.shouldShowAddToCartNonVariantQuantity() ->
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
-            }
 
-            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
+            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
                 buttonAddToCart?.configureButtonAddToCart()
-            }
 
             else -> {
                 val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
