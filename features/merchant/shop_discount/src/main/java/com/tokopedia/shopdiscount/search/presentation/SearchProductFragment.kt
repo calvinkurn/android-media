@@ -12,7 +12,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentSearchProductBinding
@@ -24,7 +26,9 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
@@ -82,11 +86,13 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     @Inject
     lateinit var userSession : UserSessionInterface
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
     private val productAdapter by lazy {
         ProductAdapter(
             onProductClicked,
+            onProductImageClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
             onVariantInfoClicked,
@@ -193,9 +199,11 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         viewModel.deleteDiscount.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    dismissLoaderDialog()
                     handleDeleteDiscountResult(it.data)
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.root showError it.throwable
                 }
             }
@@ -204,17 +212,18 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
-            binding?.btnManage?.isLoading = false
             when (it) {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
                         redirectToUpdateDiscountPage()
                     } else {
+                        binding?.btnManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
                 is Fail -> {
+                    binding?.btnManage?.isLoading = false
                     binding?.root showError it.throwable
                 }
             }
@@ -272,29 +281,38 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             viewModel.setInMultiSelectMode(false)
             viewModel.setDisableProductSelection(false)
             disableMultiSelect()
+            handleEmptyState(updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
     }
 
-    private val onProductClicked: (Product) -> Unit = { product ->
+    private val onProductImageClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            redirectToProductDetailPage(product)
+        }
+    }
+
+    private val onProductClicked: (Product, Int) -> Unit = { product, position ->
+        viewModel.setSelectedProduct(product)
+        guard(product.disableClick) {
+            showProductDetailBottomSheet(product, position)
         }
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
+        showLoaderDialog()
         viewModel.setSelectedProduct(product)
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
         reserveProduct(requestId, listOf(product.id))
     }
 
-    private val onVariantInfoClicked : (Product) -> Unit = { product ->
+    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
@@ -455,17 +473,19 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         val dialogTitle = String.format(title, toBeDeletedProductIds.size)
 
         dialog.setOnDeleteConfirmed {
+            showLoaderDialog()
             viewModel.deleteDiscount(discountStatusId, toBeDeletedProductIds)
         }
 
         dialog.show(dialogTitle)
     }
 
-    private fun showProductDetailBottomSheet(product: Product) {
+    private fun showProductDetailBottomSheet(product: Product, position: Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            discountStatusId
+            discountStatusId,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -518,6 +538,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            binding?.btnManage?.isLoading = false
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
                 viewModel.getRequestId(),
@@ -530,4 +551,60 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     override fun onSwipeRefreshPulled() {
 
     }
+
+    private fun handleEmptyState(totalProduct : Int) {
+        if (totalProduct == ZERO) {
+            showEmptyState(discountStatusId)
+        } else {
+            hideEmptyState()
+        }
+    }
+
+    private fun showEmptyState(discountStatusId : Int) {
+        val title = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_title)
+        } else {
+            getString(R.string.sd_no_paused_discount_description)
+        }
+
+        val description = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_discount_title)
+        } else {
+            getString(R.string.sd_no_discount_description)
+        }
+
+        binding?.tpgTotalProduct?.gone()
+        binding?.tpgMultiSelect?.gone()
+        binding?.tpgCancelMultiSelect?.gone()
+
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
+    }
+
+
+    private fun hideEmptyState() {
+        binding?.emptyState?.gone()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sd_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
+    }
+
+     private fun redirectToProductDetailPage(product: Product) {
+        val imageUrl = arrayListOf(product.imageUrl)
+        val intent = ImagePreviewActivity.getCallingIntent(
+            context = requireActivity(),
+            imageUris = imageUrl,
+            disableDownloadButton = true
+        )
+        startActivity(intent)
+    }
+
 }

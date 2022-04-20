@@ -9,7 +9,7 @@ import com.tokopedia.shopdiscount.databinding.SdItemSelectProductBinding
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 
 class SelectProductAdapter(
-    private val onProductClicked: (ReservableProduct) -> Unit,
+    private val onProductClicked: (ReservableProduct, Int) -> Unit,
     private val onProductSelectionChange : (ReservableProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<SelectProductViewHolder>() {
 
@@ -30,6 +30,7 @@ class SelectProductAdapter(
         products.getOrNull(position)?.let { product ->
             val isLoading = isLoading && (position == products.lastIndex)
             holder.bind(
+                position,
                 product,
                 onProductClicked,
                 onProductSelectionChange,

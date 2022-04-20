@@ -10,10 +10,11 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 
 class ProductAdapter(
-    private val onProductClicked: (Product) -> Unit,
+    private val onProductClicked: (Product, Int) -> Unit,
+    private val onProductImageClicked: (Product) -> Unit,
     private val onUpdateDiscountButtonClicked: (Product) -> Unit,
     private val onOverflowMenuClicked: (Product) -> Unit,
-    private val onVariantInfoClicked : (Product) -> Unit,
+    private val onVariantInfoClicked : (Product, Int) -> Unit,
     private val onProductSelectionChange : (Product, Boolean) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
@@ -38,7 +39,9 @@ class ProductAdapter(
         products.getOrNull(position)?.let { product ->
             val isLoading = isLoading && (position == products.lastIndex)
             holder.bind(
+                position,
                 product,
+                onProductImageClicked,
                 onProductClicked,
                 onUpdateDiscountButtonClicked,
                 onOverflowMenuClicked,

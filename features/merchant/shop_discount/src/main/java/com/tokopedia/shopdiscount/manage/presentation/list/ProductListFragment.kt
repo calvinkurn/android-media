@@ -11,7 +11,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
@@ -23,8 +28,10 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
@@ -46,25 +53,35 @@ import javax.inject.Inject
 class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     companion object {
-        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
         private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
+        private const val EMPTY_STATE_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance(
+            discountStatusName : String,
             discountStatusId: Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
         ): ProductListFragment {
             val fragment = ProductListFragment()
             fragment.arguments = Bundle().apply {
+                putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
             }
             fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
         }
 
+    }
+
+    private val discountStatusName by lazy {
+        arguments?.getString(BUNDLE_KEY_DISCOUNT_STATUS_NAME).orEmpty()
     }
 
     private val discountStatusId by lazy {
@@ -82,6 +99,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     @Inject
     lateinit var viewAnimator: ViewAnimator
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
@@ -91,6 +109,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private val productAdapter by lazy {
         ProductAdapter(
             onProductClicked,
+            onProductImageClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
             onVariantInfoClicked,
@@ -126,24 +145,38 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun setupView() {
+        setupSearchBar()
         setupMultiSelection()
         setupScrollListener()
         setupButton()
     }
+
+
+    private fun setupSearchBar() {
+        binding?.run {
+            searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
+            searchBar.searchBarTextField.isFocusable = false
+            searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
+            searchBar.setOnClickListener { navigateToSearchProductPage() }
+        }
+    }
+
 
     private fun setupScrollListener() {
         binding?.run {
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        viewAnimator.showWithAnimation(binding?.imgScrollUp)
-                        onScrollDown()
-                        hideView()
+                        onDelayFinished {
+                            onScrollDown()
+                            handleScrollDownEvent()
+                        }
                     },
                     onScrollUp = {
-                        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
-                        onScrollUp()
-                        showView()
+                        onDelayFinished {
+                            onScrollUp()
+                            handleScrollUpEvent()
+                        }
                     }
                 )
             )
@@ -177,6 +210,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 is Fail -> {
                     binding?.swipeRefresh?.isRefreshing = false
                     binding?.root showError it.throwable
+                    binding?.searchBar?.gone()
                 }
             }
         }
@@ -186,9 +220,11 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         viewModel.deleteDiscount.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    dismissLoaderDialog()
                     handleDeleteDiscountResult(it.data)
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.root showError it.throwable
                 }
             }
@@ -197,17 +233,20 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
-            binding?.btnBulkManage?.isLoading = false
             when (it) {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
                         redirectToUpdateDiscountPage()
                     } else {
+                        dismissLoaderDialog()
+                        binding?.btnBulkManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
+                    binding?.btnBulkManage?.isLoading = false
                     binding?.root showError it.throwable
                 }
             }
@@ -221,10 +260,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun handleProducts(data: ProductData) {
+        handleEmptyState(data.totalProduct)
+
         if (data.totalProduct == ZERO) {
             binding?.recyclerView?.gone()
             binding?.tpgTotalProduct?.gone()
             binding?.tpgMultiSelect?.gone()
+            binding?.emptyState?.visible()
         } else {
             if (isFirstLoad) binding?.tpgMultiSelect?.visible()
             renderList(data.products, data.products.size == getPerPage())
@@ -267,19 +309,28 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
             onDiscountRemoved(discountStatusId, updatedTotalProduct)
 
+            handleEmptyState(updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
     }
 
 
-    private fun hideView() {
-        if (!viewModel.isOnMultiSelectMode()) {
+    private fun handleScrollDownEvent() {
+        viewAnimator.hideWithAnimation(binding?.searchBar)
+
+        if (viewModel.isOnMultiSelectMode()) {
+            viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+        } else {
+            viewAnimator.showWithAnimation(binding?.imgScrollUp)
             viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
         }
     }
 
-    private fun showView() {
+    private fun handleScrollUpEvent() {
+        viewAnimator.showWithAnimation(binding?.searchBar)
+        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+
         if (!viewModel.isOnMultiSelectMode()) {
             viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
         }
@@ -322,13 +373,24 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         this.onSwipeRefresh = onSwipeRefresh
     }
 
-    private fun showProductDetailBottomSheet(product: Product) {
+    private fun showProductDetailBottomSheet(product: Product, position : Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            discountStatusId
+            discountStatusId,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun redirectToProductDetailPage(product: Product) {
+        val imageUrl = arrayListOf(product.imageUrl)
+        val intent = ImagePreviewActivity.getCallingIntent(
+            context = requireActivity(),
+            imageUris = imageUrl,
+            disableDownloadButton = true
+        )
+        startActivity(intent)
     }
 
     private fun setupMultiSelection() {
@@ -340,6 +402,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 enableMultiSelect()
                 binding?.tpgTotalProduct?.text =
                     String.format(getString(R.string.sd_selected_product_counter), ZERO)
+                binding?.imgScrollUp?.gone()
             }
             tpgCancelMultiSelect.setOnClickListener {
                 viewModel.removeAllProductFromSelection()
@@ -352,7 +415,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun enableMultiSelect() {
-        binding?.cardViewCreateDiscount?.gone()
+        viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.visible()
 
@@ -369,7 +432,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardViewMultiSelect?.gone()
-        binding?.cardViewCreateDiscount?.visible()
+        viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
     }
 
     private fun disableProductSelection(products : List<Product>) {
@@ -389,6 +452,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val dialogTitle = String.format(title, toBeDeletedProductIds.size)
 
         dialog.setOnDeleteConfirmed {
+            showLoaderDialog()
             viewModel.deleteDiscount(discountStatusId, toBeDeletedProductIds)
         }
 
@@ -432,23 +496,31 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
+        showLoaderDialog()
         viewModel.setSelectedProduct(product)
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
         reserveProduct(requestId, listOf(product.id))
     }
 
-    private val onProductClicked: (Product) -> Unit = { product ->
+    private val onProductImageClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            redirectToProductDetailPage(product)
         }
     }
 
-    private val onVariantInfoClicked : (Product) -> Unit = { product ->
+    private val onProductClicked: (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
+        }
+    }
+
+    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
+        viewModel.setSelectedProduct(product)
+        guard(product.disableClick) {
+            showProductDetailBottomSheet(product, position)
         }
     }
 
@@ -531,6 +603,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            binding?.btnBulkManage?.isLoading = false
+            dismissLoaderDialog()
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
                 viewModel.getRequestId(),
@@ -543,4 +617,66 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     override fun onSwipeRefreshPulled() {
         onSwipeRefresh()
     }
+
+    private fun handleEmptyState(totalProduct : Int) {
+        if (totalProduct == ZERO) {
+            showEmptyState(discountStatusId)
+        } else {
+            hideEmptyState()
+        }
+    }
+
+    private fun showEmptyState(discountStatusId : Int) {
+        val title = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_title)
+        } else {
+            getString(R.string.sd_no_discount_title)
+        }
+
+        val description = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_description)
+        } else {
+            getString(R.string.sd_no_discount_description)
+        }
+
+        binding?.tpgTotalProduct?.gone()
+        binding?.tpgMultiSelect?.gone()
+        binding?.tpgCancelMultiSelect?.gone()
+        binding?.searchBar?.gone()
+
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
+    }
+
+    private fun hideEmptyState() {
+        viewAnimator.showWithAnimation(binding?.searchBar)
+        binding?.emptyState?.gone()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sd_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
+    }
+
+    private fun navigateToSearchProductPage() {
+        SearchProductActivity.start(
+            requireActivity(),
+            discountStatusName,
+            discountStatusId
+        )
+    }
+
+    private fun onDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
+            block()
+        }
+    }
+
 }

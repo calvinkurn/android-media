@@ -34,7 +34,7 @@ class SelectProductViewModel @Inject constructor(
 
     private var requestId = ""
     private var shouldDisableProductSelection = false
-    private var selectedProducts: MutableList<ReservableProduct> = mutableListOf()
+    private var selectedProductIds: MutableList<String> = mutableListOf()
 
     fun getProducts(
         requestId: String,
@@ -97,19 +97,19 @@ class SelectProductViewModel @Inject constructor(
     }
 
     private fun getSelectedProductIds(): List<String> {
-        return selectedProducts.map { product -> product.id }
+        return selectedProductIds
     }
 
-    fun getSelectedProduct(): List<ReservableProduct> {
-        return selectedProducts
+    fun getSelectedProducts(): List<String> {
+        return selectedProductIds
     }
 
     fun addProductToSelection(product: ReservableProduct) {
-        this.selectedProducts.add(product)
+        this.selectedProductIds.add(product.id)
     }
 
     fun removeProductFromSelection(product: ReservableProduct) {
-        this.selectedProducts.remove(product)
+        this.selectedProductIds.remove(product.id)
     }
 
     fun getRequestId() : String {
@@ -120,10 +120,10 @@ class SelectProductViewModel @Inject constructor(
         this.requestId = requestId
     }
 
-    fun reserveProduct(requestId: String, products : List<ReservableProduct>) {
+    fun reserveProduct(requestId: String, productIds : List<String>) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val request = reserveProductRequestMapper.map(requestId, products)
+                val request = reserveProductRequestMapper.map(requestId, productIds)
                 reserveProductUseCase.setParams(request)
                 reserveProductUseCase.executeOnBackground()
             }

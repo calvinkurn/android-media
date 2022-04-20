@@ -83,7 +83,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             productId: String,
             productParentName: String,
             status: Int,
-            productPosition: Int = 0
+            productPosition: Int
         ): ShopDiscountProductDetailBottomSheet {
             return ShopDiscountProductDetailBottomSheet().apply {
                 val bundle = Bundle()

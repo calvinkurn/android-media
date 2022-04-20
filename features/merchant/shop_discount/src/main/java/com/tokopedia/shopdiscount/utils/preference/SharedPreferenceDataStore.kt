@@ -9,7 +9,6 @@ class SharedPreferenceDataStore @Inject constructor(@ApplicationContext context:
     companion object {
         private const val PREFERENCE_FILE_NAME = "shop_discount_prefs"
         private const val PREFERENCE_KEY_TICKER_DISMISSED = "ticker_dismissed"
-        private const val PREFERENCE_KEY_TICKER_MULTI_SELECT_DISMISSED = "ticker_multi_select_dismissed"
     }
 
     private val preference by lazy {
@@ -31,15 +30,4 @@ class SharedPreferenceDataStore @Inject constructor(@ApplicationContext context:
         return preference.getBoolean(PREFERENCE_KEY_TICKER_DISMISSED, false)
     }
 
-    fun markTickerMultiSelectAsDismissed() {
-        val editor = preference.edit()
-        with(editor) {
-            putBoolean(PREFERENCE_KEY_TICKER_MULTI_SELECT_DISMISSED, true)
-            apply()
-        }
-    }
-
-    fun isTickerMultiSelectDismissed(): Boolean {
-        return preference.getBoolean(PREFERENCE_KEY_TICKER_MULTI_SELECT_DISMISSED, false)
-    }
 }

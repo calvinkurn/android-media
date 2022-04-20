@@ -2,6 +2,7 @@ package com.tokopedia.shopdiscount.manage.data.response
 
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
@@ -54,7 +55,7 @@ data class GetSlashPriceProductListResponse(
             @SerializedName("url")
             val url: String = "",
             @SerializedName("warehouses")
-            val warehouses: List<Any> = listOf()
+            val warehouses: List<Warehouses> = listOf()
         ) {
             data class DiscountPercentageData(
                 @SerializedName("max")
@@ -87,6 +88,66 @@ data class GetSlashPriceProductListResponse(
                 val min: Long = 0,
                 @SerializedName("min_formatted")
                 val minFormatted: String = ""
+            )
+
+            data class Warehouses(
+                @SerializedName("warehouse_id")
+                @Expose
+                var warehouseId: String = "",
+                @SerializedName("warehouse_name")
+                @Expose
+                var warehouseName: String = "",
+                @SerializedName("warehouse_location")
+                @Expose
+                var warehouseLocation: String = "",
+                @SerializedName("warehouse_stock")
+                @Expose
+                var warehouseStock: String = "",
+                @SerializedName("max_order")
+                @Expose
+                var maxOrder: String = "",
+                @SerializedName("event_id")
+                @Expose
+                var eventId: String = "",
+                @SerializedName("abusive_rule")
+                @Expose
+                var abusiveRule: Boolean = false,
+                @SerializedName("avg_sold_price")
+                @Expose
+                var avgSoldPrice: Long = 0,
+                @SerializedName("cheapest_price")
+                @Expose
+                var cheapestPrice: Long = 0,
+                @SerializedName("discounted_price")
+                @Expose
+                var discountedPrice: Long = 0,
+                @SerializedName("discounted_percentage")
+                @Expose
+                var discountedPercentage: Int = 0,
+                @SerializedName("min_recommendation_price")
+                @Expose
+                var minRecommendationPrice: Int = 0,
+                @SerializedName("min_recommendation_percentage")
+                @Expose
+                var minRecommendationPercentage: Int = 0,
+                @SerializedName("max_recommendation_price")
+                @Expose
+                var maxRecommendationPrice: Int = 0,
+                @SerializedName("max_recommendation_percentage")
+                @Expose
+                var maxRecommendationPercentage: Int = 0,
+                @SerializedName("disable")
+                @Expose
+                var disable: Boolean = false,
+                @SerializedName("disable_recommendation")
+                @Expose
+                var disableRecommendation: Boolean = false,
+                @SerializedName("warehouse_type")
+                @Expose
+                var warehouseType: Int = 0,
+                @SerializedName("original_price")
+                @Expose
+                var originalPrice: Long = 0
             )
         }
     }

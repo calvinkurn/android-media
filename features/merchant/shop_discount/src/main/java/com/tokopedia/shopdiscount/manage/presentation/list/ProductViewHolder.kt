@@ -21,22 +21,25 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
     }
 
     fun bind(
+        position: Int,
         product: Product,
-        onProductClicked: (Product) -> Unit,
+        onProductImageClicked: (Product) -> Unit,
+        onProductClicked: (Product, Int) -> Unit,
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
-        onVariantInfoClicked: (Product) -> Unit,
-        onProductSelectionChange : (Product, Boolean) -> Unit,
+        onVariantInfoClicked: (Product, Int) -> Unit,
+        onProductSelectionChange: (Product, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
+        binding.imgProduct.setOnClickListener { onProductImageClicked(product) }
         binding.tpgProductName.text = product.name
         binding.imgMore.setOnClickListener { onOverflowMenuClicked(product) }
         binding.btnUpdateDiscount.setOnClickListener { onUpdateDiscountButtonClicked(product) }
-        binding.root.setOnClickListener { onProductClicked(product) }
+        binding.root.setOnClickListener { onProductClicked(product, position) }
         binding.loader.isVisible = isLoading
         handleProductType(product)
-        binding.imgInfo.setOnClickListener { onVariantInfoClicked(product) }
+        binding.imgInfo.setOnClickListener { onVariantInfoClicked(product, position) }
         binding.tpgOriginalPrice.strikethrough()
         handleCheckboxAppearance(product, onProductSelectionChange)
         handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)
@@ -44,12 +47,20 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         handleCardSelectable(product.disableClick)
     }
 
-    private fun handleCheckboxAppearance(product: Product, onProductSelectionChange: (Product, Boolean) -> Unit) {
+    private fun handleCheckboxAppearance(
+        product: Product,
+        onProductSelectionChange: (Product, Boolean) -> Unit
+    ) {
         binding.checkBox.setOnCheckedChangeListener(null)
         binding.checkBox.isVisible = product.shouldDisplayCheckbox
         binding.checkBox.isChecked = product.isCheckboxTicked
         binding.checkBox.isClickable = !product.disableClick
-        binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
+        binding.checkBox.setOnCheckedChangeListener { _, isSelected ->
+            onProductSelectionChange(
+                product,
+                isSelected
+            )
+        }
     }
 
     private fun handleOverflowMenuAppearance(shouldDisplayCheckbox: Boolean) {
@@ -60,8 +71,8 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
     }
 
-    private fun handleCardSelectable(disableClick : Boolean) {
-        val labelType =  if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
+    private fun handleCardSelectable(disableClick: Boolean) {
+        val labelType = if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
         binding.labelDiscount.setLabelType(labelType)
 
         val alpha = if (disableClick) ALPHA_DISABLED else ALPHA_ENABLED
@@ -76,11 +87,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
                 binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
                 binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
-                binding.tpgInformation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_placeholder),
-                    product.discountStartDate,
-                    product.discountEndDate
-                )
+                displayDiscountPeriodRange(product)
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock),
@@ -89,14 +96,10 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 )
             }
             ProductType.SINGLE_MULTI_LOCATION -> {
-                binding.labelDiscount.text = product.formattedDiscountMaxPercentage
-                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
-                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
-                binding.tpgInformation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_placeholder),
-                    product.discountStartDate,
-                    product.discountEndDate
-                )
+                displayDiscountPercentageRange(product)
+                displayDiscountedPriceRange(product)
+                displayOriginalPriceRange(product)
+                displayDiscountPeriodRange(product)
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_multiple_location),
@@ -104,14 +107,12 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                         product.locationCount
                     )
                 )
-
             }
             ProductType.VARIANT -> {
-                displayDiscountPercentage(product)
-                displayDiscountedPrice(product)
-                displayOriginalPrice(product)
-                binding.tpgInformation.text =
-                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
+                displayDiscountPercentageRange(product)
+                displayDiscountedPriceRange(product)
+                displayOriginalPriceRange(product)
+                displayVariantCount()
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock),
@@ -119,59 +120,56 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                     )
                 )
             }
-            ProductType.VARIANT_MULTI_LOCATION -> {
-                displayDiscountPercentage(product)
-                displayDiscountedPrice(product)
-                displayOriginalPrice(product)
-                binding.tpgInformation.text =
-                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
-                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
-                    String.format(
-                        binding.tpgInformation.context.getString(R.string.sd_total_stock_various_multiple_location),
-                        product.totalStock
-                    )
-                )
-
-            }
         }
     }
 
-    private fun displayDiscountPercentage(product: Product) {
-        binding.labelDiscount.text =
-            if (product.hasSameDiscountPercentageAmount) {
+    private fun displayDiscountPercentageRange(product: Product) {
+        binding.labelDiscount.text = if (product.hasSameDiscountPercentageAmount) {
+            product.formattedDiscountMaxPercentage
+        } else {
+            String.format(
+                binding.labelDiscount.context.getString(R.string.sd_placeholder),
+                product.formattedDiscountMinPercentage,
                 product.formattedDiscountMaxPercentage
-            } else {
-                String.format(
-                    binding.labelDiscount.context.getString(R.string.sd_placeholder),
-                    product.formattedDiscountMinPercentage,
-                    product.formattedDiscountMaxPercentage
-                )
-            }
+            )
+        }
     }
 
-    private fun displayDiscountedPrice(product: Product) {
-        binding.tpgDiscountedPrice.text =
-            if (product.hasSameDiscountedPriceAmount) {
+    private fun displayDiscountedPriceRange(product: Product) {
+        binding.tpgDiscountedPrice.text = if (product.hasSameDiscountedPriceAmount) {
+            product.formattedDiscountMaxPrice
+        } else {
+            String.format(
+                binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
+                product.formattedDiscountMinPrice,
                 product.formattedDiscountMaxPrice
-            } else {
-                String.format(
-                    binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
-                    product.formattedDiscountMinPrice,
-                    product.formattedDiscountMaxPrice
-                )
-            }
+            )
+        }
+
     }
 
-    private fun displayOriginalPrice(product: Product) {
-        binding.tpgOriginalPrice.text =
-            if (product.hasSameOriginalPrice) {
+    private fun displayOriginalPriceRange(product: Product) {
+        binding.tpgOriginalPrice.text = if (product.hasSameOriginalPrice) {
+            product.formattedOriginalMaxPrice
+        } else {
+            String.format(
+                binding.tpgOriginalPrice.context.getString(R.string.sd_placeholder),
+                product.formattedOriginalMinPrice,
                 product.formattedOriginalMaxPrice
-            } else {
-                String.format(
-                    binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
-                    product.formattedOriginalMinPrice,
-                    product.formattedOriginalMaxPrice
-                )
-            }
+            )
+        }
+    }
+
+    private fun displayVariantCount() {
+        binding.tpgInformation.text =
+            binding.tpgInformation.context.getString(R.string.sd_with_variant)
+    }
+
+    private fun displayDiscountPeriodRange(product: Product) {
+        binding.tpgInformation.text = String.format(
+            binding.tpgInformation.context.getString(R.string.sd_placeholder),
+            product.discountStartDate,
+            product.discountEndDate
+        )
     }
 }
