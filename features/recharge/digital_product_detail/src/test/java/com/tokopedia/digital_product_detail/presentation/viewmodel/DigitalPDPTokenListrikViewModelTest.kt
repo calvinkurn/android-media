@@ -6,7 +6,6 @@ import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
-import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.data.TokenListrikDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
