@@ -2,18 +2,13 @@ package com.tokopedia.product.detail.data.util
 
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
 
 /**
@@ -23,58 +18,11 @@ object VariantMapper {
 
     fun putChatProductInfoTo(
             intent: Intent?,
-            productId: String?,
-            productInfo: DynamicProductInfoP1?,
-            variantResp: ProductVariant?,
-            freeOngkirImgUrl: String
+            productId: String?
     ) {
         if (intent == null || productId == null) return
-        val variants = variantResp?.mapSelectedProductVariants(productId)
-        val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
-        val productName = productInfo?.getProductName ?: ""
-        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeDouble = productInfo?.priceBeforeDouble ?: 0.0
-        val priceBefore = if (priceBeforeDouble > 0) {
-            priceBeforeDouble.getCurrencyFormatted()
-        } else {
-            ""
-        }
-        val dropPercentage = productInfo?.dropPercentage ?: ""
-        val productUrl = productInfo?.basic?.url ?: ""
-        val isActive = productInfo?.basic?.isActive() ?: true
-        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
-        val productColorVariant = variants?.get("colour")?.get("value") ?: ""
-        val productColorHexVariant = variants?.get("colour")?.get("hex") ?: ""
-        val productSizeVariant = variants?.get("size")?.get("value") ?: ""
-        val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
-        val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
-        val isPreorder = productInfo?.data?.preOrder?.isPreOrderActive() == true
-        val productPreview = ProductPreview(
-            id = productId,
-            imageUrl = productImageUrl,
-            name = productName,
-            price = productPrice,
-            colorVariantId = productColorVariantId,
-            colorVariant = productColorVariant,
-            colorHexVariant = productColorHexVariant,
-            sizeVariantId = productSizeVariantId,
-            sizeVariant = productSizeVariant,
-            url = productUrl,
-            productFsIsActive = productFsIsActive,
-            productFsImageUrl = freeOngkirImgUrl,
-            priceBefore = priceBefore,
-            priceBeforeInt = priceBeforeDouble,
-            dropPercentage = dropPercentage,
-            isActive = isActive,
-            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
-            isSupportVariant = productInfo?.data?.variant?.isVariant ?: false,
-            campaignId = productInfo?.data?.campaign?.campaignID.toLongOrZero(),
-            isPreorder = isPreorder,
-            priceInt = productInfo?.finalPrice?.toLong() ?: 0,
-            categoryId = productInfo?.basic?.category?.id.toLongOrZero()
-        )
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        val productIds = listOf(productId)
+        val stringProductPreviews = CommonUtil.toJson(productIds)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
@@ -121,21 +69,6 @@ object VariantMapper {
                 additionalInfo = newData?.thematicCampaign?.additionalInfo ?: ""
         )
 
-        val newMedia = if (newData?.hasPicture == true) {
-            val copyOfOldMedia = existingListMedia?.toMutableList()
-            val newMedia = Media(type = "image", uRL300 = newData.picture?.original
-                    ?: "", uRLOriginal = newData.picture?.original
-                    ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = (newData.productId + System.nanoTime())
-            }
-
-            copyOfOldMedia?.add(0, newMedia)
-
-            copyOfOldMedia ?: mutableListOf()
-        } else {
-            oldData.data.media
-        }
-
         val newPrice = oldData.data.price.copy(
                 value = newData?.price ?: 0.0
         )
@@ -150,7 +83,6 @@ object VariantMapper {
                 thematicCampaign = newThematicCampaign,
                 price = newPrice,
                 name = newData?.name ?: "",
-                media = newMedia,
                 stock = newStock,
                 isCod = newData?.isCod ?: false
         )
@@ -162,18 +94,6 @@ object VariantMapper {
             layoutName = oldData.layoutName,
             pdpSession = oldData.pdpSession
         )
-    }
-
-    fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
-        val basic = oldData?.basic?.copy()
-        val data = oldData?.data?.copy(
-                media = media
-        )
-        return DynamicProductInfoP1(
-            basic = basic ?: BasicInfo(),
-            data = data ?: ComponentData(),
-            bestSellerContent = oldData?.bestSellerContent,
-            layoutName = oldData?.layoutName ?: "")
     }
 
     fun generateVariantString(variantData: ProductVariant?): String {

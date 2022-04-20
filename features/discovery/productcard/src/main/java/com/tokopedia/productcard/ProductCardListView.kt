@@ -22,20 +22,20 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
-import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
-    private val video: ProductCardVideo by lazy{
-        ProductCardVideo(this)
+    private val video: VideoPlayerController by lazy{
+        VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
         findViewById(R.id.cardViewProductCard)
@@ -184,8 +184,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
-        video.setProductModel(productCardModel)
         cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        video.setVideoURL(productCardModel.customVideoURL)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -280,7 +280,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         return imageProduct
     }
 
-    override fun getProductCardVideo(): ProductCardVideo {
+    override fun getVideoPlayerController(): VideoPlayerController {
         return video
     }
 

@@ -32,12 +32,13 @@ fun SuggestionItem.convertToBaseSuggestion(
         searchTerm = searchTerm,
         position = position,
         dimension90 = dimension90,
-        childItems = suggestionChildItems.convertToChildItems(searchTerm, dimension90),
+        childItems = suggestionChildItems.convertToChildItems(searchTerm, dimension90, trackingOption),
     )
 
 private fun List<SuggestionChildItem>.convertToChildItems(
     searchTerm: String,
     dimension90: String,
+    trackingOption: Int,
 ): List<BaseSuggestionDataView.ChildItem> =
     mapIndexed { index, item ->
         BaseSuggestionDataView.ChildItem(
@@ -48,7 +49,9 @@ private fun List<SuggestionChildItem>.convertToChildItems(
             title = item.title,
             searchTerm = searchTerm,
             dimension90 = dimension90,
-            position = index + 1
+            position = index + 1,
+            componentId = item.componentId,
+            trackingOption = trackingOption,
         )
     }
 
