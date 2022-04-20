@@ -11,11 +11,13 @@ import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFra
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageDiscountFragment
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment.ShopDiscountManageProductDiscountFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment.ShopDiscountManageProductDiscountMultiLocFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductFragment
+import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import dagger.Component
 
 @ShopDiscountComponentScope
@@ -39,4 +41,6 @@ interface ShopDiscountComponent {
     fun inject(fragment: SelectProductActivity)
     fun inject(fragment: ShopDiscountManageDiscountFragment)
     fun inject(fragment: ShopDiscountManageProductDiscountFragment)
+    fun inject(bottomSheet: SetPeriodBottomSheet)
+    fun inject(fragment: ShopDiscountManageProductDiscountMultiLocFragment)
 }

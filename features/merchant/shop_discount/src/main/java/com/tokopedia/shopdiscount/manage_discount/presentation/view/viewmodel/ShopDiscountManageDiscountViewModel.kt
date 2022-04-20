@@ -25,6 +25,7 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
@@ -36,14 +37,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private val mutationDoSlashPriceProductReservationUseCase: MutationDoSlashPriceProductReservationUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
+    companion object{
+        private const val GET_PRODUCT_LIST_DELAY : Long = 1000
+    }
     val setupProductListLiveData: LiveData<Result<ShopDiscountSetupProductUiModel>>
         get() = _setupProductListLiveData
     private val _setupProductListLiveData =
         MutableLiveData<Result<ShopDiscountSetupProductUiModel>>()
 
-    val bulkApplyProductListResult: LiveData<List<ShopDiscountSetupProductUiModel.SetupProductData>>
-        get() = _bulkApplyProductListResult
-    private val _bulkApplyProductListResult =
+    val updatedProductListData: LiveData<List<ShopDiscountSetupProductUiModel.SetupProductData>>
+        get() = _updatedProductListData
+    private val _updatedProductListData =
         MutableLiveData<List<ShopDiscountSetupProductUiModel.SetupProductData>>()
 
     val enableButtonSubmitLiveData: LiveData<Boolean>
@@ -62,6 +66,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
 
     fun getSetupProductListData(requestId: String, selectedProductVariantId: String) {
         launchCatchError(dispatcherProvider.io, block = {
+            delay(GET_PRODUCT_LIST_DELAY)
             val response = getSetupProductListResponse(requestId)
             val mappedUiModel =
                 ShopDiscountManageDiscountMapper.mapToShopDiscountSetupProductUiModel(
@@ -161,7 +166,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductValueError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.listProductWarehouse.any {
+        return setupProductUiModel.getListEnabledProductWarehouse().any {
             it.discountedPercentage < 1 || it.discountedPercentage > 99
         }
     }
@@ -182,7 +187,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductWarehousePartialAbusiveRuleError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.listProductWarehouse.any {
+        return setupProductUiModel.getListEnabledProductWarehouse().any {
             it.abusiveRule
         }
     }
@@ -203,7 +208,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductWarehouseAllAbusiveRuleError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.listProductWarehouse.all {
+        return setupProductUiModel.getListEnabledProductWarehouse().all {
             it.abusiveRule
         }
     }
@@ -236,14 +241,18 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Boolean {
         return if (isVariant) {
             setupProductDataUiModel.listProductVariant.any {
-                it.listProductWarehouse.any { productWarehouse ->
-                    !productWarehouse.discountedPrice.isZero()
-                }
+                getIsProductDiscountedBasedOnProductWarehouse(it)
             }
         } else {
-            setupProductDataUiModel.listProductWarehouse.any {
-                !it.discountedPercentage.isZero()
-            }
+            getIsProductDiscountedBasedOnProductWarehouse(setupProductDataUiModel)
+        }
+    }
+
+    private fun getIsProductDiscountedBasedOnProductWarehouse(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return setupProductUiModel.listProductWarehouse.any {
+            !it.discountedPercentage.isZero()
         }
     }
 
@@ -265,15 +274,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.originalPrice
-                }.maxOrNull().orZero()
+                getMaxOriginalPriceFromProductWarehouse(it)
             }.maxOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.originalPrice
-            }.maxOrNull().orZero()
+            getMaxOriginalPriceFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMaxOriginalPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.listProductWarehouse.map {
+            it.originalPrice
+        }.maxOrNull().orZero()
     }
 
     private fun getMinOriginalPrice(
@@ -281,15 +292,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.originalPrice
-                }.minOrNull().orZero()
+                getMinOriginalPriceFromProductWarehouse(it)
             }.minOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.originalPrice
-            }.minOrNull().orZero()
+            getMinOriginalPriceFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMinOriginalPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.getListEnabledProductWarehouse().map {
+            it.originalPrice
+        }.minOrNull().orZero()
     }
 
     private fun getMaxDisplayedPrice(
@@ -297,15 +310,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPrice
-                }.maxOrNull().orZero()
+                getMaxDisplayedPriceFromProductWarehouse(it)
             }.maxOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPrice
-            }.maxOrNull().orZero()
+            getMaxDisplayedPriceFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMaxDisplayedPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.getListEnabledProductWarehouse().map {
+            it.discountedPrice
+        }.maxOrNull().orZero()
     }
 
     private fun getMinDisplayedPrice(
@@ -313,15 +328,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPrice
-                }.minOrNull().orZero()
+                getMinDisplayedPriceFromProductWarehouse(it)
             }.minOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPrice
-            }.minOrNull().orZero()
+            getMinDisplayedPriceFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMinDisplayedPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.getListEnabledProductWarehouse().map {
+            it.discountedPrice
+        }.minOrNull().orZero()
     }
 
     private fun getMaxDiscountPercentage(
@@ -329,15 +346,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPercentage
-                }.maxOrNull().orZero()
+                getMaxDiscountPercentageFromProductWarehouse(it)
             }.maxOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPercentage
-            }.maxOrNull().orZero()
+            getMaxDiscountPercentageFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMaxDiscountPercentageFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.getListEnabledProductWarehouse().map {
+            it.discountedPercentage
+        }.maxOrNull().orZero()
     }
 
     private fun getMinDiscountPercentage(
@@ -345,15 +364,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return if (setupProductDataUiModel.productStatus.isVariant) {
             setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPercentage
-                }.minOrNull().orZero()
+                getMinDiscountPercentageFromProductWarehouse(it)
             }.minOrNull().orZero()
         } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPercentage
-            }.minOrNull().orZero()
+            getMinDiscountPercentageFromProductWarehouse(setupProductDataUiModel)
         }
+    }
+
+    private fun getMinDiscountPercentageFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return setupProductData.getListEnabledProductWarehouse().map {
+            it.discountedPercentage
+        }.minOrNull().orZero()
     }
 
     private fun isVariant(setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData): Boolean {
@@ -393,7 +414,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 }
                 updateProductStatusAndMappedData(productData)
             }
-            _bulkApplyProductListResult.postValue(listProductData)
+            _updatedProductListData.postValue(listProductData)
         }) {}
     }
 
@@ -404,7 +425,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ) {
         productData.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
         productData.slashPriceInfo.endDate = bulkApplyDiscountResult.endDate ?: Date()
-        productData.listProductWarehouse.forEach {
+        productData.getListEnabledProductWarehouse().forEach {
             when (bulkApplyDiscountResult.discountType) {
                 DiscountType.RUPIAH -> {
                     val diffPrice = minOriginalPrice - bulkApplyDiscountResult.discountAmount
@@ -500,6 +521,19 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): DoSlashPriceProductReservationResponse {
         mutationDoSlashPriceProductReservationUseCase.setParams(request)
         return mutationDoSlashPriceProductReservationUseCase.executeOnBackground()
+    }
+
+    fun updateSingleProductData(
+        currentProductListData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
+        newProdData: ShopDiscountSetupProductUiModel.SetupProductData
+    ) {
+        val matched = currentProductListData.firstOrNull {
+            it.productId == newProdData.productId
+        }
+        val newList = currentProductListData.toMutableList()
+        newList[currentProductListData.indexOf(matched)] = newProdData
+        updateProductStatusAndMappedData(newList[currentProductListData.indexOf(matched)])
+        _updatedProductListData.postValue(newList.toList())
     }
 
 }

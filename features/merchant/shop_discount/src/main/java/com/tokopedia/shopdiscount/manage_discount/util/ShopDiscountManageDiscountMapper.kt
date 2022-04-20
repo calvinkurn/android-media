@@ -1,5 +1,7 @@
 package com.tokopedia.shopdiscount.manage_discount.util
 
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
@@ -30,7 +32,10 @@ object ShopDiscountManageDiscountMapper {
     ): ShopDiscountSetupProductUiModel {
         return ShopDiscountSetupProductUiModel(
             responseHeader = response.responseHeader,
-            listSetupProductData = mapToListSetupProductUiModel(response.productList, selectedProductVariantId)
+            listSetupProductData = mapToListSetupProductUiModel(
+                response.productList,
+                selectedProductVariantId
+            )
         )
     }
 
@@ -91,7 +96,7 @@ object ShopDiscountManageDiscountMapper {
         selectedProductVariantId: String
     ): List<ShopDiscountSetupProductUiModel.SetupProductData> {
         return productResponse.variants.filter {
-            if(selectedProductVariantId.isNotEmpty())
+            if (selectedProductVariantId.isNotEmpty())
                 it.productId == selectedProductVariantId
             else
                 true
@@ -173,27 +178,32 @@ object ShopDiscountManageDiscountMapper {
             productId = it.productId,
             startTimeUnix = (it.slashPriceInfo.startDate.time / 1000L).toString(),
             endTimeUnix = (it.slashPriceInfo.endDate.time / 1000L).toString(),
-            slashPriceWarehouses = mapToListSlashPriceWarehouse(it.listProductWarehouse)
+            slashPriceWarehouses = mapToListSlashPriceWarehouse(it.listProductWarehouse, it.stock)
         )
     }
 
     private fun mapToListSlashPriceWarehouse(
-        listProductWarehouse: List<ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse>
+        listProductWarehouse: List<ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse>,
+        stock: String
     ): List<DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct.SlashPriceWarehouse> {
         return listProductWarehouse.map {
             DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct.SlashPriceWarehouse(
                 key = it.warehouseId,
-                value = mapToWarehouseValue(it)
+                value = mapToWarehouseValue(it, stock)
             )
         }
     }
 
     private fun mapToWarehouseValue(
-        productWarehouse: ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse
+        productWarehouse: ShopDiscountSetupProductUiModel.SetupProductData.ProductWarehouse,
+        stock: String
     ): DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct.SlashPriceWarehouse.Value {
+        val maxOrder = productWarehouse.maxOrder.takeIf {
+            !it.toIntOrZero().isZero()
+        } ?: stock
         return DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct.SlashPriceWarehouse.Value(
             warehouseId = productWarehouse.warehouseId,
-            maxOrder = productWarehouse.maxOrder,
+            maxOrder = maxOrder,
             discountedPrice = productWarehouse.discountedPrice,
             discountedPercentage = productWarehouse.discountedPercentage,
             enable = !productWarehouse.disable

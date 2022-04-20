@@ -31,6 +31,12 @@ data class ShopDiscountSetupProductUiModel(
         var mappedResultData: MappedResultData = MappedResultData(),
     ) : Parcelable, Visitable<ShopDiscountManageDiscountTypeFactory> {
 
+        fun getListEnabledProductWarehouse(): List<ProductWarehouse> {
+            return listProductWarehouse.filter {
+                !it.disable
+            }
+        }
+
         @Parcelize
         data class MappedResultData(
             val minOriginalPrice: Int = 0,
@@ -88,8 +94,8 @@ data class ShopDiscountSetupProductUiModel(
         @Parcelize
         data class ProductSlashPriceInfo(
             val slashPriceProductId: String = "",
-            val discountedPrice: Int = 0,
-            val discountPercentage: Int = 0,
+            var discountedPrice: Int = 0,
+            var discountPercentage: Int = 0,
             var startDate: Date = Date(),
             var endDate: Date = Date(),
             val slashPriceStatusId: String = ""

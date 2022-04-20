@@ -6,11 +6,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.utils.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountProductDetailItemLayoutBinding
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
@@ -74,7 +73,7 @@ open class ShopDiscountProductDetailItemViewHolder(
         textOriginalPrice: Typography,
         uiModel: ShopDiscountProductDetailUiModel.ProductDetailData
     ) {
-        val formattedOriginalPrice = getFormattedRangeString(
+        val formattedOriginalPrice = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minOriginalPrice,
             uiModel.maxOriginalPrice, {
                 it.getCurrencyFormatted()
@@ -96,7 +95,7 @@ open class ShopDiscountProductDetailItemViewHolder(
         labelDiscount: Label,
         uiModel: ShopDiscountProductDetailUiModel.ProductDetailData
     ) {
-        val formattedDiscountPercentage = getFormattedRangeString(
+        val formattedDiscountPercentage = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minDiscount,
             uiModel.maxDiscount, {
                 String.format(
@@ -120,7 +119,7 @@ open class ShopDiscountProductDetailItemViewHolder(
     ) {
         val minDisplayedPrice: Int = uiModel.minPriceDiscounted
         val maxDisplayedPrice: Int = uiModel.maxPriceDiscounted
-        val formattedDisplayedPrice = getFormattedRangeString(
+        val formattedDisplayedPrice = RangeFormatterUtil.getFormattedRangeString(
             minDisplayedPrice,
             maxDisplayedPrice, {
                 it.getCurrencyFormatted()
@@ -161,25 +160,6 @@ open class ShopDiscountProductDetailItemViewHolder(
     private fun getFormattedDate(dateString: String): String {
         return dateString.toDate(DateConstant.DATE_FORMAT_WITH_TIMEZONE)
             .parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION)
-    }
-
-    private fun getFormattedRangeString(
-        min: Int,
-        max: Int,
-        formatNonRange: (min: Int) -> String,
-        formatWithRange: (min: Int, max: Int) -> String
-    ): String {
-        return if (min.isZero() && max.isZero()) {
-            ""
-        } else if (min == max) {
-            formatNonRange(min)
-        } else if (min.isZero()) {
-            formatNonRange(max)
-        } else if (max.isZero()) {
-            formatNonRange(min)
-        } else {
-            formatWithRange(min, max)
-        }
     }
 
 }
