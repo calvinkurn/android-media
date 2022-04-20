@@ -86,6 +86,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var isEdit: Boolean = false
     private var isAccessAppPermissionFromSettings: Boolean = false
+    private var clickDontAllowForTheFirstTime: Boolean = false
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -146,9 +147,15 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
             } else if (requestCode == GPS_REQUEST) {
+                clickDontAllowForTheFirstTime = false
                 bottomSheetLocUndefined?.dismiss()
-                binding?.loaderCurrentLocation?.visibility = View.VISIBLE
-                Handler().postDelayed ({getLocation()}, 1000)
+                if (allPermissionsGranted()) {
+                    Handler().postDelayed({
+                        getLocation()
+                    }, 1000)
+                } else {
+//                 requestPermissionLocation()
+                }
             }
         } else {
             if (requestCode == GPS_REQUEST) {
@@ -175,6 +182,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 //            if (!isPermissionAccessed) {
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
                     //no-op
+                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_DENIED) {
+                        clickDontAllowForTheFirstTime = true
+                        isUndefinedWithoutPermission = false
+                    }
                 } else {
                     if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
                         isAllowed = true
@@ -298,13 +309,21 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     hasRequestedLocation = true
                     getLocation()
                 } else {
-                    isUndefinedWithoutPermission = true
-                    hasRequestedLocation = false
-                    requestPermissionLocation()
+                    if (clickDontAllowForTheFirstTime) {
+                        showBottomSheetLocUndefined(false) // -> to location
+                    } else {
+                        isUndefinedWithoutPermission = true
+                        hasRequestedLocation = false
+                        requestPermissionLocation()
+                    }
                 }
             } else {
-                isUndefinedWithoutPermission = !allPermissionsGranted()
-                requestPermissionLocation()
+                if (clickDontAllowForTheFirstTime) {
+                    showBottomSheetLocUndefined(false) // -> to location
+                } else {
+                    isUndefinedWithoutPermission = !allPermissionsGranted()
+                    requestPermissionLocation()
+                }
             }
         }
     }
@@ -462,7 +481,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        if (AddNewAddressUtils.isGpsEnabled(context)) {
+        if (AddNewAddressUtils.isGpsEnabled(context) && allPermissionsGranted()) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
