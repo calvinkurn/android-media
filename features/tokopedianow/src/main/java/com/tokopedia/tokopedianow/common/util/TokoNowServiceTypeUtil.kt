@@ -28,7 +28,8 @@ object TokoNowServiceTypeUtil {
     */
     private val resourceIdsMap = mutableMapOf(
         EDU_BOTTOM_SHEET_RESOURCE_ID to TokoNowStringResource(
-            formattedResourceId = R.string.tokopedianow_home_educational_information_duration_bottomsheet
+            resourceId2h = R.string.tokopedianow_home_educational_information_2h_duration_bottomsheet,
+            resourceId20m = R.string.tokopedianow_home_educational_information_20m_duration_bottomsheet
         ),
         EDU_WIDGET_RESOURCE_ID to TokoNowStringResource(
             formattedResourceId = R.string.tokopedianow_home_educational_information_duration
