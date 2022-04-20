@@ -46,7 +46,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -75,9 +75,11 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaVi
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
+import com.tokopedia.search.utils.FragmentProvider
 
 @Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(
+    private val fragmentProvider: FragmentProvider,
     private val productListener: ProductListener,
     private val tickerListener: TickerListener,
     private val suggestionListener: SuggestionListener,
@@ -250,7 +252,12 @@ class ProductListTypeFactoryImpl(
             SearchProductTopAdsImageViewHolder.LAYOUT ->
                 SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener)
             ChooseAddressViewHolder.LAYOUT ->
-                ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
+                ChooseAddressViewHolder(
+                    view,
+                    chooseAddressListener,
+                    searchNavigationListener,
+                    fragmentProvider,
+                )
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
             InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)

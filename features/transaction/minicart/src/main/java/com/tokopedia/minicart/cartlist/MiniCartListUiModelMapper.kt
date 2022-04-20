@@ -38,6 +38,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     companion object {
         const val PLACEHOLDER_OVERWEIGHT_VALUE = "{{weight}}"
+
+        private const val BUNDLE_NO_VARIANT_CONST = -1
     }
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
@@ -326,13 +328,17 @@ class MiniCartListUiModelMapper @Inject constructor() {
             bundleOriginalPrice = bundleDetail.bundleOriginalPrice
             bundleOriginalPriceFmt = bundleDetail.bundleOriginalPriceFmt
             bundleMinOrder = bundleDetail.bundleMinOrder
-            bundleMaxOrder = bundleDetail.bundleMaxOrder
+            bundleMaxOrder = if (bundleDetail.bundleQuota > BUNDLE_NO_VARIANT_CONST) {
+                min(bundleDetail.bundleMaxOrder, bundleDetail.bundleQuota)
+            } else {
+                bundleDetail.bundleMaxOrder
+            }
             bundleQty = bundleQuantity
             bundleIconUrl = bundleDetail.bundleIconUrl
             slashPriceLabel = bundleDetail.slashPriceLabel
             showBundlingHeader = firstProductItem && bundlingItem
             showBottomDivider = (bundlingItem && !lastCartItem && lastProductItem) ||
-                (!bundlingItem && !lastCartItem)
+                (!bundlingItem && !lastCartItem || !lastProductItem)
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
 
@@ -452,7 +458,32 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productPrice = visitable.productPrice
                 }
 
-                if (miniCartItem.isError) {
+                if (visitable.isBundlingItem) {
+                    val bundleKey = MiniCartItemKey(visitable.bundleId, type = MiniCartItemType.BUNDLE)
+                    if (!miniCartItems.contains(bundleKey)) {
+                        if (miniCartItem.isError) {
+                            unavailableItemCount++
+                        }
+                        miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                                isError = miniCartItem.isError,
+                                bundleId = visitable.bundleId,
+//                                bundleGroupId = visitable.bundleGroupId,
+                                bundleTitle = visitable.bundleName,
+                                bundlePrice = visitable.bundlePrice,
+                                bundleSlashPriceLabel = visitable.slashPriceLabel,
+                                bundleOriginalPrice = visitable.bundleOriginalPrice,
+                                bundleQuantity = visitable.bundleQty,
+                                bundleMultiplier = visitable.bundleMultiplier,
+                                bundleLabelQuantity = visitable.bundleMultiplier,
+                                products = hashMapOf(key to miniCartItem)
+                        )
+                    } else {
+                        val currentBundleItem = miniCartItems[bundleKey] as MiniCartItem.MiniCartItemBundle
+                        val products = HashMap(currentBundleItem.products)
+                        products[key] = miniCartItem
+                        miniCartItems[bundleKey] = currentBundleItem.copy(products = products)
+                    }
+                } else if (miniCartItem.isError) {
                     unavailableItemCount++
                     if (!miniCartItems.contains(key)) {
                         miniCartItems[key] = miniCartItem

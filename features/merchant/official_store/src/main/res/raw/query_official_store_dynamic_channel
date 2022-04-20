@@ -66,6 +66,9 @@ query dynamicHomeChannel($type: String, $location: String) {
                     shopID
                     name
                     applink
+                    city
+                    imageUrl
+                    url
                 }
                 campaignCode
                 labelGroup {
@@ -83,6 +86,7 @@ query dynamicHomeChannel($type: String, $location: String) {
                 badges{
                     image_url
                 }
+                expiredTime
             }
             banner {
                 id

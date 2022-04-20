@@ -131,4 +131,6 @@
     <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
     <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
     <string name="terkhir_text">update terakhir</string>
+   <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
+    <string name="affiliate_blacklisted_ticker_title">Saldo Affiliate sedang dioptimalisasi ⚙️</string>
 </resources>
