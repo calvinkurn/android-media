@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.feature.suspend.domain.usecase.SuspendReasonUseCase
 import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SuspendReasonViewModel @Inject constructor(
@@ -24,14 +22,11 @@ class SuspendReasonViewModel @Inject constructor(
     private val _suspendReasonUiModelLiveData = MutableLiveData<Result<SuspendReasonUiModel>>()
 
     fun getSuspendReason(productId: String) {
-        launchCatchError(block = {
-            _suspendReasonUiModelLiveData.value = Success(
-                withContext(dispatcher.io) {
-                    suspendReasonUseCase.execute(productId)
-                }
-            )
+        launchCatchError(dispatcher.io, block = {
+            val data = suspendReasonUseCase.execute(productId)
+            _suspendReasonUiModelLiveData.postValue(Success(data))
         }, onError = {
-            _suspendReasonUiModelLiveData.value = Fail(it)
+            _suspendReasonUiModelLiveData.postValue(Fail(it))
         })
     }
 

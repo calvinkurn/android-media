@@ -8,12 +8,14 @@ import com.tokopedia.product.manage.feature.suspend.view.uimodel.SuspendReasonUi
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class SuspendReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepository,
-                                               private val mapper: SuspendReasonMapper) :
-        GraphqlUseCase<SuspendReasonDetailResponse>(graphqlRepository) {
+class SuspendReasonUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    private val mapper: SuspendReasonMapper
+) :
+    GraphqlUseCase<SuspendReasonDetailResponse>(graphqlRepository) {
 
     companion object {
-          private val QUERY = """
+        private val QUERY = """
             query checkProductViolation(${'$'}productID: [String!]!, ${'$'}type: ProductViolationType!, ${'$'}lang: ProductViolationLang!) {
               CheckProductViolation(productID: ${'$'}productID, type: ${'$'}type, lang: ${'$'}lang) {
                 data {
@@ -30,8 +32,8 @@ class SuspendReasonUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         """.trimIndent()
 
         private const val PRODUCT_ID_KEY = "productID"
-        private const val VIOLATION_TYPE= "type"
-        private const val LANG= "lang"
+        private const val VIOLATION_TYPE = "type"
+        private const val LANG = "lang"
 
         private fun createRequestParam(productId: String): RequestParams {
             return RequestParams.create().apply {

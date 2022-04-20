@@ -32,11 +32,12 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendReasonComponent>,
-        ViolationReasonItemViewHolder.Listener {
+    ViolationReasonItemViewHolder.Listener {
 
     companion object {
-        fun createInstance(productId: String,
-                           suspendListener: Listener
+        fun createInstance(
+            productId: String,
+            suspendListener: Listener
         ): SuspendReasonBottomSheet {
             return SuspendReasonBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -65,7 +66,7 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
 
     private var binding by autoClearedNullable<BottomSheetProductManageSuspendBinding>()
 
-    public var listener: Listener? = null
+    var listener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component?.inject(this)
@@ -73,9 +74,9 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetProductManageSuspendBinding.inflate(inflater, container, false)
         setChild(binding?.root)
@@ -93,8 +94,8 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
     override fun getComponent(): SuspendReasonComponent? {
         return activity?.run {
             DaggerSuspendReasonComponent.builder()
-                    .productManageComponent(ProductManageInstance.getComponent(application))
-                    .build()
+                .productManageComponent(ProductManageInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -103,12 +104,12 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
             when {
                 URLUtil.isValidUrl(link) -> {
                     val appLink =
-                            String.format(
-                                    APPLINK_FORMAT_ALLOW_OVERRIDE,
-                                    ApplinkConst.WEBVIEW,
-                                    false,
-                                    link
-                            )
+                        String.format(
+                            APPLINK_FORMAT_ALLOW_OVERRIDE,
+                            ApplinkConst.WEBVIEW,
+                            false,
+                            link
+                        )
                     RouteManager.route(context, appLink)
                 }
                 isAppLink(uri) -> {
@@ -122,7 +123,9 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!fm.isStateSaved) {
+            show(fm, TAG)
+        }
     }
 
     private fun setupView() {
@@ -164,9 +167,9 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
 
             context?.let {
                 val adapter = ViolationReasonAdapter(
-                        it,
-                        uiModel.infoToResolve,
-                        this@SuspendReasonBottomSheet
+                    it,
+                    uiModel.infoToResolve,
+                    this@SuspendReasonBottomSheet
                 )
                 rvProductManageSuspendStep.layoutManager = LinearLayoutManager(it)
                 rvProductManageSuspendStep.adapter = adapter
