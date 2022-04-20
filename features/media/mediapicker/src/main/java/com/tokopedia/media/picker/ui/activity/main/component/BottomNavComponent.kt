@@ -38,22 +38,12 @@ class BottomNavComponent(
         }
     }
 
-    fun onStartPositionChanged(startPosition: Int) {
-        var position = startPosition
-        val tabCount = tabUnify.tabLayout.tabCount
-
-        // force the position to zero if the value more than tab count
-        if (startPosition > tabCount) {
-            position = 0
-        }
-
-        tabUnify.tabLayout.getTabAt(position)?.select()
-
-        onTabSelectionChanged(position)
+    fun onStartPositionChanged(positionIndex: Int) {
+        tabUnify.tabLayout.getTabAt(positionIndex)?.select()
     }
 
     fun navigateToCameraTab() {
-        tabUnify.tabLayout.getTabAt(PAGE_CAMERA_INDEX)?.select()
+        onStartPositionChanged(PAGE_CAMERA_INDEX)
     }
 
     private fun transparentBackground() {

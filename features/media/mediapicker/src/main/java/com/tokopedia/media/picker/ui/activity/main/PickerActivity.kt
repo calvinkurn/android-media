@@ -172,8 +172,7 @@ open class PickerActivity : BaseActivity()
         if (hasPermissionGranted) {
             navigateByPageType()
         } else {
-            navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            container.open(FragmentType.PERMISSION)
+            navigateToPermissionPage()
         }
     }
 
@@ -205,16 +204,24 @@ open class PickerActivity : BaseActivity()
         }
     }
 
+    private fun navigateToPermissionPage() {
+        navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        container.open(FragmentType.PERMISSION)
+    }
+
     private fun navigateByPageType() {
         when (param.get().pageType()) {
+            // single page -> camera
             PageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
                 container.open(FragmentType.CAMERA)
             }
+            // single page -> gallery
             PageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
                 container.open(FragmentType.GALLERY)
             }
+            // multiple page -> by index
             else -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
 
