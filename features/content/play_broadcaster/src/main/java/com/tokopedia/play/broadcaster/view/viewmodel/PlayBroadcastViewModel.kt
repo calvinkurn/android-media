@@ -50,10 +50,10 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -91,7 +91,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val playBroadcastWebSocket: PlayWebSocket,
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val productMapper: PlayBroProductUiMapper,
-    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+    private val channelInteractiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger
 ) : ViewModel() {
@@ -204,6 +204,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _quizFormState = MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
     private val _quizIsNeedToUpdateUI = MutableStateFlow(true)
 
+    private val _interactive = MutableStateFlow<InteractiveUiModel>(InteractiveUiModel.Unknown)
+
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
@@ -247,7 +249,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _isExiting,
         _gameConfigUiState,
         _quizFormUiState,
-    ) { channelState, pinnedMessage, productMap, schedule, isExiting, gameConfig, quizForm, ->
+        _interactive,
+    ) { channelState, pinnedMessage, productMap, schedule, isExiting,
+        gameConfig, quizForm, interactive ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -256,6 +260,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             isExiting = isExiting,
             gameConfig = gameConfig,
             quizForm = quizForm,
+            interactive = interactive,
         )
     }.stateIn(
         viewModelScope,
@@ -375,6 +380,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
+
+            /**
+             * Giveaway
+             */
+            PlayBroadcastAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
+            PlayBroadcastAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
+            PlayBroadcastAction.QuizEnded -> handleQuizEnded()
         }
     }
 
@@ -676,22 +688,46 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleActiveInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+    private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
         setInteractiveId(interactive.id.toString())
         setActiveInteractiveTitle(interactive.title)
-        when (val status = interactive.timeStatus) {
-            is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
-                timeToStartInMs = status.timeToStartInMs,
-                durationInMs = status.interactiveDurationInMs,
-                title = interactive.title
-            )
-            is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
-            is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
-            else -> {
-                _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-            }
+        when (interactive) {
+            is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
+            else -> {}
+        }
+//        when (val status = interactive.timeStatus) {
+//            is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
+//                timeToStartInMs = status.timeToStartInMs,
+//                durationInMs = status.interactiveDurationInMs,
+//                title = interactive.title
+//            )
+//            is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
+//            is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
+//            else -> {
+//                _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+//            }
+//        }
+    }
+
+    private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
+        _interactive.value = giveaway
+
+        if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
+            //TODO("Get leaderboard")
+//            val channelId = mChannelData?.id ?: return
+//
+//            try {
+//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+//                setLeaderboardBadgeState(interactiveLeaderboard)
+//
+//                _interactive.update {
+//                    it.copy(interactive = InteractiveUiModel.Unknown)
+//                }
+//            } catch (e: Throwable) {}
         }
     }
+
 
     private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(timeToStartInMs = timeToStartInMs, durationInMs = durationInMs, title = title)
@@ -834,8 +870,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     }
                 }
             }
-            is ChannelInteractive -> {
-                val currentInteractive = channelInteractiveMapper.mapInteractive(result)
+            is GiveawayResponse -> {
+                val currentInteractive = channelInteractiveMapper.mapGiveaway(
+                    result,
+                    TimeUnit.SECONDS.toMillis(result.waitingDuration.toLong())
+                )
                 handleActiveInteractiveFromNetwork(currentInteractive)
             }
             is PinnedMessageSocketResponse -> {
@@ -1130,6 +1169,75 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(false) }
             _uiEvent.emit(PlayBroadcastEvent.ShowErrorCreateQuiz(it))
+        }
+    }
+
+    /**
+     * When pre-start finished, interactive should be played (e.g. TapTap)
+     */
+    private fun handleGiveawayUpcomingEnded() {
+        viewModelScope.launchCatchError(dispatcher.computation, block = {
+            _interactive.update {
+                val currentGiveaway = it as? InteractiveUiModel.Giveaway ?: error("Interactive is not giveaway")
+                val upcomingStatus = currentGiveaway.status as? InteractiveUiModel.Giveaway.Status.Upcoming
+                    ?: error("Giveaway status is not upcoming")
+
+                val interactive = it.copy(
+                    status = InteractiveUiModel.Giveaway.Status.Ongoing(
+                        endTime = upcomingStatus.endTime
+                    )
+                )
+                interactive
+            }
+
+        }) {
+            _interactive.value = InteractiveUiModel.Unknown
+        }
+    }
+
+    private fun handleGiveawayOngoingEnded() {
+        viewModelScope.launchCatchError(dispatcher.computation, block = {
+            val interactive = _interactive.getAndUpdate {
+                if (it !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
+                val newInteractive = it.copy(
+                    status = InteractiveUiModel.Giveaway.Status.Finished
+                )
+                newInteractive
+            }
+
+            suspend fun checkWinnerStatus(): Boolean {
+                //TODO("Handle winner status")
+//                val winnerStatus = _winnerStatus.value
+//                return if (winnerStatus != null) {
+//                    processWinnerStatus(winnerStatus)
+//                    true
+//                } else false
+                return false
+            }
+
+            if (!checkWinnerStatus() && interactive is InteractiveUiModel.Giveaway) {
+                delay(interactive.waitingDuration)
+                checkWinnerStatus()
+            }
+
+            _interactive.value = InteractiveUiModel.Unknown
+
+        }) {
+            _interactive.value = InteractiveUiModel.Unknown
+        }
+    }
+
+    private fun handleQuizEnded() {
+        viewModelScope.launchCatchError(dispatcher.computation, block = {
+            _interactive.update {
+                if (it !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
+                val interactive = it.copy(
+                    status = InteractiveUiModel.Quiz.Status.Finished
+                )
+                interactive
+            }
+        }) {
+            _interactive.value = InteractiveUiModel.Unknown
         }
     }
 

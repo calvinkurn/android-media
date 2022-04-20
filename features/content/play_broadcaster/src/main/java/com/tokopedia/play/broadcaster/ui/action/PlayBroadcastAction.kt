@@ -25,6 +25,12 @@ sealed interface PlayBroadcastAction {
     /** Game */
     data class ClickGameOption(val gameType: GameType): PlayBroadcastAction
 
+    /**
+     * Giveaway
+     */
+    object GiveawayUpcomingEnded : PlayBroadcastAction
+    object GiveawayOngoingEnded : PlayBroadcastAction
+
     /** Quiz */
     object ClickBackOnQuiz: PlayBroadcastAction
     object ClickNextOnQuiz: PlayBroadcastAction
@@ -35,4 +41,5 @@ sealed interface PlayBroadcastAction {
     data class SelectQuizDuration(val duration: Long): PlayBroadcastAction
     data class SaveQuizData(val quizFormData: QuizFormDataUiModel): PlayBroadcastAction
     object SubmitQuizForm: PlayBroadcastAction
+    object QuizEnded : PlayBroadcastAction
 }

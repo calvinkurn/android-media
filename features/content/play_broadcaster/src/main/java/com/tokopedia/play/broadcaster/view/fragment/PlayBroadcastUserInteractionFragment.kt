@@ -55,6 +55,8 @@ import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragme
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
+import com.tokopedia.play.broadcaster.view.partial.game.InteractiveActiveViewComponent
+import com.tokopedia.play.broadcaster.view.partial.game.InteractiveFinishedViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -62,6 +64,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
@@ -72,6 +75,7 @@ import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -110,6 +114,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    /**
+     * Interactive
+     */
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
+    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
@@ -737,6 +747,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
                 renderQuizForm(prevState?.quizForm, state.quizForm, prevState?.gameConfig, state.gameConfig)
+                renderInteractiveView(prevState?.interactive, state.interactive)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -813,6 +824,90 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             state.filterNot { it.campaignStatus.isUpcoming() }
                 .flatMap { it.products }
         )
+    }
+
+    private fun renderInteractiveView(
+        prevState: InteractiveUiModel?,
+        state: InteractiveUiModel,
+    ) {
+        /**
+         * Render:
+         * - if interactive has changed <b>or</b>
+         * - if isPlaying state has changed to not playing
+         */
+        if (prevState != state) {
+            when (state) {
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state)
+                is InteractiveUiModel.Quiz -> renderQuizView(state)
+                InteractiveUiModel.Unknown -> {
+                    interactiveActiveView?.hide()
+                    interactiveFinishedView?.hide()
+                }
+            }
+        }
+    }
+
+    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+                interactiveActiveView?.setUpcomingGiveaway(
+                    desc = state.title,
+                    targetTime = status.startTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishedView?.hide()
+            }
+            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+                interactiveActiveView?.setOngoingGiveaway(
+                    desc = state.title,
+                    targetTime = status.endTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.GiveawayOngoingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishedView?.hide()
+            }
+            InteractiveUiModel.Giveaway.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishedView?.setupGiveaway()
+                interactiveFinishedView?.show()
+            }
+            InteractiveUiModel.Giveaway.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishedView?.hide()
+            }
+        }
+    }
+
+    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                interactiveActiveView?.setQuiz(
+                    question = state.title,
+                    targetTime = status.endTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.QuizEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishedView?.hide()
+            }
+            InteractiveUiModel.Quiz.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishedView?.setupQuiz()
+                interactiveFinishedView?.show()
+            }
+            InteractiveUiModel.Quiz.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishedView?.hide()
+            }
+        }
     }
 
     private fun renderQuizForm(

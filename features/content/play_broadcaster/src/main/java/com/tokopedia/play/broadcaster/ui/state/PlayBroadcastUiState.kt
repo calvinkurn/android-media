@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
 
 /**
@@ -23,6 +24,7 @@ data class PlayBroadcastUiState(
     val isExiting: Boolean,
     val gameConfig: GameConfigUiState,
     val quizForm: QuizFormUiState,
+    val interactive: InteractiveUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -40,6 +42,7 @@ data class PlayBroadcastUiState(
                 isExiting = false,
                 gameConfig = GameConfigUiState.Empty,
                 quizForm = QuizFormUiState.Empty,
+                interactive = InteractiveUiModel.Unknown,
             )
     }
 }
