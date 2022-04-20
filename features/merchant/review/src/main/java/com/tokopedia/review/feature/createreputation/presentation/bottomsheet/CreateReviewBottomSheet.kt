@@ -20,6 +20,9 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
 import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.review.R
 import com.tokopedia.review.common.ReviewInboxConstants
@@ -78,6 +81,9 @@ import kotlin.coroutines.suspendCoroutine
 class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
     companion object {
         private const val TEXT_AREA_MAX_MIN_LINE = 4
+        private const val MAX_VIDEO_COUNT = 1
+        private const val MAX_IMAGE_COUNT = 4
+        private const val MEDIA_PICKER_APP_LINK = "tokopedia-android-internal://global/media-picker?start=1"
 
         fun createInstance(
             rating: Int,
@@ -334,11 +340,18 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     private inner class ActivityResultHandler {
         private fun handleMediaPickerResult(data: Intent) {
-            val result = ImagePickerResultExtractor.extract(data)
-            val selectedImage = result.imageUrlOrPathList
-            val imagesFedIntoPicker = result.imagesFedIntoPicker
-            viewModel.updateMediaPicker(selectedImage, imagesFedIntoPicker)
-            trackingHandler.trackOnReceiveMediaFromMediaPicker(selectedImage.size)
+            val mediaCount = if (true) { // TODO: Implement rollence here
+                val result = MediaPicker.result(data)
+                viewModel.updateMediaPicker(result.originalPaths)
+                result.originalPaths.size
+            } else {
+                val result = ImagePickerResultExtractor.extract(data)
+                val selectedImage = result.imageUrlOrPathList
+                val imagesFedIntoPicker = result.imagesFedIntoPicker
+                viewModel.updateMediaPicker(selectedImage, imagesFedIntoPicker)
+                selectedImage.size
+            }
+            trackingHandler.trackOnReceiveMediaFromMediaPicker(mediaCount)
         }
 
         fun handleResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -979,21 +992,33 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
     }
 
     private inner class MediaPickerListener: CreateReviewMediaPicker.Listener {
-        private fun goToImagePicker() {
+        private fun goToMediaPicker() {
             context?.let {
-                val builder = ImagePickerBuilder.getSquareImageBuilder(it)
-                    .withSimpleEditor()
-                    .withSimpleMultipleSelection(viewModel.getSelectedImagesUrl())
-                    .apply { title = getString(R.string.image_picker_title) }
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
-                intent.putImagePickerBuilder(builder)
-                intent.putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
+                val intent = if (true) { // TODO: Implement rollence here
+                    MediaPicker.intent(it, MEDIA_PICKER_APP_LINK) {
+                        pageSource(PageSource.Review)
+                        modeType(ModeType.COMMON)
+                        maxMediaItem(MAX_IMAGE_COUNT)
+                        maxVideoItem(MAX_VIDEO_COUNT)
+                        includeMedias(viewModel.getSelectedMediaFiles())
+                        maxVideoFileSize()
+                    }
+                } else {
+                    val builder = ImagePickerBuilder.getSquareImageBuilder(it)
+                        .withSimpleEditor()
+                        .withSimpleMultipleSelection(viewModel.getSelectedMediasUrl())
+                        .apply { title = getString(R.string.image_picker_title) }
+                    RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER).apply {
+                        putImagePickerBuilder(builder)
+                        putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
+                    }
+                }
                 startActivityForResult(intent, CreateReviewFragment.REQUEST_CODE_IMAGE)
             }
         }
 
         override fun onAddMediaClicked() {
-            goToImagePicker()
+            goToMediaPicker()
         }
 
         override fun onRemoveMediaClicked(media: CreateReviewMediaUiModel) {

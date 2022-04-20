@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
@@ -53,7 +54,6 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
-import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
@@ -119,6 +119,8 @@ class CreateReviewViewModel @Inject constructor(
         private const val UPDATE_POEM_INTERVAL = 1000L
         private const val MAX_MEDIA_COUNT = 5
         private const val GOOD_RATING_THRESHOLD = 2
+        private const val CREATE_REVIEW_IMAGE_SOURCE_ID = "bjFkPX"
+        private const val CREATE_REVIEW_VIDEO_SOURCE_ID = "wKpVIv"
 
         private const val SAVED_STATE_RATING = "savedStateRating"
         private const val SAVED_STATE_REVIEW_TEXT = "savedStateReviewText"
@@ -845,7 +847,7 @@ class CreateReviewViewModel @Inject constructor(
             ProductrevGetPostSubmitBottomSheetUseCase.PostSubmitReviewRequestParams(
                 feedbackId = feedbackId,
                 reviewText = reviewText.text,
-                imagesTotal = mediaPickerUiState.mediaItems.mapNotNull { media ->
+                mediasTotal = mediaPickerUiState.mediaItems.mapNotNull { media ->
                     media.uploadId.takeIf { uploadId -> uploadId.isNotBlank() }
                 }.count(),
                 isInboxEmpty = hasPendingIncentive.not(),
@@ -924,14 +926,32 @@ class CreateReviewViewModel @Inject constructor(
                                     } ?: System.currentTimeMillis(),
                                     state = CreateReviewMediaUiModel.State.UPLOADED
                                 )
+                            } else if (it is CreateReviewMediaUiModel.Video) {
+                                it.copy(
+                                    uploadId = uploadResult.uploadId,
+                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
+                                        it.isMoreThanZero()
+                                    } ?: System.currentTimeMillis(),
+                                    state = CreateReviewMediaUiModel.State.UPLOADED
+                                )
                             } else null
-                        } ?: CreateReviewMediaUiModel.Image(
-                            uri = uri,
-                            uploadId = uploadResult.uploadId,
-                            uploadBatchNumber = uploadBatchNumber,
-                            finishUploadTimestamp = System.currentTimeMillis(),
-                            state = CreateReviewMediaUiModel.State.UPLOADED
-                        )
+                        } ?: if (isVideoFormat(uri)) {
+                            CreateReviewMediaUiModel.Video(
+                                uri = uri,
+                                uploadId = uploadResult.uploadId,
+                                uploadBatchNumber = uploadBatchNumber,
+                                finishUploadTimestamp = System.currentTimeMillis(),
+                                state = CreateReviewMediaUiModel.State.UPLOADED
+                            )
+                        } else {
+                            CreateReviewMediaUiModel.Image(
+                                uri = uri,
+                                uploadId = uploadResult.uploadId,
+                                uploadBatchNumber = uploadBatchNumber,
+                                finishUploadTimestamp = System.currentTimeMillis(),
+                                state = CreateReviewMediaUiModel.State.UPLOADED
+                            )
+                        }
                         add(mediaItem)
                     }
                     is CreateReviewMediaUploadResult.Error -> {
@@ -945,13 +965,29 @@ class CreateReviewViewModel @Inject constructor(
                                     } ?: System.currentTimeMillis(),
                                     state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
                                 )
+                            } else if (it is CreateReviewMediaUiModel.Video) {
+                                it.copy(
+                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
+                                        it.isMoreThanZero()
+                                    } ?: System.currentTimeMillis(),
+                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                )
                             } else null
-                        } ?: CreateReviewMediaUiModel.Image(
-                            uri = uri,
-                            uploadBatchNumber = uploadBatchNumber,
-                            finishUploadTimestamp = System.currentTimeMillis(),
-                            state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                        )
+                        } ?: if (isVideoFormat(uri)) {
+                            CreateReviewMediaUiModel.Video(
+                                uri = uri,
+                                uploadBatchNumber = uploadBatchNumber,
+                                finishUploadTimestamp = System.currentTimeMillis(),
+                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                            )
+                        } else {
+                            CreateReviewMediaUiModel.Image(
+                                uri = uri,
+                                uploadBatchNumber = uploadBatchNumber,
+                                finishUploadTimestamp = System.currentTimeMillis(),
+                                state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                            )
+                        }
                         add(mediaItem)
                     }
                     else -> {
@@ -964,12 +1000,26 @@ class CreateReviewViewModel @Inject constructor(
                                     finishUploadTimestamp = 0L,
                                     state = CreateReviewMediaUiModel.State.UPLOADING
                                 )
+                            } else if (it is CreateReviewMediaUiModel.Video) {
+                                it.copy(
+                                    uploadBatchNumber = uploadBatchNumber,
+                                    finishUploadTimestamp = 0L,
+                                    state = CreateReviewMediaUiModel.State.UPLOADING
+                                )
                             } else null
-                        } ?: CreateReviewMediaUiModel.Image(
-                            uri = uri,
-                            uploadBatchNumber = uploadBatchNumber,
-                            state = CreateReviewMediaUiModel.State.UPLOADING
-                        )
+                        } ?: if (isVideoFormat(uri)) {
+                            CreateReviewMediaUiModel.Video(
+                                uri = uri,
+                                uploadBatchNumber = uploadBatchNumber,
+                                state = CreateReviewMediaUiModel.State.UPLOADING
+                            )
+                        } else {
+                            CreateReviewMediaUiModel.Image(
+                                uri = uri,
+                                uploadBatchNumber = uploadBatchNumber,
+                                state = CreateReviewMediaUiModel.State.UPLOADING
+                            )
+                        }
                         add(mediaItem)
                     }
                 }
@@ -983,12 +1033,26 @@ class CreateReviewViewModel @Inject constructor(
                             finishUploadTimestamp = 0L,
                             state = CreateReviewMediaUiModel.State.UPLOADING
                         )
+                    } else if (it is CreateReviewMediaUiModel.Video) {
+                        it.copy(
+                            uploadBatchNumber = uploadBatchNumber,
+                            finishUploadTimestamp = 0L,
+                            state = CreateReviewMediaUiModel.State.UPLOADING
+                        )
                     } else null
-                } ?: CreateReviewMediaUiModel.Image(
-                    uri = uri,
-                    uploadBatchNumber = uploadBatchNumber,
-                    state = CreateReviewMediaUiModel.State.UPLOADING
-                )
+                } ?: if (isVideoFormat(uri)) {
+                    CreateReviewMediaUiModel.Video(
+                        uri = uri,
+                        uploadBatchNumber = uploadBatchNumber,
+                        state = CreateReviewMediaUiModel.State.UPLOADING
+                    )
+                } else {
+                    CreateReviewMediaUiModel.Image(
+                        uri = uri,
+                        uploadBatchNumber = uploadBatchNumber,
+                        state = CreateReviewMediaUiModel.State.UPLOADING
+                    )
+                }
                 add(mediaItem)
             }
         }
@@ -1096,11 +1160,11 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun startNewUploadMediaJob(uri: String): Job {
         return launchCatchError(block = {
-            delay(10_000L)
             val filePath = File(uri)
             val params = uploaderUseCase.createParams(
-                sourceId = CreateReviewViewModel.CREATE_REVIEW_SOURCE_ID,
-                filePath = filePath
+                sourceId = getUploadSourceId(uri),
+                filePath = filePath,
+                withTranscode = false
             )
             val uploadMediaResult = uploaderUseCase(params).let {
                 when (it) {
@@ -1353,6 +1417,10 @@ class CreateReviewViewModel @Inject constructor(
         )
     }
 
+    private fun getUploadSourceId(uri: String): String {
+        return if (isVideoFormat(uri)) CREATE_REVIEW_VIDEO_SOURCE_ID else CREATE_REVIEW_IMAGE_SOURCE_ID
+    }
+
     fun submitReview() {
         when(mediaPickerUiState.value) {
             is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster()
@@ -1418,11 +1486,16 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun updateMediaPicker(
-        selectedImage: MutableList<String>,
+        selectedImages: MutableList<String>,
         imagesFedIntoPicker: MutableList<String>
     ) {
         retryUploadMedia()
-        mediaUris.value = mergeImagePickerResultWithOriginalImages(selectedImage, imagesFedIntoPicker)
+        mediaUris.value = mergeImagePickerResultWithOriginalImages(selectedImages, imagesFedIntoPicker)
+    }
+
+    fun updateMediaPicker(selectedMedia: List<String>) {
+        retryUploadMedia()
+        mediaUris.value = selectedMedia
     }
 
     fun setReviewTemplatesAnimating(animating: Boolean) {
@@ -1501,8 +1574,12 @@ class CreateReviewViewModel @Inject constructor(
         return userSessionInterface.userId
     }
 
-    fun getSelectedImagesUrl(): ArrayList<String> {
+    fun getSelectedMediasUrl(): ArrayList<String> {
         return ArrayList(mediaUris.value)
+    }
+
+    fun getSelectedMediaFiles(): List<File> {
+        return mediaUris.value.map { File(it) }
     }
 
     fun getRating(): Int {

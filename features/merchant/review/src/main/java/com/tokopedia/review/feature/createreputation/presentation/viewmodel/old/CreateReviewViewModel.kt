@@ -406,7 +406,7 @@ class CreateReviewViewModel @Inject constructor(
                     ProductrevGetPostSubmitBottomSheetUseCase.PostSubmitReviewRequestParams(
                         feedbackId = feedbackId,
                         reviewText = reviewText,
-                        imagesTotal = getImageCount(),
+                        mediasTotal = getImageCount(),
                         isInboxEmpty = hasPendingIncentive.not(),
                         incentiveAmount = getIncentiveAmount()
                     )

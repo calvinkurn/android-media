@@ -56,7 +56,7 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
     data class PostSubmitReviewRequestParams(
         val feedbackId: String,
         val reviewText: String,
-        val imagesTotal: Int,
+        val mediasTotal: Int,
         val isInboxEmpty: Boolean,
         val incentiveAmount: Int
     ) {
@@ -64,7 +64,7 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
             return mapOf(
                 PARAM_FEEDBACK_ID to feedbackId,
                 PARAM_REVIEW_TEXT to reviewText,
-                PARAM_IMAGES_TOTAL to imagesTotal,
+                PARAM_IMAGES_TOTAL to mediasTotal,
                 PARAM_IS_INBOX_EMPTY to isInboxEmpty,
                 PARAM_INCENTIVE_AMOUNT to incentiveAmount
             )
