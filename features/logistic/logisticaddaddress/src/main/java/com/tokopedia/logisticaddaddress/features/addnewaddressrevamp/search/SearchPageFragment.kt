@@ -176,7 +176,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
                     //no-op
                 } else {
-                    isAllowed = activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED
+                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
+                        isAllowed = true
+                    } else {
+                        isAllowed = false
+                    }
+
                 }
 //            }
         }
