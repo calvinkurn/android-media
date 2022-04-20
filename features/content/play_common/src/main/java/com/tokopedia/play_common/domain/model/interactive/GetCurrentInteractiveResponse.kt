@@ -77,8 +77,11 @@ data class QuizResponse(
     @SerializedName("choices")
     val choices: List<Choice> = emptyList(),
 
-    @SerializedName("userChoice")
+    @SerializedName("user_choice")
     val userChoice: String = "",
+
+    @SerializedName("waiting_duration")
+    val waitingDuration: Long = 0L,
 ) {
 
     data class Choice(
@@ -87,5 +90,8 @@ data class QuizResponse(
 
         @SerializedName("text")
         val text: String = "",
+
+        @SerializedName("isCorrect")
+        val isCorrect: Boolean? = null,
     )
 }

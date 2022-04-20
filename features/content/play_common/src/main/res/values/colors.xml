@@ -29,6 +29,7 @@
 
     <color name="play_dms_winner_ring_g1">#EF7E08</color>
     <color name="play_dms_winner_ring_g2">#F1C53E</color>
+    <color name="play_dms_bg_game_result">#2E3137B2</color>
 
     <!--Chat-->
     <color name="play_dms_chat_user_color">#FFDD7F</color>
@@ -52,4 +53,5 @@
     <color name="play_dms_quiz_widget_gradient_end">#B3CD2F79</color>
     <color name="play_dms_quiz_header_gradient_start">#9B40DE</color>
     <color name="play_dms_quiz_header_gradient_end">#D72C65</color>
+    <color name="play_dms_stroke_quiz">#BFC9D9</color>
 </resources>
