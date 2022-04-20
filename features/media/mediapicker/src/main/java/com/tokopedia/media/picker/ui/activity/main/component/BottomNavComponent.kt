@@ -38,12 +38,19 @@ class BottomNavComponent(
         }
     }
 
-    fun onStartPositionChanged(positionIndex: Int) {
+    fun navigateToIndexOf(index: Int) {
+        val tabSize = tabUnify.tabLayout.tabCount - 1
+        var positionIndex = index
+
+        if (index > tabSize) {
+            positionIndex = 0
+        }
+
         tabUnify.tabLayout.getTabAt(positionIndex)?.select()
     }
 
     fun navigateToCameraTab() {
-        onStartPositionChanged(PAGE_CAMERA_INDEX)
+        navigateToIndexOf(PAGE_CAMERA_INDEX)
     }
 
     private fun transparentBackground() {
@@ -60,7 +67,7 @@ class BottomNavComponent(
     }
 
     private fun addTab(id: Int) {
-        tabUnify.addNewTab(context.getString(id)).view.setOnClickListener {
+        tabUnify.addNewTab(context.getString(id), false).view.setOnClickListener {
             isTabClicked = true
         }
     }
