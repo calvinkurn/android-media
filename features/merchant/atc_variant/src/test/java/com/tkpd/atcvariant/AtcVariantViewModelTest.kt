@@ -858,34 +858,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val userId = "123"
         val mainImageTag = "some tag"
 
-        val defaultItem = ProductDetailGallery.Item(
-            id = "",
-            url = imageUrl,
-            tag = mainImageTag,
-            type = ProductDetailGallery.Item.Type.Image
-        )
-        val items = emptyList<ProductDetailGallery.Item>()
-        val selectedId = null
-
         viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
 
         val data = viewModel.variantImagesData.value
 
-        Assert.assertEquals(defaultItem, data?.defaultItem)
-        Assert.assertEquals(items, data?.items)
-        Assert.assertEquals(selectedId, data?.selectedId)
-    }
-
-    @Test
-    fun `variant image clicked but no image gallery will not trigger post value`(){
-        val imageUrl = "url1234"
-        val productId = "2147818570"
-        val userId = "123"
-        val mainImageTag = "some tag"
-
-        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
-
-        val data = viewModel.variantImagesData.value
         Assert.assertEquals(null, data)
     }
     //endregion
