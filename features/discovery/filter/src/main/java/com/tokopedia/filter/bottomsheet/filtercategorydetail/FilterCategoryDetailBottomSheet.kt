@@ -73,7 +73,8 @@ internal class FilterCategoryDetailBottomSheet :
 
         setTitle(filter?.title ?: "")
 
-        binding = FilterCategoryDetailBottomSheetBinding.inflate(layoutInflater, null, false)
+        val view = View.inflate(requireContext(), R.layout.filter_category_detail_bottom_sheet, null)
+        binding = FilterCategoryDetailBottomSheetBinding.bind(view)
         filterCategoryDetailBottomSheetView = binding?.root
         setChild(filterCategoryDetailBottomSheetView)
 

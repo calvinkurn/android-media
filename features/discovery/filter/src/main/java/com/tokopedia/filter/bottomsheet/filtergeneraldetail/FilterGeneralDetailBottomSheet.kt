@@ -71,7 +71,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
         initButtonReset()
 
-        binding = FilterGeneralDetailBottomSheetBinding.inflate(layoutInflater, null, false)
+        val view = View.inflate(requireContext(), R.layout.filter_general_detail_bottom_sheet, null)
+        binding = FilterGeneralDetailBottomSheetBinding.bind(view)
         filterGeneralDetailBottomSheetView = binding?.root
         setChild(filterGeneralDetailBottomSheetView)
 

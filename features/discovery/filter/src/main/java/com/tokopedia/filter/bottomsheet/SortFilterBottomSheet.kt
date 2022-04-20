@@ -178,7 +178,8 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
         initBottomSheetAction()
 
-        binding = SortFilterBottomSheetBinding.inflate(layoutInflater, null, false)
+        val view = View.inflate(requireContext(), R.layout.sort_filter_bottom_sheet, null)
+        binding = SortFilterBottomSheetBinding.bind(view)
         sortFilterBottomSheetView = binding?.root
         setChild(sortFilterBottomSheetView)
 
