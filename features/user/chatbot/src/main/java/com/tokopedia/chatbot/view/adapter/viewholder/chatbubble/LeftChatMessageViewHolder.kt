@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-open class LeftChatMessageViewHolder(
+class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val chatbotAdapterListener: ChatbotAdapterListener,
@@ -25,7 +25,7 @@ open class LeftChatMessageViewHolder(
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
- //   private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
+    private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -48,15 +48,23 @@ open class LeftChatMessageViewHolder(
         if (chatbotAdapterListener.isPreviousItemSender(adapterPosition)) {
             senderInfoData?.let { bindSenderInfo(it) }
         }
+
+        if (message.parentReply!=null){
+            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+            replyBubbleArea?.show()
+        }else{
+            replyBubbleArea?.hide()
+        }
+
     }
 
-//    private fun bindReplyBubbleListener() {
-//        replyBubbleArea?.setReplyListener(replyBubbleListener)
-//    }
-//
-//    private fun bindReplyReference(msg: MessageUiModel) {
-//        replyBubbleArea?.bindReplyData(msg)
-//    }
+    private fun bindReplyBubbleListener() {
+        replyBubbleArea?.setReplyListener(replyBubbleListener)
+    }
+
+    private fun bindReplyReference(msg: MessageUiModel) {
+        replyBubbleArea?.bindReplyData(msg)
+    }
 
     private fun hideSenderInfo() {
         senderAvatar?.hide()
@@ -82,7 +90,7 @@ open class LeftChatMessageViewHolder(
 
     private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
-  //      replyBubbleArea?.updateBackground(true)
+        replyBubbleArea?.updateBackground(true)
     }
 
     private fun bindMessageInfo(message: MessageUiModel) {

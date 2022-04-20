@@ -11,7 +11,7 @@ import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
-open class RightChatMessageViewHolder(
+class RightChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         replyBubbleListener: ReplyBubbleAreaMessage.Listener
@@ -19,7 +19,7 @@ open class RightChatMessageViewHolder(
 
     private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
-    protected open val bg = ViewUtil.generateBackgroundWithShadow(
+     val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             R.dimen.dp_chatbot_20,
@@ -44,9 +44,7 @@ open class RightChatMessageViewHolder(
         }
     }
 
-
-
-    protected open fun bindBackground(message: MessageUiModel) {
+    private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
         replyBubbleArea?.updateBackground(false)
     }

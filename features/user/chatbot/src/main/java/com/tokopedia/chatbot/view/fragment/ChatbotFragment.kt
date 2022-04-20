@@ -1015,7 +1015,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
 //        getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
 //            .name, sendMessage, startTime,replyBubbleContainer?.referredMsg)
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId, replyBubbleContainer?.referredMsg,onSendingMessage(sendMessage, startTime,replyBubbleContainer?.referredMsg!!))
+        presenter.sendMessage(
+            messageId,
+            sendMessage,
+            startTime,
+            opponentId,
+            replyBubbleContainer?.referredMsg,
+            onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
+        )
         replyBubbleContainer?.referredMsg = null
         clearChatText()
     }
