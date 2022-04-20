@@ -20,16 +20,28 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
-import com.tokopedia.cart.view.uimodel.*
+import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
+import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
+import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
+import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
+import com.tokopedia.cart.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
@@ -280,6 +292,7 @@ object CartUiModelMapper {
                     }
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
+                    shopTypeInfo = unavailableGroup.shop.shopTypeInfo
                     isAllSelected = false
                     isPartialSelected = false
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
@@ -554,7 +567,8 @@ object CartUiModelMapper {
         return LastApplyAdditionalInfoUiModel(
                 messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
                 errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
-                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo)
+                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
+                usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
         )
     }
 
@@ -575,6 +589,18 @@ object CartUiModelMapper {
                 message = promoEmptyCartInfo.message,
                 detail = promoEmptyCartInfo.detail
         )
+    }
+
+    private fun mapUsageSummaries(promoUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
+        return promoUsageSummaries.map {
+            LastApplyUsageSummariesUiModel(
+                    description = it.desc,
+                    type = it.type,
+                    amountStr = it.amountStr,
+                    amount = it.amount,
+                    currencyDetailsStr = it.currencyDetailsStr
+            )
+        }
     }
 
     fun mapSummaryTransactionUiModel(cartData: CartData): SummaryTransactionUiModel {

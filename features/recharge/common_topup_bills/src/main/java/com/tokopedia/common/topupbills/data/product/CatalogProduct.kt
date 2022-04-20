@@ -52,6 +52,9 @@ open class CatalogProduct(
                 @SerializedName("operator_id")
                 @Expose
                 val operatorId: String = "0",
+                @SerializedName("status")
+                @Expose
+                val status: Int = 0
         )
 
         class Promo(

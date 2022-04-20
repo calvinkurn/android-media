@@ -1123,11 +1123,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                        Map<String, String> tradeInCustomDimension,
                                                        String transactionId,
+                                                       String userId,
+                                                       boolean promoFlag,
                                                        String eventCategory,
                                                        String eventAction,
                                                        String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
@@ -3305,7 +3307,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
                         newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
                         newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
-                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type(),
+                        ""
                 );
             } else if (newTokoNowData.isModified()) {
                 ChooseAddressUtils.INSTANCE.updateTokoNowData(
@@ -3410,7 +3413,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.valueOf(saveAddressDataModel.getShopId()),
                     String.valueOf(saveAddressDataModel.getWarehouseId()),
                     TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
-                    saveAddressDataModel.getServiceType()
+                    saveAddressDataModel.getServiceType(),
+                    ""
             );
         }
     }

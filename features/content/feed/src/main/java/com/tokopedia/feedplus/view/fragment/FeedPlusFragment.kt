@@ -1004,7 +1004,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
-            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -1012,6 +1011,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (userVisibleHint) {
             loadData(userVisibleHint)
         }
+    }
+    fun updateFeedVisibilityVariable(isFeedShown: Boolean){
+        this.isFeedPageShown = isFeedShown
     }
 
     override fun onPause() {

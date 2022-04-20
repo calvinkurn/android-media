@@ -80,6 +80,6 @@ class ReplyBubbleOnBoarding @Inject constructor(
     }
 
     companion object {
-        const val KEY_REPLY_BUBBLE_ONBOARDING = "KEY_REPLY_BUBBLE_ONBOARDING"
+        const val KEY_REPLY_BUBBLE_ONBOARDING = "KEY_REPLY_BUBBLE_ONBOARDING_NEW"
     }
 }

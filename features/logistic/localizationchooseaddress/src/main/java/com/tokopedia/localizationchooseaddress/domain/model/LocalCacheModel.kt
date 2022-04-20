@@ -55,7 +55,11 @@ data class LocalCacheModel (
 
         @Expose
         @SerializedName("version")
-        val version: String = DEFAULT_LCA_VERSION
+        val version: String = DEFAULT_LCA_VERSION,
+
+        @Expose
+        @SerializedName("tokonow_last_update")
+        val tokonow_last_update: String = ""
 ) {
         companion object {
                 const val OOC_WAREHOUSE_ID = "0"
