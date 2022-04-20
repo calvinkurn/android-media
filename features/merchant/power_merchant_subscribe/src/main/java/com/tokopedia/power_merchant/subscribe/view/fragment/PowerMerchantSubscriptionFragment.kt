@@ -213,6 +213,10 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
+    override fun showServiceFeeByCategory() {
+
+    }
+
     protected fun showErrorToaster(message: String, actionText: String) {
         view?.run {
             Toaster.toasterCustomBottomHeight =

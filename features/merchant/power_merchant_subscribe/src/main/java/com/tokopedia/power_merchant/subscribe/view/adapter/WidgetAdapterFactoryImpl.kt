@@ -47,11 +47,15 @@ class WidgetAdapterFactoryImpl(
     override fun type(model: WidgetPmProNewSellerBenefitUiModel): Int =
         ItemPMProNewSellerBenefitWidget.LAYOUT
 
-    override
-    fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun type(model: WidgetBannerPMRegistration): Int {
+        return BannerPMRegistrationViewHolder.LAYOUT
+    }
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RegistrationHeaderWidget.RES_LAYOUT -> RegistrationHeaderWidget(
                 parent,
+                widgetListener,
                 powerMerchantTracking
             )
             CancelDeactivationSubmissionWidget.RES_LAYOUT -> CancelDeactivationSubmissionWidget(
@@ -75,7 +79,7 @@ class WidgetAdapterFactoryImpl(
                 widgetListener,
                 powerMerchantTracking
             )
-            PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)
+            PotentialWidget.RES_LAYOUT -> PotentialWidget(parent, widgetListener)
             SingleCtaWidget.RES_LAYOUT -> SingleCtaWidget(parent)
             DividerWidget.RES_LAYOUT -> DividerWidget(parent)
             TickerWidget.RES_LAYOUT -> TickerWidget(parent, widgetListener)
@@ -83,6 +87,7 @@ class WidgetAdapterFactoryImpl(
             ItemPMProNewSellerBenefitWidget.LAYOUT -> ItemPMProNewSellerBenefitWidget(
                 parent, widgetListener
             )
+            BannerPMRegistrationViewHolder.LAYOUT -> BannerPMRegistrationViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

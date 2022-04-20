@@ -9,7 +9,6 @@ object Constant {
     const val DATE_FORMAT_HH_MM = "HH:mm"
     const val DATE_FORMAT_EXPIRED = "yyyy-MM-dd HH:mm:ss"
 
-    const val OLD_POWER_MERCHANT_CHARGING = "1%"
     const val REGULAR_MERCHANT_CHARGING = "0,5%"
     const val POWER_MERCHANT_CHARGING = "1,25%"
     const val POWER_MERCHANT_PRO_CHARGING = "1,5%"

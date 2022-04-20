@@ -2,7 +2,6 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -54,6 +53,10 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         observePmRegistrationPage()
     }
 
+    override fun onMoreDetailPMEligibilityClicked() {
+
+    }
+
     fun setOnFooterCtaClickedListener(
         term: RegistrationTermUiModel?,
         isEligiblePm: Boolean,
@@ -79,12 +82,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             val isRegularMerchant = pmBasicInfo?.pmStatus?.isRegularMerchant() == true
             val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo, isRegularMerchant)
 
-            val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-            if (isPmPro) {
-                renderPmProRegistrationWidgets(registrationHeaderWidget)
-            } else {
-                renderRegularPmRegistrationWidget(registrationHeaderWidget)
-            }
+            renderPmRegistrationWidget(registrationHeaderWidget)
 
             recyclerView?.post {
                 recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
@@ -97,27 +95,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         currentPmRegistrationTireType = arguments?.getInt(KEY_PM_TIER_TYPE, defaultTire)
             ?: defaultTire
     }
-
-    private fun renderPmProRegistrationWidgets(headerWidget: WidgetRegistrationHeaderUiModel) {
-        val widgets = if (headerWidget.shopInfo.isNewSeller) {
-            listOf(
-                getPMProNewSellerHeaderWidget(),
-                WidgetDividerUiModel,
-                getPMProNewSellerBenefitWidget()
-            )
-        } else {
-            listOf(
-                headerWidget,
-                WidgetDividerUiModel,
-                getPmGradeBenefitWidget(Constant.Url.POWER_MERCHANT_PRO_EDU)
-            )
-        }
-
-        recyclerView?.visible()
-        adapter.clearAllElements()
-        renderList(widgets, false)
-    }
-
 
     private fun getPMProNewSellerHeaderWidget(): WidgetPMProNewSellerHeaderUiModel {
         return WidgetPMProNewSellerHeaderUiModel(
@@ -147,12 +124,12 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         )
     }
 
-    private fun renderRegularPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
+    private fun renderPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
         val widgets = listOf(
+            WidgetBannerPMRegistration,
             headerWidget,
             WidgetDividerUiModel,
             WidgetPotentialUiModel(headerWidget.shopInfo.isNewSeller),
-            WidgetDividerUiModel,
             getPmGradeBenefitWidget(Constant.Url.POWER_MERCHANT_EDU)
         )
         recyclerView?.visible()
@@ -161,7 +138,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun observePmRegistrationPage() {
-        mViewModel.pmGradeBenefitInfo.observe(viewLifecycleOwner, Observer {
+        mViewModel.pmGradeBenefitInfo.observe(viewLifecycleOwner, {
             hideSwipeRefreshLoading()
             when (it) {
                 is Success -> {
@@ -182,12 +159,12 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         })
     }
 
-    private fun getPmGradeBenefitWidget(ctaApplink: String): WidgetGradeBenefitUiModel {
+    private fun getPmGradeBenefitWidget(ctaAppLink: String): WidgetGradeBenefitUiModel {
         val gradeBenefitList = pmGradeBenefitList.orEmpty()
         return WidgetGradeBenefitUiModel(
             selectedPmTireType = currentPmRegistrationTireType,
-            benefitPages = gradeBenefitList.filter { it.pmTier == currentPmRegistrationTireType },
-            ctaApplink = ctaApplink
+            benefitPages = gradeBenefitList,
+            ctaApplink = ctaAppLink
         )
     }
 

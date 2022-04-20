@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,8 +21,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class RegistrationHeaderWidget(
-        itemView: View,
-        private val powerMerchantTracking: PowerMerchantTracking
+    itemView: View,
+    private val listener: Listener,
+    private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetRegistrationHeaderUiModel>(itemView) {
 
     companion object {
@@ -43,32 +45,42 @@ class RegistrationHeaderWidget(
         tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
             setOnExpandChanged(isExpanded, element)
         }
-        tvPmHeaderTerms.setTermStatus(getPmEligibilityStatus(element))
+        val isEligiblePM = getPmEligibilityStatus(element)
+        horLinePmHeader.isVisible = isEligiblePM
+        tvPmHeaderEligibleFor.isVisible = isEligiblePM
+        tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
+        tvPmHeaderEligiblePMDetail.setOnClickListener {
+            listener.onMoreDetailPMEligibilityClicked()
+        }
     }
 
     private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
         return element.registrationTerms.all { it.isChecked }
     }
 
-    private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = binding?.run {
-        rvPmRegistrationTerm.isVisible = isExpanded
-        tvPmHeaderTerms.setExpanded(isExpanded)
-        if (isExpanded) {
-            setTickerVisibility(element.shopInfo)
-        } else {
-            tickerPmHeader.gone()
+    private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) =
+        binding?.run {
+            rvPmRegistrationTerm.isVisible = isExpanded
+            tvPmHeaderTerms.setExpanded(isExpanded)
+            if (isExpanded) {
+                setTickerVisibility(element.shopInfo)
+            } else {
+                tickerPmHeader.gone()
+            }
         }
-    }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showTermList(terms: List<RegistrationTermUiModel>) {
         termAdapter.setItems(terms)
         termAdapter.notifyDataSetChanged()
     }
 
     private fun setTickerVisibility(shopInfo: PMShopInfoUiModel) {
-        val isEligibleShopScore = !shopInfo.isNewSeller && (shopInfo.isEligibleShopScore() || shopInfo.isEligibleShopScorePmPro())
+        val isEligibleShopScore =
+            !shopInfo.isNewSeller && (shopInfo.isEligibleShopScore() || shopInfo.isEligibleShopScorePmPro())
         val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
-        val isTickerVisible = shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
+        val isTickerVisible =
+            shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
         binding?.tickerPmHeader?.isVisible = isTickerVisible
     }
 
@@ -91,5 +103,9 @@ class RegistrationHeaderWidget(
             is RegistrationTermUiModel.ShopScore -> powerMerchantTracking.sendEventClickLearnMoreShopPerformance()
             is RegistrationTermUiModel.Kyc -> powerMerchantTracking.sendEventClickKycDataVerification()
         }
+    }
+
+    interface Listener {
+        fun onMoreDetailPMEligibilityClicked() {}
     }
 }
