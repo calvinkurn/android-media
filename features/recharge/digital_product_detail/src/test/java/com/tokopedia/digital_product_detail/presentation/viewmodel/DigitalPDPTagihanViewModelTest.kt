@@ -77,6 +77,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
         verifyGetFavoriteNumberPrefillEmpty()
     }
 
