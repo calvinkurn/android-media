@@ -38,36 +38,36 @@ object TokoNowServiceTypeUtil {
         ),
         REPURCHASE_EMPTY_RESOURCE_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_repurchase_no_result_description_two_hours,
-            resourceId15m = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes
+            resourceId20m = R.string.tokopedianow_repurchase_no_result_description_fifteen_minutes
         ),
         SEARCH_CATEGORY_SUBTITLE_RESOURCE_ID to TokoNowStringResource(
             formattedResourceId = R.string.tokopedianow_search_category_subtitle
         ),
         CATEGORY_AISLE_HEADER_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_2h_category_aisle_header,
-            resourceId15m = R.string.tokopedianow_15m_category_aisle_header
+            resourceId20m = R.string.tokopedianow_20m_category_aisle_header
         ),
         OUT_OF_COVERAGE_TITLE_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_common_empty_state_title,
-            resourceId15m = R.string.tokopedianow_15m_empty_state_title
+            resourceId20m = R.string.tokopedianow_20m_empty_state_title
         ),
         OUT_OF_COVERAGE_DESCRIPTION_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_common_empty_state_desc,
-            resourceId15m = R.string.tokopedianow_15m_empty_state_desc
+            resourceId20m = R.string.tokopedianow_20m_empty_state_desc
         ),
         OUT_OF_COVERAGE_PRIMARY_BUTTON_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_common_empty_state_button_change_address,
-            resourceId15m = R.string.tokopedianow_15m_empty_state_primary_btn
+            resourceId20m = R.string.tokopedianow_20m_empty_state_primary_btn
         ),
         OUT_OF_COVERAGE_SECONDARY_BUTTON_ID to TokoNowStringResource(
             resourceId2h = R.string.tokopedianow_common_empty_state_button_return,
-            resourceId15m = R.string.tokopedianow_common_empty_state_button_change_address
+            resourceId20m = R.string.tokopedianow_common_empty_state_button_change_address
         )
     )
 
     fun getServiceTypeRes(key: String, serviceType: String): Int? {
         return if (serviceType == NOW_15M) {
-            resourceIdsMap[key]?.resourceId15m
+            resourceIdsMap[key]?.resourceId20m
         } else {
             resourceIdsMap[key]?.resourceId2h
         }
@@ -85,7 +85,7 @@ object TokoNowServiceTypeUtil {
     * If need more params, need to adjust the function or make another function.
     */
     fun getServiceTypeFormattedCopy(context: Context, key: String, serviceType: String, @ColorRes colorRes: Int? = null): String {
-        val deliveryDurationCopy = if(serviceType == NOW_15M) context.getString(R.string.tokopedianow_15m_copy) else context.getString(R.string.tokopedianow_2h_copy)
+        val deliveryDurationCopy = if(serviceType == NOW_15M) context.getString(R.string.tokopedianow_20m_copy) else context.getString(R.string.tokopedianow_2h_copy)
         return if (colorRes == null) {
             context.getString(
                 resourceIdsMap[key]?.formattedResourceId.orZero(),
@@ -101,7 +101,7 @@ object TokoNowServiceTypeUtil {
     }
 
     data class TokoNowStringResource(
-        @StringRes val resourceId15m: Int? = null,
+        @StringRes val resourceId20m: Int? = null,
         @StringRes val resourceId2h: Int? = null,
         @StringRes val formattedResourceId: Int? = null
     )

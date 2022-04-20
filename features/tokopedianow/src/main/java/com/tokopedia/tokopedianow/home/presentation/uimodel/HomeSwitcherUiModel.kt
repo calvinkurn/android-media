@@ -18,9 +18,9 @@ sealed class HomeSwitcherUiModel(
     }
 
     class Home15mSwitcher: HomeSwitcherUiModel(
-        R.string.tokopedianow_15m_switcher_title,
-        R.string.tokopedianow_15m_switcher_subtitle,
-        R.drawable.tokopedianow_ic_15m
+        R.string.tokopedianow_20m_switcher_title,
+        R.string.tokopedianow_20m_switcher_subtitle,
+        R.drawable.tokopedianow_ic_20m
     ) {
         override fun equals(other: Any?): Boolean {
             return (other as? Home15mSwitcher)?.visitableId == visitableId
