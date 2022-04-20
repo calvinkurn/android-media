@@ -355,6 +355,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
 
     private fun setSelectedTenure() {
+        var maxEnabledTenure = -1
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
             if (checkoutData.tenureDetail.isNotEmpty()) {
                 checkoutData.tenureDetail.map {
@@ -366,6 +367,17 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                         break
                     }
                 }
+                if (checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
+                    for (i in 0 until checkoutData.tenureDetail.size) {
+                        if (!checkoutData.tenureDetail[i].tenureDisable) {
+                            if (maxEnabledTenure < checkoutData.tenureDetail[i].tenure) {
+                                maxEnabledTenure = checkoutData.tenureDetail[i].tenure
+                                selectedTenurePosition = i
+                            }
+                        }
+                    }
+                }
+
                 if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty()) {
                     checkoutData.tenureDetail[0].isSelectedTenure = true
                     selectedTenurePosition = 0
@@ -563,8 +575,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     payLaterActivationViewModel.selectedProductId,
                     checkoutData.userState ?: "",
                     checkoutData.gateway_name.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition]?.monthly_installment.orEmpty(),
-                    checkoutData.tenureDetail[selectedTenurePosition]?.tenure.toString(),
+                    checkoutData.tenureDetail[selectedTenurePosition].monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition].tenure.toString(),
                     quantity.toString(),
                     checkoutData.userAmount ?: "",
                     variantName
@@ -585,13 +597,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun openPriceBreakDownBottomSheet() {
         installmentModel?.let {
-          var bundle =   setBundleForInstalmentBottomSheet( InstallmentBottomSheetDetail(
-                installmentDetail =  it,
-                gatwayToChipMap =  payLaterActivationViewModel.gatewayToChipMap,
-                selectedProductPrice = payLaterActivationViewModel.price.toString(),
-                gatewayIdSelected =  payLaterActivationViewModel.selectedGatewayId.toInt(),
-                selectedTenure = selectedTenurePosition
-            ))
+            var bundle = setBundleForInstalmentBottomSheet(
+                InstallmentBottomSheetDetail(
+                    installmentDetail = it,
+                    gatwayToChipMap = payLaterActivationViewModel.gatewayToChipMap,
+                    selectedProductPrice = payLaterActivationViewModel.price.toString(),
+                    gatewayIdSelected = payLaterActivationViewModel.selectedGatewayId.toInt(),
+                    selectedTenure = selectedTenurePosition
+                )
+            )
             bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
         }
     }
@@ -728,7 +742,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         context?.let {
             val imm: InputMethodManager =
                 it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(quantityEditor.editText.getWindowToken(), 0)
+            imm.hideSoftInputFromWindow(quantityEditor.editText.windowToken, 0)
         }
     }
 
@@ -788,15 +802,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
     }
 
-    private fun sendTenureSelectedAnalytics(newPositionToSelect:Int) {
-        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let{ checkoutData ->
+    private fun sendTenureSelectedAnalytics(newPositionToSelect: Int) {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
             sendAnalyticEvent(
                 PdpSimulationEvent.ClickTenureEvent(
                     payLaterActivationViewModel.selectedProductId,
-                    checkoutData.userState?:"",
+                    checkoutData.userState ?: "",
                     payLaterActivationViewModel.price.toString(),
                     checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
-                    checkoutData.gateway_name?:""
+                    checkoutData.gateway_name ?: ""
                 )
             )
         }
