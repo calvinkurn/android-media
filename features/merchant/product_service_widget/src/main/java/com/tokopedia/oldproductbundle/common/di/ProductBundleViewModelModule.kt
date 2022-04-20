@@ -1,23 +1,23 @@
-package com.tokopedia.gifting.di
+package com.tokopedia.oldproductbundle.common.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.gifting.presentation.viewmodel.GiftingViewModel
+import com.tokopedia.oldproductbundle.viewmodel.ProductBundleViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class GiftingViewModelModule {
+abstract class ProductBundleViewModelModule {
 
-    @GiftingScope
+    @ProductBundleScope
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(GiftingViewModel::class)
-    abstract fun provideGiftingViewModel(viewModel: GiftingViewModel): ViewModel
+    @ViewModelKey(ProductBundleViewModel::class)
+    abstract fun provideProductViewModel(productBundleViewModel: ProductBundleViewModel): ViewModel
 }
