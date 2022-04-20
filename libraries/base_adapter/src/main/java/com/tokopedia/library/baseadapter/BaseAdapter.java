@@ -313,7 +313,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * @param currentPageIndex
      */
     @CallSuper
-    public void loadData(int currentPageIndex, String ... args) {
+    public void loadData(int currentPageIndex, @Nullable String ... args) {
         setLoading(true);
     }
 
