@@ -120,20 +120,20 @@ class ShopDiscountSetupProductItemViewHolder(
                 when {
                     shouldUseNonVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
                         String.format(
-                            getString(R.string.shop_discount_manage_discount_total_stock_non_variant_multi_loc_format),
+                            getString(R.string.sd_total_stock_multiple_location),
                             totalStock,
                             totalLocation
                         )
                     }
                     shouldUseVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
                         String.format(
-                            getString(R.string.shop_discount_manage_discount_total_stock_variant_multi_loc_format),
+                            getString(R.string.sd_total_stock_various_multiple_location),
                             totalStock
                         )
                     }
                     else -> {
                         String.format(
-                            getString(R.string.shop_discount_manage_discount_total_stock_default_format),
+                            getString(R.string.sd_total_stock),
                             totalStock
                         )
                     }

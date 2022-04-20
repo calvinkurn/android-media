@@ -25,7 +25,7 @@
     <string name="sd_tab_name">%s (%s)</string>
     <string name="sd_placeholder">%s - %s</string>
     <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
-
+    <string name="sd_total_stock_various_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
     <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
     <string name="sd_total_stock_plain">Total stok: %s</string>
     <string name="sd_search">Cari produk</string>
@@ -108,9 +108,6 @@
     <string name="shop_discount_manage_discount_original_price_format">%1s-%2s</string>
     <string name="shop_discount_manage_discount_total_variant_format">%1s Varian Produk</string>
     <string name="shop_discount_manage_discount_total_discounted_variant_format">%1s Varian Diskon</string>
-    <string name="shop_discount_manage_discount_total_stock_default_format">Total stok: <![CDATA[<b>%1s</b>]]></string>
-    <string name="shop_discount_manage_discount_total_stock_non_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
-    <string name="shop_discount_manage_discount_total_stock_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
     <string name="shop_discount_manage_discount_bulk_manage_label_format">Atur Sekaligus %1s Produk</string>
     <string name="shop_discount_manage_discount_delete_product_message">Produk Berhasil Dihapus</string>
     <string name="shop_discount_manage_discount_submit_product_message">Diskon produk berhasil diaktifkan</string>
@@ -139,9 +136,6 @@
     <string name="shop_discount_manage_product_max_order_title">Maks. pembelian</string>
     <string name="shop_discount_manage_product_max_order_info">(Opsional)</string>
     <string name="shop_discount_manage_product_discount_original_price_format">%1s - %2s</string>
-    <string name="shop_discount_manage_product_discount_total_stock_default_format">Total stok: <![CDATA[<b>%1s</b>]]></string>
-    <string name="shop_discount_manage_product_discount_total_stock_non_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
-    <string name="shop_discount_manage_product_discount_total_stock_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
     <string name="shop_discount_manage_product_discount_multi_loc_ticker_desc"><![CDATA[Harga diskon akan otomatis terpasang untuk lokasi yang aktif. <a href="">Selengkapnya</a>]]></string>
 
     <!--Shop discount manage product multi loc-->
