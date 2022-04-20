@@ -209,7 +209,7 @@ open class RecommendationPageViewModel @Inject constructor(
                         pageName = ""
                 )
                 adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                val dataList = recommendationListLiveData.value as MutableList
+                val dataList = recommendationListLiveData.value?.toMutableList()
                 val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in PARAM_SUCCESS_200..PARAM_SUCCESS_300) {
@@ -247,10 +247,6 @@ open class RecommendationPageViewModel @Inject constructor(
             )
             it.printStackTrace()
         }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
     }
 
     /**

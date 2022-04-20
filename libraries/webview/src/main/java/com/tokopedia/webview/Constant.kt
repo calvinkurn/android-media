@@ -19,6 +19,7 @@ const val SEAMLESS = "seamless"
 
 internal const val PARAM_EXTERNAL_TRUE = "tokopedia_external=true"
 internal const val PARAM_EXTERNAL_FALSE = "tokopedia_external=false"
+const val GOOGLE_DOCS_PDF_URL = "https://docs.google.com/viewer?url="
 
 internal const val ZOOM_US_STRING: String = "zoom.us"
 

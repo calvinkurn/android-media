@@ -8,14 +8,14 @@
     android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:layout_marginBottom="4dp">
+    android:layout_marginBottom="10dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bundle_widget_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         tools:text="Bundling Hemat"
         android:layout_marginStart="4dp"
         />
@@ -24,6 +24,6 @@
         android:id="@+id/rv_product_bundle_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

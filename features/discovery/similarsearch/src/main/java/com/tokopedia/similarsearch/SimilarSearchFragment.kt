@@ -32,6 +32,8 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.similarsearch.databinding.SimilarSearchFragmentLayoutBinding
+import com.tokopedia.similarsearch.databinding.SimilarSearchToolbarLayoutBinding
 import com.tokopedia.similarsearch.emptyresult.EmptyResultListener
 import com.tokopedia.similarsearch.getsimilarproducts.model.Product
 import com.tokopedia.similarsearch.originalproduct.OriginalProductViewListener
@@ -42,8 +44,7 @@ import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
-import kotlinx.android.synthetic.main.similar_search_toolbar_layout.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
@@ -54,6 +55,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
         const val REQUEST_CODE_GO_TO_PRODUCT_DETAIL = 123
     }
+
+    private var binding: SimilarSearchFragmentLayoutBinding? by viewBinding()
+    private val toolbarBinding: SimilarSearchToolbarLayoutBinding?
+        get() = binding?.toolbarContent
 
     private var similarSearchViewModel: SimilarSearchViewModel? = null
     private var similarSearchAdapter: SimilarSearchAdapter? = null
@@ -84,7 +89,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         activity?.run {
             if (this !is AppCompatActivity) return
 
-            setSupportActionBar(toolbar)
+            setSupportActionBar(binding?.toolbar)
             configureSupportActionBar(supportActionBar)
             configureToolbarOnClick()
         }
@@ -97,7 +102,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun configureToolbarOnClick() {
-        imageViewBack?.setOnClickListener {
+        toolbarBinding?.imageViewBack?.setOnClickListener {
             activity?.onBackPressed()
         }
     }
@@ -122,12 +127,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun initRecyclerViewAdapter() {
         similarSearchAdapter = SimilarSearchAdapter(this, this)
-        recyclerViewSimilarSearch?.adapter = similarSearchAdapter
+        binding?.recyclerViewSimilarSearch?.adapter = similarSearchAdapter
     }
 
     private fun initRecyclerViewLayoutManager() {
         recyclerViewLayoutManager = createRecyclerViewSimilarSearchLayoutManager()
-        recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
+        binding?.recyclerViewSimilarSearch?.layoutManager = recyclerViewLayoutManager
     }
 
     private fun createRecyclerViewSimilarSearchLayoutManager(): RecyclerView.LayoutManager {
@@ -139,7 +144,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun initRecyclerViewEndlessScrollListener() {
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewScrollListener()
         endlessRecyclerViewScrollListener?.let {
-            recyclerViewSimilarSearch?.addOnScrollListener(it)
+            binding?.recyclerViewSimilarSearch?.addOnScrollListener(it)
         }
     }
 
@@ -153,13 +158,15 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun initRecyclerViewItemDecoration() {
         activity?.let { activity ->
-            recyclerViewSimilarSearch?.addItemDecoration(createSimilarSearchItemDecoration(activity))
+            binding?.recyclerViewSimilarSearch?.addItemDecoration(
+                createSimilarSearchItemDecoration(activity)
+            )
         }
     }
 
     private fun initRecyclerViewAnimateOriginalProductViewListener() {
         val recyclerViewOnScrollListener = createRecyclerViewOnScrollListener()
-        recyclerViewSimilarSearch?.addOnScrollListener(recyclerViewOnScrollListener)
+        binding?.recyclerViewSimilarSearch?.addOnScrollListener(recyclerViewOnScrollListener)
     }
 
     private fun createRecyclerViewOnScrollListener(): RecyclerView.OnScrollListener {
@@ -168,7 +175,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
                 recyclerViewVerticalScrollDistance += dy
 
                 applyToolbarElevation()
-                originalProductView?.animateBasedOnScroll(dy)
+                toolbarBinding?.originalProductView?.animateBasedOnScroll(dy)
             }
         }
     }
@@ -176,10 +183,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun applyToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (recyclerViewVerticalScrollDistance >= 10) {
-                toolbar.applyElevation()
+                binding?.toolbar?.applyElevation()
             }
             else {
-                toolbar.removeElevation()
+                binding?.toolbar?.removeElevation()
             }
         }
     }
@@ -194,7 +201,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun Toolbar.removeElevation() {
         if (this.elevation > 0f) {
-            toolbar.elevation = 0f
+            binding?.toolbar?.elevation = 0f
         }
     }
 
@@ -229,10 +236,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun initOriginalProductView(originalProduct: Product) {
-        originalProductView?.visible()
+        toolbarBinding?.originalProductView?.visible()
 
         val originalProductViewListener = createOriginalProductViewListener(originalProduct)
-        originalProductView?.bindOriginalProductView(originalProduct, originalProductViewListener)
+        toolbarBinding?.originalProductView?.bindOriginalProductView(originalProduct, originalProductViewListener)
     }
 
     private fun createOriginalProductViewListener(originalProduct: Product): OriginalProductViewListener {
@@ -286,7 +293,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     }
 
     private fun updateProgressBarVisiblity(visibility: Int) {
-        progressBarSimilarSearch?.visibility = visibility
+        binding?.progressBarSimilarSearch?.visibility = visibility
     }
 
     private fun updateAdapterList(similarSearchLiveData: State<List<Any>>) {
@@ -306,7 +313,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
 
     private fun observeUpdateWishlistOriginalProductEventLiveData() {
         similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            originalProductView?.updateWishlistStatus(it)
+            toolbarBinding?.originalProductView?.updateWishlistStatus(it)
         })
     }
 
