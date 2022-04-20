@@ -59,33 +59,26 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when getting favoriteNumber should run and give success result`() {
         val response = dataFactory.getFavoriteNumberData(true)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
-        val favoriteNumberTypes = listOf(
-            FavoriteNumberType.CHIP,
-            FavoriteNumberType.LIST,
-            FavoriteNumberType.PREFILL
-        )
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf(), favoriteNumberTypes)
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
         verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
-        verifyGetFavoriteNumberPrefillEmpty()
     }
 
     @Test
     fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
-        val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf(), favoriteNumberTypes)
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
-        verifyGetFavoriteNumberPrefillNull()
+        verifyGetFavoriteNumberPrefillEmpty()
     }
 
     @Test

@@ -142,19 +142,9 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds, operatorIds)
-            for (type in favoriteNumberTypes) {
-                when (type) {
-                    FavoriteNumberType.PREFILL -> {
-                        _prefillData.value = RechargeNetworkResult.Success(data.prefill)
-                    }
-                    FavoriteNumberType.CHIP -> {
-                        _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
-                    }
-                    FavoriteNumberType.LIST -> {
-                        _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
-                    }
-                }
-            }
+            _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
+            _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
+            _prefillData.value = RechargeNetworkResult.Success(data.prefill)
         }) {
             // this section is not reachable due to no fail scenario
         }

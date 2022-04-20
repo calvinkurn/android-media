@@ -567,6 +567,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
+        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -574,7 +575,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
                     setInputNumber(prefill.clientNumber, true)
-                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }
