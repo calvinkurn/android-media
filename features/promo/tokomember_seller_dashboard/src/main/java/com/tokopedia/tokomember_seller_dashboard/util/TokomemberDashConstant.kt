@@ -4,6 +4,8 @@ const val TM_URL_INTRO_BG = ""
 const val BUNDLE_OPEN_BS = "bundleOpenBS"
 const val BUNDLE_SHOP_ID = "bundleShopId"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
+const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
+const val BUNDLE_EDIT_PROGRAM_ITEM = "bundleEditProgramItem"
 
 const val DRAFT = 1
 const val WAITING = 2

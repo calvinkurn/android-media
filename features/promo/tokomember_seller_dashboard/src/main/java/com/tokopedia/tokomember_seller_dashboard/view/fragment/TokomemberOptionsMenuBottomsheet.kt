@@ -58,33 +58,34 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
         //TODO get all triple dots type from product team
         tripleDotsList?.forEach {
-            if(it?.type.equals(EXTEND)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLOCK) }
-            }
-            if(it?.type.equals(CANCEL)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
-            }
-            if(it?.type.equals(EDIT)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.EDIT) }
-            }
-            if(it?.type.equals(DELETE)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.DELETE) }
-            }
-            if(it?.type.equals(STOP)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
-            }
-            if(it?.type.equals(SHARE)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE) }
-            }
-            if(it?.type.equals(DUPLICATE)){
-                it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY) }
+            when {
+                it?.type.equals(EXTEND) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLOCK) }
+                }
+                it?.type.equals(CANCEL) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
+                }
+                it?.type.equals(EDIT) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.EDIT) }
+                }
+                it?.type.equals(DELETE) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.DELETE) }
+                }
+                it?.type.equals(STOP) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
+                }
+                it?.type.equals(SHARE) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE) }
+                }
+                it?.type.equals(DUPLICATE) -> {
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY) }
+                }
             }
         }
 
     }
 
     private fun addOptionItem(text: String, icon: Int) {
-
         val childLayout = LayoutInflater.from(requireContext()).inflate(R.layout.tm_dash_options_menu_item, container_options_menu ,false)
         childLayout.findViewById<ImageUnify>(R.id.icon_options_menu).setImageDrawable(getIconUnifyDrawable(childLayout.context, icon))
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text

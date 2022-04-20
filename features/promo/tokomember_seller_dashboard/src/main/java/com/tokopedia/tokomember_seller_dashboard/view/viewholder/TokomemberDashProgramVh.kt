@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
@@ -14,11 +15,14 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -75,6 +79,13 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
             TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager)
         }
 
+        btn_edit.setOnClickListener {
+            val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
+            intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
+            intent.putExtra(BUNDLE_EDIT_PROGRAM_ITEM, Gson().toJson(item))
+            itemView.context.startActivity(intent)
+        }
+
         when(item.status){
             DRAFT ->{
                 btn_edit.hide()
@@ -86,7 +97,8 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
             }
             ACTIVE ->{
-                btn_edit.hide()
+
+//                btn_edit.hide()
             }
             ACTIVE_OLDER ->{
                 btn_edit.hide()
