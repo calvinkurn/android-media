@@ -50,7 +50,6 @@
             android:paddingStart="@dimen/cm_dp_4"
             android:paddingEnd="@dimen/cm_dp_4"
             android:adjustViewBounds="true"
-            android:tint="#000"
             android:src="@drawable/cm_ic_star_review_white"
             tools:ignore="ContentDescription" />
 
@@ -61,7 +60,6 @@
             android:paddingStart="@dimen/cm_dp_4"
             android:paddingEnd="@dimen/cm_dp_4"
             android:adjustViewBounds="true"
-            android:tint="#000"
             android:src="@drawable/cm_ic_star_review_white"
             tools:ignore="ContentDescription" />
 
@@ -73,7 +71,6 @@
             android:paddingStart="@dimen/cm_dp_4"
             android:paddingEnd="@dimen/cm_dp_4"
             android:adjustViewBounds="true"
-            android:tint="#000"
             android:src="@drawable/cm_ic_star_review_white"
             tools:ignore="ContentDescription" />
 
@@ -84,7 +81,6 @@
             android:paddingStart="@dimen/cm_dp_4"
             android:paddingEnd="@dimen/cm_dp_4"
             android:adjustViewBounds="true"
-            android:tint="#000"
             android:src="@drawable/cm_ic_star_review_white"
             tools:ignore="ContentDescription" />
 
@@ -95,7 +91,6 @@
             android:paddingStart="@dimen/cm_dp_4"
             android:paddingEnd="@dimen/cm_dp_4"
             android:adjustViewBounds="true"
-            android:tint="#000"
             android:src="@drawable/cm_ic_star_review_white"
             tools:ignore="ContentDescription" />
     </LinearLayout>
