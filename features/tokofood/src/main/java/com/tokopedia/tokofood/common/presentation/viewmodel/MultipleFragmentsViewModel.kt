@@ -45,7 +45,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     val isDebug = true
 
     private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
-    private val cartDataFlow = cartDataState.asStateFlow()
+    val cartDataFlow = cartDataState.asStateFlow()
 
     private val cartDataValidationState = MutableSharedFlow<UiEvent>()
     val cartDataValidationFlow: SharedFlow<UiEvent>
