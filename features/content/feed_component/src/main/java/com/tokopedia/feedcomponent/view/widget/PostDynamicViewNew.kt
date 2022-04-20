@@ -70,9 +70,7 @@ import kotlin.math.round
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
 private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
-private const val TYPE_FEED_X_CARD_LONG_VIDEO: String = "content-long-video"
 private const val TYPE_LONG_VIDEO: String = "long-video"
-private const val TYPE_FEED_X_CARD_VOD_VIDEO: String = "play-channel-vod"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
@@ -85,9 +83,9 @@ private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
 private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
+private const val TIME_TWO_SEC = 2000L
 private const val TIME_FIVE_SEC = 5000L
-private const val TIMER_TO_BE_SHOWN = 3000L
-private const val PRODUCT_DOT_TIMER = 4000L
+
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
@@ -102,7 +100,6 @@ private const val SQUARE_RATIO = "1:1"
 private const val LONG_VIDEO_RATIO = "1.91:1"
 private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
-private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
 private var isPaused = false
@@ -117,7 +114,6 @@ private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
  *Lihat Produk Value is static so we have fixed it width to Keep our animation intact
  *Do not manipulate this value unless Lihat Produk text change
  **/
-private const val LIHAT_PRODUK_EXPANDED_WIDTH_INDP = 100
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
 private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
 const val PORTRAIT = 1
@@ -158,14 +154,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
     private var topAdsListener:TopAdsHeadlineListener? = null
     private var positionInFeed: Int = 0
-    var isMute = true
     var isVODViewFrozen = true
     private var videoPlayer: FeedExoPlayer? = null
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
+    private var changeBgColorAnim: Handler? = null
     private var feedAddViewJob: Job? = null
 
-    private var isLihatProductVisible = false
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
@@ -235,6 +230,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
+                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
             val desc = context.getString(R.string.feed_share_default_text)
             val url = if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                 feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -290,14 +286,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (feedXCard.typename == TYPE_FEED_X_CARD_VOD || isLongVideo ) {
             bindViews(feedXCard)
         } else {
-            bindLike(
-                    feedXCard.like,
-                    feedXCard.id.toIntOrZero(),
-                    feedXCard.typename,
-                    feedXCard.followers.isFollowed,
-                    feedXCard.author.id,
-                    feedXCard.media.firstOrNull()?.type?:""
-            )
+            bindLikeData(feedXCard)
         }
     }
 
@@ -354,9 +343,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
         if (shopBadge.visibility == GONE) {
-            val layoutParams = (followCount?.layoutParams as? MarginLayoutParams)
+            val layoutParams = (followCount.layoutParams as? MarginLayoutParams)
             layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
-            followCount?.layoutParams = layoutParams
+            followCount.layoutParams = layoutParams
         }
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
@@ -533,6 +522,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
+            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
             listener?.onLikeClick(
                     positionInFeed,
                     feedXCard.id.toIntOrZero(),
@@ -548,14 +538,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     }
 
-    private fun bindLike(
-        like: FeedXLike,
-        id: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String
-    ) {
+    private fun bindLikeData(feedXCard: FeedXCard) {
+        val like: FeedXLike = feedXCard.like
+        val id: Int = feedXCard.id.toIntOrZero()
+        val type: String = feedXCard.typename
+        val isFollowed: Boolean = feedXCard.followers.isFollowed
+        val shopId: String = feedXCard.author.id
+        val mediaType: String = feedXCard.media.firstOrNull()?.type?:""
+
         if (like.isLiked) {
             val colorGreen =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
@@ -601,6 +591,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
+            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
             listener?.onLikeClick(
                 positionInFeed,
                 id,
@@ -913,6 +904,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                 topAdsCard.show()
                                 topAdsCard.setOnClickListener {
+                                    changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                     RouteManager.route(context,feedMedia.appLink)
                                     listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                                 }
@@ -978,6 +970,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         context,
                                         object : GestureDetector.SimpleOnGestureListener() {
                                             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                                 var productTagBubbleShowing = false
                                                 listener?.onImageClicked(
                                                         postId.toString(),
@@ -1062,6 +1055,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                             override fun onLongPress(e: MotionEvent) {
                                                 super.onLongPress(e)
+                                                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                             }
 
                                             override fun onDoubleTapEvent(e: MotionEvent): Boolean {
@@ -1070,6 +1064,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         })
 
                                 layoutLihatProdukParent?.setOnClickListener {
+                                    changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                     listener?.let { listener ->
                                         listener.onTagClicked(
                                                 postId,
@@ -1759,7 +1754,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                             topAdsCard.show()
                             topAdsCard.setOnClickListener {
-
+                                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                 listener?.onClickSekSekarang(feedXCard.id, feedXCard.author.id, feedXCard.typename, feedXCard.followers.isFollowed, positionInFeed, feedXCard)
                             }
                                 textViewPrice.hide()
@@ -1822,6 +1817,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
                                         var productTagBubbleShowing = false
+                                        changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                         listener?.onImageClicked(
                                                 postId.toString(),
                                                 feedXCard.typename,
@@ -1874,6 +1870,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         pulseFade.setAnimationListener(object :
                                                 Animation.AnimationListener {
                                             override fun onAnimationStart(animation: Animation) {
+                                                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                                 like_anim.visibility = VISIBLE
                                                 listener?.onLikeClick(
                                                         positionInFeed, postId,
@@ -1901,6 +1898,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                     override fun onLongPress(e: MotionEvent) {
                                         super.onLongPress(e)
+                                        changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                                     }
 
                                     override fun onDoubleTapEvent(e: MotionEvent): Boolean {
@@ -1909,6 +1907,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 })
 
                         layoutLihatProdukParent?.setOnClickListener {
+                            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
                             listener?.let { listener ->
                                 listener.onTagClicked(
                                         postId,
@@ -2169,6 +2168,29 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+            val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+
+            topAdsCard?.let {
+                val topAdsProductName= topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
+                val topAdsChevron= topAdsCard.findViewById<IconUnify>(R.id.chevron)
+                feedXCard.isAsgcColorChangedToGreen = false
+                topAdsProductName.setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+                topAdsChevron.setColorFilter(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+               topAdsCard.setBackgroundColor(MethodChecker.getColor(
+                   context,
+                   com.tokopedia.unifyprinciples.R.color.Unify_NN50
+               ))
+            }
 
             val tagProducts = mutableListOf<FeedXProduct>()
 
@@ -2190,6 +2212,77 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
             }
         }
+    }
+    private fun changeTopadsCekSekarangBtnColorToGreen(feedXCard: FeedXCard) {
+        val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
+//        if (isTypeNewASGC) {
+            val media =
+                if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
+            val imageItem = media?.imageView
+
+            imageItem?.run {
+                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+                topAdsCard?.let {
+                    val topAdsProductName =
+                        topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
+                    val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
+                    topAdsProductName.setTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                    )
+                    topAdsChevron.setColorFilter(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                    )
+                    topAdsCard.setBackgroundColor(
+                        MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    )
+                    feedXCard.isAsgcColorChangedToGreen = true
+                }
+            }
+//        }
+    }
+    fun changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard: FeedXCard) {
+
+        val media = if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
+        val imageItem = media?.imageView
+
+        imageItem?.run {
+            val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+            topAdsCard?.let {
+                val topAdsProductName =
+                    topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
+                val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
+                topAdsProductName.setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+                topAdsChevron.setColorFilter(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+                topAdsCard.setBackgroundColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                    )
+                )
+            }
+
+
+        }
+
     }
 
     override fun onDetachedFromWindow() {
@@ -2255,6 +2348,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     feedXCard.author.id,
                                     list
                             )
+
+                            changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+
                             if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current)
                             bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
                         } else if (feedXCard != null) {
@@ -2299,6 +2395,44 @@ class PostDynamicViewNew @JvmOverloads constructor(
         imageItem?.run {
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
+            val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+            val startColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN50
+            )
+            val endColor = MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            )
+            val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
+
+            if (isTypeNewASGC && !feedXCard.isAsgcColorChangedToGreen) {
+                topAdsCard?.let {
+                    if (changeBgColorAnim == null)
+                        changeBgColorAnim = handlerFeed
+                    changeBgColorAnim?.postDelayed({
+                        topAdsCard.findViewById<Typography>(R.id.top_ads_product_name).setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                            )
+                        )
+                        topAdsCard.findViewById<IconUnify>(R.id.chevron).setColorFilter(
+                            MethodChecker.getColor(
+                                context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                            )
+                        )
+                           if(!feedXCard.isAsgcColorChangedToGreen) {
+                               changeBackgroundColorAnimation(startColor, endColor, topAdsCard)
+                               feedXCard.isAsgcColorChangedToGreen = true
+                           }
+
+                    }, TIME_TWO_SEC)
+                }
+            } else {
+                changeTopadsCekSekarangBtnColorToGreen(feedXCard)
+            }
             for (i in 0 until layout.childCount) {
                 val view = layout.getChildAt(i)
                 if (view is PostTagView) {
