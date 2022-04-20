@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -22,6 +24,10 @@ import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSeller
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -40,6 +46,8 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             ShopDiscountSellerInfoBottomSheetViewModel::class.java
         )
     }
+
+    private var tickerInfo: Ticker? = null
     private var sourceQuotaSection: ShopDiscountSellerInfoSectionView? = null
     private var quotaLeftSection: ShopDiscountSellerInfoSectionView? = null
     private var expirySection: ShopDiscountSellerInfoSectionView? = null
@@ -60,6 +68,47 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         observeSellerInfoBenefitLiveData()
+        observeSlashPriceTickerData()
+    }
+
+    private fun observeSlashPriceTickerData() {
+        viewModel.slashPriceTickerLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    val uiModel = it.data
+                    if (uiModel.responseHeader.success) {
+                        populateTickerData(uiModel.listTicker)
+                    }
+                }
+                is Fail -> {
+                }
+            }
+        })
+    }
+
+    private fun populateTickerData(listTicker: List<TickerData>) {
+        context?.let {
+            val tickerPagerAdapter = TickerPagerAdapter(it, listTicker)
+            tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    redirectToWebView(linkUrl)
+                }
+
+            })
+            tickerInfo?.apply {
+                show()
+                addPagerView(tickerPagerAdapter, listTicker)
+            }
+        }
+    }
+
+    private fun redirectToWebView(linkUrl: CharSequence) {
+        RouteManager.route(
+            context, String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW, linkUrl
+            )
+        )
     }
 
     private fun observeSellerInfoBenefitLiveData() {
@@ -219,10 +268,11 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSellerInfoTickerData() {
-
+        viewModel.getTickerData()
     }
 
     private fun init() {
+        tickerInfo = viewBinding?.tickerInfo
         sourceQuotaSection = viewBinding?.quotaSourceSection
         quotaLeftSection = viewBinding?.quotaLeftSection
         expirySection = viewBinding?.expirySection
