@@ -184,6 +184,10 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
         Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
+    protected fun verifyGetFavoriteNumberPrefillNull() {
+        Assert.assertNull(viewModel.prefillData.value)
+    }
+
     protected fun verifyGetMenuDetailLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.menuDetailData.value
         Assert.assertEquals(expectedResponse, actualResponse)

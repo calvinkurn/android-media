@@ -5,6 +5,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
+import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -56,11 +57,16 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData(false)
+        val response = dataFactory.getFavoriteNumberData(true)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        val favoriteNumberTypes = listOf(
+            FavoriteNumberType.CHIP,
+            FavoriteNumberType.LIST,
+            FavoriteNumberType.PREFILL
+        )
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf(), favoriteNumberTypes)
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
@@ -72,14 +78,14 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
         val response = dataFactory.getFavoriteNumberData(false)
         val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        val favoriteNumberTypes = listOf(FavoriteNumberType.CHIP, FavoriteNumberType.LIST)
         onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf(), favoriteNumberTypes)
         verifyGetFavoriteNumberChipsRepoGetCalled()
         verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
         verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
-        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
-        verifyGetFavoriteNumberPrefillEmpty()
+        verifyGetFavoriteNumberPrefillNull()
     }
 
     @Test

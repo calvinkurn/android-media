@@ -379,7 +379,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -387,6 +386,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
                     setInputNumber(prefill.clientNumber, true)
+                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }

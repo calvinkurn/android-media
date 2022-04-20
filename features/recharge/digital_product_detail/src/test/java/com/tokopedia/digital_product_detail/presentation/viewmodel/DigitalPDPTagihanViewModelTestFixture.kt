@@ -192,6 +192,10 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
+    protected fun verifyGetFavoriteNumberPrefillNull() {
+        Assert.assertNull(viewModel.prefillData.value)
+    }
+
     protected fun verifyGetOperatorSelectGroupLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.catalogSelectGroup.value
         Assert.assertEquals(expectedResponse, actualResponse)
