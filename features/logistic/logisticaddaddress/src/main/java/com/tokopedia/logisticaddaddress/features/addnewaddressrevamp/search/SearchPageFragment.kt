@@ -43,12 +43,16 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.E
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -69,18 +73,20 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
+//    private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var hasRequestedLocation: Boolean = false
     private var isPositiveFlow: Boolean = true
 
     private var isFromPinpoint: Boolean = false
 
     private var isPermissionAccessed: Boolean = false
-    private var isUndefinedWithoutPermission: Boolean = false
+//    private var isUndefinedWithoutPermission: Boolean = false
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
     private var currentLat: Double = DEFAULT_LAT
     private var currentLong: Double = DEFAULT_LONG
+    private var permissionState: Int = 0
     private var isPolygon: Boolean = false
     private var distrcitId: Long? = null
 
@@ -121,6 +127,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 viewModel.setAddress(it)
             }
         }
+//        permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -150,6 +157,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 clickDontAllowForTheFirstTime = false
                 bottomSheetLocUndefined?.dismiss()
                 if (allPermissionsGranted()) {
+                    binding?.loaderCurrentLocation?.visibility = View.VISIBLE
                     Handler().postDelayed({
                         getLocation()
                     }, 1000)
@@ -177,44 +185,74 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        var isAllowed: Boolean? = null
-        for (permission in permissions) {
-//            if (!isPermissionAccessed) {
-                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
-                    //no-op
-                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_DENIED) {
-                        clickDontAllowForTheFirstTime = true
-                        isUndefinedWithoutPermission = false
-                    }
-                } else {
-                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        isAllowed = true
-                    } else {
-                        isAllowed = false
-                    }
-
-                }
-//            }
-        }
-
-        if (isAllowed == true) {
-            if (!isUndefinedWithoutPermission) {
+        if (permissionResultGranted(permissions)) {
+            permissionState = PERMISSION_GRANTED
+//                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
                 getLocation()
             } else {
-                isUndefinedWithoutPermission = false
+                showBottomSheetLocUndefined(false)
             }
-            isPermissionAccessed = true
-        } else if (isAllowed == false) {
-            showBottomSheetLocUndefined(true)
-        }
-
-        if (!isEdit) {
-            if (isAllowed == true) {
+            if (!isEdit) {
                 AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+            }
+        } else {
+            permissionState = if (permissionResultDenied(permissions)) {
+                PERMISSION_DENIED
             } else {
+                PERMISSION_DONT_ASK_AGAIN
+            }
+            if (!isEdit) {
                 AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
             }
         }
+//        var isAllowed: Boolean? = null
+//        for (permission in permissions) {
+////            if (!isPermissionAccessed) {
+//                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
+//                    //no-op
+//                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_DENIED) {
+//                        clickDontAllowForTheFirstTime = true
+//                        isUndefinedWithoutPermission = false
+//                    }
+//                } else {
+//                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
+//                        isAllowed = true
+//                    } else {
+//                        isAllowed = false
+//                    }
+//
+//                }
+////            }
+//        }
+//
+//        if (isAllowed == true) {
+//            if (!isUndefinedWithoutPermission) {
+//                getLocation()
+//            } else {
+//                isUndefinedWithoutPermission = false
+//            }
+//            isPermissionAccessed = true
+//        } else if (isAllowed == false) {
+//            showBottomSheetLocUndefined(true)
+//        }
+    }
+
+    private fun permissionResultDenied(permissions: Array<out String>): Boolean {
+        var isDenied = false
+        for (permission in permissions) {
+            isDenied = activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true
+        }
+        return isDenied
+    }
+
+    private fun permissionResultGranted(permissions: Array<out String>): Boolean {
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
     }
 
     override fun onResume() {
@@ -304,27 +342,56 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             } else {
                 EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             }
-            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                if (allPermissionsGranted()) {
-                    hasRequestedLocation = true
+            if (allPermissionsGranted()) {
+                permissionState = PERMISSION_GRANTED
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
                 } else {
-                    if (clickDontAllowForTheFirstTime) {
-                        showBottomSheetLocUndefined(false) // -> to location
-                    } else {
-                        isUndefinedWithoutPermission = true
-                        hasRequestedLocation = false
+                    showBottomSheetLocUndefined(false)
+                }
+            } else {
+                when(permissionState) {
+                    PERMISSION_GRANTED -> {
+                        // will not go here
+                    }
+                    PERMISSION_DENIED -> {
+                        if (AddNewAddressUtils.isGpsEnabled(context)) {
+                            requestPermissionLocation()
+                        } else {
+                            // go to gps settings first
+                            showBottomSheetLocUndefined(false)
+                        }
+                    }
+                    PERMISSION_DONT_ASK_AGAIN -> {
+                        showBottomSheetLocUndefined(true)
+                    }
+                    else -> {
+                        // permission not defined yet
                         requestPermissionLocation()
                     }
                 }
-            } else {
-                if (clickDontAllowForTheFirstTime) {
-                    showBottomSheetLocUndefined(false) // -> to location
-                } else {
-                    isUndefinedWithoutPermission = !allPermissionsGranted()
-                    requestPermissionLocation()
-                }
             }
+//            if (AddNewAddressUtils.isGpsEnabled(context)) {
+//                if (allPermissionsGranted()) {
+//                    hasRequestedLocation = true
+//                    getLocation()
+//                } else {
+//                    if (clickDontAllowForTheFirstTime) {
+//                        showBottomSheetLocUndefined(false) // -> to location
+//                    } else {
+//                        isUndefinedWithoutPermission = true
+//                        hasRequestedLocation = false
+//                        requestPermissionLocation()
+//                    }
+//                }
+//            } else {
+//                if (clickDontAllowForTheFirstTime) {
+//                    showBottomSheetLocUndefined(false) // -> to location
+//                } else {
+//                    isUndefinedWithoutPermission = !allPermissionsGranted()
+//                    requestPermissionLocation()
+//                }
+//            }
         }
     }
 
@@ -468,6 +535,51 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun requestPermissionLocation() {
         requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
+//        permissionCheckerHelper?.checkPermissions(this, requiredPermissions,
+//            object : PermissionCheckerHelper.PermissionCheckListener {
+//                override fun onPermissionDenied(permissionText: String) {
+////                    ChooseAddressTracking.onClickDontAllowLocationKotaKecamatan(userSession.userId)
+////                    hasRequestedLocation = false
+////                    showDialogAskGps()
+//                    permissionState = PERMISSION_DENIED
+//                    if (!isEdit) {
+//                        AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+//                    }
+//                    // todo on permission denied:
+//                    // // set flag on never ask again to true
+//                    //                    // show bottomsheet to location settings
+//                    ////                    showBottomSheetLocUndefined(false)
+//                    //                    // do nothing
+//                }
+//
+//                override fun onNeverAskAgain(permissionText: String) {
+//                    // no op
+//                    // todo on never ask again:
+//                    // set flag on never ask again to true
+//                    // show bottomsheet to permission
+////                    showBottomSheetLocUndefined(true)
+//                    // do nothing
+//                    permissionState = PERMISSION_DONT_ASK_AGAIN
+//                    if (!isEdit) {
+//                        AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+//                    }
+//                }
+//
+//                @SuppressLint("MissingPermission")
+//                override fun onPermissionGranted() {
+//                    permissionState = PERMISSION_GRANTED
+////                    ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId)
+//                    if (AddNewAddressUtils.isGpsEnabled(context)) {
+//                        getLocation()
+//                    } else {
+//                        showBottomSheetLocUndefined(false)
+//                    }
+//                    if (!isEdit) {
+//                        AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+//                    }
+//                }
+//
+//            }, getString(R.string.rationale_need_location))
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -482,6 +594,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         if (AddNewAddressUtils.isGpsEnabled(context) && allPermissionsGranted()) {
+            binding?.loaderCurrentLocation?.visibility = View.VISIBLE
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
@@ -507,6 +620,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun getLastLocationClient() {
         isAccessAppPermissionFromSettings = false
         if (AddNewAddressUtils.isGpsEnabled(context) && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            permissionState = PERMISSION_GRANTED
             binding?.loaderCurrentLocation?.visibility = View.VISIBLE
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
