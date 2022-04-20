@@ -67,6 +67,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
@@ -383,7 +384,8 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
-            violationListener = ViolationListenerDelegate(activity)
+            violationListener = ViolationListenerDelegate(activity),
+            remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB)
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
