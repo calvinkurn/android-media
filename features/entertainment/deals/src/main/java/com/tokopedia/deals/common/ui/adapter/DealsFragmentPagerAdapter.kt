@@ -12,13 +12,12 @@ class DealsFragmentPagerAdapter(
         activity: AppCompatActivity,
         private val ids: List<String?>,
         private val page: String,
-        private val tabs: List<String>,
-        private val isShowFilter: Boolean
+        private val tabs: List<String>
 ) : FragmentStateAdapter(activity){
 
     override fun createFragment(position: Int): Fragment {
         return when (page) {
-            DealsCategoryActivity.TAG -> DealsCategoryFragment.getInstance(ids[position], tabs[position], isShowFilter)
+            DealsCategoryActivity.TAG -> DealsCategoryFragment.getInstance(ids[position], tabs[position])
             DealsBrandActivity.TAG -> { DealsBrandFragment.getInstance(ids[position], tabs[position]) }
             else -> Fragment()
         }

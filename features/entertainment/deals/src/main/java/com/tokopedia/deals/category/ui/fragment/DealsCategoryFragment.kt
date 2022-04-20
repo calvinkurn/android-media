@@ -463,13 +463,12 @@ class DealsCategoryFragment : DealsBaseFragment(),
         private const val EXTRA_TAB_NAME = ""
         private const val EXTRA_IS_SHOW_FILTER = "is_show_filter"
 
-        fun getInstance(categoryId: String?, tabName: String = "", isShowFilter: Boolean = true): DealsCategoryFragment = DealsCategoryFragment().also {
+        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
                 categoryId?.let { id ->
                     putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
                 }
                 putString(EXTRA_TAB_NAME, tabName)
-                putBoolean(EXTRA_IS_SHOW_FILTER, isShowFilter)
             }
         }
     }
