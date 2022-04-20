@@ -43,10 +43,13 @@ class PinOnboardingFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var trackingPinUtil: TrackingPinUtil
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var loadingDialog: LoadingDialog
 
@@ -56,148 +59,153 @@ class PinOnboardingFragment : BaseDaggerFragment() {
     private var isSkipOtp: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ColorUtils.setBackgroundColor(context, activity)
+	super.onCreate(savedInstanceState)
+	ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
+    override fun onCreateView(
+	inflater: LayoutInflater, container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	return inflater.inflate(R.layout.fragment_onboard_pin, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+	super.onViewCreated(view, savedInstanceState)
 
-        initVar()
+	initVar()
 
-        ImageHandler.LoadImage(onboardImage, ONBOARD_PICT_URL)
+	ImageHandler.LoadImage(onboardImage, ONBOARD_PICT_URL)
 
-        btnNext.setOnClickListener {
-            trackingPinUtil.trackClickCreateButton()
-            goToAddPin()
-        }
+	btnNext.setOnClickListener {
+	    trackingPinUtil.trackClickCreateButton()
+	    goToAddPin()
+	}
 
-        initObserver()
+	initObserver()
 
-        if (!userSession.isMsisdnVerified) {
-            goToAddPhone()
-        } else {
-            showLoading()
-            addChangePinViewModel.getStatusPin()
-        }
+	if (!userSession.isMsisdnVerified) {
+	    goToAddPhone()
+	} else {
+	    showLoading()
+	    addChangePinViewModel.getStatusPin()
+	}
     }
 
     override fun onStart() {
-        super.onStart()
-        trackingPinUtil.trackScreen(screenName)
+	super.onStart()
+	trackingPinUtil.trackScreen(screenName)
     }
 
     override fun getScreenName(): String = TrackingPinConstant.Screen.SCREEN_POPUP_PIN_WELCOME
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     private fun initObserver() {
-        addChangePinViewModel.getStatusPinResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessGetStatusPin(it.data)
-                is Fail -> onErrorGetStatusPin(it.throwable)
-            }
-        })
+	addChangePinViewModel.getStatusPinResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessGetStatusPin(it.data)
+		is Fail -> onErrorGetStatusPin(it.throwable)
+	    }
+	})
     }
 
     private fun initVar() {
-        val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
-        if (isSkipOtp != null)
-            this.isSkipOtp = isSkipOtp
+	val isSkipOtp = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, false)
+	if (isSkipOtp != null)
+	    this.isSkipOtp = isSkipOtp
     }
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData) {
-        if (statusPinData.isRegistered) {
-            goToChangePin()
-        } else {
-            if (activity is PinOnboardingActivity) {
-                (activity as PinOnboardingActivity).supportActionBar?.setDisplayShowTitleEnabled(true)
-            }
-            hideLoading()
-        }
+	if (statusPinData.isRegistered) {
+	    goToChangePin()
+	} else {
+	    if (activity is PinOnboardingActivity) {
+		(activity as PinOnboardingActivity).supportActionBar?.setDisplayShowTitleEnabled(
+		    true
+		)
+	    }
+	    hideLoading()
+	}
     }
 
     private fun goToChangePin() {
-        RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
-        activity?.finish()
+	RouteManager.route(activity, ApplinkConstInternalGlobal.CHANGE_PIN)
+	activity?.finish()
     }
 
     private fun onErrorGetStatusPin(throwable: Throwable) {
-        view?.run {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
-            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-        }
+	view?.run {
+	    val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+	    Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+	}
     }
 
     private fun goToAddPhone() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+	val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+	startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToAddPin() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, isSkipOtp)
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-        startActivity(intent)
-        activity?.finish()
+	val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+	intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, isSkipOtp)
+	intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+	startActivity(intent)
+	activity?.finish()
     }
 
     private fun onSuccessAddPhoneNumber() {
-        hideLoading()
+	hideLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_ADD_PHONE -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        onSuccessAddPhoneNumber()
-                    }
-                    Activity.RESULT_CANCELED -> {
-                        activity?.finish()
-                    }
-                }
-            }
-        }
+	when (requestCode) {
+	    REQUEST_CODE_ADD_PHONE -> {
+		when (resultCode) {
+		    Activity.RESULT_OK -> {
+			onSuccessAddPhoneNumber()
+		    }
+		    Activity.RESULT_CANCELED -> {
+			activity?.finish()
+		    }
+		}
+	    }
+	}
     }
 
     private fun showLoading() {
-        loader?.show()
-        container?.hide()
+	loader?.show()
+	container?.hide()
     }
 
     private fun hideLoading() {
-        loader?.hide()
-        container?.show()
+	loader?.hide()
+	container?.show()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        addChangePinViewModel.getStatusPinResponse.removeObservers(this)
-        addChangePinViewModel.flush()
+	super.onDestroy()
+	addChangePinViewModel.getStatusPinResponse.removeObservers(this)
+	addChangePinViewModel.flush()
     }
 
     fun onBackPressed() {
-        trackingPinUtil.trackClickBackButtonWelcome()
+	trackingPinUtil.trackClickBackButtonWelcome()
     }
 
     companion object {
 
-        const val REQUEST_CODE_ADD_PHONE = 100
+	const val REQUEST_CODE_ADD_PHONE = 100
 
-        const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
+	const val ONBOARD_PICT_URL =
+	    "https://ecs7.tokopedia.net/android/user/high_onboard_create_pin.png"
 
-        fun createInstance(bundle: Bundle): PinOnboardingFragment {
-            val fragment = PinOnboardingFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun createInstance(bundle: Bundle): PinOnboardingFragment {
+	    val fragment = PinOnboardingFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 }
