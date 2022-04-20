@@ -1,16 +1,13 @@
 package com.tokopedia.test.application.espresso_component
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
@@ -19,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.test.application.util.ViewUtils
 import com.tokopedia.test.application.util.ViewUtils.takeScreenShot
-import org.assertj.core.description.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
@@ -127,7 +123,7 @@ object CommonActions {
      * .check(matches(displayChildViewWithId(index,id)))
      *
      * @param position index of list
-     * @param id resource id of item
+     * @param targetViewId resource id of item
      */
 
     fun displayChildViewWithId(
@@ -140,7 +136,7 @@ object CommonActions {
 
 
             override fun describeTo(description: org.hamcrest.Description) {
-                description.appendText("has view id display at position $position")
+
             }
 
             override fun matchesSafely(item: RecyclerView?): Boolean {
@@ -160,7 +156,7 @@ object CommonActions {
      *  .check(matches(displayChildViewWithIdAndText(index,id,text)))
      *
      * @param position index of list
-     * @param id resource id of item
+     * @param targetViewId resource id of item
      * @param text
 
      */
@@ -174,9 +170,8 @@ object CommonActions {
             RecyclerView::class.java
         ) {
 
-
             override fun describeTo(description: org.hamcrest.Description) {
-                description.appendText("has view id display at position $position")
+
             }
 
             override fun matchesSafely(item: RecyclerView?): Boolean {
