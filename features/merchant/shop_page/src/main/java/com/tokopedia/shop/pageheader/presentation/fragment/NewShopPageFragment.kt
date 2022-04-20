@@ -1725,7 +1725,7 @@ class NewShopPageFragment :
 
     private fun resetShopProductFilterParameterSharedViewModel() {
         initialProductFilterParameter = ShopProductFilterParameter()
-        initialProductFilterParameter?. let{
+        initialProductFilterParameter?.let{
             shopProductFilterParameterSharedViewModel?.changeSharedSortData(it)
         }
     }
