@@ -158,7 +158,6 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 productImageUrl = it.imageUrlMobile ?: "",
                 productUrl = it.productURLDesktop ?: "",
                 formattedPrice = it.price ?: "",
-//                Todo:: Need to add params for ATC option
 
             )
         } ?: ProductCardOptionsModel()
