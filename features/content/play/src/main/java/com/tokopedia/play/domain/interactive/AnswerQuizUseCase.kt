@@ -37,11 +37,11 @@ class AnswerQuizUseCase @Inject constructor(
 
         const val QUERY_NAME = "AnswerQuizUseCaseQuery"
         const val QUERY = """
-            mutation playAnswerQuiz${'$'}$INTERACTIVE_ID: String, ${'$'}$CHOICE_ID: String){
+            mutation playAnswerQuiz(${'$'}$INTERACTIVE_ID: String, ${'$'}$CHOICE_ID: String){
                 playInteractiveAnswerQuiz(
                     req: {
                         $INTERACTIVE_ID: ${'$'}$INTERACTIVE_ID,
-                        $CHOICE_ID: ${'$'}$CHOICE_ID,
+                        $CHOICE_ID: ${'$'}$CHOICE_ID
                     }
                 ) {
                     correctAnswerID

@@ -23,6 +23,10 @@ class GetCurrentInteractiveUseCase @Inject constructor(
           playInteractiveGetCurrentInteractive(req:{
             channelID: ${"$$PARAM_CHANNEL_ID"}
           }){
+            meta {
+              active
+              waitingDuration
+            }
             interactive {
               interactive_id: interactiveID
               interactive_type: interactiveType
