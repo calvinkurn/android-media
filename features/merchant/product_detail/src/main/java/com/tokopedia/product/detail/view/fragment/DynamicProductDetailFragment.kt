@@ -935,7 +935,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
                 DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
-                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+                openFtInsuranceWebView(getPurchaseProtectionUrl())
             }
             ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO -> {
                 goToApplink(appLink)
@@ -2876,7 +2876,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     /**
      * @param url : linkUrl for insurance partner to be rendered in web-view
      */
-    private fun openFtInsuranceBottomSheet(url: String) {
+    private fun openFtInsuranceWebView(url: String) {
         val semalessUrl = generateURLSessionLogin(url, viewModel.deviceId, viewModel.userId)
         val webViewUrl = String.format(
             Locale.getDefault(),
