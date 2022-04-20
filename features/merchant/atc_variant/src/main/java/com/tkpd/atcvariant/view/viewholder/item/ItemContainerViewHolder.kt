@@ -48,25 +48,17 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         if (isOptionChanged) {
             setSelectedOptionText(data)
 
-            if (data.variantOptions.firstOrNull()?.hasCustomImages == true) {
-                rvVariant.layoutManager = GridLayoutManager(view.context, 5)
-                if (rvVariant.itemDecorationCount == 0) {
-                    rvVariant.addItemDecoration(HorizontalVariantImageDecorator(context, 5, R.dimen.space_vertical_variant_image))
-                }
-            } else {
-                rvVariant.layoutManager = FlexboxLayoutManager(context).apply {
-                    alignItems = AlignItems.FLEX_START
-                }
-                if (rvVariant.itemDecorationCount == 0) {
-                    val itemDecoration = FlexboxItemDecoration(context).apply {
-                        setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
-                        setOrientation(FlexboxItemDecoration.HORIZONTAL)
-                    }
-
-                    rvVariant.addItemDecoration(itemDecoration)
-                }
+            rvVariant.layoutManager = FlexboxLayoutManager(context).apply {
+                alignItems = AlignItems.FLEX_START
             }
+            if (rvVariant.itemDecorationCount == 0) {
+                val itemDecoration = FlexboxItemDecoration(context).apply {
+                    setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
+                    setOrientation(FlexboxItemDecoration.HORIZONTAL)
+                }
 
+                rvVariant.addItemDecoration(itemDecoration)
+            }
             variantOptionAdapter.setData(data.variantOptions)
         }
     }
@@ -100,26 +92,5 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
             txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
-    }
-
-    inner class HorizontalVariantImageDecorator(context: Context, private val spanCount: Int, @DimenRes horizontalMargin: Int) : RecyclerView.ItemDecoration() {
-
-        private val horizontalMarginInPx: Int =
-                context.resources.getDimension(horizontalMargin).toInt()
-
-        override fun getItemOffsets(
-                outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
-        ) {
-            val layoutParams = view.layoutParams as GridLayoutManager.LayoutParams
-            val spanIndex = layoutParams.spanIndex
-
-            val itemPosition = parent.getChildAdapterPosition(view)
-            if (itemPosition == RecyclerView.NO_POSITION) return
-
-            if (spanIndex <= spanCount) {
-                outRect.bottom = horizontalMarginInPx
-            }
-        }
-
     }
 }

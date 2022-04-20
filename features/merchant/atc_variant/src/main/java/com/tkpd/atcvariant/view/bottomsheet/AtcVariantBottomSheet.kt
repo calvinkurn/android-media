@@ -57,6 +57,7 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -194,13 +195,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 aggregatorData?.simpleBasicInfo?.shopID ?: "")
 
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
-        val boImageUrl = aggregatorData?.getIsFreeOngkirImageUrl(productId) ?: ""
 
-        AtcCommonMapper.putChatProductInfoTo(intent,
-                productId,
-                aggregatorData?.variantData?.getChildByProductId(productId),
-                aggregatorData?.variantData,
-                boImageUrl)
+        AtcCommonMapper.putChatProductInfoTo(intent, productId)
         startActivity(intent)
     }
 
@@ -225,6 +221,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeRestrictionData()
         observeToggleFavorite()
         observeStockCopy()
+        observeVariantImagesGallery()
+    }
+
+    private fun observeVariantImagesGallery(){
+        viewModel.variantImagesData.observe(viewLifecycleOwner) {data ->
+            context?.let{
+                val intent = ProductDetailGalleryActivity.createIntent(
+                    it, data
+                )
+                startActivity(intent)
+            }
+        }
     }
 
     private fun observeStockCopy() {
@@ -704,9 +712,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun onVariantImageClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.productId
-                ?: "", pageSource)
-        goToImagePreview(arrayListOf(url))
+        val productId = adapter.getHeaderDataModel()?.productId ?: ""
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(productId, pageSource)
+        viewModel.onVariantImageClicked(url, productId, userSessionInterface.userId, getString(R.string.atc_variant_tag_main_image))
     }
 
     override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {

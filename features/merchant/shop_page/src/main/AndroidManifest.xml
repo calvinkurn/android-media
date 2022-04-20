@@ -51,11 +51,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".note.view.activity.ShopNoteDetailActivity"
-            android:label="@string/note_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name="com.tokopedia.shop.product.view.activity.ShopProductListResultActivity"
             android:exported="false"
             android:label="@string/shop_product_title"

@@ -15,8 +15,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcCouponListItem
 import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcDetailViewContract
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 
@@ -29,6 +31,7 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val tv_info: Typography = itemView.findViewById(R.id.tv_info)
     val rel_cta: RelativeLayout = itemView.findViewById(R.id.rel_cta)
     val rel_info: RelativeLayout = itemView.findViewById(R.id.rel_info)
+    val iv_check: ImageUnify = itemView.findViewById(R.id.iv_check)
     val divider: View = itemView.findViewById(R.id.divider)
     private val REDIRECT_CHECK = "redirect"
     private val INFO_CHECK = "info"
@@ -46,6 +49,12 @@ class CouponListItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         if(data.ctaCatalog.type.isNullOrEmpty().not()) {
             when (data.ctaCatalog.type) {
                 REDIRECT_CHECK -> {
+                    if(contract.getMvcSource() == MvcSource.PDP){
+                        iv_check.visibility = View.VISIBLE
+                    }
+                    else{
+                        iv_check.visibility = View.GONE
+                    }
                     rel_cta.show()
                     if (data.ctaCatalog.text.isNullOrEmpty().not()) {
                         contract.getMvcTracker()?.viewMVCLockToProduct(

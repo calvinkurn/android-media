@@ -20,6 +20,7 @@ public class LinkerData implements Parcelable {
     public static final String PROMO_TYPE = "Promo";
     public static final String HOTEL_TYPE = "Hotel";
     public static final String ENTERTAINMENT_TYPE = "Entertainment";
+    public static final String USER_PROFILE_SOCIAL = "User Profile Social";
     public static final String NOW_TYPE = "Now";
     public static final String WEBVIEW_TYPE = "Webview";
 
