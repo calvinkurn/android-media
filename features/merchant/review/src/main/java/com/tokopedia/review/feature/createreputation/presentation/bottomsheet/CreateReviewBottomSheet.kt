@@ -313,12 +313,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             reputationId: String,
             utmSource: String
         ) {
-            arguments = Bundle().apply {
-                putInt(ARG_RATING, rating)
-                putString(ARG_PRODUCT_ID, productId)
-                putString(ARG_REPUTATION_ID, reputationId)
-                putString(ARG_UTM_SOURCE, utmSource)
-            }
+            val fragmentArguments = Bundle()
+            fragmentArguments.putInt(ARG_RATING, rating)
+            fragmentArguments.putString(ARG_PRODUCT_ID, productId)
+            fragmentArguments.putString(ARG_REPUTATION_ID, reputationId)
+            fragmentArguments.putString(ARG_UTM_SOURCE, utmSource)
+            arguments = fragmentArguments
         }
 
         fun CreateReviewBottomSheet.getRatingFromArgument(): Int {
