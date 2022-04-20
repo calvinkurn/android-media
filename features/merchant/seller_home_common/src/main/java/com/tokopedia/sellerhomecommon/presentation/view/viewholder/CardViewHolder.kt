@@ -134,14 +134,16 @@ class CardViewHolder(
                 tvCardSubValue.invisible()
             } else {
                 tvCardSubValue.visible()
+                tvCardSubValue.show(
+                    primary = element.data?.description.orEmpty(),
+                    secondary = element.data?.secondaryDescription.orEmpty()
+                )
             }
-            tvCardSubValue.show(
-                primary = element.data?.description.orEmpty(),
-                secondary = element.data?.secondaryDescription.orEmpty()
-            )
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
-                tvCardSubValue.showTextWithAnimation()
+                if (!element.data?.description.isNullOrBlank()) {
+                    tvCardSubValue.showTextWithAnimation()
+                }
             }
 
             root.setOnClickListener {
