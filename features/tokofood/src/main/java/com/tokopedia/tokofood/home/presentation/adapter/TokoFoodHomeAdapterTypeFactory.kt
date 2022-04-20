@@ -35,14 +35,12 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeFakeTabViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeNoPinPoinViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeOutOfCoverageViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
@@ -62,7 +60,6 @@ class TokoFoodHomeAdapterTypeFactory (
     HomeComponentTypeFactory {
 
     // region TokoFood Home Component
-    override fun type(uiModel: TokoFoodHomeFakeTabUiModel): Int = TokoFoodHomeFakeTabViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeUSPUiModel): Int = TokoFoodHomeUSPViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeNoPinPoinUiModel): Int = TokoFoodHomeNoPinPoinViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeOutOfCoverageUiModel): Int = TokoFoodHomeOutOfCoverageViewHolder.LAYOUT
@@ -94,7 +91,6 @@ class TokoFoodHomeAdapterTypeFactory (
         return when(type){
 
             // region TokoFood Home Component
-            TokoFoodHomeFakeTabViewHolder.LAYOUT -> TokoFoodHomeFakeTabViewHolder(view)
             TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view)
             TokoFoodHomeNoPinPoinViewHolder.LAYOUT -> TokoFoodHomeNoPinPoinViewHolder(view)
             TokoFoodHomeOutOfCoverageViewHolder.LAYOUT -> TokoFoodHomeOutOfCoverageViewHolder(view)
