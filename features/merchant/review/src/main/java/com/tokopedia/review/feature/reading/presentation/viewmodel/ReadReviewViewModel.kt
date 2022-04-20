@@ -288,11 +288,11 @@ class ReadReviewViewModel @Inject constructor(
         resetPage(isProductReview)
     }
 
-    fun setFilterWithImage(isActive: Boolean, isProductReview: Boolean) {
+    fun setFilterWithMedia(isActive: Boolean, isProductReview: Boolean) {
         if (isActive) {
-            this.filter.withImage = null
+            this.filter.withMedia = null
         } else {
-            this.filter.withImage = getFilterWithImageParam()
+            this.filter.withMedia = getFilterWithMediaParam()
         }
         resetPage(isProductReview)
     }
@@ -393,8 +393,8 @@ class ReadReviewViewModel @Inject constructor(
         return SortTypeConstants.sortMap[sort] ?: SortTypeConstants.MOST_HELPFUL_PARAM
     }
 
-    private fun getFilterWithImageParam(): FilterType.FilterWithImage {
-        return FilterType.FilterWithImage()
+    private fun getFilterWithMediaParam(): FilterType.FilterWithMedia {
+        return FilterType.FilterWithMedia()
     }
 
     private fun mapRatingFilterToFilterType(ratingFilters: Set<ListItemUnify>): FilterType.FilterRating {

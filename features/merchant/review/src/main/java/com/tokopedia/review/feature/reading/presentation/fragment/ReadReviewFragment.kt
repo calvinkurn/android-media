@@ -392,8 +392,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 viewModel.getProductId()
             )
         }
-        viewModel.setFilterWithImage(isActive, isProductReview)
-        reviewHeader?.updateFilterWithImage()
+        viewModel.setFilterWithMedia(isActive, isProductReview)
+        reviewHeader?.updateFilterWithMedia()
         showListOnlyLoading()
     }
 
