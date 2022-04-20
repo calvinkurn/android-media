@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -27,9 +25,6 @@ import com.tokopedia.chooseaccount.view.listener.ChooseAccountListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -39,8 +34,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountListener {
 
     private val binding: FragmentChooseLoginPhoneAccountBinding? by viewBinding()
-
-    protected var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     protected var adapter: AccountAdapter? = null
     private var listAccount: RecyclerView? = null
@@ -97,16 +90,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
         } else {
             onErrorLogin(ErrorHandler.getErrorMessage(context, throwable, builder = getErrorHandlerBuilder()))
         }
-    }
-
-    protected fun logUnknownError(throwable: Throwable?, flow: String) {
-        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN",
-            mapOf(
-                "type" to flow,
-                "error" to throwable?.message.toEmptyStringIfNull(),
-                "throwable" to Log.getStackTraceString(throwable).take(1000)
-            )
-        )
     }
 
     protected fun showPopupError(header: String, body: String, url: String) {

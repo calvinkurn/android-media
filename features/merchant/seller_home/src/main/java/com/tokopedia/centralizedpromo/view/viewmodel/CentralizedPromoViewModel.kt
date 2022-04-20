@@ -11,7 +11,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataU
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
-import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
+import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
@@ -92,11 +92,17 @@ class CentralizedPromoViewModel @Inject constructor(
                 voucherCashbackEligibleUseCase.execute(userSession.shopId)
             }
             val isVoucherCashbackFirstTimeDeferred = async {
-                sharedPreferences.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+                sharedPreferences.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
             }
             val isProductCouponFirstTimeDeferred = async {
                 sharedPreferences.getBoolean(
-                    FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME,
+                    FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME,
+                    true
+                )
+            }
+            val isTokopediaPlayFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(
+                    FirstPromoDataSource.IS_TOKOPEDIA_PLAY_FIRST_TIME,
                     true
                 )
             }
@@ -122,6 +128,7 @@ class CentralizedPromoViewModel @Inject constructor(
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
             val isVoucherCashbackFirstTime = isVoucherCashbackFirstTimeDeferred.await()
             val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
+            val isTokopediaPlayFirstTime = isTokopediaPlayFirstTimeDeferred.await()
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
@@ -133,6 +140,7 @@ class CentralizedPromoViewModel @Inject constructor(
                     isTopAdsOnBoardingEnable,
                     isVoucherCashbackFirstTime,
                     isProductCouponFirstTime,
+                    isTokopediaPlayFirstTime,
                     isProductCouponEnabled
                 )
             )

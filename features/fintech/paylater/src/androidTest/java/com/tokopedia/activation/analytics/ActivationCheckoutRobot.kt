@@ -7,8 +7,7 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pdpsimulation.test.R
@@ -19,22 +18,12 @@ import org.hamcrest.core.AllOf
 class PdpSimulationRobot {
 
 
-    fun clickTenure() {
-        onView(withId(R.id.rvPayLaterSimulation)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                0,
-                clickRecyclerViewChild(R.id.clSimulationCard)
-            )
-        )
-    }
-
-
-    fun clickInstallmentBottomSheet() {
+    fun clickChangeVariant() {
         onView(
             CommonMatcher.firstView(
                 AllOf.allOf(
-                    withId(R.id.partnerTenureInfo),
-                    isDisplayed()
+                    ViewMatchers.withId(R.id.showVariantBottomSheet),
+                    ViewMatchers.isDisplayed()
                 )
             )
         ).perform(
@@ -42,11 +31,64 @@ class PdpSimulationRobot {
         )
     }
 
+
+
+    fun clickOpenInstallmentDetail()
+    {
+        onView(
+            CommonMatcher.firstView(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.priceBreakdown),
+                    ViewMatchers.isDisplayed()
+                )
+            )
+        ).perform(
+            click()
+        )
+    }
+
+    fun changeTenure()
+    {
+        onView(ViewMatchers.withId(R.id.recyclerTenureDetail)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                0,
+                clickRecyclerViewChild(R.id.individualTenureItemContainer)
+            )
+        )
+    }
+
     private fun clickRecyclerViewChild(viewId: Int) = object : ViewAction {
         override fun getConstraints() = null
         override fun getDescription() = "Click on a child view with specified id."
         override fun perform(uiController: UiController, view: View) =
-            click().perform(uiController, view.findViewById<View>(viewId))
+            click().perform(uiController, view.findViewById(viewId))
+    }
+
+    fun closeBottomSheet() {
+        onView(
+            CommonMatcher.firstView(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.bottom_sheet_close),
+                    ViewMatchers.isDisplayed()
+                )
+            )
+        ).perform(
+            click()
+        )
+    }
+
+    fun proceedToOccPage()
+    {
+        onView(
+            CommonMatcher.firstView(
+                AllOf.allOf(
+                    ViewMatchers.withId(R.id.proceedToCheckout),
+                    ViewMatchers.isDisplayed()
+                )
+            )
+        ).perform(
+            click()
+        )
     }
 
 

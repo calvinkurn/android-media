@@ -37,7 +37,6 @@ class PdpSimulationFragmentTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
-    var idlingResource: TkpdIdlingResource? = null
 
     @Before
     fun setUp() {
@@ -45,13 +44,11 @@ class PdpSimulationFragmentTest {
         login()
         setupGraphqlMockResponse(PdpSimulationMockResponseConfig())
         launchActivity()
-        setupIdlingResource()
     }
 
     @After
     fun tearDown() {
         gtmLogDBSource.deleteAll().subscribe()
-        IdlingRegistry.getInstance().unregister(idlingResource?.countingIdlingResource)
     }
 
 
@@ -86,13 +83,7 @@ class PdpSimulationFragmentTest {
         activityRule.launchActivity(intent)
     }
 
-    private fun setupIdlingResource() {
-        idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
-        if (idlingResource != null)
-            IdlingRegistry.getInstance().register(idlingResource?.countingIdlingResource)
-        else
-            throw RuntimeException("No idling resource found")
-    }
+
 
     private fun login() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()

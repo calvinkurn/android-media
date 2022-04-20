@@ -15,7 +15,10 @@ internal open class ActivationCheckoutMockResponseConfig : MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
             PRODUCT_V3_KEY,
-            InstrumentationMockHelper.getRawString(context, R.raw.product_detail_response_lessamount),
+            InstrumentationMockHelper.getRawString(
+                context,
+                R.raw.product_detail_response_lessamount
+            ),
             FIND_BY_CONTAINS
         )
         addMockResponse(

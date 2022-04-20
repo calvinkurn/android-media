@@ -29,4 +29,19 @@ interface PlayWidgetSmallAnalyticListener {
             channelPositionInList: Int,
             isAutoPlay: Boolean
     ) {}
+    fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
 }

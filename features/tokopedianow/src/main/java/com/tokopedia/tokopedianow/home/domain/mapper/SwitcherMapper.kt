@@ -37,10 +37,10 @@ object SwitcherMapper {
     }
 
     private fun create15mSwitcherUiModel(): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(Home15mSwitcher, HomeLayoutItemState.LOADED)
+        return HomeLayoutItemUiModel(Home15mSwitcher(), HomeLayoutItemState.LOADED)
     }
 
     private fun create2HSwitcherUiModel(): HomeLayoutItemUiModel {
-        return HomeLayoutItemUiModel(Home2hSwitcher, HomeLayoutItemState.LOADED)
+        return HomeLayoutItemUiModel(Home2hSwitcher(), HomeLayoutItemState.LOADED)
     }
 }

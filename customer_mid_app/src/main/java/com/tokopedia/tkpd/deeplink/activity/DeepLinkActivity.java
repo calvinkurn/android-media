@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.digital.DeeplinkMapperDigital;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -34,6 +35,7 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -47,6 +49,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
+    private static final String PATH_FIND = "find";
+    private static final String PRODUCT_SEARCH_RESULT = "Product Search Results";
     private Uri uriData;
     private boolean isOriginalUrlAmp;
     private String IS_DEEP_LINK = "is_deep_link_flag";
@@ -70,13 +74,25 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ImageView loadingView = findViewById(R.id.iv_loading);
         ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
         logDeeplink();
-        new FirebaseDLWrapper().getFirebaseDynamicLink(this,getIntent());
+        new FirebaseDLWrapper().getFirebaseDynamicLink(this, getIntent());
     }
 
     private void checkUrlMapToApplink() {
-        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
+        String uriString = uriData.toString();
+        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriString);
         if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
-            String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
+            String digitalDeeplink = DeeplinkMapperDigital.INSTANCE.getRegisteredNavigationFromHttpDigital(this, applink);
+            String screenName = "";
+            if (!TextUtils.isEmpty(digitalDeeplink)) {
+                screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
+            } else {
+                List<String> pathSegments = uriData.getPathSegments();
+                if (pathSegments.size() > 0 && pathSegments.get(0).equals(PATH_FIND)) {
+                    screenName = PRODUCT_SEARCH_RESULT;
+                } else {
+                    screenName = uriData.getPath();
+                }
+            }
             presenter.sendCampaignGTM(this, applink, screenName, isOriginalUrlAmp);
             RouteManager.route(this, applink);
             finish();
@@ -92,9 +108,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    private boolean uriHaveCampaignData(){
+    private boolean uriHaveCampaignData() {
         boolean uriHaveCampaignData = false;
-        if (getIntent() != null && getIntent().getData()!= null) {
+        if (getIntent() != null && getIntent().getData() != null) {
             String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
             Uri applink = Uri.parse(applinkString);
             uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
