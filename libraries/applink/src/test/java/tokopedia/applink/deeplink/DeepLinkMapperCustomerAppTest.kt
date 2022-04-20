@@ -2081,10 +2081,4 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://feedplaylivedetail" + queryParam
         assertEqualsDeepLinkMapper(ApplinkConst.FEED_PlAY_LIVE_DETAIL + queryParam, expectedDeepLink)
     }
-    @Test
-    fun `check feeds user profile page applink customerapp`() {
-        val queryParam = "kumamoto"
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://people/" + queryParam
-        assertEqualsDeepLinkMapper(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, queryParam), expectedDeepLink)
-    }
 }
