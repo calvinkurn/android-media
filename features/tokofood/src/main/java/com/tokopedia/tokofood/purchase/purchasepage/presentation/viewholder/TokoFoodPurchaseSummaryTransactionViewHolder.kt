@@ -59,7 +59,8 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
                 }
                 containerTransactionItem.show()
             }
-            tickerCancellationInfo.setHtmlDescription("Pesanan dari resto ini ga bisa dibatalkan.")
+            tickerCancellationInfo.showWithCondition(element.bottomTickerMessage.isNotEmpty())
+            tickerCancellationInfo.setHtmlDescription(element.bottomTickerMessage)
         }
     }
 

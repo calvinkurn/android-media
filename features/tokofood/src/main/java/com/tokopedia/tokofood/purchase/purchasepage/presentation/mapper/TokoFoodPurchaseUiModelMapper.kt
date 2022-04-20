@@ -69,7 +69,8 @@ object TokoFoodPurchaseUiModelMapper {
                 add(
                     mapSummaryTransactionUiModel(
                         response.data.shoppingSummary.costBreakdown,
-                        response.data.shoppingSummary.discountBreakdown
+                        response.data.shoppingSummary.discountBreakdown,
+                        response.data.tickers.bottom.message
                     )
                 )
             }
@@ -92,7 +93,8 @@ object TokoFoodPurchaseUiModelMapper {
             promoUiModel = mapPromoUiModel(response.data.promo),
             summaryUiModel = mapSummaryTransactionUiModel(
                 response.data.shoppingSummary.costBreakdown,
-                response.data.shoppingSummary.discountBreakdown
+                response.data.shoppingSummary.discountBreakdown,
+                response.data.tickers.bottom.message
             ),
             totalAmountUiModel = mapTotalAmountUiModel(
                 isEnabled,
@@ -234,11 +236,15 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     private fun mapSummaryTransactionUiModel(costBreakdown: CheckoutTokoFoodShoppingCostBreakdown,
-                                             discountBreakdown: CheckoutTokoFoodShoppingDiscountBreakdown): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+                                             discountBreakdown: CheckoutTokoFoodShoppingDiscountBreakdown,
+                                             bottomTickerMessage: String): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
         // TODO: Confirm to PIC about positioning
         val transactionList = costBreakdown.mapToUiModelList().toMutableList()
         transactionList.add(1, discountBreakdown.mapToUiModel())
-        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(transactionList.toList())
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
+            transactionList.toList(),
+            bottomTickerMessage
+        )
     }
 
     private fun CheckoutTokoFoodShoppingCostBreakdown.mapToUiModelList(): List<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction> {

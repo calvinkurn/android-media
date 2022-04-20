@@ -247,10 +247,10 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                 ),
                 tickers = CheckoutTokoFoodTicker(
                     top = CheckoutTokoFoodTickerInfo(
-                        message = "This will be note relevant to any info and error on checkout"
+                        message = "Terkait COVID-19, waktu pengiriman diperpanjang untuk layanan kurir konvensional, instant, same day"
                     ),
                     bottom = CheckoutTokoFoodTickerInfo(
-                        message = "This will be note relevant to any info and error on checkout"
+                        message = "Pesanan dari resto ini tidak bisa dibatalkan, ya."
                     )
                 ),
                 errorsUnblocking = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\\\"\\\">Lihat</a>",
