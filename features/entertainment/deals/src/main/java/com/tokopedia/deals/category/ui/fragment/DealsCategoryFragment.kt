@@ -43,6 +43,7 @@ import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -51,7 +52,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoCleared
-import timber.log.Timber
 import javax.inject.Inject
 
 class DealsCategoryFragment : DealsBaseFragment(),
@@ -259,7 +259,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun showOrNotFilter(categories: List<Category>){
         val category = categories.single { it.id == categoryID }
         val isShowFilter = category.isCard == 1 && category.isHidden == 0
-        Timber.d(isShowFilter.toString())
         binding.container.root.showWithCondition(isShowFilter)
     }
 
@@ -400,9 +399,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
         getRecyclerView(view).tag = arguments?.getString(EXTRA_TAB_NAME, "") ?: ""
 
-        val isShowFilter = arguments?.getBoolean(EXTRA_IS_SHOW_FILTER, true) ?: true
-
-        binding.container.root.showWithCondition(isShowFilter)
+        binding.container.root.gone()
 
         (activity as DealsBaseActivity).searchBarActionListener = this
 
@@ -480,7 +477,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
 
         private const val EXTRA_TAB_NAME = ""
-        private const val EXTRA_IS_SHOW_FILTER = "is_show_filter"
 
         fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
