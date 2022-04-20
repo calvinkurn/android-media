@@ -11,7 +11,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.product.detail.bsinfo.view.ProductEducationalBottomSheet
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -99,8 +98,7 @@ class ProductDetailDevActivity : BaseActivity() {
         val educationalType = findViewById<TextFieldUnify>(R.id.pdp_educational_type)
         findViewById<UnifyButton>(R.id.pdp_educational_btn).setOnClickListener {
             val typeData = educationalType.textFieldInput.text.toString()
-            ProductEducationalBottomSheet().show(typeData, supportFragmentManager)
-
+            RouteManager.route(this, ApplinkConst.PRODUCT_EDUCATIONAL, typeData)
         }
     }
 }

@@ -55,6 +55,7 @@ public interface ApplinkConst {
     String SHOP_SETTINGS_NOTE = "tokopedia://setting/shop/note";
     String SHOP_SETTINGS_INFO = "tokopedia://setting/shop/info";
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
+    String PRODUCT_EDUCATIONAL = "tokopedia://product-edu/{type}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
