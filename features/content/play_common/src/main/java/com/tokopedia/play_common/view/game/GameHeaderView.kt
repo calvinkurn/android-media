@@ -49,19 +49,17 @@ class GameHeaderView : ConstraintLayout {
 
     var isEditable: Boolean = false
         set(value) {
-            if(field != value) {
-                field = value
+            field = value
 
-                binding.etPlayGameHeaderTitle.apply {
-                    isFocusable = value
-                    isFocusableInTouchMode = value
-                    isEnabled = value
+            binding.etPlayGameHeaderTitle.apply {
+                isFocusable = value
+                isFocusableInTouchMode = value
+                isEnabled = value
 
-                    setRawInputType(InputType.TYPE_CLASS_TEXT)
-                }
-
-                setFocus(value)
+                setRawInputType(InputType.TYPE_CLASS_TEXT)
             }
+
+            setFocus(value)
         }
 
     var title: String = ""

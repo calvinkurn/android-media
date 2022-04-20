@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
 import com.tokopedia.play_common.view.game.setupGiveaway
 import java.util.*
@@ -55,6 +56,10 @@ class GiveawayWidgetView : LinearLayout {
         binding.headerView.setupGiveaway(title)
     }
 
+    fun showTimer(shouldShow: Boolean) {
+        binding.timerRemaining.showWithCondition(shouldShow)
+    }
+
     fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
         binding.timerRemaining.apply {
             pause()
@@ -64,6 +69,10 @@ class GiveawayWidgetView : LinearLayout {
 
             resume()
         }
+    }
+
+    fun setEditable(isEditable: Boolean) {
+        binding.headerView.isEditable = isEditable
     }
 
     private fun setupView() {

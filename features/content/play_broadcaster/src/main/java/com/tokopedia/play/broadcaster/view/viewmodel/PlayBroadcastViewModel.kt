@@ -52,7 +52,6 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -1063,7 +1062,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     /** Handle Game Action */
     private fun handleClickGameOption(gameType: GameType) {
         when(gameType) {
-            GameType.Taptap -> { /** TODO: will handle it soon */ }
+            GameType.Giveaway -> { /** TODO: will handle it soon */ }
             GameType.Quiz -> _quizFormState.setValue { next() }
         }
     }

@@ -194,7 +194,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     /** Game */
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
-            override fun onIconClick() {
+            override fun onIconClicked() {
                 openSelectInteractiveSheet()
             }
         })
