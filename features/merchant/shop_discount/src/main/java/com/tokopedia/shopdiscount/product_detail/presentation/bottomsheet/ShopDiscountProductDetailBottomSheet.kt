@@ -38,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -79,7 +78,6 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         private const val PARAM_STATUS = "param_status"
         private const val PARAM_PARENT_PRODUCT_POSITION = "param_parent_product_position"
         private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         fun newInstance(
             productId: String,
@@ -129,7 +127,6 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     private fun redirectToManageDiscountPage(uiModel: ShopDiscountDetailReserveProductUiModel) {
         CoroutineScope(Dispatchers.Main).launch {
-            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
             context?.let {
                 val intent = RouteManager.getIntent(
                     it,

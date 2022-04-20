@@ -72,9 +72,9 @@ class ShopDiscountManageDiscountAdapter(
             .firstOrNull {
                 it.productId == productId
             }?.let {
-            newList.remove(it)
-            submitList(newList)
-        }
+                newList.remove(it)
+                submitList(newList)
+            }
     }
 
     fun getTotalAbusiveProduct(): Int {

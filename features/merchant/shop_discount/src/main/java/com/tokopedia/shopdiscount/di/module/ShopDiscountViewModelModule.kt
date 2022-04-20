@@ -10,9 +10,11 @@ import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSeller
 import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageViewModel
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListViewModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.viewmodel.ShopDiscountManageProductDiscountViewModel
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
 import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
 import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
+import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -64,5 +66,15 @@ abstract class ShopDiscountViewModelModule {
     @IntoMap
     @ViewModelKey(ShopDiscountManageDiscountViewModel::class)
     internal abstract fun provideShopDiscountManageDiscountViewModel(viewModel: ShopDiscountManageDiscountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopDiscountManageProductDiscountViewModel::class)
+    internal abstract fun provideShopDiscountManageProductDiscountViewModel(viewModel: ShopDiscountManageProductDiscountViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SetPeriodBottomSheetViewModel::class)
+    internal abstract fun provideSetPeriodBottomSheetViewModel(viewModel: SetPeriodBottomSheetViewModel): ViewModel
 
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,14 +88,6 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private var headerUnify: HeaderUnify? = null
     private var tickerAbusiveProducts: Ticker? = null
 
-
-    override fun initInjector() {
-        DaggerShopDiscountComponent.builder()
-            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
-            .build()
-            .inject(this)
-    }
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -116,6 +110,13 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         )
     }
 
+    override fun initInjector() {
+        DaggerShopDiscountComponent.builder()
+            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -128,15 +129,15 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getArgumentsData()
-        init()
-        setToolbarTitle()
+        initView()
+        configToolbar()
         setupSubmitButton()
         setupRecyclerView()
         observeLiveData()
         getSetupProductListData()
     }
 
-    private fun setToolbarTitle() {
+    private fun configToolbar() {
         headerUnify?.apply {
             title = when (mode) {
                 ShopDiscountManageDiscountMode.CREATE -> {
@@ -204,7 +205,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun init() {
+    private fun initView() {
         rvProductList = viewBinding?.rvSetupProductList
         containerButtonSubmit = viewBinding?.containerButtonSubmit
         buttonSubmit = viewBinding?.buttonSubmit
@@ -325,7 +326,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun observeBulkApplyProductListResult() {
-        viewModel.bulkApplyProductListResult.observe(viewLifecycleOwner, {
+        viewModel.updatedProductListData.observe(viewLifecycleOwner, {
             clearProductListData()
             setListSetupProductData(it)
             checkButtonSubmit()
@@ -499,7 +500,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             ShopDiscountManageProductDiscountActivity.PRODUCT_MANAGE_UI_MODEL,
             model.copy()
         )
-        startActivity(intent)
+        startActivityForResult(
+            intent,
+            ShopDiscountManageProductDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT
+        )
     }
 
     override fun onClickDeleteProduct(
@@ -548,6 +552,30 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     fun onBackPressed() {
         showDialogOnBackPressed()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            ShopDiscountManageProductDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_DISCOUNT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.extras?.getParcelable<ShopDiscountSetupProductUiModel.SetupProductData>(
+                        ShopDiscountManageProductDiscountActivity.PRODUCT_DATA_RESULT
+                    )?.let {
+                        applyUpdatedProductData(it)
+                    }
+                }
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun applyUpdatedProductData(updatedProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
+        viewModel.updateSingleProductData(
+            adapter.getAllProductData(),
+            updatedProductData
+        )
     }
 
 }

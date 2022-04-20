@@ -43,7 +43,7 @@
             tools:text="Product NameProduct" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_displayed_price"
+            android:id="@+id/text_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
@@ -54,14 +54,13 @@
             app:typographyWeight="bold"
             tools:text="Rp250.000" />
 
-
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icon_product"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginTop="6dp"
-            app:layout_constraintLeft_toLeftOf="@id/text_displayed_price"
-            app:layout_constraintTop_toBottomOf="@id/text_displayed_price"
+            app:layout_constraintLeft_toLeftOf="@id/text_original_price"
+            app:layout_constraintTop_toBottomOf="@id/text_original_price"
             app:srcCompat="@drawable/ic_shop_discount_product_icon"
             app:unify_image_corner_radius="0" />
 
@@ -72,13 +71,11 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="2dp"
             android:textColor="@color/Unify_NN600"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/icon_product"
             app:layout_constraintLeft_toRightOf="@id/icon_product"
             app:layout_constraintTop_toTopOf="@id/icon_product"
             app:typographyType="body_3"
-            tools:text="Total stok: 999"
-            tools:visibility="visible" />
+            tools:text="Total stok: 999" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

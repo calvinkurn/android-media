@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.utils.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountSetupProductItemLayoutBinding
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -126,7 +127,7 @@ class ShopDiscountSetupProductItemViewHolder(
                     }
                     shouldUseVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
                         String.format(
-                            getString(R.string.shop_discount_manage_discount_total_stock_non_variant_multi_loc_format),
+                            getString(R.string.shop_discount_manage_discount_total_stock_variant_multi_loc_format),
                             totalStock
                         )
                     }
@@ -224,7 +225,7 @@ class ShopDiscountSetupProductItemViewHolder(
             minDisplayedPrice = uiModel.minDisplayedPrice
             maxDisplayedPrice = uiModel.maxDisplayedPrice
         }
-        val formattedDisplayedPrice = getFormattedRangeString(
+        val formattedDisplayedPrice = RangeFormatterUtil.getFormattedRangeString(
             minDisplayedPrice,
             maxDisplayedPrice, {
                 it.getCurrencyFormatted()
@@ -244,7 +245,7 @@ class ShopDiscountSetupProductItemViewHolder(
         uiModel: ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData,
         productStatus: ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus
     ) {
-        val formattedOriginalPrice = getFormattedRangeString(
+        val formattedOriginalPrice = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minOriginalPrice,
             uiModel.maxOriginalPrice, {
                 it.getCurrencyFormatted()
@@ -269,7 +270,7 @@ class ShopDiscountSetupProductItemViewHolder(
         uiModel: ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData,
         productStatus: ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus
     ) {
-        val formattedDiscountPercentage = getFormattedRangeString(
+        val formattedDiscountPercentage = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minDiscountPercentage,
             uiModel.maxDiscountPercentage, {
                 String.format(
@@ -288,20 +289,4 @@ class ShopDiscountSetupProductItemViewHolder(
             labelDiscount.text = formattedDiscountPercentage
         }
     }
-
-    private fun getFormattedRangeString(
-        min: Int,
-        max: Int,
-        formatNonRange: (min: Int) -> String,
-        formatWithRange: (min: Int, max: Int) -> String
-    ): String {
-        return if (min.isZero() && max.isZero()) {
-            ""
-        } else if (min == max) {
-            formatNonRange(min)
-        } else {
-            formatWithRange(min, max)
-        }
-    }
-
 }
