@@ -115,6 +115,7 @@ private fun testSimilarProductButton(): ProductCardModelMatcher {
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.buttonSeeSimilarProduct] = isNotDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
