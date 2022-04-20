@@ -15,11 +15,9 @@ object CampaignWidgetTracking : BaseTrackerConst() {
     const val FORMAT_CREATIVE = "%s - %s"
     const val FORMAT_NAME = "/ - p%s - dynamic channel campaign - banner - %s"
     const val FORMAT_LABEL_CLICK = "%s - %s"
-    const val FORMAT_PROMO_ID = "%s - %s - %s - %s"
-    const val FORMAT_PROMO_ID_CLICK_CARD = "%s_%s_%s_%s"
+    const val FORMAT_PROMO_ID = "%s_%s_%s_%s"
     const val CLICK_SEE_ALL_CARD = "click view all card on dynamic channel campaign"
     const val CLICK_SEE_ALL_CHANNEL = "click view all on dynamic channel campaign"
-    const val DEFAULT_VALUE = ""
 
     fun getCampaignWidgetItemImpressionTracking(
         grid: ChannelGrid,
@@ -37,8 +35,8 @@ object CampaignWidgetTracking : BaseTrackerConst() {
                 Promotion(
                     id = String.format(
                         FORMAT_PROMO_ID,
-                        grid.id,
                         channel.id,
+                        grid.id,
                         channel.trackingAttributionModel.persoType,
                         channel.trackingAttributionModel.categoryId
                     ),
@@ -69,7 +67,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             promotions = listOf(
                 Promotion(
                     id = String.format(
-                        FORMAT_PROMO_ID_CLICK_CARD,
+                        FORMAT_PROMO_ID,
                         channel.id,
                         grid.id,
                         channel.trackingAttributionModel.persoType,
