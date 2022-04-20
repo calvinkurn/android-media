@@ -30,6 +30,7 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
@@ -95,6 +96,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         isDeletedFromBubble: Boolean,
         mediaType: String,
     ) {
+    }
+
+    override fun updateHeader(header: HeaderViewModel) {
+        setupToolbar(header)
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -289,27 +294,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         toolbarCommon = findViewById(R.id.toolbar_common)
     }
 
-    private fun setupToolbar() {
-        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
-        val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
-        selectedFeedAccount = when(selectedFeedAccountType) {
-            FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
-                name = userSession.shopName,
-                iconUrl = userSession.shopAvatar,
-                type = selectedFeedAccountType
-            )
-            FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
-                name = userSession.name,
-                iconUrl = userSession.profilePicture,
-                type = selectedFeedAccountType
-            )
-            else -> FeedAccountUiModel(
-                name = "",
-                iconUrl = "",
-                type = selectedFeedAccountType
-            )
-        }
-
+    private fun setupToolbar(headerViewModel: HeaderViewModel? = null) {
+        selectedFeedAccount = headerViewModel?.let {
+            generateFeedAccountFromHeaderViewModel(headerViewModel)
+        } ?: getSelectedFeedAccountFromIntent()
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
@@ -327,6 +315,43 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             visibility = View.VISIBLE
         }
         setSupportActionBar(toolbarCommon)
+    }
+
+    private fun getSelectedFeedAccountFromIntent(): FeedAccountUiModel {
+        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
+        val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
+        return when(selectedFeedAccountType) {
+            FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
+                name = userSession.shopName,
+                iconUrl = userSession.shopAvatar,
+                type = selectedFeedAccountType
+            )
+            FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
+                name = userSession.name,
+                iconUrl = userSession.profilePicture,
+                type = selectedFeedAccountType
+            )
+            else -> FeedAccountUiModel(
+                name = "",
+                iconUrl = "",
+                type = selectedFeedAccountType
+            )
+        }
+    }
+
+    private fun generateFeedAccountFromHeaderViewModel(headerViewModel: HeaderViewModel): FeedAccountUiModel {
+        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.UNKNOWN.value)
+        return if(selectedFeedAccountTypeValue == FeedAccountUiModel.Type.UNKNOWN.value)
+            FeedAccountUiModel(
+                name = headerViewModel.title,
+                iconUrl = headerViewModel.avatar,
+                type = when(headerViewModel.id) {
+                    userSession.userId -> FeedAccountUiModel.Type.BUYER
+                    userSession.shopId -> FeedAccountUiModel.Type.SELLER
+                    else -> FeedAccountUiModel.Type.UNKNOWN
+                }
+            )
+        else selectedFeedAccount
     }
 
     private fun backWithActionResult() {

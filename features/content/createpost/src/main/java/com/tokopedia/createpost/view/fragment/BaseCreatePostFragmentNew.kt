@@ -117,6 +117,14 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
+        activityListener?.updateHeader(
+            HeaderViewModel(
+                id = feedContentForm.authors.first().id,
+                title = feedContentForm.authors.first().name,
+                avatar = feedContentForm.authors.first().thumbnail,
+                badge = feedContentForm.authors.first().badge,
+            )
+        )
         createPostModel.shopName = feedContentForm.authors.first().name
         createPostModel.shopBadge = feedContentForm.authors.first().badge
         createPostModel.token = feedContentForm.token

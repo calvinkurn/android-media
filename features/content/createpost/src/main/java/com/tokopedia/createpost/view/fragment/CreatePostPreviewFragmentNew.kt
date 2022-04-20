@@ -30,6 +30,7 @@ import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.posttag.TagViewProvider
+import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
@@ -499,6 +500,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 return index
         }
         return -1
+
+    }
+
+    override fun updateHeader(header: HeaderViewModel) {
 
     }
 
