@@ -47,6 +47,8 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
     }
 
     private fun processData(data: ProductDetailGallery) {
+        if(data.items.isEmpty()) return finish()
+
         val isAutoPlay = DeviceConnectionInfo.isConnectWifi(this)
 
         val selectedPosition = data.getSelectedPosition()
