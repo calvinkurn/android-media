@@ -1,8 +1,8 @@
-package com.tokopedia.product.detail.bsinfo.di
+package com.tokopedia.product.detail.bseducational.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.product.detail.bsinfo.view.ProductEducationalBottomSheet
+import com.tokopedia.product.detail.bseducational.view.ProductEducationalBottomSheet
 import dagger.Component
 import dagger.Module
 import dagger.Provides

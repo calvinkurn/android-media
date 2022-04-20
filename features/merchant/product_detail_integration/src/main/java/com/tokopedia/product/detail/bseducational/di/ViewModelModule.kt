@@ -1,10 +1,10 @@
-package com.tokopedia.product.detail.bsinfo.di
+package com.tokopedia.product.detail.bseducational.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.product.detail.bsinfo.view.ProductEducationalViewModel
+import com.tokopedia.product.detail.bseducational.view.ProductEducationalViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

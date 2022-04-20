@@ -1,13 +1,13 @@
-package com.tokopedia.product.detail.bsinfo.view
+package com.tokopedia.product.detail.bseducational.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.detail.bsinfo.data.ProductEducational
-import com.tokopedia.product.detail.bsinfo.di.TYPE_ARG_NAMED
-import com.tokopedia.product.detail.bsinfo.usecase.GetProductEducationalUseCase
+import com.tokopedia.product.detail.bseducational.data.ProductEducational
+import com.tokopedia.product.detail.bseducational.di.TYPE_ARG_NAMED
+import com.tokopedia.product.detail.bseducational.usecase.GetProductEducationalUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

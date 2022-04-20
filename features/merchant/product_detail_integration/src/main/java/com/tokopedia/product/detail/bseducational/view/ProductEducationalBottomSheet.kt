@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.bsinfo.view
+package com.tokopedia.product.detail.bseducational.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,11 +13,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.product.detail.bsinfo.data.ProductEducationalResponse
-import com.tokopedia.product.detail.bsinfo.di.DaggerProductEducationalComponent
-import com.tokopedia.product.detail.bsinfo.di.ProductEducationalComponent
-import com.tokopedia.product.detail.bsinfo.di.ProductEducationalModule
-import com.tokopedia.product.detail.common.R
+import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.bseducational.data.ProductEducationalResponse
+import com.tokopedia.product.detail.bseducational.di.DaggerProductEducationalComponent
+import com.tokopedia.product.detail.bseducational.di.ProductEducationalComponent
+import com.tokopedia.product.detail.bseducational.di.ProductEducationalModule
 import com.tokopedia.product.detail.common.generateTheme
 import com.tokopedia.product.detail.common.goToWebView
 import com.tokopedia.unifycomponents.BottomSheetUnify

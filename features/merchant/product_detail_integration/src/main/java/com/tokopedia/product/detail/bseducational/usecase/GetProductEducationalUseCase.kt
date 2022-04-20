@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.bsinfo.usecase
+package com.tokopedia.product.detail.bseducational.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.product.detail.bsinfo.data.ProductEducational
+import com.tokopedia.product.detail.bseducational.data.ProductEducational
 import javax.inject.Inject
 
 class GetProductEducationalUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
