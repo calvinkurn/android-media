@@ -8,6 +8,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -74,7 +75,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
                 tvReward.show()
 
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
-                ivReward.setImage(newIconId = IconUnify.GIFT, newLightEnable = MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), newDarkEnable = MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start))
+               ivReward.setImage(newIconId = IconUnify.GIFT, newLightEnable = MethodChecker.getColor(itemView.context, unifyR.color.Unify_N0), newDarkEnable = MethodChecker.getColor(itemView.context, unifyR.color.Unify_N0))
                 tvReward.text = "Hadiah: ${leaderboard.reward}"
 
                 tvReward.setTextGradient(intArrayOf(MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)))
