@@ -480,7 +480,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 findViewById<Typography>(R.id.exchange_price_text).text = logistic.estimatedPriceFmt
                 findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_estimate_price)
                 findViewById<Typography>(R.id.estimated_price).text = getString(
-                    com.tokopedia.tradein.R.string.tradein_minus_asterick,
+                    com.tokopedia.tradein.R.string.tradein_asterick,
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(logistic.finalPrice.minus(tradeInHomePageVM.data?.productPrice ?: 0.0), true)
                 )
             }
@@ -511,6 +511,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
 
     private fun setUpDiagnosticReviewData(diagnosticReview: ArrayList<TradeInDetailModel.GetTradeInDetail.LogisticOption.DiagnosticReview>) {
         val textSize = 14.0f
+        view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)?.removeAllViews()
         if(diagnosticReview.size>=3) {
             for (i in 0..2) {
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
