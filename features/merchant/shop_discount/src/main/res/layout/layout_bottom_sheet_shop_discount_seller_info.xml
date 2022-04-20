@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/section_container"
     android:layout_width="match_parent"
@@ -7,9 +8,16 @@
     android:orientation="vertical"
     android:paddingBottom="16dp">
 
-    <com.tokopedia.unifycomponents.ticker.TickerViewPager
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-2dp"
+        android:layout_marginEnd="-2dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:tickerShapeType="loose"
+        tools:visibility="visible" />
 
     <com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
         android:id="@+id/quota_source_section"
