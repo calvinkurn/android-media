@@ -20,29 +20,30 @@ class AnswerQuizUseCase @Inject constructor(
         setGraphqlQuery(AnswerQuizUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
         setTypeClass(AnswerQuizResponse::class.java)
     }
 
     fun createParam(interactiveId: String, choiceId: String): HashMap<String, Any> {
         return hashMapOf(
-            INTERACTIVE_ID to interactiveId,
-            CHOICE_ID to choiceId
+            INPUT to hashMapOf(
+                INTERACTIVE_ID to interactiveId,
+                CHOICE_ID to choiceId
+            )
         )
     }
 
     companion object {
         private const val INTERACTIVE_ID = "interactiveID"
         private const val CHOICE_ID = "quizChoiceID"
+        private const val INPUT = "input"
 
         const val QUERY_NAME = "AnswerQuizUseCaseQuery"
         const val QUERY = """
-            mutation playAnswerQuiz(${'$'}$INTERACTIVE_ID: String, ${'$'}$CHOICE_ID: String){
+            mutation playAnswerQuiz(${'$'}input: PlayInteractiveAnswerQuizRequest!){
                 playInteractiveAnswerQuiz(
-                    req: {
-                        $INTERACTIVE_ID: ${'$'}$INTERACTIVE_ID,
-                        $CHOICE_ID: ${'$'}$CHOICE_ID
-                    }
+                    input:${'$'}input
                 ) {
                     correctAnswerID
                 }
