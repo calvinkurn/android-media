@@ -68,7 +68,6 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 identifier = identifier,
                 title = when (identifier) {
                     IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
-                    IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
                     IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
                     else -> ""
                 }

@@ -24,6 +24,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavExpandableViewHolder
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -232,7 +233,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
     }
 
     override fun onErrorTransactionListClicked(position: Int) {
