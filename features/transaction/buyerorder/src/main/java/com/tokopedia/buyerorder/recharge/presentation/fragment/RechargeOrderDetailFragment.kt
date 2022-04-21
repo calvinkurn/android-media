@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
@@ -471,7 +472,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.dialog_void_emoney_title))
-            dialog.setDescription(getString(R.string.dialog_void_emoney_description))
+            dialog.setDescription(MethodChecker.fromHtml(getString(R.string.dialog_void_emoney_description)))
             dialog.setPrimaryCTAText(getString(R.string.dialog_void_emoney_primary_cta_label))
             dialog.setPrimaryCTAClickListener {
                 rechargeViewModel.voidEmoneyData(orderId)
