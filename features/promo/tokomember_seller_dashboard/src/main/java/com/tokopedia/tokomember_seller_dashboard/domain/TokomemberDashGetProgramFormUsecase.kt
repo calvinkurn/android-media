@@ -56,6 +56,11 @@ const val TM_PROGRAM_FORM = """
     timePeriodList {
       name
       months
+      isSelected
+    }
+    programThreshold {
+      minThresholdLevel1
+      minThresholdLevel2
     }
   }
 }

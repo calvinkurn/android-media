@@ -4,33 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
+import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
+import com.tokopedia.tokomember_seller_dashboard.util.DELETE
+import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
+import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.SHARE
+import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokomemberDashProgramListFragment : BaseDaggerFragment() {
+class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     private var shopId = 6553698
     private var cardId = 3827
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
-        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId)
+        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId, this)
     }
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashProgramViewmodel: TokomemberDashProgramViewmodel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashProgramViewmodel::class.java)
+        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,12 +60,12 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment() {
         }
 
         observeViewModel()
-        tokomemberDashProgramViewmodel.getProgramList(shopId, cardId)
+        tokomemberDashCreateViewModel.getProgramList(shopId, cardId)
     }
 
     private fun observeViewModel() {
 
-        tokomemberDashProgramViewmodel.tokomemberProgramListResultLiveData.observe(viewLifecycleOwner, {
+        tokomemberDashCreateViewModel.tokomemberProgramListResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     tokomemberDashProgramAdapter.programSellerList = it.data.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
@@ -76,6 +86,38 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment() {
     companion object {
         fun newInstance(): TokomemberDashProgramListFragment {
             return TokomemberDashProgramListFragment()
+        }
+    }
+
+    override fun option(type: String) {
+        when {
+            type.equals(EXTEND) -> {
+                var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle("Yakin batalkan program?")
+                dialog.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog.setPrimaryCTAText("Lanjutkan")
+                dialog.setSecondaryCTAText("Batalkan Program")
+                dialog.setPrimaryCTAClickListener {
+                    Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
+                }
+                dialog.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
+            }
+            type.equals(CANCEL) -> {
+            }
+            type.equals(EDIT) -> {
+            }
+            type.equals(DELETE) -> {
+            }
+            type.equals(STOP) -> {
+            }
+            type.equals(SHARE) -> {
+            }
+            type.equals(DUPLICATE) -> {
+            }
         }
     }
 }

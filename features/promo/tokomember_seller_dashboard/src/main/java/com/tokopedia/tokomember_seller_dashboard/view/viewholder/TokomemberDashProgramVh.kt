@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
@@ -48,7 +49,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     lateinit var optionMenu: ImageUnify
 
     @SuppressLint("ResourcePackage")
-    fun bind(item: ProgramSellerListItem, shopId: Int) {
+    fun bind(item: ProgramSellerListItem, shopId: Int, programActions: ProgramActions) {
         programStatus = itemView.findViewById(R.id.programStatus)
         periodProgram = itemView.findViewById(R.id.periodProgram)
         programStartDate = itemView.findViewById(R.id.programStartDate)
@@ -86,7 +87,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         optionMenu.setOnClickListener {
             val bundle = Bundle()
             bundle.putString(BUNDLE_OPTION_MENU, Gson().toJson(item.actions))
-            TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager)
+            TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager, programActions)
         }
 
         btn_edit.setOnClickListener {

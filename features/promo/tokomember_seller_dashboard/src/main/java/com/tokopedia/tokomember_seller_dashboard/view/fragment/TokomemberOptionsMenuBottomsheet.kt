@@ -10,6 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
@@ -60,38 +61,56 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         tripleDotsList?.forEach {
             when {
                 it?.type.equals(EXTEND) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLOCK) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLOCK, EXTEND) }
                 }
                 it?.type.equals(CANCEL) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR, CANCEL) }
                 }
                 it?.type.equals(EDIT) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.EDIT) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.EDIT, EDIT) }
                 }
                 it?.type.equals(DELETE) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.DELETE) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.DELETE, DELETE) }
                 }
                 it?.type.equals(STOP) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.CLEAR, STOP) }
                 }
                 it?.type.equals(SHARE) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.SHARE, SHARE) }
                 }
                 it?.type.equals(DUPLICATE) -> {
-                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY) }
+                    it?.text?.let { it1 -> addOptionItem(it1, IconUnify.COPY, DUPLICATE) }
                 }
             }
         }
 
     }
 
-    private fun addOptionItem(text: String, icon: Int) {
+    private fun addOptionItem(text: String, icon: Int, type: String) {
         val childLayout = LayoutInflater.from(requireContext()).inflate(R.layout.tm_dash_options_menu_item, container_options_menu ,false)
         childLayout.findViewById<ImageUnify>(R.id.icon_options_menu).setImageDrawable(getIconUnifyDrawable(childLayout.context, icon))
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text
         container_options_menu.addView(childLayout)
         childLayout.setOnClickListener {
+            programActions.option(type)
+            when {
+                type.equals(EXTEND) -> {
 
+                }
+                type.equals(CANCEL) -> {
+                }
+                type.equals(EDIT) -> {
+                }
+                type.equals(DELETE) -> {
+                }
+                type.equals(STOP) -> {
+                }
+                type.equals(SHARE) -> {
+                }
+                type.equals(DUPLICATE) -> {
+                }
+            }
+            dismiss()
         }
     }
 
@@ -107,14 +126,18 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
     companion object {
 
         const val TAG = "TM_DASH_OPTIONS_MENU_BOTTOM_SHEET"
+        private lateinit var programActions: ProgramActions
+
 
         fun show(
             bundle: Bundle,
-            childFragmentManager: FragmentManager
+            childFragmentManager: FragmentManager,
+            programActions: ProgramActions
         ) {
             val tokomemberIntroBottomsheet = TokomemberOptionsMenuBottomsheet().apply {
                 arguments = bundle
             }
+            this.programActions = programActions
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)
         }
     }

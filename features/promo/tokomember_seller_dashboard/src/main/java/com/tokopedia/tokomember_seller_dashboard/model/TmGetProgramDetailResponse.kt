@@ -55,7 +55,11 @@ data class MembershipGetProgramForm(
 
 	@Expose
 	@SerializedName("timePeriodList")
-	val timePeriodList: List<TimePeriodListItem?>? = null
+	val timePeriodList: List<TimePeriodListItem?>? = null,
+
+	@Expose
+	@SerializedName("programThreshold")
+	val programThreshold: ProgramThreshold? = null
 )
 
 data class TimePeriodListItem(
@@ -64,7 +68,19 @@ data class TimePeriodListItem(
 	val months: Int? = null,
 	@Expose
 	@SerializedName("name")
-	val name: String? = null
+	val name: String? = null,
+	@Expose
+	@SerializedName("isSelected")
+	val isSelected: Boolean? = null
+)
+
+data class ProgramThreshold(
+	@Expose
+	@SerializedName("minThresholdLevel1")
+	val minThresholdLevel1: Int? = null,
+	@Expose
+	@SerializedName("minThresholdLevel2")
+	val minThresholdLevel2: Int? = null
 )
 
 data class DropdownLevelItem(

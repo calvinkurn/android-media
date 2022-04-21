@@ -73,6 +73,21 @@
         app:layout_constraintTop_toBottomOf="@id/tvDurasi"
         app:showNewNotification="false" />
 
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="6 Bulan"
+        app:chipType="normal"
+        app:isDashed="false"
+        app:layout_constraintStart_toEndOf="@+id/chipTwo"
+        app:layout_constraintTop_toBottomOf="@id/tvDurasi"
+        app:showNewNotification="false" />
+
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textFieldDuration"
         android:layout_width="0dp"

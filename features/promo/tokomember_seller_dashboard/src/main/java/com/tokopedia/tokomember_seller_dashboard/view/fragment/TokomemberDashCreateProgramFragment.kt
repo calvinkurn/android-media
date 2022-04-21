@@ -20,7 +20,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,11 +36,11 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashProgramViewmodel: TokomemberDashProgramViewmodel by lazy(
+    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashProgramViewmodel::class.java)
+        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
     }
     private var selectedCalendar: Calendar? = null
 
@@ -66,7 +66,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        tokomemberDashProgramViewmodel.getProgramInfo(0,6553698, ACTION_CREATE)
+        tokomemberDashCreateViewModel.getProgramInfo(0,6553698, ACTION_CREATE)
     }
 
     override fun getScreenName() = ""
@@ -76,7 +76,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        tokomemberDashProgramViewmodel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
                     renderProgramUI(it.data.membershipGetProgramForm)
@@ -115,6 +115,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
         chipOne.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.name
         chipTwo.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(1)?.name
+        chipThree.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(2)?.name
         context?.let {
             textFieldDuration?.setFirstIcon(R.drawable.tm_dash_calender)
         }
@@ -124,15 +125,22 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         chipOne.setOnClickListener {
             chipOne.chipType  = ChipsUnify.TYPE_SELECTED
             chipTwo.chipType = ChipsUnify.TYPE_NORMAL
+            chipThree.chipType = ChipsUnify.TYPE_NORMAL
         }
         chipTwo.setOnClickListener {
-            chipOne.chipType  = ChipsUnify.TYPE_NORMAL
             chipTwo.chipType = ChipsUnify.TYPE_SELECTED
+            chipOne.chipType  = ChipsUnify.TYPE_NORMAL
+            chipThree.chipType  = ChipsUnify.TYPE_NORMAL
+        }
+        chipThree.setOnClickListener {
+            chipThree.chipType = ChipsUnify.TYPE_SELECTED
+            chipOne.chipType  = ChipsUnify.TYPE_NORMAL
+            chipTwo.chipType = ChipsUnify.TYPE_NORMAL
         }
         //TODO 1. get program name
         btnCreateProgram?.setOnClickListener {
             if(fromEdit){
-                tokomemberDashProgramViewmodel.updateProgram(
+                tokomemberDashCreateViewModel.updateProgram(
                     ProgramUpdateDataInput(
                         actionType = "edit",
                         apiVersion = "3.0",
@@ -143,7 +151,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
                 )
             }
             else {
-                tokomemberDashProgramViewmodel.updateProgram(
+                tokomemberDashCreateViewModel.updateProgram(
                     ProgramUpdateDataInput(
                         actionType = "create",
                         apiVersion = "3.0",
