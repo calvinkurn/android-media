@@ -10,6 +10,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHo
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 
 class RightChatMessageViewHolder(
         itemView: View?,
@@ -49,14 +50,17 @@ class RightChatMessageViewHolder(
         super.bind(message)
         ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground(message)
-        if (message.parentReply!=null){
-            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
-            replyBubbleArea?.background = bg
+//        if (message.parentReply!=null){
+        //    replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+     //       replyBubbleArea?.background = bg
             customChatLayout?.background = bgForChatReplyBubble
+            replyBubbleArea?.updateReplyButtonState(false)
+            replyBubbleArea?.updateBackground(false)
+            replyBubbleArea?.setPadding(replyBubbleArea?.paddingLeft,replyBubbleArea?.paddingTop,replyBubbleArea?.paddingRight,50F.toDp().toInt())
             replyBubbleArea?.show()
-        }else{
-            replyBubbleArea?.hide()
-        }
+//        }else{
+//            replyBubbleArea?.hide()
+//        }
     }
 
     private fun bindBackground(message: MessageUiModel) {

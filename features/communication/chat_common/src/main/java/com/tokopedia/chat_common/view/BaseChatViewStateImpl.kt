@@ -21,7 +21,6 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState

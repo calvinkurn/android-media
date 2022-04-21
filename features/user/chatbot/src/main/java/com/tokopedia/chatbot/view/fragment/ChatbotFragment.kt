@@ -124,8 +124,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
-import kotlinx.android.synthetic.main.compose_message_area.new_comment
-import kotlinx.android.synthetic.main.compose_message_area2.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
 
@@ -710,6 +708,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             getViewState()?.onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
             enableLoadMore()
+            checkReplyBubbleOnboardingStatus()
         }
     }
 
@@ -1394,9 +1393,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun replyBubbleStateHandler(state: Boolean) {
         replyBubbleEnabled = state
-        if(replyBubbleEnabled){
-            checkReplyBubbleOnboardingStatus()
-        }
+//        if(replyBubbleEnabled){
+//            checkReplyBubbleOnboardingStatus()
+//        }
     }
 
     private fun checkReplyBubbleOnboardingStatus() {

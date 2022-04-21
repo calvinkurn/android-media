@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -22,6 +23,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     private var description: TextView? = null
     private var closeBtn: ImageView? = null
     private var container: ConstraintLayout? = null
+    private var replyIcon: IconUnify? = null
     var referredMsg: ParentReply? = null
     var listener: Listener? = null
         private set
@@ -54,26 +56,26 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     //todo review this
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
         view =this,
-        backgroundColor =  com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        topLeftRadius =  com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN100,
+        topLeftRadius =  com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
         elevation = R.dimen.dp_chatbot_2,
         shadowRadius =  R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
     //todo review this
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = this,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N50,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
         elevation =  R.dimen.dp_chatbot_2,
         shadowRadius =  R.dimen.dp_chatbot_1,
@@ -97,6 +99,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         description = findViewById(R.id.reply_message)
         closeBtn = findViewById(R.id.close_btn)
         container = findViewById(R.id.container)
+        replyIcon = findViewById(R.id.reply_icon)
     }
 
     private fun initOnClickListener(){
@@ -115,6 +118,13 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }else{
             hide()
         }
+    }
+
+    fun updateReplyButtonState(isLeft: Boolean) {
+        if (isLeft)
+            replyIcon?.hide()
+        else
+            replyIcon?.show()
     }
 
     private fun bindParentReplyData(parentReply: ParentReply, replyId: String?, message : String, from : String) {
@@ -155,8 +165,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referredMsg = null
     }
 
-    fun getStrokeWidthSenderDimenRes(): Int {
-        return R.dimen.dp_chatbot_3
+    private fun getStrokeWidthSenderDimenRes(): Int {
+        return R.dimen.unify_space_2
     }
 
     fun updateBackground(isLeft : Boolean){
