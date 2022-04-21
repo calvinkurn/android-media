@@ -1,20 +1,14 @@
 package com.tokopedia.imagepicker_insta.models
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created By : Jonathan Darwin on April 21, 2022
  */
 data class GetContentFormDomain(
-    @SerializedName("feedContentResponse")
-    val feedContentResponse: FeedContentResponse? = FeedContentResponse(),
+    @SerializedName("feed_content_form")
+    val feedContentForm: FeedContentForm = FeedContentForm()
 ) {
-    data class FeedContentResponse(
-        @SerializedName("feed_content_form")
-        val feedContentForm: FeedContentForm = FeedContentForm()
-    )
-
     data class FeedContentForm(
         @SerializedName("authors")
         val authors: List<Author> = listOf(),

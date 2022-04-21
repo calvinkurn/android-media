@@ -202,14 +202,14 @@ class PickerViewModel(
                 setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "content-tag", ""))
             }.executeOnBackground()
 
-            val feedAccountList = response.feedContentResponse?.feedContentForm?.authors?.map {
+            val feedAccountList = response.feedContentForm.authors.map {
                 FeedAccountUiModel(
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
                     type = FeedAccountUiModel.Type.UNKNOWN
                 )
-            } ?: emptyList()
+            }
 
             _feedAccountList.value = feedAccountList
             if(feedAccountList.isNotEmpty()) {
