@@ -889,7 +889,7 @@ class TestMainNavViewModel {
             getBuListUseCase.executeOnBackground()
         }.answers { listOf() }
 
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
         val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel }
         Assert.assertNull(errorStateBuDataModelRefreshed)

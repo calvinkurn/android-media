@@ -261,11 +261,12 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getBuListMenu() {
+    private suspend fun getBuListMenu(isExpanded: Boolean = false) {
         viewModelScope.launch {
             try {
 //                _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
                 allCategories.menus = listOf(InitialShimmerDataModel())
+                allCategories.isExpanded = isExpanded
                 updateWidget(allCategories, findBuStartIndexPosition())
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
                 getCategoryGroupUseCase.get().setStrategyCloudThenCache()
@@ -275,6 +276,7 @@ class MainNavViewModel @Inject constructor(
                 _networkProcessLiveData.postValue(true)
 //                _allCategoriesLiveData.postValue(result)
                 allCategories.menus = result
+                allCategories.isExpanded = isExpanded
                 updateWidget(allCategories, findBuStartIndexPosition())
             } catch (e: Exception) {
 //                val buShimmering = allCategoriesLiveData.value?.find {
@@ -288,11 +290,13 @@ class MainNavViewModel @Inject constructor(
                     if (allCategoriesCache.isNotEmpty()) {
 //                        _allCategoriesLiveData.postValue(allCategoriesCache)
                         allCategories.menus = allCategoriesCache
+                        allCategories.isExpanded = isExpanded
                         updateWidget(allCategories, findBuStartIndexPosition())
                     }
                     else {
 //                        _allCategoriesLiveData.postValue(listOf(ErrorStateBuDataModel()))
                         allCategories.menus = listOf(ErrorStateBuDataModel())
+                        allCategories.isExpanded = isExpanded
                         updateWidget(allCategories, findBuStartIndexPosition())
                     }
                 }
@@ -362,16 +366,11 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    fun refreshBuListdata() {
-        findBuStartIndexPosition()?.let {
-//            _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
-            allCategories.menus = listOf(InitialShimmerDataModel())
-            updateWidget(allCategories, findBuStartIndexPosition())
-            launchCatchError(coroutineContext, block = {
-                getBuListMenu()
-            }) {
-
-            }
+    fun refreshBuListData() {
+        launchCatchError(coroutineContext, block = {
+            getBuListMenu(isExpanded = true)
+        }) {
+            //no-op
         }
     }
 

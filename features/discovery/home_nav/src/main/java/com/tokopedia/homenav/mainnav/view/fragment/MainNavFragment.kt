@@ -9,7 +9,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -34,7 +33,6 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
-import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.CONTROL
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.EXP_NAME
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
@@ -48,12 +46,10 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.datamodel.ErrorStateBuDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.SeparatorDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
-import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -266,7 +262,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
     }
 
     override fun onErrorTransactionListClicked(position: Int) {
@@ -275,22 +271,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-//            populateCategoryAdapterData(listOf(ErrorStateBuDataModel()))
+            populateCategoryAdapterData(listOf(ErrorStateBuDataModel()))
 
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
-                        RouteManager.route(context, homeNavMenuDataModel.applink)
-                    }
-                } else {
-                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
-                }
-                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
-            } else {
-                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
-            }
+//            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+//                if(homeNavMenuDataModel.applink.isNotEmpty()){
+//                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+//                        RouteManager.route(context, homeNavMenuDataModel.applink)
+//                    }
+//                } else {
+//                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+//                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
+//                }
+//                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
+//            } else {
+//                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+//                hitClickTrackingBasedOnId(homeNavMenuDataModel)
+//            }
         }
     }
 

@@ -8,14 +8,15 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 /**
  * Created by dhaba
  */
-class HomeNavExpandableDataModel (
+data class HomeNavExpandableDataModel (
         val id: Int = 0,
-        var menus: List<Visitable<*>> = listOf()
+        var menus: List<Visitable<*>> = listOf(),
+        var isExpanded : Boolean = false
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
-    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean =
-            this == visitable
+    override fun isContentTheSame(visitable: HomeNavVisitable): Boolean = false
+//            this == visitable
 
 
     override fun type(factory: HomeNavTypeFactory): Int {

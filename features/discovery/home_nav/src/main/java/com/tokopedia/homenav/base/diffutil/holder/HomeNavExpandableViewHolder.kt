@@ -149,6 +149,9 @@ class HomeNavExpandableViewHolder (
 //            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 //        tv.text = "Content"
 //        containerLayout.addView(tv)
+        if (binding?.accordionExpandable?.accordionData?.isNotEmpty() == true) {
+            binding?.accordionExpandable?.removeGroup(0)
+        }
         homeNavExpandableDataModel = element
 
         val recyclerView = RecyclerView(itemView.context)
@@ -161,7 +164,14 @@ class HomeNavExpandableViewHolder (
 //            recyclerView.gone()
 //        }
         val title = itemView.context.getString(R.string.title_category_section)
-        val accordionData = AccordionDataUnify(title, DESCRIPTION, ICON_ACCORDION, ICON_ACCORDION, recyclerView, IS_NOT_EXPANDED)
+        val accordionData = AccordionDataUnify(
+            title,
+            DESCRIPTION,
+            ICON_ACCORDION,
+            ICON_ACCORDION,
+            recyclerView,
+            element.isExpanded
+        )
         accordionData.borderBottom = false
         accordionData.setContentPadding(
             WITHOUT_PADDING,
@@ -170,6 +180,9 @@ class HomeNavExpandableViewHolder (
             WITHOUT_PADDING
         )
         binding?.accordionExpandable?.addGroup(accordionData)
+        binding?.accordionExpandable?.setOnClickListener {
+            binding?.accordionExpandable?.accordionData?.get(0)?.isExpanded
+        }
         adapter?.submitList(element.menus)
     }
 
