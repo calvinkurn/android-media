@@ -23,6 +23,8 @@ object Constant {
     const val PM_PRO_EXPERT_TAB_INDEX = 2
     const val PM_PRO_ULTIMATE_TAB_INDEX = 3
 
+    const val PM_PRO_MIN_ORDER = 3
+    const val PM_PRO_MIN_INCOME = 350000L
 
     object Url {
         const val POWER_MERCHANT_EDU = "https://seller.tokopedia.com/edu/power-merchant/"

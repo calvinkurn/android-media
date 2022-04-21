@@ -35,7 +35,17 @@ class GradeBenefitPagerAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(page: PMGradeWithBenefitsUiModel) {
+            showTicker()
+            showTargetAchievement()
             setupBenefitListView(page)
+        }
+
+        private fun showTargetAchievement() {
+            binding.viewPmTargetAchievement
+        }
+
+        private fun showTicker() {
+            binding.tickerPmAchievementInfo
         }
 
         private fun setupBenefitListView(page: PMGradeWithBenefitsUiModel) {

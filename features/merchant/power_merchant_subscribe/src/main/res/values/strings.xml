@@ -224,5 +224,12 @@
 
     <string name="pm_benefit_package_upgrade">Raih</string>
     <string name="pm_benefit_package_downgrade">Pertahankan</string>
+    <string name="pm_achievement_target">Target Capaian</string>
+    <string name="pm_completed_order"><![CDATA[Pesanan Selesai: <font color="%1$s"><b>%2$s</b></font>]]></string>
+    <string name="pm_net_income"><![CDATA[Pendapatan Bersih: <font color="%1$s"><b>Rp%2$s</b></font>]]></string>
+    <string name="pm_shop_level"><![CDATA[Level Toko: <font color="#00AA5B"><b>%1$s</b></font>]]></string>
+    <string name="pm_completed_order_desc">Min. 3 pesanan dalam 30 hari terakhir</string>
+    <string name="pm_net_income_desc">Min. Rp350.000 dalam 30 hari terakhir</string>
+    <string name="pm_shop_level_desc">Level toko menentukan paket keuntungan</string>
 
 </resources>
