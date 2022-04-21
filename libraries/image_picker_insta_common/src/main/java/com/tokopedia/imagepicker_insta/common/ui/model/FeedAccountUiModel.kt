@@ -7,28 +7,14 @@ data class FeedAccountUiModel(
     val id: String,
     val name: String,
     val iconUrl: String,
-    val type: Type,
+    val badge: String,
 ) {
-    enum class Type(val value: Int) {
-        UNKNOWN(0),
-        BUYER(1),
-        SELLER(2),
-    }
-
     companion object {
         val Empty = FeedAccountUiModel(
             id = "",
             name = "",
             iconUrl = "",
-            type = Type.UNKNOWN,
+            badge = "",
         )
-
-        fun getTypeByValue(value: Int): Type {
-            return when(value) {
-                1 -> Type.BUYER
-                2 -> Type.SELLER
-                else -> Type.UNKNOWN
-            }
-        }
     }
 }

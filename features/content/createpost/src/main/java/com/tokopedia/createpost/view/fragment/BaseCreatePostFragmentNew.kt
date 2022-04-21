@@ -124,7 +124,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     id = it.id,
                     name = it.name,
                     iconUrl = it.thumbnail,
-                    type = FeedAccountUiModel.Type.UNKNOWN
+                    badge = it.badge,
                 )
             }
         )
