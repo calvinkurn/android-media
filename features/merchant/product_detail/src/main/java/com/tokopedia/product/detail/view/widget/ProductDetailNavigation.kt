@@ -133,7 +133,7 @@ class ProductDetailNavigation(
     ) {
         private var position: Int = -1
 
-        fun getPosition() = position
+        fun getPosition() = positionUpdater.invoke()
 
         fun updatePosition() {
             position = positionUpdater.invoke()
