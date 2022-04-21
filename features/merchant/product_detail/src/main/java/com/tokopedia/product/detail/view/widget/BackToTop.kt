@@ -35,6 +35,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         view.setOnClickListener {
             listener?.onClickProductDetailnavigation(BUTTON_POSITION, BUTTON_LABEL)
             smoothScrollToTop()
+            isClickable = false
         }
     }
 
@@ -96,6 +97,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
 
             if (layoutManager.findFirstVisibleItemPosition() == 0) {
                 toggle(false)
+                isClickable = true
             } else toggle(true)
         }
     }
