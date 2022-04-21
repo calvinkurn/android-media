@@ -41,6 +41,11 @@ class InteractiveQuizErrorView: ConstraintLayout {
         return binding.headerView
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mListener = null
+    }
+
     interface Listener {
         fun onRetryButtonClicked(view: InteractiveQuizErrorView)
     }
