@@ -67,6 +67,8 @@ interface ChatbotContract {
         fun sendInvoiceForArticle()
 
         fun replyBubbleStateHandler(state: Boolean)
+
+        fun visibilityReplyBubble(state: Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -151,9 +153,11 @@ interface ChatbotContract {
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
 
-        fun sendMessage(messageId: String, sendMessage: String,
-                        startTime: String, opponentId: String,
-                        parentReply: ParentReply?,
-                        onSendingMessage : () -> Unit)
+        fun sendMessage(
+            messageId: String, sendMessage: String,
+            startTime: String, opponentId: String,
+            parentReply: ParentReply?,
+            onSendingMessage: () -> Unit
+        )
     }
 }

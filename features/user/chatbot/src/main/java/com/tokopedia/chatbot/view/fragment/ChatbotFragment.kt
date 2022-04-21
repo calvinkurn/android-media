@@ -92,6 +92,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
+import com.tokopedia.chatbot.util.ChatReplyOnBoardingBubbleItemDecorator
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
@@ -104,6 +105,7 @@ import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
@@ -122,11 +124,13 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
+import kotlinx.android.synthetic.main.compose_message_area.new_comment
+import kotlinx.android.synthetic.main.compose_message_area2.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
 
 /**
- * @author by nisie on 23/11/18.
+ * @author by nisie oƒn 23/11/18.
  */
 private const val ACTION_CSAT_SMILEY_BUTTON_CLICKED = "click csat smiley button"
 private const val ACTION_QUICK_REPLY_BUTTON_CLICKED = "click quick reply button"
@@ -196,6 +200,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isFloatingInvoiceCancelled : Boolean = false
     private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
     private var replyBubbleEnabled : Boolean = false
+
+    @Inject
+    lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
+    private var recyclerView : RecyclerView? = null
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -306,10 +314,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         invoiceCancel = view.findViewById(R.id.iv_cross)
         sendButton = view.findViewById(R.id.send_but)
 
+        recyclerView = getRecyclerView(view)
         isFloatingInvoiceCancelled = false
         setChatBackground()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
+        getRecyclerView(view)?.addItemDecoration(ChatReplyOnBoardingBubbleItemDecorator(setOnBoardingPosition()))
         return view
+    }
+    var tempView : View?=null
+    private fun setOnBoardingPosition(): (View) -> Unit = {
+        if(tempView==null)
+            tempView = it
     }
 
     private fun checkForArticleEntry(uri: Uri): Boolean {
@@ -702,7 +717,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty()))
+                        (it is MessageUiModel && it.message.isEmpty()) || (it is FallbackAttachmentUiModel && it.attachmentType=="31"))
             }
             if (page == FIRST_PAGE) isFirstPage = false
             if (list.isNotEmpty()){
@@ -1023,7 +1038,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             replyBubbleContainer?.referredMsg,
             onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
         )
-        replyBubbleContainer?.referredMsg = null
+        replyBubbleOnBoarding.dismiss()
+        visibilityReplyBubble(false)
         clearChatText()
     }
 
@@ -1148,6 +1164,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
+        replyBubbleOnBoarding.flush()
         presenter.detachView()
     }
 
@@ -1365,6 +1382,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             when (it) {
                 REPLY -> {
+                    replyBubbleOnBoarding.dismiss()
                     replyBubbleContainer?.composeReplyData(messageUiModel,"",true)
                     Log.d("FATAL", "onReplyBottomSheetItemClicked: HIDE")
                     bottomSheetPage.dismiss()
@@ -1373,12 +1391,33 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun initReplyBubble(){
-        replyBubbleContainer.show()
-    }
 
     override fun replyBubbleStateHandler(state: Boolean) {
         replyBubbleEnabled = state
+        if(replyBubbleEnabled){
+            checkReplyBubbleOnboardingStatus()
+        }
+    }
+
+    private fun checkReplyBubbleOnboardingStatus() {
+        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+        recyclerView?.let {
+            if (!false){
+                replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
+                    adapter as ChatbotAdapter,
+                    it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()), context)
+              //  it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition())
+            }
+        }
+    }
+
+    override fun visibilityReplyBubble(state: Boolean) {
+        if (!state) {
+            replyBubbleContainer?.referredMsg = null
+            replyBubbleContainer.hide()
+        }else{
+            replyBubbleContainer.show()
+        }
     }
 }
 

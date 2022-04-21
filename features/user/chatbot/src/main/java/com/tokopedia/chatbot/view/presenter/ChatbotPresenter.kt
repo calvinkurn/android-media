@@ -288,9 +288,9 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
         if (agentMode!=null){
-            if (agentMode.mode==MODE_AGENT){
+            if (agentMode.sessionChange.mode==MODE_AGENT){
                 view.replyBubbleStateHandler(true)
-            }else if (agentMode.mode==MODE_BOT){
+            }else if (agentMode.sessionChange.mode==MODE_BOT){
                 view.replyBubbleStateHandler(false)
             }
         }

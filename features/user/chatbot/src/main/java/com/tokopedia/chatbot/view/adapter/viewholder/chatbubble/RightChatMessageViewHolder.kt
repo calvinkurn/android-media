@@ -32,12 +32,27 @@ class RightChatMessageViewHolder(
             Gravity.CENTER
     )
 
+    val bgForChatReplyBubble = ViewUtil.generateBackgroundWithShadow(
+        customChatLayout,
+        com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_0,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER
+    )
+
     override fun bind(message: MessageUiModel) {
         super.bind(message)
         ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground(message)
         if (message.parentReply!=null){
             replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+            replyBubbleArea?.background = bg
+            customChatLayout?.background = bgForChatReplyBubble
             replyBubbleArea?.show()
         }else{
             replyBubbleArea?.hide()

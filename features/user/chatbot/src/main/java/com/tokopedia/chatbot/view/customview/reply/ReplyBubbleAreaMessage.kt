@@ -101,7 +101,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun initOnClickListener(){
         closeBtn?.setOnClickListener {
-         //   container?.hide()
+            container?.hide()
         }
     }
 
