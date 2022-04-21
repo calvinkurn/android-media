@@ -1773,8 +1773,8 @@ class PlayViewModel @AssistedInject constructor(
             val winnerStatus = _winnerStatus.value
             val isRewardAvailable: Boolean = winnerStatus != null
 
-            delay(interactive.interactive.waitingDuration)
             if (isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
+                delay(interactive.interactive.waitingDuration) //waiting duration: wait for user winner message
                 winnerStatus?.let { processWinnerStatus(it) }
             } else {
                 showLeaderBoard()
