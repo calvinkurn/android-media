@@ -144,24 +144,17 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun getGroupStatisticsData(page: Int, search: String, sort: String, status: Int?, startDate: String,
-                               endDate: String, groupIds: List<String>, onSuccess: (GetTopadsDashboardGroupStatistics) -> Unit) {
-        val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
-        topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
+    fun getGroupStatisticsData(
+        page: Int, search: String, sort: String, status: Int?, startDate: String, endDate: String,
+        groupIds: List<String>, onSuccess: (GetTopadsDashboardGroupStatistics) -> Unit) {
+        launchCatchError(block = {
+            val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
 
-            }
+            val response = topAdsGetGroupStatisticsUseCase.execute(params).getTopadsDashboardGroupStatistics
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<GroupStatisticsResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<GroupStatisticsResponse>
-                response.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
-            }
+            onSuccess(response)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -499,7 +492,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetGroupDataUseCase.unsubscribe()
-        topAdsGetGroupStatisticsUseCase.unsubscribe()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         budgetRecomUseCase.cancelJobs()
