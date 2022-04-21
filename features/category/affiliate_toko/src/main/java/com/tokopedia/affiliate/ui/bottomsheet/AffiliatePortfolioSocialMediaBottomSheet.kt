@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
-import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
-import com.tokopedia.affiliate.AFFILIATE_TWITTER_REGEX
-import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -108,18 +105,19 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         updateList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
         for (item in checkedSocialList){
             val portfolioDataItemText = portfolioSharedViewModel.finEditTextModelWithId(item.id)?.text
+            val isFirstTime = portfolioSharedViewModel.finEditTextModelWithId(item.id)?.firstTime
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(
                     AffiliatePortfolioUrlModel(
                         AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(R.string.affiliate_link)} ${item.name}",
-                    portfolioDataItemText,item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex)
+                    portfolioDataItemText,item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = isFirstTime)
                     )
                 )
             }else {
                 updateList.add(
                     AffiliatePortfolioUrlModel(
                         AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(R.string.affiliate_link)} ${item.name}",
-                    "",item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex)
+                    item.defaultText,item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)
                     )
                 )
             }
@@ -143,24 +141,25 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
             AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: instagram.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_INSTAGRAM_REGEX
+                AFFILIATE_INSTAGRAM_REGEX,
+                INSTAGRAM_DEFAULT
             ),
             AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: tiktok.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_TIKTOK_REGEX
+                AFFILIATE_TIKTOK_REGEX,TIKTOK_DEFAULT
             ),
             AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: youtube.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_YT_REGEX
+                AFFILIATE_YT_REGEX,YOUTUBE_DEFAULT
             ),
             AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: facebook.com/tokopedia",false,isChecked = false, false),
+                "Contoh: facebook.com/tokopedia",false,isChecked = false, false,defaultText = FACEBOOK_DEFAULT),
             AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: twitter.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_TWITTER_REGEX
+                AFFILIATE_TWITTER_REGEX,TWITTER_DEFAULT
             ),
             AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: tokopedia.com/tokopedia",false,isChecked = false, false),
+                "Contoh: tokopedia.com/tokopedia",false,isChecked = false, false,defaultText = WWW),
             AffiliateShareModel("Lainnya",null,"others", 0,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: yourwebiste.com",false, isChecked = false,false)
         )
