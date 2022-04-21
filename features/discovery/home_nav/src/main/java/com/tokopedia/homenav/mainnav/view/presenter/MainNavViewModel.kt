@@ -107,11 +107,9 @@ class MainNavViewModel @Inject constructor(
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
-//    val allCategoriesLiveData: LiveData<List<Visitable<*>>>
-//        get() = _allCategoriesLiveData
-//    private val _allCategoriesLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
     private var allCategoriesCache = listOf<Visitable<*>>()
     private lateinit var allCategories : HomeNavExpandableDataModel
+    var isCategoryAccordionExpanded = false
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -217,7 +215,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
+        allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES, isExpanded = isCategoryAccordionExpanded)
         this.add(allCategories)
         this.add(SeparatorDataModel())
     }
@@ -264,7 +262,6 @@ class MainNavViewModel @Inject constructor(
     private suspend fun getBuListMenu(isExpanded: Boolean = false) {
         viewModelScope.launch {
             try {
-//                _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
                 allCategories.menus = listOf(InitialShimmerDataModel())
                 allCategories.isExpanded = isExpanded
                 updateWidget(allCategories, findBuStartIndexPosition())
@@ -274,27 +271,21 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-//                _allCategoriesLiveData.postValue(result)
                 allCategories.menus = result
                 allCategories.isExpanded = isExpanded
                 updateWidget(allCategories, findBuStartIndexPosition())
             } catch (e: Exception) {
-//                val buShimmering = allCategoriesLiveData.value?.find {
-//                    it is InitialShimmerDataModel
-//                }
 
                 val buShimmering = allCategories.menus.find {
                     it is InitialShimmerDataModel
                 }
                 buShimmering?.let {
                     if (allCategoriesCache.isNotEmpty()) {
-//                        _allCategoriesLiveData.postValue(allCategoriesCache)
                         allCategories.menus = allCategoriesCache
                         allCategories.isExpanded = isExpanded
                         updateWidget(allCategories, findBuStartIndexPosition())
                     }
                     else {
-//                        _allCategoriesLiveData.postValue(listOf(ErrorStateBuDataModel()))
                         allCategories.menus = listOf(ErrorStateBuDataModel())
                         allCategories.isExpanded = isExpanded
                         updateWidget(allCategories, findBuStartIndexPosition())
@@ -709,16 +700,6 @@ class MainNavViewModel @Inject constructor(
             return _mainNavListVisitable.indexOf(it)
         }
     }
-
-//    private fun findExistingEndBuIndexPosition(): Int? {
-//        val findHomeMenu = allCategoriesLiveData.value?.findLast {
-//            it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
-//        }
-//        findHomeMenu?.let{
-//            return _mainNavListVisitable.indexOf(it)
-//        }
-//        return null
-//    }
 
     fun findMenu(menuId: Int): HomeNavMenuDataModel? {
         val findExistingMenu = _mainNavListVisitable.find {
