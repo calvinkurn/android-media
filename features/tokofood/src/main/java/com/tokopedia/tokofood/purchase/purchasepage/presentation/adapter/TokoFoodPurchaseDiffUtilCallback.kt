@@ -49,7 +49,9 @@ class TokoFoodPurchaseDiffUtilCallback(private val oldList: List<Any>,
                 oldItem == newItem && oldItem.isLoading == newItem.isLoading
             }
             oldItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> oldItem == newItem
-            oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> oldItem == newItem
+            oldItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel && newItem is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
+                oldItem == newItem && oldItem.isLoading == newItem.isLoading
+            }
             else -> false
         }
     }

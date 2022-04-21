@@ -5,7 +5,15 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 
 data class TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel(
         var totalAmount: Long = 0L
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {
+
+    var isLoading = false
+
+    override fun copyWithLoading(isLoading: Boolean): CanLoadPartially {
+        return this.copy().apply {
+            this.isLoading = isLoading
+        }
+    }
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

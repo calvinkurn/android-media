@@ -291,9 +291,8 @@ object TokoFoodPurchaseUiModelMapper {
 
     private fun mapTotalAmountUiModel(isEnabled: Boolean,
                                       total: CheckoutTokoFoodShoppingTotal): TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel().apply {
-            totalAmount = total.cost.toLong()
-            this.isEnabled = true
+        return TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel(total.cost.toLong()).apply {
+            this.isEnabled = isEnabled
         }
     }
 

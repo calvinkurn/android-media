@@ -18,20 +18,33 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
 
     override fun bind(element: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            if (element.isEnabled) {
-                totalAmountPurchase.amountCtaView.isEnabled = true
-                totalAmountPurchase.setCtaText("Pilih Pembayaran")
-                totalAmountPurchase.setLabelTitle("Total Tagihan")
-                val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
-                totalAmountPurchase.setAmount(totalAmountString)
-                totalAmountPurchase.amountCtaView.setOnClickListener {
-                    listener.onButtonCheckoutClicked()
+            when {
+                element.isLoading -> {
+                    totalAmountPurchase.isTotalAmountLoading.let { isLoading ->
+                        if (!isLoading) {
+                            totalAmountPurchase.isTotalAmountLoading = true
+                        }
+                    }
                 }
-            } else {
-                totalAmountPurchase.amountCtaView.isEnabled = false
-                totalAmountPurchase.setCtaText("Pilih Pembayaran")
-                totalAmountPurchase.setLabelTitle("Total Tagihan")
-                totalAmountPurchase.setAmount("-")
+                element.isEnabled -> {
+                    if (totalAmountPurchase.isTotalAmountLoading) {
+                        totalAmountPurchase.isTotalAmountLoading = false
+                    }
+                    totalAmountPurchase.amountCtaView.isEnabled = true
+                    totalAmountPurchase.setCtaText("Pilih Pembayaran")
+                    totalAmountPurchase.setLabelTitle("Total Tagihan")
+                    val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
+                    totalAmountPurchase.setAmount(totalAmountString)
+                    totalAmountPurchase.amountCtaView.setOnClickListener {
+                        listener.onButtonCheckoutClicked()
+                    }
+                }
+                else -> {
+                    totalAmountPurchase.amountCtaView.isEnabled = false
+                    totalAmountPurchase.setCtaText("Pilih Pembayaran")
+                    totalAmountPurchase.setLabelTitle("Total Tagihan")
+                    totalAmountPurchase.setAmount("-")
+                }
             }
         }
     }
