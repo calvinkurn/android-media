@@ -2,12 +2,16 @@ package com.tokopedia.product_bundle.activity
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.oldproductbundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.newInstance
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ProductBundleActivity : BaseSimpleActivity() {
 
@@ -16,6 +20,13 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes() = R.layout.activity_product_bundle
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (getRemoteConfigEnableOldBundleSelectionPage()) {
+            directToOldActivity()
+        }
+    }
 
     override fun getNewFragment(): Fragment {
         return intent?.data?.let {
@@ -43,4 +54,17 @@ class ProductBundleActivity : BaseSimpleActivity() {
             finish()
         }
     }
+
+    private fun directToOldActivity() {
+        val newIntent = Intent(this, ProductBundleActivity::class.java)
+        newIntent.data = intent.data
+        startActivity(newIntent)
+        finish()
+    }
+
+    private fun getRemoteConfigEnableOldBundleSelectionPage(): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_BUNDLE_SELECTION_PAGE, false)
+    }
+
 }

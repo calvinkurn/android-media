@@ -286,4 +286,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
 
     public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
+
+    public static final String ENABLE_OLD_BUNDLE_SELECTION_PAGE = "android_enable_old_bundle_selection_page";
 }
