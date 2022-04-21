@@ -1,10 +1,13 @@
 package com.tokopedia.tokomember_common_widget.util
 
 import androidx.annotation.IntDef
-import com.tokopedia.tokomember_common_widget.util.ANIMATIONTYPE.Companion.LEFT_ANIMATION
-import com.tokopedia.tokomember_common_widget.util.ANIMATIONTYPE.Companion.RIGHT_ANIMATION
+import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.LEFT_ANIMATION
+import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.RIGHT_ANIMATION
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
+import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CREATE
+import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.DETAIL
+import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.EXTEND
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(PREMIUM, VIP)
@@ -17,10 +20,21 @@ annotation class MemberType {
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(LEFT_ANIMATION, RIGHT_ANIMATION)
-annotation class ANIMATIONTYPE {
+annotation class AnimationType {
     companion object {
         const val LEFT_ANIMATION = 0
         const val RIGHT_ANIMATION = 1
     }
 }
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(CREATE, DETAIL, EXTEND)
+annotation class ProgramType {
+    companion object {
+        const val CREATE = 0
+        const val DETAIL = 1
+        const val EXTEND = 2
+    }
+}
+
 

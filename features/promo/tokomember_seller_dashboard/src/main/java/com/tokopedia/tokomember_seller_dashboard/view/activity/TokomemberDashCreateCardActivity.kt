@@ -5,12 +5,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCreateCardFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashIntroFragment
 
 class TokomemberDashCreateCardActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return TokomemberDashCreateCardFragment.newInstance()
+        return TokomemberDashCreateCardFragment.newInstance(intent.extras?:Bundle())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,4 +17,11 @@ class TokomemberDashCreateCardActivity : BaseSimpleActivity() {
         toolbar.hide()
     }
 
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            return super.onBackPressed()
+        }
+    }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
@@ -66,7 +67,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramInfo(0,6553698, ACTION_CREATE)
+        callGQL(arguments?.getInt("PROGRAM_TYPE")?:0 ,arguments?.getInt("SHOP_ID")?:0  )
     }
 
     override fun getScreenName() = ""
@@ -86,6 +87,16 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
+        when(programType){
+            ProgramType.CREATE ->{
+                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
+            }
+            ProgramType.DETAIL ->{}
+            ProgramType.EXTEND ->{}
+        }
     }
 
     private fun renderHeader() {
@@ -198,14 +209,13 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            fragmentManager?.let {
+            childFragmentManager.let {
                 datepickerObject.show(it, "")
             }
             datepickerObject.setOnDismissListener {
                 textFieldDuration?.textInputLayout?.editText?.setText(( "$date $month $year"))
             }
         }
-
     }
 
      fun getDate(): Calendar? {
@@ -218,6 +228,5 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         fun newInstance(extras: Bundle?) = TokomemberDashCreateProgramFragment().apply {
             arguments = extras
         }
-
     }
 }

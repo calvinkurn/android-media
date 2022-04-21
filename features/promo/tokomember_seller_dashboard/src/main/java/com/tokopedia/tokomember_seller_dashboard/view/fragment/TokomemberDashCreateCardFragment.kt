@@ -1,7 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
@@ -54,6 +52,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     private var mCardBgTemplateList = arrayListOf<CardTemplateImageListItem>()
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
+    private var shopID = 0
     private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
@@ -68,7 +67,6 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
         TokomemberCardColorAdapter(arrayListOf(), TokomemberCardColorFactory(this))
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +78,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        tokomemberDashCreateViewModel.getCardInfo(3827)
+        tokomemberDashCreateViewModel.getCardInfo(arguments?.getInt("cardID")?:0)
         renderHeader()
     }
 
@@ -129,7 +127,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
         tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.observe(viewLifecycleOwner,{
             when(it) {
                 is Success -> {
-                     startActivity(Intent(this.context , TokomemberDashCreateProgramActivity::class.java))
+                     openProgramCreationPage()
                 }
                 is Fail -> {
                     view?.let { v -> Toaster.build(v,it.throwable.localizedMessage?:"",Toaster.LENGTH_LONG , Toaster.TYPE_ERROR).show()
@@ -139,7 +137,17 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
         })
     }
 
+    private fun openProgramCreationPage() {
+        val bundle = Bundle()
+        bundle.putInt("PROGRAM_TYPE",0)
+        bundle.putInt("SHOP_ID",shopID)
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.add(R.id.containerParent,TokomemberDashCreateProgramFragment.newInstance(bundle), "program")
+            ?.addToBackStack("program")?.commit()
+    }
+
     private fun renderCardUi(data: CardDataTemplate) {
+        shopID = data.card?.shopID?:0
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
             tokomemberDashCreateViewModel.modifyShopCard(
@@ -163,7 +171,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
 
     @SuppressLint("NotifyDataSetChanged")
     private fun renderBgTemplateList(data: TokomemberCardBgItem) {
-        (rvCardBg.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
+        (rvCardBg.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         val layoutManagerBg = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvCardBg.layoutManager = layoutManagerBg
         rvCardBg.adapter = adapterBg
@@ -176,7 +184,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
 
     @SuppressLint("NotifyDataSetChanged")
     private fun renderColorTemplateList(data: TokomemberCardColorItem) {
-        (rvColor.getItemAnimator() as SimpleItemAnimator).supportsChangeAnimations = false
+        (rvColor.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvColor.layoutManager = layoutManager
@@ -292,9 +300,10 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getBackgroundPallete(colorCode: String, arrayList: ArrayList<String>) {
-        val x = TokomemberCardMapper.getBackground(mCardBgTemplateList, colorCode, arrayList)
-        adapterBg.addItems(x.tokoVisitableCardBg)
+        val bgItem = TokomemberCardMapper.getBackground(mCardBgTemplateList, colorCode, arrayList)
+        adapterBg.addItems(bgItem.tokoVisitableCardBg)
         adapterBg.notifyDataSetChanged()
     }
 
@@ -306,9 +315,10 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
 
     companion object {
 
-        fun newInstance(): TokomemberDashCreateCardFragment {
-            return TokomemberDashCreateCardFragment()
+        fun newInstance(bundle: Bundle): TokomemberDashCreateCardFragment {
+            return TokomemberDashCreateCardFragment().apply {
+                arguments = bundle
+            }
         }
-
     }
 }

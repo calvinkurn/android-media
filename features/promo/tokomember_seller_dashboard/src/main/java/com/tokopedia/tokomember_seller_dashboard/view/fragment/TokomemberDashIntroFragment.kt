@@ -3,6 +3,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -16,32 +17,32 @@ import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
+import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroButtonVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
 
-private const val ARG_OPEN_BS = "openBS"
-private const val ARG_SHOP_ID = "shopId"
-
-class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapterListener {
+class TokomemberDashIntroFragment : BaseDaggerFragment(),
+    TokomemberIntroButtonVh.TokomemberIntroButtonListener {
 
     private var rootView: RelativeLayout? = null
     private var viewFlipperIntro : ViewFlipper?=null
     private var openBS: Boolean = false
     private var videoUrl:String? =null
+    private var cardID:Int?=null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -91,6 +92,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
             when (it) {
                 is Success -> {
                     viewFlipperIntro?.displayedChild = 1
+                    cardID = it.data.membershipGetSellerOnboarding?.cardID.toIntOrZero()
                     populateUI(it.data )
                 }
                 is Fail -> {
@@ -133,9 +135,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
         }
         videoUrl = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:""
          setVideoView(
-            videoUrl?:"",
-            "1:1"
-        )
+            videoUrl?:"")
 
         val animation2: Animation =
             AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
@@ -153,16 +153,16 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
     }
 
     private fun setVideoView(
-        url: String,
-        ratio: String,
-    ) {
+        url: String) {
         context?.let {
             frame_video?.setVideoPlayer(url)
         }
     }
 
-    override fun onItemDisplayed(tokoIntroItem: Visitable<*>, position: Int) {
-
+    override fun onButtonItemClick(position: Int) {
+        startActivity(Intent(this.context, TokomemberDashCreateCardActivity::class.java).putExtra(
+            "cardID",cardID?:0
+        ))
     }
 
     private fun renderHeader(){

@@ -1,63 +1,68 @@
 package com.tokopedia.tokomember_seller_dashboard.view.animation
 
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroTextVh
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.view.View
 
-open class TokomemberIntroItemAnimator : DefaultItemAnimator() {
+object  TokomemberIntroItemAnimator {
+    var DURATION: Long = 1000
 
-/*    override fun animateAdd(holder: RecyclerView.ViewHolder?): Boolean {
-        if (holder is TokomemberIntroTextVh){
-            setAnimation(holder)
+     fun fromLeftToRight(
+         itemView: View,
+         position: Int,
+         isAttach: Boolean,
+         animListener: Animator.AnimatorListener
+     ) {
+        var i = position
+        if (!isAttach) {
+            i = -1
         }
-        return true
-    }*/
-
-    override fun canReuseUpdatedViewHolder(
-        viewHolder: RecyclerView.ViewHolder,
-        payloads: MutableList<Any>
-    ): Boolean {
-        return true
+        val notFirsItem = i == -1
+        i += 1
+        itemView.translationX = -(getDeviceWidth(itemView))
+        itemView.alpha = 0f
+        val animatorSet = AnimatorSet()
+        val animatorTranslateX: ObjectAnimator =
+            ObjectAnimator.ofFloat(itemView, "translationX", -(getDeviceWidth(itemView)), 0F)
+        val animatorAlpha = ObjectAnimator.ofFloat(itemView, "alpha", 1f)
+        ObjectAnimator.ofFloat(itemView, "alpha", 0f).start()
+        animatorTranslateX.startDelay = if (notFirsItem) DURATION else i * DURATION
+        animatorTranslateX.duration = (if (notFirsItem) 2 else 1) * DURATION
+        animatorTranslateX.addListener(animListener)
+        animatorSet.playTogether(animatorTranslateX, animatorAlpha)
+        animatorSet.start()
     }
 
-    override fun animatePersistence(
-        viewHolder: RecyclerView.ViewHolder,
-        preInfo: ItemHolderInfo,
-        postInfo: ItemHolderInfo
-    ): Boolean {
-        if (viewHolder is TokomemberIntroTextVh){
-            setAnimation(viewHolder)
+     fun fromRightToLeft(
+         itemView: View,
+         position: Int,
+         isAttach: Boolean,
+         animListener: Animator.AnimatorListener
+     ) {
+        var i = position
+        if (!isAttach) {
+            i = -1
         }
-        return true
+        val notFirsItem = i == -1
+        i += 1
+        itemView.translationX = (getDeviceWidth(itemView)+ itemView.x)
+        itemView.alpha = 0f
+        val animatorSet = AnimatorSet()
+        val animatorTranslateX =
+            ObjectAnimator.ofFloat(itemView, "translationX", getDeviceWidth(itemView)+ itemView.x, 0f)
+        val animatorAlpha = ObjectAnimator.ofFloat(itemView, "alpha", 1f)
+        ObjectAnimator.ofFloat(itemView, "alpha", 0f).start()
+        animatorTranslateX.startDelay = if (notFirsItem) DURATION else i * DURATION
+        animatorTranslateX.duration = (if (notFirsItem) 2 else 1) * DURATION
+        animatorTranslateX.addListener(animListener)
+        animatorSet.playTogether(animatorTranslateX, animatorAlpha)
+        animatorSet.start()
     }
 
-    override fun animateChange(
-        oldHolder: RecyclerView.ViewHolder,
-        newHolder: RecyclerView.ViewHolder,
-        preInfo: ItemHolderInfo,
-        postInfo: ItemHolderInfo
-    ): Boolean {
-        if (newHolder is TokomemberIntroTextVh){
-            setAnimation(newHolder)
-        }
-        return true
+    private fun getDeviceWidth(itemView: View): Float {
+        val metrics = itemView.context.resources.displayMetrics
+        return metrics.widthPixels.toFloat()
     }
+}
 
-    override fun animateAdd(holder: RecyclerView.ViewHolder?): Boolean {
-        if (holder is TokomemberIntroTextVh){
-            setAnimation(holder)
-        }
-        return true
-    }
-
-
-    private fun setAnimation(viewHolder: RecyclerView.ViewHolder) {
-            val animation: Animation =
-                AnimationUtils.loadAnimation(viewHolder.itemView.context, R.anim.tm_dash_intro_benefit_left)
-        viewHolder.itemView.startAnimation(animation)
-
-        }
-    }
