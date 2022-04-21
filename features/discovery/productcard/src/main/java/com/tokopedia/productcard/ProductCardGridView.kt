@@ -18,7 +18,7 @@ class ProductCardGridView: BaseProductCardGridView {
         init()
     }
 
-    fun init() {
+    private fun init() {
         View.inflate(context, R.layout.product_card_grid_layout, this)
     }
 }
