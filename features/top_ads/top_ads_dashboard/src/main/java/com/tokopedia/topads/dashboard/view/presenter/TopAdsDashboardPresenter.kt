@@ -266,12 +266,13 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         status: Int?, startDate: String, endDate: String, goalId: Int,
         onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit,
     ) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search,
-            sort, status, startDate, endDate, goalId = goalId)
-
         launchCatchError(block = {
+            val requestParams = topAdsGetGroupProductDataUseCase.setParams(
+                groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
+
             val nonGroupResponse =
                 topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
+
             if (nonGroupResponse.data.isEmpty()) {
                 onEmpty()
             } else {
@@ -283,22 +284,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getInsight(resources: Resources, onSuccess: ((InsightKeyData) -> Unit)) {
-        topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
-        val requestParams = topAdsInsightUseCase.setParams()
-        topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+        launchCatchError(block = {
+            val requestParams = topAdsInsightUseCase.setParams()
+            val param = GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword)
 
-            override fun onError(e: Throwable?) {}
+            val responseData = topAdsInsightUseCase.execute(param, requestParams)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<JsonObject>
-                val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
-                val type = object : TypeToken<InsightKeyData>() {}.type
-                val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
-                onSuccess(data)
-            }
+            onSuccess.invoke(responseData)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -522,7 +516,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGroupActionUseCase.unsubscribe()
-        topAdsInsightUseCase.unsubscribe()
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
         topAdsEditUseCase.unsubscribe()

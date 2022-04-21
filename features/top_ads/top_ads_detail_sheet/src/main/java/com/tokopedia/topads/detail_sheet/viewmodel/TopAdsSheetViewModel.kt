@@ -54,11 +54,13 @@ class TopAdsSheetViewModel @Inject constructor(
     }
 
     fun getGroupProductData(groupId: Int, onSuccess: (List<WithoutGroupDataItem>) -> Unit) {
-        val requestParams =
-            topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
         launchCatchError(block = {
+            val requestParams =
+                topAdsGetGroupProductDataUseCase.setParams(groupId, 0, "", "", null, "", "")
+
             val nonGroupResponse =
                 topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
+
             onSuccess(nonGroupResponse.data)
         }, onError = {})
     }

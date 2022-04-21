@@ -72,10 +72,11 @@ class GroupDetailViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val param = topAdsGetGroupProductDataUseCase.setParams(
-                groupId, page, search, sort, status, startDate, endDate, goalId = goalId
-            )
+                groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
+
             val nonGroupResponse =
                 topAdsGetGroupProductDataUseCase.execute(param).topadsDashboardGroupProducts
+
             if (nonGroupResponse.data.isEmpty()) {
                 onEmpty.invoke()
             } else {

@@ -37,29 +37,24 @@ class TopAdsInsightPresenter @Inject constructor(
     private val job = SupervisorJob()
 
     fun getInsight(resources: Resources) {
-        topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
-        val requestParams = topAdsInsightUseCase.setParams()
-        topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+        launchCatchError(block = {
+            val query = GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword)
+            val requestParams = topAdsInsightUseCase.setParams()
 
-            override fun onError(e: Throwable?) {}
+            val data = topAdsInsightUseCase.execute(query, requestParams)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<JsonObject>
-                val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(DATA)
-                val type = object : TypeToken<InsightKeyData>() {}.type
-                val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
-                view?.onSuccessKeywordInsight(data)
-            }
+            view?.onSuccessKeywordInsight(data)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
     fun topAdsCreated(groupId: String, query: String, data: List<MutationData>) {
         launchCatchError(block = {
             val requestParams = topAdsEditKeywordUseCase.setParam(groupId, data)
+
             val response = topAdsEditKeywordUseCase.execute(query, requestParams)
+
             if (response.topadsManageGroupAds.keywordResponse.errors?.isEmpty()!!)
                 view?.onSuccessEditKeywords(response)
             else
@@ -74,7 +69,6 @@ class TopAdsInsightPresenter @Inject constructor(
 
     override fun detachView() {
         super.detachView()
-        topAdsInsightUseCase.unsubscribe()
         job.cancel()
     }
 }
