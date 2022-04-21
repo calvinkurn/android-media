@@ -164,6 +164,12 @@ class MainNavViewModel @Inject constructor(
         return pageSource
     }
 
+    private fun updateAllCategories(menus: List<Visitable<*>>, isExpanded: Boolean = false) {
+        allCategories.menus = menus
+        allCategories.isExpanded = isExpanded
+        updateWidget(allCategories, findBuStartIndexPosition())
+    }
+
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
@@ -237,8 +243,7 @@ class MainNavViewModel @Inject constructor(
     private suspend fun getBuListMenuCached() {
         viewModelScope.launch {
             try {
-                allCategories.menus = listOf(InitialShimmerDataModel())
-                updateWidget(allCategories, findBuStartIndexPosition())
+                updateAllCategories(listOf(InitialShimmerDataModel()))
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
                 getCategoryGroupUseCase.get().setStrategyCache()
                 val result = getCategoryGroupUseCase.get().executeOnBackground()
@@ -247,8 +252,7 @@ class MainNavViewModel @Inject constructor(
                 _networkProcessLiveData.postValue(true)
 
                 allCategoriesCache = result
-                allCategories.menus = result
-                updateWidget(allCategories, findBuStartIndexPosition())
+                updateAllCategories(result)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -257,9 +261,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuListMenu(isExpanded: Boolean = false) {
-        allCategories.menus = listOf(InitialShimmerDataModel())
-        allCategories.isExpanded = isExpanded
-        updateWidget(allCategories, findBuStartIndexPosition())
+        updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
@@ -268,19 +270,13 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
-                allCategories.menus = result
-                allCategories.isExpanded = isExpanded
-                updateWidget(allCategories, findBuStartIndexPosition())
+                updateAllCategories(result, isExpanded)
             } catch (e: Exception) {
                 if (allCategoriesCache.isNotEmpty()) {
-                    allCategories.menus = allCategoriesCache
-                    allCategories.isExpanded = isExpanded
-                    updateWidget(allCategories, findBuStartIndexPosition())
+                    updateAllCategories(allCategoriesCache, isExpanded)
                 }
                 else {
-                    allCategories.menus = listOf(ErrorStateBuDataModel())
-                    allCategories.isExpanded = isExpanded
-                    updateWidget(allCategories, findBuStartIndexPosition())
+                    updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
                 }
                 e.printStackTrace()
             }

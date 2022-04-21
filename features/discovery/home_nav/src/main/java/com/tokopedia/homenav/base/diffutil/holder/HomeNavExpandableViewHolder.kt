@@ -9,6 +9,7 @@ import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavExpandableAdapter
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.databinding.HolderHomeNavExpandableBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
@@ -33,18 +34,28 @@ class HomeNavExpandableViewHolder (
         private val ICON_ACCORDION = null
         private const val DESCRIPTION = ""
         private const val WITHOUT_PADDING = 0
+        private const val DEFAULT_POSITION_ACCORDION = 0
+        private const val DEFAULT_TITLE = ""
     }
 
-    override fun bind(element: HomeNavExpandableDataModel) {
+    private fun removeFirstPositionAccordion() {
         if (binding?.accordionExpandable?.accordionData?.isNotEmpty() == true) {
-            binding?.accordionExpandable?.removeGroup(0)
+            binding?.accordionExpandable?.removeGroup(DEFAULT_POSITION_ACCORDION)
         }
+    }
 
-        val recyclerView = RecyclerView(itemView.context)
-        recyclerView.layoutParams =
-            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        initAdapter(recyclerView)
-        val title = itemView.context.getString(R.string.title_category_section)
+    private fun initAdapter(recyclerView: RecyclerView) {
+        val typeFactory = MainNavTypeFactoryImpl(mainNavListener, userSession)
+        adapter = HomeNavExpandableAdapter(typeFactory)
+        recyclerView.layoutManager = NpaLayoutManager(itemView.context)
+        recyclerView.adapter = adapter
+    }
+
+    private fun setAccordionData(element: HomeNavExpandableDataModel, recyclerView: RecyclerView) {
+        val title =
+            if (element.id == ClientMenuGenerator.IDENTIFIER_TITLE_ALL_CATEGORIES) itemView.context.getString(
+                R.string.title_category_section
+            ) else DEFAULT_TITLE
         accordionData = AccordionDataUnify(
             title,
             DESCRIPTION,
@@ -53,6 +64,7 @@ class HomeNavExpandableViewHolder (
             recyclerView,
             element.isExpanded
         )
+
         accordionData.borderBottom = false
         accordionData.setContentPadding(
             WITHOUT_PADDING,
@@ -60,17 +72,23 @@ class HomeNavExpandableViewHolder (
             WITHOUT_PADDING,
             WITHOUT_PADDING
         )
+
         binding?.accordionExpandable?.addGroup(accordionData)
         binding?.accordionExpandable?.onItemClick = { _, isExpanded ->
             element.isExpanded = isExpanded
         }
-        adapter?.submitList(element.menus)
     }
 
-    private fun initAdapter(recyclerView: RecyclerView) {
-        val typeFactory = MainNavTypeFactoryImpl(mainNavListener, userSession)
-        adapter = HomeNavExpandableAdapter(typeFactory)
-        recyclerView.layoutManager = NpaLayoutManager(itemView.context)
-        recyclerView.adapter = adapter
+    override fun bind(element: HomeNavExpandableDataModel) {
+        removeFirstPositionAccordion()
+
+        val recyclerView = RecyclerView(itemView.context)
+        recyclerView.layoutParams =
+            ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        initAdapter(recyclerView)
+        setAccordionData(element, recyclerView)
+
+        adapter?.submitList(element.menus)
     }
 }

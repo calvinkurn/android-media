@@ -54,6 +54,7 @@ class TestMainNavViewModel {
 
     private lateinit var viewModel : MainNavViewModel
     private val shopId = 1224
+    private val mockListAllCategory = listOf(HomeNavMenuDataModel())
 
     @Before
     fun setup(){
@@ -865,7 +866,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list then refresh bu list data will success delete error bu list`() = runBlocking {
+    fun `test show error bu list then refresh bu list data will success delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -899,4 +900,31 @@ class TestMainNavViewModel {
         Assert.assertNull(errorStateBuDataModelRefreshed)
     }
 
+    @Test
+    fun `given default data from cache when load all categories with exception then success get data from cache`() {
+        val getCategoryGroupUseCase = mockk<GetCategoryGroupUseCase>()
+        coEvery {
+            getCategoryGroupUseCase.executeOnBackground()
+        } returns mockListAllCategory
+
+        coEvery {
+            getCategoryGroupUseCase.setStrategyCloudThenCache()
+        } throws MessageErrorException("")
+
+        every {
+            getCategoryGroupUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+
+        every {
+            getCategoryGroupUseCase.setStrategyCache()
+        } answers { }
+
+        viewModel = createViewModel(getBuListUseCase = getCategoryGroupUseCase)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val homeNavMenuDataModel = homeNavExpandableDataModel.menus.find { it is HomeNavMenuDataModel } as HomeNavMenuDataModel
+        Assert.assertNotNull(homeNavMenuDataModel)
+    }
 }
