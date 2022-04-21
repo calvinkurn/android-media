@@ -12,8 +12,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -131,7 +129,7 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with valid keyword when country list success fetched should be success`() = runBlocking{
+    fun `filter country list with valid keyword when country list success fetched should be success`(){
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "Korea"
@@ -139,11 +137,12 @@ class PhoneCodePickerViewModelTest {
             TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
             TravelCountryPhoneCode(countryId = "JP", countryName = "Jepang", countryPhoneCode = 81))
         coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Success(expected)
-        phoneCodePickerViewModel.getCountryList(rawQuery)
 
         //when
-        delay(300)
+        phoneCodePickerViewModel.getCountryList(rawQuery)
         phoneCodePickerViewModel.filterCountryList(keyword)
+
+        coroutineDispatcher.coroutineDispatcher.advanceUntilIdle()
 
         //then
         val result = phoneCodePickerViewModel.countryList.value
@@ -166,7 +165,7 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with valid number keyword when country list success fetched should be success`() = runBlocking{
+    fun `filter country list with valid number keyword when country list success fetched should be success`() {
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "81"
@@ -179,7 +178,7 @@ class PhoneCodePickerViewModelTest {
         phoneCodePickerViewModel.getCountryList(rawQuery)
         phoneCodePickerViewModel.filterCountryList(keyword)
 
-        delay(300)
+        coroutineDispatcher.coroutineDispatcher.advanceUntilIdle()
 
         //then
         val result = phoneCodePickerViewModel.countryList.value
