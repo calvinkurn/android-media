@@ -219,29 +219,24 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun setGroupAction(onSuccess: ((action: String) -> Unit), action: String, groupIds: List<String>, resources: Resources) {
-        topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_group_action))
-        val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+    fun setGroupAction(
+        onSuccess: ((action: String) -> Unit), action: String,
+        groupIds: List<String>, resources: Resources,
+    ) {
+        launchCatchError(block = {
+            val query = GraphqlHelper.loadRawString(resources, R.raw.gql_query_group_action)
+            val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<GroupActionResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<GroupActionResponse>
-                if (response.data.topAdsEditGroupBulk?.errors?.isEmpty() == true) {
-                    response.data.topAdsEditGroupBulk?.data?.action?.let { onSuccess(it) }
-                } else {
-                    view?.onError(response.data.topAdsEditGroupBulk?.errors?.firstOrNull()?.detail
-                            ?: "")
-                }
-            }
+            val response = topAdsGroupActionUseCase.execute(query, requestParams)
 
-            override fun onError(e: Throwable) {
-                view?.onErrorGetStatisticsInfo(e)
+            if (response.topAdsEditGroupBulk?.errors?.isEmpty() == true) {
+                onSuccess(response.topAdsEditGroupBulk.data.action)
+            } else {
+                view?.onError(response.topAdsEditGroupBulk?.errors?.firstOrNull()?.detail ?: "")
             }
+        }, onError = { error ->
+            error.printStackTrace()
+            error.message?.let { view?.onError(it) }
         })
     }
 
@@ -515,7 +510,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsGetGroupStatisticsUseCase.unsubscribe()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
-        topAdsGroupActionUseCase.unsubscribe()
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
         topAdsEditUseCase.unsubscribe()

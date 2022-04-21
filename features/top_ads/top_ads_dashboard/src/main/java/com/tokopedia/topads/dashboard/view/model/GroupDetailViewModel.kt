@@ -254,17 +254,13 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun setGroupAction(action: String, groupIds: List<String>, resources: Resources) {
-        topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
-                R.raw.gql_query_group_action))
-        val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
-        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+        launchCatchError(block = {
+            val query = GraphqlHelper.loadRawString(resources, R.raw.gql_query_group_action)
+            val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
 
-            override fun onNext(t: Map<Type, RestResponse>?) {}
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            topAdsGroupActionUseCase.execute(query, requestParams)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -287,7 +283,6 @@ class GroupDetailViewModel @Inject constructor(
         topAdsKeywordsActionUseCase.cancelJobs()
         topAdsProductActionUseCase.unsubscribe()
         topAdsGetGroupListUseCase.unsubscribe()
-        topAdsGroupActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()

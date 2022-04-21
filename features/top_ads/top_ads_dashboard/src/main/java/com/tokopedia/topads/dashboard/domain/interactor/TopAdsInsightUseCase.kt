@@ -31,10 +31,12 @@ class TopAdsInsightUseCase @Inject constructor(val userSession: UserSessionInter
         try {
             val token = object : TypeToken<DataResponse<JsonObject>>() {}.type
             val request = GraphqlRequest(query, JsonObject::class.java, requestParams?.parameters)
+
             val restRequest = RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
                 .setBody(request)
                 .setRequestType(RequestType.POST)
                 .build()
+
             val response = restRepository.getResponse(restRequest)
                 .getData<DataResponse<JsonObject>>().data.getAsJsonObject("topAdsGetKeywordInsights")
                 .getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
