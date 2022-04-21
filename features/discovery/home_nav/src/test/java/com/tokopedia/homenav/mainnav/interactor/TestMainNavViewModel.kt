@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
@@ -34,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -863,7 +865,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list then refresh bu list data will success delete error bu list`() {
+    fun `test show error bu list then refresh bu list data will success delete error bu list`() = runBlocking {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -882,7 +884,8 @@ class TestMainNavViewModel {
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModel = dataList.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
+        val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val errorStateBuDataModel = homeNavExpandableDataModel.menus.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
         Assert.assertNotNull(errorStateBuDataModel) //error state bu data model existed
 
         coEvery {
@@ -891,7 +894,8 @@ class TestMainNavViewModel {
 
         viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel }
+        val homeNavExpandableDataModelRefreshed = dataListRefreshed.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val errorStateBuDataModelRefreshed = homeNavExpandableDataModelRefreshed.menus.find { it is ErrorStateBuDataModel }
         Assert.assertNull(errorStateBuDataModelRefreshed)
     }
 

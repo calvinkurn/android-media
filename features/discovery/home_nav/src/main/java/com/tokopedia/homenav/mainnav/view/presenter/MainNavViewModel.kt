@@ -257,11 +257,11 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getBuListMenu(isExpanded: Boolean = false) {
+        allCategories.menus = listOf(InitialShimmerDataModel())
+        allCategories.isExpanded = isExpanded
+        updateWidget(allCategories, findBuStartIndexPosition())
         viewModelScope.launch {
             try {
-                allCategories.menus = listOf(InitialShimmerDataModel())
-                allCategories.isExpanded = isExpanded
-                updateWidget(allCategories, findBuStartIndexPosition())
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
                 getCategoryGroupUseCase.get().setStrategyCloudThenCache()
                 val result = getCategoryGroupUseCase.get().executeOnBackground()
@@ -272,21 +272,15 @@ class MainNavViewModel @Inject constructor(
                 allCategories.isExpanded = isExpanded
                 updateWidget(allCategories, findBuStartIndexPosition())
             } catch (e: Exception) {
-
-                val buShimmering = allCategories.menus.find {
-                    it is InitialShimmerDataModel
+                if (allCategoriesCache.isNotEmpty()) {
+                    allCategories.menus = allCategoriesCache
+                    allCategories.isExpanded = isExpanded
+                    updateWidget(allCategories, findBuStartIndexPosition())
                 }
-                buShimmering?.let {
-                    if (allCategoriesCache.isNotEmpty()) {
-                        allCategories.menus = allCategoriesCache
-                        allCategories.isExpanded = isExpanded
-                        updateWidget(allCategories, findBuStartIndexPosition())
-                    }
-                    else {
-                        allCategories.menus = listOf(ErrorStateBuDataModel())
-                        allCategories.isExpanded = isExpanded
-                        updateWidget(allCategories, findBuStartIndexPosition())
-                    }
+                else {
+                    allCategories.menus = listOf(ErrorStateBuDataModel())
+                    allCategories.isExpanded = isExpanded
+                    updateWidget(allCategories, findBuStartIndexPosition())
                 }
                 e.printStackTrace()
             }
