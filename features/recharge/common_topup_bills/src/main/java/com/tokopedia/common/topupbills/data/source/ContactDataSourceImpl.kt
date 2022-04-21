@@ -23,7 +23,7 @@ class ContactDataSourceImpl(
         if (cursor != null && cursor.count > 0) {
             while (cursor.moveToNext()) {
                 val name = cursor.getString(cursor.getColumnIndex(
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)) ?: ""
                 val phoneNumber = cursor.getString(cursor.getColumnIndex(
                     ContactsContract.CommonDataKinds.Phone.NUMBER))
                 contacts.add(TopupBillsContact(name, formatPrefixClientNumber(phoneNumber)))
