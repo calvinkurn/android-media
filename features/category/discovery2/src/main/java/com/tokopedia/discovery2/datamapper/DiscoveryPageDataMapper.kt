@@ -170,7 +170,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             }
 
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+            ComponentNames.TripleBanner.componentName, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
             ComponentNames.BannerTimer.componentName -> {
                 if (addBannerTimerComp(component)) {

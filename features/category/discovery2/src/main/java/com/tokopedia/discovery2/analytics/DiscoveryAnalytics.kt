@@ -58,7 +58,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 val list = ArrayList<Map<String, Any>>()
                 val hashMap = HashMap<String, Any>()
                 banner.let {
-                    hashMap[KEY_ID] = it.id ?: 0
+                    val bannerID = if(it.id.isNullOrEmpty()) 0 else it.id
+                    hashMap[KEY_ID] = "${bannerID}_0"
                     hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}"
                     hashMap[KEY_CREATIVE] = it.creativeName ?: EMPTY_STRING
                     hashMap[KEY_POSITION] = componentPosition?.plus(1)?:index+1
@@ -81,8 +82,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
         val list = ArrayList<Map<String, Any>>()
         banner.let {
+            val bannerID = if(it.id.isNullOrEmpty()) 0 else it.id
             list.add(mapOf(
-                    KEY_ID to it.id.toString(),
+                    KEY_ID to "${bannerID}_0",
                     KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - ${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}",
                     KEY_CREATIVE to it.creativeName.toString(),
                     KEY_POSITION to bannerPosition + 1
@@ -610,6 +612,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 eventAction = PRODUCT_LIST_IMPRESSION)
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = (userSession.userId ?: "")
+        map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
@@ -751,6 +756,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[PAGE_TYPE] = pageType
             map[PAGE_PATH] = removedDashPageIdentifier
+            map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+            map[USER_ID] = (userSession.userId ?: "")
+            map[BUSINESS_UNIT] = HOME_BROWSE
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
