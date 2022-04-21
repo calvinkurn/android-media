@@ -53,6 +53,9 @@ data class SellerHomeTextBenefitItem(
     @SerializedName("iconURL")
     val iconURL: String? = null,
     @Expose
+    @SerializedName("imageURL")
+    val imageURL: String? = null,
+    @Expose
     @SerializedName("benefit")
     val benefit: String? = null
 )

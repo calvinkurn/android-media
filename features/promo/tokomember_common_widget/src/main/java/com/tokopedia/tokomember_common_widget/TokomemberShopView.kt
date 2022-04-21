@@ -70,6 +70,18 @@ class TokomemberShopView @JvmOverloads constructor(
         tvShopMemberName.text = tokomemberShopViewModel.shopMemberName
         shopType = tokomemberShopViewModel.shopType
         ivShopContainer.loadImage(mBackgroundImageUrl)
+
+        when(shopType){
+            MemberType.PREMIUM ->{
+                containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_premium)
+                tvShopType.text = "Premium"
+            }
+
+            MemberType.VIP ->{
+                containerBadge.background = context?.getDrawable(R.drawable.tm_dash_badge_vip)
+                tvShopType.text = "VIP"
+            }
+        }
     }
 
 }

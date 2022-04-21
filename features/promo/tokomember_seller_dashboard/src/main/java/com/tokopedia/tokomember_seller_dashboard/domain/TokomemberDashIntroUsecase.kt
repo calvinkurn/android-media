@@ -64,6 +64,7 @@ const val TM_SELLER_ONBOARD = """
         sellerHomeTextBenefit {
           iconURL
           benefit
+          imageURL
         }
       }
       CTA {

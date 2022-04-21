@@ -32,7 +32,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCa
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -54,11 +54,11 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     private var mCardBgTemplateList = arrayListOf<CardTemplateImageListItem>()
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
-    private val tokomemberDashCreateCardViewModel: TokomemberDashCreateCardViewModel by lazy(
+    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateCardViewModel::class.java)
+        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
     }
     private val adapterBg: TokomemberCardBgAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TokomemberCardBgAdapter(arrayListOf(), TokomemberCardBgFactory(this))
@@ -80,7 +80,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        tokomemberDashCreateCardViewModel.getCardInfo(3827)
+        tokomemberDashCreateViewModel.getCardInfo(3827)
         renderHeader()
     }
 
@@ -91,7 +91,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     }
 
     private fun observeViewModel() {
-        tokomemberDashCreateCardViewModel.tokomemberCardResultLiveData.observe(viewLifecycleOwner, {
+        tokomemberDashCreateViewModel.tokomemberCardResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     mCardBgTemplateList.addAll(it.data.cardTemplateImageList as ArrayList<CardTemplateImageListItem>)
@@ -102,7 +102,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
             }
         })
 
-        tokomemberDashCreateCardViewModel.tokomemberCardBgResultLiveData.observe(
+        tokomemberDashCreateViewModel.tokomemberCardBgResultLiveData.observe(
             viewLifecycleOwner,
             {
                 when (it) {
@@ -114,7 +114,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
                 }
             })
 
-        tokomemberDashCreateCardViewModel.tokomemberCardColorResultLiveData.observe(
+        tokomemberDashCreateViewModel.tokomemberCardColorResultLiveData.observe(
             viewLifecycleOwner,
             {
                 when (it) {
@@ -126,7 +126,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
                 }
             })
 
-        tokomemberDashCreateCardViewModel.tokomemberCardModifyLiveData.observe(viewLifecycleOwner,{
+        tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.observe(viewLifecycleOwner,{
             when(it) {
                 is Success -> {
                      startActivity(Intent(this.context , TokomemberDashCreateProgramActivity::class.java))
@@ -142,7 +142,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     private fun renderCardUi(data: CardDataTemplate) {
         renderCardCarousel(data)
         btnContinueCard?.setOnClickListener {
-            tokomemberDashCreateCardViewModel.modifyShopCard(
+            tokomemberDashCreateViewModel.modifyShopCard(
                 TmCardModifyInput(
                     apiVersion = "3.0.0",
                     isMerchantCard = true,
@@ -211,7 +211,8 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
                         shopName = data.card?.name ?: "",
                         numberOfLevel = data.card?.numberOfLevel ?: 0,
                         backgroundColor = data.cardTemplate?.backgroundColor ?: "",
-                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: ""
+                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
+                        shopType = 0
                     )
                 )
             }
@@ -222,7 +223,8 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
                         shopName = data.card?.name ?: "",
                         numberOfLevel = data.card?.numberOfLevel ?: 0,
                         backgroundColor = data.cardTemplate?.backgroundColor ?: "",
-                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: ""
+                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
+                        shopType = 1
                     )
                 )
             }
@@ -265,7 +267,15 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
                 shopViewPremium?.setShopCardData(
                     TokomemberShopCardModel(
                         shopName = "kk",
-                        backgroundImgUrl = tokoCardItem.imageUrl ?: ""
+                        backgroundImgUrl = tokoCardItem.imageUrl ?: "",
+                        shopType = 0
+                    )
+                )
+                shopViewVip?.setShopCardData(
+                    TokomemberShopCardModel(
+                        shopName = "kk",
+                        backgroundImgUrl = tokoCardItem.imageUrl ?: "",
+                        shopType = 1
                     )
                 )
             }

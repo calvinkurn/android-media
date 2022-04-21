@@ -59,6 +59,14 @@ class TokomemberVideoView @JvmOverloads constructor(
         }
     }
 
+    fun stopVideoPlayer(){
+        videoPlayer?.let{
+            it.stop()
+        }
+    }
+
+    fun isPlaying() = videoPlayer?.isPlaying()
+
     fun releaseVideoPlayer(){
         videoPlayer?.let {
             it.destroy()

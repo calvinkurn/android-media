@@ -31,7 +31,7 @@ object TokomemberIntroMapper {
 
     private fun getIntroImageData(sellerHomeTextBenefit: SellerHomeTextBenefitItem?): TokomemberIntroBenefitImageItem {
         return TokomemberIntroBenefitImageItem(
-            imgUrl = sellerHomeTextBenefit?.iconURL
+            imgUrl = sellerHomeTextBenefit?.imageURL
         )
     }
 

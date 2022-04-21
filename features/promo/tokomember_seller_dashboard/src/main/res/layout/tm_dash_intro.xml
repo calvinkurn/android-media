@@ -18,17 +18,6 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true">
 
-            <com.tokopedia.header.HeaderUnify
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_header_is_show_back_button="true"
-                app:unify_header_is_show_shadow="false"
-                app:unify_header_transparent_mode="false" />
-
             <RelativeLayout
                 android:id="@+id/containerBgvideo"
                 android:layout_width="match_parent"
@@ -44,18 +33,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/tm_intro_bg" />
 
-               <View
+                <View
                     android:id="@+id/viewBgSelector"
                     android:layout_width="match_parent"
                     android:layout_height="184dp"
                     android:layout_below="@id/ivBg"
-                    android:visibility="visible"
-                    android:layout_marginTop="-80dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="-80dp"
                     android:layout_marginEnd="16dp"
                     android:alpha="0.2"
                     android:background="@drawable/tm_video_selector"
-                   />
+                    android:visibility="visible" />
 
                 <com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
                     android:id="@+id/frame_video"
@@ -67,9 +55,7 @@
                     android:layout_marginEnd="16dp"
                     android:visibility="visible"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivBg">
-
-                </com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView>
+                    app:layout_constraintTop_toBottomOf="@+id/ivBg" />
 
             </RelativeLayout>
 
@@ -79,7 +65,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/header">
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.tokopedia.header.HeaderUnify
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/unify_space_16"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unify_header_transparent_mode="true"
+                    app:unify_header_is_show_back_button="true"/>
 
                 <com.tokopedia.unifycomponents.CardUnify
                     android:id="@+id/cardTokomember"
@@ -87,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_16"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toBottomOf="@+id/header">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/tokomemberCardContainer"
@@ -152,11 +148,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_16"
-                android:layout_marginEnd="@dimen/unify_space_16"
                 android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
                 app:layout_constraintStart_toStartOf="@id/cardTokmemberParent"
-                app:layout_constraintTop_toBottomOf="@+id/containerBgvideo"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/containerBgvideo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

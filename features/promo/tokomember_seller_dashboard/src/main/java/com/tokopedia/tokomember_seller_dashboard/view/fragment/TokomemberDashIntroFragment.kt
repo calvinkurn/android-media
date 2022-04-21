@@ -3,7 +3,6 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -13,38 +12,26 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.LayoutAnimationController
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
-import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
-import androidx.recyclerview.widget.PagerSnapHelper
-
-import androidx.recyclerview.widget.SnapHelper
-import com.tokopedia.tokomember_seller_dashboard.view.animation.TokomemberIntroItemAnimator
-import android.view.ViewTreeObserver
-import kotlinx.android.synthetic.main.tm_dash_intro_button_item.*
-
 
 private const val ARG_OPEN_BS = "openBS"
 private const val ARG_SHOP_ID = "shopId"
@@ -54,6 +41,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
     private var rootView: RelativeLayout? = null
     private var viewFlipperIntro : ViewFlipper?=null
     private var openBS: Boolean = false
+    private var videoUrl:String? =null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -87,10 +75,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
         rootView = view.findViewById(R.id.rootView)
         hideStatusBar()
         observeViewModel()
-//        tokomemberIntroViewmodel.getSellerInfo()
-       /* arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let*/
-        tokomemberIntroViewmodel.getIntroInfo(6553698)
-
+        renderHeader()
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tokomemberIntroViewmodel.getIntroInfo(it) }
     }
 
     override fun getScreenName() = ""
@@ -100,15 +86,6 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
     }
 
     private fun observeViewModel() {
-//        tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
-//            when (it) {
-//                is Success -> {
-//                    tokomemberIntroViewmodel.getIntroInfo(it.data.userShopInfo?.info?.shopId.toIntOrZero())
-//                }
-//                is Fail -> {
-//                }
-//            }
-//        })
 
         tokomemberIntroViewmodel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
@@ -141,7 +118,6 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
             TokomemberIntroBottomsheet.show(bundle, childFragmentManager)
         }
 
-
         val animation: Animation =
             AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_benefit_left)
          cardTokmemberParent.startAnimation(animation)
@@ -150,14 +126,14 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
             AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
         buttonContainer.startAnimation(animation1)
 
-
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
         headerData?.let {
             tvTitle.text = it.title?.getOrNull(0)
             tvSubtitle.text = it.subTitle?.getOrNull(0)
         }
+        videoUrl = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:""
          setVideoView(
-            membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:"",
+            videoUrl?:"",
             "1:1"
         )
 
@@ -189,6 +165,26 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
 
     }
 
+    private fun renderHeader(){
+        header?.apply {
+            isShowBackButton = true
+            headerSubTitle =""
+            headerTitle =""
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(frame_video.isPlaying() == false){
+            frame_video?.setVideoPlayer(videoUrl?:"");
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        frame_video.stopVideoPlayer()
+        frame_video.releaseVideoPlayer()
+    }
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")
     private fun hideStatusBar() {

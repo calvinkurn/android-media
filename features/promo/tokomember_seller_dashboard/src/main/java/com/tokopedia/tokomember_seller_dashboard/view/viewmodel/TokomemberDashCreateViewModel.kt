@@ -20,7 +20,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class TokomemberDashCreateCardViewModel @Inject constructor(
+class TokomemberDashCreateViewModel @Inject constructor(
     private val tokomemberDashCardUsecase: TokomemberDashCardUsecase,
     private val tokomemberCardColorMapperUsecase: TokomemberCardColorMapperUsecase,
     private val tokomemeberCardBgUsecase: TokomemeberCardBgUsecase,
