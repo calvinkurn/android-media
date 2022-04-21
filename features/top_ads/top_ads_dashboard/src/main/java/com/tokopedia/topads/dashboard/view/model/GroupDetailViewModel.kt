@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -31,17 +30,12 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.KeywordsResponse
-import com.tokopedia.topads.dashboard.data.model.StatsData
-import com.tokopedia.topads.dashboard.data.raw.STATS_URL
 import com.tokopedia.topads.dashboard.domain.interactor.*
-import com.tokopedia.topads.dashboard.view.presenter.StatsList
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
-import timber.log.Timber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.collections.HashMap
 
 /**
@@ -196,25 +190,21 @@ class GroupDetailViewModel @Inject constructor(
                 })
     }
 
-    @GqlQuery("StatsList", STATS_URL)
-    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, onSuccesGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit, groupId: String, goalId: Int) {
-        val params = topAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId, groupId, goalId)
-        topAdsGetStatisticsUseCase.setQueryString(StatsList.GQL_QUERY)
-        topAdsGetStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
 
-            override fun onError(e: Throwable?) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e?.localizedMessage)
-            }
+    fun getTopAdsStatistic(
+        startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int,
+        onSuccessGetStatisticsInfo: (dataStatistic: DataStatistic) -> Unit,
+        groupId: String, goalId: Int,
+    ) {
+        launchCatchError(block = {
+            val params = topAdsGetStatisticsUseCase.createRequestParams(
+                startDate, endDate, selectedStatisticType, userSession.shopId, groupId, goalId)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<StatsData>
-                val dataStatistic = response.data.topadsDashboardStatistics.data
-                onSuccesGetStatisticsInfo(dataStatistic)
-            }
+            val response = topAdsGetStatisticsUseCase.execute(params)
+
+            onSuccessGetStatisticsInfo(response.topadsDashboardStatistics.data)
+        }, onError = {
+
         })
     }
 

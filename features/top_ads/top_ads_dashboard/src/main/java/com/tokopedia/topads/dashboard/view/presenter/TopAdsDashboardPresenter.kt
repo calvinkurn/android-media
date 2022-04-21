@@ -2,8 +2,6 @@ package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -30,14 +28,12 @@ import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.domain.interactor.*
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.raw.BUDGET_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
-import com.tokopedia.topads.dashboard.data.raw.STATS_URL
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
@@ -72,7 +68,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
             private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
             private val topAdsInsightUseCase: TopAdsInsightUseCase,
-            private val getStatisticUseCase: GetStatisticUseCase,
+            private val getStatisticUseCase: TopAdsGetStatisticsUseCase,
             private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
             private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
             private val topAdsEditUseCase: TopAdsEditUseCase,
@@ -130,25 +126,21 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    @GqlQuery("StatsList", STATS_URL)
-    fun getStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
-        val requestParams = getStatisticUseCase.createRequestParams(startDate, endDate, selectedStatisticType, userSession.shopId, adType)
-        getStatisticUseCase.setQueryString(StatsList.GQL_QUERY)
-        getStatisticUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<StatsData>
-                val dataStatistic = response.data.topadsDashboardStatistics.data
-                onSuccesGetStatisticsInfo(dataStatistic)
-            }
+    fun getStatistic(
+        startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int,
+        adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit),
+    ) {
+        launchCatchError(block = {
+            val requestParams = getStatisticUseCase.createRequestParams(
+                startDate, endDate, selectedStatisticType, userSession.shopId, adType)
 
-            override fun onError(e: Throwable) {
-                view?.onErrorGetStatisticsInfo(e)
-            }
+            val dataStatistic =
+                getStatisticUseCase.execute(requestParams).topadsDashboardStatistics.data
+
+            onSuccesGetStatisticsInfo(dataStatistic)
+        }, onError = {
+            view?.onErrorGetStatisticsInfo(it)
         })
     }
 
