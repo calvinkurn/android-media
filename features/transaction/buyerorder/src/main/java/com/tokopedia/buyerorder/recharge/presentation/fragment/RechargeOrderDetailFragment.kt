@@ -347,8 +347,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     context?.let { ctx ->
                         Toaster.build(
-                            ctx,
-                            result.throwable.message,
+                            binding.rvRechargeOrderDetail,
+                            result.throwable.message ?: "",
                             Toaster.LENGTH_SHORT,
                             Toaster.TYPE_ERROR
                         ).show()

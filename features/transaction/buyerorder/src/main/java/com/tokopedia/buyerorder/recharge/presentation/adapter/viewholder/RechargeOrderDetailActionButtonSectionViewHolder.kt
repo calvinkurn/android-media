@@ -23,11 +23,14 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
         with(binding) {
             if (containerRechargeOrderDetailActionButton.childCount < element.actionButtons.size) {
                 containerRechargeOrderDetailActionButton.removeAllViews()
-                val unifyActionButton : List<UnifyButton> = element.actionButtons.map {
-                    createActionButton(root.context, it)
+                val primaryActionButton = mutableListOf<UnifyButton>()
+
+                for (item in element.actionButtons) {
+                    val button = createActionButton(root.context, item)
+                    primaryActionButton.add(button)
                 }
 
-                for (button in unifyActionButton) {
+                for (button in primaryActionButton) {
                     containerRechargeOrderDetailActionButton.addView(button)
                     button.setMargin(
                         0,
