@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteRepository: BannerInfiniteRepository) {
     companion object {
-        private const val BANNER_PER_PAGE = 10
+        private const val BANNER_PER_PAGE = 20
         private const val PAGE_START = 1
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
         private const val RPC_NEXT_PAGE = "rpc_next_page"

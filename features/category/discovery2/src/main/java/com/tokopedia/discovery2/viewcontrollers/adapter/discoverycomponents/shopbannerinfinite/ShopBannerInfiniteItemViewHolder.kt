@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -28,9 +30,7 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
         bannerImage.setOnClickListener {
             shopBannerInfiniteItemViewModel.getNavigationUrl()?.let {
                 RouteManager.route(fragment.activity, it)
-                shopBannerInfiniteItemViewModel.getItemData()?.let { itemData ->
-                    //to be handled for click impressions
-                }
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteClick(shopBannerInfiniteItemViewModel.components)
             }
         }
     }
@@ -58,7 +58,7 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
     private fun setupImage(itemData: DataItem){
         try {
             val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
-            layoutParams.width = ((displayMetrics.widthPixels)
+            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_24))
                     / DEFAULT_DESIGN)
             val height = Utils.extractDimension(itemData.imageUrlDynamicMobile,Constant.Dimensions.HEIGHT)
             val width = Utils.extractDimension(itemData.imageUrlDynamicMobile,Constant.Dimensions.WIDTH)
@@ -77,4 +77,10 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
             exception.printStackTrace()
         }
     }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackShopBannerInfiniteImpression(shopBannerInfiniteItemViewModel.components)
+    }
+
 }

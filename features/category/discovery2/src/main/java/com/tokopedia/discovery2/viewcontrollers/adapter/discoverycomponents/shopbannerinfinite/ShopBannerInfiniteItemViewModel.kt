@@ -7,7 +7,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class ShopBannerInfiniteItemViewModel(application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class ShopBannerInfiniteItemViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     override fun onAttachToViewHolder() {
