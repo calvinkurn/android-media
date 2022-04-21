@@ -2165,7 +2165,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateUi() {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
-        updateNavigationItems()
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -2322,8 +2321,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
         val items = data.navBar.items.map { item ->
-            val position = adapter.getComponentPositionByName(item.componentName)
-            ProductDetailNavigation.Item(item.title, position)
+            ProductDetailNavigation.Item(item.title) {
+                adapter.getComponentPositionByName(item.componentName)
+            }
         }
 
         val navigationTab = binding?.pdpNavigationTab
@@ -2333,19 +2333,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 navigationTab?.stop(recyclerView)
                 backToTop?.stop(recyclerView)
             } else {
-                navigationTab?.start(recyclerView, this)
+                navigationTab?.start(recyclerView, items, this)
                 backToTop?.start(recyclerView, this)
             }
         }
-    }
-
-    private fun updateNavigationItems() {
-        val navBar = viewModel.p2Data.value?.navBar ?: return
-        val items = navBar.items.map { item ->
-            val position = adapter.getComponentPositionByName(item.componentName)
-            ProductDetailNavigation.Item(item.title, position)
-        }
-        binding?.pdpNavigationTab?.updateItems(items)
     }
 
     override fun onButtonFollowNplClick() {

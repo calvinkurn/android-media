@@ -54,7 +54,11 @@ class ProductDetailNavigation(
         binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
-    fun start(recyclerView: RecyclerView, listener: DynamicProductDetailListener) {
+    fun start(
+        recyclerView: RecyclerView,
+        items: List<Item>,
+        listener: DynamicProductDetailListener
+    ) {
         recyclerView.removeOnScrollListener(onScrollListener)
         recyclerView.removeOnScrollListener(onContentScrollListener)
 
@@ -62,6 +66,8 @@ class ProductDetailNavigation(
         recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(onContentScrollListener)
         this.recyclerView = recyclerView
+
+        updateItems(items)
     }
 
     fun stop(recyclerView: RecyclerView) {
@@ -71,14 +77,19 @@ class ProductDetailNavigation(
         view.visibility = INVISIBLE
     }
 
-    fun updateItems(items: List<Item>) {
+    fun updateItemPosition() {
+        this.items.forEach { item ->
+            item.updatePosition()
+        }
+    }
+
+    private fun updateItems(items: List<Item>) {
         var shouldUpdateTab = false
         items.forEachIndexed { index, item ->
             val currentItem = this.items.getOrNull(index)
             if (currentItem?.label != item.label) {
                 shouldUpdateTab = true
             }
-            currentItem?.position = item.position
         }
 
         if (shouldUpdateTab) {
@@ -118,8 +129,16 @@ class ProductDetailNavigation(
 
     data class Item(
         val label: String,
-        var position: Int
-    )
+        private val positionUpdater: () -> Int
+    ) {
+        private var position: Int = -1
+
+        fun getPosition() = position
+
+        fun updatePosition() {
+            position = positionUpdater.invoke()
+        }
+    }
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
@@ -182,7 +201,7 @@ class ProductDetailNavigation(
         }
 
         private fun scrollToContent(tabPosition: Int) {
-            val position = items.getOrNull(tabPosition)?.position ?: -1
+            val position = items.getOrNull(tabPosition)?.getPosition() ?: -1
             smoothScrollToPosition(position)
         }
 
@@ -238,7 +257,7 @@ class ProductDetailNavigation(
 
         private fun updateSelectedTab(recyclerView: RecyclerView) {
             val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView)
-            val indexTab = items.indexOfFirst { firstVisibleItemPosition == it.position }
+            val indexTab = items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
 
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
                 if (isSelected) return
@@ -278,7 +297,7 @@ class ProductDetailNavigation(
 
         override fun onTargetFound(targetView: View, state: RecyclerView.State, action: Action) {
             super.onTargetFound(targetView, state, action)
-            if(!isScroll) enableTouchScroll(true)
+            if (!isScroll) enableTouchScroll(true)
             isScroll = false
         }
     }
