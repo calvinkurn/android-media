@@ -2,10 +2,6 @@ package com.tokopedia.officialstore
 
 import com.tokopedia.applink.ApplinkConst
 
-object GQLQueryConstant {
-    const val QUERY_OFFICIAL_STORE_CATEGORIES = "gql_query_official_store_categories"
-}
-
 object DynamicChannelIdentifiers {
 
     val CTA_MODE_MAIN = "main"
