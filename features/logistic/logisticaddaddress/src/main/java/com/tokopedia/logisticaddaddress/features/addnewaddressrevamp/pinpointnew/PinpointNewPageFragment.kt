@@ -56,10 +56,15 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -104,6 +109,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var isPinpoint: Boolean = false
 
     private var isPermissionAccessed: Boolean = false
+    private var permissionState: Int = PERMISSION_NOT_DEFINED
+    private var isAccessAppPermissionFromSettings: Boolean = false
 
     private var showIllustrationMap: Boolean = false
 
@@ -179,37 +186,38 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             } else if (requestCode == GPS_REQUEST) {
                 bottomSheetLocUndefined?.dismiss()
-                showLoading()
-                Handler().postDelayed ({getLocation()}, 1000)
+                if (allPermissionsGranted()) {
+                    showLoading()
+                    Handler().postDelayed({ getLocation() }, 1000)
+                }
+            }
+        } else {
+            if (requestCode == GPS_REQUEST) {
+                bottomSheetLocUndefined?.dismiss()
             }
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        var isAllowed = false
-        for (permission in permissions) {
-            if (!isPermissionAccessed) {
-                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
-                    //no-op
+        if (activity != null && context != null) {
+            permissionState = AddNewAddressUtils.getPermissionStateFromResult(requireActivity(), requireContext(), permissions)
+        }
+        when (permissionState) {
+            PERMISSION_GRANTED -> {
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    getLocation()
                 } else {
-                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        isAllowed = true
-                        getLocation()
-                        isPermissionAccessed = true
-                    } else {
-                        showBottomSheetLocUndefined(true)
-                    }
+                    showBottomSheetLocUndefined(false)
+                }
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
                 }
             }
-        }
-        if (!isEdit) {
-            if (isAllowed) {
-                AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
-            } else {
-                AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
-
+            PERMISSION_DENIED, PERMISSION_DONT_ASK_AGAIN -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
+                }
             }
         }
     }
@@ -261,6 +269,16 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         binding?.mapViews?.onResume()
+        if (isAccessAppPermissionFromSettings) {
+            bottomSheetLocUndefined?.dismiss()
+            isAccessAppPermissionFromSettings = false
+            if (allPermissionsGranted()) {
+                permissionState = PERMISSION_GRANTED
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    getLocation()
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -549,16 +567,30 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 } else {
                     EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
                 }
-                if (AddNewAddressUtils.isGpsEnabled(context)) {
-                    if (allPermissionsGranted()) {
-                        hasRequestedLocation = true
+                if (allPermissionsGranted()) {
+                    permissionState = PERMISSION_GRANTED
+                    if (AddNewAddressUtils.isGpsEnabled(context)) {
                         getLocation()
                     } else {
-                        hasRequestedLocation = false
-                        requestPermissionLocation()
+                        showBottomSheetLocUndefined(false)
                     }
                 } else {
-                    requestPermissionLocation()
+                    when(permissionState) {
+                        PERMISSION_DENIED -> {
+                            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                requestPermissionLocation()
+                            } else {
+                                // go to gps settings first
+                                showBottomSheetLocUndefined(false)
+                            }
+                        }
+                        PERMISSION_DONT_ASK_AGAIN -> {
+                            showBottomSheetLocUndefined(true)
+                        }
+                        PERMISSION_NOT_DEFINED -> {
+                            requestPermissionLocation()
+                        }
+                    }
                 }
             }
             if (isEdit) {
@@ -592,7 +624,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        if (AddNewAddressUtils.isGpsEnabled(context)) {
+//        if (AddNewAddressUtils.isGpsEnabled(context)) {
             showLoading()
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
@@ -605,9 +637,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
 
             }
-        } else {
-            showBottomSheetLocUndefined(false)
-        }
+//        } else {
+//            showBottomSheetLocUndefined(false)
+//        }
     }
 
     private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean){
@@ -663,6 +695,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
         intent.data = uri
+        isAccessAppPermissionFromSettings = true
         activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
     }
 

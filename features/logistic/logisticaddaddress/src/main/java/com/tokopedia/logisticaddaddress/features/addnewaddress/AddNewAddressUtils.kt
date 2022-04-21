@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
@@ -12,11 +13,17 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
 import kotlin.math.abs
 
 
@@ -111,5 +118,23 @@ object AddNewAddressUtils {
 
         return if (exact) (diffLat == 0.0 && diffLong == 0.0)
         else (abs(diffLat) < threshold && abs(diffLong) < threshold)
+    }
+
+    fun getPermissionStateFromResult(activity: Activity, context: Context, permissions: Array<out String>) : Int {
+        var state = PERMISSION_NOT_DEFINED
+        for (permission in permissions) {
+            state = when {
+                ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED -> {
+                    PERMISSION_GRANTED
+                }
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)  -> {
+                    PERMISSION_DENIED
+                }
+                else -> {
+                    PERMISSION_DONT_ASK_AGAIN
+                }
+            }
+        }
+        return state
     }
 }
