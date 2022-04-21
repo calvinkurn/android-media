@@ -65,7 +65,7 @@ class TokomemberDashCreateViewModel @Inject constructor(
             getCardColorData(it)
         }, {
             it.printStackTrace()
-        }, 3827)
+        }, cardID)
     }
 
     fun getCardBackgroundData(cardData: CardData, colorcode:String, pattern: ArrayList<String>) {

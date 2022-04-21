@@ -17,6 +17,7 @@ data class TokomemberIntroTextItem(
     val text: String?,
     @SerializedName("imgUrl")
     val imgUrl: String?,
+    var isAnimationFinished: Boolean = false
 
     ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
 
@@ -41,8 +42,9 @@ data class TokomemberIntroButtonItem(
 data class TokomemberIntroBenefitImageItem(
     @SerializedName("imgUrl")
     val imgUrl: String?,
+    var isAnimationFinished: Boolean = false
 
-    ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
+) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
 
     override fun type(typeFactory: TokomemberIntroFactory): Int {
         return typeFactory.type(this)

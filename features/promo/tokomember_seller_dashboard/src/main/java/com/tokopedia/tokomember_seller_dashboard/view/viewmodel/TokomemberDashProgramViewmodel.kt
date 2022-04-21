@@ -42,7 +42,7 @@ class TokomemberDashProgramViewmodel @Inject constructor(
         }, shopId, cardID, status, page, pageSize)
     }
 
-    fun getProgramInfo(programID: Int ,shopId: Int ,actionType: String, query: String = "") {
+    fun getProgramInfo(programID: Int = 0 ,shopId: Int ,actionType: String, query: String = "") {
         tokomemberDashGetProgramFormUsecase.cancelJobs()
         tokomemberDashGetProgramFormUsecase.getProgramInfo({
             _tokomemberProgramResultLiveData.postValue(Success(it))
