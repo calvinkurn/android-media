@@ -1758,7 +1758,38 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleQuizEnded() {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+            val interactive = _interactive.getAndUpdate {
+                if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
+                val newInteractive = it.interactive.copy(
+                    status = InteractiveUiModel.Quiz.Status.Finished
+                )
+                it.copy(
+                    interactive = newInteractive,
+                    isPlaying = false,
+                )
+            }
 
+            val winnerStatus = _winnerStatus.value
+            val isRewardAvailable: Boolean = winnerStatus != null
+
+            delay(interactive.interactive.waitingDuration)
+            if (isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
+                winnerStatus?.let { processWinnerStatus(it) }
+            } else {
+                showLeaderBoard()
+            }
+            _interactive.value = InteractiveStateUiModel.Empty
+
+        }) {
+            _interactive.value = InteractiveStateUiModel.Empty
+        }
+    }
+
+    private fun showLeaderBoard(){
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
     }
 
     private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
