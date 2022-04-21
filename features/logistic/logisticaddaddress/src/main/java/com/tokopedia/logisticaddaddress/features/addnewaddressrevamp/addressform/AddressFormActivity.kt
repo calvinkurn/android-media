@@ -54,7 +54,7 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
                 supportFragmentManager.fragments.firstOrNull()?.let {
                     if (it is AddressFormFragment) {
                         if (it.isBackDialogClicked) {
-                            super.onBackPressed()
+                            finish()
                         } else {
                             it.showDialogBackButton()
                         }

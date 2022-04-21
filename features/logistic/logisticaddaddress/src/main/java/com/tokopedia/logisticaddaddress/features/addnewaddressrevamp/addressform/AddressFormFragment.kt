@@ -1138,11 +1138,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setPrimaryCTAClickListener {
                         isBackDialogClicked = true
                         activity?.onBackPressed()
+                        backDialog?.dismiss()
                     }
                     setSecondaryCTAText("Batal")
                     setSecondaryCTAClickListener {
                         isBackDialogClicked = false
-                        backDialog?.hide()
+                        backDialog?.dismiss()
                     }
                     show()
                 }
