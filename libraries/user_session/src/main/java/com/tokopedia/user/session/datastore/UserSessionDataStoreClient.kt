@@ -7,6 +7,8 @@ import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
+import com.tokopedia.encryption.security.AeadEncryptor
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 
 object UserSessionDataStoreClient {
     lateinit var userSessionDataStore: UserSessionDataStore
@@ -22,21 +24,11 @@ object UserSessionDataStoreClient {
             return userSessionDataStore
         }
 
+        val aead = AeadEncryptorImpl(context).getAead()
         val store = DataStoreFactory.create(
-            UserSessionSerializer(createAead(context)),
+            UserSessionSerializer(aead),
             produceFile = { context.dataStoreFile(DATA_STORE_FILE_NAME) })
         userSessionDataStore = UserSessionDataStoreImpl(context, store)
         return userSessionDataStore
-    }
-
-    private fun createAead(context: Context): Aead {
-        AeadConfig.register()
-        return AndroidKeysetManager.Builder()
-            .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
-            .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-            .withMasterKeyUri(MASTER_KEY_URI)
-            .build()
-            .keysetHandle
-            .getPrimitive(Aead::class.java)
     }
 }

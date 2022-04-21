@@ -14,6 +14,7 @@ buildscript {
 }
 
 dependencies {
+    api rootProject.ext.miscDependencies.googleTink
 }
 
 project.ext {

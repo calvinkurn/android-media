@@ -36,8 +36,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	    return withContext(Dispatchers.IO) {
 		try {
 		    if (userSession.isLoggedIn) {
-			val syncResult = checkDataSync()
-			if (isMigrationSuccess() &&
+			val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
+			if (!isMigrationSuccess() &&
 			    (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
 			) {
 			    migrateData()
@@ -59,9 +59,9 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     private suspend fun migrateData() {
 	try {
-	    DataStoreMigrationHelper().migrateToDataStore(dataStore, userSession)
+	    DataStoreMigrationHelper.migrateToDataStore(dataStore, userSession)
 	    //Check if still difference between the data
-	    val migrationResult = checkDataSync()
+	    val migrationResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
 	    if (migrationResult.isEmpty()) {
 		getDataStoreMigrationPreference(applicationContext).edit()
 		    .putBoolean(KEY_MIGRATION_STATUS, true).apply()
@@ -75,128 +75,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	    e.printStackTrace()
 	    logMigrationException(e)
 	}
-    }
-
-    private suspend fun checkDataSync(): List<String> {
-	val result = mutableListOf<String>()
-	val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
-	val userSession = UserSession(applicationContext)
-
-	if (dataStore.getName().first().trim() != userSession.name.trim()) {
-	    result.add("name")
-	}
-	if (dataStore.getAccessToken().first().trim() != userSession.accessToken.trim()) {
-	    result.add("accessToken")
-	}
-	if (dataStore.getRefreshToken().first().trim() != userSession.freshToken.trim()) {
-	    result.add("refreshToken")
-	}
-	if (dataStore.getEmail().first().trim() != userSession.email.trim()) {
-	    result.add("email")
-	}
-	if (dataStore.getUserId().first().trim() != userSession.userId.trim()) {
-	    result.add("userId")
-	}
-	if (dataStore.getShopId().first().trim() != userSession.shopId.trim()) {
-	    result.add("shopId")
-	}
-	if (dataStore.getShopName().first().trim() != userSession.shopName.trim()) {
-	    result.add("shopName")
-	}
-	if (dataStore.isGoldMerchant().first() != userSession.isGoldMerchant) {
-	    result.add("isGoldMerchant")
-	}
-	if (dataStore.isAffiliate().first() != userSession.isAffiliate) {
-	    result.add("isAffiliate")
-	}
-	if (dataStore.getTempPhoneNumber().first().trim() != userSession.tempPhoneNumber.trim()) {
-	    result.add("tempPhoneNumber")
-	}
-	if (dataStore.getTempEmail().first().trim() != userSession.tempEmail.trim()) {
-	    result.add("tempEmail")
-	}
-	if (dataStore.isFirstTimeUser().first() != userSession.isFirstTimeUser) {
-	    result.add("isFirstTimeUser")
-	}
-	if (dataStore.isMsisdnVerified().first() != userSession.isMsisdnVerified) {
-	    result.add("isMsisdnVerified")
-	}
-	if (dataStore.hasPassword().first() != userSession.hasPassword()) {
-	    result.add("hasPassword")
-	}
-	if (dataStore.getProfilePicture().first().trim() != userSession.profilePicture.trim()) {
-	    result.add("profilePicture")
-	}
-	if (dataStore.hasShownSaldoWithdrawalWarning()
-		.first() != userSession.hasShownSaldoWithdrawalWarning()
-	) {
-	    result.add("saldoWithdrawalWaring")
-	}
-	if (dataStore.hasShownSaldoIntroScreen()
-		.first() != userSession.hasShownSaldoIntroScreen()
-	) {
-	    result.add("hasShownSaldoIntroScreen")
-	}
-	if (dataStore.getGCToken().first().trim() != userSession.gcToken?.trim()) {
-	    result.add("gcToken")
-	}
-	if (dataStore.getShopAvatar().first().trim() != userSession.shopAvatar.trim()) {
-	    result.add("shopAvatar")
-	}
-	if (dataStore.isPowerMerchantIdle().first() != userSession.isPowerMerchantIdle) {
-	    result.add("isPowerMerchantIdle")
-	}
-	if (dataStore.getAutofillUserData().first().trim() != userSession.autofillUserData.trim()) {
-	    result.add("autofillUserData")
-	}
-	if (dataStore.getLoginMethod().first().trim() != userSession.loginMethod.trim()) {
-	    result.add("loginMethod")
-	}
-	if (dataStore.isShopOfficialStore().first() != userSession.isShopOfficialStore) {
-	    result.add("isShopOfficialStore")
-	}
-	if (dataStore.getDeviceId().first().trim() != userSession.deviceId.trim()) {
-	    result.add("deviceId")
-	}
-	if (dataStore.getFcmTimestamp().first() != userSession.fcmTimestamp) {
-	    result.add("fcmTimestamp")
-	}
-	if (dataStore.isShopOwner().first() != userSession.isShopOwner) {
-	    result.add("isShopOwner")
-	}
-	if (dataStore.isShopAdmin().first() != userSession.isShopAdmin) {
-	    result.add("isShopAdmin")
-	}
-	if (dataStore.isLocationAdmin().first() != userSession.isLocationAdmin) {
-	    result.add("isLocationAdmin")
-	}
-	if (dataStore.isMultiLocationShop().first() != userSession.isMultiLocationShop) {
-	    result.add("isMultiLocationShop")
-	}
-	if (dataStore.isLoggedIn().first() != userSession.isLoggedIn) {
-	    result.add("isLoggedIn")
-	}
-	if (dataStore.getPhoneNumber().first().trim() != userSession.phoneNumber.trim()) {
-	    result.add("phoneNumber")
-	}
-	if (dataStore.getTokenType().first().trim() != userSession.tokenType.trim()) {
-	    result.add("tokenType")
-	}
-	if (dataStore.getTwitterAccessTokenSecret().first()
-		.trim() != userSession.twitterAccessTokenSecret?.trim()
-	) {
-	    result.add("twitterAccessTokenSecret")
-	}
-	if (dataStore.getTwitterShouldPost().first() != userSession.twitterShouldPost) {
-	    result.add("twitterShouldPost")
-	}
-	if (dataStore.getTwitterAccessToken().first()
-		.trim() != userSession.twitterAccessToken?.trim()
-	) {
-	    result.add("twitterAccessToken")
-	}
-
-	return result
     }
 
     private fun logMigrationResultSuccess() {
@@ -258,10 +136,11 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
 	const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
 
+	@JvmStatic
 	fun scheduleWorker(context: Context) {
 	    try {
 		val periodicWorker = PeriodicWorkRequest
-		    .Builder(DataStoreMigrationWorker::class.java, 3, TimeUnit.DAYS)
+		    .Builder(DataStoreMigrationWorker::class.java, 2, TimeUnit.DAYS)
 		    .setConstraints(Constraints.NONE)
 		    .build()
 

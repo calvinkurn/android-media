@@ -38,7 +38,7 @@ public class MigratedUserSession {
     @Nullable
     private UserSessionDataStore getDataStore() {
         if(isEnableDataStore()) {
-	    return UserSessionDataStoreClient.INSTANCE.getInstance(context);
+	    return UserSessionDataStoreClient.getInstance(context);
 	}
         return null;
     }

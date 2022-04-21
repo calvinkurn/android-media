@@ -27,9 +27,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.dataStore
-    implementation rootProject.ext.miscDependencies.googleTink
     implementation rootProject.ext.miscDependencies.protobufLite
-
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
 }
 
 protobuf {
