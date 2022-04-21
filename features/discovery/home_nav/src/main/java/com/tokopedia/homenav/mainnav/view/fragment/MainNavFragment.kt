@@ -208,12 +208,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         })
 
-        viewModel.allCategoriesLiveData.observe(
-            viewLifecycleOwner,
-            Observer {
-                val listCategory = addSeparator(it)
-                populateCategoryAdapterData(listCategory)
-            })
+//        viewModel.allCategoriesLiveData.observe(
+//            viewLifecycleOwner,
+//            Observer {
+//                val listCategory = addSeparator(it)
+//                populateCategoryAdapterData(listCategory)
+//            })
     }
 
     override fun onPause() {
@@ -275,22 +275,22 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            populateCategoryAdapterData(listOf(ErrorStateBuDataModel()))
+//            populateCategoryAdapterData(listOf(ErrorStateBuDataModel()))
 
-//            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
-//                if(homeNavMenuDataModel.applink.isNotEmpty()){
-//                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
-//                        RouteManager.route(context, homeNavMenuDataModel.applink)
-//                    }
-//                } else {
-//                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-//                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
-//                }
-//                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
-//            } else {
-//                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-//                hitClickTrackingBasedOnId(homeNavMenuDataModel)
-//            }
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+                if(homeNavMenuDataModel.applink.isNotEmpty()){
+                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+                        RouteManager.route(context, homeNavMenuDataModel.applink)
+                    }
+                } else {
+                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
+                }
+                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
+            } else {
+                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+                hitClickTrackingBasedOnId(homeNavMenuDataModel)
+            }
         }
     }
 
@@ -384,8 +384,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun populateCategoryAdapterData(menus: List<Visitable<*>>) {
         val categoryViewHolder = recyclerView.findViewHolderForAdapterPosition(viewModel.findBuStartIndexPosition()?: 0)
         (categoryViewHolder as? HomeNavExpandableViewHolder)?.let {
-//            it.adapter?.submitList(menus)
-            it.submitList(menus)
+            it.adapter?.submitList(menus)
+//            it.submitList(menus)
         }
     }
 
