@@ -13,6 +13,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -49,12 +50,24 @@ class LeftChatMessageViewHolder(
             senderInfoData?.let { bindSenderInfo(it) }
         }
 
-        if (message.parentReply!=null){
-            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
-            replyBubbleArea?.show()
-        }else{
-            replyBubbleArea?.hide()
-        }
+//        if (message.parentReply!=null){
+//            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+//            replyBubbleArea?.show()
+//        }else{
+//            replyBubbleArea?.hide()
+//        }
+
+        customChatLayout?.background = bg
+        replyBubbleArea?.updateReplyButtonState(true)
+        replyBubbleArea?.updateBackground(true)
+        replyBubbleArea?.updateCloseButtonState(false)
+        replyBubbleArea?.setPadding(
+            replyBubbleArea?.paddingLeft,
+            replyBubbleArea?.paddingTop,
+            replyBubbleArea?.paddingRight,
+            100F.toDp().toInt()
+        )
+        replyBubbleArea?.show()
 
     }
 

@@ -120,11 +120,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }
     }
 
-    fun updateReplyButtonState(isLeft: Boolean) {
-        if (isLeft)
-            replyIcon?.hide()
-        else
+    fun updateReplyButtonState(toShow: Boolean) {
+        if (toShow)
             replyIcon?.show()
+        else
+            replyIcon?.hide()
     }
 
     private fun bindParentReplyData(parentReply: ParentReply, replyId: String?, message : String, from : String) {
@@ -149,7 +149,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         description?.text = MethodChecker.fromHtml(msg)
     }
 
-    private fun updateCloseButtonState(enableCloseButton: Boolean) {
+    fun updateCloseButtonState(enableCloseButton: Boolean) {
+        //TODO check close not working
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {

@@ -53,11 +53,17 @@ class RightChatMessageViewHolder(
 //        if (message.parentReply!=null){
         //    replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
      //       replyBubbleArea?.background = bg
-            customChatLayout?.background = bgForChatReplyBubble
-            replyBubbleArea?.updateReplyButtonState(false)
-            replyBubbleArea?.updateBackground(false)
-            replyBubbleArea?.setPadding(replyBubbleArea?.paddingLeft,replyBubbleArea?.paddingTop,replyBubbleArea?.paddingRight,50F.toDp().toInt())
-            replyBubbleArea?.show()
+        customChatLayout?.background = bgForChatReplyBubble
+        replyBubbleArea?.updateReplyButtonState(true)
+        replyBubbleArea?.updateBackground(false)
+        replyBubbleArea?.updateCloseButtonState(false)
+        replyBubbleArea?.setPadding(
+            replyBubbleArea?.paddingLeft,
+            replyBubbleArea?.paddingTop,
+            replyBubbleArea?.paddingRight,
+            50F.toDp().toInt()
+        )
+        replyBubbleArea?.show()
 //        }else{
 //            replyBubbleArea?.hide()
 //        }
