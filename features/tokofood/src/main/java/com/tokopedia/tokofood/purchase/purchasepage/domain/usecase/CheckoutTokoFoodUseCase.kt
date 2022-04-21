@@ -13,6 +13,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariantOption
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromoBreakdown
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
@@ -366,8 +367,12 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     priceFmt = "Rp0"
                 ),
                 promo = CheckoutTokoFoodPromo(
-                    title = "",
-                    subtitle = "1 promo dipakai"
+                    title = "Kamu bisa hemat Rp.12.000",
+                    subtitle = "1 promo dipakai",
+                    promoBreakdown = CheckoutTokoFoodPromoBreakdown(
+                        title = "Diskon Ongkos Kirim",
+                        amount = 12000.00
+                    )
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
                     total = CheckoutTokoFoodShoppingTotal(

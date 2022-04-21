@@ -5,7 +5,8 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 
 data class TokoFoodPurchasePromoTokoFoodPurchaseUiModel(
         var title: String = "",
-        var description: String = ""
+        var description: String = "",
+        var benefitList: List<PromoBenefit> = listOf()
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {
 
     var isLoading = false
@@ -19,4 +20,10 @@ data class TokoFoodPurchasePromoTokoFoodPurchaseUiModel(
             this.isLoading = isLoading
         }
     }
+
+    data class PromoBenefit(
+        var title: String = "",
+        var value: Double = 0.0
+    )
+
 }

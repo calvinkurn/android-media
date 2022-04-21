@@ -1,12 +1,9 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.explorepromo.ExplorePromo
-import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromoBreakdown
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
@@ -229,10 +226,17 @@ object TokoFoodPurchaseUiModelMapper {
     }
 
     private fun mapPromoUiModel(promo: CheckoutTokoFoodPromo): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
-        return TokoFoodPurchasePromoTokoFoodPurchaseUiModel().apply {
-            title = promo.title
-            description = promo.subtitle
-        }
+        return TokoFoodPurchasePromoTokoFoodPurchaseUiModel(
+            title = promo.title,
+            description = promo.subtitle,
+            // TODO: Check for promo breakdown
+            benefitList = listOf(
+                TokoFoodPurchasePromoTokoFoodPurchaseUiModel.PromoBenefit(
+                    title = promo.promoBreakdown.title,
+                    value = promo.promoBreakdown.amount
+                )
+            )
+        )
     }
 
     private fun mapSummaryTransactionUiModel(costBreakdown: CheckoutTokoFoodShoppingCostBreakdown,
