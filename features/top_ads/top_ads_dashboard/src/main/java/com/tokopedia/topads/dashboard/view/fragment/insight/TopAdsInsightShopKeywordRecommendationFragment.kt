@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,11 +29,7 @@ import javax.inject.Inject
 class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TopAdsInsightViewModel::class.java]
-    }
+    lateinit var viewModel: TopAdsInsightViewModel
 
     @Inject
     lateinit var userSession: UserSessionInterface

@@ -8,9 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -76,11 +74,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val topAdsDashboardViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TopAdsDashboardViewModel::class.java]
-    }
+    lateinit var topAdsDashboardViewModel: TopAdsDashboardViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
