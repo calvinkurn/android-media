@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFITS
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -42,13 +41,6 @@ class OfficialStoreHomeModule {
     @Named(QUERY_OFFICIAL_STORE_BANNERS)
     fun provideQueryofficialStoreBanners(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_banner)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_BENEFITS)
-    fun provideQueryofficialStoreBenefitShop(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_benefit)
     }
 
     @OfficialStoreHomeScope
