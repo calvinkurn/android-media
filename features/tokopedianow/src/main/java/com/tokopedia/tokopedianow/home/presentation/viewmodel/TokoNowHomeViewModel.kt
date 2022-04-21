@@ -468,7 +468,7 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     /***
-     * Switch between NOW 15 minutes/2 hours
+     * Switch between NOW 20 minutes/2 hours
      * @param localCacheModel local data from choose address
      */
     fun switchService(localCacheModel: LocalCacheModel) {
