@@ -585,7 +585,12 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                             }
                         }
                         PERMISSION_DONT_ASK_AGAIN -> {
-                            showBottomSheetLocUndefined(true)
+                            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                                showBottomSheetLocUndefined(true)
+                            } else {
+                                // go to gps settings first
+                                showBottomSheetLocUndefined(false)
+                            }
                         }
                         PERMISSION_NOT_DEFINED -> {
                             requestPermissionLocation()
