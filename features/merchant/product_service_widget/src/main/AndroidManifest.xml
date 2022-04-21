@@ -8,7 +8,7 @@
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -19,19 +19,6 @@
                     android:host="@string/host_merchant"
                     android:pathPattern="@string/path_product_bundle"
                     android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name="com.tokopedia.product_bundle.activity.ProductBundleBottomSheetActivity"
-            android:label="@string/title_bundling_selection_page"
-            android:configChanges="orientation"
-            android:theme="@style/Theme.AppCompat.Translucent"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
 

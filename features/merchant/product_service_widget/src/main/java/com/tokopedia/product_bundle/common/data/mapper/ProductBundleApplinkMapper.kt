@@ -3,18 +3,21 @@ package com.tokopedia.product_bundle.common.data.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
-// Applink sample = tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
+/*
+ *   1. Applink Sample Page        : tokopedia-android-internal/product-bundle/2147881200/?bundleId=3&selectedProductIds=12,45,67&source=cart&cartIds=1,2,3
+ *   2. Applink Sample Bottomsheet : tokopedia://product-bundle/2148348122?source=minicart&viewType=bottomsheet&bundleId=36386&selectedProductIds=2148348122&cartIds=2166374981
+ */
+
 object ProductBundleApplinkMapper {
 
     private const val BUNDLE_ID = "bundleId"
     private const val SELECTED_PRODUCT_IDS = "selectedProductIds"
+    private const val VIEW_TYPE = "viewType"
     private const val SOURCE = "source"
     private const val DEFAULT_VALUE_APPLINK_DATA = 0L
     private const val PRODUCT_ID_SEGMENT_INDEX = 1
     private const val PRODUCT_ID_SEGMENT_SIZE_MIN = 2
     private const val APPLINK_ARRAY_DELIMITER = ","
-
-    const val MINICART = "minicart"
 
     fun getProductIdFromUri(uri: Uri, pathSegments: List<String>): Long {
         return if (pathSegments.size >= PRODUCT_ID_SEGMENT_SIZE_MIN) {
@@ -47,4 +50,11 @@ object ProductBundleApplinkMapper {
         return uri.getQueryParameter(SOURCE).orEmpty()
     }
 
+    fun getViewType(uri: Uri): String {
+        return uri.getQueryParameter(VIEW_TYPE)?.uppercase() ?: ViewType.PAGE.name.uppercase()
+    }
+}
+
+enum class ViewType {
+    BOTTOMSHEET, PAGE
 }
