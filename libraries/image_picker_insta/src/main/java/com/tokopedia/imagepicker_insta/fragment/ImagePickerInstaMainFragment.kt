@@ -790,7 +790,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
-                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT, viewModel.selectedFeedAccountType.value)
+                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
                 startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
                 activity?.setResult(
@@ -874,28 +874,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val selectedFeedAccountTypeValue = data?.getIntExtra(
-                EXTRA_SELECTED_FEED_ACCOUNT,
-                FeedAccountUiModel.Type.BUYER.value
-            ) ?: FeedAccountUiModel.Type.BUYER.value
-
-            val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
-            val selectedFeedAccount = when(selectedFeedAccountType) {
-                FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
-                    id = userSession.shopId,
-                    name = userSession.shopName,
-                    iconUrl = userSession.shopAvatar,
-                    type = selectedFeedAccountType
-                )
-                FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
-                    id = userSession.userId,
-                    name = userSession.name,
-                    iconUrl = userSession.profilePicture,
-                    type = selectedFeedAccountType
-                )
-                else -> FeedAccountUiModel.Empty
-            }
-            viewModel.setSelectedFeedAccount(selectedFeedAccount)
+            val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+            viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
         }
     }
 
@@ -905,7 +885,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     companion object {
-        private const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+        private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val CREATE_POST_REQUEST_CODE = 101
     }
 }

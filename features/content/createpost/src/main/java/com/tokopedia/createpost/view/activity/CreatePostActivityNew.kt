@@ -53,7 +53,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    lateinit var selectedFeedAccount: FeedAccountUiModel
+    protected var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
+
+    protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
 
     private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
         val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
@@ -98,8 +100,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     ) {
     }
 
-    override fun updateHeader(header: HeaderViewModel) {
-        setupToolbar(header)
+    override fun setFeedAccountList(feedAccountList: List<FeedAccountUiModel>) {
+        setupToolbar(feedAccountList)
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -146,7 +148,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+        const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
 
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
@@ -189,6 +191,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
 
         }
+
+        if(selectedFeedAccount.id.isNotEmpty())
+            intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
+
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
                 ?: Bundle())
@@ -211,7 +217,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         setupView()
-        setupToolbar()
     }
 
     override fun clickContinueOnTaggingPage(){
@@ -294,10 +299,14 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         toolbarCommon = findViewById(R.id.toolbar_common)
     }
 
-    private fun setupToolbar(headerViewModel: HeaderViewModel? = null) {
-        selectedFeedAccount = headerViewModel?.let {
-            generateFeedAccountFromHeaderViewModel(headerViewModel)
-        } ?: getSelectedFeedAccountFromIntent()
+    private fun setupToolbar(feedAccountList: List<FeedAccountUiModel>) {
+        feedAccountBottomSheet.setData(feedAccountList)
+
+        mFeedAccountList.clear()
+        mFeedAccountList.addAll(feedAccountList)
+
+        val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+        selectedFeedAccount = mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: FeedAccountUiModel.Empty
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
@@ -317,45 +326,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         setSupportActionBar(toolbarCommon)
     }
 
-    private fun getSelectedFeedAccountFromIntent(): FeedAccountUiModel {
-        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
-        val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
-        return when(selectedFeedAccountType) {
-            FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
-                id = userSession.shopId,
-                name = userSession.shopName,
-                iconUrl = userSession.shopAvatar,
-                type = selectedFeedAccountType
-            )
-            FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
-                id = userSession.userId,
-                name = userSession.name,
-                iconUrl = userSession.profilePicture,
-                type = selectedFeedAccountType
-            )
-            else -> FeedAccountUiModel.Empty
-        }
-    }
-
-    private fun generateFeedAccountFromHeaderViewModel(headerViewModel: HeaderViewModel): FeedAccountUiModel {
-        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.UNKNOWN.value)
-        return if(selectedFeedAccountTypeValue == FeedAccountUiModel.Type.UNKNOWN.value)
-            FeedAccountUiModel(
-                id = headerViewModel.id,
-                name = headerViewModel.title,
-                iconUrl = headerViewModel.avatar,
-                type = when(headerViewModel.id) {
-                    userSession.userId -> FeedAccountUiModel.Type.BUYER
-                    userSession.shopId -> FeedAccountUiModel.Type.SELLER
-                    else -> FeedAccountUiModel.Type.UNKNOWN
-                }
-            )
-        else selectedFeedAccount
-    }
-
     private fun backWithActionResult() {
         val intent = Intent().apply {
-            putExtra(EXTRA_SELECTED_FEED_ACCOUNT, selectedFeedAccount.type.value)
+            putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()

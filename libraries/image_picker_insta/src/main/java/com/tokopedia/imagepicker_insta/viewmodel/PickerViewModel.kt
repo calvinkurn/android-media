@@ -49,8 +49,8 @@ class PickerViewModel(
     private val folderDataList = arrayListOf<FolderData>()
     private val uriSet = HashSet<Uri>()
 
-    val selectedFeedAccountType: FeedAccountUiModel.Type
-        get() = _selectedFeedAccount.value.type
+    val selectedFeedAccountId: String
+        get() = _selectedFeedAccount.value.id
 
     private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
     val selectedFeedAccount: Flow<FeedAccountUiModel>
@@ -199,7 +199,7 @@ class PickerViewModel(
     fun getFeedAccountList() {
         launchCatchError(block = {
             val response = getContentFormUseCase.apply {
-                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "content-tag", ""))
+                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "content-tagging-page", ""))
             }.executeOnBackground()
 
             val feedAccountList = response.feedContentForm.authors.map {
@@ -223,6 +223,15 @@ class PickerViewModel(
             val current = _selectedFeedAccount.value
             if(current.id != feedAccount.id) {
                 _selectedFeedAccount.value = feedAccount
+            }
+        }, onError = { })
+    }
+
+    fun setSelectedFeedAccountId(feedAccountId: String) {
+        launchCatchError(block = {
+            val current = _selectedFeedAccount.value
+            if(current.id != feedAccountId) {
+                _selectedFeedAccount.value = _feedAccountList.value.firstOrNull { it.id == feedAccountId } ?: FeedAccountUiModel.Empty
             }
         }, onError = { })
     }
