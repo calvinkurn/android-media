@@ -109,7 +109,6 @@ class MainNavViewModel @Inject constructor(
 
     private var allCategoriesCache = listOf<Visitable<*>>()
     private lateinit var allCategories : HomeNavExpandableDataModel
-    var isCategoryAccordionExpanded = false
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -215,7 +214,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES, isExpanded = isCategoryAccordionExpanded)
+        allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
         this.add(allCategories)
         this.add(SeparatorDataModel())
     }
@@ -238,7 +237,6 @@ class MainNavViewModel @Inject constructor(
     private suspend fun getBuListMenuCached() {
         viewModelScope.launch {
             try {
-//                _allCategoriesLiveData.postValue(listOf(InitialShimmerDataModel()))
                 allCategories.menus = listOf(InitialShimmerDataModel())
                 updateWidget(allCategories, findBuStartIndexPosition())
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
@@ -251,7 +249,6 @@ class MainNavViewModel @Inject constructor(
                 allCategoriesCache = result
                 allCategories.menus = result
                 updateWidget(allCategories, findBuStartIndexPosition())
-//                _allCategoriesLiveData.postValue(result)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -4,9 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.homenav.base.datamodel.*
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
-import com.tokopedia.homenav.base.diffutil.holder.*
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
+import com.tokopedia.homenav.base.datamodel.HomeNavGlobalErrorDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.category.view.adapter.model.CategoryListLoadingDataModel
 import com.tokopedia.homenav.category.view.adapter.viewholder.CategoryListLoadingViewHolder
 
@@ -35,10 +41,6 @@ class CategoryListTypeFactoryImpl(
 
     override fun type(visitable: HomeNavTickerDataModel): Int {
         return HomeNavTickerViewHolder.LAYOUT
-    }
-
-    override fun type(visitable: HomeNavExpandableDataModel): Int {
-        TODO("Not yet implemented")
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<Visitable<*>> {

@@ -240,21 +240,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.refreshTransactionListData()
     }
 
-    private fun isCategoryAccordionExpanded() : Boolean {
-        val categoryViewHolder = recyclerView.findViewHolderForAdapterPosition(viewModel.findBuStartIndexPosition())
-        (categoryViewHolder as? HomeNavExpandableViewHolder)?.let {
-            return it.accordionData.isExpanded
-        }
-        return false
-    }
-
-    private fun setLastCategoryExpanded() {
-        viewModel.isCategoryAccordionExpanded = isCategoryAccordionExpanded()
-    }
-
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            setLastCategoryExpanded()
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {

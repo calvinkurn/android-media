@@ -15,5 +15,5 @@ interface HomeNavTypeFactory{
     fun type(visitable: HomeNavTitleDataModel) : Int
     fun type(visitable: HomeNavGlobalErrorDataModel) : Int
     fun type(visitable: HomeNavTickerDataModel) : Int
-    fun type(visitable: HomeNavExpandableDataModel) : Int
+    fun type(visitable: HomeNavExpandableDataModel) : Int = 0
 }

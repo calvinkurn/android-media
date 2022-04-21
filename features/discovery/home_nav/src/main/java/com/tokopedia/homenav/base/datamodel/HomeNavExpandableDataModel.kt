@@ -16,8 +16,6 @@ data class HomeNavExpandableDataModel (
     override fun id(): Any = id
 
     override fun isContentTheSame(visitable: HomeNavVisitable): Boolean = false
-//            this == visitable
-
 
     override fun type(factory: HomeNavTypeFactory): Int {
         return factory.type(this)
