@@ -13,9 +13,15 @@ object Constant {
     const val POWER_MERCHANT_CHARGING = "1,25%"
     const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
 
+    const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"
     const val PM_PRO_EXPERT = "Expert"
     const val PM_PRO_ULTIMATE = "Ultimate"
+
+    const val POWER_MERCHANT_TAB_INDEX = 0
+    const val PM_PRO_ADVANCED_TAB_INDEX = 1
+    const val PM_PRO_EXPERT_TAB_INDEX = 2
+    const val PM_PRO_ULTIMATE_TAB_INDEX = 3
 
 
     object Url {

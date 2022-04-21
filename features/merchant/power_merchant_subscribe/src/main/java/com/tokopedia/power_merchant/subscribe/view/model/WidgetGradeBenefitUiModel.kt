@@ -8,9 +8,9 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactory
  */
 
 class WidgetGradeBenefitUiModel(
-        val selectedPmTireType: Int,
-        val benefitPages: List<PMGradeWithBenefitsUiModel>,
-        val ctaApplink: String
+    val selectedPmTireType: Int,
+    val benefitPages: List<PMGradeWithBenefitsUiModel>,
+    val ctaAppLink: String
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

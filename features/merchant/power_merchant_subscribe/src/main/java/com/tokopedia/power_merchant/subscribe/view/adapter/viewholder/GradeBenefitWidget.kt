@@ -9,16 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.constant.PMConstant
-import com.tokopedia.kotlin.extensions.view.asCamelCase
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
+import com.tokopedia.unifycomponents.setIconUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 
@@ -43,27 +41,8 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
     private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            RouteManager.route(root.context, element.ctaApplink)
+            RouteManager.route(root.context, element.ctaAppLink)
         }
-
-        val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        tvPmGradeBenefitDescription.isVisible = isPmPro
-
-        if (element.benefitPages.isNotEmpty()) {
-            val selectedTab = element.benefitPages.firstOrNull { it.isActive }
-                    ?: element.benefitPages[0]
-            val gradeName = selectedTab.gradeName.asCamelCase()
-            setGradeBenefitTitle(isPmPro, gradeName)
-        }
-    }
-
-    private fun setGradeBenefitTitle(isPmPro: Boolean, grade: String) {
-        val title = if (isPmPro) {
-            itemView.context.getString(R.string.pm_grade_benefit_widget_title_pm_pro, Constant.POWER_MERCHANT_PRO_CHARGING, grade)
-        } else {
-            getString(R.string.pm_grade_benefit_widget_title_pm)
-        }
-        binding?.tvPmGradeBenefitTitle?.text = title
     }
 
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) = binding?.run {
@@ -75,17 +54,16 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
     }
 
     private fun setupTabLayout(element: WidgetGradeBenefitUiModel) {
-       binding?.tabPmGradeBenefit?.run {
-            val isSinglePage = element.benefitPages.size <= 1
-            if (isSinglePage) {
-                gone()
-                return@run
-            }
-
-            visible()
+        binding?.tabPmGradeBenefit?.run {
             tabLayout.removeAllTabs()
-            element.benefitPages.forEach {
-                addNewTab(it.gradeName.asCamelCase())
+            try {
+                getTabList(element.benefitPages).filterNotNull()
+                    .forEachIndexed { i, pair ->
+                        addNewTab(pair.first)
+                        getUnifyTabLayout().getTabAt(i)?.setIconUnify(pair.second)
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
             }
 
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
@@ -99,6 +77,26 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+        }
+    }
+
+    private fun getTabList(benefitPages: List<PMGradeWithBenefitsUiModel>): List<Pair<String, Int>?> {
+        return benefitPages.mapIndexed { i, _ ->
+            return@mapIndexed when (i) {
+                Constant.POWER_MERCHANT_TAB_INDEX -> {
+                    Pair(getString(R.string.pm_power_merchant), IconUnify.BADGE_PM_FILLED)
+                }
+                Constant.PM_PRO_ADVANCED_TAB_INDEX -> {
+                    Pair(getString(R.string.pm_pro_advanced), IconUnify.BADGE_PMPRO_FILLED)
+                }
+                Constant.PM_PRO_EXPERT_TAB_INDEX -> {
+                    Pair(getString(R.string.pm_pro_expert), IconUnify.BADGE_PMPRO_FILLED)
+                }
+                Constant.PM_PRO_ULTIMATE_TAB_INDEX -> {
+                    Pair(getString(R.string.pm_pro_ultimate), IconUnify.BADGE_PMPRO_FILLED)
+                }
+                else -> null
+            }
         }
     }
 
