@@ -262,7 +262,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
         }
         val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                ?: shippingCourierViewModelList.first()
+                ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend } ?: shippingCourierViewModelList.first()
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
