@@ -251,7 +251,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         handleATC(quantity,false)
     }
 
-    private fun handleATC(quantity: Int, useProductShopID: Boolean) {
+    private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
             masterProductCardItemViewModel.components,
@@ -265,7 +265,8 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                         masterProductCardItemViewModel.position,
                         productItem.productId!!,
                         quantity,
-                        if (useProductShopID) productItem.shopId else null
+                        if (isGeneralCartATC) productItem.shopId else null,
+                        isGeneralCartATC
                     )
             }
         } else {

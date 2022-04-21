@@ -635,11 +635,25 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
             if(it is Success) {
-                getMiniCart()
-                showToaster(
-                    message = it.data.errorMessage.joinToString(separator = ", "),
-                    type = Toaster.TYPE_NORMAL
-                )
+                if(it.data.isGeneralCartATC){
+                    showToasterWithAction(
+                        message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
+                        Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL,
+                        actionText = getString(R.string.disco_lihat),
+                        clickListener = {
+                            context?.let { context->
+                                RouteManager.route(context,ApplinkConst.CART)
+                            }
+                        }
+                    )
+                }else {
+                    getMiniCart()
+                    showToaster(
+                        message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
             }else if(it is Fail){
                 if(it.throwable is ResponseErrorException)
                     showToaster(
@@ -728,6 +742,21 @@ class DiscoveryFragment :
                     text = message,
                     duration = duration,
                     type = type
+                ).show()
+            }
+        }
+    }
+
+    private fun showToasterWithAction(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int,actionText: String, clickListener: View.OnClickListener = View.OnClickListener {}) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = clickListener
                 ).show()
             }
         }
@@ -1488,13 +1517,14 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int,shopId : String? = null) {
+    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int,shopId : String? = null, isGeneralCartATC:Boolean) {
         discoveryViewModel.addProductToCart(
             parentPosition,
             position,
             productId,
             quantity,
-            shopId ?: (userAddressData?.shop_id ?: "")
+            shopId ?: (userAddressData?.shop_id ?: ""),
+             isGeneralCartATC
         )
     }
 
