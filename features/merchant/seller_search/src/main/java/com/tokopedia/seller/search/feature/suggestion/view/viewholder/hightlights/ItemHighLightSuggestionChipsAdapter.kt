@@ -3,10 +3,10 @@ package com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightligh
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.util.setRippleEffect
 import com.tokopedia.seller.search.databinding.ItemChipsHighlightSearchBinding
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HighlightSuggestionSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemHighlightSuggestionSearchUiModel
@@ -54,7 +54,7 @@ class ItemHighLightSuggestionChipsAdapter(private val highLightListener: Highlig
                     setOnClickListener {
                         highLightListener.onHighlightItemClicked(data, adapterPosition)
                     }
-                    background = ContextCompat.getDrawable(context, R.drawable.chips_ripple)
+                    setRippleEffect()
                 }
             }
         }

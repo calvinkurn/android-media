@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.view.ShopPageLabelView
+import com.tokopedia.shop_widget.common.customview.ShopPageLabelView
 import com.tokopedia.shop.databinding.ItemShopFavouriteUserBinding
 import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import com.tokopedia.utils.view.binding.viewBinding

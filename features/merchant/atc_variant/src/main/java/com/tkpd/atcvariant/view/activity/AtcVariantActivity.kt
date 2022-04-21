@@ -68,6 +68,8 @@ class AtcVariantActivity : BaseSimpleActivity() {
                     .getBooleanExtra(AtcVariantHelper.KEY_DISMISS_AFTER_ATC, false)
             paramsData.saveAfterClose = intent
                     .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
+            paramsData.extParams = intent
+                    .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
         }
 
         super.onCreate(savedInstanceState)

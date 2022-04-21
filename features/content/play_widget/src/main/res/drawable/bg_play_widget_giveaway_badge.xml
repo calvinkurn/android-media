@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners
-        android:radius="@dimen/play_view_stats_info_badge_radius"
-        />
-    <gradient
-
-        android:startColor="@color/play_widget_dms_bg_giveaway_badge_start"
-        android:endColor="@color/play_widget_dms_bg_giveaway_badge_end"
-        android:angle="225"
-        />
+    <corners android:radius="@dimen/play_view_stats_info_badge_radius"/>
+    <gradient android:startColor="@color/play_widget_dms_bg_giveaway_badge_start" android:endColor="@color/play_widget_dms_bg_giveaway_badge_end" android:angle="225"/>
 </shape>

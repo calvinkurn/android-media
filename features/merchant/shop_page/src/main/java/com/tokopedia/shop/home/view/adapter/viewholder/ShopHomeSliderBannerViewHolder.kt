@@ -27,7 +27,6 @@ import java.util.*
 
 class ShopHomeSliderBannerViewHolder(
         view: View?,
-        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
@@ -83,6 +82,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, 0 , indicatorWrapper.paddingRight, 0)
             indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
@@ -125,11 +125,6 @@ class ShopHomeSliderBannerViewHolder(
         textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
-                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
-                    }
-                }
             } else {
                 text = shopHomeDisplayWidgetUiModel.header.title
                 show()

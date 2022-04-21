@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.topads.create.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_info_bs.*
+import kotlinx.android.synthetic.main.topads_static_info_bs.*
 
 class StaticInfoBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null

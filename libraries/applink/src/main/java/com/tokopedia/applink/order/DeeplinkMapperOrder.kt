@@ -10,6 +10,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import java.net.URLDecoder
 
 /**
  * Created by fwidjaja on 2020-01-26.
@@ -38,6 +40,7 @@ object DeeplinkMapperOrder {
     const val PATH_ORDER_ID = "order_id"
     const val PATH_ORDER_DETAIL_ID = "order_detail_id"
     const val QUERY_PARAM_ORDER_ID = "order_id"
+    const val QUERY_PARAM_DTL_ID = "dtl_id"
 
     fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri)
@@ -184,6 +187,47 @@ object DeeplinkMapperOrder {
             }
             else -> ""
         }
+    }
+
+    /**
+     * map a http url to tokopedia applink. example :
+     * Url = https://www.tokopedia.com/snapshot_product?order_id=1149427127&dtl_id=2141552099
+     * AppLink = tokopedia-android-internal://snapshot/order?order_id=1149427127&order_detail_id=2141552099
+     * */
+    fun mapSnapShotAppLinkFromHttp(url: String): String {
+        return try {
+            val uri = Uri.parse(url)
+            val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID)
+            val orderDetailId = uri.getQueryParameter(QUERY_PARAM_DTL_ID)
+
+            if (orderId.isNullOrBlank() || orderDetailId.isNullOrBlank()) {
+                return url
+            }
+
+            Uri.parse(ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT)
+                .buildUpon()
+                .appendQueryParameter(QUERY_PARAM_ORDER_ID, orderId)
+                .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
+                .build()
+                .toString()
+        } catch (e: Exception) {
+            url
+        }
+    }
+
+    fun getRegisteredNavigationSnapshotFromBranchLink(uri: Uri): String {
+        try {
+            val decodedUrl = URLDecoder.decode(uri.toString(), Charsets.UTF_8.name())
+            val pattern = "(?<==).*?/snapshot_product\\?dtl_id=.*?&order_id=.*?[^&]*".toRegex()
+            val result = pattern.find(decodedUrl)
+            val matches = result?.groupValues
+            if (!matches.isNullOrEmpty()) {
+                return mapSnapShotAppLinkFromHttp(matches.first())
+            }
+        } catch (e: Exception) {
+            return String.EMPTY
+        }
+        return String.EMPTY
     }
 
     fun getBuyerCancellationRequestInternalAppLink(): String {

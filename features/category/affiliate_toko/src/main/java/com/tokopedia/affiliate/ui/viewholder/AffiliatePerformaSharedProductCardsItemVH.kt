@@ -27,9 +27,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
         var LAYOUT = R.layout.affiliate_performa_vertical_product_card_item_layout
 
         const val PRODUCT_ACTIVE = 1
-        const val PENDAPATAN = "Pendapatan"
-        const val KLIK = "Klik"
-        const val TERJUAL = "Terjual"
+        const val PENDAPATAN = "orderCommissionPerItem"
+        const val KLIK = "totalClickPerItem"
+        const val TERJUAL = "orderPerItem"
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -40,7 +40,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
     private fun setPerformaData(element: AffiliatePerformaSharedProductCardsModel?) {
         if (element?.product?.metrics?.isNotEmpty() == true) {
             element.product.metrics?.forEach { metric ->
-                when(metric?.metricTitle){
+                when(metric?.metricType){
                     PENDAPATAN -> {
                         setCommisionData(metric)
                     }
@@ -56,18 +56,21 @@ class AffiliatePerformaSharedProductCardsItemVH(
     }
 
     private fun setCommisionData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
+        itemView.findViewById<Typography>(R.id.pendapatan)?.text = data.metricTitle
         itemView.findViewById<Typography>(R.id.pendapatan_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.pendapatan_icon), metricIntValue)
     }
 
     private fun setSoldData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
+        itemView.findViewById<Typography>(R.id.terjual)?.text = data.metricTitle
         itemView.findViewById<Typography>(R.id.terjual_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.terjual_icon), metricIntValue)
     }
 
     private fun setClickData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
+        itemView.findViewById<Typography>(R.id.klik)?.text = data.metricTitle
         itemView.findViewById<Typography>(R.id.klik_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.klik_icon), metricIntValue)

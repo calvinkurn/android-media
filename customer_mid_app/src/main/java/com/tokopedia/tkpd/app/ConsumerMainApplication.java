@@ -153,6 +153,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private void checkAppPackageNameAsync() {
@@ -504,7 +505,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         RemoteConfigInstance.initAbTestPlatform(this);
     }
 
-    private void createAndCallFetchAbTest(){
+    private void createAndCallFetchAbTest() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface weave = new WeaveInterface() {
             @NotNull

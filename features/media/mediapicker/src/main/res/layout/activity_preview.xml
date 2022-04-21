@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_NN50">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/Unify_N0"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/ui_component_toolbar_media_picker" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <include
+        layout="@layout/ui_component_preview_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/drawer_selector"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container"/>
+
+    <com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
+        android:id="@+id/drawer_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone"
+        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:draggable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:placeholder="@drawable/picker_ic_placeholder_media_preview"
+        tools:visibility="visible" />
+
+    <com.tokopedia.media.preview.ui.widget.button.RetakeActionButtonWidget
+        android:id="@+id/btn_retake"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

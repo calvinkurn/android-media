@@ -25,8 +25,8 @@ interface ImageGeneratorService {
         @Query("voucher_finish_time") voucherFinishTime: String,
         @Query("product_count") productCount: Int,
         @Query("product_image_1") firstProductImageUrl: String,
-        @Query("product_image_2") secondProductImageUrl: String,
-        @Query("product_image_3") thirdProductImageUrl: String,
+        @Query("product_image_2") secondProductImageUrl: String?,
+        @Query("product_image_3") thirdProductImageUrl: String?,
         @Query("audience_target") audienceTarget: String
     ): ResponseBody
 }

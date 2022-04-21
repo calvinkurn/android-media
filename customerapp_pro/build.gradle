@@ -316,6 +316,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.playServicesDependencies.measurementApi
+    implementation projectOrAar(rootProject.ext.features.addOnGifting)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse

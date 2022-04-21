@@ -24,8 +24,7 @@ class ShopHomeProductBundleMultipleAdapter(
                         parent,
                         false
                 ),
-                multipleProductBundleListener,
-                itemCount
+                multipleProductBundleListener
         )
     }
 

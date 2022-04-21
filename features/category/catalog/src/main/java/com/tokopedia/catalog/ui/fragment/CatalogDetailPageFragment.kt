@@ -34,12 +34,8 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
@@ -65,6 +61,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -91,6 +88,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
+    private val widgetTrackingSet =  HashSet<String>()
 
     private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
@@ -346,11 +348,11 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    private fun viewMoreClicked(openPage : String) {
+    private fun viewMoreClicked(openPage : String, jumpToFullSpecIndex : Int = 0) {
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogName , catalogId,
                 catalogUiUpdater.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
-                ,openPage
+                ,openPage,jumpToFullSpecIndex
         )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
@@ -505,13 +507,22 @@ class CatalogDetailPageFragment : Fragment(),
                 "$catalogName - $catalogId",userSession.userId,catalogId)
     }
 
-    override fun onViewMoreSpecificationsClick() {
+    override fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                "$catalogName - $catalogId",userSession.userId,catalogId)
-        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
+            "$catalogName - $catalogId",userSession.userId,catalogId)
+        var positionInFullSpecs = 0
+        topModel?.let { safeTopModel ->
+            fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
+                    index, fullSpecificationsComponentData ->
+                if(safeTopModel.key == fullSpecificationsComponentData.name){
+                    positionInFullSpecs = index
+                }
+            }
+        }
+        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION, jumpToFullSpecIndex = positionInFullSpecs)
     }
 
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
@@ -620,6 +631,43 @@ class CatalogDetailPageFragment : Fragment(),
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 
+    override fun sendWidgetImpressionEvent(
+        widgetImpressionActionName: String,
+        widgetImpressionItemName: String,
+        adapterPosition: Int
+    ) {
+        val uniqueTrackingKey = "$widgetImpressionActionName-$adapterPosition"
+        if(!widgetTrackingSet.contains(uniqueTrackingKey)){
+            CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue,
+                CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
+                widgetImpressionActionName,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                "$catalogName - $catalogId",
+                catalogId,
+                adapterPosition,
+                userSession.userId,
+                catalogId,
+                catalogName,
+                widgetImpressionItemName,
+                widgetImpressionActionName
+            )
+            widgetTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun sendWidgetTrackEvent(actionName: String) {
+        if(!widgetTrackingSet.contains(actionName)){
+            CatalogDetailAnalytics.sendEvent(CatalogDetailAnalytics.EventKeys.EVENT_VIEW_PG_IRIS,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                actionName,
+                "$catalogName - $catalogId",
+                userSession.userId,
+                catalogId
+            )
+            widgetTrackingSet.add(actionName)
+        }
+    }
+
     fun onBackPressed(){
         isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -635,5 +683,10 @@ class CatalogDetailPageFragment : Fragment(),
         } else {
             0
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
     }
 }

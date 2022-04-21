@@ -39,7 +39,14 @@ data class TopAdsDeletedAdsResponse(
             @SerializedName("stat_total_spent")
             val statTotalSpent: String,
             @SerializedName("stat_total_top_slot_impression")
-            val statTotalTopSlotImpression: String
+            val statTotalTopSlotImpression: String,
+            @SerializedName("keyword_tag")
+            val keywordTag: String,
+            @SerializedName("price_bid")
+            val priceBid: String,
+            @SerializedName("search_type")
+            val searchType: Int,
+            var adType: String = ""
         )
 
         data class Page(
