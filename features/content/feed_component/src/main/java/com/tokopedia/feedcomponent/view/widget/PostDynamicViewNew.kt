@@ -2,7 +2,6 @@ package com.tokopedia.feedcomponent.view.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
@@ -49,8 +48,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
@@ -67,7 +64,6 @@ import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.round
 

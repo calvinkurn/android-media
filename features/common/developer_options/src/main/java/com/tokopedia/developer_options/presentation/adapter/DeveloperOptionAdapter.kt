@@ -82,6 +82,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
+        const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
     }
 
     /**
@@ -101,6 +102,7 @@ class DeveloperOptionAdapter(
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),

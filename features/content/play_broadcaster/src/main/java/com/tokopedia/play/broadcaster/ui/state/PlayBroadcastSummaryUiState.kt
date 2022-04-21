@@ -12,7 +12,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 data class PlayBroadcastSummaryUiState(
     val channelSummary: ChannelSummaryUiState,
     val liveReport: LiveReportUiState,
-    val tag: TagUiState,
+    val tag: NetworkResult<TagUiState>,
 )
 
 data class ChannelSummaryUiState(

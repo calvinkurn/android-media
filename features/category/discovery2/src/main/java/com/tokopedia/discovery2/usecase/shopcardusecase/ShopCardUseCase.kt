@@ -12,7 +12,7 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
     companion object {
         private const val SHOP_PER_PAGE = 10
         private const val PAGE_START = 1
-        private const val PAGE_LOADED_2 = 1
+        private const val PAGE_LOADED_2 = 2
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, shopLimit: Int = SHOP_PER_PAGE): Boolean {

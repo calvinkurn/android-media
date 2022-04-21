@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,6 +27,7 @@ import com.tokopedia.vouchercreation.product.create.view.activity.CreateCouponPr
 import com.tokopedia.vouchercreation.product.list.view.activity.AddProductActivity
 import com.tokopedia.vouchercreation.product.list.view.activity.ManageProductActivity
 import com.tokopedia.vouchercreation.product.list.view.adapter.ProductListAdapter
+import com.tokopedia.vouchercreation.product.list.view.bottomsheet.DeleteProductConfirmationDialog
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.list.view.viewmodel.ManageProductViewModel
 import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity
@@ -172,9 +172,7 @@ class ManageProductFragment : BaseDaggerFragment(),
 
     private fun setupDeleteProductButton(binding: FragmentMvcManageProductBinding?) {
         binding?.tpgDeleteProduct?.setOnClickListener {
-            adapter?.deleteSelectedProducts()
-            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
-            updateProductCounter()
+            displayDeleteMultipleProductConfirmationDialog()
         }
     }
 
@@ -285,7 +283,9 @@ class ManageProductFragment : BaseDaggerFragment(),
                     val validationResults = result.data.response.voucherValidationData.validationPartial
                     val productList = viewModel.getProductUiModels()
                     // add variants and error message (if any)
+                    val isEditing = viewModel.getIsEditing()
                     val updatedProductList = viewModel.applyValidationResult(
+                            isEditing,
                             productList = productList,
                             validationResults = validationResults
                     )
@@ -338,9 +338,41 @@ class ManageProductFragment : BaseDaggerFragment(),
         viewModel.isSingleClick = false
     }
 
-    override fun onRemoveButtonClicked() {
-        updateProductCounter()
-        viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
+    override fun onRemoveButtonClicked(position: Int) {
+        displayDeleteSingleProductConfirmationDialog(position)
+    }
+
+    private fun displayDeleteSingleProductConfirmationDialog(position : Int) {
+        val dialog = DeleteProductConfirmationDialog(context = context ?: return)
+        dialog.setOnDeleteProductConfirmed {
+            adapter?.removeSingleProduct(position)
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts()?: listOf())
+            toaster(getString(R.string.mvc_delete_single_product_message))
+            updateProductCounter()
+        }
+        dialog.show()
+    }
+
+    private fun displayDeleteMultipleProductConfirmationDialog() {
+        val dialog = DeleteProductConfirmationDialog(context = context ?: return)
+        dialog.setOnDeleteProductConfirmed {
+            val selectedProductCount = adapter?.getSelectedProducts()?.size.orZero()
+            adapter?.deleteSelectedProducts()
+            viewModel.setSetSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
+            updateProductCounter()
+            toaster(String.format(getString(R.string.mvc_delete_product_message), selectedProductCount))
+        }
+        dialog.show()
+    }
+
+    private fun toaster(text: String) {
+        Toaster.build(
+            view ?: return,
+            text,
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            context?.getString(R.string.mvc_oke).toBlankOrString()
+        ).show()
     }
 
     override fun onBackPressed() {

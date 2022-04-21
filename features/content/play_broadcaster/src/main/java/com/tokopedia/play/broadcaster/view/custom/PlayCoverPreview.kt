@@ -37,7 +37,8 @@ class PlayCoverPreview : ConstraintLayout {
         true
     )
 
-    private var isCoverAvailable = false
+    var isCoverAvailable = false
+        private set
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
