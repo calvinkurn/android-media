@@ -21,7 +21,8 @@ internal class ProductCardOptionsViewModelFactory(
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val isUsingWishlistV2: Boolean
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -43,7 +44,8 @@ internal class ProductCardOptionsViewModelFactory(
                 deleteWishlistV2UseCase,
                 topAdsWishlistUseCase,
                 addToCartUseCase,
-                userSession
+                userSession,
+                isUsingWishlistV2
         )
     }
 }

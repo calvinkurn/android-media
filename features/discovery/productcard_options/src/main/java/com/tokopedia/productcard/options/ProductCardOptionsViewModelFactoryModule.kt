@@ -38,7 +38,8 @@ internal class ProductCardOptionsViewModelFactoryModule(
             topAdsWishlistUseCase: UseCase<Boolean>,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
-            coroutineDispatchers: CoroutineDispatchers
+            coroutineDispatchers: CoroutineDispatchers,
+            isUsingWishlistV2: Boolean
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
                 coroutineDispatchers,
@@ -49,7 +50,8 @@ internal class ProductCardOptionsViewModelFactoryModule(
                 deleteWishlistV2UseCase,
                 topAdsWishlistUseCase,
                 addToCartUseCase,
-                userSession
+                userSession,
+                isUsingWishlistV2
         )
     }
 }

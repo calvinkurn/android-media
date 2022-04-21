@@ -135,17 +135,26 @@ data class ProductCardOptionsModel(
     data class WishlistResult(
             var isUserLoggedIn: Boolean = false,
             var isSuccess: Boolean = false,
-            var isAddWishlist: Boolean = false
+            var isAddWishlist: Boolean = false,
+            var isUsingWishlistV2: Boolean = false,
+            var messageV2: String = "",
+            var toasterColorV2: String = ""
     ): Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readByte() != 0.toByte(),
                 parcel.readByte() != 0.toByte(),
-                parcel.readByte() != 0.toByte())
+                parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+                parcel.readString() ?: "",
+            parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeByte(if (isUserLoggedIn) 1 else 0)
             parcel.writeByte(if (isSuccess) 1 else 0)
             parcel.writeByte(if (isAddWishlist) 1 else 0)
+            parcel.writeByte(if (isUsingWishlistV2) 1 else 0)
+            parcel.writeString(messageV2)
+            parcel.writeString(toasterColorV2)
         }
 
         override fun describeContents(): Int {

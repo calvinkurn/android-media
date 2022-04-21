@@ -19,12 +19,15 @@ import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import rx.Subscriber
 
 internal class ProductCardOptionsViewModel(
@@ -36,7 +39,8 @@ internal class ProductCardOptionsViewModel(
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlistUseCase: UseCase<Boolean>,
         private val addToCartUseCase: UseCase<AddToCartDataModel>,
-        private val userSession: UserSessionInterface
+        private val userSession: UserSessionInterface,
+        private val isUsingWishlistV2: Boolean
 ): BaseViewModel(dispatcherProvider.main) {
 
     private val productCardOptionsItemListLiveData = MutableLiveData<List<Visitable<*>>>()
@@ -49,7 +53,6 @@ internal class ProductCardOptionsViewModel(
     private val routeToShopPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shareProductEventLiveData = MutableLiveData<Event<ProductData>>()
     private val isLoadingEventLiveData = MutableLiveData<Event<Boolean>>()
-    var isUsingWishlistV2 = false
 
     init {
         initWishlistOption()
@@ -130,22 +133,30 @@ internal class ProductCardOptionsViewModel(
     }
 
     private fun onSuccessRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = false)
+        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = false, isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onErrorRemoveWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = false)
+        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = false, isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onErrorAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = true)
+        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = true, isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
     }
 
     private fun onSuccessAddWishlist() {
-        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true)
+        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = true, isAddWishlist = true, isUsingWishlistV2 = isUsingWishlistV2)
+        wishlistEventLiveData.postValue(Event(true))
+    }
+
+    private fun onSuccessAddWishlistV2(resultWishlistV2: AddToWishlistV2Response.Data.WishlistAdd) {
+        productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true,
+            isSuccess = resultWishlistV2.success, isAddWishlist = true,
+            isUsingWishlistV2 = isUsingWishlistV2, messageV2 = resultWishlistV2.message,
+            toasterColorV2 = resultWishlistV2.toasterColor)
         wishlistEventLiveData.postValue(Event(true))
     }
 
@@ -251,8 +262,10 @@ internal class ProductCardOptionsViewModel(
     private fun tryAddWishlistV2() {
         addToWishlistV2UseCase.setParams(getProductId(), userSession.userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                onSuccessAddWishlist()},
+            onSuccess = { result ->
+                if (result is Success) {
+                    onSuccessAddWishlistV2(result.data)
+                } },
             onError = {
                 onErrorAddWishlist()
             })

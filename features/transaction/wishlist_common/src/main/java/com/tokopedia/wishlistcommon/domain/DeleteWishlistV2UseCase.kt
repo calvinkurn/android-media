@@ -16,7 +16,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.USER_ID
 import javax.inject.Inject
 
 @GqlQuery("DeleteWishlistV2", GQL_WISHLIST_REMOVE_V2)
-class DeleteWishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) : UseCase<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>() {
+class DeleteWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>() {
     private var params: Map<String, Any?>? = null
     override suspend fun executeOnBackground(): Result<DeleteWishlistV2Response.Data.WishlistRemoveV2> {
         return try {

@@ -17,7 +17,6 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.databinding.ProductCardOptionsFragmentLayoutBinding
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -40,14 +39,8 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun initViewModel() {
-
-        var isUsingWishlistV2 = false
-        context?.let {
-            isUsingWishlistV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
-        }
         activity?.let {
             productCardOptionsViewModel = ViewModelProvider(it).get(ProductCardOptionsViewModel::class.java)
-            productCardOptionsViewModel?.isUsingWishlistV2 = isUsingWishlistV2
         }
     }
 

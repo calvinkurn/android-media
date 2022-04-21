@@ -136,6 +136,8 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlist_common.R as Rwishlist
 import org.json.JSONArray
 import javax.inject.Inject
 
@@ -1682,13 +1684,32 @@ class ProductListFragment: BaseDaggerFragment(),
         productListAdapter?.updateWishlistStatus(productId!!, isWishlisted)
     }
 
-    override fun showMessageSuccessWishlistAction(isWishlisted: Boolean) {
+    override fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view = view ?: return
 
-        if (isWishlisted)
-            Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
-        else
-            Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+        if (wishlistResult.isUsingWishlistV2) {
+            if (wishlistResult.isAddWishlist) {
+                val msg = if (wishlistResult.messageV2.isNotEmpty()) {
+                    wishlistResult.messageV2
+                } else {
+                    getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+                }
+
+                var typeToaster = TYPE_NORMAL
+                if (wishlistResult.toasterColorV2 == TOASTER_RED) typeToaster = TYPE_ERROR
+
+                Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
+                    actionText = getString(Rwishlist.string.cta_success_add_to_wishlist)
+                ) { goToWishlistPage() }.show()
+            } else
+                Toaster.build(view, getString(Rwishlist.string.on_success_remove_from_wishlist_msg),
+                    Toaster.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(Rwishlist.string.cta_success_remove_from_wishlist)).show()
+        } else {
+            if (wishlistResult.isAddWishlist)
+                Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
+            else
+                Toaster.build(view, getString(R.string.msg_remove_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+        }
     }
 
     private fun goToWishlistPage() {

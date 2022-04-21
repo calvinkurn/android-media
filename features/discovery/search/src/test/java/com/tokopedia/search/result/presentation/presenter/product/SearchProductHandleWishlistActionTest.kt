@@ -119,7 +119,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
         verifyOrder {
             productListView.trackWishlistRecommendationProductLoginUser(true)
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult.isAddWishlist)
+            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
         confirmVerified(productListView)
@@ -158,7 +158,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
             productListView.queryKey
             productListView.trackWishlistProduct(capture(slotWishlistTrackingModel))
             productListView.updateWishlistStatus(productCardOptionsModel.productId, true)
-            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult.isAddWishlist)
+            productListView.showMessageSuccessWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
         confirmVerified(productListView)

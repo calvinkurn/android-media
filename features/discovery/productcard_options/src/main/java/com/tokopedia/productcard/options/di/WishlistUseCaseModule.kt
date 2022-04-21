@@ -8,6 +8,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import dagger.Module
 import dagger.Provides
 
@@ -40,5 +41,11 @@ internal class WishlistUseCaseModule {
     @Provides
     fun provideDeleteWishlistV2UseCaseModule(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
+    }
+
+    @ProductCardOptionsScope
+    @Provides
+    fun provideFlagIsUsingWishlistV2(@ApplicationContext context: Context): Boolean {
+        return WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
     }
 }
