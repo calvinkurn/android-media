@@ -10,7 +10,8 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashP
 
 class TokomemberDashProgramAdapter(
     var programSellerList: ArrayList<ProgramSellerListItem>,
-    val fragmentManager: FragmentManager
+    val fragmentManager: FragmentManager,
+    val shopId: Int
 ) :
     RecyclerView.Adapter<TokomemberDashProgramVh>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokomemberDashProgramVh {
@@ -25,7 +26,7 @@ class TokomemberDashProgramAdapter(
     }
 
     override fun onBindViewHolder(holder: TokomemberDashProgramVh, position: Int) {
-        holder.bind(programSellerList[position])
+        holder.bind(programSellerList[position], shopId)
     }
 
     override fun getItemCount() = programSellerList.size

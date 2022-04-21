@@ -90,6 +90,9 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         childLayout.findViewById<ImageUnify>(R.id.icon_options_menu).setImageDrawable(getIconUnifyDrawable(childLayout.context, icon))
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text
         container_options_menu.addView(childLayout)
+        childLayout.setOnClickListener {
+
+        }
     }
 
     private fun setDefaultParams() {

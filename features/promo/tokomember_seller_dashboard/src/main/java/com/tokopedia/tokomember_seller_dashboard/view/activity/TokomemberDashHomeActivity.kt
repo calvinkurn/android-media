@@ -13,7 +13,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCouponFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramListFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
 class TokomemberDashHomeActivity : AppCompatActivity() {
@@ -59,7 +59,7 @@ class TokomemberDashHomeActivity : AppCompatActivity() {
 
         var adapter = TokomemberDashHomeViewpagerAdapter(supportFragmentManager)
         adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
-        adapter.addFragment(TokomemberDashProgramFragment.newInstance(), "Program")
+        adapter.addFragment(TokomemberDashProgramListFragment.newInstance(), "Program")
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter

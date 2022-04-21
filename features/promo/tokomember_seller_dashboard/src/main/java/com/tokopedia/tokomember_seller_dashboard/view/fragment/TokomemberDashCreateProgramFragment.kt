@@ -17,7 +17,9 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpda
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -47,7 +49,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         arguments?.getBoolean(BUNDLE_EDIT_PROGRAM, false)?.let {
             fromEdit = it
         }
-        arguments?.getString(BUNDLE_EDIT_PROGRAM, "")?.let {
+        arguments?.getString(BUNDLE_EDIT_PROGRAM_ITEM, "")?.let {
             editItem = Gson().fromJson(it, ProgramSellerListItem::class.java)
         }
     }
@@ -64,7 +66,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        tokomemberDashProgramViewmodel.getProgramInfo(3827)
+        tokomemberDashProgramViewmodel.getProgramInfo(0,6553698, ACTION_CREATE)
     }
 
     override fun getScreenName() = ""

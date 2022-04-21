@@ -18,11 +18,14 @@ import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashProgramDetailActivity
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -45,7 +48,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     lateinit var optionMenu: ImageUnify
 
     @SuppressLint("ResourcePackage")
-    fun bind(item: ProgramSellerListItem) {
+    fun bind(item: ProgramSellerListItem, shopId: Int) {
         programStatus = itemView.findViewById(R.id.programStatus)
         periodProgram = itemView.findViewById(R.id.periodProgram)
         programStartDate = itemView.findViewById(R.id.programStartDate)
@@ -71,6 +74,13 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
 
         if(item.actions?.tripleDots.isNullOrEmpty()){
             optionMenu.hide()
+        }
+
+        itemView.setOnClickListener {
+            val intent = Intent(itemView.context, TokomemberDashProgramDetailActivity::class.java)
+            intent.putExtra(BUNDLE_PROGRAM_ID, item.id?.toInt())
+            intent.putExtra(BUNDLE_SHOP_ID, shopId)
+            itemView.context.startActivity(intent)
         }
 
         optionMenu.setOnClickListener {

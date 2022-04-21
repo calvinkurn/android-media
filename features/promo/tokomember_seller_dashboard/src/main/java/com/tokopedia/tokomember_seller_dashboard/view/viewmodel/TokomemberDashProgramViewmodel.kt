@@ -8,7 +8,7 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgram
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramListUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramFormData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,8 +24,8 @@ class TokomemberDashProgramViewmodel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _tokomemberProgramResultLiveData = MutableLiveData<Result<ProgramFormData>>()
-    val tokomemberProgramResultLiveData: LiveData<Result<ProgramFormData>> = _tokomemberProgramResultLiveData
+    private val _tokomemberProgramResultLiveData = MutableLiveData<Result<ProgramDetailData>>()
+    val tokomemberProgramResultLiveData: LiveData<Result<ProgramDetailData>> = _tokomemberProgramResultLiveData
 
     private val _tokomemberProgramListResultLiveData = MutableLiveData<Result<ProgramList>>()
     val tokomemberProgramListResultLiveData: LiveData<Result<ProgramList>> = _tokomemberProgramListResultLiveData
@@ -42,13 +42,13 @@ class TokomemberDashProgramViewmodel @Inject constructor(
         }, shopId, cardID, status, page, pageSize)
     }
 
-    fun getProgramInfo(cardID: Int) {
+    fun getProgramInfo(programID: Int ,shopId: Int ,actionType: String, query: String = "") {
         tokomemberDashGetProgramFormUsecase.cancelJobs()
         tokomemberDashGetProgramFormUsecase.getProgramInfo({
             _tokomemberProgramResultLiveData.postValue(Success(it))
         }, {
             _tokomemberProgramResultLiveData.postValue(Fail(it))
-        }, 0,6553698,"create")
+        }, programID,shopId,actionType, query)
     }
 
     fun updateProgram(programUpdateDataInput: ProgramUpdateDataInput) {

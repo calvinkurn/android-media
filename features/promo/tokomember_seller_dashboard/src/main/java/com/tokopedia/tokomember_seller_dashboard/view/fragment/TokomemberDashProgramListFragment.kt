@@ -17,13 +17,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokomemberDashProgramFragment : BaseDaggerFragment() {
+class TokomemberDashProgramListFragment : BaseDaggerFragment() {
 
     private var shopId = 6553698
     private var cardId = 3827
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
-        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager)
+        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId)
     }
 
     @Inject
@@ -74,8 +74,8 @@ class TokomemberDashProgramFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(): TokomemberDashProgramFragment {
-            return TokomemberDashProgramFragment()
+        fun newInstance(): TokomemberDashProgramListFragment {
+            return TokomemberDashProgramListFragment()
         }
     }
 }

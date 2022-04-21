@@ -14,6 +14,8 @@ import javax.inject.Inject
 class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<ProgramList>(graphqlRepository) {
 
+    var gqlQuery = TM_PROGRAM_LIST
+
     fun getProgramList(
         success: (ProgramList) -> Unit,
         onFail: (Throwable) -> Unit,
@@ -21,7 +23,7 @@ class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository:
     ){
         this.setTypeClass(ProgramList::class.java)
         this.setRequestParams(getRequestParams(shopId, cardID, status, page, pageSize))
-        this.setGraphqlQuery(TM_PROGRAM_LIST)
+        this.setGraphqlQuery(gqlQuery)
         execute({
             success(it)
         }, {
