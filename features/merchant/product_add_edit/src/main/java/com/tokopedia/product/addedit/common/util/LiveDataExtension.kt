@@ -1,5 +1,5 @@
 package com.tokopedia.product.addedit.common.util
 
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 
-fun <T> MutableLiveData<T>.getValueOrDefault(defaultValue: T) = value ?: defaultValue
+fun <T> LiveData<T>.getValueOrDefault(defaultValue: T) = value ?: defaultValue

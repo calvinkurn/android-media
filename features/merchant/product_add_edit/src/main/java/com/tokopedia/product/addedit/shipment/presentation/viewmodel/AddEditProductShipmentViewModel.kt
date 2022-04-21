@@ -13,6 +13,7 @@ import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticRepository
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -58,6 +59,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
     }
 
     fun validateWeightInput(weightInput: String): String {
+        if (hasVariant.getValueOrDefault(false)) return ""
         return when {
             weightInput.isEmpty() -> resourceProvider.getEmptyProductWeightErrorMessage()
             getWeight(weightInput) < AddEditProductVariantConstants.MIN_PRODUCT_WEIGHT_LIMIT -> {

@@ -436,9 +436,15 @@ class AddEditProductVariantViewModel @Inject constructor(
             val categoryId = it.categoryId.toIntOrNull()
             categoryId?.run { getVariantCategoryCombination(this, selections) }
             it.price = primaryVariantData.price
+            it.sku = ""
         }
-        productInputModel.getValueOrDefault().shipmentInputModel.weight =
-            primaryVariantData.weight.orZero()
+
+        if (isEditMode.value == true) {
+            productInputModel.getValueOrDefault().shipmentInputModel.weight = 0
+            productInputModel.getValueOrDefault().detailInputModel.stock = primaryVariantData.stock.orZero()
+        } else {
+            productInputModel.getValueOrDefault().shipmentInputModel.weight = primaryVariantData.weight.orZero()
+        }
     }
 
     private fun mapSelections(

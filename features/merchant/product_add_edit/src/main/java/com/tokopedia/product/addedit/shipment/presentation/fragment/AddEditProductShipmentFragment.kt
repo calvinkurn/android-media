@@ -25,10 +25,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS
@@ -196,7 +193,6 @@ class AddEditProductShipmentFragment:
         setupViews()
         hideKeyboardWhenTouchOutside()
 
-        setupWeightInput()
         setupInsuranceTicker()
         setupInsuranceRadios()
 
@@ -359,6 +355,7 @@ class AddEditProductShipmentFragment:
         })
         shipmentViewModel.hasVariant.observe(viewLifecycleOwner, {
             binding.weightInputLayout.root.isVisible = !it
+            setupWeightInput()
         })
     }
 
@@ -571,7 +568,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun applyShipmentInputModel(inputModel: ShipmentInputModel) {
-        tfWeightAmount.setText(inputModel.weight.toString())
+        tfWeightAmount.setText(if (inputModel.weight.isZero()) "" else inputModel.weight.toString())
 
         applyInsuranceValue(inputModel.isMustInsurance)
 
@@ -682,6 +679,10 @@ class AddEditProductShipmentFragment:
         tfWeightAmount?.setMessage(errorMessage)
         btnEnd?.isEnabled = isValid
         btnSave?.isEnabled = isValid
+        if (!isValid) {
+            btnEnd?.isLoading = false
+            btnSave?.isLoading = false
+        }
         return isValid
     }
 
