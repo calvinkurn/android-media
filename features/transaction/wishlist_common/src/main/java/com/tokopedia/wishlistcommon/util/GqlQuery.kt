@@ -116,6 +116,7 @@ package com.tokopedia.wishlistcommon.query
                 id
                 success
                 message
+                toaster_color
                 button{
                     text
                     action
