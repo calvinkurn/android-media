@@ -62,8 +62,8 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 project.ext {
-    defaultVersionCode = 518001101;
-    defaultVersionName = "3.174";
+    defaultVersionCode = 418001101;
+    defaultVersionName = "4.01-test";
 }
 
 buildscript {
