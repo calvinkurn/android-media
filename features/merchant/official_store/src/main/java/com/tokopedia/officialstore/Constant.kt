@@ -4,7 +4,6 @@ import com.tokopedia.applink.ApplinkConst
 
 object GQLQueryConstant {
     const val QUERY_OFFICIAL_STORE_CATEGORIES = "gql_query_official_store_categories"
-    const val QUERY_OFFICIAL_STORE_BANNERS = "gql_query_official_store_banners"
 }
 
 object DynamicChannelIdentifiers {

@@ -2,13 +2,10 @@ package com.tokopedia.officialstore.official.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
@@ -17,7 +14,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module(includes = [OfficialStoreHomeViewModelModule::class])
 class OfficialStoreHomeModule {
@@ -35,13 +31,6 @@ class OfficialStoreHomeModule {
     @Provides
     fun provideGraphqlCoroutineUseCase(graphqlRepository: GraphqlRepository) =
             com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_BANNERS)
-    fun provideQueryofficialStoreBanners(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_banner)
-    }
 
     @OfficialStoreHomeScope
     @Provides
