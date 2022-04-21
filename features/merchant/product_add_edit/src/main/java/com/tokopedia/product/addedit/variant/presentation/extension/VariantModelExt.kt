@@ -4,10 +4,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 
 fun MutableLiveData<ProductInputModel>.getValueOrDefault(
     defaultValue: ProductInputModel = ProductInputModel()
 ) = value ?: defaultValue
+
+fun HashMap<Int, VariantDetailInputLayoutModel>.getValueOrDefault(
+    position: Int,
+    defaultValue: VariantDetailInputLayoutModel = VariantDetailInputLayoutModel()
+) = this[position] ?: VariantDetailInputLayoutModel()
 
 fun MutableLiveData<ProductInputModel>.hasVariant() =
     value?.variantInputModel?.products?.isNotEmpty().orFalse()

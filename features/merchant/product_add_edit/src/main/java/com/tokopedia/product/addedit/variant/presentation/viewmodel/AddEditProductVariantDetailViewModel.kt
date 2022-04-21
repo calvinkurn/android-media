@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
@@ -177,7 +178,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun updateProductInputModel() {
         val products = productInputModel.getValueOrDefault().variantInputModel.products
-        var productPosition = 0
+        var productPosition = Int.ZERO
         inputLayoutModelMap.toSortedMap().forEach {
             val variantDetailInput = it.value
             products.getOrNull(productPosition)?.apply {
@@ -291,19 +292,19 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun updateSwitchStatus(isChecked: Boolean, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap.getValueOrDefault(adapterPosition)
         inputModel.isActive = isChecked
         return inputModel
     }
 
     fun updateVariantSkuInput(sku: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap.getValueOrDefault(adapterPosition)
         inputModel.sku = sku
         return inputModel
     }
 
     fun validateVariantPriceInput(priceInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap.getValueOrDefault(adapterPosition)
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
             inputModel.priceFieldErrorMessage = imsResourceProvider.getEmptyProductPriceErrorMessage()
@@ -316,7 +317,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun validateProductVariantStockInput(stockInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap.getValueOrDefault(adapterPosition)
         inputModel.stock = stockInput
         if (stockInput == null) {
             inputModel.stockFieldErrorMessage = imsResourceProvider.getEmptyProductStockErrorMessage()
@@ -329,7 +330,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun validateProductVariantWeightInput(weightInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        val inputModel = inputLayoutModelMap.getValueOrDefault(adapterPosition)
         inputModel.weight = weightInput
         if (weightInput == null) {
             inputModel.weightFieldErrorMessage = imsResourceProvider.getEmptyProductWeightErrorMessage()

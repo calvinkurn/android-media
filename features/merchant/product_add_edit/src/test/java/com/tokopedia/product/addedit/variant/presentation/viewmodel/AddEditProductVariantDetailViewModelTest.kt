@@ -2,15 +2,18 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.product.addedit.common.constant.ProductStatus
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
+import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -77,24 +80,12 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
         // test overflowed element
         assert(viewModel.getCurrentHeaderPosition(999999) == 0)
+
+        // test input size change
+        assert(viewModel.getInputFieldSize() == 2)
     }
 
     /*@Test
-    fun `When collapsedFields increement and decreement Expect valid collapsedFields`() {
-        // test for 2x2 variant
-        viewModel.setInputFieldSize(2)
-        // test increement/ decreement
-        viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
-        assert(viewModel.getCollapsedFields() == 2)
-        viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
-        assert(viewModel.getCollapsedFields() == 0)
-
-        // reset field
-        viewModel.resetCollapsedFields()
-        assert(viewModel.getCollapsedFields() == 0)
-    }*/
-
-    @Test
     fun `When validate MultipleSelect data Expect valid error message`() {
         val messagePriceMin = viewModel.validateVariantPriceInput(0.toBigInteger())
         val messagePriceExact = viewModel.validateVariantPriceInput(MIN_PRODUCT_PRICE_LIMIT.toBigInteger())
@@ -105,32 +96,8 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         val messageStockExact = viewModel.validateProductVariantStockInput(MIN_PRODUCT_STOCK_LIMIT.toBigInteger())
         assert(messageStockMin == viewModel.provider.getMinLimitProductStockErrorMessage())
         assert(messageStockExact.isEmpty())
-    }
-
-    /*@Test
-    fun `When validate submit button data Expect valid boolean`() {
-        val variantInputs = listOf(
-                VariantDetailInputLayoutModel(price = "5000", stock = "1"),
-                VariantDetailInputLayoutModel(price = "3000", stock = "2"),
-                VariantDetailInputLayoutModel(price = "1000", stock = "1")
-        )
-
-        var isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(!isResultInvalid)
-
-        // check invalid price
-        variantInputs[1].price = "0"
-        isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(isResultInvalid)
-
-        // check invalid stock
-        variantInputs[1].price = "3000"
-        variantInputs[1].stock = "0"
-        isResultInvalid = viewModel.validateSubmitDetailField(variantInputs)
-        assert(isResultInvalid)
     }*/
 
-    private val EXPECTED_AVAILABLE_FIELDS = 4
     private fun initVariantDetailInputMap(){
         viewModel.productInputModel.value = productInputModel
 
@@ -142,7 +109,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.updateVariantDetailHeaderMap(3, false)
 
         // create
-        viewModel.updateVariantDetailInputMap(1,
+        viewModel.addToVariantDetailInputMap(1,
                 VariantDetailInputLayoutModel(
                         headerPosition=0,
                         visitablePosition=1,
@@ -157,7 +124,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isPrimary=false,
                         combination= listOf(0, 0)))
 
-        viewModel.updateVariantDetailInputMap(2,
+        viewModel.addToVariantDetailInputMap(2,
                 VariantDetailInputLayoutModel(
                         headerPosition=0,
                         visitablePosition=2,
@@ -172,7 +139,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
                         isPrimary=false,
                         combination= listOf(0, 1)))
 
-        viewModel.updateVariantDetailInputMap(4,
+        viewModel.addToVariantDetailInputMap(4,
                 VariantDetailInputLayoutModel(
                         headerPosition=3,
                         visitablePosition=4,
@@ -190,31 +157,25 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.updateVariantDetailInputMap(4,
                 viewModel.generateVariantDetailInputModel(2, 3, "8", true))
 
-        viewModel.updateVariantDetailInputMap(5,
+        viewModel.addToVariantDetailInputMap(5,
                 viewModel.generateVariantDetailInputModel(3, 3, "10", true))
 
     }
 
-    /*@Test
-    fun `When getAvailableFields Expect valid number of fields`() {
-        assert(viewModel.getAvailableFields().isEmpty())
-
-        initVariantDetailInputMap()
-        assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS)
-
-        viewModel.updateVariantDetailHeaderMap(0, true)
-        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS)
-        assert(viewModel.getAvailableFields().size == EXPECTED_AVAILABLE_FIELDS/ 2)
-
-        viewModel.updateVariantDetailHeaderMap(3, true)
-        viewModel.increaseCollapsedFields(EXPECTED_AVAILABLE_FIELDS/ 2)
-        assert(viewModel.getAvailableFields().isEmpty())
-    }*/
-
-    /*@Test
+    @Test
     fun `When validate variant input Expect valid error`() {
         initVariantDetailInputMap()
-        var inputModel: VariantDetailInputLayoutModel? = null
+        val dummyError = "error"
+        var inputModel: VariantDetailInputLayoutModel?
+
+        coEvery { imsResourceProvider.getEmptyProductPriceErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getEmptyProductStockErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getMaxLimitProductStockErrorMessage(AddEditProductDetailConstants.MAX_PRODUCT_STOCK_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getEmptyProductWeightErrorMessage() } returns dummyError
+        coEvery { imsResourceProvider.getMinLimitProductWeightErrorMessage(AddEditProductVariantConstants.MIN_PRODUCT_WEIGHT_LIMIT) } returns dummyError
+        coEvery { imsResourceProvider.getMaxLimitProductWeightErrorMessage(AddEditProductVariantConstants.MAX_PRODUCT_WEIGHT_LIMIT) } returns dummyError
 
         // price test
         inputModel = viewModel.validateVariantPriceInput("0", 1)
@@ -227,20 +188,33 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(!inputModel.isPriceError)
 
         // stock test
-        inputModel = viewModel.validateProductVariantStockInput("0", 1)
+        inputModel = viewModel.validateProductVariantStockInput(0, 1)
         assert(inputModel.isStockError)
 
-        inputModel = viewModel.validateProductVariantStockInput("", 1)
+        inputModel = viewModel.validateProductVariantStockInput(null, 1)
         assert(inputModel.isStockError)
 
-        inputModel = viewModel.validateProductVariantStockInput("10", 1)
+        inputModel = viewModel.validateProductVariantStockInput(AddEditProductDetailConstants.MAX_PRODUCT_STOCK_LIMIT.inc(), 1)
+        assert(inputModel.isStockError)
+
+        inputModel = viewModel.validateProductVariantStockInput(10, 1)
         assert(!inputModel.isStockError)
 
-        // check error count
-        assert(viewModel.errorCounter.getOrAwaitValue() == 0)
-    }*/
+        // weight test
+        inputModel = viewModel.validateProductVariantWeightInput(0, 1)
+        assert(inputModel.isWeightError)
 
-    /*@Test
+        inputModel = viewModel.validateProductVariantWeightInput(null, 1)
+        assert(inputModel.isWeightError)
+
+        inputModel = viewModel.validateProductVariantWeightInput(AddEditProductVariantConstants.MAX_PRODUCT_WEIGHT_LIMIT.inc(), 1)
+        assert(inputModel.isWeightError)
+
+        inputModel = viewModel.validateProductVariantWeightInput(10, 1)
+        assert(!inputModel.isWeightError)
+    }
+
+    @Test
     fun `When update all sku visibility Expect sku visibility changes`() {
         initVariantDetailInputMap()
         viewModel.updateSkuVisibilityStatus(false)
@@ -252,9 +226,9 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         }
         assert(!isAllField1SkuVisible)
         assert(!isAllField2SkuVisible)
-    }*/
+    }
 
-    /*@Test
+    @Test
     fun `When update productInputModel Expect update main product price`() {
         val expectedPrice = 100.toBigInteger()
         initVariantDetailInputMap()
@@ -271,7 +245,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
 
         val mainPrice = viewModel.productInputModel.getOrAwaitValue().detailInputModel.price
         assertEquals(expectedPrice, mainPrice)
-    }*/
+    }
 
     @Test
     fun `When update sku data Expect sku data changes`() {
@@ -295,15 +269,16 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(inputModel2.isActive == testSwitch2)
     }
 
-    /*@Test
+    @Test
     fun `When update primary variant Expect primary variant changes`() {
         initVariantDetailInputMap()
+        viewModel.addToVariantDetailInputMap(99, VariantDetailInputLayoutModel())
         viewModel.updatePrimaryVariant(listOf(1, 1))
         val variantInput = viewModel.productInputModel.value?.variantInputModel?.products?.first {
             it.combination[0] == 1 && it.combination[1] == 1
         } ?: ProductVariantInputModel()
         assert(variantInput.isPrimary)
-    }*/
+    }
 
     @Test
     fun `When get primary variant title Expect correct primary variant title`() {
@@ -313,23 +288,15 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(title == expectedTitle)
     }
 
-    /*@Test
+    @Test
     fun `When update multiple input variant Expect correct variant`() {
         initVariantDetailInputMap()
         val multipleVariantEditInputModel = MultipleVariantEditInputModel(price="666", stock="6",
-                sku="SK-U", selection= mutableListOf(
+                sku="SK-U", weight = "1000",  selection= mutableListOf(
                 mutableListOf(0, 0),
                 mutableListOf(0, 1),
                 mutableListOf(1, 0),
                 mutableListOf(1, 1)))
-        val privateInputPriceErrorStatusMap = viewModel::class.java.getDeclaredField("inputPriceErrorStatusMap").apply {
-            isAccessible = true
-        }
-        val privateInputStockErrorStatusMap = viewModel::class.java.getDeclaredField("inputStockErrorStatusMap").apply {
-            isAccessible = true
-        }
-        privateInputPriceErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
-        privateInputStockErrorStatusMap.set(viewModel, hashMapOf(1 to true, 2 to true))
 
         viewModel.updateProductInputModel(multipleVariantEditInputModel)
 
@@ -337,7 +304,7 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
             it.price == 666.toBigInteger() && it.stock == 6 && it.sku == "SK-U"
         } ?: false
         assert(isChanged)
-    }*/
+    }
 
     @Test
     fun `When productInput model became null Expect empty objects`() {
