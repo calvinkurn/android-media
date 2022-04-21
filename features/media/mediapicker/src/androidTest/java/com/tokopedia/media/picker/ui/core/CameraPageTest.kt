@@ -1,20 +1,13 @@
 package com.tokopedia.media.picker.ui.core
 
 import android.net.Uri
-import android.view.View
-import android.widget.ImageView
 import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.R
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matcher
-import android.widget.TextView
-import com.otaliastudios.cameraview.CameraView
 
 
 open class CameraPageTest : PickerTest() {
@@ -85,10 +78,6 @@ open class CameraPageTest : PickerTest() {
 
         fun assertCloseButton(pickerTest: PickerTest){
             assert(pickerTest.activityTestRule.activity.isDestroyed)
-        }
-
-        fun assertFlashButton(imageView: ImageView){
-
         }
     }
 }

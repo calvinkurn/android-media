@@ -1,51 +1,22 @@
 package com.tokopedia.media.picker.ui.camera
 
-
-import androidx.test.espresso.IdlingPolicies
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
 import com.tokopedia.media.picker.ui.core.CameraPageTest
-import com.tokopedia.media.picker.ui.core.GalleryPageTest
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.test.application.annotations.UiTest
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
-import java.io.FileOutputStream
 import java.lang.Thread.sleep
-import java.util.concurrent.TimeUnit
-import android.content.ContextWrapper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import android.content.Intent
 import android.view.View
-import android.widget.ImageView
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.fragment.app.FragmentActivity
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.matcher.ViewMatchers
-import com.google.android.gms.tagmanager.PreviewActivity
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.ui.activity.main.PickerActivity
-import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.picker.common.EXTRA_INTENT_PREVIEW
-import com.tokopedia.picker.common.uimodel.MediaUiModel
 import org.hamcrest.Matcher
 
 
@@ -68,7 +39,7 @@ class CameraPageUiTest : CameraPageTest() {
 
     // V check capture image
     // V check flip camera
-    // ⏳ check flash
+    // V check flash
     // V check capture image thumbnail click
     // V check click lanjut
     // V check click close
@@ -78,7 +49,7 @@ class CameraPageUiTest : CameraPageTest() {
         // When
         startCameraPage()
         Robot.clickCaptureImageButton()
-        sleep(1000)
+        sleep(3000)
 
         // Then
         Assert.assertCaptureImage()
