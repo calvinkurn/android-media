@@ -76,6 +76,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -149,21 +151,28 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
      */
-    @NonNull
+    @Nullable
     protected String getUrl() {
         String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
-        if (url.contains(JS_TOKOPEDIA) || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
-            return url;
-        } else if (isTokopediaUrl) {
-            String gcmId = userSession.getDeviceId();
-            String userId = userSession.getUserId();
-            return URLGenerator.generateURLSessionLogin(
-                    encodeOnce(url),
-                    gcmId,
-                    userId);
-        } else {
-            return url;
+        try {
+            String host = new URL(url).getHost();
+            if (host.contains(JS_TOKOPEDIA) || (host.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
+                return url;
+            } else if (isTokopediaUrl) {
+                String gcmId = userSession.getDeviceId();
+                String userId = userSession.getUserId();
+                return URLGenerator.generateURLSessionLogin(
+                        encodeOnce(url),
+                        gcmId,
+                        userId);
+            } else {
+                return url;
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
         }
+
     }
 
     @Override
@@ -279,10 +288,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected void loadWeb() {
+        String url = getUrl();
+        if (url == null || url.isEmpty()){
+            return;
+        }
         if (isTokopediaUrl) {
-            webView.loadAuthUrl(getUrl(), new UserSession(getContext()));
+            webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
-            webView.loadAuthUrl(getUrl(), null);
+            webView.loadAuthUrl(url, null);
         }
     }
 
@@ -373,7 +386,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == RESULT_OK) {
-                webView.loadAuthUrl(getUrl(), userSession);
+                String url = getUrl();
+                if (url == null || url.isEmpty()){
+                    return;
+                }
+                webView.loadAuthUrl(url, userSession);
             } else {
                 if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
