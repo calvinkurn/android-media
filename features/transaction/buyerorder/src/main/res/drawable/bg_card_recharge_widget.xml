@@ -1,58 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <!-- Drop Shadow Stack -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!--Drop Shadow Stack-->
     <item>
         <shape>
-            <padding
-                    android:bottom="2dp"
-                    android:left="@dimen/dp_1"
-                    android:right="@dimen/dp_1"
-                    android:top="@dimen/dp_1" />
-
-            <corners android:radius="@dimen/dp_15" />
+            <padding android:bottom="2dp" android:left="@dimen/dp_1" android:right="@dimen/dp_1" android:top="@dimen/dp_1"/>
+            <corners android:radius="@dimen/dp_15"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                    android:bottom="2dp"
-                    android:left="@dimen/dp_1"
-                    android:right="@dimen/dp_1"
-                    android:top="@dimen/dp_1" />
-
-            <corners android:radius="@dimen/dp_15" />
+            <padding android:bottom="2dp" android:left="@dimen/dp_1" android:right="@dimen/dp_1" android:top="@dimen/dp_1"/>
+            <corners android:radius="@dimen/dp_15"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                    android:bottom="2dp"
-                    android:left="@dimen/dp_1"
-                    android:right="@dimen/dp_1"
-                    android:top="@dimen/dp_1" />
-
-            <corners android:radius="@dimen/dp_15" />
+            <padding android:bottom="2dp" android:left="@dimen/dp_1" android:right="@dimen/dp_1" android:top="@dimen/dp_1"/>
+            <corners android:radius="@dimen/dp_15"/>
         </shape>
     </item>
     <item>
         <shape>
-            <padding
-                    android:bottom="2dp"
-                    android:left="@dimen/dp_1"
-                    android:right="@dimen/dp_1"
-                    android:top="@dimen/dp_1" />
-
-            <corners android:radius="@dimen/dp_15" />
+            <padding android:bottom="2dp" android:left="@dimen/dp_1" android:right="@dimen/dp_1" android:top="@dimen/dp_1"/>
+            <corners android:radius="@dimen/dp_15"/>
         </shape>
     </item>
-
-    <!-- Background -->
+<!--Background-->
     <item>
         <shape>
-            <solid android:color="@color/Unify_N0" />
-            <corners android:radius="8dp" />
+            <solid android:color="@color/Unify_N0"/>
+            <corners android:radius="8dp"/>
         </shape>
     </item>
-
 </layer-list>

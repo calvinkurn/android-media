@@ -1,0 +1,519 @@
+[
+  {
+    "data": {
+      "ProductList": {
+        "header": {
+          "processTime": 0.299609162,
+          "messages": [],
+          "reason": "",
+          "errorCode": ""
+        },
+        "meta": {
+          "totalHits": 355
+        },
+        "data": [
+          {
+            "id": "2872641617",
+            "name": "Saucony Endorphin",
+            "price": {
+              "min": 1000,
+              "max": 1000
+            },
+            "stock": 499,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/saucony-endorphin",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/2/4/4a8d0adc-7bb6-4e8c-a153-cf93cf9bf883.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2826866866",
+            "name": "kcg khampong",
+            "price": {
+              "min": 600001,
+              "max": 600001
+            },
+            "stock": 1,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/kcg-khampong",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/28/f5293a07-a7d4-4a61-b202-d73ae565d4d8.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2825233295",
+            "name": "mainan shinchan action",
+            "price": {
+              "min": 50000,
+              "max": 50000
+            },
+            "stock": 98,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/mainan-shinchan-action",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/28/ba72943f-ad58-4a7e-9fb5-6da2aa5f390a.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2825136863",
+            "name": "kcg bengong",
+            "price": {
+              "min": 540000,
+              "max": 540000
+            },
+            "stock": 1,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/kcg-bengong",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/28/89a1a327-aa84-4c5e-b85c-00d9db2d24ba.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2819244404",
+            "name": "Doge Canary Bitcoin Uang",
+            "price": {
+              "min": 1000,
+              "max": 1000
+            },
+            "stock": 60000,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/doge-canary-bitcoin-uang",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/27/5dbce6df-31b6-4f07-911a-eb03ad025e1b.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2807459209",
+            "name": "Kucing Minecraft Bayi",
+            "price": {
+              "min": 1000,
+              "max": 1000
+            },
+            "stock": 1,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/kucing-minecraft-bayi",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/25/cb7f64d4-9d4f-432b-b1b4-9fc9e72c3aa1.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2805716578",
+            "name": "Beta Dogo",
+            "price": {
+              "min": 1231,
+              "max": 1231
+            },
+            "stock": 1231,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/beta-dogo",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/25/f3f48ea1-474f-45ae-a876-878e57fdf1d1.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2805557909",
+            "name": "Doge Test",
+            "price": {
+              "min": 1231,
+              "max": 1231
+            },
+            "stock": 1231,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-test",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/25/864d3c1a-650d-449b-8178-fdaf3b241fa5.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2802764925",
+            "name": "Doge Test last",
+            "price": {
+              "min": 1234,
+              "max": 1234
+            },
+            "stock": 1111,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/doge-test-last",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/25/85fc5e5d-bbdd-4a95-8bcd-4b80c5604240.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2785974152",
+            "name": "Doge Have Variant",
+            "price": {
+              "min": 12312,
+              "max": 12312
+            },
+            "stock": 12312,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/doge-have-variant",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/22/60461865-e5ee-4965-a9e3-ef4fa3f0546f.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2783198385",
+            "name": "Doge Test Stock",
+            "price": {
+              "min": 12312,
+              "max": 12312
+            },
+            "stock": 0,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "INACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-test-stock",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/21/c3aa2369-e276-4553-bf4c-c4b2933694ff.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2783191191",
+            "name": "Doge Dropdown Delete",
+            "price": {
+              "min": 12312,
+              "max": 12312
+            },
+            "stock": 1222,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-dropdown-delete",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/21/ed9294d7-3796-407c-8354-1a472606aaf3.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2783188833",
+            "name": "Doge Trash Right Icon",
+            "price": {
+              "min": 123012,
+              "max": 123012
+            },
+            "stock": 12312,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-trash-right-icon",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/21/3bd8fc41-fed9-4775-9247-cf4f2334ee8c.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2780475332",
+            "name": "Doge Variant 2",
+            "price": {
+              "min": 1231,
+              "max": 1231
+            },
+            "stock": 0,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "INACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-variant-2",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/21/f2580763-6f3e-4f70-861c-6076cd2a77d5.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2780462214",
+            "name": "Doge Variant",
+            "price": {
+              "min": 12321,
+              "max": 12321
+            },
+            "stock": 123124,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/doge-variant",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/21/41d46381-1265-4673-8aec-e25ebe16d138.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2754798731",
+            "name": "Greeting Card",
+            "price": {
+              "min": 99000,
+              "max": 99000
+            },
+            "stock": 5,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/greeting-card",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/18/f0b45c1f-6d8f-4d1a-b48f-27374ab59776.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2684140798",
+            "name": "baju gamis wanita terbaru",
+            "price": {
+              "min": 10005,
+              "max": 10005
+            },
+            "stock": 98,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "INACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/baju-gamis-wanita-terbaru",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/7/e94b29e0-cde0-4e7d-9ae3-77fc532e4cee.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2666231584",
+            "name": "test9999urhebsbe",
+            "price": {
+              "min": 100000,
+              "max": 100000
+            },
+            "stock": 1,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "INACTIVE",
+            "featured": 0,
+            "isVariant": false,
+            "url": "https://tokopedia.com/tumblersbux/test9999urhebsbe",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/4/4c59c639-392b-40e8-9baa-9b86f7cd585a.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2654051240",
+            "name": "Air Pegunungan Warna Warni",
+            "price": {
+              "min": 12000,
+              "max": 12000
+            },
+            "stock": 57,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "ACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/air-pegunungan-warna-warni",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/1/2/1bb006cf-cfa3-4e47-966b-9f9b6ecb9ee7.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          },
+          {
+            "id": "2496684532",
+            "name": "meja/table",
+            "price": {
+              "min": 123,
+              "max": 650
+            },
+            "stock": 3,
+            "stockReserved": 0,
+            "hasStockReserved": false,
+            "isCampaign": false,
+            "cashback": 0,
+            "status": "INACTIVE",
+            "featured": 0,
+            "isVariant": true,
+            "url": "https://tokopedia.com/tumblersbux/meja-table",
+            "sku": "",
+            "pictures": [
+              {
+                "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/11/10/e7152cf0-7305-4482-b262-24af7dc62e57.jpg"
+              }
+            ],
+            "topads": null,
+            "campaignType": []
+          }
+        ]
+      }
+    }
+  }
+]

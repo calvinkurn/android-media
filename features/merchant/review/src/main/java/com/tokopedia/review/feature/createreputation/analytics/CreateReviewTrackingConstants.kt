@@ -21,8 +21,8 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
     const val EVENT_ACTION_VIEW_POST_SUBMIT_REVIEW_BOTTOM_SHEET = "view - bottomsheet postsubmit review"
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
-    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
-    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
+    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review reason checkbox"
+    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review reason checkbox"
     const val EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON = "click - cta on bottomsheet postsubmit review"
 
     const val EVENT_CATEGORY = "product review detail page"

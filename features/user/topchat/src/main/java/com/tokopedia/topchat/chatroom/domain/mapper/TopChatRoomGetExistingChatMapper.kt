@@ -264,6 +264,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             .withResponseFromGQL(item)
             .withVoucherModel(voucherModel)
             .withIsPublic(voucher.isPublic)
+            .withIsLockToProduct(voucher.isLockToProduct?: 0)
+            .withApplink(voucher.applink?: "")
             .build()
     }
 

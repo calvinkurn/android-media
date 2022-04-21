@@ -5,6 +5,7 @@ import com.tokopedia.catalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogDetailProductListingFragment
 import com.tokopedia.catalog.ui.fragment.CatalogProductComparisonFragment
+import com.tokopedia.catalog.viewholder.products.CatalogForYouContainerViewHolder
 import dagger.Component
 
 @CatalogScope
@@ -16,4 +17,5 @@ interface CatalogComponent {
     fun inject(catalogDetailProductListingFragment: CatalogDetailProductListingFragment)
     fun inject(catalogAllReviewFragment: CatalogAllReviewFragment)
     fun inject(catalogProductComparisonFragment: CatalogProductComparisonFragment)
+    fun inject(catalogForYouContainerViewHolder : CatalogForYouContainerViewHolder)
 }

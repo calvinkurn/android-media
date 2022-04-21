@@ -16,7 +16,7 @@ class PlayWidgetCardPlaceholderViewHolder(itemView: View) : RecyclerView.ViewHol
     private val loaderDetail2: LoaderUnify = itemView.findViewById(R.id.loader_detail_2)
     private val loaderDetail3: LoaderUnify = itemView.findViewById(R.id.loader_detail_3)
 
-    fun bind(item: PlayWidgetUiModel.Placeholder) {
+    fun bind() {
         loaderImage.type = LoaderUnify.TYPE_RECT
         loaderDetail1.type = LoaderUnify.TYPE_LINE
         loaderDetail2.type = LoaderUnify.TYPE_LINE

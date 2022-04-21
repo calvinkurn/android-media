@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.presentation.adapter.viewholder.SpecificationValueViewHolder
+import com.tokopedia.product.addedit.specification.presentation.dialog.SignalStatusSpecificationBottomSheet
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 
 class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
@@ -32,9 +34,9 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
     }
 
     override fun onBindViewHolder(holder: SpecificationValueViewHolder, position: Int) {
-        val item = getData(position)
-        val itemValue = getDataSelected(position).data
-        holder.bindData(item.variant, itemValue)
+        val title = getData(position).variant
+        val selectedSpecification = getDataSelected(position)
+        holder.bindData(title, selectedSpecification)
     }
 
     override fun onSpecificationValueTextClicked(position: Int) {
@@ -47,8 +49,13 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         itemsSelected.getOrNull(position)?.let {
             it.id = ""
             it.data = ""
+            it.errorMessageRes = Int.ZERO
         }
         onSpecificationChanged(itemsSelected)
+    }
+
+    override fun onTooltipRequiredClicked() {
+        SignalStatusSpecificationBottomSheet().show(fragmentManager)
     }
 
     fun setData(items: List<AnnotationCategoryData>) {
@@ -67,10 +74,16 @@ class SpecificationValueAdapter(private val fragmentManager: FragmentManager?) :
         setData(items)
     }
 
+    fun setDataSelected(itemsSelected: List<SpecificationInputModel>) {
+        this.itemsSelected = itemsSelected.toMutableList()
+        notifyDataSetChanged()
+    }
+
     fun setDataSelected(position: Int, itemId: String, itemData: String) {
         itemsSelected.getOrNull(position)?.apply {
             id = itemId
             data = itemData
+            errorMessageRes = Int.ZERO
             notifyItemChanged(position)
         }
         onSpecificationChanged(itemsSelected)

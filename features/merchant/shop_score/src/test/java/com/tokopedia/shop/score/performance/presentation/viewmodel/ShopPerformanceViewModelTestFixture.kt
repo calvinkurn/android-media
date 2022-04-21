@@ -2,7 +2,7 @@ package com.tokopedia.shop.score.performance.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
+import com.tokopedia.gm.common.domain.interactor.GetShopCreatedInfoUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
@@ -23,7 +23,7 @@ abstract class ShopPerformanceViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    protected lateinit var getShopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>
+    protected lateinit var getShopCreatedInfoUseCase: Lazy<GetShopCreatedInfoUseCase>
 
     @RelaxedMockK
     protected lateinit var getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
@@ -46,21 +46,21 @@ abstract class ShopPerformanceViewModelTestFixture {
                 dispatchers,
                 shopScoreMapper,
                 userSession,
-                getShopInfoPeriodUseCase,
+                getShopCreatedInfoUseCase,
                 getShopPerformanceUseCase
         )
     }
 
     protected fun onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        coEvery { getShopInfoPeriodUseCase.get().executeOnBackground() } returns shopInfoPeriodUiModel
+        coEvery { getShopCreatedInfoUseCase.get().executeOnBackground() } returns shopInfoPeriodUiModel
     }
 
     protected fun onGetShopInfoPeriodUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopInfoPeriodUseCase.get().executeOnBackground() } throws exception
+        coEvery { getShopCreatedInfoUseCase.get().executeOnBackground() } throws exception
     }
 
     protected fun verifyGetShopInfoPeriodUseCaseCalled() {
-        coVerify { getShopInfoPeriodUseCase.get().executeOnBackground() }
+        coVerify { getShopCreatedInfoUseCase.get().executeOnBackground() }
     }
 
     protected fun onGetShopPerformanceUseCase_thenReturn(shopScoreWrapperResponse: ShopScoreWrapperResponse) {

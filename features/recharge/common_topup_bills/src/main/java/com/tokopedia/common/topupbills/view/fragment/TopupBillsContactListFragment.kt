@@ -19,12 +19,10 @@ import com.tokopedia.common.topupbills.databinding.FragmentContactListBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.adapter.TopupBillsContactListAdapter
+import com.tokopedia.common.topupbills.favoritecommon.view.adapter.TopupBillsContactListAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
-import com.tokopedia.common.topupbills.view.typefactory.ContactListTypeFactoryImpl
+import com.tokopedia.common.topupbills.favoritecommon.view.typefactory.ContactListTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsSavedNumberViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 

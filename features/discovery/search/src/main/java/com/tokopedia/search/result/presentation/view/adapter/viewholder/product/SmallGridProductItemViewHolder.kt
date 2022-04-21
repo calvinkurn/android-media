@@ -25,10 +25,6 @@ class SmallGridProductItemViewHolder(
     override val productCardView: IProductCardView?
         get() = binding?.productCardView
 
-    init {
-        initVideoHelper()
-    }
-
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
 

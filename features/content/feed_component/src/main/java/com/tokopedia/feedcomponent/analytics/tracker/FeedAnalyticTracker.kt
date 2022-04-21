@@ -185,6 +185,7 @@ class FeedAnalyticTracker
 
     object Screen {
         const val FEED = "/feed"
+        const val SCREEN_FEED = "/feed - update tab"
         const val FEED_SHOP = "/shop-feed"
         const val MEDIA_PREVIEW = "$FEED/media-preview"
         const val TRENDING = "$FEED/trending-tab"
@@ -1878,7 +1879,7 @@ class FeedAnalyticTracker
         val map = mapOf(
             KEY_EVENT to OPEN_SCREEN,
             SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to isLoggedInStatus.toString(),
-            KEY_EVENT_SCREEN_NAME to Screen.FEED,
+            KEY_EVENT_SCREEN_NAME to Screen.SCREEN_FEED,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_EVENT_USER_ID to userSessionInterface.userId

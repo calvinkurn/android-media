@@ -16,7 +16,9 @@ import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
 import java.util.*
@@ -29,12 +31,14 @@ class SuggestionDoubleLineViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_autocomplete_double_line_item
+
+        private const val FONT_LEVEL_14_SP = 2
     }
 
     private var searchQueryStartIndexInKeyword = -1
 
     override fun bind(item: SuggestionDoubleLineDataDataView) {
-        bindIconImage(item.data)
+        bindIconImage(item)
         bindIconTitle(item.data)
         bindIconSubtitle(item.data)
         bindSubtitle(item.data)
@@ -44,9 +48,11 @@ class SuggestionDoubleLineViewHolder(
         bindListener(item.data)
     }
 
-    private fun bindIconImage(item: BaseSuggestionDataView) {
-        itemView.iconImage?.let {
-            ImageHandler.loadImageCircle2(itemView.context, it, item.imageUrl)
+    private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
+        if (item.isBoldSquareType()) {
+            itemView.iconImage?.loadImageRounded(item.data.imageUrl, itemView.context.resources.getDimension(R.dimen.autocomplete_product_suggestion_image_radius))
+        } else {
+            itemView.iconImage?.loadImageCircle(item.data.imageUrl)
         }
     }
 
@@ -74,12 +80,13 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
-        if (item.isBoldText()) {
-            setSearchQueryStartIndexInKeyword(item.data)
-            bindBoldTextTitle(item.data)
-        }
-        else {
-            bindNormalTextTitle(item.data)
+        when {
+            item.isBoldText() -> {
+                setSearchQueryStartIndexInKeyword(item.data)
+                bindBoldTextTitle(item.data)
+            }
+            item.isBoldSquareType() -> bindAllBoldTextTitle(item.data)
+            else -> bindNormalTextTitle(item.data)
         }
     }
 
@@ -99,6 +106,11 @@ class SuggestionDoubleLineViewHolder(
         } else {
             itemView.doubleLineTitle?.text = getHighlightedTitle(item)
         }
+    }
+
+    private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
+        itemView.doubleLineTitle?.setWeight(Typography.BOLD)
+        itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
     }
 
     private fun getHighlightedTitle(item: BaseSuggestionDataView): SpannableString {

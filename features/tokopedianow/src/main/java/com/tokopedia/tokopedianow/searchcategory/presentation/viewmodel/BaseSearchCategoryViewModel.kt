@@ -441,8 +441,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(
             TokoNowRecommendationCarouselUiModel(
                 pageName = TOKONOW_NO_RESULT,
-                keywords = getKeywordForGeneralSearchTracking(),
-                isBindWithPageName = true
+                keywords = getKeywordForGeneralSearchTracking()
             )
         )
     }

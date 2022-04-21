@@ -74,6 +74,9 @@ class ProductProfile {
     @SerializedName("icon_tokocabang")
     @Expose
     var urlTokocabang: String = ""
+    @SerializedName("desc_tokocabang")
+    @Expose
+    var descTokocabang: String = ""
     @SerializedName("parent_id")
     @Expose
     var parentId: String = "0"

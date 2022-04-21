@@ -168,7 +168,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
         dismiss()
     }
 
-    override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
+    override fun openUspBottomSheet(uspImageUrl: String) {
         context?.let {
             val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
             ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
@@ -176,7 +176,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             if (ratesEstimateRequest?.isTokoNow == true) {
                 RouteManager.route(context, EDUCATIONAL_INFO)
             } else {
-                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+                val bottomSheet = ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, uspImageUrl)
                 bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
             }
         }

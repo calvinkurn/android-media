@@ -209,6 +209,7 @@ class AddEditProductVariantFragment :
         // button "tambah" variant values level 2 on click listener
         linkAddVariantValueLevel2.setOnClickListener {
             addVariantValueAtLevel(VARIANT_VALUE_LEVEL_TWO_POSITION)
+
         }
 
         observeIsEditMode()
@@ -658,6 +659,7 @@ class AddEditProductVariantFragment :
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
             cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setDefaultMaxWidth()
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }
@@ -1009,7 +1011,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = ImagePickerCallback(ctx) { it, _ ->
             val shopId = UserSession(it).shopId ?: ""
             if (isEditMode) ProductEditVariantTracking.pickProductVariantPhotos(shopId)
@@ -1025,6 +1026,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_exit_dialog_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_exit_dialog_desc))
             setPrimaryCTAText(getString(R.string.action_cancel_exit))
             setPrimaryCTAClickListener {
@@ -1043,6 +1045,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_delete_all_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_delete_all_description))
             setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
             setPrimaryCTAClickListener {
@@ -1073,6 +1076,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(dialogTitle)
+            setDefaultMaxWidth()
             setDescription(dialogDesc)
             setPrimaryCTAText(getString(R.string.action_cancel_replacement))
             setPrimaryCTAClickListener {
@@ -1099,8 +1103,7 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImageEditorBuilder(
                 imageUrls = arrayListOf(urlOrPath),
-                defaultRatio = ImageRatioType.RATIO_1_1,
-                convertToWebp = true
+                defaultRatio = ImageRatioType.RATIO_1_1
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
@@ -1335,7 +1338,6 @@ class AddEditProductVariantFragment :
         val isEditMode = viewModel.isEditMode.value ?: false
         val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
                 .withSimpleEditor()
-        builder.imagePickerEditorBuilder?.convertToWebp = true
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)

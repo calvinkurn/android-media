@@ -60,23 +60,28 @@ class TopAdsDashboardPresenterTest {
     private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
     private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> = mockk(relaxed = true)
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
+    private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase = mockk(relaxed = true)
     private var userSession: UserSessionInterface = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
 
     var view: TopAdsDashboardView = mockk(relaxed = true)
     private val presenter by lazy {
-        TopAdsDashboardPresenter(topAdsGetShopDepositUseCase, shopAdInfoUseCase,
-                gqlGetShopInfoUseCase, topAdsGetGroupDataUseCase,
-                topAdsGetGroupStatisticsUseCase, topAdsGetProductStatisticsUseCase,
-                topAdsGetProductKeyCountUseCase, topAdsGetGroupListUseCase,
-                topAdsGroupActionUseCase, topAdsProductActionUseCase,
-                topAdsGetGroupProductDataUseCase, topAdsInsightUseCase,
-                getStatisticUseCase, budgetRecomUseCase,
-                productRecomUseCase, topAdsEditUseCase,
-                validGroupUseCase, createGroupUseCase,
-                bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
-                autoAdsStatusUseCase, getExpiryDateUseCase,
-                getHiddenTrialUseCase, whiteListedUserUseCase, userSession)
+        TopAdsDashboardPresenter(
+            topAdsGetShopDepositUseCase, shopAdInfoUseCase,
+            gqlGetShopInfoUseCase, topAdsGetGroupDataUseCase,
+            topAdsGetGroupStatisticsUseCase, topAdsGetProductStatisticsUseCase,
+            topAdsGetProductKeyCountUseCase, topAdsGetGroupListUseCase,
+            topAdsGroupActionUseCase, topAdsProductActionUseCase,
+            topAdsGetGroupProductDataUseCase, topAdsInsightUseCase,
+            getStatisticUseCase, budgetRecomUseCase,
+            productRecomUseCase, topAdsEditUseCase,
+            validGroupUseCase, createGroupUseCase,
+            bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
+            autoAdsStatusUseCase, getExpiryDateUseCase,
+            getHiddenTrialUseCase, whiteListedUserUseCase,
+            topAdsGetDeletedAdsUseCase,
+            userSession
+        )
     }
 
     @Before

@@ -275,6 +275,19 @@
 # Window
 -keep class androidx.window.** { *; }
 
+-keep class io.jsonwebtoken.** { *; }
+-keepnames class io.jsonwebtoken.* { *; }
+-keepnames interface io.jsonwebtoken.* { *; }
+
+-keep class org.bouncycastle.** { *; }
+-keepnames class org.bouncycastle.** { *; }
+-dontwarn org.bouncycastle.**
+
 # Keep fragment class name
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
+
+-keep class com.tokopedia.stability.**{*;}
+-keepclassmembers class **{
+public static com.tokopedia.stability.ChangeDelegate *;
+}

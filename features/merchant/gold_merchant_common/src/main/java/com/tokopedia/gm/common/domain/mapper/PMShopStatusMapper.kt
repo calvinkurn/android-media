@@ -5,6 +5,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 /**
@@ -20,7 +21,8 @@ class PMShopStatusMapper @Inject constructor() {
                 pmTier = shopStatus.powerMerchant?.pmTire ?: PMConstant.PMTierType.POWER_MERCHANT,
                 expiredTime = getExpiredTimeFmt(shopStatus.powerMerchant?.expiredTime.orEmpty()),
                 autoExtendEnabled = shopStatus.powerMerchant?.autoExtend?.status != statusOff,
-                isOfficialStore = shopStatus.officialStore?.status == PMStatusConst.ACTIVE
+                isOfficialStore = shopStatus.officialStore?.status == PMStatusConst.ACTIVE,
+                subscriptionType = shopStatus.powerMerchant?.autoExtend?.tkpdProductId.orZero()
         )
     }
 

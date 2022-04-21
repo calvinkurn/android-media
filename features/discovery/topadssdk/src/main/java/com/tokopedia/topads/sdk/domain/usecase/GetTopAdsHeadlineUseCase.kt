@@ -30,7 +30,8 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
         button_text
         layout
         position
-        description
+        description,
+        widget_title
         image {
           full_url
           full_ecs
@@ -61,6 +62,7 @@ const val GET_TOPADS_HEADLINE_QUERY: String = """query TopadsCPMHeadlineQuery(${
             }
             price_format
             product_rating
+            uri
             count_review_format
             label_group {
               title

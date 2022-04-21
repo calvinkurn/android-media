@@ -57,4 +57,5 @@ object CatalogConstant {
     const val HTTPS_WWW_DOT_TEXT = "https://www."
 
     const val DEBOUNCE_SEARCH = 250L
+    const val KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING  = "Catalog For You List Analytics"
 }

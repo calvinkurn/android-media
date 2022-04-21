@@ -19,11 +19,13 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateFilterDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateKeywordDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
 interface ProductListTypeFactory {
@@ -33,11 +35,13 @@ interface ProductListTypeFactory {
     fun type(suggestionDataView: SuggestionDataView): Int
     fun type(globalNavDataView: GlobalNavDataView): Int
     fun type(inspirationCarouselDataView: InspirationCarouselDataView): Int
+    fun type(inspirationCarouselDataView: InspirationCarouselVideoDataView): Int
     fun type(titleViewModel: RecommendationTitleDataView): Int
     fun type(recommendationItemDataView: RecommendationItemDataView): Int
     fun type(bannedProductsEmptySearchDataView: BannedProductsEmptySearchDataView): Int
     fun type(bannedProductsTickerDataView: BannedProductsTickerDataView): Int
-    fun type(emptySearchProductDataView: EmptyStateDataView): Int
+    fun type(emptySearchProductDataView: EmptyStateKeywordDataView): Int
+    fun type(emptySearchFilterDataView: EmptyStateFilterDataView): Int
     fun type(broadMatchDataView: BroadMatchDataView): Int
     fun type(inspirationCardDataView: InspirationCardDataView): Int
     fun type(searchProductTitleDataView: SearchProductTitleDataView): Int

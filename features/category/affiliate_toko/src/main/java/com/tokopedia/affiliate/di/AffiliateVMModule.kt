@@ -90,6 +90,12 @@ abstract class AffiliateVMModule {
     @Binds
     @IntoMap
     @AffiliateScope
+    @ViewModelKey(AffiliateRecyclerViewModel::class)
+    internal abstract fun affiliateRecyclerViewModel(viewModel: AffiliateRecyclerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
     @ViewModelKey(AffiliateRegistrationSharedViewModel::class)
     internal abstract fun affiliateRegistrationViewModel(viewModel: AffiliateRegistrationSharedViewModel): ViewModel
 

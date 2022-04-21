@@ -75,7 +75,7 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         }
         if (holder is ContentWidgetViewHolder &&
             holder.adapterPosition < currentList.size &&
-            (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetUiModel == PlayWidgetUiModel.Placeholder) {
+            (currentList[holder.adapterPosition] as? ContentWidgetDataModel)?.playWidgetState?.isLoading == true) {
             listener?.loadPlayWidget()
         }
     }

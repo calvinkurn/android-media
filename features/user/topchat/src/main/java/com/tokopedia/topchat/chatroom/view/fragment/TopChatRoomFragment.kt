@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -56,7 +55,6 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
@@ -68,7 +66,6 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.UpdateCampaignVariantResult
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -151,7 +148,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
-
 /**
  * @author : Steven 29/11/18
  */
@@ -212,6 +208,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
+    private var seenAttachmentVoucher = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -1703,12 +1700,45 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onVoucherClicked(data: MerchantVoucherViewModel) {
-        analytics.eventVoucherThumbnailClicked()
+    override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
+        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (data.isLockToProduct()) {
+            goToMvcPage(data.applink)
+        } else {
+            goToMerchantVoucherDetail(data)
+        }
+    }
+
+    override fun onVoucherSeen(data: TopChatVoucherUiModel, source: String) {
+        if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
+            TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
+        }
+    }
+
+    private fun goToMvcPage(applink: String) {
+        //If seller in MA, show toaster
+        if(!GlobalConfig.isSellerApp() && isSeller()) {
+            view?.let {
+                val text = getStringResource(R.string.topchat_mvc_not_available)
+                Toaster.build(it, text).show()
+            }
+        //If applink is empty or wrong applink in sellerapp, return
+        } else if (applink.isEmpty() || GlobalConfig.isSellerApp() &&
+            !applink.contains(PREFIX_SELLER_APPLINK, ignoreCase = true)) {
+            return
+        } else {
+            context?.let {
+                val intent = RouteManager.getIntent(it, applink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun goToMerchantVoucherDetail(data: TopChatVoucherUiModel) {
         activity?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(
-                it, data.voucherId,
-                data, shopId.toString()
+                it, data.voucher.voucherId,
+                data.voucher, shopId.toString()
             )
             startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
         }
@@ -2110,15 +2140,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initProductPreview(savedInstanceState: Bundle?) {
-        val stringProductPreviews =
+        val stringProductIds =
             getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
-        if (stringProductPreviews.isEmpty()) return
-        val listType = object : TypeToken<List<ProductPreview>>() {}.type
-        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
-            stringProductPreviews,
+        if (stringProductIds.isEmpty()) return
+        val listType = object : TypeToken<List<String>>() {}.type
+        val productIds = CommonUtil.fromJson<List<String>>(
+            stringProductIds,
             listType
         )
-        val productIds = productPreviews.map { it.id }
         if (productIds.isNotEmpty()) {
             viewModel.loadProductPreview(productIds)
         }
@@ -2910,6 +2939,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"
+
+        private const val PREFIX_SELLER_APPLINK = "sellerapp://"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

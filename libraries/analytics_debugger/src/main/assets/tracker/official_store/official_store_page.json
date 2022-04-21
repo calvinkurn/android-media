@@ -315,7 +315,7 @@
       "businessUnit": "home & browse",
       "eventCategory": "os microsite",
       "currentSite": "tokopediamarketplace",
-      "event": "clickOSMicrosite",
+      "event": "clickHomepage",
       "eventAction": "all brands - click",
       "sessionIris": ".*",
       "eventLabel": "click view all - .*"

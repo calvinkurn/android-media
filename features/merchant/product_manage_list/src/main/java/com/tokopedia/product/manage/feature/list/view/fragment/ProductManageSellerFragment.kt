@@ -32,11 +32,11 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
 
-class ProductManageSellerFragment : ProductManageFragment() {
+open class ProductManageSellerFragment : ProductManageFragment() {
 
     companion object {
-        private const val FILTER_OPTIONS = "filter_options"
-        private const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
+        const val FILTER_OPTIONS = "filter_options"
+        const val SEARCH_KEYWORD_OPTIONS = "search_keyword_options"
 
         @JvmStatic
         fun newInstance(

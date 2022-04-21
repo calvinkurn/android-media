@@ -84,7 +84,9 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         ProductDetailInfoAdapterFactoryImpl(this)
     }
 
-    fun show(childFragmentManager: FragmentManager, daggerProductDetailComponent: ProductDetailComponent?, listener: ProductDetailBottomSheetListener) {
+    fun show(childFragmentManager: FragmentManager,
+             daggerProductDetailComponent: ProductDetailComponent?,
+             listener: ProductDetailBottomSheetListener) {
         this.productDetailComponent = daggerProductDetailComponent
         this.listener = listener
 
@@ -240,6 +242,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
         productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
+    }
+
+    override fun onCustomInfoClicked(url: String) {
+        DynamicProductDetailTracking.ProductDetailSheet.onCustomInfoPalugadaBottomSheetClicked()
+        goToApplink(url)
     }
 
     private fun observeData() {

@@ -26,7 +26,9 @@ class SuggestionChipWidgetViewHolder(
     override fun bind(element: SuggestionChipWidgetDataView) {
         val chipWidget = binding?.autocompleteChipWidgetView ?: return
         chipWidget.addOnImpressionListener(element.data) {
-            chipListener.onChipImpressed(element.data)
+            for (item in element.data.childItems) {
+                chipListener.onChipImpressed(item)
+            }
         }
         chipWidget.bindChipWidgetView(
             data = element.data.toListAutocompleteChipDataView(),

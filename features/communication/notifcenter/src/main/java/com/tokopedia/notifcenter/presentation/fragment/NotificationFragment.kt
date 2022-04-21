@@ -31,6 +31,8 @@ import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.MarkAsSeenAnalytic
@@ -63,17 +65,21 @@ import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationL
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
+import com.tokopedia.notifcenter.util.NotificationTopAdsHeadlineHelper
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import timber.log.Timber
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -92,6 +98,13 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     @Inject
     lateinit var markAsSeenAnalytic: MarkAsSeenAnalytic
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private val topAdsHeadlineViewModel by lazy {
+        ViewModelProvider(this)[TopAdsHeadlineViewModel::class.java]
+    }
 
     var remoteConfig: RemoteConfig? = null
 
@@ -383,7 +396,23 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private fun renderRecomList(recoms: RecommendationDataModel) {
         hideLoading()
         rvAdapter?.addRecomProducts(recoms.item)
+        loadShopAds()
         updateScrollListenerState(recoms)
+    }
+
+    private fun loadShopAds() {
+        if(rvAdapter == null || rvAdapter?.shopAdsWidgetAdded == true) return
+        topAdsHeadlineViewModel.getTopAdsHeadlineData(
+            NotificationTopAdsHeadlineHelper.getParams(userSession.userId), {
+                rvAdapter?.addShopAds(it)
+            }, {
+                ServerLogger.log(
+                    Priority.P1,
+                    NotificationFragment::class.java.simpleName,
+                    mapOf(ERROR to SHOPADS_LOAD_FAIL_ERROR)
+                )
+            }
+        )
     }
 
     private fun updateScrollListenerState(recoms: RecommendationDataModel) {
@@ -778,6 +807,8 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
+        private const val SHOPADS_LOAD_FAIL_ERROR = "Failed to load Shopads in NotifCenter"
+        private const val ERROR = "error"
     }
 
 }

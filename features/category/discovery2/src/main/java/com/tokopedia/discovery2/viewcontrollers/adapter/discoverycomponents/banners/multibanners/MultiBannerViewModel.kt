@@ -6,19 +6,25 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.BannerAction
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoveryext.checkForNullAndSize
 import com.tokopedia.discovery2.usecase.CheckPushStatusUseCase
 import com.tokopedia.discovery2.usecase.SubScribeToUseCase
+import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -31,12 +37,17 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()
     private val refreshPage: MutableLiveData<Boolean> = MutableLiveData()
+    private val _hideShimmer = SingleLiveEvent<Boolean>()
+    private val _showErrorState = SingleLiveEvent<Boolean>()
 
     @Inject
     lateinit var checkPushStatusUseCase: CheckPushStatusUseCase
 
     @Inject
     lateinit var subScribeToUseCase: SubScribeToUseCase
+
+    @Inject
+    lateinit var bannerUseCase: BannerUseCase
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -57,6 +68,45 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     fun getBannerUrlWidth() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile, "width")
     fun checkApplink(): LiveData<String> = applinkCheck
     fun isPageRefresh(): LiveData<Boolean> = refreshPage
+    val hideShimmer: LiveData<Boolean> = _hideShimmer
+    val showErrorState: LiveData<Boolean> = _showErrorState
+
+    override fun onAttachToViewHolder() {
+        super.onAttachToViewHolder()
+        fetchBannerData()
+    }
+
+    private fun fetchBannerData() {
+        if (components.properties?.dynamic == true) {
+            launchCatchError(block = {
+
+                if (bannerUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+                    if (components.data.isNullOrEmpty()) {
+                        _hideShimmer.value = true
+                    }
+                    bannerData.value = components
+                }
+            }, onError = {
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideShimmer.value = true
+                }
+            })
+        }
+    }
+
+    fun layoutSelector(): Int {
+        return when (components.name) {
+            ComponentNames.SingleBanner.componentName -> R.layout.disco_shimmer_single_banner_layout
+            ComponentNames.DoubleBanner.componentName -> R.layout.disco_shimmer_double_banner_layout
+            ComponentNames.TripleBanner.componentName -> R.layout.disco_shimmer_triple_banner_layout
+            ComponentNames.QuadrupleBanner.componentName -> R.layout.disco_shimmer_quadruple_banner_layout
+            else -> R.layout.multi_banner_layout
+        }
+    }
 
     fun onBannerClicked(position: Int, context: Context) {
         bannerData.value?.data.checkForNullAndSize(position)?.let { listItem ->
@@ -97,7 +147,8 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage ?: "")
+                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage
+                            ?: "")
                 }
             }, onError = {
                 it.printStackTrace()
@@ -155,4 +206,12 @@ class MultiBannerViewModel(val application: Application, var components: Compone
     }
 
     fun getComponentPosition() = position
+    fun shouldShowShimmer(): Boolean {
+        return components.properties?.dynamic == true && components.noOfPagesLoaded != 1 && !components.verticalProductFailState
+    }
+
+    fun reload() {
+        components.noOfPagesLoaded = 0
+        fetchBannerData()
+    }
 }

@@ -136,7 +136,8 @@ class FeaturedShopViewHolder(
                     grid = element,
                     applink = channel.channelHeader.applink,
                     componentName = this::class.java.simpleName,
-                    listener = this
+                    listener = this,
+                    impressHolder = element
             ))
         }
         return list

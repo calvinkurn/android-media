@@ -1,6 +1,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
+apply plugin: 'robust'
 
 repositories{
     flatDir {
@@ -121,5 +122,7 @@ dependencies {
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

@@ -74,11 +74,11 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
-        val categoryList = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
+        val categoryListUiModel = RepurchaseCategoryMapper.mapToCategoryList(response, warehouseId)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",
-                categoryList = categoryList,
+                categoryListUiModel = categoryListUiModel,
                 state = TokoNowLayoutState.SHOW
             )
         )

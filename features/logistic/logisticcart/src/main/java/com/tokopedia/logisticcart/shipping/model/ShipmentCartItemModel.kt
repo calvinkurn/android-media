@@ -2,6 +2,8 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -33,6 +35,12 @@ class ShipmentCartItemModel(
         var isTokoNow: Boolean = false,
         var shopTickerTitle: String = "",
         var shopTicker: String = "",
+
+        // AddOns
+        var addOnsOrderLevelModel: AddOnsDataModel? = null,
+        var addOnWordingModel: AddOnWordingModel? = null,
+        var addOnDefaultFrom: String? = null,
+        var addOnDefaultTo: String? = null,
 
         // Cart item state
         var cartString: String? = null,
@@ -94,6 +102,10 @@ class ShipmentCartItemModel(
         var isAutoCourierSelection: Boolean = false,
         var hasGeolocation: Boolean = false,
 
+        // regular shipment service but do not show change courier card
+        var isHideChangeCourierCard: Boolean = false,
+        var durationCardDescription: String = "",
+
         // Courier Selection Error
         var courierSelectionErrorTitle: String? = null,
         var courierSelectionErrorDescription: String? = null,
@@ -151,6 +163,8 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.shopTypeInfoData = shipmentCartItemModel.shopTypeInfoData
             newShipmentCartItemModel.isDisableChangeCourier = shipmentCartItemModel.isDisableChangeCourier
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
+            newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
+            newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
             return newShipmentCartItemModel
         }
     }

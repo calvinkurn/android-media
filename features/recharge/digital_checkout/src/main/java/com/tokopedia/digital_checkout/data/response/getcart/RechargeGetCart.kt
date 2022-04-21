@@ -115,7 +115,11 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee")
         @Expose
-        val adminFee: Double = 0.0
+        val adminFee: Double = 0.0,
+
+        @SerializedName("admin_fee_included")
+        @Expose
+        val isAdminFeeIncluded : Boolean= false
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")

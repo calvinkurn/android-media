@@ -26,20 +26,20 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
         val list = when (productComponentName) {
             ComponentNames.ProductCardRevamp.componentName -> {
                 if (componentProperties?.template == Constant.ProductTemplate.LIST) {
-                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
                 } else {
-                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
                 }
             }
             ComponentNames.ProductCardCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
             ComponentNames.ProductCardSprintSale.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
             ComponentNames.ProductCardSprintSaleCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleCarouselItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
             ComponentNames.CalendarWidgetGrid.componentName, ComponentNames.CalendarWidgetCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.CalendarWidgetItem.componentName, componentProperties, creativeName,
-                    parentComponentPosition = componentItem?.position, parentListSize = componentsListSize)
+                    parentComponentPosition = componentItem?.position, parentListSize = componentsListSize, parentSectionId = componentItem?.parentSectionId)
             else ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize)
 

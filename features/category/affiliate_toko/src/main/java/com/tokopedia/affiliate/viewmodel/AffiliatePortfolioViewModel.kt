@@ -1,12 +1,10 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.util.Patterns
+import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
-import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
-import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
@@ -30,15 +28,15 @@ class AffiliatePortfolioViewModel@Inject constructor(
     fun createDefaultListForSm() {
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex =
-        AFFILIATE_YT_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok", TIKTOK_DEFAULT,"Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube", YOUTUBE_DEFAULT,"Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
         affiliatePortfolioData.value = itemList
     }
     fun updateList(position: Int, text: String) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
+        (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.firstTime = false
         if(text.isNotEmpty()){
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
             isError.value = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
@@ -51,9 +49,9 @@ class AffiliatePortfolioViewModel@Inject constructor(
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
             val regex = Regex(element.portfolioItm.regex!!,setOf(RegexOption.IGNORE_CASE))
-            regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
+            regex.matches(text) && PatternsCompat.WEB_URL.matcher(text).matches()
         } else{
-            Patterns.WEB_URL.matcher(text).matches()
+            PatternsCompat.WEB_URL.matcher(text).matches()
         }
     }
 
@@ -62,7 +60,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text!!,item)){
+                if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text!!,item) && item.portfolioItm.firstTime == false){
                     if(isUpdateList){
                     item.portfolioItm.isError = true
                     updateListItem.value = i

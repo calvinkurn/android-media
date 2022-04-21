@@ -26,6 +26,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
             withContext(Dispatchers.IO) {
                 components.forEach { comp ->
                     comp.parentSectionId = it.sectionId
+                    comp.parentSectionCompID = it.id
                     val creativeName = comp.creativeName ?: ""
                     var isProductComponent = true
                     comp.pageEndPoint = component.pageEndPoint
@@ -37,14 +38,16 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                     comp.data,
                                     ComponentNames.MasterProductCardItemList.componentName,
                                     comp.properties,
-                                    creativeName
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
                                 )
                             } else {
                                 DiscoveryDataMapper().mapListToComponentList(
                                     comp.data,
                                     ComponentNames.ProductCardRevampItem.componentName,
                                     comp.properties,
-                                    creativeName
+                                    creativeName,
+                                    parentSectionId = comp.parentSectionId
                                 )
                             }
                         }
@@ -61,7 +64,8 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                                 comp.data,
                                 ComponentNames.ProductCardSprintSaleItem.componentName,
                                 comp.properties,
-                                creativeName
+                                creativeName,
+                                parentSectionId = comp.parentSectionId
                             )
                         }
                         ComponentNames.ProductCardSprintSaleCarousel.componentName -> {

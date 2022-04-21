@@ -8,6 +8,8 @@
         android:id="@+id/product_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/unify_space_12"
+        android:paddingEnd="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />

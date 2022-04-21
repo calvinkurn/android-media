@@ -1,35 +1,37 @@
 package com.tokopedia.globalnavwidgetsamples
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalnavwidget.GlobalNavWidgetListener
 import com.tokopedia.globalnavwidget.GlobalNavWidgetModel
-import kotlinx.android.synthetic.main.activity_global_nav_widget.*
+import com.tokopedia.globalnavwidgetsamples.databinding.ActivityGlobalNavWidgetBinding
 
 class GlobalNavWidgetSamplesActivity : AppCompatActivity(), GlobalNavWidgetListener {
+    private lateinit var binding: ActivityGlobalNavWidgetBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_global_nav_widget)
+        binding = ActivityGlobalNavWidgetBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        globalNavWidgetPillWithNoInfo?.setData(globalNavWidgetPillModelItemNoInfo, this)
-        globalNavWidgetPillWithInfo?.setData(globalNavWidgetPillModelItemWithInfo, this)
-        globalNavWidgetPillWithoutSeeAllApplink?.setData(globalNavWidgetPillModelWithoutSeeAllApplink, this)
-        globalNavWidgetWithoutBackground?.setData(globalNavWidgetWithoutBackgroundInModel, this)
-        globalNavWidgetCard?.setData(globalNavWidgetModelCard, this)
-        globalNavWidgetCard2?.setData(globalNavWidgetModelCard2, this)
-        singleGlobalNavWidgetPill?.setData(singleGlobalNavWidgetModelPill, this)
-        singleGlobalNavWidgetCardIconWithNoSubtitleInfo?.setData(singleGlobalNavWidgetModelCardIconWithNoSubtitleInfo, this)
-        singleGlobalNavWidgetCardIcon?.setData(singleGlobalNavWidgetModelCardIcon, this)
-        singleGlobalNavWidgetCardImage?.setData(singleGlobalNavWidgetModelCardImage, this)
+        binding.globalNavWidgetPillWithNoInfo.setData(globalNavWidgetPillModelItemNoInfo, this)
+        binding.globalNavWidgetPillWithInfo.setData(globalNavWidgetPillModelItemWithInfo, this)
+        binding.globalNavWidgetPillWithoutSeeAllApplink.setData(globalNavWidgetPillModelWithoutSeeAllApplink, this)
+        binding.globalNavWidgetWithoutBackground.setData(globalNavWidgetWithoutBackgroundInModel, this)
+        binding.globalNavWidgetCard.setData(globalNavWidgetModelCard, this)
+        binding.globalNavWidgetCard2.setData(globalNavWidgetModelCard2, this)
+        binding.singleGlobalNavWidgetPill.setData(singleGlobalNavWidgetModelPill, this)
+        binding.singleGlobalNavWidgetCardIconWithNoSubtitleInfo.setData(singleGlobalNavWidgetModelCardIconWithNoSubtitleInfo, this)
+        binding.singleGlobalNavWidgetCardIcon.setData(singleGlobalNavWidgetModelCardIcon, this)
+        binding.singleGlobalNavWidgetCardImage.setData(singleGlobalNavWidgetModelCardImage, this)
     }
 
     override fun onClickItem(item: GlobalNavWidgetModel.Item) {
-        Snackbar.make(constraintLayoutGlobalNavWidget, item.clickItemApplink, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.constraintLayoutGlobalNavWidget, item.clickItemApplink, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onClickSeeAll(globalNavWidgetModel: GlobalNavWidgetModel) {
-        Snackbar.make(constraintLayoutGlobalNavWidget, globalNavWidgetModel.clickSeeAllApplink, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.constraintLayoutGlobalNavWidget, globalNavWidgetModel.clickSeeAllApplink, Snackbar.LENGTH_SHORT).show()
     }
 }

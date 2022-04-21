@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
+import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
@@ -52,7 +53,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
 import java.io.IOException
-import java.lang.Exception
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -887,6 +887,24 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductNameInputFromNetwork should invalid when Error throws`() = coroutineTestRule.runBlockingTest {
+        val errorMessage = "Error Message"
+
+        coEvery {
+            validateProductNameUseCase.executeOnBackground()
+        } throws MessageErrorException(errorMessage)
+
+        viewModel.validateProductNameInputFromNetwork("book")
+
+        coVerify {
+            validateProductNameUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.productNameValidationFromNetwork.getOrAwaitValue()
+        Assert.assertTrue((result as Fail).throwable.message == errorMessage)
+    }
+
+    @Test
     fun `set data to productNameInputFromNetwork and isProductNameInputError, the value should the same with the latest provided variable`()  {
         var productName: Success<String>? = null
         viewModel.setProductNameInputFromNetwork(productName)
@@ -1149,7 +1167,10 @@ class AddEditProductDetailViewModelTest {
 
         if (result is Success) {
             viewModel.updateSpecificationByAnnotationCategory(result.data)
+            val specificationList = viewModel.selectedSpecificationList.getOrAwaitValue()
             val specificationText = viewModel.specificationText.getOrAwaitValue()
+            Assert.assertEquals("Indomie", specificationList[0].data)
+            Assert.assertEquals("Bawang", specificationList[1].data)
             Assert.assertEquals("Indomie, Bawang", specificationText)
         }
     }
@@ -1427,9 +1448,46 @@ class AddEditProductDetailViewModelTest {
     fun `when removeKeywords from product name input, should generate clean product name`() {
         val blacklistedWords = listOf("shopee", "lazada")
         val result = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
-        val result2 = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
 
         assertEquals("samsung", result)
+    }
+
+    @Test
+    fun `when updateHasRequiredSpecification updated with SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
+        val annotationData = listOf(AnnotationCategoryData(
+            variant = SIGNAL_STATUS_VARIANT
+        ))
+        viewModel.updateHasRequiredSpecification(annotationData)
+        val result = viewModel.hasRequiredSpecification.getOrAwaitValue()
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `when updateHasRequiredSpecification without SIGNAL_STATUS_VARIANT, should update hasRequiredSpecification`() {
+        val annotationData = listOf(AnnotationCategoryData())
+        viewModel.updateHasRequiredSpecification(annotationData)
+        val result = viewModel.hasRequiredSpecification.getOrAwaitValue()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun `when validateSelectedSpecificationList, should return valid result`() {
+        val annotationData = listOf(AnnotationCategoryData(
+            variant = SIGNAL_STATUS_VARIANT
+        ))
+        val selectedSpec = listOf(SpecificationInputModel(
+            specificationVariant = SIGNAL_STATUS_VARIANT
+        ))
+
+        val resultEmptyState = viewModel.validateSelectedSpecificationList()
+        viewModel.updateHasRequiredSpecification(annotationData)
+        viewModel.updateSelectedSpecification(selectedSpec)
+        val resultFilledState = viewModel.validateSelectedSpecificationList()
+
+        assertTrue(resultEmptyState)
+        assertTrue(resultFilledState)
     }
 
     @Test
@@ -1466,9 +1524,6 @@ class AddEditProductDetailViewModelTest {
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
 
-        viewModel.specificationList = mutableListOf(SpecificationInputModel(id="123"))
-        assert(viewModel.specificationList[0].id == "123")
-
         viewModel.productInputModel = ProductInputModel(productId = 11L)
         assert(viewModel.productInputModel.productId == 11L)
 
@@ -1498,12 +1553,6 @@ class AddEditProductDetailViewModelTest {
         }
         runValidationAndProvideMessage(provider::getProductNameTips, null) {
             viewModel.validateProductNameInput("toped")
-        }
-        runValidationAndProvideMessage(provider::getEmptyProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("")
-        }
-        runValidationAndProvideMessage(provider::getMinLimitProductPriceErrorMessage, null) {
-            viewModel.validateProductPriceInput("-9999")
         }
 
         runValidationAndProvideMessage(provider::getEmptyWholeSaleQuantityErrorMessage, null) {
@@ -1535,12 +1584,6 @@ class AddEditProductDetailViewModelTest {
             viewModel.validateProductWholeSalePriceInput("-1", "10", "1")
         }
 
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("")
-        }
-        runValidationAndProvideMessage(provider::getEmptyProductStockErrorMessage, null) {
-            viewModel.validateProductStockInput("-9999")
-        }
         runValidationAndProvideMessage(provider::getMaxLimitProductStockErrorMessage, null) {
             viewModel.validateProductStockInput((MAX_PRODUCT_STOCK_LIMIT + 1).toString())
         }
@@ -1589,7 +1632,6 @@ class AddEditProductDetailViewModelTest {
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(

@@ -38,6 +38,8 @@ object WidgetName {
     const val INFO_CARD = "info_card"
     const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
     const val PRODUCT_BUNDLE_MULTIPLE = "multiple_bundling"
+    const val ETALASE_THEMATIC = "etalase_thematic"
+    const val BIG_CAMPAIGN_THEMATIC = "big_campaign_thematic"
 
     // showcase widget name list
     const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"

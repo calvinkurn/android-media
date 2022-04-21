@@ -13,7 +13,7 @@
         android:id="@+id/constraint_sah_new_other_initial_start"
         motion:transitionEasing="decelerate">
         <Constraint
-            android:id="@+id/iv_sah_new_other_curved_header"
+            android:id="@+id/layout_sah_new_other_curved_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sah_new_other_header_background_height"
             android:alpha="0.2"
@@ -31,7 +31,7 @@
         android:id="@+id/constraint_sah_new_other_initial_end"
         motion:transitionEasing="decelerate">
         <Constraint
-            android:id="@+id/iv_sah_new_other_curved_header"
+            android:id="@+id/layout_sah_new_other_curved_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sah_new_other_header_background_height"
             android:alpha="1"

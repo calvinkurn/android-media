@@ -39,8 +39,8 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -146,7 +146,8 @@ class NewShopPageViewModel @Inject constructor(
             keyword: String,
             etalaseId: String,
             isRefresh: Boolean,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            extParam: String
     ) {
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
@@ -155,11 +156,15 @@ class NewShopPageViewModel @Inject constructor(
                         getShopP1Data(
                                 shopId,
                                 shopDomain,
-                                isRefresh
+                                isRefresh,
+                                extParam
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1,
+                            it
+                        )))
                         null
                     })
 
@@ -172,7 +177,10 @@ class NewShopPageViewModel @Inject constructor(
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET,
+                            it
+                        )))
                         null
                     })
 
@@ -190,7 +198,10 @@ class NewShopPageViewModel @Inject constructor(
                         )
                     },
                     onError = {
-                        shopPageP1Data.postValue(Fail(it))
+                        shopPageP1Data.postValue(Fail(ShopAsyncErrorException(
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST,
+                            it
+                        )))
                         null
                     }
             )
@@ -255,11 +266,12 @@ class NewShopPageViewModel @Inject constructor(
     private suspend fun getShopP1Data(
             shopId: String,
             shopDomain: String,
-            isRefresh: Boolean
+            isRefresh: Boolean,
+            extParam: String
     ): ShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
-        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain)
+        useCase.params = GetShopPageP1DataUseCase.createParams(shopId, shopDomain, extParam)
         return useCase.executeOnBackground()
     }
 

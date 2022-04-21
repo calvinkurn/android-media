@@ -9,13 +9,15 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class DynamicLegoBannerCallback(
     private val view: TokoNowView,
     private val viewModel: TokoNowHomeViewModel,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val analytics: HomeAnalytics
     ): DynamicLegoBannerListener {
 
     private val context by lazy { view.getFragmentPage().context }
@@ -60,6 +62,7 @@ class DynamicLegoBannerCallback(
         RouteManager.route(context,
             if (channelGrid.applink.isNotEmpty())
                 channelGrid.applink else channelGrid.url)
+        analytics.trackClickLego3Banner(position, channelModel, channelGrid)
     }
 
     override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -84,6 +87,7 @@ class DynamicLegoBannerCallback(
     }
 
     override fun onChannelImpressionThreeImage(channelModel: ChannelModel, parentPosition: Int) {
+        analytics.trackImpressionLego3Banner(channelModel)
     }
 
     override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {

@@ -151,9 +151,20 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
 
     private fun showShopOperationalHourStatusTicker(shopOperationalHourStatus: ShopOperationalHourStatus, isMyShop: Boolean = false) {
         tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+        tickerShopStatus?.tickerType = if (isMyShop) {
+            Ticker.TYPE_WARNING
+        } else {
+            Ticker.TYPE_ANNOUNCEMENT
+        }
         tickerShopStatus?.tickerTitle = HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
         tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                listener.onShopStatusTickerClickableDescriptionClicked(linkUrl)
+            }
+
+            override fun onDismiss() {}
+        })
         if (isMyShop) {
             tickerShopStatus?.closeButtonVisibility = View.GONE
         } else {
@@ -169,6 +180,7 @@ class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayo
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
         tickerShopStatus?.show()
+        tickerShopStatus?.tickerType = Ticker.TYPE_WARNING
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
                 if(shopStatus == ShopStatusDef.MODERATED && isMyShop) {

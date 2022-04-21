@@ -18,6 +18,8 @@ import com.tokopedia.linker.validation.BranchHelperValidation;
 import com.tokopedia.track.TrackApp;
 
 
+import org.json.JSONArray;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -256,11 +258,13 @@ public class BranchHelper {
     }
 
     public static void sendSearchEvent(Context context, ArrayList<String> searchItems) {
-        BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
-                .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
-                .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, String.valueOf(searchItems));
-        branchEvent.logEvent(context);
-        saveBranchEvent(branchEvent);
+        if(context != null && searchItems != null && searchItems.size() > 0) {
+            BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.SEARCH)
+                    .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)
+                    .addCustomDataProperty(LinkerConstants.KEY_ITEM_ID, new JSONArray(searchItems).toString());
+            branchEvent.logEvent(context);
+            saveBranchEvent(branchEvent);
+        }
     }
 
     public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice) {

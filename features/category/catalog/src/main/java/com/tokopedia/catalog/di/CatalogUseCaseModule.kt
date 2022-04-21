@@ -14,6 +14,7 @@ import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
@@ -114,4 +115,8 @@ class CatalogUseCaseModule {
     fun getCatalogComparisonProductUseCase(catalogComparisonProductRepository: CatalogComparisonProductRepository): CatalogComparisonProductUseCase {
         return CatalogComparisonProductUseCase(catalogComparisonProductRepository)
     }
+
+    @CatalogScope
+    @Provides
+    fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

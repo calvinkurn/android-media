@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +28,8 @@ import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.helper.StatusBarColorHelper
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
+import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -36,9 +37,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class SortFilterBottomSheet: BottomSheetUnify() {
 
@@ -49,7 +52,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private var mapParameter: Map<String, String> = mapOf()
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var sortFilterCallback: Callback? = null
-    private var statusBarColorHelper: StatusBarColorHelper? = null
 
     private var sortFilterBottomSheetViewModel: SortFilterBottomSheetViewModel? = null
     private var sortFilterBottomSheetView: View? = null
@@ -69,6 +71,19 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             else
                 onSeeAllFilterGeneralClick(filterViewModel)
         }
+    }
+
+    private val buttonApplySortFilter: UnifyButton? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.buttonApplySortFilter)
+    }
+    private val recyclerViewSortFilterBottomSheet: RecyclerView? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.recyclerViewSortFilterBottomSheet)
+    }
+    private val buttonApplyContainer: LinearLayout? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.buttonApplyContainer)
+    }
+    private val progressBarSortFilterBottomSheet: LoaderUnify? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.progressBarSortFilterBottomSheet)
     }
 
     private fun onSeeAllFilterCategoryClick(filterViewModel: FilterViewModel) {
@@ -113,10 +128,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private val keywordFilterListener = object: KeywordFilterListener {
         override fun scrollToPosition(position: Int) {
-            val layoutManager =
-                sortFilterBottomSheetView
-                    ?.recyclerViewSortFilterBottomSheet
-                    ?.layoutManager
+            val layoutManager = recyclerViewSortFilterBottomSheet?.layoutManager
 
             if (layoutManager is LinearLayoutManager)
                 layoutManager.scrollToPositionWithOffset(position, 0)
@@ -152,9 +164,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     fun setResultCountText(buttonApplySortFilterText: String) {
-        sortFilterBottomSheetView?.let {
-            it.buttonApplySortFilter.isLoading = false
-            it.buttonApplySortFilter.text = buttonApplySortFilterText
+        buttonApplySortFilter?.let {
+            it.isLoading = buttonApplySortFilterText.isEmpty()
+            it.text = buttonApplySortFilterText
         }
     }
 
@@ -203,10 +215,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initRecyclerView() {
-        sortFilterBottomSheetView?.let {
-            it.recyclerViewSortFilterBottomSheet?.adapter = sortFilterBottomSheetAdapter
-            it.recyclerViewSortFilterBottomSheet?.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
-            it.recyclerViewSortFilterBottomSheet?.addOnScrollListener(createRecyclerViewOnScrollListener())
+        recyclerViewSortFilterBottomSheet?.let {
+            it.adapter = sortFilterBottomSheetAdapter
+            it.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
+            it.addOnScrollListener(createRecyclerViewOnScrollListener())
         }
     }
 
@@ -223,7 +235,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initButtonApplySortFilter() {
-        sortFilterBottomSheetView?.buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
+        buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
     }
 
     private fun onButtonApplySortFilterClicked(view: View) {
@@ -249,15 +261,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
         if (showKnob) configureBottomSheetHeight()
         setBottomSheetActionBold()
-        setStatusBarOverlayColor()
         observeViewModel()
 
         sortFilterBottomSheetViewModel?.onViewCreated()
-    }
-
-    private fun setStatusBarOverlayColor() {
-        statusBarColorHelper = StatusBarColorHelper(requireActivity())
-        statusBarColorHelper?.setStatusBarColor()
     }
 
     private fun observeViewModel() {
@@ -292,7 +298,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun processSortFilterList(sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>) {
         sortFilterBottomSheetAdapter.setSortFilterList(sortFilterList)
-        sortFilterBottomSheetView?.recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
+        recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
     }
 
     private fun processUpdateViewInPosition(position: Int) {
@@ -300,23 +306,42 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun processLoading(isLoading: Boolean) {
-        if (isLoading) {
-            sortFilterBottomSheetView?.let {
-                if (context.isDarkMode()) {
-                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
-                } else {
-                    it.buttonApplyContainer?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                }
-                it.buttonApplyContainer?.visibility = View.VISIBLE
-                it.buttonApplySortFilter?.isLoading = true
-                it.buttonApplySortFilter?.text = ""
-            }
+        if (isLoading)
+            showButtonApplyFilter()
+        else
+            hideButtonApplyFilter()
+    }
 
-            sortFilterCallback?.getResultCount(sortFilterBottomSheetViewModel?.mapParameter ?: mapOf())
+    private fun showButtonApplyFilter() {
+        buttonApplyContainer?.let {
+            it.background = getButtonApplyContainerBackground()
+            it.visibility = View.VISIBLE
         }
-        else {
-            sortFilterBottomSheetView?.buttonApplyContainer?.visibility = View.GONE
+
+        setButtonApplyFilterText()
+    }
+
+    private fun setButtonApplyFilterText() {
+        val mapParameter = sortFilterBottomSheetViewModel?.mapParameter ?: mapOf()
+
+        if (isPostProcessingFilter(mapParameter)) {
+            setResultCountText(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
+            )
+        } else {
+            setResultCountText("")
+            sortFilterCallback?.getResultCount(mapParameter)
         }
+    }
+
+    private fun getButtonApplyContainerBackground() =
+        if (context.isDarkMode())
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N50)
+        else
+            context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+
+    private fun hideButtonApplyFilter() {
+        buttonApplyContainer?.visibility = View.GONE
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
@@ -340,18 +365,14 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun showLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.show()
-            it.recyclerViewSortFilterBottomSheet?.hide()
-            it.buttonApplyContainer?.hide()
-        }
+        progressBarSortFilterBottomSheet?.show()
+        recyclerViewSortFilterBottomSheet?.hide()
+        buttonApplyContainer?.hide()
     }
 
     private fun finishLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.hide()
-            it.recyclerViewSortFilterBottomSheet?.show()
-        }
+        progressBarSortFilterBottomSheet?.hide()
+        recyclerViewSortFilterBottomSheet?.show()
     }
 
     override fun onDestroyView() {
@@ -362,16 +383,6 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
 
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        undoStatusBarOverlayColor()
-        super.onDestroy()
-    }
-
-    private fun undoStatusBarOverlayColor() {
-        statusBarColorHelper?.undoSetStatusBarColor()
-        statusBarColorHelper = null
     }
 
     data class ApplySortFilterModel(

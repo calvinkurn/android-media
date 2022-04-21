@@ -54,6 +54,7 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
+import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -1001,7 +1002,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onResume() {
         if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
-            feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -1009,6 +1009,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (userVisibleHint) {
             loadData(userVisibleHint)
         }
+    }
+    fun updateFeedVisibilityVariable(isFeedShown: Boolean){
+        this.isFeedPageShown = isFeedShown
     }
 
     override fun onPause() {
@@ -1742,8 +1745,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShareClick(
-        positionInFeed: Int, id: Int, title: String,
-        description: String, url: String,
+        positionInFeed: Int,
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
         imageUrl: String,
         typeASGC: Boolean,
         type: String,
@@ -1779,6 +1785,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
+                    setDesktopUrl(url)
                     setUri(url)
                 }
             } else {
@@ -1966,7 +1973,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (adapter.getList()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && adapter.getList()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventImageImpressionPost(
                 FeedAnalyticTracker.Screen.FEED,
@@ -2307,7 +2314,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            String.format(getString(R.string.feed_share_pdp), id.toString())
+            url
         } else{
             shareBottomSheetProduct = false
             url
@@ -2324,6 +2331,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             if (isTopads) {
                 linkerBuilder.setOgImageUrl(imageUrl)
+                linkerBuilder.setDesktopUrl(url)
             }
             shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)

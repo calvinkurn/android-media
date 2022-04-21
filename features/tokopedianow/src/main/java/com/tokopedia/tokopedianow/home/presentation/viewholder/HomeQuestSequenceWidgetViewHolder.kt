@@ -7,9 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -31,9 +35,6 @@ class HomeQuestSequenceWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestSequenceWidgetUiModel>(itemView) {
 
     companion object {
-        private const val QUEST_DETAIL_STAGING_URL = "https://staging.tokopedia.com/now/quest-channel"
-        private const val QUEST_DETAIL_PRODUCTION_URL = "https://www.tokopedia.com/now/quest-channel"
-
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_sequence_widget
     }
@@ -63,36 +64,47 @@ class HomeQuestSequenceWidgetViewHolder(
 
     private fun setupUi(element: HomeQuestSequenceWidgetUiModel) {
         setAdapter()
-        setTitle(getString(R.string.tokopedianow_quest_sequence_widget_title))
-
-        val currentQuestFinished = element.questList.filter { it.currentProgress == it.totalProgress }.size
-        val totalQuestTarget = element.questList.size
-        if (currentQuestFinished != totalQuestTarget) {
-            if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), QUEST_DETAIL_STAGING_URL)
-            } else {
-                setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), QUEST_DETAIL_PRODUCTION_URL)
-            }
-        } else {
-            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all))
-        }
 
         when(element.state) {
-            HomeLayoutItemState.LOADED -> questLoaded(
-                id = element.id,
-                currentQuestFinished = currentQuestFinished,
-                totalQuestTarget = totalQuestTarget,
-                questList = element.questList
-            )
-            else -> questNotLoaded()
+            HomeLayoutItemState.LOADED -> questLoaded(element)
+            HomeLayoutItemState.ERROR -> questError(element)
+            else -> { /* do nothing */ }
         }
     }
 
-    private fun questLoaded(id: String, currentQuestFinished: Int, totalQuestTarget: Int, questList: List<HomeQuestWidgetUiModel>) {
-        addWidgets(id, currentQuestFinished, totalQuestTarget, questList)
+    private fun showHeader(element: HomeQuestSequenceWidgetUiModel) {
+        setTitle(getString(R.string.tokopedianow_quest_sequence_widget_title))
+
+        if (isQuestFinished(element)) {
+            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all))
+        } else {
+            val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+                QUEST_DETAIL_STAGING_URL
+            } else {
+                QUEST_DETAIL_PRODUCTION_URL
+            }
+            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), url)
+        }
     }
 
-    private fun questNotLoaded() {
+    private fun setImpressionListener(element: HomeQuestSequenceWidgetUiModel) {
+        itemView.addOnImpressionListener(element) {
+            if (isQuestFinished(element)) {
+                listener?.onFinishedQuestImpression()
+            } else {
+                listener?.onQuestWidgetImpression()
+            }
+        }
+    }
+
+    private fun questLoaded(element: HomeQuestSequenceWidgetUiModel) {
+        showHeader(element)
+        addWidgets(element)
+        setImpressionListener(element)
+    }
+
+    private fun questError(element: HomeQuestSequenceWidgetUiModel) {
+        showHeader(element)
         addErrorWidgets()
     }
 
@@ -103,24 +115,29 @@ class HomeQuestSequenceWidgetViewHolder(
         }
     }
 
-    private fun addWidgets(id: String, currentQuestFinished: Int, totalQuestTarget: Int, questList: List<HomeQuestWidgetUiModel>) {
+    private fun addWidgets(element: HomeQuestSequenceWidgetUiModel) {
         val widgets = mutableListOf<Visitable<*>>()
-        if (currentQuestFinished != totalQuestTarget) {
-            widgets.add(
-                HomeQuestTitleUiModel(
-                    currentQuestFinished = currentQuestFinished,
-                    totalQuestTarget = totalQuestTarget
-                )
-            )
-            widgets.addAll(questList.filter { it.status !=  STATUS_CLAIMED})
-        } else {
+        val currentQuestFinishedSize = element.questList.filter {
+            it.currentProgress == it.totalProgress
+        }.size
+        val totalQuestTargetSize = element.questList.size
+
+        if (isQuestFinished(element)) {
             widgets.add(
                 HomeQuestAllClaimedWidgetUiModel(
-                    id = id,
-                    currentQuestFinished = currentQuestFinished,
-                    totalQuestTarget = totalQuestTarget
+                    id = element.id,
+                    currentQuestFinished = currentQuestFinishedSize,
+                    totalQuestTarget = totalQuestTargetSize
                 )
             )
+        } else {
+            widgets.add(
+                HomeQuestTitleUiModel(
+                    currentQuestFinished = currentQuestFinishedSize,
+                    totalQuestTarget = totalQuestTargetSize
+                )
+            )
+            widgets.addAll(element.questList.filter { it.status !=  STATUS_CLAIMED})
         }
         adapter.submitList(widgets)
     }
@@ -150,16 +167,29 @@ class HomeQuestSequenceWidgetViewHolder(
                 show()
                 text = seeAll
                 setOnClickListener {
+                    listener?.onClickSeeDetails()
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, linkUrl)
                 }
             } else {
-                visibility = View.INVISIBLE
+                gone()
             }
         }
+    }
+
+    private fun isQuestFinished(element: HomeQuestSequenceWidgetUiModel): Boolean {
+        val currentQuestFinished = element.questList.filter { it.currentProgress == it.totalProgress }.size
+        val totalQuestTarget = element.questList.size
+        return currentQuestFinished == totalQuestTarget
     }
 
     interface HomeQuestSequenceWidgetListener {
         fun onClickRefreshQuestWidget()
         fun onCloseQuestAllClaimedBtnClicked(id: String)
+        fun onQuestWidgetImpression()
+        fun onFinishedQuestImpression()
+        fun onClickSeeDetails()
+        fun onClickQuestWidgetCard()
+        fun onClickQuestWidgetTitle()
+        fun onClickCheckReward()
     }
 }

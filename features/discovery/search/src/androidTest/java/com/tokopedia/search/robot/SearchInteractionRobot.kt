@@ -72,17 +72,15 @@ internal class SearchInteractionRobot(
     }
 
     fun savePLTPerformanceResultData() {
-        val performanceData = searchActivity.pltPerformanceResultData
-        performanceData?.let {
-            val dataSource = getDataSource(it)
+        val performanceData = searchActivity.getPltPerformanceData()
+        val dataSource = getDataSource(performanceData)
 
-            PerformanceDataFileUtils.writePLTPerformanceFile(
-                    searchActivity,
-                    TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
-                    it,
-                    dataSource
-            )
-        }
+        PerformanceDataFileUtils.writePLTPerformanceFile(
+            searchActivity,
+            TEST_CASE_PAGE_LOAD_TIME_SEARCH_PERFORMANCE,
+            performanceData,
+            dataSource
+        )
     }
 
     private fun getDataSource(it: PltPerformanceData): String {

@@ -107,13 +107,11 @@
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
     <string name="review_create_activity_title">Tulis Ulasan</string>
     <string name="review_create_submit_edit">Simpan</string>
-    <string name="review_form_progress_bar_bad_empty_old">Ceritain alasanmu, yuk ✍️</string>
     <string name="review_form_progress_bar_good_empty">Makin lengkap, makin mantap 👍</string>
     <string name="review_form_progress_bar_good_need_photo">Fotoin barangnya dong 📸</string>
     <string name="review_form_progress_bar_good_need_text">Ceritain dong pengalamanmu</string>
     <string name="review_form_progress_bar_good_complete">Udah lengkap nih, keren! 😍</string>
     <string name="review_form_progress_bar_bad_need_photo">Lengkapi juga dengan foto 📸</string>
-    <string name="review_form_progress_bar_bad_need_text">Harus dilengkapi alasan, ya ✍️</string>
     <string name="review_form_progress_bar_bad_need_reason">Harus pilih dulu alasanmu, ya️ 🙏</string>
     <string name="review_form_progress_bar_bad_complete">Oke, udah siap kirim! 👉</string>
     <string name="review_form_progress_bar_new_flow_need_review_only">Ceritain lebih lengkap, ya 🙏</string>
@@ -291,9 +289,6 @@
     <string name="review_create_text_area_empty_challenge">Tulis min. 40 karakter buat ikut Tantangan Ulasan ✍️</string>
     <string name="review_create_text_area_partial_challenge">Lengkapi sedikit lagi biar ikut Tantangan Ulasan 🙌</string>
     <string name="review_create_text_area_eligible_challenge">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
-    <string name="review_create_rating_condition_incentive">Kasih ratingnya</string>
-    <string name="review_create_photo_condition">Lanjut foto barang, min. 1</string>
-    <string name="review_create_review_condition">Tulis ulasan min. 40 karakter</string>
     <string name="review_create_send_another">Kasih Ulasan Lagi</string>
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
@@ -301,9 +296,6 @@
     <string name="review_create_bottom_sheet_text_area_empty_incentive">Tulis min. 40 karakter buat dapetin hadiahnya ✍️️</string>
     <string name="review_create_bottom_sheet_text_area_partial_incentive">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
     <string name="review_create_bottom_sheet_text_area_eligible_for_incentive">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
-    <string name="review_create_bottom_sheet_text_area_empty_challenge">Tulis min. 40 karakter buat ikut Tantangan Ulasan ✍️</string>
-    <string name="review_create_bottom_sheet_text_area_partial_challenge">Lengkapi sedikit lagi biar ikut Tantangan Ulasan 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible_for_challenge">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>

@@ -10,7 +10,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
@@ -19,8 +18,6 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.HashMap
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -28,14 +25,12 @@ interface ProductListSectionContract {
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(startRow: Int, throwable: Throwable?)
-        val filterParamString: String
         val queryKey: String
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
         fun addLoading()
         fun removeLoading()
-        fun stopTracePerformanceMonitoring()
         fun setAutocompleteApplink(autocompleteApplink: String?)
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
@@ -70,10 +65,6 @@ interface ProductListSectionContract {
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
-        fun stopPreparePagePerformanceMonitoring()
-        fun startNetworkRequestPerformanceMonitoring()
-        fun stopNetworkRequestPerformanceMonitoring()
-        fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
@@ -97,9 +88,6 @@ interface ProductListSectionContract {
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
         fun switchSearchNavigationLayoutTypeToBigGridView(position: Int)
         fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
-        val isChooseAddressWidgetEnabled: Boolean
-        val chooseAddressData: LocalCacheModel?
-        fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
         fun trackDynamicProductCarouselImpression(

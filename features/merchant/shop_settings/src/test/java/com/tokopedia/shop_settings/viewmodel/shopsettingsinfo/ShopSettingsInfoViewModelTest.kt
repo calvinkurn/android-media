@@ -6,11 +6,13 @@ import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
+import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -25,10 +27,12 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val shopId: String = "123456"
             val includeOs: Boolean = false
             val sampleShopBadgeValue = "shop_badge"
+            val sampleShopStatusClose = 2
             val shopBasicData = ShopBasicDataModel()
             val pmOsStatus = PMStatusUiModel()
             val shopInfo = ShopInfo(
-                    goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue)
+                    goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue),
+                    closedInfo = ShopInfo.ClosedInfo(closeDetail = ShopInfo.CloseDetail(status = sampleShopStatusClose))
             )
             coEvery {
                 getShopInfoUseCase.executeOnBackground()
@@ -43,13 +47,13 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             } returns pmOsStatus
 
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
-            val expectedResultShopBadget = Success(sampleShopBadgeValue)
+            val expectedResultShopInfo = Success(shopInfo)
             val expectedResultShopBasicData = Success(shopBasicData)
             val expectedResultGoldGetPmOsStatus = Success(pmOsStatus)
 
-            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
-            shopSettingsInfoViewModel.shopBadgeData
-                    .verifySuccessEquals(expectedResultShopBadget)
+            assertTrue(shopSettingsInfoViewModel.shopInfoData.value is Success)
+            shopSettingsInfoViewModel.shopInfoData
+                    .verifySuccessEquals(expectedResultShopInfo)
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
             shopSettingsInfoViewModel.shopBasicData
@@ -97,6 +101,42 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
     }
 
     @Test
+    fun `when get shop operational hours list should return success`() {
+        runBlocking {
+            coEvery {
+                shopOperationalHoursListUseCase.executeOnBackground()
+            } returns ShopOperationalHoursListResponse()
+
+            shopSettingsInfoViewModel.getOperationalHoursList("123")
+
+            coVerify {
+                shopOperationalHoursListUseCase.executeOnBackground()
+            }
+            assertTrue(shopSettingsInfoViewModel.shopOperationalHourList.value is Success)
+            assertEquals(
+                    shopSettingsInfoViewModel.shopOperationalHourList.value,
+                    Success(ShopOperationalHoursListResponse())
+            )
+        }
+    }
+
+    @Test
+    fun `when get shop operational hours list should return Fail`() {
+        runBlocking {
+            coEvery {
+                shopOperationalHoursListUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopSettingsInfoViewModel.getOperationalHoursList("123")
+
+            coVerify {
+                shopOperationalHoursListUseCase.executeOnBackground()
+            }
+            assertTrue(shopSettingsInfoViewModel.shopOperationalHourList.value is Fail)
+        }
+    }
+
+    @Test
     fun `when get shop data with provided shopid and includeos should return fail`() {
         runBlocking {
             val shopId: String = "123456"
@@ -108,7 +148,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
 
-            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Fail)
+            assertTrue(shopSettingsInfoViewModel.shopInfoData.value is Fail)
         }
     }
 
@@ -185,7 +225,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value == null)
         assertTrue(shopSettingsInfoViewModel.shopStatusData.value == null)
         assertTrue(shopSettingsInfoViewModel.updateScheduleResult.value == null)
-        assertTrue(shopSettingsInfoViewModel.shopBadgeData.value == null)
+        assertTrue(shopSettingsInfoViewModel.shopInfoData.value == null)
 
     }
 

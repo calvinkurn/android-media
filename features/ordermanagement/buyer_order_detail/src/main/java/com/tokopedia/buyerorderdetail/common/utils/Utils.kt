@@ -42,14 +42,21 @@ object Utils {
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
         val color = parseColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
-        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        val drawable =
+            MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
+        val filter: ColorFilter = LightingColorFilter(
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+            ), color
+        )
         drawable.colorFilter = filter
         return drawable
     }
 
     fun copyText(context: Context, label: String, text: CharSequence) {
-        val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
     }
 
@@ -88,7 +95,7 @@ object Utils {
     }
 
     fun Double.toCurrencyFormatted(): String {
-        val value =  BigDecimal(this).apply {
+        val value = BigDecimal(this).apply {
             setScale(0, RoundingMode.HALF_UP)
         }
         val values = CurrencyFormatHelper.convertToRupiah(value.toString())
