@@ -238,7 +238,7 @@ fun String?.mapToUnifyButtonSize(): Int {
     }
 }
 
-fun Throwable.getErrorMessage(context: Context?, defaultErrorMessage: String? = null): String {
+fun Throwable?.getErrorMessage(context: Context?, defaultErrorMessage: String? = null): String {
     return ErrorHandler.getErrorMessage(context, this).takeIf {
         it.isNotBlank()
     } ?: defaultErrorMessage ?: context?.getString(R.string.review_reading_connection_error)
