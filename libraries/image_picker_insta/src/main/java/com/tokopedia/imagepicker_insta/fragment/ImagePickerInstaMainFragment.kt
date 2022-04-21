@@ -183,6 +183,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         return v
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getFeedAccountList()
+    }
+
     private fun hasReadPermission(): Boolean {
         if (context != null) {
             return PermissionUtil.isReadPermissionGranted(requireContext())
@@ -299,13 +304,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
             toolbarCommon.title = toolbarTitle
-            viewModel.setSelectedFeedAccount(
-                FeedAccountUiModel(
-                    name = userSession.name,
-                    iconUrl = userSession.profilePicture,
-                    type = FeedAccountUiModel.Type.BUYER,
-                )
-            )
         }
     }
 
@@ -878,20 +876,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
             val selectedFeedAccount = when(selectedFeedAccountType) {
                 FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
+                    id = userSession.shopId,
                     name = userSession.shopName,
                     iconUrl = userSession.shopAvatar,
                     type = selectedFeedAccountType
                 )
                 FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
+                    id = userSession.userId,
                     name = userSession.name,
                     iconUrl = userSession.profilePicture,
                     type = selectedFeedAccountType
                 )
-                else -> FeedAccountUiModel(
-                    name = "",
-                    iconUrl = "",
-                    type = selectedFeedAccountType
-                )
+                else -> FeedAccountUiModel.Empty
             }
             viewModel.setSelectedFeedAccount(selectedFeedAccount)
         }

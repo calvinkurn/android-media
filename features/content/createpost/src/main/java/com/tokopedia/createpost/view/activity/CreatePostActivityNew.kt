@@ -322,20 +322,18 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
         return when(selectedFeedAccountType) {
             FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
+                id = userSession.shopId,
                 name = userSession.shopName,
                 iconUrl = userSession.shopAvatar,
                 type = selectedFeedAccountType
             )
             FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
+                id = userSession.userId,
                 name = userSession.name,
                 iconUrl = userSession.profilePicture,
                 type = selectedFeedAccountType
             )
-            else -> FeedAccountUiModel(
-                name = "",
-                iconUrl = "",
-                type = selectedFeedAccountType
-            )
+            else -> FeedAccountUiModel.Empty
         }
     }
 
@@ -343,6 +341,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.UNKNOWN.value)
         return if(selectedFeedAccountTypeValue == FeedAccountUiModel.Type.UNKNOWN.value)
             FeedAccountUiModel(
+                id = headerViewModel.id,
                 name = headerViewModel.title,
                 iconUrl = headerViewModel.avatar,
                 type = when(headerViewModel.id) {

@@ -7,6 +7,7 @@ import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
+import com.tokopedia.imagepicker_insta.usecase.GetContentFormUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
@@ -19,7 +20,9 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
+class PickerViewModel(
+    val app: Application,
+) : BaseAndroidViewModel(app) {
 
     override val coroutineContext: CoroutineContext
         get() = super.coroutineContext + workerDispatcher + ceh
@@ -37,6 +40,9 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     @Inject
     lateinit var workerDispatcher: CoroutineDispatcher
 
+    @Inject
+    lateinit var getContentFormUseCase: GetContentFormUseCase
+
     val photosFlow: MutableStateFlow<LiveDataResult<MediaVmMData>> = MutableStateFlow(LiveDataResult.loading())
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
     val folderFlow :MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
@@ -49,6 +55,10 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
     val selectedFeedAccount: Flow<FeedAccountUiModel>
         get() = _selectedFeedAccount
+
+    private val _feedAccountList = MutableStateFlow(listOf<FeedAccountUiModel>())
+    val feedAccountList: Flow<List<FeedAccountUiModel>>
+        get() = _feedAccountList
 
     fun getFolderData() {
         launchCatchError(block = {
@@ -184,6 +194,28 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         }, onError = {
             selectedMediaUriLiveData.postValue(LiveDataResult.error(it))
         })
+    }
+
+    fun getFeedAccountList() {
+        launchCatchError(block = {
+            val response = getContentFormUseCase.apply {
+                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "content-tag", ""))
+            }.executeOnBackground()
+
+            val feedAccountList = response.feedContentResponse?.feedContentForm?.authors?.map {
+                FeedAccountUiModel(
+                    id = it.id,
+                    name = it.name,
+                    iconUrl = it.thumbnail,
+                    type = FeedAccountUiModel.Type.UNKNOWN
+                )
+            } ?: emptyList()
+
+            _feedAccountList.value = feedAccountList
+            if(feedAccountList.isNotEmpty()) {
+                _selectedFeedAccount.value = feedAccountList.first()
+            }
+        }, onError = {})
     }
 
     fun setSelectedFeedAccount(feedAccount: FeedAccountUiModel) {

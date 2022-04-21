@@ -42,6 +42,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
             if(userSession.isLoggedIn) {
                 add(
                     FeedAccountUiModel(
+                        id = userSession.userId,
                         name = userSession.name,
                         iconUrl = userSession.profilePicture,
                         type = FeedAccountUiModel.Type.BUYER
@@ -51,6 +52,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
                 if(userSession.hasShop()) {
                     add(
                         FeedAccountUiModel(
+                            id = userSession.shopId,
                             name = userSession.shopName,
                             iconUrl = userSession.shopAvatar,
                             type = FeedAccountUiModel.Type.SELLER
