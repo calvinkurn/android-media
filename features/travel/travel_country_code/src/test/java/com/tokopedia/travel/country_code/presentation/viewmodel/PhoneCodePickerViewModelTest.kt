@@ -129,7 +129,7 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with valid keyword when country list success fetched should be success`(){
+    fun `filter country list with valid countryName keyword when country list success fetched should be success`(){
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "Korea"
@@ -165,7 +165,43 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with valid number keyword when country list success fetched should be success`() {
+    fun `filter country list with valid countryId keyword when country list success fetched should be success`(){
+        //given
+        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val keyword = "JP"
+        val expected = listOf(TravelCountryPhoneCode(countryId = "ID", countryName = "Indonesia", countryPhoneCode = 62),
+            TravelCountryPhoneCode(countryId = "KR", countryName = "Korea Selatan", countryPhoneCode = 82),
+            TravelCountryPhoneCode(countryId = "JP", countryName = "Jepang", countryPhoneCode = 81))
+        coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Success(expected)
+
+        //when
+        phoneCodePickerViewModel.getCountryList(rawQuery)
+        phoneCodePickerViewModel.filterCountryList(keyword)
+
+        coroutineDispatcher.coroutineDispatcher.advanceUntilIdle()
+
+        //then
+        val result = phoneCodePickerViewModel.countryList.value
+        assertTrue(result is Success)
+        assertFalse(result is Fail)
+
+        val filteredDataResult = phoneCodePickerViewModel.filteredCountryList.value
+        assertTrue(filteredDataResult is Success)
+        assertFalse(filteredDataResult is Fail)
+
+        val data = filteredDataResult as Success
+        assertFalse(expected == data.data)
+        assertFalse(expected.size == data.data.size)
+        assertEquals(1, data.data.size)
+        assertEquals(expected[2].countryPhoneCode, data.data[0].countryPhoneCode)
+        assertEquals(expected[2].countryName, data.data[0].countryName)
+        assertEquals(expected[2].countryId, data.data[0].countryId)
+
+        coVerify { travelCountryCodeUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `filter country list with valid countryPhoneCode keyword when country list success fetched should be success`() {
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "81"
@@ -269,7 +305,7 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with valid keyword when country list failed fetched should be failed`(){
+    fun `filter country list with valid countryName keyword when country list failed fetched should be failed`(){
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "Korea"
@@ -297,10 +333,66 @@ class PhoneCodePickerViewModelTest {
     }
 
     @Test
-    fun `filter country list with number keyword when country list failed fetched should be failed`(){
+    fun `filter country list with valid countryCode keyword when country list failed fetched should be failed`(){
+        //given
+        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val keyword = "KR"
+        val expected = Throwable(message = "fetch failed")
+
+        coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Fail(expected)
+
+        //when
+        phoneCodePickerViewModel.getCountryList(rawQuery)
+        phoneCodePickerViewModel.filterCountryList(keyword)
+
+        //then
+        val result = phoneCodePickerViewModel.countryList.value
+        assertTrue(result is Fail)
+        assertFalse(result is Success)
+
+        val filteredDataResult = phoneCodePickerViewModel.filteredCountryList.value
+        assertTrue(filteredDataResult is Fail)
+        assertFalse(filteredDataResult is Success)
+
+        val data = filteredDataResult as Fail
+        assertEquals(expected.message, data.throwable.message)
+
+        coVerify { travelCountryCodeUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `filter country list with valid number keyword when country list failed fetched should be failed`(){
         //given
         val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
         val keyword = "82"
+        val expected = Throwable(message = "fetch failed")
+
+        coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Fail(expected)
+
+        //when
+        phoneCodePickerViewModel.getCountryList(rawQuery)
+        phoneCodePickerViewModel.filterCountryList(keyword)
+
+        //then
+        val result = phoneCodePickerViewModel.countryList.value
+        assertTrue(result is Fail)
+        assertFalse(result is Success)
+
+        val filteredDataResult = phoneCodePickerViewModel.filteredCountryList.value
+        assertTrue(filteredDataResult is Fail)
+        assertFalse(filteredDataResult is Success)
+
+        val data = filteredDataResult as Fail
+        assertEquals(expected.message, data.throwable.message)
+
+        coVerify { travelCountryCodeUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `filter country list with invalid keyword when country list failed fetched should be failed`(){
+        //given
+        val rawQuery = TravelCountryCodeGqlQuery.ALL_COUNTRY
+        val keyword = "&*("
         val expected = Throwable(message = "fetch failed")
 
         coEvery { travelCountryCodeUseCase.execute(rawQuery) } returns Fail(expected)
