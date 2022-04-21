@@ -2406,7 +2406,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             )
             val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
-            if (isTypeNewASGC && !feedXCard.isAsgcColorChangedToGreen) {
+            if ((isTypeNewASGC || feedXCard.isTopAds) && !feedXCard.isAsgcColorChangedToGreen) {
                 topAdsCard?.let {
                     if (changeBgColorAnim == null)
                         changeBgColorAnim = handlerFeed
