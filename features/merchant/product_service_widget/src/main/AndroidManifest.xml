@@ -6,7 +6,6 @@
         <activity
             android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false">
