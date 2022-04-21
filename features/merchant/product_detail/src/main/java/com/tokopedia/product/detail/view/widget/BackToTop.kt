@@ -29,13 +29,15 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
 
     private var impressNavigation = false
     private var isVisibile = false
+    private var enableClick = true
 
     init {
         addView(view)
         view.setOnClickListener {
+            if (!enableClick) return@setOnClickListener
             listener?.onClickProductDetailnavigation(BUTTON_POSITION, BUTTON_LABEL)
             smoothScrollToTop()
-            isClickable = false
+            enableClick = false
         }
     }
 
@@ -97,7 +99,6 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
 
             if (layoutManager.findFirstVisibleItemPosition() == 0) {
                 toggle(false)
-                isClickable = true
             } else toggle(true)
         }
     }
@@ -115,6 +116,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
             super.onTargetFound(targetView, state, action)
             if (!isScroll) enableTouchScroll(true)
             isScroll = false
+            enableClick = true
         }
 
     }
