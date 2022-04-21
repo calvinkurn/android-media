@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
@@ -393,6 +394,20 @@ class PlayBroadcastUiMapper(
         return PostInteractiveCreateQuizUseCase.Choice(
             text = option.text,
             correct = option.isSelected
+        )
+    }
+
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailUiModel {
+        return QuizDetailUiModel(
+            title = "Respon quiz",
+            question = response.question,
+            countDownEnd = response.countdownEnd,
+            choices = response.choices.map {
+                QuizDetailUiModel.Choice(
+                    text = it.text,
+                    isCorrectAnswer = it.isCorrectAnswer,
+                    participantCount = it.participantCount)
+            }
         )
     }
 

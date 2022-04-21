@@ -5,6 +5,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
@@ -12,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -26,18 +28,18 @@ interface PlayBroadcastMapper {
     fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel>
 
     fun mapProductList(
-            productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (String) -> Boolean,
-            isSelectableHandler: (Boolean) -> SelectableState
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
+        isSelectedHandler: (String) -> Boolean,
+        isSelectableHandler: (Boolean) -> SelectableState
     ): List<ProductContentUiModel>
 
     fun mapSearchSuggestionList(
-            keyword: String,
-            productsResponse: GetProductsByEtalaseResponse.GetProductListData
+        keyword: String,
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData
     ): List<SearchSuggestionUiModel>
 
     fun mapLiveFollowers(
-            response: GetLiveFollowersResponse
+        response: GetLiveFollowersResponse
     ): FollowerDataUiModel
 
     fun mapLiveStream(
@@ -67,7 +69,13 @@ interface PlayBroadcastMapper {
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 
-    fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel
+    fun mapChannelSummary(
+        title: String,
+        coverUrl: String,
+        date: String,
+        duration: String,
+        isEligiblePostVideo: Boolean
+    ): ChannelSummaryUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
 
@@ -77,9 +85,11 @@ interface PlayBroadcastMapper {
 
     fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel
 
-    fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
-                              title: String,
-                              durationInMs: Long): InteractiveSessionUiModel
+    fun mapInteractiveSession(
+        response: PostInteractiveCreateSessionResponse,
+        title: String,
+        durationInMs: Long
+    ): InteractiveSessionUiModel
 
     fun mapLiveInfo(
         activeIngestUrl: String,
@@ -97,4 +107,8 @@ interface PlayBroadcastMapper {
     fun mapQuizOptionToChoice(
         option: QuizFormDataUiModel.Option
     ): PostInteractiveCreateQuizUseCase.Choice
+
+    fun mapQuizDetail(
+        response: GetInteractiveQuizDetailResponse
+    ): QuizDetailUiModel
 }

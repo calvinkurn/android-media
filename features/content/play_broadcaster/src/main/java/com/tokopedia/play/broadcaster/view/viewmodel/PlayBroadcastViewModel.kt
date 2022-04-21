@@ -689,6 +689,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+
     private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
         setInteractiveId(interactive.id.toString())
         setActiveInteractiveTitle(interactive.title)
@@ -721,6 +722,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             }
         }
+
+    }
+
+
+    private fun handleQuizDetailFromNetwork(quizDetailUiModel: QuizDetailUiModel) {
 
     }
 
@@ -1199,6 +1205,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _uiEvent.emit(PlayBroadcastEvent.ShowErrorCreateQuiz(it))
         }
     }
+
+    private fun handleClickOngoingQuiz(){
+        viewModelScope.launchCatchError(block = {
+            val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
+            handleQuizDetailFromNetwork(quizDetailUiModel)
+
+        }) {
+
+        }
+    }
+
+
 
     /**
      * Quiz

@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
@@ -312,6 +313,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             text = option.text,
             correct = option.isSelected
         )
+    }
+
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailUiModel {
+        TODO("Not yet implemented")
     }
 
     companion object {

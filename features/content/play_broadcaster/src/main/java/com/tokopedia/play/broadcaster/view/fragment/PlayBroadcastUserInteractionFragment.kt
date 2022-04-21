@@ -70,6 +70,7 @@ import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
+import com.tokopedia.play_common.view.game.InteractiveFinishView
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -194,7 +195,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
 
-    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_widget)
+    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_ongoing)
+    private val quizFinishedView: InteractiveFinishView by detachableView(R.id.view_game_finished)
+
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -944,7 +947,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
         quizOngoingView.show()
-        quizOngoingView.setupQuiz(state.question,state.endTime) { gameSmallWidgetView ->
+        quizOngoingView.setupQuiz(state.question,state.endTime) {
+            it.hide()
+            quizFinishedView.setupQuiz()
+            quizFinishedView.show()
             gameIconView.show()
         }
         gameIconView.hide()
