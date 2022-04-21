@@ -43,6 +43,7 @@
     <string name="action_activate_variant_status">Ya, Aktifkan</string>
     <string name="action_activate_variant_status_stock_empty">Update Stok</string>
     <string name="action_cancel_activate_variant_status">Batal</string>
+    <string name="error_weight_not_filled">Isi detail pengiriman dulu, ya.</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
@@ -397,6 +398,8 @@
     <string name="error_used_variant_name">Nama sudah digunakan. Coba nama lain, ya.</string>
     <string name="error_min_char_variant_name">Minimum 3 karakter, ya.</string>
     <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
+    <string name="title_wpv_intro_coachmark">Atur berat per varian, yuk!</string>
+    <string name="message_wpv_intro_coachmark">Sekarang kamu bisa atur berat tiap varian.</string>
 
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
@@ -542,8 +545,5 @@
     <string name="error_empty_weight">Berat wajib diisi</string>
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
-    <string name="wpv_coachmark_title">Atur berat per varian, yuk!</string>
-    <string name="wpv_coachmark_message">Sekarang kamu bisa atur berat tiap varian.</string>
-    <string name="error_weight_not_filled">Isi detail pengiriman dulu, ya.</string>
 
 </resources>

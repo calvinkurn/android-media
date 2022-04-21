@@ -185,8 +185,8 @@ class VariantDetailFieldsViewHolder(
             val items = listOf(
                 CoachMark2Item(
                     anchorView,
-                    getString(R.string.label_cvt_tips_title),
-                    getString(R.string.label_cvt_tips),
+                    itemView.context.getString(R.string.title_wpv_intro_coachmark),
+                    itemView.context.getString(R.string.message_wpv_intro_coachmark),
                     CoachMarkContentPosition.TOP.position
                 )
             )
