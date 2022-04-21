@@ -461,7 +461,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             }
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
