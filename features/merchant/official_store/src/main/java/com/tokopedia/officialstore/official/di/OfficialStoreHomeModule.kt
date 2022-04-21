@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFITS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -52,21 +50,6 @@ class OfficialStoreHomeModule {
     fun provideQueryofficialStoreBenefitShop(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_benefit)
     }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS)
-    fun provideQueryofficialStoreFeaturedShop(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_featured)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION)
-    fun provideQueryOfficialStoreProductRecommendation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_product_recommendation)
-    }
-
 
     @OfficialStoreHomeScope
     @Provides
