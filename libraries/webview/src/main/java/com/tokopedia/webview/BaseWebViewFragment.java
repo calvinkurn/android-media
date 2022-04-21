@@ -156,7 +156,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
         try {
             String host = new URL(url).getHost();
-            if (host.contains(JS_TOKOPEDIA) || (host.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
+            if (host.endsWith(JS_TOKOPEDIA) || (host.endsWith(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
                 return url;
             } else if (isTokopediaUrl) {
                 String gcmId = userSession.getDeviceId();
@@ -166,7 +166,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         gcmId,
                         userId);
             } else {
-                return url;
+                return null;
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -193,7 +193,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
+        isTokopediaUrl = host != null && host.endsWith("tokopedia.com") && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -290,6 +290,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     protected void loadWeb() {
         String url = getUrl();
         if (url == null || url.isEmpty()){
+            Toast.makeText(getActivity(), "url is invalid", Toast.LENGTH_LONG).show();
+            getActivity().finish();
             return;
         }
         if (isTokopediaUrl) {
