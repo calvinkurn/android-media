@@ -819,16 +819,6 @@ object CreateReviewTracking {
         return this
     }
 
-    private fun MutableMap<String, Any>.appendPagePath(pagePath: String): MutableMap<String, Any> {
-        put(CreateReviewTrackingConstants.KEY_PAGE_PATH, pagePath)
-        return this
-    }
-
-    private fun MutableMap<String, Any>.appendPageType(pageType: String): MutableMap<String, Any> {
-        put(CreateReviewTrackingConstants.KEY_PAGE_TYPE, pageType)
-        return this
-    }
-
     private fun Bundle.appendCurrentSite(currentSite: String): Bundle {
         putString(CreateReviewTrackingConstants.KEY_CURRENT_SITE, currentSite)
         return this
@@ -876,8 +866,6 @@ object CreateReviewTracking {
             )
         ).appendBusinessUnit(CreateReviewTrackingConstants.BUSINESS_UNIT_MEDIA)
             .appendCurrentSite(CreateReviewTrackingConstants.CURRENT_SITE)
-            .appendPagePath("")
-            .appendPageType("")
             .appendUserId(userId)
             .sendGeneralEvent()
     }

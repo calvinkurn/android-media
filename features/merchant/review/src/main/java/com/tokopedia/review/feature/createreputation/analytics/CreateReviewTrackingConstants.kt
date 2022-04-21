@@ -67,8 +67,6 @@ object CreateReviewTrackingConstants {
     const val KEY_CREATIVE = "creative"
     const val KEY_NAME = "name"
     const val KEY_POSITION = "position"
-    const val KEY_PAGE_PATH = "pagePath"
-    const val KEY_PAGE_TYPE = "pageType"
 
     const val BUSINESS_UNIT = "product detail page"
     const val BUSINESS_UNIT_MEDIA = "media"
