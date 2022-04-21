@@ -9,6 +9,7 @@ import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
+import com.tokopedia.officialstore.official.di.query.DynamicHomeChannelQuery
 import com.tokopedia.usecase.coroutines.UseCase
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -16,8 +17,7 @@ import javax.inject.Named
 
 class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
         private val officialHomeMapper: OfficialHomeMapper,
-        private val graphqlUseCase: MultiRequestGraphqlUseCase,
-        @Named(GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL) val gqlQuery: String
+        private val graphqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<OfficialStoreChannel>>() {
     private val paramChannelType = "type"
     private val paramChannelLocation = "location"
@@ -31,7 +31,7 @@ class GetOfficialStoreDynamicChannelUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<OfficialStoreChannel> {
         val responseType: Type = DynamicChannel.Response::class.java
-        val requestInstance = GraphqlRequest(gqlQuery, responseType, requestParams)
+        val requestInstance = GraphqlRequest(DynamicHomeChannelQuery(), responseType, requestParams)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(requestInstance)

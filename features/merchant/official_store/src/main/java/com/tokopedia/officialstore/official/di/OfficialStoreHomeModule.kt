@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BANNERS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_BENEFITS
-import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_FEATURED_SHOPS
 import com.tokopedia.officialstore.GQLQueryConstant.QUERY_OFFICIAL_STORE_PRODUCT_RECOMMENDATION
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -14,7 +13,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,13 +58,6 @@ class OfficialStoreHomeModule {
     @Named(QUERY_OFFICIAL_STORE_FEATURED_SHOPS)
     fun provideQueryofficialStoreFeaturedShop(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_featured)
-    }
-
-    @OfficialStoreHomeScope
-    @Provides
-    @Named(QUERY_OFFICIAL_STORE_DYNAMIC_CHANNEL)
-    fun provideQueryOfficialStoreDynamicChannel(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_official_store_dynamic_channel)
     }
 
     @OfficialStoreHomeScope
