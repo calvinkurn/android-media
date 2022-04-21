@@ -561,7 +561,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     requestPermissionLocation()
                 }
             }
-
+            if (isEdit) {
+                chipsSearch.chipText = getString(R.string.pinpointpage_chips_search_edit)
+            }
             chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
                 if (!isEdit) {

@@ -226,4 +226,5 @@
     <string name="editaddress_back_dialog_title">Keluar Halaman?</string>
     <string name="editaddress_back_dialog_description">Kamu akan membatalkan perubahan alamat. Semua perubahan data tidak akan disimpan.</string>
     <string name="editaddress_back_dialog_cta">Keluar</string>
+    <string name="pinpointpage_chips_search_edit">Cari Ulang Alamat</string>
 </resources>
