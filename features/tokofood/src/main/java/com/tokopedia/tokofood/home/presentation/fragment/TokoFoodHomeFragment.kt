@@ -20,6 +20,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
@@ -36,6 +37,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R.dimen as unifyR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -68,6 +70,8 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     private var navToolbar: NavToolbar? = null
     private var rvHome: RecyclerView? = null
+
+    private val navBarScrollListener by lazy { createNavBarScrollListener() }
 
     override fun getScreenName(): String {
         return ""
@@ -214,6 +218,48 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
     private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
         rvHome?.post {
             adapter.submitList(data.items)
+        }
+    }
+
+    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
+        return navToolbar?.let { toolbar ->
+            NavRecyclerViewScrollListener(
+                navToolbar = toolbar,
+                startTransitionPixel = 0,
+                toolbarTransitionRangePixel = resources.getDimensionPixelSize(unifyR.spacing_lvl4),
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
+
+                    override fun onSwitchToLightToolbar() { /* nothing to do */ }
+
+                    override fun onSwitchToDarkToolbar() {
+                        navToolbar?.hideShadow()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {}
+                },
+                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+            )
+        }
+    }
+
+    private fun removeAllScrollListener() {
+        removeNavBarScrollListener()
+    }
+
+    private fun addScrollListener() {
+        addNavBarScrollListener()
+    }
+
+    private fun addNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.addOnScrollListener(it)
+        }
+    }
+
+    private fun removeNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.removeOnScrollListener(it)
         }
     }
 

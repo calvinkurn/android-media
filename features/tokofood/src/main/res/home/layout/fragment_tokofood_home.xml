@@ -32,12 +32,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="true"
+        app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
-        app:toolbarInitialFillColor="transparent"
         app:toolbarInitialTheme="light"
-        app:toolbarInvertSearchBarColor="true"
         app:toolbarPageName="/" />
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
