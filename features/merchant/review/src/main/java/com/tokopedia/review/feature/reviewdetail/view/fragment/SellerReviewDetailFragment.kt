@@ -38,6 +38,7 @@ import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringCo
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
+import com.tokopedia.review.common.util.getErrorMessage
 import com.tokopedia.review.common.util.getKeyByValue
 import com.tokopedia.review.common.util.setSelectedFilterOrSort
 import com.tokopedia.review.common.util.toggle
@@ -432,7 +433,7 @@ class SellerReviewDetailFragment :
                     coachMarkShow()
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -444,7 +445,7 @@ class SellerReviewDetailFragment :
                     onSuccessGetFeedbackReviewListData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetReviewDetailData()
+                    onErrorGetReviewDetailData(it.throwable)
                 }
             }
         })
@@ -464,7 +465,7 @@ class SellerReviewDetailFragment :
         updateScrollListenerState(data.hasNext)
     }
 
-    private fun onErrorGetReviewDetailData() {
+    private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefresh?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
@@ -479,7 +480,7 @@ class SellerReviewDetailFragment :
             binding?.rvRatingDetail?.hide()
         } else {
             onErrorLoadMoreToaster(
-                getString(R.string.error_message_load_more_review_product),
+                throwable.getErrorMessage(context, getString(R.string.error_message_load_more_review_product)),
                 getString(R.string.action_retry_toaster_review_product)
             )
         }
