@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.bseducational.view
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -69,6 +70,11 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        (activity as? ProductEducationalActivity)?.finish()
+        super.onDismiss(dialog)
     }
 
     private fun observeData() {

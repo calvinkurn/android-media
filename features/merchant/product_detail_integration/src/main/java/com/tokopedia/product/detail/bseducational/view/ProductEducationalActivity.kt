@@ -27,13 +27,13 @@ class ProductEducationalActivity : BaseSimpleActivity() {
         }
 
         super.onCreate(savedInstanceState)
+        adjustOrientation()
         try {
             window.setDimAmount(0f)
         } catch (th: Throwable) {
             Timber.e(th)
         }
 
-        adjustOrientation()
         ProductEducationalBottomSheet().show(type, supportFragmentManager)
     }
 
