@@ -12,6 +12,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.review.R
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.common.extension.combine
@@ -1438,6 +1440,12 @@ class CreateReviewViewModel @Inject constructor(
             is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
             else ->sendingReview.value = true
         }
+    }
+
+    fun shouldUseUniversalMediaPicker(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
+        ) == RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
     }
 
     // region MutableStateFlow updater

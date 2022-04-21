@@ -72,4 +72,7 @@ object RollenceKey {
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
+
+    // Review
+    const val CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME = "review_video"
 }

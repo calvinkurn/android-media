@@ -340,7 +340,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     private inner class ActivityResultHandler {
         private fun handleMediaPickerResult(data: Intent) {
-            val mediaCount = if (true) { // TODO: Implement rollence here
+            val mediaCount = if (viewModel.shouldUseUniversalMediaPicker()) {
                 val result = MediaPicker.result(data)
                 viewModel.updateMediaPicker(result.originalPaths)
                 result.originalPaths.size
@@ -1001,7 +1001,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
     private inner class MediaPickerListener: CreateReviewMediaPicker.Listener {
         private fun goToMediaPicker() {
             context?.let {
-                val intent = if (true) { // TODO: Implement rollence here
+                val intent = if (viewModel.shouldUseUniversalMediaPicker()) {
                     trackingHandler.trackOpenUniversalMediaPicker()
                     MediaPicker.intent(it) {
                         pageSource(PageSource.Review)
