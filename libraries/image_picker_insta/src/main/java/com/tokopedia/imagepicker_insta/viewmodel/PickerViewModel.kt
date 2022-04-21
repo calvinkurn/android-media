@@ -221,7 +221,7 @@ class PickerViewModel(
     fun setSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.type != feedAccount.type) {
+            if(current.id != feedAccount.id) {
                 _selectedFeedAccount.value = feedAccount
             }
         }, onError = { })

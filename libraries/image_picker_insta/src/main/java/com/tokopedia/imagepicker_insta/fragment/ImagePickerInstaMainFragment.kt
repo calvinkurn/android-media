@@ -480,6 +480,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun setObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.feedAccountList.collect {
+                feedAccountBottomSheet.setData(it)
+            }
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.selectedFeedAccount.collectLatest {
                 toolbarCommon.subtitle = it.name
                 toolbarCommon.icon = it.iconUrl

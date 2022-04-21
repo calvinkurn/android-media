@@ -37,31 +37,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    private val feedAccountList: List<FeedAccountUiModel> by lazy {
-        buildList{
-            if(userSession.isLoggedIn) {
-                add(
-                    FeedAccountUiModel(
-                        id = userSession.userId,
-                        name = userSession.name,
-                        iconUrl = userSession.profilePicture,
-                        type = FeedAccountUiModel.Type.BUYER
-                    )
-                )
-
-                if(userSession.hasShop()) {
-                    add(
-                        FeedAccountUiModel(
-                            id = userSession.shopId,
-                            name = userSession.shopName,
-                            iconUrl = userSession.shopAvatar,
-                            type = FeedAccountUiModel.Type.SELLER
-                        )
-                    )
-                }
-            }
-        }
-    }
+    private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +68,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         binding.rvFeedAccount.addItemDecoration(FeedAccountTypeItemDecoration(requireContext()))
         binding.rvFeedAccount.adapter = adapter
 
-        adapter.updateData(feedAccountList)
+        adapter.updateData(mFeedAccountList)
     }
 
     fun setOnAccountClickListener(listener: Listener?) {
@@ -101,6 +77,13 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
     fun showNow(fragmentManager: FragmentManager) {
         if(!isAdded) showNow(fragmentManager, TAG)
+    }
+
+    fun setData(feedAccountList: List<FeedAccountUiModel>) {
+        mFeedAccountList.clear()
+        mFeedAccountList.addAll(feedAccountList)
+
+        if(isAdded) adapter.updateData(mFeedAccountList)
     }
 
     companion object {
