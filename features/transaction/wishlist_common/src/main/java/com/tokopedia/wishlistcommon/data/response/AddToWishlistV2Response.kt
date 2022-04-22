@@ -7,10 +7,10 @@ data class AddToWishlistV2Response(
         val data: Data = Data()
 ) {
     data class Data(
-            @SerializedName("wishlist_add")
-            val wishlistAdd: WishlistAdd = WishlistAdd()
+            @SerializedName("wishlist_add_v2")
+            val wishlistAdd: WishlistAddV2 = WishlistAddV2()
     ) {
-        data class WishlistAdd(
+        data class WishlistAddV2(
                 @SerializedName("button")
                 val button: Button = Button(),
 
