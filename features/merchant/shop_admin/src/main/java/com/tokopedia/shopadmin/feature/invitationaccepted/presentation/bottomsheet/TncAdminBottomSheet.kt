@@ -39,7 +39,7 @@ class TncAdminBottomSheet : BottomSheetUnify() {
     }
 
     @SuppressWarnings("unchecked")
-    fun <C> getComponent(componentType: Class<C>): C? {
+    private fun <C> getComponent(componentType: Class<C>): C? {
         return componentType.cast((activity as? HasComponent<C>)?.component)
     }
 
