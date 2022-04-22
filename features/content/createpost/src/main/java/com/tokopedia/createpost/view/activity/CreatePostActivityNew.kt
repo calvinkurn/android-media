@@ -70,7 +70,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 fragment.setData(mFeedAccountList)
                 fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        showSwitchAccountDialog(feedAccount)
+                        if(feedAccount.type != selectedFeedAccount.type && feedAccount.isShop) {
+                            showSwitchAccountDialog(feedAccount)
+                            return
+                        }
+
+                        changeSelectedFeedAccount(feedAccount)
                     }
                 })
             }
@@ -335,35 +340,18 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     private fun showSwitchAccountDialog(feedAccount: FeedAccountUiModel) {
-        if(selectedFeedAccount.type == FeedAccountUiModel.Type.UNKNOWN ||
-            selectedFeedAccount.type == feedAccount.type) return
-
         DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            if(selectedFeedAccount.type == FeedAccountUiModel.Type.BUYER) {
-                setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
-                setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
-                setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
-                setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
-            }
-            else if(selectedFeedAccount.type == FeedAccountUiModel.Type.SELLER){
-                /** TODO: gonna change the text */
-                setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
-                setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
-                setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
-                setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
-            }
+            setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
+            setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
+            setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
+            setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
 
-            setPrimaryCTAClickListener {
-                dismiss()
-            }
+            setPrimaryCTAClickListener { dismiss() }
 
             setSecondaryCTAClickListener {
                 dismiss()
-                /** TODO: check which fragment is the user in */
-
                 when(intent.extras?.get(PARAM_TYPE)) {
                     TYPE_CONTENT_TAGGING_PAGE -> {
-                        /** TODO: clear product tag */
                         (fragment as CreatePostPreviewFragmentNew).deleteAllProducts()
                     }
                     TYPE_CONTENT_PREVIEW_PAGE -> {
@@ -371,12 +359,18 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
                     }
                 }
-                selectedFeedAccount = feedAccount
-                toolbarCommon.apply {
-                    subtitle = selectedFeedAccount.name
-                    icon = selectedFeedAccount.iconUrl
-                }
+
+                changeSelectedFeedAccount(feedAccount)
             }
         }.show()
+    }
+
+    private fun changeSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+        selectedFeedAccount = feedAccount
+
+        toolbarCommon.apply {
+            subtitle = selectedFeedAccount.name
+            icon = selectedFeedAccount.iconUrl
+        }
     }
 }
