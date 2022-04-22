@@ -20,10 +20,10 @@ internal fun ImageView.call(source: Any?, properties: Properties, isSecure: Bool
             e.printStackTrace()
 
             /*
-            * don't let the imageView haven't image
-            * render with error drawable
+            * don't let the imageView haven't image to show,
+            * render with error drawable unify instead.
             * */
-            this.loadImage(ERROR_RES_UNIFY)
+            setImageResource(ERROR_RES_UNIFY)
         }
     }
 }
