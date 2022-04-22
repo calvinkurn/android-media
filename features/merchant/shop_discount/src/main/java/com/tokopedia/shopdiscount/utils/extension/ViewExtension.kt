@@ -22,3 +22,11 @@ infix fun View?.showToaster(message : String) {
         Toaster.TYPE_NORMAL
     ).show()
 }
+
+fun View.enable() {
+    this.isEnabled = true
+}
+
+fun View.disable() {
+    this.isEnabled = false
+}
