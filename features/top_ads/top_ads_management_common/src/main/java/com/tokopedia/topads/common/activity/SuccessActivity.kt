@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_INDEX
 import com.tokopedia.topads.common.fragment.OnSuccessFragment
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -24,6 +25,7 @@ class SuccessActivity : BaseSimpleActivity() {
                 putString(EXTRA_TITLE, it.getStringExtra(EXTRA_TITLE))
                 putString(EXTRA_SUBTITLE, it.getStringExtra(EXTRA_SUBTITLE))
                 putString(EXTRA_BUTTON, it.getStringExtra(EXTRA_BUTTON))
+                putString(DASHBOARD_TAB_INDEX, it.getStringExtra(DASHBOARD_TAB_INDEX))
             }
         })
     }

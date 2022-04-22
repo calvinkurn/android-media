@@ -27,6 +27,10 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_INDEX
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_INSIGHT
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_PRODUCT_AD
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_SHOP_AD
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -41,13 +45,9 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EXPI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.FIRST_LAUNCH
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IS_CHANGED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_DAILY_BUDGET
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_INSIGHT_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -328,11 +328,11 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
         redirectToTab = bundle?.getInt(TOPADS_MOVE_TO_DASHBOARD, 0) ?: 0
-        if (intent.extras?.get(PARAM_TAB) != null) {
-            redirectToTab = when (intent.extras?.get(PARAM_TAB)) {
-                PARAM_INSIGHT -> CONST_3
-                PARAM_PRODUCT_AD -> CONST_1
-                PARAM_SHOP_AD -> CONST_2
+        if (intent.extras?.get(DASHBOARD_TAB_INDEX) != null) {
+            redirectToTab = when (intent.extras?.get(DASHBOARD_TAB_INDEX)) {
+                DASHBOARD_TAB_INSIGHT -> CONST_3
+                DASHBOARD_TAB_PRODUCT_AD -> CONST_1
+                DASHBOARD_TAB_SHOP_AD -> CONST_2
                 else -> CONST_0
             }
         }

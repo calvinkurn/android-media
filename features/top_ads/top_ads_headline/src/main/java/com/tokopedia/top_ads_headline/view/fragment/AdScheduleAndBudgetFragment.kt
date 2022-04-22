@@ -23,6 +23,8 @@ import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewMode
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_INDEX
+import com.tokopedia.topads.common.constant.TopadsDashboardTabParam.DASHBOARD_TAB_SHOP_AD
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday
@@ -149,6 +151,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             putExtra(EXTRA_TITLE, getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
             putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
             putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
+            putExtra(DASHBOARD_TAB_INDEX, DASHBOARD_TAB_SHOP_AD)
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
