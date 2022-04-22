@@ -355,8 +355,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                         (fragment as CreatePostPreviewFragmentNew).deleteAllProducts()
                     }
                     TYPE_CONTENT_PREVIEW_PAGE -> {
-                        /** TODO: clear product tag */
-
+                        (fragment as ContentCreateCaptionFragment).deleteAllProducts()
                     }
                 }
 
