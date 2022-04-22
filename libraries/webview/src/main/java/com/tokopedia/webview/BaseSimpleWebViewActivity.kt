@@ -2,7 +2,6 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -301,8 +300,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     private fun redirectToNativeBrowser() {
         try {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            val queryIntentActivities = packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
-            browserIntent.setPackage(queryIntentActivities[0].activityInfo.packageName)
             startActivity(browserIntent)
             finish()
         } catch (th: Throwable) {
