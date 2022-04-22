@@ -30,6 +30,15 @@ data class Carts(
         var promoCodes: List<String> = emptyList()
 )
 
+data class CartsNoPromo(
+        @SerializedName("business_type")
+        @Expose
+        var businessType: Int = 0,
+        @SerializedName("cart_info")
+        @Expose
+        var cartInfo: MutableList<CartInfo> = arrayListOf(),
+)
+
 data class CartInfo(
         @SerializedName("metadata")
         @Expose
