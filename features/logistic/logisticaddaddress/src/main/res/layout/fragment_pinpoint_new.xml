@@ -60,41 +60,43 @@
 
         </RelativeLayout>
 
-
-
-        <LinearLayout
-            android:id="@+id/btn_horizonal_layout"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_12"
-            android:orientation="horizontal"
-            android:layout_above="@id/layout_botoomsheet_loc"
-            android:visibility="visible">
-
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/chips_current_loc"
+            android:layout_above="@id/layout_botoomsheet_loc" >
+            <LinearLayout
+                android:id="@+id/btn_horizonal_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/unify_space_12"
-                app:centerText="true"
-                app:chipSize="medium"
-                app:chipText="Gunakan Lokasi Saat Ini"
-                app:chipType="normal" />
+                android:layout_marginBottom="@dimen/unify_space_12"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/chips_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/unify_space_12"
-                app:centerText="true"
-                app:chipSize="medium"
-                app:chipText="Cari Ulang"
-                app:chipType="normal" />
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chips_current_loc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/unify_space_12"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="Gunakan Lokasi Saat Ini"
+                    app:chipType="normal" />
 
-        </LinearLayout>
+                <com.tokopedia.unifycomponents.ChipsUnify
+                    android:id="@+id/chips_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/unify_space_12"
+                    app:centerText="true"
+                    app:chipSize="medium"
+                    app:chipText="Cari Ulang"
+                    app:chipType="normal" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/layout_botoomsheet_loc"

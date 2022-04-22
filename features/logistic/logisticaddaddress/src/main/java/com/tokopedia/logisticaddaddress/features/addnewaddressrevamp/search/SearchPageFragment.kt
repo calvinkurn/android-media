@@ -185,7 +185,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (activity != null && context != null) {
             permissionState = AddNewAddressUtils.getPermissionStateFromResult(requireActivity(), requireContext(), permissions)
         }
-        activity?.let { act -> context?.let { ctx -> { permissionState = AddNewAddressUtils.getPermissionStateFromResult(act, ctx, permissions) } } }
         when (permissionState) {
             PERMISSION_GRANTED -> {
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
