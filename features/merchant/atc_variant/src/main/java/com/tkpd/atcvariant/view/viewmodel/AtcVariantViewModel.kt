@@ -349,7 +349,8 @@ class AtcVariantViewModel @Inject constructor(
                     pdpSession = aggregatorParams.pdpSession,
                     shopId = aggregatorParams.shopId,
                     isLoggedIn = isLoggedIn,
-                    extParams = aggregatorParams.extParams
+                    extParams = aggregatorParams.extParams,
+                    showQtyEditor = aggregatorParams.showQtyEditor
             )
             aggregatorData = result.variantAggregator
             minicartData = result.miniCartData?.mapProductsWithProductId()?.toMutableMap()
