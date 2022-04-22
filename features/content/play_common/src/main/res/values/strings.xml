@@ -28,4 +28,5 @@
     <string name="play_giveaway_end">Berakhir</string>
     <string name="play_interactive_game_result">Hasil Game</string>
     <string name="play_interactive_retry">Coba Lagi</string>
+    <string name="play_game_reward_type">Hadiah:</string>
 </resources>
