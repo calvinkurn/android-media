@@ -584,11 +584,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
                     validated = false
-                    if (isEdit) {
-                        field.add(getString(R.string.field_alamat_edit))
-                    } else {
-                        field.add(getString(R.string.field_alamat))
-                    }
+                    field.add(getString(R.string.field_alamat))
                     setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
@@ -600,11 +596,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    if (isEdit) {
-                        field.add(getString(R.string.field_alamat_edit))
-                    } else {
-                        field.add(getString(R.string.field_alamat))
-                    }
+                    field.add(getString(R.string.field_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             } else {
@@ -616,11 +608,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 if (formAddressNegative.etAlamat.textFieldInput.text.toString().isEmpty() || formAddressNegative.etAlamat.textFieldInput.text.toString() == " ") {
                     validated = false
-                    if (isEdit) {
-                        field.add(getString(R.string.field_alamat_edit))
-                    } else {
-                        field.add(getString(R.string.field_alamat))
-                    }
+                    field.add(getString(R.string.field_alamat))
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
@@ -633,11 +621,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    if (isEdit) {
-                        field.add(getString(R.string.field_alamat_edit))
-                    } else {
-                        field.add(getString(R.string.field_alamat))
-                    }
+                    field.add(getString(R.string.field_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
