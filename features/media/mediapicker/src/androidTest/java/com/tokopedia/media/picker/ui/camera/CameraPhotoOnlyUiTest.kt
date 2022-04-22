@@ -9,17 +9,7 @@ import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
-import java.lang.Thread.sleep
-import android.view.View
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.ViewMatchers
-import com.otaliastudios.cameraview.CameraView
-import com.tokopedia.media.R
 import com.tokopedia.picker.common.types.ModeType
-import org.hamcrest.Matcher
-
 
 @UiTest
 class CameraPhotoOnlyUiTest : CameraPageTest() {
@@ -38,26 +28,25 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
-    // V check capture image
-    // V check flip camera
-    // V check flash
-    // V check capture image thumbnail click
-    // V check click lanjut
-    // V check click close
+    // should be able to capture photo and provide thumbnail
+    // should be able to switch camera usage between front camera and back camera
+    // should be able to finish picker activity
+    // should be able to open preview activity when click lanjut button
+    // should be able to change flash camera state (if camera is supported by flash, emulator that not support will fail)
+    // should be able to open preview activity when click thumbnail
 
     @Test
-    fun capture_image() {
+    fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.clickCaptureImageButton()
-        sleep(3000)
+        Robot.clickCaptureButton()
 
         // Then
         Assert.assertCaptureImage()
     }
 
     @Test
-    fun check_flip_camera() {
+    fun should_flip_camera_and_hide_flash_button_onFlipButtonClicked() {
         // When
         startCameraPage()
         Robot.clickFlipCameraButton()
@@ -67,72 +56,48 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
     }
 
     @Test
-    fun check_preview_thumbnail() {
-        // When
-        startCameraPage()
-        Robot.clickCaptureImageButton()
-        sleep(5000)
-        Robot.clickPreviewThumbnail()
-
-        // Then
-        sleep(5000)
-        Assert.assertPreviewThumbnail()
-    }
-
-    @Test
-    fun check_lanjut_btn(){
-        // When
-        startCameraPage()
-        Robot.clickCaptureImageButton()
-        sleep(5000)
-        Robot.clickLanjutButton()
-
-        // Then
-        sleep(5000)
-        Assert.assertLanjutButton()
-    }
-
-    @Test
-    fun check_close_btn(){
+    fun should_close_activity_onCloseClicked() {
         // When
         startCameraPage()
         Robot.clickCloseButton()
 
         // Then
-        sleep(1000)
-        Assert.assertCloseButton(this)
+        Assert.assertActivityDestroy(this)
     }
 
-    // expected to fail on emulator that didn't support flash feature
     @Test
-    fun check_flash_btn(){
+    fun should_open_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
-
-        var cameraRef: CameraView? = null
-        Espresso.onView(
-            ViewMatchers.withId(R.id.cameraView)
-        ).perform(object: ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return ViewMatchers.isAssignableFrom(CameraView::class.java)
-            }
-
-            override fun getDescription(): String {
-                return "get camera view reference"
-            }
-
-            override fun perform(uiController: UiController?, view: View?) {
-                cameraRef = view as CameraView
-            }
-        })
-
-        val initialFlashState = cameraRef?.flash?.ordinal
-
-        Robot.clickFlashButton()
+        Robot.clickCaptureButton()
+        Robot.clickLanjutButton()
 
         // Then
-        assert(initialFlashState != cameraRef?.flash?.ordinal)
+        Assert.assertLanjutButton()
     }
+
+    @Test
+    fun should_update_flash_state_onFlashButtonClicked() {
+        // When
+        startCameraPage()
+        val flashState = Robot.clickFlashButton()
+
+        // Then
+        assert(flashState != null)
+        assert(flashState?.first != flashState?.second)
+    }
+
+    @Test
+    fun should_open_preview_activity_onThumbnailClicker() {
+        // When
+        startCameraPage()
+        Robot.clickCaptureButton()
+        Robot.clickPreviewThumbnail()
+
+        // Then
+        Assert.assertPreviewThumbnail()
+    }
+
 
     private fun startCameraPage() {
         val pickerParam: PickerParam.() -> Unit = {
