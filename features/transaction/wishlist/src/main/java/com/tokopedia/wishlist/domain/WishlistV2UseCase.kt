@@ -30,7 +30,6 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                     next_page_url
                     has_next_page
                     total_data
-                    count_removable_items
                     empty_state{
                       type
                       messages{

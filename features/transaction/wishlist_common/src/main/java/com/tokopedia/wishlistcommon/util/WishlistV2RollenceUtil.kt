@@ -18,13 +18,15 @@ object WishlistV2RemoteConfigRollenceUtil {
     }
 
     private fun isEnableRollenceAddRemoveWishlistV2(): Boolean {
-        return try {
+        /*return try {
             val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
             val abTestAddRemoveWishlistV2 = abTestPlatform.getString(RollenceKey.ADD_REMOVE_WISHLIST_V2, "")
 
             abTestAddRemoveWishlistV2 == RollenceKey.ADD_REMOVE_WISHLIST_V2
         } catch (throwable: Throwable) {
             false
-        }
+        }*/
+        // TODO: revert back
+        return true
     }
 }
