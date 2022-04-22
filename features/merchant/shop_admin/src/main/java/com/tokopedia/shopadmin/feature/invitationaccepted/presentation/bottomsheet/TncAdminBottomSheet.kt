@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shopadmin.R
@@ -106,11 +107,15 @@ class TncAdminBottomSheet : BottomSheetUnify() {
     }
 
     private fun showLoading() {
-        binding?.loaderTncAdmin?.show()
+        if (binding?.loaderTncAdmin?.isVisible == false) {
+            binding?.loaderTncAdmin?.show()
+        }
     }
 
     private fun hideLoading() {
-        binding?.loaderTncAdmin?.hide()
+        if (binding?.loaderTncAdmin?.isVisible == true) {
+            binding?.loaderTncAdmin?.hide()
+        }
     }
 
     private fun showToaster() {
@@ -118,7 +123,11 @@ class TncAdminBottomSheet : BottomSheetUnify() {
             Toaster.build(
                 it,
                 text = getString(com.tokopedia.shopadmin.R.string.error_message_article_detail),
-                type = Toaster.TYPE_ERROR
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(com.tokopedia.shopadmin.R.string.error_admin_try_again_action),
+                clickListener = {
+                    fetchArticleDetail()
+                }
             ).show()
         }
     }

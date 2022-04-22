@@ -16,7 +16,7 @@
     <string name="label_admin_confirmation_invitation_with_email">Klik Terima Akses supaya kamu bisa mengakses toko sebagai admin, ya.</string>
     <string name="label_admin_confirmation_invitation_with_no_email">Sebelum Terima Akses menjadi admin, tambahkan email ke akun Tokopedia-mu dulu, ya.</string>
 
-    <string name="placeholder_email">Email</string>
+    <string name="placeholder_admin_email">Email</string>
 
     <string name="title_reject_access_button">Tolak Akses</string>
     <string name="title_accept_access_button">Terima Akses</string>
@@ -44,5 +44,5 @@
     <string name="error_message_email_has_been_registered">E-mail ini sudah terdaftar, masukkan e-mail lain.</string>
     
     <string name="error_message_article_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
-
+    <string name="error_admin_try_again_action">Coba Lagi</string>
 </resources>
