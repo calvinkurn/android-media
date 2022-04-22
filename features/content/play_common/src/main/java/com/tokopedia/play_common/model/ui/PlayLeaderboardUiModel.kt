@@ -58,5 +58,5 @@ enum class LeadeboardType{
     Giveaway,
     Quiz,
     Polling,
-    Unknown
+    Unknown,
 }

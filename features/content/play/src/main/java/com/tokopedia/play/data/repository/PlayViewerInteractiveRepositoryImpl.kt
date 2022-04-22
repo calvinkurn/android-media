@@ -24,7 +24,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     private val answerQuizUseCase: AnswerQuizUseCase,
     private val mapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
-    private val interactiveStorage: PlayInteractiveStorage
+    private val interactiveStorage: PlayInteractiveStorage,
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
