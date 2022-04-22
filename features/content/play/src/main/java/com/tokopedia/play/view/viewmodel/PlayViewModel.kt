@@ -53,6 +53,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -66,6 +67,7 @@ import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.play_common.util.extension.exhaustive
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
@@ -842,8 +844,10 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
+            is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item.id)
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
+            is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)
@@ -1373,6 +1377,7 @@ class PlayViewModel @AssistedInject constructor(
         repo.save(interactive)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
+            is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
             else -> {}
         }
     }
@@ -1395,6 +1400,51 @@ class PlayViewModel @AssistedInject constructor(
                 }
             } catch (e: Throwable) {}
         }
+    }
+
+    private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
+        _interactive.update {
+            it.copy(interactive = quiz)
+        }
+
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
+            val channelId = mChannelData?.id ?: return
+
+            try {
+                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                setLeaderboardBadgeState(interactiveLeaderboard)
+
+                _interactive.update {
+                    it.copy(interactive = InteractiveUiModel.Unknown)
+                }
+            } catch (e: Throwable) {}
+        }
+    }
+
+    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+//        if (!isInteractiveAllowed) return
+//        val interactiveUiState = mapInteractiveToState(interactive)
+//        repo.setDetail(interactive.id.toString(), interactive)
+//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
+//            repo.setActive(interactive.id.toString())
+//        } else {
+//            repo.setFinished(interactive.id.toString())
+//        }
+//
+//        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
+//
+//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
+//            val channelId = mChannelData?.id ?: return
+//
+//            try {
+//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+//                setLeaderboardBadgeState(interactiveLeaderboard)
+//
+//                _interactive.value = PlayInteractiveUiState.NoInteractive
+//            } catch (e: Throwable) {}
+//        }
     }
 
     private fun prepareSelfLikeBubbleIcon() {
@@ -1590,6 +1640,10 @@ class PlayViewModel @AssistedInject constructor(
 
                 if(isFinished) processWinnerStatus(winnerStatus)
             }
+            is QuizResponse -> {
+                val interactive = playSocketToModelMapper.mapQuizFromSocket(result) as InteractiveUiModel.Quiz
+                handleQuizFromNetwork(interactive)
+            }
         }
     }
 
@@ -1705,15 +1759,36 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.getAndUpdate {
-                if (it.interactive !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
-                val interactive = it.interactive.copy(
+            val interactive = _interactive.getAndUpdate {
+                if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
+                val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
                 )
-                it.copy(interactive = interactive)
+                it.copy(
+                    interactive = newInteractive,
+                    isPlaying = false,
+                )
             }
+
+            val winnerStatus = _winnerStatus.value
+            val isRewardAvailable: Boolean = winnerStatus != null
+
+            if (isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
+                delay(interactive.interactive.waitingDuration) //waiting duration: wait for user winner message
+                winnerStatus?.let { processWinnerStatus(it) }
+            } else {
+                showLeaderBoard()
+            }
+            _interactive.value = InteractiveStateUiModel.Empty
+
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
+        }
+    }
+
+    private fun showLeaderBoard(){
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
         }
     }
 
@@ -1730,7 +1805,7 @@ class PlayViewModel @AssistedInject constructor(
             repo.hasJoined(interactive.interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
-                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText)
+                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, _interactive.value.interactive)
                 }
                 else {
                     ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
@@ -1751,6 +1826,115 @@ class PlayViewModel @AssistedInject constructor(
                 else -> false
             }
             it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
+        }
+    }
+
+    private fun handleClickQuizOption(optionId: String){
+        updateQuizOptionUi(selectedId = optionId, isLoading = true)
+        viewModelScope.launchCatchError(block = {
+            val response = repo.answerQuiz(interactiveId = _interactive.value.interactive.id.toString(), choiceId = optionId)
+            updateQuizOptionUi(selectedId = optionId, correctId = response)
+            _uiEvent.emit(QuizAnsweredEvent)
+        }) {
+            _uiEvent.emit(
+                ShowErrorEvent(it)
+            )
+            _uiEvent.emit(QuizAnsweredEvent)
+        }
+    }
+
+    private fun updateQuizOptionUi(selectedId: String, correctId: String = "", isLoading: Boolean? = null){
+        _interactive.update {
+            val quiz = it.interactive as InteractiveUiModel.Quiz
+            val new = quiz.copy(
+                listOfChoices =  quiz.listOfChoices.map { choice ->
+                    when {
+                        isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
+                        choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
+                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
+                        else -> choice
+                    }
+                }
+            )
+            it.copy(interactive = new)
+        }
+    }
+
+    private fun handleInteractivePreStartFinished() {
+//        viewModelScope.launch {
+//            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launch
+//            val interactiveDetail = repo.getDetail(activeInteractiveId) ?: return@launch
+//            if (!interactiveDetail.timeStatus.isScheduled()) return@launch
+//
+//            _interactive.value = PlayInteractiveUiState.Ongoing(
+//                    timeRemainingInMs = (interactiveDetail.timeStatus as PlayInteractiveTimeStatus.Scheduled).interactiveDurationInMs
+//            )
+//        }
+    }
+
+    private fun handleInteractiveOngoingFinished() {
+//        suspend fun waitingForSocketOrDuration(activeInteractive: PlayCurrentInteractiveModel, activeInteractiveId: String) {
+//            delay(activeInteractive.endGameDelayInMs)
+//            repo.setFinished(activeInteractiveId)
+//            handleUserWinnerStatus(null)
+//        }
+//
+//        viewModelScope.launchCatchError(block = {
+//            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+//            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
+//
+//            _interactive.value = PlayInteractiveUiState.Finished(
+//                info = R.string.play_interactive_finish_initial_text,
+//            )
+//            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+//
+//            _interactive.value = PlayInteractiveUiState.Finished(
+//                info = R.string.play_interactive_finish_loading_winner_text,
+//            )
+//            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+//
+//            val winnerStatus = _observableUserWinnerStatus.value
+//            if(winnerStatus != null && winnerStatus.interactiveId.toString() == activeInteractiveId){
+//                handleUserWinnerStatus(winnerStatus)
+//            }
+//            else {
+//                waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
+//            }
+//        }) {}
+    }
+
+    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
+        fun setNoInteractive() {
+//            if(_interactive.value is PlayInteractiveUiState.Finished)
+//                _interactive.value = PlayInteractiveUiState.NoInteractive
+        }
+
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
+
+        winnerStatus?.let {
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
+
+            if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+                setNoInteractive()
+                repo.setFinished(activeInteractiveId)
+
+                _uiEvent.emit(
+                    if(winnerStatus.userId.toString() == userId){
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText, _interactive.value.interactive)
+                    }
+                    else {
+                        ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
+                    }
+                )
+            }
+            else {
+                setNoInteractive()
+            }
+        } ?: run {
+            setNoInteractive()
         }
     }
 

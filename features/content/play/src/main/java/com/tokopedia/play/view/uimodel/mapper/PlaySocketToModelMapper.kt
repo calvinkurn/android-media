@@ -11,8 +11,9 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
@@ -77,7 +78,7 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
-        return interactiveMapper.mapGiveaway(input)
+        return interactiveMapper.mapGiveaway(input, input.waitingDuration.toLong())
     }
 
     fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
@@ -96,6 +97,10 @@ class PlaySocketToModelMapper @Inject constructor(
 
     fun mapUserWinnerStatus(userWinnerStatus: UserWinnerStatus): PlayUserWinnerStatusUiModel {
         return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
+    }
+
+    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
+        return interactiveMapper.mapQuiz(response, response.waitingDuration)
     }
 
     /**

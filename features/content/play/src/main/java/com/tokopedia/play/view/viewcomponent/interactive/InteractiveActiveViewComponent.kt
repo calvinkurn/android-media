@@ -22,7 +22,7 @@ class InteractiveActiveViewComponent(
 
     init {
         rootView.setOnClickListener {
-            listener.onWidgetClicked(this)
+            listener.onWidgetClicked(this@InteractiveActiveViewComponent)
         }
     }
 
@@ -53,6 +53,7 @@ class InteractiveActiveViewComponent(
             )
         }
     }
+
 
     fun setQuiz(
         question: String,

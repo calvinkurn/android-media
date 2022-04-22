@@ -126,7 +126,8 @@ class PlayUserInteractionFragment @Inject constructor(
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener,
-        InteractiveActiveViewComponent.Listener
+        InteractiveActiveViewComponent.Listener,
+        InteractiveGameResultViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -160,6 +161,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
+    private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -817,6 +819,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderKebabMenuView(state.kebabMenu)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
+                renderGameResult(state = state.winnerBadge)
 
                 handleStatus(state.status)
 
@@ -837,6 +840,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
+                            setInteractive(interactive = event.interactiveType)
                         }.show(childFragmentManager)
                     }
                     is OpenPageEvent -> {
@@ -909,9 +913,20 @@ class PlayUserInteractionFragment @Inject constructor(
                             actionText = getString(R.string.play_sharing_refresh),
                         )
                     }
+                    QuizAnsweredEvent -> {
+                        delay(FADE_TRANSITION_DELAY)
+                        InteractiveDialogFragment.get(childFragmentManager)?.dismiss()
+                    }
                     OpenKebabEvent -> {
                         playViewModel.onShowKebabMenuSheet()
                         showMoreActionBottomSheet()
+                    }
+                    is ShowCoachMarkWinnerEvent -> {
+                        if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
+                        interactiveResultView?.showCoachMark(event.title, event.subtitle)
+                    }
+                    HideCoachMarkWinnerEvent -> {
+                        interactiveResultView?.hideCoachMark()
                     }
                 }
             }
@@ -979,6 +994,7 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) {
+                    interactiveResultView?.hideCoachMark()
                     playFullscreenManager.onEnterFullscreen()
                 }
                 else playFullscreenManager.onExitFullscreen()
@@ -1058,6 +1074,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doClickChatBox() {
+        interactiveResultView?.hideCoachMark()
         viewModel.doInteractionEvent(InteractionEvent.SendChat)
     }
 
@@ -1128,6 +1145,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
+        interactiveResultView?.hideCoachMark()
         playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 
@@ -1499,6 +1517,11 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun renderGameResult(state: PlayWinnerBadgeUiState){
+        if (state.shouldShow) interactiveResultView?.show()
+        else interactiveResultView?.hide()
+    }
+
     private fun renderToolbarView(title: PlayTitleUiState) {
         toolbarView.setTitle(title.title)
     }
@@ -1715,6 +1738,10 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.submitAction(OpenKebabAction)
+    }
+
+    override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+        playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
     }
 
     companion object {
