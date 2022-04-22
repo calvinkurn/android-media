@@ -138,4 +138,5 @@
 
     <!--Engagement tools-->
     <dimen name="play_engagement_tools_width">104dp</dimen>
+    <dimen name="play_interactive_error_btn_size">40dp</dimen>
 </resources>

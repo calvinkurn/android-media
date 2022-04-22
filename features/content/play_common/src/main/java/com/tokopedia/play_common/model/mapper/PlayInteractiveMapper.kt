@@ -4,6 +4,8 @@ import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveR
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -47,7 +49,7 @@ class PlayInteractiveMapper @Inject constructor() {
         )
     }
 
-    private fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
+    fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
             title = data.question,
@@ -60,9 +62,23 @@ class PlayInteractiveMapper @Inject constructor() {
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown
             },
+            listOfChoices = data.choices.mapIndexed { index: Int, item: QuizResponse.Choice ->
+                QuizChoicesUiModel(
+                    item.id,
+                    item.text,
+                    if(item.id == data.userChoice)
+                        PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
+                    else
+                        PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
+                )
+            },
+            reward = data.prize,
             waitingDuration = waitingDurationInMillis,
         )
     }
+
+    private fun generateAlphabet(index: Int) : Char = arrayOfAlphabet[index]
+    private val arrayOfAlphabet = ('A'..'Z').toMutableList()
 
     companion object {
         private const val TYPE_GIVEAWAY = "QUICK_TAP"

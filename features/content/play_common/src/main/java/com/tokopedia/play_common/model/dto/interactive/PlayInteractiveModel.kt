@@ -17,6 +17,7 @@ data class PlayCurrentInteractiveModel(
 
 enum class InteractiveType(val type: Int) {
     QuickTap(0),
+    Quiz(1),
     Unknown(-1);
 
     companion object {

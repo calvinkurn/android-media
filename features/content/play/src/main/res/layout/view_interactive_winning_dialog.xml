@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rc_winning_dialog"
     android:layout_width="@dimen/play_interactive_winning_dialog_width"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_play_interactive"
