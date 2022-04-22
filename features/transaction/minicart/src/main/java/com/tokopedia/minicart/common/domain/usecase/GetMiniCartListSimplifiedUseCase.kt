@@ -5,18 +5,27 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.minicart.common.config.MiniCartRemoteConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToMiniCartData
 import com.tokopedia.usecase.coroutines.UseCase
+import dagger.Lazy
 import javax.inject.Inject
 
-class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                           private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
-                                                           private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<MiniCartSimplifiedData>() {
+class GetMiniCartListSimplifiedUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val miniCartSimplifiedMapper: MiniCartSimplifiedMapper,
+    private val oldGetMiniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val remoteConfig: MiniCartRemoteConfig
+) : UseCase<MiniCartSimplifiedData>() {
 
     private var params: Map<String, Any>? = null
+    private var shopIds: List<String> = emptyList()
 
     fun setParams(shopIds: List<String>) {
         params = mapOf(
@@ -26,6 +35,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                         ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
                 )
         )
+        this.shopIds = shopIds
     }
 
     fun setParams(shopIds: List<String>, promoId: String, promoCode: String) {
@@ -47,13 +57,19 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
+        return if(remoteConfig.isNewMiniCartEnabled()) {
+            val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
+            val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
-        if (response.miniCart.status == "OK") {
-            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+            if (response.miniCart.status == "OK") {
+                miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
+            } else {
+                throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
+            }
         } else {
-            throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
+            oldGetMiniCartListSimplifiedUseCase.get().setParams(shopIds)
+            val response = oldGetMiniCartListSimplifiedUseCase.get().executeOnBackground()
+            mapToMiniCartData(response)
         }
     }
 
