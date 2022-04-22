@@ -7,13 +7,6 @@
     android:animateLayoutChanges="true"
     >
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/view_background_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -41,19 +34,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:toolbarAlwaysShowShadow="false"
+        app:toolbarAlwaysShowShadow="true"
         app:toolbarBackButton="back"
-        app:toolbarContentType="typeSearchbar"
+        app:toolbarContentType="typeTitle"
         app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"
         app:toolbarInvertSearchBarColor="true"
         app:toolbarPageName="/" />
-
-    <View
-        android:id="@+id/status_bar_bg"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"
-        android:background="@color/Unify_R500"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.util.ViewHelper
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -46,15 +47,14 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
+class TokoFoodHomeFragment : BaseDaggerFragment(), IBaseMultiFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -84,25 +84,21 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     private var navToolbar: NavToolbar? = null
     private var rvHome: RecyclerView? = null
-    private var statusBarBackground: View? = null
-    private var ivHeaderBackground: ImageView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var movingPosition = 0
     private val homeMainToolbarHeight: Int
         get() {
             val defaultHeight = resources.getDimensionPixelSize(
-                R.dimen.tokofood_default_toolbar_status_height)
+                R.dimen.tokofood_default_toolbar_status_height
+            )
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(unifyR.spacing_lvl3)
+            val padding = resources.getDimensionPixelSize(unifyR.dimen.spacing_lvl3)
 
             return height + padding
         }
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
-
-    private val navBarScrollListener by lazy { createNavBarScrollListener() }
-    private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun getScreenName(): String {
         return ""
@@ -141,10 +137,8 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hideStatusBar()
         setupUi()
         setupNavToolbar()
-        setupStatusBar()
         setupRecycleView()
         setupSwipeRefreshLayout()
         observeLiveData()
@@ -160,19 +154,17 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         viewModel.getHomeLayout()
     }
 
-    private fun getLayoutComponentData(){
+    private fun getLayoutComponentData() {
         viewModel.getLayoutComponentData()
     }
 
-    private fun loadLayout(){
+    private fun loadLayout() {
         viewModel.getLoadingState()
     }
 
     private fun setupUi() {
         view?.apply {
-            ivHeaderBackground = binding?.viewBackgroundImage
             navToolbar = binding?.navToolbar
-            statusBarBackground = binding?.statusBarBg
             rvHome = binding?.rvHome
             swipeLayout = binding?.swipeRefreshLayout
         }
@@ -188,7 +180,6 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         }
 
         rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
-        addHomeComponentScrollListener()
     }
 
     private fun setupNavToolbar() {
@@ -199,37 +190,21 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
-            addNavBarScrollListener()
-
             activity?.let {
-                toolbar.setupToolbarWithStatusBar(it, statusBarTheme = NavToolbar.Companion.StatusBar.STATUS_BAR_DARK)
+                toolbar.showShadow(true)
+                toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
-           }
+            }
         }
     }
 
     private fun setIconNavigation() {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-            .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
-            .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
-            .addIcon(IconList.ID_NAV_GLOBAL, onClick = ::onClickNavGlobalButton)
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
+                .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
+                .addIcon(IconList.ID_NAV_GLOBAL, onClick = ::onClickNavGlobalButton)
         navToolbar?.setIcon(icons)
-    }
-
-    private fun setupStatusBar() {
-        activity?.let {
-            statusBarBackground?.apply {
-                layoutParams?.height = ViewHelper.getStatusBarHeight(context)
-                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
-            }
-            setStatusBarAlpha()
-        }
-    }
-
-    private fun setStatusBarAlpha() {
-        val drawable = statusBarBackground?.background
-        drawable?.alpha = 0
-        statusBarBackground?.background = drawable
     }
 
     private fun onClickShareButton() {
@@ -268,18 +243,15 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
     }
 
     private fun onHideHomeLayout(data: TokoFoodHomeListUiModel) {
-        hideHeaderBackground()
     }
 
     private fun onShowHomeLayout(data: TokoFoodHomeListUiModel) {
         showHomeLayout(data)
-        showHeaderBackground()
         getLayoutComponentData()
     }
 
     private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
         //showHomeLayout(data)
-        loadHeaderBackground()
         showLayout()
     }
 
@@ -291,56 +263,15 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     private fun setupSwipeRefreshLayout() {
         context?.let {
-            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getToolbarHeight(it), spaceZero, spaceZero)
+            swipeLayout?.setMargin(
+                spaceZero,
+                NavToolbarExt.getToolbarHeight(it),
+                spaceZero,
+                spaceZero
+            )
             swipeLayout?.setOnRefreshListener {
                 onRefreshLayout()
             }
-        }
-    }
-
-    private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
-        return object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                evaluateHomeComponentOnScroll(recyclerView, dy)
-            }
-        }
-    }
-
-    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
-        return navToolbar?.let { toolbar ->
-            NavRecyclerViewScrollListener(
-                navToolbar = toolbar,
-                startTransitionPixel = homeMainToolbarHeight,
-                toolbarTransitionRangePixel = resources.getDimensionPixelSize(unifyR.spacing_lvl4),
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
-
-                    override fun onSwitchToLightToolbar() { /* nothing to do */ }
-
-                    override fun onSwitchToDarkToolbar() {
-                        navToolbar?.hideShadow()
-                    }
-
-                    override fun onYposChanged(yOffset: Int) {}
-                },
-                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-            )
-        }
-    }
-
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
-        movingPosition += dy
-        ivHeaderBackground?.y = if(movingPosition >= 0) {
-            -(movingPosition.toFloat())
-        } else {
-            resetMovingPosition()
-            movingPosition.toFloat()
-        }
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
-            navToolbar?.showShadow(lineShadow = true)
-        } else {
-            navToolbar?.hideShadow(lineShadow = true)
         }
     }
 
@@ -354,66 +285,9 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
     }
 
     private fun removeAllScrollListener() {
-        removeNavBarScrollListener()
-        removeHomeComponentScrollListener()
     }
 
     private fun addScrollListener() {
-        addNavBarScrollListener()
-        addHomeComponentScrollListener()
-    }
-
-    private fun addHomeComponentScrollListener() {
-        rvHome?.addOnScrollListener(homeComponentScrollListener)
-    }
-
-    private fun removeHomeComponentScrollListener() {
-        rvHome?.removeOnScrollListener(homeComponentScrollListener)
-    }
-
-    private fun addNavBarScrollListener() {
-        navBarScrollListener?.let {
-            rvHome?.addOnScrollListener(it)
-        }
-    }
-
-    private fun removeNavBarScrollListener() {
-        navBarScrollListener?.let {
-            rvHome?.removeOnScrollListener(it)
-        }
-    }
-
-    private fun loadHeaderBackground() {
-        ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.background_tokofood_header_shimmering)
-    }
-
-    private fun showHeaderBackground() {
-        ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.background_tokofood_header)
-    }
-
-    private fun hideHeaderBackground() {
-        ivHeaderBackground?.hide()
-    }
-
-    private fun hideStatusBar() {
-        binding?.root?.apply {
-            fitsSystemWindows = false
-            requestApplyInsets()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !context.isDarkMode()) {
-                var flags: Int = systemUiVisibility
-                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                systemUiVisibility = flags
-                activity?.window?.statusBarColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            }
-
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                StatusBarUtil.setWindowFlag(activity, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-                activity?.window?.statusBarColor = Color.TRANSPARENT
-            }
-        }
     }
 
     private fun onRefreshLayout() {
