@@ -17,6 +17,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.R
+import com.tokopedia.picker.common.types.ModeType
 import org.hamcrest.Matcher
 
 
@@ -137,6 +138,7 @@ class CameraPageUiTest : CameraPageTest() {
         val pickerParam: PickerParam.() -> Unit = {
             this.pageSource(PageSource.Feed)
             this.pageType(PageType.CAMERA)
+            this.modeType(ModeType.IMAGE_ONLY)
         }
 
         startPickerActivity(pickerParam)
