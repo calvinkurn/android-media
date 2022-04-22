@@ -58,6 +58,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
 import kotlinx.android.synthetic.main.item_post_long_video_vod.view.*
@@ -399,7 +400,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N600
+                    unifyPrinciplesR.color.Unify_N600
                 )
             }
         }
@@ -423,12 +424,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     if (endIndex == startIndex + FOLLOW_SIZE) {
                         ds.color = MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            unifyPrinciplesR.color.Unify_G500
                         )
                     } else {
                         ds.color = MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            unifyPrinciplesR.color.Unify_NN600
                         )
                     }
                 }
@@ -501,11 +502,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                    ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (view.count != 0) {
@@ -548,11 +549,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         if (like.isLiked) {
             val colorGreen =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -648,7 +649,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ds.isUnderlineText = false
                 ds.color = MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N600
+                    unifyPrinciplesR.color.Unify_N600
                 )
             }
         }
@@ -739,7 +740,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        get() = ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G400)
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClickedFeed(hashtag, feed)
@@ -918,7 +919,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     topAdsProductName.setTextColor(
                                             MethodChecker.getColor(
                                                     context,
-                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                                    unifyPrinciplesR.color.Unify_NN600
                                             )
                                     )
                                     topAdsProductName.show()
@@ -1769,7 +1770,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 topAdsProductName.setTextColor(
                                         MethodChecker.getColor(
                                                 context,
-                                                com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                                unifyPrinciplesR.color.Unify_NN600
                                         )
                                 )
                                 topAdsProductName.show()
@@ -2168,31 +2169,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
-            val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-
-            topAdsCard?.let {
-                val topAdsProductName= topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
-                val topAdsChevron= topAdsCard.findViewById<IconUnify>(R.id.chevron)
-                feedXCard.isAsgcColorChangedToGreen = false
-                topAdsProductName.setTextColor(
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                    )
-                )
-                topAdsChevron.setColorFilter(
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                    )
-                )
-               topAdsCard.setBackgroundColor(MethodChecker.getColor(
-                   context,
-                   com.tokopedia.unifyprinciples.R.color.Unify_NN50
-               ))
-            }
 
             val tagProducts = mutableListOf<FeedXProduct>()
+            changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard)
 
             tags?.map {
                 if (!ifProductAlreadyPresent(cardProducts[it.tagIndex], tagProducts))
@@ -2213,45 +2192,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
     }
-    private fun changeTopadsCekSekarangBtnColorToGreen(feedXCard: FeedXCard) {
-        val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
-//        if (isTypeNewASGC) {
-            val media =
-                if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
-            val imageItem = media?.imageView
-
-            imageItem?.run {
-                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
-                topAdsCard?.let {
-                    val topAdsProductName =
-                        topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
-                    val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
-                    topAdsProductName.setTextColor(
-                        MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
-                        )
-                    )
-                    topAdsChevron.setColorFilter(
-                        MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
-                        )
-                    )
-                    topAdsCard.setBackgroundColor(
-                        MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
-                        )
-                    )
-                    feedXCard.isAsgcColorChangedToGreen = true
-                }
-            }
-//        }
-    }
-    fun changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard: FeedXCard) {
-
-        val media = if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
+    private fun changeTopadsCekSekarangBtnColor(
+        feedXCard: FeedXCard,
+        ctaButtonBackgroundColor: Int,
+        ctaTextColor: Int
+    ) {
+        val media =
+            if (feedXCard.media.size > feedXCard.lastCarouselIndex) feedXCard.media[feedXCard.lastCarouselIndex] else null
         val imageItem = media?.imageView
 
         imageItem?.run {
@@ -2261,27 +2208,43 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     topAdsCard.findViewById<Typography>(R.id.top_ads_product_name)
                 val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
                 topAdsProductName.setTextColor(
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                    )
+                    ctaTextColor
                 )
                 topAdsChevron.setColorFilter(
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                    )
+                    ctaTextColor
                 )
                 topAdsCard.setBackgroundColor(
-                    MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN50
-                    )
+                    ctaButtonBackgroundColor
                 )
             }
-
-
         }
+    }
+    private fun changeTopadsCekSekarangBtnColorToGreen(feedXCard: FeedXCard) {
+        feedXCard.isAsgcColorChangedToGreen = true
+        val backgroundWhiteColor = MethodChecker.getColor(
+            context,
+            unifyPrinciplesR.color.Unify_G500
+        )
+        val textColor = MethodChecker.getColor(
+            context,
+            unifyPrinciplesR.color.Unify_N0
+        )
+        changeTopadsCekSekarangBtnColor(feedXCard, backgroundWhiteColor, textColor)
+
+    }
+
+
+    fun changeTopadsCekSekarangBtnColorToDefaultWhite(feedXCard: FeedXCard) {
+        feedXCard.isAsgcColorChangedToGreen = false
+        val backgroundWhiteColor = MethodChecker.getColor(
+            context,
+            unifyPrinciplesR.color.Unify_NN50
+        )
+        val textColor = MethodChecker.getColor(
+            context,
+            unifyPrinciplesR.color.Unify_NN600
+        )
+        changeTopadsCekSekarangBtnColor(feedXCard, backgroundWhiteColor, textColor)
 
     }
 
@@ -2398,11 +2361,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
             val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
             val startColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN50
+                unifyPrinciplesR.color.Unify_NN50
             )
             val endColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                unifyPrinciplesR.color.Unify_G500
             )
             val isTypeNewASGC = feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && feedXCard.mods.contains(TYPE_USE_ASGC_NEW_DESIGN)
 
@@ -2414,13 +2377,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         topAdsCard.findViewById<Typography>(R.id.top_ads_product_name).setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                unifyPrinciplesR.color.Unify_N0
                             )
                         )
                         topAdsCard.findViewById<IconUnify>(R.id.chevron).setColorFilter(
                             MethodChecker.getColor(
                                 context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                unifyPrinciplesR.color.Unify_N0
                             )
                         )
                            if(!feedXCard.isAsgcColorChangedToGreen) {
