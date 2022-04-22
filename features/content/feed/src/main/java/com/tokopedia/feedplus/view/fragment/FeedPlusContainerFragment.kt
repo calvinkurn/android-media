@@ -176,7 +176,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         })
         viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> renderFab(it.data)
+                is Success -> renderCompleteFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
             }
         })
@@ -397,6 +397,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.menuOpen = !fab_feed.menuOpen
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
+
+        if (userSession.hasShop() && userSession.isLoggedIn) {
+            fab_feed.addItem(arrayListOf(createCreateLiveFab()))
+            fab_feed.show()
+        }
+        else {
+            fab_feed.hide()
+        }
     }
 
     private fun enableContentCreationNewFlow(): Boolean {
@@ -484,25 +492,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun renderFab(whitelistDomain: WhitelistDomain) {
+    private fun renderCompleteFab(whitelistDomain: WhitelistDomain) {
         authorList.clear()
         authorList.addAll(whitelistDomain.authors)
 
         val items = arrayListOf<FloatingButtonItem>()
 
         if (userSession.hasShop() && userSession.isLoggedIn) {
-            items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-                    title = getString(R.string.feed_fab_create_live),
-                    listener = {
-                        fab_feed.menuOpen = false
-                        entryPointAnalytic.clickCreateLiveEntryPoint()
-
-                        RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-                    }
-                )
-            )
+            items.add(createCreateLiveFab())
         }
 
         if(authorList.isNotEmpty()) {
@@ -550,6 +547,19 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             fab_feed.hide()
         }
+    }
+
+    private fun createCreateLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(R.string.feed_fab_create_live),
+            listener = {
+                fab_feed.menuOpen = false
+                entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+            }
+        )
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
