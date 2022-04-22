@@ -91,7 +91,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.tokopedia.product.detail.view.widget.ProductDetailNavigation
+    <com.tokopedia.product.detail.view.widget.NavigationTab
         android:id="@+id/pdp_navigation_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -191,7 +191,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInsuranceBottomSheet
-import com.tokopedia.product.detail.view.widget.ProductDetailNavigation
+import com.tokopedia.product.detail.view.widget.NavigationTab
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
@@ -2321,7 +2321,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
         val items = data.navBar.items.map { item ->
-            ProductDetailNavigation.Item(item.title) {
+            NavigationTab.Item(item.title) {
                 adapter.getComponentPositionByName(item.componentName)
             }
         }

@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 
-class ProductDetailNavigation(
+class NavigationTab(
     context: Context, attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), CoroutineScope {
 
@@ -277,7 +277,7 @@ class ProductDetailNavigation(
             return super.calculateDyToMakeVisible(
                 view,
                 snapPreference
-            ) + this@ProductDetailNavigation.view.height
+            ) + this@NavigationTab.view.height
         }
 
         override fun getVerticalSnapPreference(): Int {
