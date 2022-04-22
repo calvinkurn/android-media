@@ -248,7 +248,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
-            viewAnimator.hideWithAnimation(ticker)
+            binding?.ticker?.gone()
         }
     }
 
@@ -257,7 +257,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
             val shouldShowTicker = !isPreviouslyDismissed
             if (shouldShowTicker){
-                viewAnimator.showWithAnimation(ticker)
+                binding?.ticker?.visible()
             }
         }
     }
