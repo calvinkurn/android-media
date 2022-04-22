@@ -735,7 +735,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     // Calculation
 
     fun calculateProduct() {
-        // TODO: BUNDLING NOW MINI CART
         val visitables = getVisitables()
 
         val miniCartProductList = mutableListOf<MiniCartProductUiModel>()

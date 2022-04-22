@@ -269,6 +269,7 @@ abstract class BaseRecomPageFragment<T : Visitable<*>, F : AdapterTypeFactory> :
             if (miniCartSimplifiedData.miniCartItems.isEmpty()) {
                 it.gone()
             } else {
+                initMiniCartWidget()
                 it.updateData(miniCartSimplifiedData)
                 it.show()
             }

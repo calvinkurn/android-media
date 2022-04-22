@@ -231,7 +231,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       }
                       cart_string
                       errors
-                      cart_details {
+                      cart_details {                    
                         selected_unavailable_action_link
                         errors
                         bundle_detail { 
