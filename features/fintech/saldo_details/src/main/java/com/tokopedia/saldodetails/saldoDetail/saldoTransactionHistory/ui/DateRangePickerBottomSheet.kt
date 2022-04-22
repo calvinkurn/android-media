@@ -16,12 +16,13 @@ import java.util.*
 class DateRangePickerBottomSheet : BottomSheetUnify() {
 
     private val maxDate = Date()
-    private val minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
+    private var minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
 
     private var defaultDateFrom: Date? = null
     private var defaultDateTo: Date? = null
     private var newSelectedDateFrom : Date? = Date()
     private var newSelectedDateTO : Date? = Date()
+    private var maxRange:Long = MAX_RANGE
 
     lateinit var childView: View
 
@@ -35,6 +36,17 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         } else {
             defaultDateFrom = Date()
             defaultDateTo = Date()
+        }
+        if (arguments?.containsKey(ARG_MAX_RANGE) == true) {
+            arguments?.getLong(ARG_MAX_RANGE)?.let {
+                maxRange = it
+            }
+        }
+
+        if (arguments?.containsKey(ARG_MIN_DATE_GAP) == true) {
+            arguments?.getLong(ARG_MIN_DATE_GAP)?.let {
+                minDate = Date(System.currentTimeMillis() - it)
+            }
         }
     }
 
@@ -72,7 +84,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
         newSelectedDateTO = defaultDateTo
         calendar_unify.calendarPickerView?.init(minDate, maxDate, arrayListOf())
             ?.inMode(CalendarPickerView.SelectionMode.RANGE)
-            ?.maxRange(MAX_RANGE)
+            ?.maxRange(maxRange)
             ?.withSelectedDates(arrayListOf(defaultDateFrom!!, defaultDateTo!!))
         calendar_unify.calendarPickerView?.selectDateClickListener()
         calendar_unify.calendarPickerView?.outOfRange()
@@ -117,7 +129,7 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
             actionType = DialogUnify.SINGLE_ACTION,
             imageType = DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.saldo_calendar_range_error_title))
-            setDescription(getString(R.string.sp_title_max_day))
+            setDescription(getString(R.string.sp_title_max_day, maxRange))
             setPrimaryCTAText(getString(R.string.saldo_btn_oke))
             setPrimaryCTAClickListener {
                 cancel()
@@ -138,16 +150,28 @@ class DateRangePickerBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val FIFTY_YEAR_MILLIS = (50 * 365 * 24 * 3600 * 1000L)
+        const val TWO_YEAR_MILLIS = (2 * 365 * 24 * 3600 * 1000L)
         const val MAX_RANGE = 30L
+        const val MAX_RANGE_90 = 90L
         const val ARG_DATE_FROM = "ARG_DATE_FROM"
         const val ARG_DATE_TO = "ARG_DATE_TO"
+        const val ARG_MAX_RANGE = "ARG_MAX_RANGE"
+        const val ARG_MIN_DATE_GAP = "ARG_MIN_DATE_GAP"
         const val BOTTOM_SHEET_HEIGHT_3 = 3
         const val BOTTOM_SHEET_HEIGHT_2 = 2
         fun getInstance(dateFrom: Date?, dateTo: Date?): DateRangePickerBottomSheet {
             return DateRangePickerBottomSheet().apply {
+                getInstanceRange(dateFrom, dateTo, MAX_RANGE, FIFTY_YEAR_MILLIS)
+            }
+        }
+
+        fun getInstanceRange(dateFrom: Date?, dateTo: Date?, range: Long, minDate: Long): DateRangePickerBottomSheet {
+            return DateRangePickerBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
                 bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
+                bundle.putLong(ARG_MAX_RANGE, range)
+                bundle.putLong(ARG_MIN_DATE_GAP, minDate)
                 arguments = bundle
             }
         }

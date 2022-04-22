@@ -301,11 +301,23 @@
             app:unifyButtonVariant="filled" />
     </LinearLayout>
 
+<!--    <include-->
+<!--        layout="@layout/fragment_saldo_transaction_fee_report_download_section"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/saldo_balance_layout" />-->
+
+    <FrameLayout
+        android:id="@+id/transaction_fee_report_download_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/saldo_balance_layout"/>
+
     <LinearLayout
         android:id="@+id/merchant_status_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/saldo_balance_layout"
+        android:layout_below="@+id/transaction_fee_report_download_widget"
         android:background="@color/Unify_N0"
         android:orientation="vertical"
         android:padding="@dimen/unify_space_16"

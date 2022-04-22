@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/merchant_status_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:visibility="visible">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/download_trx_fee_report_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/download_trx_fee_report"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/download_trx_fee_report_expand"
+        app:layout_constraintBottom_toBottomOf="@id/download_trx_fee_report_expand"
+        app:typographyType="heading_4"
+        android:gravity="center_vertical"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/download_trx_fee_report_expand"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:icon_name="CHEVRON_DOWN"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/trx_fee_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
+        app:card_type="shadow"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/download_trx_fee_report_expand"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/trx_fee_parent_rl"
+                android:layout_alignBottom="@+id/trx_fee_parent_rl"
+                android:scaleType="fitXY"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="background"
+                app:srcCompat="@drawable/saldo_merchant_credit_background" />
+
+            <RelativeLayout
+                android:id="@+id/trx_fee_parent_rl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/unify_space_2"
+                android:padding="@dimen/unify_space_8">
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/trx_fee_logo"
+                    android:layout_width="@dimen/unify_space_24"
+                    android:layout_height="@dimen/unify_space_24"
+                    app:icon_name="SALDO" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/trx_fee_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_2"
+                    android:layout_toEndOf="@+id/trx_fee_logo"
+                    android:text="@string/trx_fee_title"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_5" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/trx_fee_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/trx_fee_title"
+                    android:layout_marginTop="@dimen/unify_space_12"
+                    android:lineSpacingExtra="@dimen/sp_4"
+                    android:text="@string/trx_fee_desc"
+                    android:textColor="@color/Unify_N700_68"
+                    android:textSize="@dimen/sp_12"
+                    android:visibility="visible"
+                    app:typographyType="body_2" />
+
+                <com.tokopedia.unifycomponents.CardUnify
+                    android:id="@+id/trx_download_date_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/trx_fee_description"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="36dp">
+
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/trx_download_date_icon"
+                            android:layout_width="@dimen/unify_space_24"
+                            android:layout_height="@dimen/unify_space_24"
+                            android:layout_marginStart="@dimen/unify_space_8"
+                            app:icon_color_light_enable="@color/Unify_N500"
+                            app:icon_color_night_enable="@color/Unify_N500"
+                            app:icon_name="CALENDAR"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/trx_download_date_selected"
+                            android:layout_width="@dimen/layout_lvl0"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/unify_space_8"
+                            android:text="@string/trx_fee_date"
+                            android:textColor="@color/Unify_N700_68"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/trx_download_date_chevron"
+                            app:layout_constraintStart_toEndOf="@id/trx_download_date_icon"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <com.tokopedia.iconunify.IconUnify
+                            android:id="@+id/trx_download_date_chevron"
+                            android:layout_width="@dimen/unify_space_24"
+                            android:layout_height="@dimen/unify_space_24"
+                            app:icon_color_light_enable="@color/Unify_N500"
+                            app:icon_color_night_enable="@color/Unify_N500"
+                            app:icon_name="CHEVRON_RIGHT"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.tokopedia.unifycomponents.CardUnify>
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/trx_fee_download"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/trx_download_date_card"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/trx_fee_download"
+                    app:unifyButtonSize="medium"
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="ghost"
+                    android:enabled="false"/>
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#F3F4F5"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/trx_fee_card_view"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
