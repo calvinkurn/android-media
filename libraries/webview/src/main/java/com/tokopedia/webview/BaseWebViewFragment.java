@@ -22,15 +22,12 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +76,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
@@ -301,8 +295,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             getActivity().finish();
         } catch (Throwable th) {
             Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type","browser");
-            messageMap.put("url",url);
+            messageMap.put("type", "browser");
+            messageMap.put("url", url);
             ServerLogger.log(Priority.P1, "FAILED_BROWSER", messageMap);
         }
     }
