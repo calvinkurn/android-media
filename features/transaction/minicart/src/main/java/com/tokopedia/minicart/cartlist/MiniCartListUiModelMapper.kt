@@ -341,6 +341,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 (!bundlingItem && !lastCartItem || !lastProductItem)
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
+            editBundleApplink = cartDetail.bundleDetail.editBundleApplink
 
             if(bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity

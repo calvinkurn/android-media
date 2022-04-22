@@ -50,6 +50,7 @@ data class MiniCartProductUiModel(
         var showBundlingHeader: Boolean = false,
         var showBottomDivider: Boolean = false,
         var isLastProductItem: Boolean = false,
+        var editBundleApplink: String = "",
 
         // Fields below are for analytics purpose only
         var campaignId: String = "",

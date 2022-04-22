@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,7 +19,6 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
-import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -37,7 +35,25 @@ import javax.inject.Inject
 class EntrypointFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val EXTRA_BUNDLE_ID = "BUNDLE_ID"
+        private const val EXTRA_SELECTED_PRODUCT_ID = "SELECTED_PRODUCT_ID"
+        private const val EXTRA_SOURCE = "SOURCE"
+        private const val EXTRA_PARENT_PRODUCT_ID = "PARENT_PRODUCT_ID"
+
         const val tagFragment = "TAG_FRAGMENT"
+
+        @JvmStatic
+        fun newInstance(bundleId: Long, selectedProductsId: ArrayList<String>, source: String, parentProductId: Long): EntrypointFragment {
+            val fragment = EntrypointFragment()
+            val bundle = Bundle().apply {
+                putLong(EXTRA_BUNDLE_ID, bundleId)
+                putStringArrayList(EXTRA_SELECTED_PRODUCT_ID, selectedProductsId)
+                putString(EXTRA_SOURCE, source)
+                putLong(EXTRA_PARENT_PRODUCT_ID, parentProductId)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     private var bundleId: Long = 0
@@ -144,14 +160,11 @@ class EntrypointFragment : BaseDaggerFragment() {
     }
 
     private fun initApplinkValues() {
-        var data = activity?.intent?.data
-        data?.let {
-            data = RouteManager.getIntent(context, activity?.intent?.data.toString()).data
-            val pathSegments = it.pathSegments.orEmpty()
-            bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
-            selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
-            source = ProductBundleApplinkMapper.getPageSourceFromUri(it)
-            viewModel.parentProductID = ProductBundleApplinkMapper.getProductIdFromUri(it, pathSegments)
+        arguments?.apply {
+            bundleId = getLong(EXTRA_BUNDLE_ID)
+            selectedProductIds = getStringArrayList(EXTRA_SELECTED_PRODUCT_ID).orEmpty()
+            source = getString(EXTRA_SOURCE).orEmpty()
+            viewModel.parentProductID = getLong(EXTRA_PARENT_PRODUCT_ID)
             viewModel.selectedBundleId = bundleId
             viewModel.selectedProductIds = selectedProductIds
         }
@@ -254,9 +267,6 @@ class EntrypointFragment : BaseDaggerFragment() {
     private fun setupToolbarActions() {
         activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
             headerTitle = getString(R.string.product_bundle_page_title)
-            setNavigationOnClickListener {
-                activity?.finish()
-            }
         }
     }
 }
