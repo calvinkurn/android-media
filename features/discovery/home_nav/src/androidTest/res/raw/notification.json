@@ -1,0 +1,15 @@
+[
+  {
+    "data": {
+      "notifications": {
+        "resolutionAs": {
+          "buyer": 0
+        },
+        "inbox": {
+          "inbox_ticket": 0,
+          "inbox_review": 0
+        }
+      }
+    }
+  }
+]
