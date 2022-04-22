@@ -56,15 +56,15 @@ class TransactionDetails : BaseDaggerFragment(){
             val rpFormattedString =
                 ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.amt?.toDouble()
                     ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
-            amt.text = "-Rp" + rpFormattedString?.formattedString
-            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.refNum
+            amt.text = "-Rp" + rpFormattedString?.formattedString ?: ""
+            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.refNum?: ""
             setSenderUserData()
             setRcvrUserData()
         }
     }
 
     private fun setRcvrUserData() {
-        rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.destination?.name
+        rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.destination?.name?:""
         rcvrNum.text =
             Constants.Prefixes.OVO + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.destination?.phone
     }
@@ -90,8 +90,8 @@ class TransactionDetails : BaseDaggerFragment(){
     }
 
     private fun setSenderUserData() {
-        senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.name
+        senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.name ?: ""
         senderNumber.text =
-            Constants.Prefixes.OVO + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.phone
+            Constants.Prefixes.OVO + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.phone?: ""
     }
 }

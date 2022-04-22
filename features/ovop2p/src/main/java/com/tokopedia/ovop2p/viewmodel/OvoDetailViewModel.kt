@@ -12,7 +12,6 @@ import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.ovop2p.domain.usecase.GetWalletBalanceUseCase
 import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
 import com.tokopedia.ovop2p.domain.usecase.OvoTrxnConfirmationUseCase
-import com.tokopedia.ovop2p.view.fragment.OvoP2PForm.Companion.GENERAL_ERROR
 import com.tokopedia.ovop2p.view.viewStates.GoToThankYouPage
 import com.tokopedia.ovop2p.view.viewStates.OpenPinChlngWebView
 import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorPage
@@ -51,7 +50,7 @@ class OvoDetailViewModel @Inject constructor(
                 } else {
                     onSuccessGetWalletDetail(walletDataBase.wallet)
                 }
-            } ?: kotlin.run {
+            } ?: run {
                 walletDataBase.wallet?.let { onSuccessGetWalletDetail(it) }
             }
 
@@ -98,14 +97,8 @@ class OvoDetailViewModel @Inject constructor(
                             confObj.transferId?.let { GoToThankYouPage(it) }
                     }
                 }
-            } ?: kotlin.run {
-                if (!TextUtils.isEmpty(confObj.pinUrl)) {
-                    txnConfirmMutableLiveData.value =
-                        confObj.pinUrl?.let { OpenPinChlngWebView(it) }
-                } else {
-                    txnConfirmMutableLiveData.value =
-                        confObj.transferId?.let { GoToThankYouPage(it) }
-                }
+            } ?: run {
+                txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(GENERAL_ERROR)
             }
         }
     }
@@ -130,8 +123,8 @@ class OvoDetailViewModel @Inject constructor(
                 } else {
                     setSuccessData(reqObj)
                 }
-            } ?: kotlin.run {
-                setSuccessData(reqObj)
+            } ?: run {
+                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(GENERAL_ERROR)
             }
         }
     }
@@ -164,6 +157,7 @@ class OvoDetailViewModel @Inject constructor(
 
     companion object {
         const val NON_OVO_ERROR = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
+        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
     }
 
 

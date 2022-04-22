@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.ovop2p.viewmodel.OvoDetailViewModel
+import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,4 +19,9 @@ abstract class OvoP2PViewModelModule {
     @IntoMap
     @ViewModelKey(OvoDetailViewModel::class)
     internal abstract fun bindsWalletBalanceViewModel(viewModel: OvoDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OvoP2PTransactionThankYouVM::class)
+    internal abstract fun bindsOvoP2pTransactionThankYou(thankyouViewModel: OvoP2PTransactionThankYouVM): ViewModel
 }
