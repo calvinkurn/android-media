@@ -96,6 +96,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final int HALF_PROGRESS = 50;
     private static final int PICTURE_QUALITY = 60;
     private static final String ERR_INTERNET_DISCONNECTED = "ERR_INTERNET_DISCONNECTED";
+    public static final String TOKOPEDIA_COM = ".tokopedia.com";
 
     public TkpdWebView webView;
     ProgressBar progressBar;
@@ -190,7 +191,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.endsWith(".tokopedia.com") && !host.contains(ZOOM_US_STRING);
+        isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
