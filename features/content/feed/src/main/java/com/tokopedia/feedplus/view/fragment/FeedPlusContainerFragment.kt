@@ -494,6 +494,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun renderCompleteFab() {
+        hideAllFab()
+
         val items = arrayListOf<FloatingButtonItem>()
 
         if (userSession.hasShop() && userSession.isLoggedIn) {
