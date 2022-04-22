@@ -90,7 +90,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
-    
+
     private val discountStatusId by lazy {
         arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
     }
@@ -257,7 +257,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         val hasNextPage = data.size == getPerPage()
         renderList(data, hasNextPage)
 
-        if (data.size == ZERO) {
+        val currentItemCount = adapter?.getItems()?.size.orZero()
+        val isScrolling = currentItemCount > ZERO
+
+        if (data.isEmpty() && !isScrolling) {
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
             binding?.emptyState?.setTitle(getString(R.string.sd_search_result_not_found_title))
             binding?.emptyState?.setDescription(getString(R.string.sd_search_result_not_found_description))
