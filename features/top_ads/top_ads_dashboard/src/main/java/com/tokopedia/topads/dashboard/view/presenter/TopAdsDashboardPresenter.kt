@@ -185,22 +185,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
-        val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
-        topAdsGetGroupListUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+        launchCatchError(block = {
+            val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<DashGroupListResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<DashGroupListResponse>
-                val nonGroupResponse = response.data.getTopadsDashboardGroups
-                onSuccess(nonGroupResponse.data)
-            }
+            val response = topAdsGetGroupListUseCase.execute(params)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            onSuccess(response.getTopadsDashboardGroups.data)
+
+        }, onError = {
+            it.printStackTrace()
         })
     }
 

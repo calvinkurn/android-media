@@ -10,7 +10,6 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.FinalAdResponse
@@ -36,7 +35,6 @@ import rx.Subscriber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 /**
  * Created by Pika on 7/6/20.
@@ -209,22 +207,15 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun getGroupList(search: String, onSuccess: (List<GroupListDataItem>) -> Unit) {
-        val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
-        topAdsGetGroupListUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
+        launchCatchError(block = {
+            val params = topAdsGetGroupListUseCase.setParamsForKeyWord(search)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<DashGroupListResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<DashGroupListResponse>
-                val nonGroupResponse = response.data.getTopadsDashboardGroups
-                onSuccess(nonGroupResponse.data)
-            }
+            val response = topAdsGetGroupListUseCase.execute(params)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            onSuccess(response.getTopadsDashboardGroups.data)
+
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -272,7 +263,6 @@ class GroupDetailViewModel @Inject constructor(
         topAdsGetAdKeywordUseCase.cancelJobs()
         topAdsKeywordsActionUseCase.cancelJobs()
         topAdsProductActionUseCase.unsubscribe()
-        topAdsGetGroupListUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
