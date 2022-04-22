@@ -22,7 +22,7 @@ import org.hamcrest.Matcher
 
 
 @UiTest
-class CameraPageUiTest : CameraPageTest() {
+class CameraPhotoOnlyUiTest : CameraPageTest() {
     @get:Rule
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         android.Manifest.permission.CAMERA,
