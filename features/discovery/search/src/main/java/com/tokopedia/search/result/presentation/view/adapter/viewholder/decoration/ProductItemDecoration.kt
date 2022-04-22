@@ -25,6 +25,7 @@ class ProductItemDecoration(private val spacing: Int) : ItemDecoration() {
             R.layout.search_result_product_card_small_grid_with_viewstub,
             R.layout.search_result_product_card_big_grid,
             R.layout.search_result_product_card_list,
+            R.layout.search_result_product_card_list_with_viewstub,
             R.layout.search_result_recommendation_card_small_grid,
             R.layout.search_result_product_big_grid_inspiration_card_layout,
             R.layout.search_result_product_small_grid_inspiration_card_layout

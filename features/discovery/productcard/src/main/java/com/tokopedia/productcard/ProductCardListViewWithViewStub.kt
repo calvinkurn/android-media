@@ -6,11 +6,7 @@ import android.view.View
 import com.tokopedia.productcard.utils.findViewByIdInViewStub
 import com.tokopedia.unifycomponents.UnifyButton
 
-class ProductCardGridViewWithViewStub: BaseProductCardGridView {
-    override val buttonSimilarProduct: UnifyButton? by lazy {
-        findViewByIdInViewStub(R.id.buttonSeeSimilarProductStub, R.id.buttonSeeSimilarProduct)
-    }
-
+class ProductCardListViewWithViewStub: BaseProductCardListView {
     override val buttonAddVariant: UnifyButton? by lazy {
         findViewByIdInViewStub(R.id.buttonAddVariantStub, R.id.buttonAddVariant)
     }
@@ -27,6 +23,14 @@ class ProductCardGridViewWithViewStub: BaseProductCardGridView {
         findViewByIdInViewStub(R.id.buttonSeeSimilarProductWishlistStub, R.id.buttonSeeSimilarProductWishlist)
     }
 
+    override val buttonAddToCart: UnifyButton? by lazy {
+        findViewByIdInViewStub(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
+    }
+
+    override val buttonDeleteProduct: UnifyButton? by lazy {
+        findViewByIdInViewStub(R.id.buttonDeleteProductStub, R.id.buttonDeleteProduct)
+    }
+
     constructor(context: Context): super(context) {
         init()
     }
@@ -40,6 +44,6 @@ class ProductCardGridViewWithViewStub: BaseProductCardGridView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.product_card_grid_with_viewstub_layout, this)
+        View.inflate(context, R.layout.product_card_list_with_viewstub_layout, this)
     }
 }

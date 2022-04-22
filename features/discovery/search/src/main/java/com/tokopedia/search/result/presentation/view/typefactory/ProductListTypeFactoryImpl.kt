@@ -109,7 +109,7 @@ class ProductListTypeFactoryImpl(
     override fun type(productItem: ProductItemDataView): Int {
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST ->
-                ListProductItemViewHolder.LAYOUT
+                if (isUsingViewStub) ListProductItemWithViewStubViewHolder.LAYOUT else ListProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
@@ -216,6 +216,8 @@ class ProductListTypeFactoryImpl(
         return when (type) {
             ListProductItemViewHolder.LAYOUT ->
                 ListProductItemViewHolder(view, productListener)
+            ListProductItemViewHolder.LAYOUT ->
+                ListProductItemWithViewStubViewHolder(view, productListener)
             SmallGridProductItemViewHolder.LAYOUT ->
                 SmallGridProductItemViewHolder(view, productListener)
             SmallGridProductItemWithViewStubViewHolder.LAYOUT ->

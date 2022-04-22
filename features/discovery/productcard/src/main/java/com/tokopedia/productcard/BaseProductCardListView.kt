@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Space
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -15,8 +16,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.initLabelGroup
-import com.tokopedia.productcard.utils.loadImage
-import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -24,10 +24,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 
-abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
-    private val cartExtension by lazy {
-        ProductCardCartExtension(this)
-    }
+abstract class BaseProductCardListView: BaseCustomView, IProductCardView {
+    private val cartExtension = ProductCardCartExtension(this)
     private val video: VideoPlayerController by lazy{
         VideoPlayerController(this, R.id.videoProduct, R.id.imageProduct)
     }
@@ -58,7 +56,6 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
     private val imageThreeDots: ImageView? by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.imageThreeDots)
     }
-    abstract val buttonSimilarProduct: UnifyButton?
     private val labelCampaignBackground: ImageView? by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.labelCampaignBackground)
     }
@@ -90,13 +87,21 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
     private val imageFreeOngkirPromo: ImageView? by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.imageFreeOngkirPromo)
     }
+    abstract val buttonAddToCart: UnifyButton?
+    abstract val buttonDeleteProduct: UnifyButton?
+    private val buttonRemoveFromWishlist: FrameLayout? by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonRemoveFromWishlist)
+    }
+    private val spaceCampaignBestSeller: Space? by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.spaceCampaignBestSeller)
+    }
 
     constructor(context: Context): super(context)
     constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun setProductModel(productCardModel: ProductCardModel) {
-        imageProduct?.loadImage(productCardModel.productImageUrl)
+        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
@@ -127,6 +132,9 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
             productCardModel
         )
 
+        val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
+        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
+
         outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
@@ -135,25 +143,25 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        renderProductCardContent(productCardModel, productCardModel.isWideContent)
+        renderProductCardContent(productCardModel, isWideContent = true)
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
-        renderProductCardFooter(productCardModel, isProductCardList = false)
+        renderProductCardFooter(productCardModel, isProductCardList = true)
 
-        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
-            constraintLayoutProductCard?.post {
-                imageThreeDots?.expandTouchArea(
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                    getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-                )
-            }
-        }
+        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
         video.setVideoURL(productCardModel.customVideoURL)
+
+        constraintLayoutProductCard?.post {
+            imageThreeDots?.expandTouchArea(
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
+            )
+        }
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
@@ -164,16 +172,20 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.setOnClickListener(threeDotsClickListener)
     }
 
+    fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) {
+        buttonDeleteProduct?.setOnClickListener(deleteProductClickListener)
+    }
+
+    fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {
+        buttonRemoveFromWishlist?.setOnClickListener(removeWishlistClickListener)
+    }
+
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         cartExtension.addToCartClickListener = addToCartClickListener
     }
 
     fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
-    }
-
-    fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
-        buttonSimilarProduct?.setOnClickListener(similarProductClickListener)
     }
 
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
@@ -202,6 +214,7 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
 
     fun applyCarousel() {
         setCardHeightMatchParent()
+        resizeImageProductSize()
     }
 
     private fun setCardHeightMatchParent() {
@@ -210,10 +223,16 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
         cardViewProductCard?.layoutParams = layoutParams
     }
 
+    private fun resizeImageProductSize() {
+        val layoutParams = imageProduct?.layoutParams
+        layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+        layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+        imageProduct?.layoutParams = layoutParams
+    }
+
     override fun recycle() {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
-        labelCampaignBackground?.glideClear()
         cartExtension.clear()
         video.clear()
     }
@@ -230,5 +249,35 @@ abstract class BaseProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getVideoPlayerController(): VideoPlayerController {
         return video
+    }
+
+    /**
+     * Special cases for specific pages
+     * */
+    fun wishlistPage_hideCTAButton(isVisible: Boolean) {
+        buttonAddToCart?.showWithCondition(isVisible)
+        buttonRemoveFromWishlist?.showWithCondition(isVisible)
+        progressBarStock?.showWithCondition(!isVisible)
+        textViewStockLabel?.showWithCondition(!isVisible)
+    }
+
+    fun wishlistPage_enableButtonAddToCart(){
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = true
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.GHOST
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+    }
+
+    fun wishlistPage_disableButtonAddToCart(){
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+    }
+
+    fun wishlistPage_setOutOfStock(){
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
+        buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
     }
 }
