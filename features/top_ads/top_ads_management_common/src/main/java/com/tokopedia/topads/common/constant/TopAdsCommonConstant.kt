@@ -18,6 +18,7 @@ object TopAdsCommonConstant {
     const val TOPADS_MOVE_TO_DASHBOARD = "move_to_dashboard"
     const val TOPADS_AUTOADS_BUDGET_UPDATED = "budget_updated"
     const val PARAM_PRODUK_IKLAN = 1
+    const val PARAM_IKLAN_TOKO = 2
     const val PARAM_AUTOADS_BUDGET = 1
     const val ERROR_TOO_MANY_REQUEST = "TOO_MANY_REQUESTS"
     const val ERROR_INVALID_ITEM_ID = "INVALID_ITEM_ID"
