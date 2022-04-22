@@ -274,15 +274,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minBid = it.minBid
             maxBid = it.maxBid
         }
-        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
-            it.forEach {
-                if (it.bidType.equals(PRODUCT_AUTO_SEARCH)) {
-                    budgetInput.textFieldInput.setText(suggestBidPerClick)
-                } else if (it.bidType.equals(PRODUCT_AUTO_BROWSE)) {
-                    budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
-                }
-            }
-        })
         checkForbidValidity(getCurrentBid())
         checkForRekommendedBid(getCurrentRekommendedBid())
     }
@@ -644,8 +635,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        registerObservers()
         userID = UserSession(view.context).userId
+        registerObservers()
 
         info1.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
@@ -669,27 +660,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 ""
             )
             onAddKeyword()
-        }
-
-        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, {
-            it.forEach {
-                if (it.bidType.equals(PRODUCT_SEARCH)) {
-                    budgetInput.textFieldInput.setText(
-                        ( it.priceBid?.toInt()?:suggestBidPerClick).toString()
-                    )
-                } else if(it.bidType.equals(PRODUCT_BROWSE)) {
-                            budgetInputRekomendasi.textFieldInput.setText(( it.priceBid?.toInt()?:suggestBidPerClick).toString())
-                }
-            }
-        })
-
-        if(budgetInput.textFiedlLabelText.text.isEmpty()) {
-            budgetInput.setError(true)
-            budgetInput.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
-        }
-        if(budgetInputRekomendasi.textFiedlLabelText.text.isEmpty()) {
-            budgetInputRekomendasi.setError(true)
-            budgetInputRekomendasi.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
         }
 
         budgetInput.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
@@ -724,10 +694,43 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun updateTextFields() {
+        if(budgetInput.textFieldInput.text.isEmpty()) {
+            budgetInput.setError(true)
+            budgetInput.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
+        }
+        if(budgetInputRekomendasi.textFieldInput.text.isEmpty()) {
+            budgetInputRekomendasi.setError(true)
+            budgetInputRekomendasi.setMessage(getString(com.tokopedia.topads.common.R.string.empty_bid_error_message))
+        }
+    }
+
     private fun registerObservers() {
         sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
             groupId = it
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
+        })
+
+        sharedViewModel.getBidSettings().observe(viewLifecycleOwner, { list ->
+            list.forEach {
+                when {
+                    it.bidType.equals(PRODUCT_SEARCH) -> {
+                        budgetInput.textFieldInput.setText(
+                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                    }
+                    it.bidType.equals(PRODUCT_BROWSE) -> {
+                        budgetInputRekomendasi.textFieldInput.setText(
+                            (it.priceBid?.toInt() ?: suggestBidPerClick).toString())
+                    }
+                    it.bidType.equals(PRODUCT_AUTO_SEARCH) -> {
+                        budgetInput.textFieldInput.setText(suggestBidPerClick)
+                    }
+                    it.bidType.equals(PRODUCT_AUTO_BROWSE) -> {
+                        budgetInputRekomendasi.textFieldInput.setText(suggestBidPerClick)
+                    }
+                }
+            }
+            updateTextFields()
         })
     }
 
