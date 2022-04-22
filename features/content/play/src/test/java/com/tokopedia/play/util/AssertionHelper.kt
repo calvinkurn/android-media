@@ -138,10 +138,20 @@ fun Boolean.assertFalse() {
         .isFalse
 }
 
+@Deprecated(
+    message = "Use assertInstanceOf()",
+    replaceWith = ReplaceWith("assertInstanceOf()"),
+)
 fun <T : Any?> Any.isInstanceOf(expected: Class<T>) {
     Assertions
             .assertThat(this)
             .isInstanceOf(expected)
+}
+
+inline fun <reified T : Any?> Any.assertInstanceOf() {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(T::class.java)
 }
 
 inline fun <reified T: Throwable> throwsException(fn: () -> Any) {

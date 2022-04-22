@@ -47,7 +47,6 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             val response = getCurrentInteractiveUseCase.apply {
                 setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
             }.executeOnBackground()
-
             return@withContext interactiveMapper.mapInteractive(response.data)
         }
 

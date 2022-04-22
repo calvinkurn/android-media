@@ -2,13 +2,25 @@ package com.tokopedia.play.view.uimodel.action
 
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
  * Created by jegul on 28/06/21
  */
-sealed class PlayViewerNewAction
+sealed class PlayViewerNewAction {
+
+    object GiveawayUpcomingEnded : PlayViewerNewAction()
+    object GiveawayOngoingEnded : PlayViewerNewAction()
+
+    data class ClickQuizOptionAction(val item: QuizChoicesUiModel): PlayViewerNewAction()
+    object QuizEnded : PlayViewerNewAction()
+
+    object StartPlayingInteractive : PlayViewerNewAction()
+    object StopPlayingInteractive : PlayViewerNewAction()
+    object Follow : PlayViewerNewAction()
+}
 
 /**
  * Interactive
@@ -17,6 +29,7 @@ object InteractivePreStartFinishedAction : PlayViewerNewAction()
 object InteractiveOngoingFinishedAction : PlayViewerNewAction()
 
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
+data class InteractiveGameResultBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
 object InteractiveTapTapAction : PlayViewerNewAction()
 

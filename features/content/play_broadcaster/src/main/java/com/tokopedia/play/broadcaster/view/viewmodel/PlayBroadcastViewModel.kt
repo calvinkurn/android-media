@@ -53,6 +53,7 @@ import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -894,9 +895,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     }
                 }
             }
-            is GetCurrentInteractiveResponse -> {
-                val currentInteractive = interactiveMapper.mapInteractive(result.data)
-                handleActiveInteractiveFromNetwork(currentInteractive)
+            is GiveawayResponse -> {
+                //TODO() add channelInteractiveMapper
+                //val currentInteractive = channelInteractiveMapper.mapInteractive(result)
+                //handleActiveInteractiveFromNetwork(currentInteractive)
             }
             is PinnedMessageSocketResponse -> {
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
