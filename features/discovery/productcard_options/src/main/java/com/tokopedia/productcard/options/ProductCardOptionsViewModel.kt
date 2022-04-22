@@ -152,7 +152,7 @@ internal class ProductCardOptionsViewModel(
         wishlistEventLiveData.postValue(Event(true))
     }
 
-    private fun onSuccessAddWishlistV2(resultWishlistV2: AddToWishlistV2Response.Data.WishlistAdd) {
+    private fun onSuccessAddWishlistV2(resultWishlistV2: AddToWishlistV2Response.Data.WishlistAddV2) {
         productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true,
             isSuccess = resultWishlistV2.success, isAddWishlist = true,
             isUsingWishlistV2 = isUsingWishlistV2, messageV2 = resultWishlistV2.message,
