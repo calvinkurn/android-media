@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -84,24 +85,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     val coachMarkItem = ArrayList<CoachMark2Item>()
     private  lateinit var coachMark: CoachMark2
 
-    private val userSession: UserSessionInterface by lazy(mode = LazyThreadSafetyMode.NONE) {
-        UserSession(context)
-    }
-
-    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
-        val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
-        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                viewModel.setSelectedFeedAccount(feedAccount)
-            }
-        })
-        fragment
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is FeedAccountTypeBottomSheet -> {
+                childFragment.setData(viewModel.feedAccountList)
+                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(feedAccount)
+                    }
+                })
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -308,7 +309,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openFeedAccountBottomSheet(){
-        feedAccountBottomSheet.showNow(childFragmentManager)
+        FeedAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .showNow(childFragmentManager)
     }
 
     private fun showFabCoachMark() {
@@ -479,12 +482,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun setObservers() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.feedAccountList.collect {
-                feedAccountBottomSheet.setData(it)
-            }
-        }
-        
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.selectedFeedAccount.collectLatest {
                 toolbarCommon.subtitle = it.name
