@@ -17,12 +17,8 @@ class ShopBannerInfiniteItemViewModel(application: Application, val components: 
 
     fun getComponentLiveData(): LiveData<ComponentsItem> = componentData
 
-    fun getItemData(): DataItem? {
-        return getDataItem()
-    }
-
     fun getNavigationUrl(): String? {
-        return getDataItem()?.imageClickUrl
+        return getDataItem()?.applinks
     }
 
     private fun getDataItem(): DataItem? {
