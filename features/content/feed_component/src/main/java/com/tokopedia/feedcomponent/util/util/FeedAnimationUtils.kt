@@ -1,9 +1,6 @@
 package com.tokopedia.feedcomponent.util.util
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
+import android.animation.*
 import android.content.Context
 import android.transition.AutoTransition
 import android.transition.Transition
@@ -237,6 +234,14 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         anim.duration = 0
         anim.start()
     }
+}
+fun changeBackgroundColorAnimation(startColor: Int, endColor: Int, view: View){
+
+    val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), startColor, endColor)
+    colorAnimation.duration = 250 // milliseconds
+
+    colorAnimation.addUpdateListener { animator -> view.setBackgroundColor(animator.animatedValue as Int) }
+    colorAnimation.start()
 }
 
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
