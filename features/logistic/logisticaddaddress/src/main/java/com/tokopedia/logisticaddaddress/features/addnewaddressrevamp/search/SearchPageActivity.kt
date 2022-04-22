@@ -48,7 +48,7 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         val bundle = Bundle()
         if (intent != null && intent.extras != null) {
             val extra = intent.extras
-            isEdit = bundle.getBoolean(AddressConstants.EXTRA_IS_EDIT)
+            isEdit = extra?.getBoolean(AddressConstants.EXTRA_IS_EDIT)
             extra?.getString(EXTRA_REF).let { from ->
                 if (isEdit == false) {
                     AddNewAddressRevampAnalytics.sendScreenName(from)
