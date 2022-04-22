@@ -19,12 +19,15 @@ import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroTokomemberItem
+import com.tokopedia.tokomember.model.BottomSheetContentItem
 
 
 const val KEY_NEED_LOGIN = "need_login"
 
 class GyroView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0 ,
+        var listener: RegisterMemberShipListener? = null)
     : FrameLayout(context, attrs, defStyleAttr), GyroAdapterListener {
 
 
@@ -59,6 +62,14 @@ class GyroView @JvmOverloads constructor(
         }
     }
 
+    fun updateTokoMemberWidget(position: Int, gyroTokomemberItem: GyroTokomemberItem?) {
+        if (adapter.list.any { it is GyroTokomemberItem } && position >=0) {
+            adapter.list.removeAt(position)
+            adapter.list.add(position, gyroTokomemberItem)
+            adapter.notifyItemChanged(position)
+        }
+    }
+
     private fun addTORecyclerView(featureEngineItem: ArrayList<Visitable<*>>) {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -69,18 +80,49 @@ class GyroView @JvmOverloads constructor(
         }
     }
 
-    override fun onItemDisplayed(gyroRecommendationListItem: GyroRecommendationListItem,
+    override fun onItemDisplayed(gyroRecommendationItem: Visitable<*>,
                                  position: Int) {
-        if (::analytics.isInitialized || ::thanksPageData.isInitialized)
-            analytics.onGyroRecommendationListView(gyroRecommendationListItem,
-                    thanksPageData, position + 1)
+        if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
+            when(gyroRecommendationItem) {
+                is GyroTokomemberItem -> {
+                    analytics.onGyroRecommendationTokomemberView(
+                        gyroRecommendationItem ,
+                        thanksPageData, position + 1
+                    )
+                }
+                is GyroRecommendationListItem -> {
+                    analytics.onGyroRecommendationListView(
+                        gyroRecommendationItem,
+                        thanksPageData, position + 1
+                    )
+                }
+            }
+        }
     }
 
-    override fun onItemClicked(gyroRecommendationListItem: GyroRecommendationListItem,
+    override fun onItemClicked(gyroRecommendationItem: Visitable<*>,
                                position: Int) {
-        if (::analytics.isInitialized || ::thanksPageData.isInitialized)
-            analytics.onGyroRecommendationListClick(gyroRecommendationListItem,
-                    thanksPageData, position + 1)
+        if (::analytics.isInitialized || ::thanksPageData.isInitialized) {
+            when (gyroRecommendationItem) {
+                is GyroTokomemberItem -> {
+                    analytics.onGyroRecommendationTokomemberClick(
+                        gyroRecommendationItem,
+                        thanksPageData, position + 1
+                    )
+                    listener?.registerMembership(
+                        gyroRecommendationItem.listOfBottomSheetContent,
+                        gyroRecommendationItem.membershipCardId,
+                        position
+                    )
+                }
+                is GyroRecommendationListItem -> {
+                    analytics.onGyroRecommendationListClick(
+                        gyroRecommendationItem,
+                        thanksPageData, position + 1
+                    )
+                }
+            }
+        }
     }
 
     override fun openAppLink(appLink: String) {
@@ -94,4 +136,12 @@ class GyroView @JvmOverloads constructor(
         }
         context.startActivity(intent)
     }
+}
+
+interface RegisterMemberShipListener {
+    fun registerMembership(
+        bottomSheetContentItem: BottomSheetContentItem,
+        memberShipCardId: String,
+        position: Int
+    )
 }

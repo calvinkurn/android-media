@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -215,6 +216,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         listSize = 0
         adapter.resetList()
         hideGlobalErrorEmptyState()
+        affiliateIncomeViewModel.getAffiliateBalance()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
     }
 
@@ -277,7 +279,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
-                affiliateIncomeViewModel.getAffiliateBalance()
                 resetItems()
             }
             view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
@@ -317,15 +318,24 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         affiliateIncomeViewModel.getAffiliateBalance()
     }
 
+    private var tarikSaldoBtn : UnifyButton? = null
     private fun initUi() {
+        tarikSaldoBtn =  view?.findViewById(R.id.saldo_button_affiliate)
         setTarikSaldoButtonUI()
         when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
-            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
-            else -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+            AFFILIATE_WITHDRAWAL -> if(!affiliateIncomeViewModel.getIsBlackListed()) tarikSaldoBtn?.isEnabled = true
+            else ->{
+                tarikSaldoBtn?.isEnabled = false
+                initTicker()
+            }
         }
+    }
+
+    private fun initTicker() {
+        view?.findViewById<Ticker>(R.id.affiliate_income_ticker)?.show()
     }
 
     private fun setTarikSaldoButtonUI() {

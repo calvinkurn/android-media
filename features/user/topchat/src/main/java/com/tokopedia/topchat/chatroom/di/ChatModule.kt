@@ -240,7 +240,8 @@ class ChatModule {
     @Provides
     fun provideTopChatWebSocket(
         userSession: UserSessionInterface,
-        client: OkHttpClient
+        client: OkHttpClient,
+        abTestPlatform: AbTestPlatform
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN
             .plus(ChatUrl.CONNECT_WEBSOCKET)
@@ -252,7 +253,7 @@ class ChatModule {
                 userSession.userId
             )
         return DefaultTopChatWebSocket(
-            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM
+            client, webSocketUrl, userSession.accessToken, PAGE_CHATROOM, abTestPlatform
         )
     }
 

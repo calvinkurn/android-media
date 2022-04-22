@@ -10,6 +10,8 @@ import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductM
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -47,6 +49,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val searchCoachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
+    protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
 
@@ -73,11 +76,12 @@ internal open class ProductListPresenterTestFixtures {
             testSchedulersProvider,
             topAdsHeadlineHelper,
             { performanceMonitoring },
+            ChooseAddressPresenterDelegate(chooseAddressView),
         )
         productListPresenter.attachView(productListView)
 
         verify {
-            productListView.isChooseAddressWidgetEnabled
+            chooseAddressView.isChooseAddressWidgetEnabled
         }
     }
 

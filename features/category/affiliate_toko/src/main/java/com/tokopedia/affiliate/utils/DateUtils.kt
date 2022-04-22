@@ -4,11 +4,31 @@ import android.content.Context
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate_toko.R
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Exception
 
 class DateUtils {
+
+    fun formatDate(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = dd_MMM_yyyy_HH_mm, dateString: String): String {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
+            fromFormat.isLenient = false
+            fromFormat.timeZone = TimeZone.getTimeZone(UTC)
+            val toFormat: DateFormat = SimpleDateFormat(newFormat, Locale.ENGLISH)
+            toFormat.isLenient = false
+            toFormat.timeZone = TimeZone.getDefault()
+
+            val date = fromFormat.parse(dateString)
+            toFormat.format(date)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            dateString
+        }
+    }
+
      fun getMessage(dayRange: String,context: Context? = null): String {
         val timeZone = TimeZone.getTimeZone(TIME_ZONE)
         val calendar = Calendar.getInstance()
