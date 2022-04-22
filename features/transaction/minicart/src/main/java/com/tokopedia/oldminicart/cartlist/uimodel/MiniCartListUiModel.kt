@@ -1,7 +1,9 @@
 package com.tokopedia.oldminicart.cartlist.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.oldminicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.oldminicart.common.domain.data.MiniCartWidgetData
 
 data class MiniCartListUiModel(

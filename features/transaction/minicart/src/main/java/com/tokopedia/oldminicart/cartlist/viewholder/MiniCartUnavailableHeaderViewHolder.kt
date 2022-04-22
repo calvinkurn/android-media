@@ -3,7 +3,7 @@ package com.tokopedia.oldminicart.cartlist.viewholder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.R
 import com.tokopedia.oldminicart.cartlist.MiniCartListActionListener
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartUnavailableHeaderBinding
 
 class MiniCartUnavailableHeaderViewHolder(private val viewBinding: ItemMiniCartUnavailableHeaderBinding,

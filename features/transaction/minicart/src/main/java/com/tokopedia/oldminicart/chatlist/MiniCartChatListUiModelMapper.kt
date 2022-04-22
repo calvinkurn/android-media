@@ -1,10 +1,10 @@
 package com.tokopedia.oldminicart.chatlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.oldminicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatProductUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 import com.tokopedia.oldminicart.common.data.response.minicartlist.*
 import com.tokopedia.oldminicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartListUiModel

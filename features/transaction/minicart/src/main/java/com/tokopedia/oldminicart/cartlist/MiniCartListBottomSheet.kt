@@ -21,13 +21,14 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.oldminicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.oldminicart.cartlist.adapter.MiniCartListAdapterTypeFactory
-import com.tokopedia.oldminicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.oldminicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.oldminicart.common.domain.data.MiniCartWidgetData
-import com.tokopedia.oldminicart.common.widget.GlobalEvent
+import com.tokopedia.minicart.common.widget.GlobalEvent
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics.Page
 import com.tokopedia.oldminicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
@@ -185,7 +186,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+        val pageName = viewModel?.currentPage?.value ?: Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
         val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false

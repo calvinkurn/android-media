@@ -8,12 +8,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatProductUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
-import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatLoadingViewHolder
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatLoadingViewHolder
 import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatProductViewHolder
-import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatSeparatorViewHolder
-import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatSeparatorViewHolder
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
 import com.tokopedia.minicart.databinding.*
 
 class MiniCartChatListAdapterTypeFactory(private val listener: MiniCartChatProductViewHolder.ChatProductListener? = null)

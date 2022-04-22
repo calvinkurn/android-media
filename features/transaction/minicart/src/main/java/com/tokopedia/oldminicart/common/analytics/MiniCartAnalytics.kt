@@ -3,16 +3,13 @@ package com.tokopedia.oldminicart.common.analytics
 import android.os.Bundle
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.oldminicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics.Page
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
-
-    enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE, DISCOVERY_PAGE, RECOMMENDATION_INFINITE, MVC_PAGE
-    }
 
     companion object {
         const val AB_TEST_BUY = "beli"

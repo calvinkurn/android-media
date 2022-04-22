@@ -2,7 +2,7 @@ package com.tokopedia.oldminicart.chatlist.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatProductUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 
 class MiniCartChatListDiffUtilCallback(private val oldList: List<Any>,
                                        private val newList: List<Any>) : DiffUtil.Callback() {

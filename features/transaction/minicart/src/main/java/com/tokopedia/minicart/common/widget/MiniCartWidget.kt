@@ -38,9 +38,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.oldminicart.common.widget.MiniCartWidget
-import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToOldGlobalEvent
 import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToOldMiniCartData
-import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToOldPageName
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.totalamount.TotalAmount
@@ -123,9 +121,8 @@ class MiniCartWidget @JvmOverloads constructor(
             }
             addView(view)
         } else {
-            val page = mapToOldPageName(pageName)
             oldMiniCart = MiniCartWidget(context)
-            oldMiniCart?.initialize(shopIds, fragment, listener, autoInitializeData, page)
+            oldMiniCart?.initialize(shopIds, fragment, listener, autoInitializeData, pageName)
             addView(oldMiniCart)
         }
     }
@@ -630,8 +627,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
             }
         } else {
-            val event = mapToOldGlobalEvent(globalEvent)
-            oldMiniCart?.onBottomSheetFailedGoToCheckout(toasterAnchorView, fragmentManager, event)
+            oldMiniCart?.onBottomSheetFailedGoToCheckout(toasterAnchorView, fragmentManager, globalEvent)
         }
     }
 

@@ -6,8 +6,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.R
-import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatSeparatorViewHolder
-import com.tokopedia.oldminicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatSeparatorViewHolder
+import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatUnavailableReasonViewHolder
 import javax.inject.Inject
 
 class MiniCartChatListDecoration @Inject constructor() : RecyclerView.ItemDecoration() {

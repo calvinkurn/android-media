@@ -26,15 +26,17 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.oldminicart.cartlist.MiniCartListBottomSheet
-import com.tokopedia.oldminicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
-import com.tokopedia.oldminicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.oldminicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.oldminicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.oldminicart.common.domain.data.MiniCartCheckoutData
+import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.oldminicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics.Page
 import com.tokopedia.oldminicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToMiniCartData
 import com.tokopedia.oldminicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -94,7 +96,7 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: Page) {
         if (viewModel == null) {
             val application = fragment.activity?.application
             initializeInjector(application)
@@ -280,13 +282,13 @@ class MiniCartWidget @JvmOverloads constructor(
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
-            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+            val pageName = viewModel?.currentPage?.value ?: Page.HOME_PAGE
             val pageSource = when (pageName) {
-                MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
-                MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
-                MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
-                MiniCartAnalytics.Page.DISCOVERY_PAGE -> "$MINICART_PAGE_SOURCE discovery page"
-                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
+                Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
+                Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
+                Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
+                Page.DISCOVERY_PAGE -> "$MINICART_PAGE_SOURCE discovery page"
+                Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
                 else -> ""
             }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
@@ -362,7 +364,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+        val pageName = viewModel?.currentPage?.value ?: Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
         val isOCCFlow = viewModel?.miniCartABTestData?.value?.isOCCFlow ?: false
         analytics.eventClickBuy(pageName, products, isOCCFlow)

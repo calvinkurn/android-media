@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.oldminicart.cartlist.MiniCartListActionListener
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartTickerErrorBinding
 
 class MiniCartTickerErrorViewHolder(private val viewBinding: ItemMiniCartTickerErrorBinding,

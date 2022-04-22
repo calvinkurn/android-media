@@ -1,12 +1,10 @@
 package com.tokopedia.oldminicart.common.widget
 
-import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
-import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 object MiniCartWidgetMapper {
@@ -123,25 +121,5 @@ object MiniCartWidgetMapper {
             cartItems,
             isShowMiniCartWidget
         )
-    }
-    
-    fun mapToOldGlobalEvent(globalEvent: GlobalEvent): com.tokopedia.oldminicart.common.widget.GlobalEvent {
-        return com.tokopedia.oldminicart.common.widget.GlobalEvent(
-            globalEvent.observer,
-            globalEvent.state,
-            globalEvent.data,
-            globalEvent.throwable
-        )
-    }
-
-    fun mapToOldPageName(pageName: MiniCartAnalytics.Page): com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page {
-        return when (pageName) {
-            MiniCartAnalytics.Page.HOME_PAGE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.HOME_PAGE
-            MiniCartAnalytics.Page.SEARCH_PAGE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.SEARCH_PAGE
-            MiniCartAnalytics.Page.CATEGORY_PAGE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.CATEGORY_PAGE
-            MiniCartAnalytics.Page.DISCOVERY_PAGE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.DISCOVERY_PAGE
-            MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.RECOMMENDATION_INFINITE
-            MiniCartAnalytics.Page.MVC_PAGE -> com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics.Page.MVC_PAGE
-        }
     }
 }

@@ -1,9 +1,8 @@
 package com.tokopedia.oldminicart.cartlist
 
-import android.content.Context
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.oldminicart.common.widget.GlobalEvent
+import com.tokopedia.minicart.common.widget.GlobalEvent
 
 interface MiniCartListBottomSheetListener {
 

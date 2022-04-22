@@ -3,8 +3,8 @@ package com.tokopedia.oldminicart.chatlist.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatProductUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
-import com.tokopedia.oldminicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatSeparatorUiModel
+import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatUnavailableReasonUiModel
 
 interface MiniCartChatListTypeFactory {
     fun type(uiModel: MiniCartChatUnavailableReasonUiModel): Int

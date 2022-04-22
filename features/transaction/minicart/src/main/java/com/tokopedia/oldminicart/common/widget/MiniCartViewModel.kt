@@ -19,18 +19,20 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.oldminicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartTickerErrorUiModel
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartTickerWarningUiModel
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
-import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.oldminicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics.Page
 import com.tokopedia.oldminicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.oldminicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.oldminicart.common.domain.data.MiniCartABTestData
-import com.tokopedia.oldminicart.common.domain.data.MiniCartCheckoutData
+import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
+import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.oldminicart.common.domain.data.MiniCartItem
 import com.tokopedia.oldminicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -61,8 +63,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
 
-    private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
-    val currentPage: LiveData<MiniCartAnalytics.Page>
+    private val _currentPage = MutableLiveData<Page>()
+    val currentPage: LiveData<Page>
         get() = _currentPage
 
     private val _miniCartABTestData = MutableLiveData<MiniCartABTestData>()
@@ -114,7 +116,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     // Setter & Getter
     // Some of setter & getter here added to reduce complexity (due to nullability) so we can increase unit test coverage
 
-    fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
+    fun initializeCurrentPage(currentPage: Page) {
         _currentPage.value = currentPage
     }
 
