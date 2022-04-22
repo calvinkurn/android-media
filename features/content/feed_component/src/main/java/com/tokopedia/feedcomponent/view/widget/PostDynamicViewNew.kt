@@ -542,18 +542,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun bindLikeData(feedXCard: FeedXCard) {
         val like: FeedXLike = feedXCard.like
         val id: Int = feedXCard.id.toIntOrZero()
-        val type: String = feedXCard.typename
-        val isFollowed: Boolean = feedXCard.followers.isFollowed
-        val shopId: String = feedXCard.author.id
         val mediaType: String = feedXCard.media.firstOrNull()?.type?:""
 
         if (like.isLiked) {
             val colorGreen =
-                ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G500)
+                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
+                MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (like.likedBy.isNotEmpty() || like.count != 0) {
@@ -597,9 +594,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 positionInFeed,
                 id,
                 like.isLiked,
-                type,
-                isFollowed,
-                shopId = shopId,
+                feedXCard.typename,
+                feedXCard.followers.isFollowed,
+                shopId = feedXCard.author.id,
                 mediaType = mediaType
             )
         }
