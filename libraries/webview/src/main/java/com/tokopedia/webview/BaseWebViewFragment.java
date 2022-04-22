@@ -22,12 +22,15 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +82,7 @@ import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import kotlin.Unit;
@@ -151,28 +155,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
      */
-    @Nullable
+    @NonNull
     protected String getUrl() {
         String env = TokopediaUrl.Companion.getInstance().getTYPE().getValue();
-        try {
-            String host = new URL(url).getHost();
-            if (host.endsWith(JS_TOKOPEDIA) || (host.endsWith(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
-                return url;
-            } else if (isTokopediaUrl) {
-                String gcmId = userSession.getDeviceId();
-                String userId = userSession.getUserId();
-                return URLGenerator.generateURLSessionLogin(
-                        encodeOnce(url),
-                        gcmId,
-                        userId);
-            } else {
-                return null;
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
+        if (url.contains(JS_TOKOPEDIA) || (url.contains(JS_STAGING_TOKOPEDIA) && env.equalsIgnoreCase(STAGING))) {
+            return url;
+        } else if (isTokopediaUrl) {
+            String gcmId = userSession.getDeviceId();
+            String userId = userSession.getUserId();
+            return URLGenerator.generateURLSessionLogin(
+                    encodeOnce(url),
+                    gcmId,
+                    userId);
+        } else {
+            return url;
         }
-
     }
 
     @Override
@@ -193,7 +190,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.endsWith("tokopedia.com") && !host.contains(ZOOM_US_STRING);
+        isTokopediaUrl = host != null && host.endsWith(".tokopedia.com") && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
@@ -289,15 +286,27 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     protected void loadWeb() {
         String url = getUrl();
-        if (url == null || url.isEmpty()){
-            Toast.makeText(getActivity(), "url is invalid", Toast.LENGTH_LONG).show();
-            getActivity().finish();
-            return;
-        }
         if (isTokopediaUrl) {
             webView.loadAuthUrl(url, new UserSession(getContext()));
         } else {
-            webView.loadAuthUrl(url, null);
+            redirectToNativeBrowser();
+        }
+    }
+
+    private void redirectToNativeBrowser() {
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//            List<ResolveInfo> queryIntentActivities = getActivity().getPackageManager().queryIntentActivities(browserIntent, PackageManager.MATCH_ALL);
+//            browserIntent.setPackage(queryIntentActivities.get(0).activityInfo.packageName);
+            startActivity(browserIntent);
+            getActivity().finish();
+        } catch (Throwable th) {
+            Log.d("TeST", th.toString());
+
+//            val messageMap: MutableMap<String, String> = HashMap()
+//            messageMap["type"] = "webview"
+//            messageMap["url"] = url
+//            ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
         }
     }
 
