@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -37,10 +36,13 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
+import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
+import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -54,7 +56,10 @@ import com.tokopedia.unifyprinciples.R as unifyR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodHomeFragment : BaseDaggerFragment(), IBaseMultiFragment {
+class TokoFoodHomeFragment : BaseDaggerFragment(),
+        IBaseMultiFragment,
+        TokoFoodHomeUSPViewHolder.TokoFoodUSPListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,9 +72,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(), IBaseMultiFragment {
     private val adapter by lazy {
         TokoFoodHomeAdapter(
             typeFactory = TokoFoodHomeAdapterTypeFactory(
-                createLegoBannerCallback(),
-                createBannerCallback(),
-                createCategoryWidgetCallback()
+                dynamicLegoBannerCallback = createLegoBannerCallback(),
+                bannerComponentCallback = createBannerCallback(),
+                categoryWidgetCallback = createCategoryWidgetCallback(),
+                uspListener = this,
             ),
             differ = TokoFoodHomeListDiffer()
         )
@@ -297,6 +303,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(), IBaseMultiFragment {
         loadLayout()
     }
 
+    private fun showUSPBottomSheet(uspResponse: USPResponse) {
+        val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
+        tokoFoodUSPBottomSheet.setUSP(uspResponse)
+        tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
+    }
 
     // region TokoFood Home Component Callback
 
@@ -310,6 +321,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(), IBaseMultiFragment {
 
     private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
         return TokoFoodHomeCategoryWidgetV2ComponentCallback()
+    }
+
+    // endregion
+
+    override fun onUSPClicked(uspResponse: USPResponse) {
+        showUSPBottomSheet(uspResponse)
     }
 
     // endregion

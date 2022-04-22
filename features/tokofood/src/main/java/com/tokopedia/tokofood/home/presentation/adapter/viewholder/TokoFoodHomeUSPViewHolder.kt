@@ -7,12 +7,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class TokoFoodHomeUSPViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: TokoFoodUSPListener? = null
 ): AbstractViewHolder<TokoFoodHomeUSPUiModel>(itemView) {
 
     companion object {
@@ -52,5 +54,15 @@ class TokoFoodHomeUSPViewHolder(
                 tgThirdUsp?.text = it.get(2).title
             }
         }
+
+        itemView?.setOnClickListener {
+            element.uspModel?.response?.let {
+                listener?.onUSPClicked(it)
+            }
+        }
+    }
+
+    interface TokoFoodUSPListener {
+        fun onUSPClicked(uspResponse: USPResponse)
     }
 }

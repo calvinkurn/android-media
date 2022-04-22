@@ -54,7 +54,8 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoCo
 class TokoFoodHomeAdapterTypeFactory (
     private val dynamicLegoBannerCallback: TokoFoodHomeLegoComponentCallback? = null,
     private val bannerComponentCallback: TokoFoodHomeBannerComponentCallback? = null,
-    private val categoryWidgetCallback: TokoFoodHomeCategoryWidgetV2ComponentCallback? = null
+    private val categoryWidgetCallback: TokoFoodHomeCategoryWidgetV2ComponentCallback? = null,
+    private val uspListener: TokoFoodHomeUSPViewHolder.TokoFoodUSPListener? = null
 ):  BaseAdapterTypeFactory(),
     TokoFoodHomeTypeFactory,
     HomeComponentTypeFactory {
@@ -91,7 +92,7 @@ class TokoFoodHomeAdapterTypeFactory (
         return when(type){
 
             // region TokoFood Home Component
-            TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view)
+            TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view, uspListener)
             TokoFoodHomeNoPinPoinViewHolder.LAYOUT -> TokoFoodHomeNoPinPoinViewHolder(view)
             TokoFoodHomeOutOfCoverageViewHolder.LAYOUT -> TokoFoodHomeOutOfCoverageViewHolder(view)
             TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
