@@ -14,7 +14,7 @@ import javax.inject.Inject
 class PlayInteractiveMapper @Inject constructor() {
 
     fun mapInteractive(data: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
-        val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong()),
+        val waitingDuration = TimeUnit.SECONDS.toMillis(data.meta.waitingDuration.toLong())
         return when (data.meta.active) {
             TYPE_GIVEAWAY -> mapGiveaway(data.giveaway, waitingDuration)
             TYPE_QUIZ -> mapQuiz(data.quiz, waitingDuration)
