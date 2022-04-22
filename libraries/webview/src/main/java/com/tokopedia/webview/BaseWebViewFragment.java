@@ -297,7 +297,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "browser");
             messageMap.put("url", url);
-            ServerLogger.log(Priority.P1, "FAILED_BROWSER", messageMap);
+            ServerLogger.log(Priority.P1, "INVALID_WEBVIEW_URL", messageMap);
         }
     }
 
