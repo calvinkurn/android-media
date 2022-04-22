@@ -23,6 +23,9 @@ data class GetAdminPermissionResponse(
                 @SerializedName("permission_name")
                 @Expose
                 val permissionName: String = "",
+                @SerializedName("permission_id")
+                @Expose
+                val permissionId: String = "",
                 @SerializedName("icon_url")
                 @Expose
                 val iconUrl: String = ""

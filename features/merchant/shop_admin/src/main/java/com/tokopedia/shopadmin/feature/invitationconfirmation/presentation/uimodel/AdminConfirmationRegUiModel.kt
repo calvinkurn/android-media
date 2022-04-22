@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model
+package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel
 
 data class AdminConfirmationRegUiModel(
     val isSuccess: Boolean,

@@ -20,9 +20,6 @@ data class ArticleDetailResponse(
             val blog: Blog = Blog()
         ) {
             data class Blog(
-                @SerializedName("description")
-                @Expose
-                val description: String = "",
                 @SerializedName("html_content")
                 @Expose
                 val htmlContent: String = "",

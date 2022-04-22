@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model
+package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel
 
 data class ShopAdminInfoUiModel(
     val shopName: String,

@@ -16,6 +16,7 @@ object GetAdminInfoListQuery: GqlQueryInterface {
               $OPERATION_NAME(source: ${'$'}source, shop_id: ${'$'}shop_id) {
                     admin_data {
                       permission_list {  
+                          permission_id
                           permission_name
                           icon_url
                       }

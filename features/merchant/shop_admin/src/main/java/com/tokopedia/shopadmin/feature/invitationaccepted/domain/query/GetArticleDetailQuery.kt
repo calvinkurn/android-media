@@ -7,15 +7,14 @@ object GetArticleDetailQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "articleDetail"
     private const val SLUG_KEY = "slug"
-    private const val SLUG_VALUE = ""
+    private const val SLUG_VALUE = "syarat-dan-ketentuan-admin"
 
     private val ARTICLE_DETAIL_QUERY = """
         query articleDetail(${'$'}slug: String!){
-          articleDetail(slug: ${'$'}slug ,source: "articleDetail-android") {
+          articleDetail(slug: ${'$'}slug) {
             data {
               blog {
                 title
-                description
                 html_content
               }
             }

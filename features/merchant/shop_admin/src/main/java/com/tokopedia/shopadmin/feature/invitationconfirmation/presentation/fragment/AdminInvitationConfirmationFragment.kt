@@ -32,11 +32,10 @@ import com.tokopedia.shopadmin.databinding.ItemAdminInvitationRejectedBinding
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.component.AdminInvitationConfirmationComponent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.dialog.AdminInvitationConfirmRejectDialog
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateEmailUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -128,11 +127,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         lifecycleScope.launchWhenResumed {
             viewModel.validateEmail.collect {
                 when (it) {
-                    is ValidateAdminEmailEvent.Success -> {
-                        setValidateEmailMessage(it.validateEmailUiModel)
+                    is Success -> {
+                        setValidateEmailMessage(it.data)
                     }
-                    is ValidateAdminEmailEvent.Error -> {
-                        val message = ErrorHandler.getErrorMessage(context, it.error)
+                    is Fail -> {
+                        val message = ErrorHandler.getErrorMessage(context, it.throwable)
                         showToaster(message)
                     }
                 }
@@ -140,13 +139,13 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setValidateEmailMessage(validateEmailUiModel: ValidateEmailUiModel) {
+    private fun setValidateEmailMessage(validateAdminEmailUiModel: ValidateAdminEmailUiModel) {
         confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
-            if (!validateEmailUiModel.isSuccess && validateEmailUiModel.message.isNotEmpty()) {
-                setMessage(validateEmailUiModel.message)
+            if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.message.isNotEmpty()) {
+                setMessage(validateAdminEmailUiModel.message)
                 setError(true)
                 setAccessAcceptedBtnDisabled()
-            } else if (!validateEmailUiModel.isSuccess && validateEmailUiModel.existsUser) {
+            } else if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.existsUser) {
                 setMessage(getString(R.string.error_message_email_has_been_registered))
                 setError(true)
                 setAccessAcceptedBtnDisabled()
@@ -213,8 +212,8 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadAdminInfo() {
-        viewModel.fetchAdminInfo()
+    private fun fetchAdminType() {
+        viewModel.fetchAdminType()
     }
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
@@ -406,7 +405,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun fetchInvitationIsActive() {
         showLoading()
-        loadAdminInfo()
+        fetchAdminType()
     }
 
     private fun showLoading() {
@@ -489,7 +488,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun actionGlobalError() {
         binding?.globalErrorConfirmationInvitation?.setActionClickListener {
             showLoading()
-            loadAdminInfo()
+            fetchAdminType()
             hideGlobalError()
         }
     }

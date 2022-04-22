@@ -6,29 +6,38 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.AdminConfirmationRegUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetAdminTypeUseCaseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetShopAdminInfoUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.ValidateAdminEmailUseCase
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminTypeUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ShopAdminInfoUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.ValidateAdminEmailEvent
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminTypeUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class InvitationConfirmationViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getAdminTypeUseCaseCase: Lazy<GetAdminTypeUseCaseCase>,
@@ -52,19 +61,19 @@ class InvitationConfirmationViewModel @Inject constructor(
 
     private val _emailParam = MutableStateFlow("")
 
-    private val _validateEmail = MutableSharedFlow<ValidateAdminEmailEvent>(replay = 1)
-    val validateEmail = _validateEmail.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+    private val _validateEmail = MutableSharedFlow<Result<ValidateAdminEmailUiModel>>(Int.ONE)
+    val validateEmail: Flow<Result<ValidateAdminEmailUiModel>> = _validateEmail
 
     init {
-        fetchValidateAdminEmail()
+        initValidateAdminEmail()
     }
 
-    fun fetchAdminInfo() {
+    fun fetchAdminType() {
         launchCatchError(block = {
-            val adminInfoData = withContext(coroutineDispatchers.io) {
+            val adminTypeData = withContext(coroutineDispatchers.io) {
                 getAdminTypeUseCaseCase.get().execute()
             }
-            _adminType.value = Success(adminInfoData)
+            _adminType.value = Success(adminTypeData)
         }, onError = {
             _adminType.value = Fail(it)
         })
@@ -84,7 +93,8 @@ class InvitationConfirmationViewModel @Inject constructor(
     fun adminConfirmationReg(userId: String, email: String, acceptBecomeAdmin: Boolean) {
         launchCatchError(block = {
             val confirmationRegResponse = withContext(coroutineDispatchers.io) {
-                adminConfirmationRegUseCase.get().execute(invitationConfirmationParam.getShopId(), userId, email,
+                adminConfirmationRegUseCase.get().execute(
+                    invitationConfirmationParam.getShopId(), userId, email,
                     invitationConfirmationParam.getOtpToken(),
                     acceptBecomeAdmin, invitationConfirmationParam.getShopManageId()
                 )
@@ -95,21 +105,34 @@ class InvitationConfirmationViewModel @Inject constructor(
         })
     }
 
-    private fun fetchValidateAdminEmail() {
-        viewModelScope.launchCatchError(block =  {
-            _emailParam.debounce(DEBOUNCE_DELAY_MILLIS).distinctUntilChanged().collectLatest { email ->
-                val validateEmailResponse = withContext(coroutineDispatchers.io) {
-                    validateAdminEmailUseCase.get().execute(
-                        invitationConfirmationParam.getShopId(),
-                        email,
-                        invitationConfirmationParam.getShopManageId()
-                    )
-                }
-                _validateEmail.emit(ValidateAdminEmailEvent.Success(validateEmailResponse))
+    private fun initValidateAdminEmail() = viewModelScope.launch {
+        _emailParam
+            .filter {
+                return@filter it.isNotBlank()
             }
-        }, onError = {
-            _validateEmail.emit(ValidateAdminEmailEvent.Error(it))
-        })
+            .debounce(DEBOUNCE_DELAY_MILLIS)
+            .flatMapLatest { email ->
+                fetchValidateEmailUseCase(
+                    invitationConfirmationParam.getShopId(),
+                    email,
+                    invitationConfirmationParam.getShopManageId()
+                ).catch { emit(Fail(it)) }
+            }
+            .flowOn(coroutineDispatchers.io)
+            .collect {
+                _validateEmail.emit(it)
+            }
+    }
+
+    private fun fetchValidateEmailUseCase(
+        shopId: String,
+        email: String,
+        manageID: String
+    ): Flow<Result<ValidateAdminEmailUiModel>> {
+        return flow {
+            val result = validateAdminEmailUseCase.get().execute(shopId, email, manageID)
+            emit(Success(result))
+        }
     }
 
     fun validateAdminEmail(email: String) {
@@ -118,5 +141,6 @@ class InvitationConfirmationViewModel @Inject constructor(
 
     companion object {
         const val DEBOUNCE_DELAY_MILLIS = 300L
+        const val TIMEOUT_IN_MILLIS = 5000L
     }
 }

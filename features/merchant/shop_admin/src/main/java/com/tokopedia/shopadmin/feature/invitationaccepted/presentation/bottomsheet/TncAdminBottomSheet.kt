@@ -44,6 +44,7 @@ class TncAdminBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isFullpage = true
         getComponent(AdminInvitationAcceptedComponent::class.java)?.inject(this)
     }
 
@@ -84,9 +85,11 @@ class TncAdminBottomSheet : BottomSheetUnify() {
 
     private fun observeArticleDetail() {
         observe(viewModel.articleDetail) {
-            hideLoading()
             when (it) {
-                is Success -> setupViews(it.data)
+                is Success -> {
+                    hideLoading()
+                    setupViews(it.data)
+                }
                 is Fail -> showToaster()
             }
         }

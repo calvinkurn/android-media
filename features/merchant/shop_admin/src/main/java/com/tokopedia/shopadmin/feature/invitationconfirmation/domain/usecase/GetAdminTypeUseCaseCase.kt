@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.mapper.AdminInvitationConfirmationMapper
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAdminInfoResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.query.GetAdminTypeQuery
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model.AdminTypeUiModel
+import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminTypeUiModel
 import javax.inject.Inject
 
 class GetAdminTypeUseCaseCase @Inject constructor(

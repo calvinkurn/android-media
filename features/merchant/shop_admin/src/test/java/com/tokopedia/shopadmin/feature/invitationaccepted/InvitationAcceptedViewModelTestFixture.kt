@@ -2,12 +2,12 @@ package com.tokopedia.shopadmin.feature.invitationaccepted
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shopadmin.feature.invitationaccepted.domain.usecase.GetArticleDetailUseCase
 import com.tokopedia.shopadmin.feature.invitationaccepted.domain.usecase.GetPermissionListUseCase
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.AdminPermissionUiModel
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.ArticleDetailUiModel
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.viewmodel.InvitationAcceptedViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -38,7 +38,7 @@ abstract class InvitationAcceptedViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        dispatchers = CoroutineDispatchersProvider
+        dispatchers = CoroutineTestDispatchersProvider
         viewModel = InvitationAcceptedViewModel(
             getPermissionListUseCase,
             getArticleDetailUseCase,

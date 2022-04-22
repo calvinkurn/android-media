@@ -7,19 +7,36 @@ import javax.inject.Inject
 
 class PermissionListMapper @Inject constructor() {
 
-    fun mapPermissionListUiModel(response: GetAdminPermissionResponse.GetAdminInfo): List<AdminPermissionUiModel> {
-        return response.adminData.firstOrNull()?.permissionList?.map {
-            AdminPermissionUiModel(
-                iconUrl = it.iconUrl,
-                permissionName = it.permissionName
-            )
-        } ?: emptyList()
-    }
-
     fun mapAdminPermissionListUiModel(
         allPermissionList: List<GetAdminManagementInfoListResponse.GetAdminManagementInfoList.AllPermission>,
         adminPermissionList: List<GetAdminPermissionResponse.GetAdminInfo.AdminData.Permission>
     ): List<AdminPermissionUiModel> {
-        return emptyList()
+        val adminPermissionResultList =
+            hashMapOf<String, GetAdminManagementInfoListResponse.GetAdminManagementInfoList.AllPermission>()
+
+        allPermissionList.forEach allPermission@{ allPermission ->
+            adminPermissionList.forEach adminPermission@{ adminPermission ->
+                if (adminPermission.permissionId == allPermission.permissionId) {
+                    adminPermissionResultList[allPermission.permissionId] = allPermission
+                } else {
+                    if (allPermission.permissionRecursive.isNotEmpty()) {
+                        allPermission.permissionRecursive.forEach permissionRecursive@{ permissionRecursive ->
+                            if (adminPermissionResultList[allPermission.permissionId] == null) {
+                                if (permissionRecursive.permissionId == adminPermission.permissionId) {
+                                    adminPermissionResultList[allPermission.permissionId] = allPermission
+                                }
+                            } else {
+                                return@allPermission
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return adminPermissionResultList.map {
+            AdminPermissionUiModel(iconUrl = it.value.iconURL, permissionName = it.value.permissionName)
+        }
     }
 }
