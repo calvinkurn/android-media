@@ -176,7 +176,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         })
         viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> renderCompleteFab(it.data)
+                is Success -> handleWhitelistData(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
             }
         })
@@ -398,13 +398,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
 
-        if (userSession.hasShop() && userSession.isLoggedIn) {
-            fab_feed.addItem(arrayListOf(createCreateLiveFab()))
-            fab_feed.show()
-        }
-        else {
-            fab_feed.hide()
-        }
+        renderCompleteFab()
     }
 
     private fun enableContentCreationNewFlow(): Boolean {
@@ -492,10 +486,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun renderCompleteFab(whitelistDomain: WhitelistDomain) {
+    private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
         authorList.clear()
         authorList.addAll(whitelistDomain.authors)
 
+        renderCompleteFab()
+    }
+
+    private fun renderCompleteFab() {
         val items = arrayListOf<FloatingButtonItem>()
 
         if (userSession.hasShop() && userSession.isLoggedIn) {
