@@ -102,7 +102,7 @@ class CameraPageUiTest:CameraPageTest() {
     }
 
     @Test
-    fun gallery_tab_click(){
+    fun should_open_gallery_fragment_onGalleryTabClicked(){
         // When
         startCameraPage()
         Robot.clickGalleryTab()
