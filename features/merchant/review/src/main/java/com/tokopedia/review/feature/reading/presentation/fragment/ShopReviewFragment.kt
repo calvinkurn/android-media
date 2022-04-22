@@ -1,6 +1,8 @@
 package com.tokopedia.review.feature.reading.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,7 @@ import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTo
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -80,6 +83,15 @@ class ShopReviewFragment : ReadReviewFragment() {
         hideHeaderOnScrolled()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            requestCode == REPORT_REVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK -> {
+                showToaster(getString(R.string.review_reading_success_submit_report))
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     override fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         super.onSuccessGetRatingAndTopic(ratingAndTopics)
         if (ratingOnlyContainer?.isVisible.orFalse()) {
@@ -131,5 +143,14 @@ class ShopReviewFragment : ReadReviewFragment() {
                 }
             })
         }
+    }
+
+    private fun showToaster(message: String) {
+        Toaster.build(
+                requireView(),
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_NORMAL
+        ).show()
     }
 }
