@@ -370,7 +370,8 @@ class ShopPageHomeTracking(
             shopName: String,
             horizontalPosition: Int,
             widgetHeaderTitle: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            categoryBreadcrumbs: String
     ) {
         val eventAction = IMPRESSION_PRODUCT_RECOMMENDATION
         var eventLabel = joinDash(widgetHeaderTitle, WIDGET_TYPE_REMINDER)
@@ -404,6 +405,7 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
+                        categoryBreadcrumbs,
                         horizontalPosition,
                         actionFieldList
                 )))
@@ -578,7 +580,8 @@ class ShopPageHomeTracking(
             userId: String,
             horizontalPosition: Int,
             widgetHeaderTitle: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            categoryBreadcrumbs: String
     ) {
         val eventAction = CLICK_PRODUCT_RECOMMENDATION
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -613,6 +616,7 @@ class ShopPageHomeTracking(
                                 productId,
                                 productDisplayedPrice,
                                 shopName,
+                                categoryBreadcrumbs,
                                 horizontalPosition,
                                 actionFieldList
                         ))

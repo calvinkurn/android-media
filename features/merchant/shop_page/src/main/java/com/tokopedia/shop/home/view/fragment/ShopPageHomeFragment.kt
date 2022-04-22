@@ -2033,6 +2033,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeProductViewModel.id ?: "",
                 shopHomeProductViewModel.displayedPrice ?: "",
                 shopHomeProductViewModel.recommendationType ?: "",
+                    shopHomeProductViewModel.categoryBreadcrumbs ?: "",
                 shopName,
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
@@ -2068,7 +2069,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 viewModel?.userId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(itemPosition),
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
-                customDimensionShopPage
+                customDimensionShopPage,
+                    shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
             )
             goToPDP(it.id ?: "")
         }
@@ -2234,7 +2236,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopName,
             ShopUtil.getActualPositionFromIndex(itemPosition),
             shopHomeCarousellProductUiModel?.header?.title ?: "",
-            customDimensionShopPage
+            customDimensionShopPage,
+                shopHomeProductViewModel?.categoryBreadcrumbs ?: ""
         )
     }
 
