@@ -1,3 +1,4 @@
+@file:JvmName("ExtensionKt")
 package com.tokopedia.media.loader
 
 import android.graphics.Bitmap
