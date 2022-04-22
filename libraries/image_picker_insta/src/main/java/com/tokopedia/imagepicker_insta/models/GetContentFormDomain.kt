@@ -11,7 +11,7 @@ data class GetContentFormDomain(
 ) {
     data class FeedContentForm(
         @SerializedName("authors")
-        val authors: List<Author> = listOf(),
+        val authors: List<Author> = emptyList(),
     )
 
     data class Author(
