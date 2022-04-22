@@ -18,7 +18,6 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RecommendationItemViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemWithViewStubViewHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 
@@ -119,7 +118,7 @@ class ProductListAdapter(
 
     private fun isStaggeredGridFullSpan(viewType: Int): Boolean {
         return viewType != SmallGridProductItemViewHolder.LAYOUT
-                && viewType != SmallGridProductItemWithViewStubViewHolder.LAYOUT
+            && viewType != SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB
                 && viewType != RecommendationItemViewHolder.LAYOUT
                 && viewType != SmallGridInspirationCardViewHolder.LAYOUT
     }

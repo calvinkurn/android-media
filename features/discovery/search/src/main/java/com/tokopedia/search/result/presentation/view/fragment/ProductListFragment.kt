@@ -420,7 +420,7 @@ class ProductListFragment: BaseDaggerFragment(),
             videoCarouselListener = videoCarouselListenerDelegate,
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
             networkMonitor = networkMonitor,
-            isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB)
+            isUsingViewStub = true
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)

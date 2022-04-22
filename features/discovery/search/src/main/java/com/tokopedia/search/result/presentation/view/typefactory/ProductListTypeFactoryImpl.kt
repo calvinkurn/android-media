@@ -109,12 +109,12 @@ class ProductListTypeFactoryImpl(
     override fun type(productItem: ProductItemDataView): Int {
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST ->
-                if (isUsingViewStub) ListProductItemWithViewStubViewHolder.LAYOUT else ListProductItemViewHolder.LAYOUT
+                if (isUsingViewStub) ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB else ListProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
             SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
-                if (isUsingViewStub) SmallGridProductItemWithViewStubViewHolder.LAYOUT else SmallGridProductItemViewHolder.LAYOUT
-            else -> if (isUsingViewStub) SmallGridProductItemWithViewStubViewHolder.LAYOUT else SmallGridProductItemViewHolder.LAYOUT
+                if (isUsingViewStub) SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB else SmallGridProductItemViewHolder.LAYOUT
+            else -> if (isUsingViewStub) SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB else SmallGridProductItemViewHolder.LAYOUT
         }
     }
 
@@ -214,14 +214,10 @@ class ProductListTypeFactoryImpl(
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ListProductItemViewHolder.LAYOUT ->
+            ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 ListProductItemViewHolder(view, productListener)
-            ListProductItemViewHolder.LAYOUT ->
-                ListProductItemWithViewStubViewHolder(view, productListener)
-            SmallGridProductItemViewHolder.LAYOUT ->
+            SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
                 SmallGridProductItemViewHolder(view, productListener)
-            SmallGridProductItemWithViewStubViewHolder.LAYOUT ->
-                SmallGridProductItemWithViewStubViewHolder(view, productListener)
             BigGridProductItemViewHolder.LAYOUT ->
                 BigGridProductItemViewHolder(view, productListener)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
