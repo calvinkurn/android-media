@@ -67,7 +67,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
             parentProductId = parentProductId
         )
 
-        setTheme(Theme_WhiteUnify)
+        setTheme(com.tokopedia.abstraction.R.style.Theme_WhiteUnify)
         super.onCreate(savedInstanceState)
     }
 

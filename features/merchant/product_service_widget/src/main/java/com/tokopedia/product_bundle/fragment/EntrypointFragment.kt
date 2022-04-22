@@ -267,6 +267,9 @@ class EntrypointFragment : BaseDaggerFragment() {
     private fun setupToolbarActions() {
         activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
             headerTitle = getString(R.string.product_bundle_page_title)
+            setNavigationOnClickListener {
+                activity?.finish()
+            }
         }
     }
 }
