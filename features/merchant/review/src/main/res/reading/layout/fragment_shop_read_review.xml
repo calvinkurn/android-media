@@ -56,13 +56,6 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-        <include
-            android:id="@+id/read_review_list_empty"
-            layout="@layout/partial_read_review_empty_filtered"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
@@ -72,19 +65,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/read_review_network_error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
-        android:gravity="center"
-        android:visibility="gone"
-        app:globalerrors_type="NO_CONNECTION"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/rating_only_container"
         android:layout_width="match_parent"
@@ -93,11 +73,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
-            android:id="@+id/read_review_rating_only"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:orientation="vertical">
+
+            <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
+                android:id="@+id/read_review_rating_only"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/shop_read_review_list_empty"
+                layout="@layout/partial_read_review_empty_filtered"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/read_review_network_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_Background"
+                android:gravity="center"
+                android:visibility="visible"
+                app:globalerrors_type="NO_CONNECTION"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
