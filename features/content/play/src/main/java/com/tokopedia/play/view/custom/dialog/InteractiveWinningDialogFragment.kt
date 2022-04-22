@@ -10,7 +10,11 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
+import com.tokopedia.play_common.R as commonR
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -28,6 +32,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private lateinit var tvTitle: Typography
     private lateinit var tvDetail: Typography
     private lateinit var imgUser: ImageUnify
+    private lateinit var rootV: RoundedConstraintLayout
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -68,11 +73,25 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         setupView()
     }
 
+    fun setInteractive(interactive: InteractiveUiModel){
+        val backgroundType = when (interactive){
+            is InteractiveUiModel.Giveaway -> {
+                commonR.drawable.bg_play_interactive
+            }
+            is InteractiveUiModel.Quiz -> {
+                commonR.drawable.bg_play_quiz_widget
+            }
+            else -> commonR.drawable.bg_play_interactive
+        }
+        rootV.background = MethodChecker.getDrawable(context, backgroundType)
+    }
+
     private fun initView(view: View) {
         with(view) {
             tvTitle = findViewById(R.id.tv_title)
             tvDetail = findViewById(R.id.tv_detail)
             imgUser = findViewById(R.id.img_user)
+            rootV = findViewById(R.id.rc_winning_dialog)
         }
     }
 

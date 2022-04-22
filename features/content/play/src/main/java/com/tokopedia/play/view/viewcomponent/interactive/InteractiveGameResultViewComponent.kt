@@ -8,39 +8,39 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.play.R
 
 /**
- * Created by jegul on 29/06/21
+ * @author by astidhiyaa on 18/04/22
  */
-class InteractiveWinnerBadgeViewComponent(
-        container: ViewGroup,
-        listener: Listener
-) : ViewComponent(container, R.id.view_interactive_winner_badge) {
+class InteractiveGameResultViewComponent (container: ViewGroup,
+                                          listener: Listener,
+) : ViewComponent(container, R.id.view_game_result) {
 
-    private val vAnchorTop = findViewById<View>(R.id.v_anchor_top)
+    private val vAnchorBottom = findViewById<View>(R.id.v_anchor_bottom)
     private val coachMark: CoachMark2 = CoachMark2(container.context)
 
     init {
-        coachMark.onDismissListener = { vAnchorTop.gone() }
         rootView.setOnClickListener {
-            listener.onBadgeClicked(this)
+            listener.onGameResultClicked(this)
         }
+
+        coachMark.onDismissListener = { vAnchorBottom.gone() }
     }
 
     fun showCoachMark(title: String, subtitle: String) {
         coachMark.isDismissed = false
-        vAnchorTop.visible()
+        vAnchorBottom.visible()
 
         coachMark.showCoachMark(
-                arrayListOf(
-                        CoachMark2Item(
-                                vAnchorTop,
-                                title,
-                                subtitle
-                        )
+            arrayListOf(
+                CoachMark2Item(
+                    vAnchorBottom,
+                    title,
+                    subtitle
                 )
+            )
         )
     }
 
@@ -48,13 +48,14 @@ class InteractiveWinnerBadgeViewComponent(
         coachMark.dismissCoachMark()
     }
 
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         coachMark.dismissCoachMark()
     }
 
-    interface Listener {
 
-        fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent)
+    interface Listener {
+        fun onGameResultClicked(view: InteractiveGameResultViewComponent)
     }
 }

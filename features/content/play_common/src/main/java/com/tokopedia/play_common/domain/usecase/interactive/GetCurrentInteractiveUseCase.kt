@@ -46,6 +46,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               choices {
                 id
                 text
+                isCorrect
               }
               user_choice: userChoice
             }
