@@ -273,11 +273,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
-        if (!userSession.isLoggedIn || !isSeller)
-            fab_feed.visibility = View.GONE
-        else
-            fab_feed.visibility = View.VISIBLE
-
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
                 val isEditPost = activity?.intent?.getBooleanExtra(
@@ -485,13 +480,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist(authorList.isEmpty(), userSession.userId)
+            viewModel.getWhitelist(authorList.isEmpty())
         }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
-        fab_feed.addItem(arrayListOf())
-
         authorList.clear()
         authorList.addAll(whitelistDomain.authors)
 
@@ -564,7 +557,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist(authorList.isEmpty(), userSession.userId)
+                    viewModel.getWhitelist(authorList.isEmpty())
                 }
             })
         }
