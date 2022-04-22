@@ -8,7 +8,7 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.InteractiveViewerGetLeaderboardWithSlotUseCase
+import com.tokopedia.play_common.domain.usecase.interactive.GetViewerLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
     private val postInteractiveTapUseCase: PostInteractiveTapUseCase,
-    private val getInteractiveLeaderboardUseCase: InteractiveViewerGetLeaderboardWithSlotUseCase,
+    private val getInteractiveViewerLeaderboardUseCase: GetViewerLeaderboardUseCase,
     private val answerQuizUseCase: AnswerQuizUseCase,
     private val mapper: PlayUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
@@ -44,8 +44,8 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {
-        val response = getInteractiveLeaderboardUseCase.apply {
-            setRequestParams(getInteractiveLeaderboardUseCase.createParams(channelId))
+        val response = getInteractiveViewerLeaderboardUseCase.apply {
+            setRequestParams(getInteractiveViewerLeaderboardUseCase.createParams(channelId))
         }.executeOnBackground()
         return@withContext mapper.mapInteractiveLeaderboard(response)
     }
