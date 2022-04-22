@@ -296,17 +296,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void redirectToNativeBrowser() {
         try {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//            List<ResolveInfo> queryIntentActivities = getActivity().getPackageManager().queryIntentActivities(browserIntent, PackageManager.MATCH_ALL);
-//            browserIntent.setPackage(queryIntentActivities.get(0).activityInfo.packageName);
             startActivity(browserIntent);
             getActivity().finish();
         } catch (Throwable th) {
-            Log.d("TeST", th.toString());
-
-//            val messageMap: MutableMap<String, String> = HashMap()
-//            messageMap["type"] = "webview"
-//            messageMap["url"] = url
-//            ServerLogger.log(Priority.P1, "WRONG_DEEPLINK", messageMap)
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type","browser");
+            messageMap.put("url",url);
+            ServerLogger.log(Priority.P1, "FAILED_BROWSER", messageMap);
         }
     }
 
@@ -397,11 +393,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == RESULT_OK) {
-                String url = getUrl();
-                if (url == null || url.isEmpty()){
-                    return;
-                }
-                webView.loadAuthUrl(url, userSession);
+                webView.loadAuthUrl(getUrl(), userSession);
             } else {
                 if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
