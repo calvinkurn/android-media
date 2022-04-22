@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -25,6 +26,7 @@ data class PlayBroadcastUiState(
     val gameConfig: GameConfigUiState,
     val quizForm: QuizFormUiState,
     val interactive: InteractiveUiModel,
+    val interactiveSetup: InteractiveSetupUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -43,6 +45,7 @@ data class PlayBroadcastUiState(
                 gameConfig = GameConfigUiState.Empty,
                 quizForm = QuizFormUiState.Empty,
                 interactive = InteractiveUiModel.Unknown,
+                interactiveSetup = InteractiveSetupUiModel.Empty,
             )
     }
 }

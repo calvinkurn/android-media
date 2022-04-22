@@ -14,8 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -29,9 +31,11 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -52,6 +56,7 @@ import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
@@ -214,10 +219,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity()),
-        ).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = getViewModelProvider()
+            .get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -258,7 +261,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     }
                 })
             }
+            is InteractiveSetupDialogFragment -> {
+                childFragment.setDataSource(object : InteractiveSetupDialogFragment.DataSource {
+                    override fun getViewModelProvider(): ViewModelProvider {
+                        return this@PlayBroadcastUserInteractionFragment.getViewModelProvider()
+                    }
+                })
+            }
         }
+    }
+
+    private fun getViewModelProvider(): ViewModelProvider {
+        return ViewModelProvider(
+            requireActivity(),
+            parentViewModelFactoryCreator.create(requireActivity()),
+        )
     }
 
     private fun initAnalytic() {
@@ -748,6 +765,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
                 renderQuizForm(prevState?.quizForm, state.quizForm, prevState?.gameConfig, state.gameConfig)
                 renderInteractiveView(prevState?.interactive, state.interactive)
+                renderGameIconView(prevState?.interactive, state.interactive)
+
+                renderInteractionView(state.interactiveSetup)
+
+                renderSetupDialog(
+                    prevState?.interactiveSetup,
+                    state.interactiveSetup,
+                    prevState?.interactive,
+                    state.interactive,
+                )
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -847,6 +874,24 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun renderGameIconView(
+        prevState: InteractiveUiModel?,
+        state: InteractiveUiModel,
+    ) {
+        if (prevState == state) return
+
+        if (state !is InteractiveUiModel.Unknown) gameIconView.hide()
+        else gameIconView.show()
+    }
+
+    private fun renderInteractionView(
+        state: InteractiveSetupUiModel
+    ) {
+        //Have to be invisible because gone will resulting in not-rounded unify timer
+        if (state.type == GameType.Unknown) clInteraction.visible()
+        else clInteraction.invisible()
+    }
+
     private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
@@ -907,6 +952,27 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
+        }
+    }
+
+    private fun renderSetupDialog(
+        prevSetup: InteractiveSetupUiModel?,
+        setup: InteractiveSetupUiModel,
+        prevInteractive: InteractiveUiModel?,
+        interactive: InteractiveUiModel,
+    ) {
+        if (prevSetup == setup && prevInteractive == interactive) return
+
+        //If seller is not going to setup or if there is active interactive
+        //then hide the setup dialog
+        if (setup.type == GameType.Unknown || interactive !is InteractiveUiModel.Unknown) {
+            val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
+            if (dialog?.isAdded == true) dialog.dismiss()
+        } else {
+            InteractiveSetupDialogFragment.getOrCreate(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showNow(childFragmentManager)
         }
     }
 

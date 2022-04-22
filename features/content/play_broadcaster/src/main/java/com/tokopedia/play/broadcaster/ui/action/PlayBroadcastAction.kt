@@ -30,6 +30,10 @@ sealed interface PlayBroadcastAction {
      */
     object GiveawayUpcomingEnded : PlayBroadcastAction
     object GiveawayOngoingEnded : PlayBroadcastAction
+    data class CreateGiveaway(
+        val title: String,
+        val durationInMs: Long,
+    ) : PlayBroadcastAction
 
     /** Quiz */
     object ClickBackOnQuiz: PlayBroadcastAction

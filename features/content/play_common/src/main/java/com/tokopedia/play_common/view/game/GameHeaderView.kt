@@ -6,7 +6,6 @@ import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
@@ -55,14 +54,12 @@ class GameHeaderView : ConstraintLayout {
                 isFocusable = value
                 isFocusableInTouchMode = value
                 isEnabled = value
-
-                setRawInputType(InputType.TYPE_CLASS_TEXT)
             }
 
             setFocus(value)
         }
 
-    var title: String = ""
+    var title: String = binding.etPlayGameHeaderTitle.text.toString()
         set(value) {
             field = value
 
@@ -70,6 +67,9 @@ class GameHeaderView : ConstraintLayout {
                 binding.etPlayGameHeaderTitle.setText(value)
                 binding.etPlayGameHeaderTitle.setSelection(value.length)
             }
+        }
+        get() {
+            return binding.etPlayGameHeaderTitle.text.toString()
         }
 
     var maxLength: Int = 0
@@ -88,6 +88,10 @@ class GameHeaderView : ConstraintLayout {
             setIcon()
             setBackground()
         }
+
+    init {
+        binding.etPlayGameHeaderTitle.setRawInputType(InputType.TYPE_CLASS_TEXT)
+    }
 
     fun setOnTextChangedListener(listener: (String) -> Unit) {
         onTextChanged = listener
@@ -131,6 +135,10 @@ class GameHeaderView : ConstraintLayout {
 
     fun setIcon(icon: Drawable) {
         binding.icPlayGameHeaderIcon.setImageDrawable(icon)
+    }
+
+    fun setHint(hint: String) {
+        binding.etPlayGameHeaderTitle.hint = hint
     }
 
     private fun setBackground() {

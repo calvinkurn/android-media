@@ -11,8 +11,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiM
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -62,7 +60,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun createInteractiveSession(
+    override suspend fun createInteractiveGiveaway(
         channelId: String,
         title: String,
         durationInMs: Long

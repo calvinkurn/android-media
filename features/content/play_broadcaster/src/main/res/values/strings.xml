@@ -283,4 +283,8 @@
     <string name="play_bro_quiz_hint_add_new_option">Tambah Pilihan</string>
     <string name="play_bro_quiz_prize_coachmark">Hadiah &amp; ongkirnya (jika ada)\nakan ditanggung Seller.</string>
     <string name="play_bro_select_quiz_option_coachmark">Tap di ikon huruf untuk\ntentuin jawaban yang benar.</string>
+
+    <!-- Interactive -->
+        <!-- Giveaway -->
+    <string name="play_bro_giveaway_form_title">Buat Game Hadiah</string>
 </resources>

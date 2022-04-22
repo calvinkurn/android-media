@@ -73,6 +73,7 @@
             android:textAlignment="center"
             android:textColor="@color/Unify_NN950"
             app:typographyType="heading_5"
+            app:typographyWeight="reguler"
             />
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>

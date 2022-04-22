@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
+import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import java.util.*
 
@@ -48,12 +50,16 @@ class GiveawayWidgetView : LinearLayout {
         mListener = null
     }
 
+    fun getHeaderView(): GameHeaderView {
+        return binding.headerView
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }
 
     fun setTitle(title: String) {
-        binding.headerView.setupGiveaway(title)
+        getHeaderView().setupGiveaway(title)
     }
 
     fun showTimer(shouldShow: Boolean) {
@@ -77,6 +83,9 @@ class GiveawayWidgetView : LinearLayout {
 
     private fun setupView() {
         setTitle("")
+        binding.headerView.setHint(
+            context.getString(R.string.play_giveaway_header_hint)
+        )
     }
 
     interface Listener {
