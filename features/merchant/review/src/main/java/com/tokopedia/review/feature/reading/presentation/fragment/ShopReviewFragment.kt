@@ -9,18 +9,23 @@ import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by @ilhamsuaib on 29/03/22.
  *
- * Inflated using on-demand DF Fragment in NewShopPageFragment.kt
+ * Inflated using on-demand DF Fragment in NewShopPageFragment.kt using reflection
+ * please be aware for make any changes
  */
 class ShopReviewFragment : ReadReviewFragment() {
 
@@ -40,7 +45,10 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     }
 
-    private var ratingOnlyContainer: NestedScrollView? = null
+    private var nestedScrollViewContainer: NestedScrollView? = null
+    private var ratingOnlyContainer: ReadReviewRatingOnlyEmptyState? = null
+    private var emptyStateContainer: View? = null
+    private var emptyStateImage: ImageUnify? = null
     private var emptyStateTitle: Typography? = null
     private var emptyStateSubtitle: Typography? = null
     private var globalError: GlobalError? = null
@@ -56,7 +64,10 @@ class ShopReviewFragment : ReadReviewFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_shop_read_review, container, false).apply {
-            ratingOnlyContainer = findViewById(R.id.rating_only_container)
+            nestedScrollViewContainer = findViewById(R.id.rating_only_container)
+            ratingOnlyContainer = findViewById(R.id.read_review_rating_only)
+            emptyStateContainer = findViewById(R.id.shop_read_review_list_empty)
+            emptyStateImage = findViewById(R.id.read_review_empty_list_image)
             emptyStateTitle = findViewById(R.id.read_review_empty_list_title)
             emptyStateSubtitle = findViewById(R.id.read_review_empty_list_subtitle)
             globalError = findViewById(R.id.read_review_network_error)
@@ -71,37 +82,33 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         super.onSuccessGetRatingAndTopic(ratingAndTopics)
-        val isRatingAndTopicsAvailable = !(ratingAndTopics.rating.totalRatingTextAndImage == 0L && ratingAndTopics.rating.totalRatingWithImage == 0L)
-        val isRatingAndReviewAvailable = ratingAndTopics.rating.totalRating != 0L
-
-        // show rating bar only
-        ratingOnlyContainer?.showWithCondition(!isRatingAndTopicsAvailable)
-
-        if (!isRatingAndReviewAvailable) {
-            // show empty state with specific shop wording
-            showFilteredEmpty()
+        if (ratingOnlyContainer?.isVisible.orFalse()) {
+            nestedScrollViewContainer?.visible()
         }
     }
 
     override fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
         super.onSuccessGetShopRatingAndTopic(shopRatingAndTopics)
-        val isShopRatingAndTopicsAvailable = !(shopRatingAndTopics.rating.totalRatingTextAndImage == 0L && shopRatingAndTopics.rating.totalRatingWithImage == 0L)
-        val isRatingAndReviewAvailable = shopRatingAndTopics.rating.totalRating != 0L
-
-        // show rating bar only
-        ratingOnlyContainer?.showWithCondition(!isShopRatingAndTopicsAvailable)
-
-        if (!isRatingAndReviewAvailable) {
-            // show empty state with specific shop wording
-            showFilteredEmpty()
+        if (ratingOnlyContainer?.isVisible.orFalse()) {
+            nestedScrollViewContainer?.visible()
         }
     }
 
-    override fun showFilteredEmpty() {
-        super.showFilteredEmpty()
-        emptyStateTitle?.text = getString(R.string.review_reading_empty_review_shop_page_title)
-        emptyStateSubtitle?.text = getString(R.string.review_reading_empty_review_shop_page_subtitle)
+    override fun showPageNotFound() {
+        super.showPageNotFound()
         globalError?.gone()
+        nestedScrollViewContainer?.visible()
+        emptyStateContainer?.apply {
+            emptyStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
+            emptyStateTitle?.text = getString(R.string.review_reading_empty_review_shop_page_title)
+            emptyStateSubtitle?.text = getString(R.string.review_reading_empty_review_shop_page_subtitle)
+            visible()
+        }
+    }
+
+    override fun showError() {
+        super.showError()
+        nestedScrollViewContainer?.visible()
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = false

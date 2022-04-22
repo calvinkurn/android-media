@@ -944,7 +944,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    private fun showError() {
+    open fun showError() {
         globalError?.apply {
             setActionClickListener {
                 loadInitialData()
@@ -1005,10 +1005,11 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         emptyFilteredState?.hide()
     }
 
-    private fun showPageNotFound() {
+    open fun showPageNotFound() {
         hideFab()
         globalError?.apply {
             errorType = GlobalError.PAGE_NOT_FOUND
+            errorAction.text = getString(R.string.review_back_to_home)
             setType(GlobalError.PAGE_NOT_FOUND)
             setActionClickListener {
                 goToHome()
