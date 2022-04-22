@@ -700,15 +700,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty()))
+                        (it is MessageUiModel && it.message.isEmpty()) || (it is FallbackAttachmentUiModel && it.attachmentType == "31"))
             }
+            if (it.listChat.isNotEmpty()){
+                if (list.isEmpty()) {
+                    loadData(2)
+                }
+                else {
+                    updateViewData(it)
+                    renderList(list, it.canLoadMore)
+                    getViewState()?.onSuccessLoadFirstTime(it)
+                    checkShowLoading(it.canLoadMore)
+                    enableLoadMore()
+                    //     checkReplyBubbleOnboardingStatus()
+                }
 
-            updateViewData(it)
-            renderList(list, it.canLoadMore)
-            getViewState()?.onSuccessLoadFirstTime(it)
-            checkShowLoading(it.canLoadMore)
-            enableLoadMore()
-            checkReplyBubbleOnboardingStatus()
+            }
         }
     }
 
@@ -716,7 +723,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageUiModel && it.message.isEmpty()) || (it is FallbackAttachmentUiModel && it.attachmentType=="31"))
+                        (it is MessageUiModel && it.message.isEmpty()) || (it is FallbackAttachmentUiModel && it.attachmentType == "31"))
             }
             if (page == FIRST_PAGE) isFirstPage = false
             if (list.isNotEmpty()){
@@ -727,6 +734,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 }
                 checkShowLoading(it.canLoadMore)
                 enableLoadMore()
+            }else {
+                loadData(page+1)
             }
         }
     }

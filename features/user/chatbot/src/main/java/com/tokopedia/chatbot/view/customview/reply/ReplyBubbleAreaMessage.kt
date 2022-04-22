@@ -87,7 +87,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     init {
         initLayout()
         initViewBinding()
-        initOnClickListener()
+        updateCloseButtonState(true)
     }
 
     private fun initLayout() {
@@ -102,11 +102,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         replyIcon = findViewById(R.id.reply_icon)
     }
 
-    private fun initOnClickListener(){
-        closeBtn?.setOnClickListener {
-            container?.hide()
-        }
-    }
 
     //TODO bind background
     fun bindReplyData(uiModel : BaseChatUiModel){
