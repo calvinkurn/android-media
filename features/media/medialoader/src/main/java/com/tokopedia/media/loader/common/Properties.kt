@@ -36,7 +36,8 @@ open class Properties(
         internal var centerInside: Boolean = false,
         internal var fitCenter: Boolean = false,
         internal var isAdaptiveSizeImageRequest: Boolean = false,
-        internal var accessToken: String = ""
+        internal var accessToken: String = "",
+        internal var userId: String = ""
 ) {
 
     /*
@@ -189,6 +190,10 @@ open class Properties(
         this.accessToken = token
     }
 
+    fun userId(userId: String) = apply {
+        this.userId = userId
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
@@ -216,6 +221,7 @@ open class Properties(
                 centerInside == other.centerInside &&
                 fitCenter == other.fitCenter &&
                 accessToken == other.accessToken &&
+                userId == other.userId &&
                 isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
     }
 
@@ -244,6 +250,7 @@ open class Properties(
         result = 3 * result + fitCenter.hashCode()
         result = 3 * result + centerInside.hashCode()
         result = 3 * result + accessToken.hashCode()
+        result = 3 * result + userId.hashCode()
         result = 3 * result + isAdaptiveSizeImageRequest.hashCode()
         return result
     }
