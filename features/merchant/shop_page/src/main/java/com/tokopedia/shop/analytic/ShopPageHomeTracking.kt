@@ -315,6 +315,7 @@ class ShopPageHomeTracking(
             productId: String,
             productDisplayedPrice: String,
             recommendationType: String,
+            categoryBreadcrumbs: String,
             userId: String,
             shopName: String,
             horizontalPosition: Int,
@@ -350,6 +351,7 @@ class ShopPageHomeTracking(
                         productId,
                         productDisplayedPrice,
                         shopName,
+                        categoryBreadcrumbs,
                         horizontalPosition,
                         actionFieldList
                 ))
@@ -518,6 +520,7 @@ class ShopPageHomeTracking(
             productId: String,
             productDisplayedPrice: String,
             recommendationType: String,
+            categoryBreadcrumbs: String,
             shopName: String,
             userId: String,
             horizontalPosition: Int,
@@ -555,6 +558,7 @@ class ShopPageHomeTracking(
                                 productId,
                                 productDisplayedPrice,
                                 shopName,
+                                categoryBreadcrumbs,
                                 horizontalPosition,
                                 actionFieldList
                         ))
@@ -734,7 +738,9 @@ class ShopPageHomeTracking(
             userId: String,
             widgetHeaderTitle: String,
             widgetName: String,
-            customDimensionShopPage: CustomDimensionShopPage
+            customDimensionShopPage: CustomDimensionShopPage,
+            recommendationType: String,
+            categoryBreadcrumbs: String
     ) {
 
         val widgetType = getShopPersoWidgetType(widgetName)
@@ -763,7 +769,9 @@ class ShopPageHomeTracking(
                                 productQuantity,
                                 customDimensionShopPage.shopId.orEmpty(),
                                 shopName,
-                                customDimensionShopPage.shopType.orEmpty()
+                                customDimensionShopPage.shopType.orEmpty(),
+                                recommendationType,
+                                categoryBreadcrumbs
                         ))
                 )
         )
@@ -936,6 +944,7 @@ class ShopPageHomeTracking(
             productId: String,
             productDisplayedPrice: String,
             shopName: String,
+            categoryBreadcrumbs: String,
             horizontalPosition: Int,
             actionList: String
     ): Map<String, Any> {
@@ -944,7 +953,7 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to NONE,
+                CATEGORY to categoryBreadcrumbs,
                 VARIANT to NONE,
                 LIST to actionList,
                 POSITION to horizontalPosition,
@@ -1030,6 +1039,8 @@ class ShopPageHomeTracking(
             shopId: String,
             shopName: String,
             shopType: String,
+            recommendationType: String,
+            categoryBreadcrumbs: String
     ): Map<String, Any> {
 
         return mutableMapOf(
@@ -1037,8 +1048,8 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to NONE,
-                CATEGORY_ID to NONE,
+                CATEGORY to categoryBreadcrumbs,
+                CATEGORY_ID to recommendationType,
                 VARIANT to NONE,
                 QUANTITY to productQuantity,
                 DIMENSION_45 to "45",
