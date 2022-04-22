@@ -22,6 +22,7 @@ import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.twitter_share.TwitterAuthenticator
@@ -117,13 +118,24 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
+        activityListener?.setFeedAccountList(
+            feedContentForm.authors.map {
+                FeedAccountUiModel(
+                    id = it.id,
+                    name = it.name,
+                    iconUrl = it.thumbnail,
+                    badge = it.badge,
+                    type = it.type,
+                )
+            }
+        )
         createPostModel.shopName = feedContentForm.authors.first().name
         createPostModel.shopBadge = feedContentForm.authors.first().badge
         createPostModel.token = feedContentForm.token
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
         createPostModel.allowVideo = feedContentForm.media.allowVideo
-        createPostModel.maxProduct = 5
+        createPostModel.maxProduct = feedContentForm.maxTag
         createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
         if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -84,24 +85,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     val coachMarkItem = ArrayList<CoachMark2Item>()
     private  lateinit var coachMark: CoachMark2
 
-    private val userSession: UserSessionInterface by lazy(mode = LazyThreadSafetyMode.NONE) {
-        UserSession(context)
-    }
-
-    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
-        val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
-        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                viewModel.setSelectedFeedAccount(feedAccount)
-            }
-        })
-        fragment
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is FeedAccountTypeBottomSheet -> {
+                childFragment.setData(viewModel.feedAccountList)
+                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(feedAccount)
+                    }
+                })
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -181,6 +182,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         setObservers()
         setClicks()
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getFeedAccountList()
     }
 
     private fun hasReadPermission(): Boolean {
@@ -299,18 +305,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
             toolbarCommon.title = toolbarTitle
-            viewModel.setSelectedFeedAccount(
-                FeedAccountUiModel(
-                    name = userSession.name,
-                    iconUrl = userSession.profilePicture,
-                    type = FeedAccountUiModel.Type.BUYER,
-                )
-            )
         }
     }
 
     private fun openFeedAccountBottomSheet(){
-        feedAccountBottomSheet.showNow(childFragmentManager)
+        FeedAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .showNow(childFragmentManager)
     }
 
     private fun showFabCoachMark() {
@@ -786,7 +787,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
-                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT, viewModel.selectedFeedAccountType.value)
+                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
                 startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
                 activity?.setResult(
@@ -870,30 +871,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val selectedFeedAccountTypeValue = data?.getIntExtra(
-                EXTRA_SELECTED_FEED_ACCOUNT,
-                FeedAccountUiModel.Type.BUYER.value
-            ) ?: FeedAccountUiModel.Type.BUYER.value
-
-            val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
-            val selectedFeedAccount = when(selectedFeedAccountType) {
-                FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
-                    name = userSession.shopName,
-                    iconUrl = userSession.shopAvatar,
-                    type = selectedFeedAccountType
-                )
-                FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
-                    name = userSession.name,
-                    iconUrl = userSession.profilePicture,
-                    type = selectedFeedAccountType
-                )
-                else -> FeedAccountUiModel(
-                    name = "",
-                    iconUrl = "",
-                    type = selectedFeedAccountType
-                )
-            }
-            viewModel.setSelectedFeedAccount(selectedFeedAccount)
+            val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+            viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
         }
     }
 
@@ -903,7 +882,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     companion object {
-        private const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+        private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val CREATE_POST_REQUEST_CODE = 101
     }
 }

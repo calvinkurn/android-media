@@ -7,6 +7,7 @@ import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
+import com.tokopedia.imagepicker_insta.usecase.GetContentFormUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
@@ -19,7 +20,9 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
+class PickerViewModel(
+    val app: Application,
+) : BaseAndroidViewModel(app) {
 
     override val coroutineContext: CoroutineContext
         get() = super.coroutineContext + workerDispatcher + ceh
@@ -37,18 +40,25 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     @Inject
     lateinit var workerDispatcher: CoroutineDispatcher
 
+    @Inject
+    lateinit var getContentFormUseCase: GetContentFormUseCase
+
     val photosFlow: MutableStateFlow<LiveDataResult<MediaVmMData>> = MutableStateFlow(LiveDataResult.loading())
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
     val folderFlow :MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
     private val folderDataList = arrayListOf<FolderData>()
     private val uriSet = HashSet<Uri>()
 
-    val selectedFeedAccountType: FeedAccountUiModel.Type
-        get() = _selectedFeedAccount.value.type
+    val selectedFeedAccountId: String
+        get() = _selectedFeedAccount.value.id
 
     private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
     val selectedFeedAccount: Flow<FeedAccountUiModel>
         get() = _selectedFeedAccount
+
+    private val _feedAccountList = mutableListOf<FeedAccountUiModel>()
+    val feedAccountList: List<FeedAccountUiModel>
+        get() = _feedAccountList
 
     fun getFolderData() {
         launchCatchError(block = {
@@ -186,11 +196,45 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         })
     }
 
+    fun getFeedAccountList() {
+        launchCatchError(block = {
+            val response = getContentFormUseCase.apply {
+                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "entrypoint", ""))
+            }.executeOnBackground()
+
+            val feedAccountList = response.feedContentForm.authors.map {
+                FeedAccountUiModel(
+                    id = it.id,
+                    name = it.name,
+                    iconUrl = it.thumbnail,
+                    badge = it.badge,
+                    type = it.type,
+                )
+            }
+
+            _feedAccountList.clear()
+            _feedAccountList.addAll(feedAccountList)
+
+            if(feedAccountList.isNotEmpty()) {
+                _selectedFeedAccount.value = feedAccountList.first()
+            }
+        }, onError = {})
+    }
+
     fun setSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
         launchCatchError(block = {
             val current = _selectedFeedAccount.value
-            if(current.type != feedAccount.type) {
+            if(current.id != feedAccount.id) {
                 _selectedFeedAccount.value = feedAccount
+            }
+        }, onError = { })
+    }
+
+    fun setSelectedFeedAccountId(feedAccountId: String) {
+        launchCatchError(block = {
+            val current = _selectedFeedAccount.value
+            if(current.id != feedAccountId) {
+                _selectedFeedAccount.value = _feedAccountList.firstOrNull { it.id == feedAccountId } ?: FeedAccountUiModel.Empty
             }
         }, onError = { })
     }

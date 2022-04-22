@@ -30,6 +30,7 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
@@ -52,23 +53,30 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    lateinit var selectedFeedAccount: FeedAccountUiModel
+    protected var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
 
-    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
-        val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
-        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                showSwitchAccountDialog(feedAccount)
-            }
-        })
-        fragment
-    }
+    protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
         UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when(fragment) {
+            is FeedAccountTypeBottomSheet -> {
+                fragment.setData(mFeedAccountList)
+                fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        showSwitchAccountDialog(feedAccount)
+                    }
+                })
+            }
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         this.intent = intent
@@ -90,6 +98,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         isDeletedFromBubble: Boolean,
         mediaType: String,
     ) {
+    }
+
+    override fun setFeedAccountList(feedAccountList: List<FeedAccountUiModel>) {
+        setupToolbar(feedAccountList)
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -136,7 +148,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+        const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
 
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
@@ -179,6 +191,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
 
         }
+
+        if(selectedFeedAccount.id.isNotEmpty())
+            intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
+
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
                 ?: Bundle())
@@ -201,7 +217,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
         setupView()
-        setupToolbar()
     }
 
     override fun clickContinueOnTaggingPage(){
@@ -284,27 +299,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         toolbarCommon = findViewById(R.id.toolbar_common)
     }
 
-    private fun setupToolbar() {
-        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
-        val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
-        selectedFeedAccount = when(selectedFeedAccountType) {
-            FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
-                name = userSession.shopName,
-                iconUrl = userSession.shopAvatar,
-                type = selectedFeedAccountType
-            )
-            FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
-                name = userSession.name,
-                iconUrl = userSession.profilePicture,
-                type = selectedFeedAccountType
-            )
-            else -> FeedAccountUiModel(
-                name = "",
-                iconUrl = "",
-                type = selectedFeedAccountType
-            )
-        }
+    private fun setupToolbar(feedAccountList: List<FeedAccountUiModel>) {
+        mFeedAccountList.clear()
+        mFeedAccountList.addAll(feedAccountList)
 
+        val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+        selectedFeedAccount = mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: FeedAccountUiModel.Empty
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
@@ -316,7 +316,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             }
 
             setOnAccountClickListener {
-                feedAccountBottomSheet.showNow(supportFragmentManager)
+                FeedAccountTypeBottomSheet
+                    .getFragment(supportFragmentManager, classLoader)
+                    .showNow(supportFragmentManager)
             }
 
             visibility = View.VISIBLE
@@ -326,7 +328,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     private fun backWithActionResult() {
         val intent = Intent().apply {
-            putExtra(EXTRA_SELECTED_FEED_ACCOUNT, selectedFeedAccount.type.value)
+            putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, selectedFeedAccount.id)
         }
         setResult(Activity.RESULT_OK, intent)
         finish()

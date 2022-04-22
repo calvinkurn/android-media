@@ -1,12 +1,13 @@
 package com.tokopedia.imagepicker_insta.di
 
 import com.tokopedia.imagepicker_insta.di.module.DispatcherModule
+import com.tokopedia.imagepicker_insta.di.module.ImagePickerModule
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import dagger.Component
 import javax.inject.Scope
 
 @ImagePickerScope
-@Component(modules = [DispatcherModule::class])
+@Component(modules = [DispatcherModule::class, ImagePickerModule::class])
 interface ImagePickerComponent {
     fun inject(viewModel: PickerViewModel)
 }

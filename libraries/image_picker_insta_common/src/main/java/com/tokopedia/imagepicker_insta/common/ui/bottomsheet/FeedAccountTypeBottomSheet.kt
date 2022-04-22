@@ -32,34 +32,8 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private val userSession: UserSessionInterface by lazy {
-        UserSession(context)
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
-    private val feedAccountList: List<FeedAccountUiModel> by lazy {
-        buildList{
-            if(userSession.isLoggedIn) {
-                add(
-                    FeedAccountUiModel(
-                        name = userSession.name,
-                        iconUrl = userSession.profilePicture,
-                        type = FeedAccountUiModel.Type.BUYER
-                    )
-                )
-
-                if(userSession.hasShop()) {
-                    add(
-                        FeedAccountUiModel(
-                            name = userSession.shopName,
-                            iconUrl = userSession.shopAvatar,
-                            type = FeedAccountUiModel.Type.SELLER
-                        )
-                    )
-                }
-            }
-        }
-    }
+    private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +49,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
     }
 
     private fun setupBottomSheet() {
@@ -90,7 +65,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         binding.rvFeedAccount.addItemDecoration(FeedAccountTypeItemDecoration(requireContext()))
         binding.rvFeedAccount.adapter = adapter
 
-        adapter.updateData(feedAccountList)
+        adapter.updateData(mFeedAccountList)
     }
 
     fun setOnAccountClickListener(listener: Listener?) {
@@ -98,7 +73,16 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
+    }
+
+    fun setData(feedAccountList: List<FeedAccountUiModel>): FeedAccountTypeBottomSheet {
+        mFeedAccountList.clear()
+        mFeedAccountList.addAll(feedAccountList)
+
+        if(isAdded) adapter.updateData(mFeedAccountList)
+
+        return this
     }
 
     companion object {
