@@ -51,9 +51,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                     isHasATC = isHasATC(element),
                     isHasOCCButton = (element.name == BUY_AGAIN) || (element.name == REMINDER),
                     occButtonText = if(isAtcOcc(element.name)) {
-                        itemView.context.getString(
-                                R.string.occ_text
-                        )
+                        itemView.context.getString(R.string.occ_text)
                     } else ""
             )
         }

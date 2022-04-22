@@ -2027,7 +2027,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
-                isLogin,
                 shopHomeProductViewModel.name ?: "",
                 shopHomeProductViewModel.id ?: "",
                 shopHomeProductViewModel.displayedPrice ?: "",
@@ -2202,7 +2201,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     ) {
         shopPageHomeTracking.impressionProductPersonalization(
             isOwner,
-            isLogin,
             shopHomeProductViewModel?.name ?: "",
             shopHomeProductViewModel?.id ?: "",
             shopHomeProductViewModel?.displayedPrice ?: "",

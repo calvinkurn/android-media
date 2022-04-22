@@ -311,7 +311,6 @@ class ShopPageHomeTracking(
 
     fun impressionProductPersonalization(
             isOwner: Boolean,
-            isLogin: Boolean,
             productName: String,
             productId: String,
             productDisplayedPrice: String,
@@ -324,27 +323,15 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val widgetType = getShopPersoWidgetType(widgetName)
-        val eventAction = IMPRESSION_PRODUCT_RECOMMENDATION
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
+        val eventAction = joinDash(IMPRESSION_PRODUCT_RECOMMENDATION, LOGIN)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
+        val actionFieldList = joinDash(
+                SHOPPAGE,
+                LOGIN,
+                BUYER_RECOMMENDATION,
+                recommendationType,
                 widgetType
         )
-        val actionFieldList = if(isLogin) {
-            joinDash(
-                    SHOPPAGE,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        } else {
-            joinDash(
-                    SHOPPAGE,
-                    NON_LOGIN,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to PRODUCT_VIEW,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
@@ -365,7 +352,8 @@ class ShopPageHomeTracking(
                         shopName,
                         horizontalPosition,
                         actionFieldList
-                )))
+                ))
+        )
         sendDataLayerEvent(eventMap)
     }
 
@@ -526,7 +514,6 @@ class ShopPageHomeTracking(
 
     fun clickProductPersonalization(
             isOwner: Boolean,
-            isLogin: Boolean,
             productName: String,
             productId: String,
             productDisplayedPrice: String,
@@ -539,31 +526,15 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val widgetType = getShopPersoWidgetType(widgetName)
-        val eventAction = if(isLogin) {
-            CLICK_PRODUCT_RECOMMENDATION
-        } else {
-            joinDash(CLICK_PRODUCT_RECOMMENDATION, NON_LOGIN)
-        }
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
+        val eventAction = joinDash(CLICK_PRODUCT_RECOMMENDATION, LOGIN)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
+        val actionFieldList = joinDash(
+                SHOPPAGE,
+                LOGIN,
+                BUYER_RECOMMENDATION,
+                recommendationType,
                 widgetType
         )
-        val actionFieldList = if(isLogin) {
-            joinDash(
-                    SHOPPAGE,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        } else {
-            joinDash(
-                    SHOPPAGE,
-                    NON_LOGIN,
-                    BUYER_RECOMMENDATION,
-                    recommendationType,
-                    widgetType
-            )
-        }
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to PRODUCT_CLICK,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
@@ -767,17 +738,12 @@ class ShopPageHomeTracking(
     ) {
 
         val widgetType = getShopPersoWidgetType(widgetName)
+        val eventLabel = joinDash(widgetHeaderTitle, widgetType)
         val eventAction = when(widgetType){
-            WIDGET_TYPE_CAROUSELL -> CLICK_ATC_RECOMMENDATION
+            WIDGET_TYPE_CAROUSELL, WIDGET_TYPE_ADD_ONS -> CLICK_ATC_RECOMMENDATION
             WIDGET_TYPE_BUY_AGAIN -> CLICK_OCC_RECOMMENDATION
             else -> ""
         }
-
-        val eventLabel = joinDash(
-                widgetHeaderTitle,
-                widgetType
-        )
-
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to ADD_TO_CART,
                 EVENT_CATEGORY to getShopPageCategory(isOwner),
