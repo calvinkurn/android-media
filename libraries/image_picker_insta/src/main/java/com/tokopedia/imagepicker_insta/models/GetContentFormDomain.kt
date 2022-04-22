@@ -17,13 +17,17 @@ data class GetContentFormDomain(
     data class Author(
         @SerializedName("type")
         val type: String = "",
+
         @SerializedName("id")
         val id: String = "",
+
         @SerializedName("name")
         val name: String = "",
+
         @SerializedName("thumbnail")
         val thumbnail: String = "",
+
         @SerializedName("badge")
-        val badge: String = ""
+        val badge: String = "",
     )
 }

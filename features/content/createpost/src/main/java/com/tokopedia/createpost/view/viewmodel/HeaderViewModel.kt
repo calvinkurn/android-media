@@ -7,5 +7,5 @@ data class HeaderViewModel(
         val id: String = "",
         val title: String = "",
         val avatar: String = "",
-        val badge: String = ""
+        val badge: String = "",
 )
