@@ -42,7 +42,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               status
               question
               prize
-              countdownEnd
+              countdown_end: countdownEnd
               choices {
                 id
                 text
