@@ -110,19 +110,13 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
     }
 
     private fun getDataGroup(requestParams: RequestParams, onSuccess: (GroupItemResponse.GetTopadsDashboardGroups) -> Unit) {
-        topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+        launchCatchError(block = {
+            val response = topAdsGetGroupDataUseCase.execute(requestParams)
 
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+            onSuccess(response.getTopadsDashboardGroups)
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<GroupItemResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<GroupItemResponse>
-                onSuccess(response.data.getTopadsDashboardGroups)
-            }
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -480,7 +474,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         job.cancel()
         topAdsGetShopDepositUseCase.cancelJobs()
         gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetGroupDataUseCase.unsubscribe()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         budgetRecomUseCase.cancelJobs()
