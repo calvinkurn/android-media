@@ -59,6 +59,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.google.firebase.analytics.FirebaseAnalytics.Param.CHECKOUT_STEP;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 import org.json.JSONException;
@@ -613,7 +614,7 @@ public class GTMAnalytics extends ContextAnalytics {
             String step = bruteForceCastToString(actionField.get("step"));
             String option = bruteForceCastToString(actionField.get("option"));
 
-            bundle.putString(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
+            bundle.putString(CHECKOUT_STEP, step);
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, option);
         }
 
@@ -1179,7 +1180,42 @@ public class GTMAnalytics extends ContextAnalytics {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
             publishNewRelic(eventName, bundle);
-            FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+            FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
+            fa.logEvent(eventName, bundle);
+            switch (eventName) {
+                // https://tokopedia.atlassian.net/browse/AN-36119
+                case FirebaseAnalytics.Event.VIEW_ITEM:
+                    fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
+                    break;
+                case FirebaseAnalytics.Event.SELECT_CONTENT:
+                    if (bundle.getString(FirebaseAnalytics.Param.ITEM_LIST).equals("Search Results")) {
+                        // https://tokopedia.atlassian.net/browse/AN-36131
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
+                        fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
+                    } else {
+                        // https://tokopedia.atlassian.net/browse/AN-36122
+                        fa.logEvent(FirebaseAnalytics.Event.SELECT_PROMOTION, bundle);
+                    }
+                    break;
+                case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
+                    // https://tokopedia.atlassian.net/browse/AN-36179
+                    // https://tokopedia.atlassian.net/browse/AN-36180
+                    if (bundle.getLong(CHECKOUT_STEP) == 2 || bundle.getLong(CHECKOUT_STEP) == 3) {
+                        fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
+                    }
+                    break;
+                case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
+                    // https://tokopedia.atlassian.net/browse/AN-36125
+                    if (bundle.getString(FirebaseAnalytics.Param.ITEM_LIST).equals("Search Result")) {
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
+                        fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
+                    }
+                    break;
+                case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+                    // https://tokopedia.atlassian.net/browse/AN-36181
+                    fa.logEvent(FirebaseAnalytics.Event.PURCHASE, bundle);
+                    break;
+            }
             logV5(context, eventName, bundle);
             trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
