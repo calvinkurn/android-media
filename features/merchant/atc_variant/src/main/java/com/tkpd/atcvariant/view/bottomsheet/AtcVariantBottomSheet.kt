@@ -49,12 +49,20 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.*
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.ProductCartHelper
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
+import com.tokopedia.product.detail.common.ProductTrackingCommon
+import com.tokopedia.product.detail.common.VariantConstant
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
@@ -477,7 +485,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
         trackSuccessAtc(cartId)
 
-        if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
+        if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
+                sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
             return
         }
@@ -633,8 +642,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         if (state == VariantConstant.STATE_SELECTED || state == VariantConstant.STATE_SELECTED_EMPTY) return
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
-        viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
-                variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)
+        viewModel.onVariantClicked(
+                sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
+                variantOptions.variantCategoryKey,
+                variantOptions.variantId,
+                variantOptions.imageOriginal,
+                variantOptions.level)
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -776,7 +789,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     sharedData?.minimumShippingPrice ?: 0.0,
                     sharedData?.trackerAttribution ?: "",
                     sharedData?.trackerListNamePdp ?: "",
-                    sharedData?.isTokoNow ?: false
+                    sharedData?.showQtyEditor ?: false
             )
         }
     }

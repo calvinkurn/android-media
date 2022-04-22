@@ -139,9 +139,11 @@ abstract class BaseAtcVariantViewModelTest {
         Assert.assertTrue(viewModel.buttonData.value is Fail)
     }
 
-    fun decideSuccessValueHitGqlAggregator(productId: String, isTokoNow: Boolean) {
+    fun decideSuccessValueHitGqlAggregator(productId: String,
+                                           isTokoNow: Boolean,
+                                           showQtyEditor: Boolean) {
         val mockData = AtcVariantJsonHelper.generateAggregatorData(isTokoNow)
-        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
+        val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow, showQtyEditor)
 
         coEvery {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), isTokoNow, any())
