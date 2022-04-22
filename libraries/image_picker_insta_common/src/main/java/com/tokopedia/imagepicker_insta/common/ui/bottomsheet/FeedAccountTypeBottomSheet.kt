@@ -49,6 +49,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
     }
 
     private fun setupBottomSheet() {
