@@ -2,5 +2,7 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimo
 
 data class AdminTypeUiModel(
     val status: String,
-    val shopID: String
+    val shopID: String,
+    val isShopAdmin: Boolean,
+    val isShopOwner: Boolean
 )

@@ -13,6 +13,12 @@ object GetAdminTypeQuery : GqlQueryInterface {
         query ${OPERATION_NAME}(${'$'}source: String!) {
             ${OPERATION_NAME}(source: ${'$'}source) {
                 admin_data {
+                  	detail_information {
+                      admin_role_type {
+                        is_shop_admin
+                        is_shop_owner
+                      }
+                    }
                     status
                 }
                 shopID

@@ -2,7 +2,7 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.mapper
 
 import com.tokopedia.shopadmin.common.constants.AdminStatus
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.AdminConfirmationRegResponse
-import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAdminInfoResponse
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAdminTypeResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetShopAdminInfoResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.ValidateAdminEmailResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
@@ -15,7 +15,8 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
 
     fun mapToShopAdminInfoUiModel(shopAdminInfoResponse: GetShopAdminInfoResponse): ShopAdminInfoUiModel {
         val shop = shopAdminInfoResponse.shop
-        val shopManageID = shopAdminInfoResponse.getAdminInfo.adminData.firstOrNull()?.shopManageId.orEmpty()
+        val shopManageID =
+            shopAdminInfoResponse.getAdminInfo.adminData.firstOrNull()?.shopManageId.orEmpty()
         return ShopAdminInfoUiModel(shopName = shop.shopName, shop.logo, shopManageID)
     }
 
@@ -35,9 +36,15 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
         )
     }
 
-    fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminInfoResponse): AdminTypeUiModel {
+    fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminTypeResponse): AdminTypeUiModel {
         val adminType = adminInfoResponse.getAdminType
+        val adminRoleType = adminType.adminData.detailInformation.adminRoleType
 //        return AdminTypeUiModel(adminType.adminData.status, adminType.shopID)
-        return AdminTypeUiModel(AdminStatus.WAITING_CONFIRMATION, adminType.shopID)
+        return AdminTypeUiModel(
+            AdminStatus.WAITING_CONFIRMATION,
+            adminType.shopID,
+            adminRoleType.isShopAdmin,
+            adminRoleType.isShopOwner
+        )
     }
 }
