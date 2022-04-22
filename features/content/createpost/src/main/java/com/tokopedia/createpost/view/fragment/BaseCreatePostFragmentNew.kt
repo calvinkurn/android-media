@@ -125,6 +125,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     name = it.name,
                     iconUrl = it.thumbnail,
                     badge = it.badge,
+                    type = it.type,
                 )
             }
         )
@@ -134,7 +135,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         createPostModel.maxImage = feedContentForm.media.maxMedia
         createPostModel.allowImage = feedContentForm.media.allowImage
         createPostModel.allowVideo = feedContentForm.media.allowVideo
-        createPostModel.maxProduct = 5
+        createPostModel.maxProduct = feedContentForm.maxTag
         createPostModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
         if (createPostModel.caption.isEmpty()) createPostModel.caption = feedContentForm.caption
 

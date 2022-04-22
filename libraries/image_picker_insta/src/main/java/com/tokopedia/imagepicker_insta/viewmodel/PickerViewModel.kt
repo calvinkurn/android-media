@@ -208,6 +208,7 @@ class PickerViewModel(
                     name = it.name,
                     iconUrl = it.thumbnail,
                     badge = it.badge,
+                    type = it.type,
                 )
             }
 
