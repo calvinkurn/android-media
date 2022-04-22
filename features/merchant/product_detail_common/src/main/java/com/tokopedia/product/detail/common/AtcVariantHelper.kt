@@ -130,10 +130,11 @@ object AtcVariantHelper {
                 pageSource.source,
                 isTokoNow.toString(),
                 trackerCdListName)
+        val qtyEditorData = if (isTokoNow) true else showQuantityEditor
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
         intent.putExtra(KEY_EXT_PARAMS, extParams)
-        intent.putExtra(KEY_SHOW_QTY_EDITOR, showQuantityEditor)
+        intent.putExtra(KEY_SHOW_QTY_EDITOR, qtyEditorData)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 
