@@ -1009,11 +1009,11 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         hideFab()
         globalError?.apply {
             errorType = GlobalError.PAGE_NOT_FOUND
-            errorAction.text = getString(R.string.review_back_to_home)
             setType(GlobalError.PAGE_NOT_FOUND)
             setActionClickListener {
                 goToHome()
             }
+            errorAction.text = getString(R.string.review_back_to_home)
             show()
         }
     }
