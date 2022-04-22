@@ -101,7 +101,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
 
     private fun isEnableNew2Fa(): Boolean =
-	RemoteConfigInstance.getInstance().abTestPlatform.getString(NEW_BIOMETRIC_OFFERING).isNotEmpty()
+	RemoteConfigInstance.getInstance().abTestPlatform.getString(NEW_BIOMETRIC_OFFERING) == NEW_BIOMETRIC_OFFERING
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 	if (!exceptionPage.contains(activity.javaClass.simpleName)) {
@@ -251,7 +251,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
     companion object {
 
-	private const val NEW_BIOMETRIC_OFFERING = "biometric_offering_an"
+	private const val NEW_BIOMETRIC_OFFERING = "biometric_offer_an"
 
 	fun mapToApplink(
 	    activity: Activity,
