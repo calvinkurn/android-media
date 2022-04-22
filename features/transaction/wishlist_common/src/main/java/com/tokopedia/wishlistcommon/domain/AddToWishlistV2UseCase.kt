@@ -16,10 +16,10 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.USER_ID
 import javax.inject.Inject
 
 @GqlQuery("AddToWishlistV2", GQL_WISHLIST_ADD_V2)
-class AddToWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<AddToWishlistV2Response.Data.WishlistAdd>>() {
+class AddToWishlistV2UseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : UseCase<Result<AddToWishlistV2Response.Data.WishlistAddV2>>() {
     private var params: Map<String, Any?>? = null
 
-    override suspend fun executeOnBackground(): Result<AddToWishlistV2Response.Data.WishlistAdd> {
+    override suspend fun executeOnBackground(): Result<AddToWishlistV2Response.Data.WishlistAddV2> {
         return try {
             val request = GraphqlRequest(AddToWishlistV2(), AddToWishlistV2Response.Data::class.java, params)
             val response = gqlRepository.response(listOf(request)).getSuccessData<AddToWishlistV2Response.Data>()
