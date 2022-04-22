@@ -41,8 +41,8 @@
 
     <View
         android:id="@+id/v_anchor_bottom"
-        android:layout_width="@dimen/play_anchor_size"
-        android:layout_height="@dimen/play_anchor_size"
+        android:layout_width="@dimen/play_common_anchor_size"
+        android:layout_height="@dimen/play_common_anchor_size"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone"
