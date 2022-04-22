@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_NN0"
             android:paddingStart="@dimen/spacing_lvl3"
-            android:paddingTop="11dp"
+            android:paddingTop="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl3">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -100,12 +100,13 @@
                 android:id="@+id/tg_powered"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:text="@string/home_usp_powered_by"
                 android:textColor="@color/Unify_NN600"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline2"
+                app:layout_constraintEnd_toStartOf="@id/img_gofood"
                 app:layout_constraintTop_toBottomOf="@id/img_third_usp"
                 app:typographyType="small"
                 app:typographyWeight="reguler" />
@@ -113,10 +114,11 @@
             <ImageView
                 android:id="@+id/img_gofood"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_lvl3"
+                android:layout_height="@dimen/unify_space_12"
                 android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/unify_space_12"
                 app:layout_constraintBottom_toBottomOf="@id/tg_powered"
-                app:layout_constraintStart_toEndOf="@+id/tg_powered"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tg_powered" />
 
             <androidx.constraintlayout.widget.Guideline
@@ -162,7 +164,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:layout_gravity="center"
         android:elevation="4dp"
-        android:src="@drawable/iconunify_chevron_down"
+        android:src="@drawable/iconunify_chevron_up"
         android:tint="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="@id/main_layout"
         app:layout_constraintTop_toBottomOf="@id/main_layout"

@@ -3,7 +3,7 @@
     <string name="tokofood_title">Gofood</string>
 
     <!-- Home -->
-    <string name="home_usp_powered_by">Powered by</string>
+    <string name="home_usp_powered_by">Dilayani</string>
 
     <!-- Purchase -->
     <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>

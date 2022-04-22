@@ -97,7 +97,7 @@ class TokoFoodHomeViewModel @Inject constructor(
     private suspend fun getTokoFoodHomeComponent(item: TokoFoodHomeLayoutUiModel) {
         when (item) {
             is TokoFoodHomeUSPUiModel -> getUSPDataAsync(item).await()
-            is TokoFoodHomeIconsUiModel -> {}
+            is TokoFoodHomeIconsUiModel -> getIconListDataAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -106,6 +106,14 @@ class TokoFoodHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val uspData = tokoFoodHomeUSPUseCase.execute()
             homeLayoutItemList.mapUSPData(item, uspData)
+        }){
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getIconListDataAsync(item: TokoFoodHomeIconsUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            throw Throwable()
         }){
             homeLayoutItemList.removeItem(item.id)
         }
