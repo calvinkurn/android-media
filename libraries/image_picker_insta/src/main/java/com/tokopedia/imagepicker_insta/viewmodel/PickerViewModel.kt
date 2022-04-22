@@ -199,7 +199,7 @@ class PickerViewModel(
     fun getFeedAccountList() {
         launchCatchError(block = {
             val response = getContentFormUseCase.apply {
-                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "content-tagging-page", ""))
+                setRequestParams(GetContentFormUseCase.createParams(mutableListOf(), "entrypoint", ""))
             }.executeOnBackground()
 
             val feedAccountList = response.feedContentForm.authors.map {
