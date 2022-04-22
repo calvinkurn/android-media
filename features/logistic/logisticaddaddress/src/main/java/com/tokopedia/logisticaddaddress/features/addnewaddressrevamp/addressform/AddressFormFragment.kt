@@ -573,74 +573,90 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun validateForm(): Boolean {
         validated = true
-        var field = ""
+        val field = mutableListOf<String>()
         binding?.run {
             if (isPositiveFlow) {
                 if (formAddress.etLabel.textFieldInput.text.toString().isEmpty() || formAddress.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
-                    field += getString(R.string.field_label_alamat)
+                    field.add(getString(R.string.field_label_alamat))
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
                 if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
                     validated = false
-                    field += getString(R.string.field_alamat)
+                    if (isEdit) {
+                        field.add(getString(R.string.field_alamat_edit))
+                    } else {
+                        field.add(getString(R.string.field_alamat))
+                    }
                     setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
                 if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field += getString(R.string.field_label_alamat)
+                    field.add(getString(R.string.field_label_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
                 if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field += getString(R.string.field_alamat)
+                    if (isEdit) {
+                        field.add(getString(R.string.field_alamat_edit))
+                    } else {
+                        field.add(getString(R.string.field_alamat))
+                    }
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             } else {
                 if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
-                    field += getString(R.string.field_label_alamat)
+                    field.add(getString(R.string.field_label_alamat))
                     setWrapperError(formAddressNegative.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
                 if (formAddressNegative.etAlamat.textFieldInput.text.toString().isEmpty() || formAddressNegative.etAlamat.textFieldInput.text.toString() == " ") {
                     validated = false
-                    field += getString(R.string.field_alamat)
+                    if (isEdit) {
+                        field.add(getString(R.string.field_alamat_edit))
+                    } else {
+                        field.add(getString(R.string.field_alamat))
+                    }
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
                 if (formAddressNegative.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field += getString(R.string.field_label_alamat)
+                    field.add(getString(R.string.field_label_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 
                 if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
-                    field += getString(R.string.field_alamat)
+                    if (isEdit) {
+                        field.add(getString(R.string.field_alamat_edit))
+                    } else {
+                        field.add(getString(R.string.field_alamat))
+                    }
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
 
             if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty() || formAccount.etNamaPenerima.textFieldInput.text.toString() == " ") {
                 validated = false
-                field += getString(R.string.field_nama_penerima)
+                field.add(getString(R.string.field_nama_penerima))
                 setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
             }
 
             if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
                 validated = false
-                field += getString(R.string.field_nomor_hp)
+                field.add( getString(R.string.field_nomor_hp))
                 setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
             }
 
             if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
                 validated = false
-                field += getString(R.string.field_nama_penerima)
+                field.add(getString(R.string.field_nama_penerima))
                 view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
             }
         }
@@ -660,14 +676,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
         if (!isEdit) {
             if (!validated && isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field)
+                AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, field.toSet().joinToString ("," ))
             } else if (!validated && !isPositiveFlow) {
-                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field)
+                AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field.toSet().joinToString ("," ))
             }
         } else {
             if (!validated) {
                 EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field)
+                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field.toSet().joinToString ("," ))
             }
         }
         return validated
