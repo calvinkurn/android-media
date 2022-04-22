@@ -3,9 +3,11 @@ package com.tokopedia.oldminicart.common.widget
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 object MiniCartWidgetMapper {
 
@@ -94,6 +96,25 @@ object MiniCartWidgetMapper {
             )
             val key = MiniCartItemKey(it.productId)
             cartItems[key] = item
+
+            if (item.productParentId.isNotBlankOrZero()) {
+                val parentKey = MiniCartItemKey(it.productParentId, type = MiniCartItemType.PARENT)
+                if (!cartItems.contains(parentKey)) {
+                    cartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                        parentId = it.productParentId,
+                        totalQuantity = item.quantity,
+                        products = hashMapOf(key to item)
+                    )
+                } else {
+                    val currentParentItem = cartItems[parentKey] as MiniCartItem.MiniCartItemParentProduct
+                    val products = HashMap(currentParentItem.products)
+                    products[key] = item
+                    val totalQuantity = currentParentItem.totalQuantity + item.quantity
+                    cartItems[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                        it.productParentId, totalQuantity, products
+                    )
+                }
+            }
         }
         val isShowMiniCartWidget = miniCartSimplifiedData.isShowMiniCartWidget
 
