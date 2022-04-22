@@ -1,7 +1,10 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.MessageUiModel
@@ -61,12 +64,6 @@ class LeftChatMessageViewHolder(
         replyBubbleArea?.updateReplyButtonState(true)
         replyBubbleArea?.updateBackground(true)
         replyBubbleArea?.updateCloseButtonState(false)
-        replyBubbleArea?.setPadding(
-            replyBubbleArea?.paddingLeft,
-            replyBubbleArea?.paddingTop,
-            replyBubbleArea?.paddingRight,
-            100F.toDp().toInt()
-        )
         replyBubbleArea?.show()
 
     }
@@ -115,6 +112,11 @@ class LeftChatMessageViewHolder(
     }
 
     override fun getDateContainerId(): Int = R.id.dateContainer
+
+
+
+
+
 
     companion object {
         val LAYOUT = R.layout.item_chatbot_chat_left

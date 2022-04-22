@@ -712,7 +712,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     getViewState()?.onSuccessLoadFirstTime(it)
                     checkShowLoading(it.canLoadMore)
                     enableLoadMore()
-                    //     checkReplyBubbleOnboardingStatus()
+               //     checkReplyBubbleOnboardingStatus()
                 }
 
             }
@@ -734,6 +734,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 }
                 checkShowLoading(it.canLoadMore)
                 enableLoadMore()
+         //       checkReplyBubbleOnboardingStatus()
             }else {
                 loadData(page+1)
             }
@@ -1406,11 +1407,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 //            checkReplyBubbleOnboardingStatus()
 //        }
     }
-
+    var showed = false
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
         recyclerView?.let {
-            if (!false){
+            if (!false && !showed){
+                showed = true
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
                     adapter as ChatbotAdapter,
                     it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()), context)

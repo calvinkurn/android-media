@@ -57,12 +57,6 @@ class RightChatMessageViewHolder(
         replyBubbleArea?.updateReplyButtonState(true)
         replyBubbleArea?.updateBackground(false)
         replyBubbleArea?.updateCloseButtonState(false)
-        replyBubbleArea?.setPadding(
-            replyBubbleArea?.paddingLeft,
-            replyBubbleArea?.paddingTop,
-            replyBubbleArea?.paddingRight,
-            50F.toDp().toInt()
-        )
         replyBubbleArea?.show()
 //        }else{
 //            replyBubbleArea?.hide()

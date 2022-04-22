@@ -11,6 +11,7 @@
         android:id="@+id/dateContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/chatbot_ticker"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:cardCornerRadius="12dp"
         app:cardBackgroundColor="#E5F5FF"
@@ -34,7 +35,7 @@
 
     <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:id="@+id/reply"
         app:layout_constraintTop_toBottomOf="@id/dateContainer"
         app:layout_constraintStart_toStartOf="@id/chat_layout_container"
@@ -51,10 +52,9 @@
         android:layout_gravity="right|center_vertical"
         android:layout_marginEnd="@dimen/unify_space_12"
         android:layout_marginRight="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/chatcommon_40dp"
+        android:layout_marginTop="50dp"
         android:gravity="right"
-        app:layout_constraintTop_toBottomOf="@id/reply"
-        app:layout_constraintBottom_toBottomOf="@id/reply"
+        app:layout_constraintTop_toTopOf="@id/reply"
         app:layout_constraintRight_toRightOf="parent"
         tools:ignore="RtlHardcoded">
 
