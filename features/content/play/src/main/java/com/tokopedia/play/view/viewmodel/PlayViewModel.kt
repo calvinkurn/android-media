@@ -1793,6 +1793,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
+        val interactiveType = _interactive.value.interactive
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
@@ -1805,7 +1806,7 @@ class PlayViewModel @AssistedInject constructor(
             repo.hasJoined(interactive.interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
-                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, _interactive.value.interactive)
+                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
                     ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
