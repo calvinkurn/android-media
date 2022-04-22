@@ -7,26 +7,31 @@
     android:orientation="vertical"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.25"
+        android:orientation="horizontal" />
+
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/quiz_header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/gl_top"
+        app:layout_constraintWidth_percent="0.6" />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
         android:id="@+id/ll_quiz_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/play_dp_12"
         android:background="@color/Unify_Background"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/view_game_reward"
         app:layout_constraintEnd_toEndOf="@+id/quiz_header"
         app:layout_constraintStart_toStartOf="@+id/quiz_header"
         app:layout_constraintTop_toBottomOf="@+id/quiz_header"
-        app:layout_constraintVertical_bias="0.0"
         app:rll_bottomLeftRadius="@dimen/play_dp_12"
         app:rll_bottomRightRadius="@dimen/play_dp_12">
 
@@ -46,6 +51,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/spacing_lvl4"
             android:visibility="visible"
+            tools:itemCount="3"
             tools:listitem="@layout/item_quiz_option" />
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>
@@ -56,8 +62,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/play_dp_12"
         app:layout_constraintEnd_toEndOf="@+id/ll_quiz_content"
         app:layout_constraintStart_toStartOf="@+id/ll_quiz_content"
+        app:layout_constraintTop_toBottomOf="@+id/ll_quiz_content"
         tools:visibility="visible" />
 </merge>

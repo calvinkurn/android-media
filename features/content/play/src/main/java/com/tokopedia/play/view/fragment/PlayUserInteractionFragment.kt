@@ -875,7 +875,8 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
-                        doShowToaster(
+                        if (interactiveActiveView?.isHidden() == true)
+                            doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = errMessage
                         )

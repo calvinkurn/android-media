@@ -14,12 +14,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
 import com.tokopedia.play.view.uimodel.action.ClickRetryInteractiveAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -30,6 +31,8 @@ import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
 import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -73,8 +76,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
         val window = dialog?.window ?: return
         window.setLayout(
-            (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
-            WindowManager.LayoutParams.WRAP_CONTENT
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
@@ -94,6 +97,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
     private fun setupObserve() {
         observeUiState()
+        observeUiEvent()
     }
 
     private fun observeUiState() {
@@ -118,6 +122,21 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
             }
         }
     }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                when(event){
+                    is ShowErrorEvent -> {
+                        val errMsg = ErrorHandler.getErrorMessage(context, event.error, ErrorHandler.Builder()
+                                .className(PlayViewModel::class.java.simpleName).build())
+                        doShowToaster(toasterType = Toaster.TYPE_ERROR, message = errMsg)
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun renderGiveawayDialog(
         giveaway: InteractiveUiModel.Giveaway,
@@ -200,6 +219,20 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         }
     }
 
+    private fun doShowToaster(
+        toasterType: Int = Toaster.TYPE_NORMAL,
+        actionText: String = "",
+        message: String,
+    ) {
+
+        Toaster.build(
+            view = requireView(),
+            message,
+            type = toasterType,
+            actionText = actionText
+        ).show()
+    }
+
     private inline fun <reified V: View> setChildView(
         viewCreator: (Context) -> V
     ): V {
@@ -215,8 +248,6 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
     companion object {
         private const val TAG = "InteractiveDialogFragment"
-
-        private const val WIDTH_PERCENTAGE = 0.6
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? InteractiveDialogFragment
