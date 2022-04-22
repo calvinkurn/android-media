@@ -10,7 +10,7 @@ import com.tokopedia.picker.common.types.PageType
 import org.junit.Rule
 import org.junit.Test
 
-class CameraPageUiTest:CameraPageTest() {
+class CameraPageUiTest : CameraPageTest() {
     @get:Rule
     var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         android.Manifest.permission.CAMERA,
@@ -42,23 +42,21 @@ class CameraPageUiTest:CameraPageTest() {
         Robot.captureVideo(2000)
 
         // Then
-        Thread.sleep(2000)
         Assert.assertCaptureImage()
     }
 
     @Test
-    fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked(){
+    fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
         startCameraPage()
         Robot.clickCaptureButton()
 
         // Then
-        Thread.sleep(2000)
         Assert.assertCaptureImage()
     }
 
     @Test
-    fun should_flip_camera_and_hide_flash_button_onFlipButtonClicked(){
+    fun should_flip_camera_and_hide_flash_button_onFlipButtonClicked() {
         // When
         startCameraPage()
         Robot.clickFlipCameraButton()
@@ -68,31 +66,28 @@ class CameraPageUiTest:CameraPageTest() {
     }
 
     @Test
-    fun should_close_activity_onCloseClicked(){
+    fun should_close_activity_onCloseClicked() {
         // When
         startCameraPage()
         Robot.clickCloseButton()
 
         // Then
-        Thread.sleep(2000)
         Assert.assertActivityDestroy(this)
     }
 
     @Test
-    fun should_open_preview_activity_onLanjutClicked(){
+    fun should_open_preview_activity_onLanjutClicked() {
         // When
         startCameraPage()
         Robot.clickCaptureButton()
-        Thread.sleep(5000)
         Robot.clickLanjutButton()
 
         // Then
-        Thread.sleep(2000)
         Assert.assertLanjutButton()
     }
 
     @Test
-    fun should_update_flash_state_onFlashButtonClicked(){
+    fun should_update_flash_state_onFlashButtonClicked() {
         // When
         startCameraPage()
         val flashState = Robot.clickFlashButton()
@@ -103,7 +98,7 @@ class CameraPageUiTest:CameraPageTest() {
     }
 
     @Test
-    fun should_open_gallery_fragment_onGalleryTabClicked(){
+    fun should_open_gallery_fragment_onGalleryTabClicked() {
         // When
         startCameraPage()
         Robot.clickGalleryTab()
@@ -113,15 +108,13 @@ class CameraPageUiTest:CameraPageTest() {
     }
 
     @Test
-    fun should_open_preview_activity_onThumbnailClicker(){
+    fun should_open_preview_activity_onThumbnailClicker() {
         // When
         startCameraPage()
         Robot.clickCaptureButton()
-        Thread.sleep(5000)
         Robot.clickPreviewThumbnail()
 
         // Then
-        Thread.sleep(2000)
         Assert.assertPreviewThumbnail()
     }
 
