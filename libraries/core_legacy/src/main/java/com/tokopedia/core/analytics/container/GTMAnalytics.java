@@ -614,7 +614,7 @@ public class GTMAnalytics extends ContextAnalytics {
             String step = bruteForceCastToString(actionField.get("step"));
             String option = bruteForceCastToString(actionField.get("option"));
 
-            bundle.putString(CHECKOUT_STEP, step);
+            bundle.putString(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
             bundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, option);
         }
 
