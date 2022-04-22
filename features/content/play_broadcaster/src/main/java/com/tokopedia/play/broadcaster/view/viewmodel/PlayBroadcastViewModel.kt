@@ -29,6 +29,8 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.BroadcastQuizState
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -139,6 +141,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableInteractiveState
     val observableQuizState: LiveData<BroadcastQuizState>
         get() = _observableQuizState
+    val observableQuizDetailState: LiveData<QuizDetailStateUiModel>
+        get() = _observableQuizDetailState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
@@ -189,6 +193,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableQuizState = MutableLiveData<BroadcastQuizState>()
+    private val _observableQuizDetailState = MutableLiveData<QuizDetailStateUiModel>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession =
@@ -713,21 +718,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 when (val status = interactive.status) {
                     is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
                         endTime = status.endTime,
-                        question = interactive.title)
+                        question = interactive.title
+                    )
                     is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
                     else -> {}
                 }
             }
-            else -> {
-
-            }
         }
-
-    }
-
-
-    private fun handleQuizDetailFromNetwork(quizDetailUiModel: QuizDetailUiModel) {
-
     }
 
     private fun onQuizFinished() {
@@ -1206,13 +1203,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleClickOngoingQuiz(){
+    fun getQuizDetailData() {
+        _observableQuizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
-            handleQuizDetailFromNetwork(quizDetailUiModel)
-
+            _observableQuizDetailState.value = QuizDetailStateUiModel.Success(quizDetailUiModel)
         }) {
-
+            _observableQuizDetailState.value = QuizDetailStateUiModel.Error
         }
     }
 

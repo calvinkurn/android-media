@@ -35,7 +35,9 @@ class GetInteractiveQuizDetailsUseCase @Inject constructor(
         private const val PARAM_INTERACTIVE_ID = "interactiveId"
         const val QUERY_NAME = "GetInteractiveQuizDetailsUseCaseQuery"
         const val QUERY = """
-            {
+            query GetInteractiveQuizDetailsUseCase(
+                ${'$'}$PARAM_INTERACTIVE_ID: String!
+            ) {
               playInteractiveGetQuizDetails(req:{
                 interactiveID: ${"$$PARAM_INTERACTIVE_ID"}
               }){

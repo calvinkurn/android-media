@@ -29,10 +29,11 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.BroadcastQuizState
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastQuizState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -46,6 +47,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -947,6 +949,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
         quizOngoingView.show()
+        quizOngoingView.setOnClickListener {
+            openQuizDetailSheet()
+        }
         quizOngoingView.setupQuiz(state.question,state.endTime) {
             it.hide()
             quizFinishedView.setupQuiz()
@@ -982,6 +987,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
         }
         leaderBoardBottomSheet.show(childFragmentManager)
+    }
+
+    private fun openQuizDetailSheet() {
+        val fragmentFactory = childFragmentManager.fragmentFactory
+        val playQuizDetailBottomSheet = fragmentFactory.instantiate(
+            requireContext().classLoader,
+            PlayQuizDetailBottomSheet::class.java.name) as PlayQuizDetailBottomSheet
+        playQuizDetailBottomSheet.show(childFragmentManager)
     }
 
     companion object {

@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostIntera
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -315,7 +316,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailUiModel {
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
         TODO("Not yet implemented")
     }
 

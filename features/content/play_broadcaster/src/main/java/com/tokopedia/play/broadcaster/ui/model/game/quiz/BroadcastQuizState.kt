@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.ui.model.interactive
+package com.tokopedia.play.broadcaster.ui.model.game.quiz
 
 import java.util.*
 

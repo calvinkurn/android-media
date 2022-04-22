@@ -10,10 +10,10 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.QuizDetailUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
@@ -110,5 +110,5 @@ interface PlayBroadcastMapper {
 
     fun mapQuizDetail(
         response: GetInteractiveQuizDetailResponse
-    ): QuizDetailUiModel
+    ): QuizDetailDataUiModel
 }

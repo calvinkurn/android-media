@@ -1,8 +1,8 @@
-package com.tokopedia.play.broadcaster.ui.model.interactive
+package com.tokopedia.play.broadcaster.ui.model.game.quiz
 
-data class QuizDetailUiModel(
-    val title: String,
+data class QuizDetailDataUiModel(
     val question: String,
+    val reward:String,
     val countDownEnd: Int,
     val choices: List<Choice> = listOf(),
 ) {

@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -397,13 +398,13 @@ class PlayBroadcastUiMapper(
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailUiModel {
-        return QuizDetailUiModel(
-            title = "Respon quiz",
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
+        return QuizDetailDataUiModel(
             question = response.question,
+            reward = response.reward,
             countDownEnd = response.countdownEnd,
             choices = response.choices.map {
-                QuizDetailUiModel.Choice(
+                QuizDetailDataUiModel.Choice(
                     text = it.text,
                     isCorrectAnswer = it.isCorrectAnswer,
                     participantCount = it.participantCount)
