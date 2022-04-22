@@ -78,7 +78,7 @@ class GetSlashPriceProductListToReserveUseCase @Inject constructor(
         sortType: String = EMPTY_STRING,
         requestId : String,
         page: Int,
-        pageSize: Int = 10,
+        pageSize: Int = 5,
         keyword: String = EMPTY_STRING,
         showcaseIds: List<String>  = emptyList(),
         categoryIds: List<String> = emptyList(),

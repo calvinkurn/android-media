@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
+import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
@@ -89,7 +90,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
-
+    
     private val discountStatusId by lazy {
         arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
     }
@@ -123,6 +124,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         setupView()
         observeProducts()
         observeReserveProducts()
+        observeShopBenefits()
     }
 
     private fun setupView() {
@@ -222,7 +224,39 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
     }
 
+    private fun observeShopBenefits() {
+        viewModel.benefit.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    handleRemainingQuota(it.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun handleRemainingQuota(shopBenefit: ShopBenefit) {
+        val remainingQuota = if (shopBenefit.isUseVps) {
+            val vpsPackage = findVpsPackage(shopBenefit.benefits)
+            vpsPackage?.remainingQuota.orZero()
+        } else {
+            MAX_PRODUCT_SELECTION
+        }
+
+        viewModel.setRemainingQuota(remainingQuota)
+
+        if (remainingQuota == ZERO) {
+            binding?.recyclerView showError getString(R.string.sd_no_remaining_quota)
+            viewModel.setDisableProductSelection(true)
+        }
+    }
+
     private fun handleProducts(data: List<ReservableProduct>) {
+        val hasNextPage = data.size == getPerPage()
+        renderList(data, hasNextPage)
+
         if (data.size == ZERO) {
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
             binding?.emptyState?.setTitle(getString(R.string.sd_search_result_not_found_title))
@@ -234,9 +268,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         } else {
             binding?.recyclerView?.visible()
             binding?.emptyState?.gone()
-
-
-            renderList(data, data.size == getPerPage())
         }
     }
 
@@ -257,17 +288,18 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         val selectedProductCount = viewModel.getSelectedProducts().size
 
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
-        adapter?.update(selectedProduct, updatedProduct)
+        productAdapter.update(selectedProduct, updatedProduct)
 
 
-        val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
+        val remainingQuota = viewModel.getRemainingQuota()
+        val shouldDisableSelection = selectedProductCount >= remainingQuota
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
         binding?.btnManage?.text =
             String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
         binding?.btnManage?.isEnabled = selectedProductCount > 0
 
-        val items = adapter?.getItems() ?: emptyList()
+        val items = productAdapter.getItems()
 
         if (shouldDisableSelection) {
             showTickerWithAnimation()
@@ -280,12 +312,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun disableProductSelection(products : List<ReservableProduct>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
-        adapter?.refresh(toBeDisabledProducts)
+        productAdapter.refresh(toBeDisabledProducts)
     }
 
     private fun enableProductSelection(products : List<ReservableProduct>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
-        adapter?.refresh(toBeEnabledProducts)
+        productAdapter.refresh(toBeEnabledProducts)
     }
 
     private fun guard(isDisabled: Boolean, disableReason : String, block : () -> Unit) {
@@ -325,7 +357,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     override fun addElementToAdapter(list: List<ReservableProduct>) {
-        adapter?.addData(list)
+        productAdapter.addData(list)
     }
 
     override fun loadData(page: Int) {
@@ -340,26 +372,27 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             requestId,
             page,
             keyword,
-            viewModel.shouldDisableProductSelection()
+            viewModel.shouldDisableProductSelection(),
         )
     }
 
     override fun clearAdapterData() {
-        adapter?.clearData()
+        productAdapter.clearData()
     }
 
     override fun onShowLoading() {
         binding?.emptyState?.gone()
-        adapter?.showLoading()
+        productAdapter.showLoading()
     }
 
     override fun onHideLoading() {
         binding?.emptyState?.gone()
-        adapter?.hideLoading()
+        productAdapter.hideLoading()
     }
 
     override fun onDataEmpty() {
         binding?.emptyState?.visible()
+        productAdapter.hideLoading()
     }
 
     override fun onGetListError(message: String) {
@@ -387,7 +420,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun clearSearchBar() {
         val selectedProductCount = viewModel.getSelectedProducts().size
-        val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
+        val remainingQuota = viewModel.getRemainingQuota()
+        val shouldDisableSelection = selectedProductCount >= remainingQuota
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
         clearAllData()
@@ -433,9 +467,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
     }
 
-    override fun onSwipeRefreshPulled() {
-
-    }
 
     private fun redirectToDesktopPage() {
         if (!isAdded) return
@@ -460,5 +491,13 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                 ShopDiscountManageDiscountMode.CREATE
             )
         }
+    }
+
+    private fun findVpsPackage(benefits: List<ShopBenefit.Benefit>): ShopBenefit.Benefit? {
+        return benefits.firstOrNull { it.packageId.toInt() > ZERO }
+    }
+
+    override fun onSwipeRefreshPulled() {
+
     }
 }

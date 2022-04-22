@@ -5,11 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
+import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
+import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReservableProductMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReserveProductRequestMapper
+import com.tokopedia.shopdiscount.select.data.mapper.ShopBenefitMapper
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
+import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
 import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserveUseCase
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,8 +27,10 @@ class SelectProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListToReserveUseCase: GetSlashPriceProductListToReserveUseCase,
     private val reserveProductUseCase : MutationDoSlashPriceProductReservationUseCase,
+    private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase,
     private val reservableProductMapper: ReservableProductMapper,
-    private val reserveProductRequestMapper: ReserveProductRequestMapper
+    private val reserveProductRequestMapper: ReserveProductRequestMapper,
+    private val shopBenefitMapper: ShopBenefitMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _products = MutableLiveData<Result<List<ReservableProduct>>>()
@@ -32,7 +41,12 @@ class SelectProductViewModel @Inject constructor(
     val reserveProduct: LiveData<Result<Boolean>>
         get() = _reserveProduct
 
+    private val _benefit = MutableLiveData<Result<ShopBenefit>>()
+    val benefit: LiveData<Result<ShopBenefit>>
+        get() = _benefit
+
     private var requestId = ""
+    private var remainingQuota = 0
     private var shouldDisableProductSelection = false
     private var selectedProductIds: MutableList<String> = mutableListOf()
 
@@ -67,6 +81,20 @@ class SelectProductViewModel @Inject constructor(
             _products.value = Fail(it)
         })
     }
+
+
+    fun getSellerBenefits() {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val response = getSlashPriceBenefitUseCase.execute()
+                shopBenefitMapper.map(response)
+            }
+            _benefit.value = Success(result)
+        }) {
+            _benefit.value = Fail(it)
+        }
+    }
+
 
     fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
         this.shouldDisableProductSelection = shouldDisableProductSelection
@@ -112,12 +140,20 @@ class SelectProductViewModel @Inject constructor(
         this.selectedProductIds.remove(product.id)
     }
 
+    fun setRequestId(requestId : String) {
+        this.requestId = requestId
+    }
+
     fun getRequestId() : String {
         return requestId
     }
 
-    fun setRequestId(requestId : String) {
-        this.requestId = requestId
+    fun setRemainingQuota(remainingQuota : Int) {
+        this.remainingQuota = remainingQuota
+    }
+
+    fun getRemainingQuota(): Int {
+        return remainingQuota
     }
 
     fun reserveProduct(requestId: String, productIds : List<String>) {
