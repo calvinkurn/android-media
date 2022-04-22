@@ -58,7 +58,7 @@ abstract class BaseNotificationViewHolder constructor(
         bindTime(element)
         bindClick(element)
         bindRippleBackground()
-        bindPin()
+        bindPin(element)
         trackSeenNotification(element)
         trackNotificationImpression(element)
     }
@@ -119,11 +119,12 @@ abstract class BaseNotificationViewHolder constructor(
     }
 
     protected open fun bindContainer(element: NotificationUiModel) {
-        val isPinnedNotif = true
-        if (isPinnedNotif || adapterPosition == 2) {
-            container?.setBackgroundColor(pinnedColor)
-        } else if (!element.isRead()) {
-            container?.setBackgroundColor(clickedColor)
+        if (!element.isRead()) {
+            if (element.isPinned) {
+                container?.setBackgroundColor(pinnedColor)
+            } else {
+                container?.setBackgroundColor(clickedColor)
+            }
         } else {
             container?.background = null
         }
@@ -189,19 +190,18 @@ abstract class BaseNotificationViewHolder constructor(
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnixMillis)
     }
 
-    private fun bindPin() {
-        val isPinnedNotif = true
-        if (isPinnedNotif) {
-            showPinNotif()
+    private fun bindPin(element: NotificationUiModel) {
+        if (element.isPinned) {
+            showPinNotif(element)
         } else {
             hidePinNotif()
         }
     }
 
-    private fun showPinNotif() {
+    private fun showPinNotif(element: NotificationUiModel) {
         layoutPinTop?.show()
         layoutPinBot?.show()
-        bindPinExpired()
+        bindPinExpired(element)
         time?.hide()
     }
 
@@ -211,8 +211,8 @@ abstract class BaseNotificationViewHolder constructor(
         time?.show()
     }
 
-    private fun bindPinExpired() {
-        tvPinExpired?.text = "Di-pin sampai 2 Apr 2022"
+    private fun bindPinExpired(element: NotificationUiModel) {
+        tvPinExpired?.text = element.pinnedText
     }
 
     private fun getStringResource(stringId: Int): String {
