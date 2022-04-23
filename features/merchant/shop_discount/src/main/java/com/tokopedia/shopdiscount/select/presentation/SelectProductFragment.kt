@@ -22,12 +22,10 @@ import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
 import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
-import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
@@ -273,10 +271,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
     }
 
-    private val onProductClicked: (ReservableProduct, Int) -> Unit = { product, position ->
+    private val onProductClicked: (ReservableProduct, Int) -> Unit = { product, _ ->
         val isDisabled = product.disableClick || product.disabled
-        val hasVariant = product.countVariant > ZERO
-        handleProductClick(isDisabled, product.disabledReason, hasVariant, product, position)
+        handleProductClick(isDisabled, product.disabledReason)
     }
 
     private val onProductSelectionChange: (ReservableProduct, Boolean) -> Unit = { selectedProduct, isSelected ->
@@ -326,10 +323,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun handleProductClick(
         isDisabled: Boolean,
-        disableReason: String,
-        hasVariant: Boolean,
-        product: ReservableProduct,
-        position: Int
+        disableReason: String
     ) {
         val selectedProductCount = viewModel.getSelectedProducts().size
         val reachedMaxAllowedSelection = selectedProductCount == MAX_PRODUCT_SELECTION
@@ -337,7 +331,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         when {
             remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
             reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
-            !isDisabled && hasVariant -> showProductDetailBottomSheet(product, position)
             isDisabled -> showDisableReason(disableReason)
             else -> {}
         }
@@ -500,15 +493,5 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         } else {
             viewAnimator.hideWithAnimation(binding?.ticker)
         }
-    }
-
-    private fun showProductDetailBottomSheet(product: ReservableProduct, position: Int) {
-        val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
-            product.id,
-            product.name,
-            discountStatusId,
-            position
-        )
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }

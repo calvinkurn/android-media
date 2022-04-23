@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.select.data.mapper.ReservableProductMapper
@@ -86,6 +87,7 @@ class SelectProductViewModel @Inject constructor(
                 shopBenefitMapper.map(response)
             }
             _benefit.value = Success(result)
+           // _benefit.value = Fail(MessageErrorException("Kuota hasbis"))
         }) {
             _benefit.value = Fail(it)
         }
