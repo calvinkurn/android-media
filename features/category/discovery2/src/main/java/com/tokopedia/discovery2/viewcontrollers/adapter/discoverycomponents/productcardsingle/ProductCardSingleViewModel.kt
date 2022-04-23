@@ -53,9 +53,7 @@ class ProductCardSingleViewModel(
     }
 
     private fun handleErrorState() {
-        if (components.verticalProductFailState) {
-            _showErrorState.value = true
-        }
+        _showErrorState.value = components.verticalProductFailState
     }
 
     private fun handleMixLeft() {
