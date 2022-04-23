@@ -46,9 +46,9 @@
         android:id="@+id/tpgSkuNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
+        app:layout_constraintBottom_toBottomOf="@+id/labelVariantCount"
         app:layout_constraintStart_toStartOf="@+id/tpgProductName"
-        app:layout_constraintTop_toBottomOf="@id/tpgProductName"
+        app:layout_constraintTop_toTopOf="@+id/labelVariantCount"
         app:typographyType="small"
         tools:text="SKU: NICE 1" />
 
@@ -56,6 +56,7 @@
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelVariantCount"
         android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_2"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
         android:paddingStart="@dimen/unify_space_4"

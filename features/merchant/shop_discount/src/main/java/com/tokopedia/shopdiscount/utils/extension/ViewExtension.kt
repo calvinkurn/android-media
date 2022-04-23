@@ -39,7 +39,6 @@ fun View.disable() {
 
 fun View?.slideUp(duration: Int = 350) {
     this?.let {
-
         val animate = TranslateAnimation(0f, 0f, this.height.toFloat(), 0f)
         animate.duration = duration.toLong()
         animate.setAnimationListener(object : Animation.AnimationListener {
@@ -63,7 +62,6 @@ fun View?.slideUp(duration: Int = 350) {
 
 fun View?.slideDown(duration : Int = 350) {
     this?.let {
-
         val animate =
             TranslateAnimation(Float.ZERO, Float.ZERO, Float.ZERO, this.height.toFloat())
         animate.duration = duration.toLong()
