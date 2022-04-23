@@ -196,8 +196,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 is Success -> {
                     displayProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
-                    binding?.tpgTotalProduct?.text =
-                        String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+
+                    if (!viewModel.isOnMultiSelectMode()) {
+                        binding?.tpgTotalProduct?.text =
+                            String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    }
+
                     binding?.swipeRefresh?.isRefreshing = false
                 }
                 is Fail -> {
