@@ -407,6 +407,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             tpgCancelMultiSelect.setOnClickListener {
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(false)
+                viewModel.setDisableProductSelection(false)
                 disableMultiSelect()
                 binding?.tpgTotalProduct?.text =
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
