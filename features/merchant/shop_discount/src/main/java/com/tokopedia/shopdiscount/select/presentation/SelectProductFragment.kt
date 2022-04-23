@@ -25,11 +25,12 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
-import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.slideDown
+import com.tokopedia.shopdiscount.utils.extension.slideUp
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -77,9 +78,6 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewAnimator: ViewAnimator
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
@@ -462,9 +460,9 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private fun handleTickerAppearance(selectedProductCount: Int) {
         if (selectedProductCount >= MAX_PRODUCT_SELECTION) {
-            viewAnimator.showWithAnimation(binding?.ticker)
+            binding?.ticker.slideUp()
         } else {
-            viewAnimator.hideWithAnimation(binding?.ticker)
+            binding?.ticker?.slideDown()
         }
     }
 

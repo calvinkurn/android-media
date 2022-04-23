@@ -30,13 +30,10 @@ import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
-import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
-import com.tokopedia.shopdiscount.utils.extension.showError
-import com.tokopedia.shopdiscount.utils.extension.showToaster
-import com.tokopedia.shopdiscount.utils.extension.smoothSnapToPosition
+import com.tokopedia.shopdiscount.utils.extension.*
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -95,9 +92,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     @Inject
     lateinit var userSession : UserSessionInterface
-
-    @Inject
-    lateinit var viewAnimator: ViewAnimator
 
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -317,22 +311,22 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
 
     private fun handleScrollDownEvent() {
-        viewAnimator.hideWithAnimation(binding?.searchBar)
+        binding?.searchBar.slideDown()
 
         if (viewModel.isOnMultiSelectMode()) {
-            viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+            binding?.imgScrollUp.slideDown()
         } else {
-            viewAnimator.showWithAnimation(binding?.imgScrollUp)
-            viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
+            binding?.cardViewCreateDiscount.slideDown()
+            binding?.imgScrollUp.slideUp()
         }
     }
 
     private fun handleScrollUpEvent() {
-        viewAnimator.showWithAnimation(binding?.searchBar)
-        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+        binding?.searchBar.slideUp()
+        binding?.imgScrollUp.slideDown()
 
         if (!viewModel.isOnMultiSelectMode()) {
-            viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
+            binding?.cardViewCreateDiscount.slideUp()
         }
     }
 
@@ -415,7 +409,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun enableMultiSelect() {
-        viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
+        binding?.cardViewCreateDiscount.slideDown()
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.visible()
 
@@ -432,7 +426,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardViewMultiSelect?.gone()
-        viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
+        binding?.cardViewCreateDiscount.slideUp()
     }
 
     private fun disableProductSelection(products : List<Product>) {
@@ -651,7 +645,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun hideEmptyState() {
-        viewAnimator.showWithAnimation(binding?.searchBar)
         binding?.emptyState?.gone()
     }
 

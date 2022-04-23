@@ -23,7 +23,6 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
-import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
@@ -66,8 +65,6 @@ class ProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
-    @Inject
-    lateinit var viewAnimator: ViewAnimator
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
