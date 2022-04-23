@@ -38,10 +38,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
@@ -55,7 +51,6 @@ class SelectProductFragment : BaseDaggerFragment() {
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS: Long = 1000
 
         @JvmStatic
         fun newInstance(discountStatusId: Int): SelectProductFragment {
@@ -442,16 +437,13 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToUpdateDiscountPage() {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
-            binding?.btnManage?.isLoading = false
-            ShopDiscountManageDiscountActivity.start(
-                requireActivity(),
-                viewModel.getRequestId(),
-                discountStatusId,
-                ShopDiscountManageDiscountMode.CREATE
-            )
-        }
+        binding?.btnManage?.isLoading = false
+        ShopDiscountManageDiscountActivity.start(
+            requireActivity(),
+            viewModel.getRequestId(),
+            discountStatusId,
+            ShopDiscountManageDiscountMode.CREATE
+        )
     }
 
     private fun findVpsPackage(benefits: List<ShopBenefit.Benefit>): ShopBenefit.Benefit? {
