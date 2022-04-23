@@ -87,7 +87,6 @@ class SelectProductViewModel @Inject constructor(
                 shopBenefitMapper.map(response)
             }
             _benefit.value = Success(result)
-           // _benefit.value = Fail(MessageErrorException("Kuota hasbis"))
         }) {
             _benefit.value = Fail(it)
         }

@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -30,7 +30,6 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
-import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -46,7 +45,7 @@ import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
-class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, ReservableProduct>() {
+class SelectProductFragment : BaseDaggerFragment() {
 
     companion object {
         private const val PAGE_SIZE = 10
@@ -55,7 +54,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS: Long = 1000
 
         @JvmStatic
         fun newInstance(discountStatusId: Int): SelectProductFragment {
@@ -77,13 +76,15 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewAnimator: ViewAnimator
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
+    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
 
     private val discountStatusId by lazy {
         arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
@@ -120,13 +121,22 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         observeReserveProducts()
         observeShopBenefits()
         viewModel.getSellerBenefits()
+
     }
 
     private fun setupView() {
+        setupRecyclerView()
         setupButton()
         setupToolbar()
         setupSearchBar()
         setupTicker()
+    }
+
+    private fun setupRecyclerView() {
+        binding?.recyclerView?.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        binding?.recyclerView?.adapter = productAdapter
+        enableLoadMore()
     }
 
     private fun setupTicker() {
@@ -148,7 +158,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.run {
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    loadInitialData()
+                    loadFirstPage()
                     return@setOnEditorActionListener false
                 }
                 return@setOnEditorActionListener false
@@ -165,7 +175,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun setupButton() {
         binding?.run {
-            binding?.btnManage?.text = String.format(getString(R.string.sd_manage_with_counter), ZERO)
+            binding?.btnManage?.text =
+                String.format(getString(R.string.sd_manage_with_counter), ZERO)
             btnManage.setOnClickListener {
                 binding?.btnManage?.isLoading = true
                 binding?.btnManage?.loadingText = getString(R.string.sd_wait)
@@ -223,10 +234,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         viewModel.benefit.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.shimmer?.content?.gone()
                     handleRemainingQuota(it.data)
                 }
                 is Fail -> {
                     displayError()
+                    binding?.shimmer?.content?.gone()
                     binding?.recyclerView?.gone()
                     binding?.root showError it.throwable
                 }
@@ -244,13 +257,14 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
         viewModel.setRemainingQuota(remainingQuota)
 
+        loadFirstPage()
         if (remainingQuota == ZERO) {
             showNoMoreRemainingQuota()
         }
     }
 
     private fun handleProducts(data: List<ReservableProduct>) {
-        val currentItemCount = adapter?.getItems()?.size.orZero()
+        val currentItemCount = productAdapter.getItems().size.orZero()
         val isScrolling = currentItemCount > ZERO
 
         if (data.isEmpty() && !isScrolling) {
@@ -262,10 +276,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             binding?.emptyState?.visible()
 
         } else {
-            val dataSize = data.size
-            val perPage = getPerPage()
-            val hasNextPage = (dataSize == perPage) || (dataSize > perPage)
-            renderList(data, hasNextPage)
+            renderList(data, data.size >= PAGE_SIZE)
             binding?.recyclerView?.visible()
             binding?.emptyState?.gone()
         }
@@ -276,47 +287,49 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         handleProductClick(isDisabled, product.disabledReason)
     }
 
-    private val onProductSelectionChange: (ReservableProduct, Boolean) -> Unit = { selectedProduct, isSelected ->
-        if (isSelected) {
-            viewModel.addProductToSelection(selectedProduct)
-        } else {
-            viewModel.removeProductFromSelection(selectedProduct)
+    private val onProductSelectionChange: (ReservableProduct, Boolean) -> Unit =
+        { selectedProduct, isSelected ->
+            if (isSelected) {
+                viewModel.addProductToSelection(selectedProduct)
+            } else {
+                viewModel.removeProductFromSelection(selectedProduct)
+            }
+
+            val selectedProductCount = viewModel.getSelectedProducts().size
+            handleTickerAppearance(selectedProductCount)
+
+            val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
+            productAdapter.update(selectedProduct, updatedProduct)
+
+
+            val remainingQuota = viewModel.getRemainingQuota()
+            val shouldDisableSelection = selectedProductCount >= remainingQuota
+            viewModel.setDisableProductSelection(shouldDisableSelection)
+
+            val items = productAdapter.getItems()
+            if (shouldDisableSelection) {
+                disableProductSelection(items)
+            } else {
+                enableProductSelection(items)
+            }
+
+            val remainingSelection =
+                viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+            if (remainingSelection < ZERO) {
+                showNoMoreRemainingQuota()
+            }
+
+            binding?.btnManage?.text =
+                String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
+            binding?.btnManage?.isEnabled = selectedProductCount > ZERO
         }
 
-        val selectedProductCount = viewModel.getSelectedProducts().size
-        handleTickerAppearance(selectedProductCount)
-
-        val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
-        productAdapter.update(selectedProduct, updatedProduct)
-
-
-        val remainingQuota = viewModel.getRemainingQuota()
-        val shouldDisableSelection = selectedProductCount >= remainingQuota
-        viewModel.setDisableProductSelection(shouldDisableSelection)
-
-        val items = productAdapter.getItems()
-        if (shouldDisableSelection) {
-            disableProductSelection(items)
-        } else {
-            enableProductSelection(items)
-        }
-
-        val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
-        if (remainingSelection < ZERO) {
-            showNoMoreRemainingQuota()
-        }
-
-        binding?.btnManage?.text =
-            String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
-        binding?.btnManage?.isEnabled = selectedProductCount > ZERO
-    }
-
-    private fun disableProductSelection(products : List<ReservableProduct>) {
+    private fun disableProductSelection(products: List<ReservableProduct>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
         productAdapter.refresh(toBeDisabledProducts)
     }
 
-    private fun enableProductSelection(products : List<ReservableProduct>) {
+    private fun enableProductSelection(products: List<ReservableProduct>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
         productAdapter.refresh(toBeEnabledProducts)
     }
@@ -332,7 +345,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
             reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
             isDisabled -> showDisableReason(disableReason)
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -366,29 +380,11 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         ).show()
     }
 
-    override fun createAdapter(): SelectProductAdapter {
-        return productAdapter
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        val recyclerView = binding?.recyclerView
-        recyclerView?.addItemDecoration(ProductListItemDecoration(requireActivity()))
-        return recyclerView
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return null
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<ReservableProduct>) {
+    private fun addElementToAdapter(list: List<ReservableProduct>) {
         productAdapter.addData(list)
     }
 
-    override fun loadData(page: Int) {
+    fun loadData(page: Int) {
         binding?.globalError?.gone()
         binding?.emptyState?.gone()
         val keyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
@@ -404,34 +400,16 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         )
     }
 
-    override fun clearAdapterData() {
-        productAdapter.clearData()
-    }
-
-    override fun onShowLoading() {
-        binding?.emptyState?.gone()
-        productAdapter.showLoading()
-    }
-
-    override fun onHideLoading() {
-        binding?.emptyState?.gone()
-        productAdapter.hideLoading()
-    }
-
-    override fun onDataEmpty() {
-        binding?.emptyState?.visible()
-        productAdapter.hideLoading()
-    }
-
-    override fun onGetListError(message: String) {
-        displayError()
-    }
 
     private fun displayError() {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { loadInitialData() }
+            globalError.setActionClickListener {
+                binding?.globalError?.gone()
+                binding?.shimmer?.content?.visible()
+                viewModel.getSellerBenefits()
+            }
         }
 
     }
@@ -442,9 +420,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         val shouldDisableSelection = selectedProductCount >= remainingQuota
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
-        clearAllData()
-        onShowLoading()
-        binding?.shimmer?.content?.visible()
+        clearPreviousData()
+        showLoading()
         viewModel.getReservableProducts(
             viewModel.getRequestId(),
             FIRST_PAGE,
@@ -483,10 +460,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         return benefits.firstOrNull { it.packageId.toInt() > ZERO }
     }
 
-    override fun onSwipeRefreshPulled() {
-
-    }
-
     private fun handleTickerAppearance(selectedProductCount: Int) {
         if (selectedProductCount >= MAX_PRODUCT_SELECTION) {
             viewAnimator.showWithAnimation(binding?.ticker)
@@ -494,4 +467,64 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             viewAnimator.hideWithAnimation(binding?.ticker)
         }
     }
+
+    private fun loadFirstPage() {
+        binding?.shimmer?.content?.visible()
+        clearPreviousData()
+        showLoading()
+        loadData(FIRST_PAGE)
+    }
+
+    private fun enableLoadMore() {
+        if (endlessRecyclerViewScrollListener == null) {
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
+            endlessRecyclerViewScrollListener?.setEndlessLayoutManagerListener(
+                endlessLayoutManagerListener
+            )
+
+        }
+        endlessRecyclerViewScrollListener?.apply {
+            binding?.recyclerView?.addOnScrollListener(this)
+        }
+    }
+
+    private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(binding?.recyclerView?.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                showLoading()
+                loadData(page)
+            }
+        }
+    }
+
+    private fun updateScrollListenerState(hasNextPage: Boolean) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(hasNextPage)
+    }
+
+
+    private fun showLoading() {
+        productAdapter.showLoading()
+    }
+
+    private fun hideLoading() {
+        productAdapter.hideLoading()
+    }
+
+    private fun renderList(list: List<ReservableProduct>, hasNextPage: Boolean) {
+        hideLoading()
+        addElementToAdapter(list)
+
+        updateScrollListenerState(hasNextPage)
+
+        if (productAdapter.itemCount.orZero() < PAGE_SIZE && hasNextPage && endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener?.loadMoreNextPage()
+        }
+    }
+
+    private fun clearPreviousData() {
+        productAdapter.clearData()
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
 }
