@@ -1,13 +1,9 @@
 package com.tokopedia.shopdiscount.select.presentation
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +26,7 @@ import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDi
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
+import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
@@ -54,12 +51,8 @@ import javax.inject.Inject
 class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, ReservableProduct>() {
 
     companion object {
-        private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
-        private const val SCROLL_WIDGET_MARGIN = 24F
-        private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
         private const val PAGE_SIZE = 10
         private const val FIRST_PAGE = 1
-        private const val DECELERATOR_FACTOR: Float = 2.0F
         private const val MAX_PRODUCT_SELECTION = 5
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
@@ -87,6 +80,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     @Inject
     lateinit var userSession : UserSessionInterface
+
+    @Inject
+    lateinit var viewAnimator: ViewAnimator
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
@@ -125,6 +121,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         observeProducts()
         observeReserveProducts()
         observeShopBenefits()
+        viewModel.getSellerBenefits()
     }
 
     private fun setupView() {
@@ -231,7 +228,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                     handleRemainingQuota(it.data)
                 }
                 is Fail -> {
-
+                    displayError()
+                    binding?.recyclerView?.visible()
+                    binding?.root showError it.throwable
                 }
             }
         }
@@ -248,14 +247,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         viewModel.setRemainingQuota(remainingQuota)
 
         if (remainingQuota == ZERO) {
-            binding?.recyclerView showError getString(R.string.sd_no_remaining_quota)
-            viewModel.setDisableProductSelection(true)
+            showNoMoreRemainingQuota()
         }
     }
 
     private fun handleProducts(data: List<ReservableProduct>) {
-        val hasNextPage = data.size == getPerPage()
-        renderList(data, hasNextPage)
+        renderList(data, true)
 
         val currentItemCount = adapter?.getItems()?.size.orZero()
         val isScrolling = currentItemCount > ZERO
@@ -276,9 +273,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private val onProductClicked: (ReservableProduct, Int) -> Unit = { product, position ->
         val isDisabled = product.disableClick || product.disabled
-        guard(isDisabled, product.disabledReason) {
-            showProductDetailBottomSheet(product, position)
-        }
+        val hasVariant = product.countVariant > ZERO
+        handleProductClick(isDisabled, product.disabledReason, hasVariant, product, position)
     }
 
     private val onProductSelectionChange: (ReservableProduct, Boolean) -> Unit = { selectedProduct, isSelected ->
@@ -289,6 +285,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
 
         val selectedProductCount = viewModel.getSelectedProducts().size
+        handleTickerAppearance(selectedProductCount)
 
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
         productAdapter.update(selectedProduct, updatedProduct)
@@ -298,19 +295,21 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         val shouldDisableSelection = selectedProductCount >= remainingQuota
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
-        binding?.btnManage?.text =
-            String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
-        binding?.btnManage?.isEnabled = selectedProductCount > 0
-
         val items = productAdapter.getItems()
-
         if (shouldDisableSelection) {
-            showTickerWithAnimation()
             disableProductSelection(items)
         } else {
-            hideTickerWithAnimation()
             enableProductSelection(items)
         }
+
+        val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+        if (remainingSelection < ZERO) {
+            showNoMoreRemainingQuota()
+        }
+
+        binding?.btnManage?.text =
+            String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
+        binding?.btnManage?.isEnabled = selectedProductCount > ZERO
     }
 
     private fun disableProductSelection(products : List<ReservableProduct>) {
@@ -323,22 +322,53 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         productAdapter.refresh(toBeEnabledProducts)
     }
 
-    private fun guard(isDisabled: Boolean, disableReason : String, block : () -> Unit) {
-        if (isDisabled) {
-            val reason = disableReason.ifEmpty {
-                getString(R.string.sd_select_product_max_count_reached)
-            }
+    private fun handleProductClick(
+        isDisabled: Boolean,
+        disableReason: String,
+        hasVariant: Boolean,
+        product: ReservableProduct,
+        position: Int
+    ) {
+        val selectedProductCount = viewModel.getSelectedProducts().size
+        val reachedMaxAllowedSelection = selectedProductCount == MAX_PRODUCT_SELECTION
+        val remainingAllowedSelection = viewModel.getRemainingQuota() - selectedProductCount
+        when {
+            remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
+            reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
+            !isDisabled && hasVariant -> showProductDetailBottomSheet(product, position)
+            isDisabled -> showDisableReason(disableReason)
+            else -> {}
+        }
+    }
 
+    private fun showDisableReason(disableReason: String) {
+        if (disableReason.isNotEmpty()) {
             Toaster.build(
                 binding?.recyclerView ?: return,
-                reason,
+                disableReason,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.sd_ok)
             ).show()
         } else {
-            block()
+            Toaster.build(
+                binding?.recyclerView ?: return,
+                getString(R.string.sd_already_discount),
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.sd_ok)
+            ).show()
         }
+    }
+
+    private fun showNoMoreRemainingQuota() {
+        Toaster.build(
+            binding?.cardView ?: return,
+            getString(R.string.sd_no_remaining_quota),
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_ERROR,
+            getString(R.string.sd_ok)
+        ).show()
     }
 
     override fun createAdapter(): SelectProductAdapter {
@@ -371,7 +401,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
 
-        viewModel.getProducts(
+        viewModel.getReservableProducts(
             requestId,
             page,
             keyword,
@@ -411,16 +441,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     }
 
-    private fun showProductDetailBottomSheet(product: ReservableProduct, position: Int) {
-        val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
-            product.id,
-            product.name,
-            DiscountStatus.ALL,
-            position
-        )
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
-
     private fun clearSearchBar() {
         val selectedProductCount = viewModel.getSelectedProducts().size
         val remainingQuota = viewModel.getRemainingQuota()
@@ -430,44 +450,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         clearAllData()
         onShowLoading()
         binding?.shimmer?.content?.visible()
-        viewModel.getProducts(
+        viewModel.getReservableProducts(
             viewModel.getRequestId(),
             FIRST_PAGE,
             EMPTY_STRING,
             viewModel.shouldDisableProductSelection(),
         )
-    }
-
-    private fun showTickerWithAnimation() {
-        binding?.run {
-            ticker
-                .animate()
-                .translationY(BACK_TO_ORIGINAL_POSITION)
-                .setDuration(ANIMATION_DURATION_IN_MILLIS)
-                .setInterpolator(AccelerateInterpolator(DECELERATOR_FACTOR))
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        ticker.visible()
-                    }
-                }).start()
-        }
-    }
-
-    private fun hideTickerWithAnimation() {
-        binding?.run {
-            ticker.animate()
-                .translationY(ticker.height.toFloat() + SCROLL_WIDGET_MARGIN)
-                .setInterpolator(DecelerateInterpolator(DECELERATOR_FACTOR))
-                .setDuration(ANIMATION_DURATION_IN_MILLIS)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        ticker.gone()
-                    }
-                })
-                .start()
-        }
     }
 
 
@@ -502,5 +490,23 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     override fun onSwipeRefreshPulled() {
 
+    }
+
+    private fun handleTickerAppearance(selectedProductCount: Int) {
+        if (selectedProductCount >= MAX_PRODUCT_SELECTION) {
+            viewAnimator.showWithAnimation(binding?.ticker)
+        } else {
+            viewAnimator.hideWithAnimation(binding?.ticker)
+        }
+    }
+
+    private fun showProductDetailBottomSheet(product: ReservableProduct, position: Int) {
+        val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
+            product.id,
+            product.name,
+            discountStatusId,
+            position
+        )
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }

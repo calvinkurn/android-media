@@ -5,18 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
-import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
-import com.tokopedia.shopdiscount.info.util.ShopDiscountSellerInfoMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReservableProductMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReserveProductRequestMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ShopBenefitMapper
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
 import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserveUseCase
-import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +46,7 @@ class SelectProductViewModel @Inject constructor(
     private var shouldDisableProductSelection = false
     private var selectedProductIds: MutableList<String> = mutableListOf()
 
-    fun getProducts(
+    fun getReservableProducts(
         requestId: String,
         page: Int,
         keyword: String,
