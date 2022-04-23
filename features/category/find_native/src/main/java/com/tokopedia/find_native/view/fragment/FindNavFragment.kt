@@ -51,12 +51,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
@@ -581,13 +584,27 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
     }
 
-    private fun onSuccessAddWishlistV2(productId: String) {
+    private fun onSuccessAddWishlistV2(
+        result: AddToWishlistV2Response.Data.WishlistAddV2,
+        productId: String
+    ) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishListButton(productId)
-        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+
+        var msg = ""
+        if (result.message.isEmpty()) {
+            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = result.message
+        }
+
+        var typeToaster = TYPE_NORMAL
+        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
+
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
         }
     }
 
@@ -665,7 +682,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                             if (result.data.toasterColor == TOASTER_RED) {
                                 onErrorAddWishList(result.data.message, productId)
                             } else {
-                                onSuccessAddWishlistV2(productId)
+                                onSuccessAddWishlistV2(result.data, productId)
                             }
                         }
                         is Fail -> {
