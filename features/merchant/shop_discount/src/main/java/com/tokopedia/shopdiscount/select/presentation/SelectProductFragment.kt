@@ -229,7 +229,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                 }
                 is Fail -> {
                     displayError()
-                    binding?.recyclerView?.visible()
+                    binding?.recyclerView?.gone()
                     binding?.root showError it.throwable
                 }
             }
@@ -252,8 +252,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     private fun handleProducts(data: List<ReservableProduct>) {
-        renderList(data, true)
-
         val currentItemCount = adapter?.getItems()?.size.orZero()
         val isScrolling = currentItemCount > ZERO
 
@@ -266,6 +264,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             binding?.emptyState?.visible()
 
         } else {
+            val dataSize = data.size
+            val perPage = getPerPage()
+            val hasNextPage = (dataSize == perPage) || (dataSize > perPage)
+            renderList(data, hasNextPage)
             binding?.recyclerView?.visible()
             binding?.emptyState?.gone()
         }
