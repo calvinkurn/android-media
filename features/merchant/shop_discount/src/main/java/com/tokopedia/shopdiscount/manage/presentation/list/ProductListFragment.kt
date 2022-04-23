@@ -195,7 +195,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    handleProducts(it.data)
+                    displayProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
                     binding?.tpgTotalProduct?.text =
                         String.format(getString(R.string.sd_total_product), it.data.totalProduct)
@@ -253,7 +253,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         viewModel.reserveProduct(requestId, productIds)
     }
 
-    private fun handleProducts(data: ProductData) {
+    private fun displayProducts(data: ProductData) {
         handleEmptyState(data.totalProduct)
 
         if (data.totalProduct == ZERO) {
@@ -262,7 +262,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             binding?.tpgMultiSelect?.gone()
             binding?.emptyState?.visible()
         } else {
-            if (isFirstLoad) binding?.tpgMultiSelect?.visible()
+            if (isFirstLoad) {
+                binding?.searchBar?.visible()
+                binding?.tpgMultiSelect?.visible()
+            }
             renderList(data.products, data.products.size == getPerPage())
         }
 
