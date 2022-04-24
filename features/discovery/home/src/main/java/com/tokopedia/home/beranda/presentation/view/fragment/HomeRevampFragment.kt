@@ -161,6 +161,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
 import rx.Observable
@@ -2427,13 +2428,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ?: false)
 
                 if (wishlistResult.isAddWishlist) {
-                    showToasterWithAction(
-                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                        typeToaster = TYPE_NORMAL,
-                        actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                        clickListener = View.OnClickListener {
-                            RouteManager.route(context, ApplinkConst.WISHLIST)
-                        })
+                    if (wishlistResult.isUsingWishlistV2) showToasterSuccessWishlistV2(wishlistResult)
+                    else showToasterSuccessWishlist()
                 } else {
                     showToasterWithAction(
                         message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
@@ -2449,6 +2445,45 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun showToasterSuccessWishlist() {
+        showToasterWithAction(
+            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            typeToaster = TYPE_NORMAL,
+            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            clickListener = View.OnClickListener {
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            })
+    }
+
+    private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        var msg = ""
+        if (wishlistResult.messageV2.isEmpty()) {
+            if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = wishlistResult.messageV2
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) {
+            typeToaster = TYPE_ERROR
+            ctaText = ""
+        }
+
+        if (ctaText.isEmpty()) {
+            showToaster(msg, typeToaster)
+        } else {
+            showToasterWithAction(
+                message = msg,
+                typeToaster = typeToaster,
+                actionText = ctaText,
+                clickListener = {
+                    RouteManager.route(context, ApplinkConst.WISHLIST)
+                })
         }
     }
 

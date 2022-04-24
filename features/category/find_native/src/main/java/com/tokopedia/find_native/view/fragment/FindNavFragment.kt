@@ -599,12 +599,19 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             msg = result.message
         }
 
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
+        if (result.toasterColor == TOASTER_RED || !result.success) {
+            typeToaster = TYPE_ERROR
+            ctaText = ""
+        }
 
-        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
+            if (ctaText.isEmpty()) {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+            } else {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
+            }
         }
     }
 

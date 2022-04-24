@@ -16,6 +16,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -73,14 +74,14 @@ open class RecentViewViewModel @Inject constructor(
             })
     }
 
-    fun addToWishlistV2(productId: String) {
+    fun addToWishlistV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userSession.userId)
         addToWishlistV2UseCase.execute(
-                onSuccess = {
-                    _addWishlistResponse.postValue(Success(productId))},
-                onError = {
-                    _addWishlistResponse.postValue(Fail(it))
-                })
+            onSuccess = { result ->
+                if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId) },
+            onError = {
+                wishlistV2ActionListener.onErrorAddWishList(it, productId)
+            })
     }
 
     fun removeFromWishlist(productId: String) {

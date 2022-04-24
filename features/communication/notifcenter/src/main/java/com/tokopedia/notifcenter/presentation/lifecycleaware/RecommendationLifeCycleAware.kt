@@ -26,6 +26,9 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 class RecommendationLifeCycleAware constructor(
         private val topAdsAnalytic: NotificationTopAdsAnalytic,
@@ -82,19 +85,37 @@ class RecommendationLifeCycleAware constructor(
         topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
         rvAdapter?.notifyItemChanged(productCardOptionsModel.productPosition, isAddWishlist)
         if (isAddWishlist) {
-            showSuccessAddWishlist()
+            showSuccessAddWishlist(productCardOptionsModel.wishlistResult)
         } else {
             showSuccessRemoveWishlist()
         }
     }
 
-    private fun showSuccessAddWishlist() {
+    private fun showSuccessAddWishlist(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-        val message = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-        val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {
-            RouteManager.route(context, ApplinkConst.WISHLIST)
-        }.show()
+
+        var msg = ""
+        if (wishlistResult.messageV2.isEmpty()) {
+            if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+            else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = wishlistResult.messageV2
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
+            typeToaster = TYPE_ERROR
+            ctaText = ""
+        }
+
+        if (ctaText.isEmpty()) {
+            Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+        } else {
+            Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }.show()
+        }
     }
 
     private fun getString(@StringRes stringRes: Int): String {

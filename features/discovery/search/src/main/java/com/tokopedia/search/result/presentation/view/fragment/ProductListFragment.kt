@@ -1697,12 +1697,20 @@ class ProductListFragment: BaseDaggerFragment(),
                     msg = wishlistResult.messageV2
                 }
 
+                var ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
                 var typeToaster = TYPE_NORMAL
-                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
+                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
+                    typeToaster = TYPE_ERROR
+                    ctaText
+                }
 
-                Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
-                    actionText = getString(Rwishlist.string.cta_success_add_to_wishlist)
-                ) { goToWishlistPage() }.show()
+                if (ctaText.isEmpty()) {
+                    Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+                } else {
+                    Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
+                        actionText = getString(Rwishlist.string.cta_success_add_to_wishlist)
+                    ) { goToWishlistPage() }.show()
+                }
             } else
                 Toaster.build(view, getString(Rwishlist.string.on_success_remove_from_wishlist_msg),
                     Toaster.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(Rwishlist.string.cta_success_remove_from_wishlist)).show()

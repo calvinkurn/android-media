@@ -419,8 +419,10 @@ class NotificationViewModel @Inject constructor(
     ) {
         addWishListV2UseCase.setParams(productId, userSessionInterface.userId)
         addWishListV2UseCase.execute(
-                onSuccess = {
-                    callback.onSuccessAddWishlist(productId)},
+                onSuccess = { result ->
+                    if (result is Success) {
+                        callback.onSuccessAddWishlist(result.data, productId)}
+                    },
                 onError = {
                     callback.onErrorAddWishList(it, productId) })
     }

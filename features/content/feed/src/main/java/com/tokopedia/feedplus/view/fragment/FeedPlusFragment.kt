@@ -54,7 +54,6 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
-import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -74,7 +73,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -101,7 +99,6 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolde
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
-import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.analytics.widget.FeedPlayWidgetAnalyticListener
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
@@ -113,7 +110,6 @@ import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -148,6 +144,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.net.ConnectException
@@ -2257,7 +2256,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismiss()
         }
         context?.let {
-            feedViewModel.addWishlist(
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                feedViewModel.addWishlistV2(
+                    postId,
+                    productId,
+                    shopId,
+                    0,
+                    type,
+                    isFollowed,
+                    ::onWishListFail,
+                    ::onWishListSuccessV2,
+                    it
+                )
+            } else {
+                feedViewModel.addWishlist(
                     postId,
                     productId,
                     shopId,
@@ -2267,12 +2279,45 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     ::onWishListFail,
                     ::onWishListSuccess,
                     it
-        )
+                )
+            }
         }
     }
 
     private fun onWishListFail(s: String) {
         showToast(s, Toaster.TYPE_ERROR)
+    }
+
+    private fun onWishListSuccess(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        result: AddToWishlistV2Response.Data.WishlistAddV2
+    ) {
+        var msg = ""
+        if (result.message.isEmpty()) {
+            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = result.message
+        }
+
+        var typeToaster = Toaster.TYPE_NORMAL
+        if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster =
+            Toaster.TYPE_ERROR
+
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        Toaster.build(
+            requireView(),
+            msg,
+            Toaster.LENGTH_SHORT,
+            typeToaster,
+            ctaText
+        ) {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }.show()
     }
 
     private fun onWishListSuccess(
@@ -2291,6 +2336,38 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
+    }
+
+    private fun onWishListSuccessV2(
+        activityId: String,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean,
+        result: AddToWishlistV2Response.Data.WishlistAddV2
+    ) {
+        var msg = ""
+        if (result.message.isEmpty()) {
+            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = result.message
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = Toaster.TYPE_NORMAL
+        if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) {
+            typeToaster = Toaster.TYPE_ERROR
+            ctaText = ""
+        }
+
+        if (ctaText.isEmpty()) {
+            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster).show()
+        } else {
+            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }.show()
+        }
     }
 
     private fun onShareProduct(

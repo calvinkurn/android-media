@@ -56,8 +56,8 @@ class OrderHistoryViewModel @Inject constructor(
         if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
             addWishlistV2UseCase.setParams(productId, userId)
             addWishlistV2UseCase.execute(
-                onSuccess = {
-                    wishlistV2ActionListener.onSuccessAddWishlist(productId)},
+                onSuccess = { result ->
+                    if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId) },
                 onError = {
                     wishlistV2ActionListener.onErrorAddWishList(it, productId)
                 })

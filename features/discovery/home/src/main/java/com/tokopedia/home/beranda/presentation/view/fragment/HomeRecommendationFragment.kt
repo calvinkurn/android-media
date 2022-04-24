@@ -65,6 +65,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import java.util.*
 import javax.inject.Inject
 
@@ -423,7 +424,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             if (wishlistResult.isSuccess) {
                 if (wishlistResult.isAddWishlist) {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistLogin(productCardOptionsModel.productId, tabName))
-                    showMessageSuccessAddWishlist()
+
+                    if (wishlistResult.isUsingWishlistV2) {
+                        showMessageSuccessAddWishlistV2(wishlistResult)
+                    } else {
+                        showMessageSuccessAddWishlist()
+                    }
+
                 } else {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationRemoveWishlistLogin(productCardOptionsModel.productId, tabName))
                     showMessageSuccessRemoveWishlist()
@@ -435,6 +442,31 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName))
             RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun showMessageSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        var msg = ""
+        if (wishlistResult.messageV2.isEmpty()) {
+            if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = wishlistResult.messageV2
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = Toaster.TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) {
+            typeToaster = Toaster.TYPE_ERROR
+            ctaText = ""
+        }
+
+        view?.let {
+            if (ctaText.isEmpty()) {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+            } else {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
+            }
         }
     }
 

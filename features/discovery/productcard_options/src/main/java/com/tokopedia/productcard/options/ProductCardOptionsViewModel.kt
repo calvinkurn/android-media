@@ -27,7 +27,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import rx.Subscriber
 
 internal class ProductCardOptionsViewModel(

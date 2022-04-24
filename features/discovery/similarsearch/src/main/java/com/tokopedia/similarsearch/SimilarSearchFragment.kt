@@ -43,8 +43,12 @@ import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemListener, EmptyResultListener {
 
@@ -323,6 +327,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         })
     }
 
+    private fun observeAddWishlistV2EventLiveData() {
+        similarSearchViewModel?.getAddWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleAddWishlistV2Event(it)
+        })
+    }
+
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
             val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -333,6 +343,31 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         }
         else {
             showSnackbar(R.string.similar_search_add_wishlist_failed, Toaster.TYPE_ERROR)
+        }
+    }
+
+    private fun handleAddWishlistV2Event(result: AddToWishlistV2Response.Data.WishlistAddV2) {
+        var msg = ""
+        if (result.message.isEmpty()) {
+            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = result.message
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = TYPE_NORMAL
+        if (result.toasterColor == TOASTER_RED || !result.success) {
+            typeToaster = TYPE_ERROR
+            ctaText = ""
+        }
+
+        view?.let {
+            if (ctaText.isEmpty()) {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+            } else {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
+            }
         }
     }
 

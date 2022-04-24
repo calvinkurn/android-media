@@ -51,8 +51,10 @@ import kotlinx.coroutines.withContext
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
+import kotlin.reflect.KFunction4
 
 /**
  * @author by yoasfs on 2019-09-18
@@ -423,35 +425,45 @@ class FeedViewModel @Inject constructor(
         onSuccess: (String, String, String, Boolean) -> Unit,
         context: Context
     ) {
-        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-            addToWishlistV2UseCase.setParams(productId, userSession.userId)
-            addToWishlistV2UseCase.execute(
-                onSuccess = {
-                    onSuccess.invoke(activityId, shopId, type, isFollowed)},
-                onError = {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                    onFail.invoke(errorMessage)
-                })
-        } else {
-            addWishListUseCase.createObservable(
-                productId, userSession.userId,
-                object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                        onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+        addWishListUseCase.createObservable(
+            productId, userSession.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    if (productId != null) {
+                        onSuccess.invoke(activityId, shopId, type, isFollowed)
                     }
+                }
 
-                    override fun onSuccessAddWishlist(productId: String?) {
-                        if (productId != null) {
-                            onSuccess.invoke(activityId, shopId, type, isFollowed)
-                        }
-                    }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                override fun onSuccessRemoveWishlist(productId: String?) {}
 
-                    override fun onSuccessRemoveWishlist(productId: String?) {}
+            })
+    }
 
-                })
-        }
+    fun addWishlistV2(
+        activityId: String,
+        productId: String,
+        shopId: String,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+        onFail: (String) -> Unit,
+        onSuccess: (String, String, String, Boolean, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
+        context: Context
+    ) {
+        addToWishlistV2UseCase.setParams(productId, userSession.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)},
+            onError = {
+                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                onFail.invoke(errorMessage)
+            })
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel =
