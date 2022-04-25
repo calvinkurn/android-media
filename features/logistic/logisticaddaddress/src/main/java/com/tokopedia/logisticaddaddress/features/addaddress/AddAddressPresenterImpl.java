@@ -75,9 +75,9 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
-            networkInteractor.editAddress(param, getEditAddressListener(true));
+            networkInteractor.editAddress(param, getEditAddressListener());
         } else {
-            networkInteractor.addAddress(param, getListener(false));
+            networkInteractor.addAddress(param, getListener());
         }
     }
 
@@ -112,7 +112,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
         );
     }
 
-    private AddressRepository.AddAddressListener getListener(boolean isEditOperation) {
+    private AddressRepository.AddAddressListener getListener() {
         return new AddressRepository.AddAddressListener() {
             @Override
             public void onSuccess(String address_id) {
@@ -123,7 +123,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                     mView.setAddress(address);
                 }
                 mView.successSaveAddress();
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.stopPerformaceMonitoring();
                 mView.finishActivity();
             }
 
@@ -132,7 +132,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -140,7 +140,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster(error);
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -148,7 +148,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -156,12 +156,12 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.stopPerformaceMonitoring();
             }
         };
     }
 
-    private AddressRepository.EditAddressListener getEditAddressListener(boolean isEditOperation) {
+    private AddressRepository.EditAddressListener getEditAddressListener() {
         return new AddressRepository.EditAddressListener() {
             @Override
             public void onSuccess(OldEditAddressResponseData response) {
@@ -173,7 +173,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                     mView.setAddress(address);
                 }
                 mView.successSaveAddress();
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
                 mView.finishActivityAfterEdit(response);
             }
 
@@ -182,7 +181,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -190,7 +188,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster(error);
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -198,7 +195,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
             @Override
@@ -206,7 +202,6 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.finishLoading();
                 mView.errorSaveAddress();
                 mView.showErrorToaster("");
-                if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
         };
     }
