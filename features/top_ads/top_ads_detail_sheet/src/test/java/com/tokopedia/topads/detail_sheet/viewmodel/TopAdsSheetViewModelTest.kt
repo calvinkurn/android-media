@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.SingleAdInFo
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
@@ -110,7 +109,7 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun testSetProductAction() {
-        viewModel.setProductAction({}, "123", adIds, resources, "filter")
+        viewModel.setProductAction({}, "123", adIds, "filter")
         verify {
             topAdsProductActionUseCase.execute(any(), any())
         }
@@ -118,7 +117,7 @@ class TopAdsSheetViewModelTest {
 
     @Test
     fun `test on error testSetProductAction`() {
-        viewModel.setProductAction({}, "123", adIds, resources, "filter")
+        viewModel.setProductAction({}, "123", adIds, "filter")
 
         verify {
             topAdsProductActionUseCase.execute(any(), any())

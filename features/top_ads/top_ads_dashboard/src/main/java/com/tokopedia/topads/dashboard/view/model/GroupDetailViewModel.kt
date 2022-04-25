@@ -219,18 +219,15 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                onSuccess()
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+    fun setProductAction(
+        onSuccess: () -> Unit, action: String, adIds: List<String>, selectedFilter: String?
+    ) {
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            onSuccess()
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -262,7 +259,6 @@ class GroupDetailViewModel @Inject constructor(
         super.onCleared()
         topAdsGetAdKeywordUseCase.cancelJobs()
         topAdsKeywordsActionUseCase.cancelJobs()
-        topAdsProductActionUseCase.unsubscribe()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()

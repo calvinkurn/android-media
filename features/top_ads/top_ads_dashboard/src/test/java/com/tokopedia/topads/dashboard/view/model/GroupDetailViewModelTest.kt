@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.view.model
 
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
@@ -201,7 +200,7 @@ class GroupDetailViewModelTest {
         every { topAdsProductActionUseCase.execute(any(), any()) } answers {
             onSuccess.invoke()
         }
-        viewModel.setProductAction(onSuccess, "", listOf(), res, "")
+        viewModel.setProductAction(onSuccess, "", listOf(), "")
         Assert.assertEquals(expected, actual)
     }
 

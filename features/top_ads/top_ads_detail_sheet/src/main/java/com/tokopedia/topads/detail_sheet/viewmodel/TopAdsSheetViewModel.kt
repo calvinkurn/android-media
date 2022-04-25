@@ -13,7 +13,6 @@ import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.SingleAd
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
 import com.tokopedia.topads.common.data.response.TopAdsAutoAdsData
-import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
@@ -74,23 +73,16 @@ class TopAdsSheetViewModel @Inject constructor(
         })
     }
 
-    fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {
-            }
-
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<ProductActionResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<ProductActionResponse>
-                val nonGroupResponse = response.data.topadsUpdateSingleAds
-                onSuccess(action)
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
+    fun setProductAction(
+        onSuccess: (action: String) -> Unit, action: String, adIds: List<String>,
+        selectedFilter: String?,
+    ) {
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            onSuccess(action)
+        }, onError = {
+            it.printStackTrace()
         })
     }
 
@@ -112,7 +104,6 @@ class TopAdsSheetViewModel @Inject constructor(
         super.onCleared()
         topAdsGetProductStatisticsUseCase.cancelJobs()
         topAdsGetGroupIdUseCase.cancelJobs()
-        topAdsProductActionUseCase.unsubscribe()
         topAdsGetAutoAdsStatusUseCase.cancelJobs()
     }
 }

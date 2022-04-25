@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.data.model.RestResponse
@@ -43,9 +42,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import rx.Subscriber
 import timber.log.Timber
-import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -212,21 +209,17 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>,selectedFilter: String?) {
-        val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
-        topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
+    fun setProductAction(
+        onSuccess: (() -> Unit), action: String, adIds: List<String>, selectedFilter: String?,
+    ) {
+        launchCatchError(block = {
+            val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+            topAdsProductActionUseCase.execute(params)
+            onSuccess()
+        }, onError = {
 
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                onSuccess()
-            }
-
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-            }
         })
     }
-
 
     fun getGroupProductData(
         page: Int, groupId: Int?, search: String, sort: String,
