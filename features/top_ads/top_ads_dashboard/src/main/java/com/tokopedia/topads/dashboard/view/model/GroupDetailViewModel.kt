@@ -202,7 +202,7 @@ class GroupDetailViewModel @Inject constructor(
 
             onSuccessGetStatisticsInfo(response.topadsDashboardStatistics.data)
         }, onError = {
-
+            it.printStackTrace()
         })
     }
 
@@ -263,6 +263,7 @@ class GroupDetailViewModel @Inject constructor(
         getHeadlineInfoUseCase.cancelJobs()
         topAdsGetProductKeyCountUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
+        groupInfoUseCase.cancelJobs()
     }
 }
 
