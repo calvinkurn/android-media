@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -440,7 +441,7 @@ class AddEditProductVariantViewModel @Inject constructor(
         }
 
         if (isEditMode.value == true) {
-            productInputModel.getValueOrDefault().shipmentInputModel.weight = 0
+            productInputModel.getValueOrDefault().shipmentInputModel.weight = Int.ZERO
             productInputModel.getValueOrDefault().detailInputModel.stock = primaryVariantData.stock.orZero()
         } else {
             productInputModel.getValueOrDefault().shipmentInputModel.weight = primaryVariantData.weight.orZero()
@@ -642,6 +643,9 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         // update isRemovingVariant value based on selectedVariantDetails elements
         mIsRemovingVariant.value = this.selectedVariantDetails.isEmpty()
+        if (selectedVariantDetails.isEmpty()) {
+            removeVariant()
+        }
     }
 
     fun disableRemovingVariant(){

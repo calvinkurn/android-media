@@ -444,6 +444,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 onPriceInputTextChanged(it.price.replace(".", ""), index)
                 onStockInputTextChanged(it.stock?.toString().orEmpty(), index)
                 onWeightInputTextChanged(it.weight?.toString().orEmpty(), index)
+                onSkuInputTextChanged(it.sku, index)
             }
             variantDetailFieldsAdapter?.notifyItemChanged(index)
         }

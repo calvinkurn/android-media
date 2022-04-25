@@ -126,10 +126,8 @@ class VariantDetailFieldsViewHolder(
     }
 
     private fun setupSkuFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
-        skuField?.textFieldInput?.doOnTextChanged { text, _, count, _ ->
-            if (count.isMoreThanZero()) {
-                variantDetailFieldsViewHolderListener.onSkuInputTextChanged(text.toString(), visitablePosition)
-            }
+        skuField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
+            variantDetailFieldsViewHolderListener.onSkuInputTextChanged(text.toString(), visitablePosition)
         }
     }
 
