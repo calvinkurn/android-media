@@ -58,5 +58,6 @@ class ProductDetailNavigation(
 
     override fun onClickBackToTop(position: Int, label: String) {
         listener?.onClickProductDetailnavigation(position, label)
+        navigationTab.onClickBackToTop()
     }
 }

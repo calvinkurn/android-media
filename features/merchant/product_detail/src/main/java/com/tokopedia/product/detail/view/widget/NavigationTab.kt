@@ -82,6 +82,10 @@ class NavigationTab(
         }
     }
 
+    fun onClickBackToTop(){
+        enableContentChangeListener = true
+    }
+
     private fun updateItems(items: List<Item>) {
         var shouldUpdateTab = false
         items.forEachIndexed { index, item ->
