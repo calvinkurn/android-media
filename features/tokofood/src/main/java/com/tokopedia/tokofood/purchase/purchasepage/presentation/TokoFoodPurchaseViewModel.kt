@@ -11,19 +11,18 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
-import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
-import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
+import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.GetConsentStateUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByUpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getTickerErrorShopLevelUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
@@ -46,6 +45,7 @@ import javax.inject.Inject
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
+    private val getConsentStateUseCase: GetConsentStateUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
@@ -461,6 +461,39 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             showPartialLoading()
             _shouldRefreshCartData.emit(true)
         }
+    }
+
+    fun checkUserConsent() {
+        launchCatchError(block = {
+            getConsentStateUseCase(Unit).collect { response ->
+                if (response.data.isAgreed) {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
+                        data = response.data.bottomSheet
+                    )
+                }
+            }
+        }, onError = {
+            _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT,
+                throwable = it
+            )
+        })
+    }
+
+    fun removeButtonLoading() {
+        val dataList = getVisitablesValue().toMutableList().apply {
+            getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
+                val (totalAmountIndex, uiModel) = pair
+                if (totalAmountIndex >= 0) {
+                    removeAt(totalAmountIndex)
+                    add(totalAmountIndex, uiModel.copy(isButtonLoading = false))
+                }
+            }
+        }
+        _visitables.value = dataList
     }
 
     /**

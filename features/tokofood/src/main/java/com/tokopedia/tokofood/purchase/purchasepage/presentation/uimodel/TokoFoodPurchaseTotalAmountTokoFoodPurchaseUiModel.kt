@@ -4,7 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel(
-        var totalAmount: Long = 0L
+        var totalAmount: Long = 0L,
+        var isButtonLoading: Boolean
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {
 
     var isLoading = false

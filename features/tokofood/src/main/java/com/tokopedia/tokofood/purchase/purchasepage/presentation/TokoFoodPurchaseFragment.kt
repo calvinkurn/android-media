@@ -49,9 +49,12 @@ import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsVie
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.GetConsentStateBottomsheet
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.GetConsentStateData
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseConsentBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseGlobalErrorBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseSurgeBottomSheet
@@ -71,7 +74,8 @@ import javax.inject.Inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
-        TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener, IBaseMultiFragment {
+    TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener,
+    TokoFoodPurchaseConsentBottomSheet.Listener,IBaseMultiFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -88,6 +92,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var loaderDialog: LoaderDialog? = null
+    private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
 
     companion object {
         const val HAS_ELEVATION = 6
@@ -306,6 +311,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     // TODO: Show error
                     viewModel.loadData()
+                }
+                PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
+                    (it.data as? GetConsentStateBottomsheet)?.let { data ->
+                        showConsentBottomSheet(data)
+                    }
+                }
+                PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT -> {
+                    it.throwable?.let { throwable -> showConsentError(throwable) }
                 }
             }
         })
@@ -535,6 +548,48 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
+    private fun showConsentBottomSheet(data: GetConsentStateBottomsheet) {
+        if (data.isShowBottomsheet) {
+            consentBottomSheet = TokoFoodPurchaseConsentBottomSheet.createInstance(
+                data.title,
+                data.description,
+                data.termsAndCondition,
+                data.imageUrl,
+                this
+            ).apply {
+                setOnDismissListener {
+                    viewModel.removeButtonLoading()
+                }
+            }
+            consentBottomSheet?.show(childFragmentManager)
+        }
+    }
+
+    private fun showConsentError(throwable: Throwable) {
+        // Todo : hit checkout API, validate response, show global error / toaster, reload
+        val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet(
+            outOfService = null,
+            listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
+                override fun onGoToHome() {
+
+                }
+
+                override fun onRetry() {
+                    loadInitialData()
+                }
+
+                override fun onCheckOtherMerchant() {
+
+                }
+
+                override fun onStayOnCurrentPage() {
+
+                }
+            }
+        )
+        bottomSheet.show(parentFragmentManager, "")
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -600,32 +655,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onButtonCheckoutClicked() {
-        // Todo : hit checkout API, validate response, show global error / toaster, reload
-        val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet(
-                outOfService = null,
-                listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
-                    override fun onGoToHome() {
-
-                    }
-
-                    override fun onRetry() {
-                        loadInitialData()
-                    }
-
-                    override fun onCheckOtherMerchant() {
-
-                    }
-
-                    override fun onStayOnCurrentPage() {
-
-                    }
-                }
-        )
-        bottomSheet.show(parentFragmentManager, "")
+        viewModel.checkUserConsent()
     }
 
     override fun onSurgePriceIconClicked(title: String, desc: String) {
         TokoFoodPurchaseSurgeBottomSheet.createInstance(title, desc).show(childFragmentManager)
     }
 
+    override fun onSuccessAgreeConsent() {
+        consentBottomSheet?.dismiss()
+        // TODO: Go to purchase page
+    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object VisitableDataHelper {
@@ -68,6 +69,15 @@ object VisitableDataHelper {
 
     inline fun <reified U: Visitable<*>> MutableList<Visitable<*>>.getUiModelIndex(): Int {
         return indexOfFirst { it is U }
+    }
+
+    inline fun <reified U: Visitable<*>> MutableList<Visitable<*>>.getUiModel(): Pair<Int, U>? {
+        loop@ for ((index, data) in this.withIndex()) {
+            if (data is U) {
+                return Pair(index, data)
+            }
+        }
+        return null
     }
 
     fun MutableList<Visitable<*>>.getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>? {

@@ -27,6 +27,7 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                     }
                 }
                 element.isEnabled -> {
+                    totalAmountPurchase.amountCtaView.isLoading = element.isButtonLoading
                     if (totalAmountPurchase.isTotalAmountLoading) {
                         totalAmountPurchase.isTotalAmountLoading = false
                     }
@@ -36,7 +37,10 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                     val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.totalAmount, false).removeDecimalSuffix()
                     totalAmountPurchase.setAmount(totalAmountString)
                     totalAmountPurchase.amountCtaView.setOnClickListener {
+                        totalAmountPurchase.amountCtaView.isLoading = true
+                        element.isButtonLoading = true
                         listener.onButtonCheckoutClicked()
+                        totalAmountPurchase.amountCtaView.setOnClickListener(null)
                     }
                 }
                 else -> {

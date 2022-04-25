@@ -15,5 +15,8 @@ data class PurchaseUiEvent(
         const val EVENT_NAVIGATE_TO_SET_PINPOINT = 77
         const val EVENT_SUCCESS_EDIT_PINPOINT = 88
         const val EVENT_FAILED_EDIT_PINPOINT = 89
+        const val EVENT_SUCCESS_GET_CONSENT = 90
+        const val EVENT_SUCCESS_VALIDATE_CONSENT = 91
+        const val EVENT_FAILED_VALIDATE_CONSENT = 92
     }
 }
