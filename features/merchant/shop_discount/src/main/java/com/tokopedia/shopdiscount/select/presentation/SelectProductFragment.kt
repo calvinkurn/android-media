@@ -241,11 +241,13 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun handleRemainingQuota(shopBenefit: ShopBenefit) {
+        val unlimited = Int.MAX_VALUE
+
         val remainingQuota = if (shopBenefit.isUseVps) {
             val vpsPackage = findVpsPackage(shopBenefit.benefits)
             vpsPackage?.remainingQuota.orZero()
         } else {
-            MAX_PRODUCT_SELECTION
+            unlimited
         }
 
         viewModel.setRemainingQuota(remainingQuota)
