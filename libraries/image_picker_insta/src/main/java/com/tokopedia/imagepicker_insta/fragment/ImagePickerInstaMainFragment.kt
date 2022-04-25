@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,11 +23,12 @@ import com.tokopedia.coachmark.*
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.imagepicker_insta.bottomsheets.CreatorTypesBottomSheet
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -43,10 +45,12 @@ import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -56,6 +60,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     lateinit var viewModel: PickerViewModel
 
+    private lateinit var toolbarCommon: ImagePickerCommonToolbar
     lateinit var rv: RecyclerView
     lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout
@@ -84,6 +89,20 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         super.onCreate(savedInstanceState)
         initDagger()
         setHasOptionsMenu(true)
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is FeedAccountTypeBottomSheet -> {
+                childFragment.setData(viewModel.feedAccountList)
+                childFragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        viewModel.setSelectedFeedAccount(feedAccount)
+                    }
+                })
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -163,6 +182,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         setObservers()
         setClicks()
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getFeedAccountList()
     }
 
     private fun hasReadPermission(): Boolean {
@@ -254,21 +278,21 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun setupToolbar(v: View) {
-        val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
-        toolbarCommon.toolbarNavIcon.setOnClickListener {
+        toolbarCommon = v.findViewById(R.id.toolbar_common)
+        toolbarCommon.setOnBackClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
-        toolbarCommon.toolbarExpandIcon.setOnClickListener {
-            openBottomSheet()
+        toolbarCommon.setOnAccountClickListener {
+            openFeedAccountBottomSheet()
         }
 
-        toolbarCommon.toolbarParent.addOneTimeGlobalLayoutListener {
+        toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
             coachMark = CoachMark2(activity as Context)
 
             coachMarkItem.add(
                 CoachMark2Item(
-                    toolbarCommon.toolbarParent,
+                    toolbarCommon.getToolbarParentView(),
                     getString(R.string.imagepicker_coachmark_header),
                     getString(R.string.imagepicker_coachmark_text),
                     CoachMark2.POSITION_BOTTOM
@@ -278,43 +302,22 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             showFabCoachMark()
         }
 
-
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
-            setToolbarIcon(this, toolbarCommon.toolbarIcon)
-            toolbarCommon.toolbarTitle.text = this.toolbarTitle
-            toolbarCommon.toolbarSubtitle.text = this.toolbarSubTitle
+            toolbarCommon.title = toolbarTitle
         }
     }
-    private fun openBottomSheet(){
-        var creatorListData= mutableListOf<CreatorListData>()
-        (activity as ImagePickerInstaActivity).run{
-            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-        }
 
-        val contentProductTagBS = CreatorTypesBottomSheet()
-        contentProductTagBS.show(Bundle.EMPTY,
-            childFragmentManager,
-            creatorListData,
-           )
-
+    private fun openFeedAccountBottomSheet(){
+        FeedAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .showNow(childFragmentManager)
     }
 
     private fun showFabCoachMark() {
         Prefs.saveShouldShowCoachMarkValue(activity as Context)
         if (::coachMark.isInitialized) {
             coachMark.showCoachMark(coachMarkItem)
-        }
-    }
-
-    private fun setToolbarIcon(activity: ImagePickerInstaActivity, imageView: AppCompatImageView) {
-        if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
-            imageView.setImageResource(activity.toolbarIconRes)
-        } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
-            imageView.loadImageCircle(activity.toolbarIconUrl)
-        } else {
-            imageView.visibility = View.GONE
         }
     }
 
@@ -479,6 +482,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun setObservers() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.selectedFeedAccount.collectLatest {
+                toolbarCommon.subtitle = it.name
+                toolbarCommon.icon = it.iconUrl
+            }
+        }
+
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -776,7 +786,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
-                RouteManager.route(activity, finalApplink)
+                val intent = RouteManager.getIntent(activity, finalApplink)
+                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID, viewModel.selectedFeedAccountId)
+                startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
                 activity?.setResult(
                     Activity.RESULT_OK,
@@ -856,8 +868,21 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
+            viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         stopMedia()
+    }
+
+    companion object {
+        private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
+        private const val CREATE_POST_REQUEST_CODE = 101
     }
 }
