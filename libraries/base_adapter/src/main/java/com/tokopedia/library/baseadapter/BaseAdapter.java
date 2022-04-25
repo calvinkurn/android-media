@@ -235,6 +235,9 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
      * Method to invoke page loading
      */
     public final void startDataLoading(String ... args) {
+        if (args == null)
+            args = "".split("");
+
         this.args = args;
         if (mCallback != null) {
             if (mCurrentPageIndex == 1) {
