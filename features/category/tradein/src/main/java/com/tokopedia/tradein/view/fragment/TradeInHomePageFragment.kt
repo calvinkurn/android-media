@@ -471,20 +471,15 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 findViewById<Typography>(R.id.exchange_price_text).text =
                     logistic.diagnosticPriceFmt
                 findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_phone_price)
-                findViewById<Typography>(R.id.estimated_price).text = getString(
-                    com.tokopedia.tradein.R.string.tradein_minus,
-                    logistic.diagnosticPriceFmt
-                )
             }
             else {
                 findViewById<Typography>(R.id.exchange_price_text).text = logistic.estimatedPriceFmt
                 findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_estimate_price)
-                findViewById<Typography>(R.id.estimated_price).text = getString(
-                    com.tokopedia.tradein.R.string.tradein_asterick,
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(logistic.finalPrice.minus(tradeInHomePageVM.data?.productPrice ?: 0.0), true)
-                )
             }
-
+            findViewById<Typography>(R.id.estimated_price).text = getString(
+                com.tokopedia.tradein.R.string.tradein_minus,
+                logistic.diagnosticPriceFmt
+            )
             findViewById<Label>(R.id.label_discount).text = logistic.discountPercentageFmt
             findViewById<TimerUnifySingle>(R.id.tradein_count_down).let { countDownView ->
                 if (showTimer && logistic.expiryTime.isNotEmpty()) {
