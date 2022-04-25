@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.domain.usecase.OvoTrnxThankyouPageUseCase
-import com.tokopedia.ovop2p.view.fragment.TxnSucsOvoUser.Companion.GENERAL_ERROR
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
