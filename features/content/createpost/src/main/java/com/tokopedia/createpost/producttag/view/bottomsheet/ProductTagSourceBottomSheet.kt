@@ -57,14 +57,17 @@ class ProductTagSourceBottomSheet @Inject constructor(
 
         binding.clGlobalSearch.setOnClickListener {
             mListener?.onSelectProductTagSource(ProductTagSource.GlobalSearch)
+            dismiss()
         }
 
         binding.clLastPurchase.setOnClickListener {
             mListener?.onSelectProductTagSource(ProductTagSource.LastPurchase)
+            dismiss()
         }
 
         binding.clMyShop.setOnClickListener {
             mListener?.onSelectProductTagSource(ProductTagSource.MyShop)
+            dismiss()
         }
     }
 

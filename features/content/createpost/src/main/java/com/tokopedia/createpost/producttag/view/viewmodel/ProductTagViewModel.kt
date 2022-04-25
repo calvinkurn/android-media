@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -47,6 +48,12 @@ class ProductTagViewModel @Inject constructor(
         )
     }
 
+    fun submitAction(action: ProductTagAction) {
+        when(action) {
+            is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
+        }
+    }
+
     fun processProductTagSource(productTagSourceRaw: String) {
         viewModelScope.launchCatchError(block = {
             val split = productTagSourceRaw.split(",")
@@ -54,5 +61,10 @@ class ProductTagViewModel @Inject constructor(
                 ProductTagSource.mapFromString(it)
             }
         }) { }
+    }
+
+    /** Handle Action */
+    private fun handleSelectProductTagSource(source: ProductTagSource) {
+        _selectedProductTagSource.value = source
     }
 }

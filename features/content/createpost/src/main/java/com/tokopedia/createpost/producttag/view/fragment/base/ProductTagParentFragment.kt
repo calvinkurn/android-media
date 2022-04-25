@@ -16,6 +16,7 @@ import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentB
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.createpost.view.bottomSheet.SearchCategoryTypeBottomSheet
@@ -81,7 +82,8 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
-                            /** TODO: handle this */
+
+                            viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
                     setData(viewModel.productTagSourceList)
