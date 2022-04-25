@@ -36,6 +36,7 @@ object BannerCarouselTracking : BaseTrackerConst() {
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
+                .appendCampaignCode(channelGrid.campaignCode.ifEmpty { channelModel.trackingAttributionModel.campaignCode })
                 .build()
     }
 
