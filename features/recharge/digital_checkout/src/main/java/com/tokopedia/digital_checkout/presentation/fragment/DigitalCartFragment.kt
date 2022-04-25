@@ -384,13 +384,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 || errMsg == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
             ) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.noConnectionTitle))
-                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection))
+                viewEmptyState.setImageUrl(GLOBAL_ERROR_CONNECTION_IMG)
                 viewEmptyState.setDescription(
                     "${getString(com.tokopedia.globalerror.R.string.noConnectionDesc)} Kode Error: ($errCode)"
                 )
             } else if (errMsg == ErrorNetMessage.MESSAGE_ERROR_SERVER || errMsg == ErrorNetMessage.MESSAGE_ERROR_DEFAULT) {
                 viewEmptyState.setTitle(getString(com.tokopedia.globalerror.R.string.error500Title))
-                viewEmptyState.setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500))
+                viewEmptyState.setImageUrl(GLOBAL_ERROR_500_IMG)
                 viewEmptyState.setDescription(
                     "${getString(com.tokopedia.globalerror.R.string.error500Desc)} Kode Error: ($errCode)"
                 )
@@ -807,6 +807,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
+        private const val GLOBAL_ERROR_500_IMG = "https://images.tokopedia.net/img/digital_globalerrors_500.png"
+        private const val GLOBAL_ERROR_CONNECTION_IMG = "https://images.tokopedia.net/img/digital_globalerrors_connection.png"
+
 
         fun newInstance(
             passData: DigitalCheckoutPassData?,
