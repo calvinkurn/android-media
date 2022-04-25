@@ -52,13 +52,6 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     val totalPaymentIndex: Int
         get() = products.size + totalPaymentIndexAddition
 
-    fun setOrderShipment(orderShipment: OrderShipment) {
-        orderShipment.shippingRecommendationData?.shippingDurationUiModels =
-            (orderShipment.shippingRecommendationData?.shippingDurationUiModels ?: emptyList())
-            .filter { !it.serviceData.isUiRatesHidden }
-        this.shipment = orderShipment
-    }
-
     fun getFirstErrorIndex(): Int {
         if (shop.isError) {
             return shopIndex

@@ -330,6 +330,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
                                     list.add(NotifierModel())
                                 }
+                                shippingDurationViewModel.shippingCourierViewModelList =
+                                    shippingDurationViewModel.shippingCourierViewModelList.filter {
+                                        !it.productData.isUiRatesHidden
+                                    }
                                 list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
                                 break
                             }
@@ -358,6 +362,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                 if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
                                     list.add(NotifierModel())
                                 }
+                                shippingDurationViewModel.shippingCourierViewModelList =
+                                    shippingDurationViewModel.shippingCourierViewModelList.filter {
+                                        !it.productData.isUiRatesHidden
+                                    }
                                 list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
                                 break
                             }
