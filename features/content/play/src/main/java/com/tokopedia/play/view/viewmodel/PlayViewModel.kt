@@ -1832,13 +1832,13 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickQuizOption(optionId: String){
-        updateQuizOptionUi(selectedId = optionId, isLoading = true)
-
         val interactiveId = _interactive.value.interactive.id.toString()
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
+
+            updateQuizOptionUi(selectedId = optionId, isLoading = true)
 
             val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = optionId)
             repo.setJoined(interactiveId)
