@@ -16,6 +16,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -42,7 +43,6 @@ class DealsCheckoutViewModelTest {
     private lateinit var mockDealsDetailInstant: DealsDetailsResponse
     private lateinit var mockDealsDetailGeneral: DealsDetailsResponse
     private val promoCodes = listOf("FNVTEST1")
-    private val promoCodesEmpty = listOf("")
 
 
     var graphqlRepository: GraphqlRepository = mockk()
@@ -198,6 +198,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.dealsCheckoutResponse.value
         assertEquals(mockDealsCheckoutGeneralResponse, actualData)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -221,6 +223,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.errorGeneralValue.value
         assertEquals(actualData?.message, message)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -241,6 +245,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.dealsCheckoutInstantResponse.value
         assertEquals(mockDealsCheckoutGeneralInstantResponse, actualData)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 
@@ -264,6 +270,8 @@ class DealsCheckoutViewModelTest {
         //then
         val actualData = viewModel.errorGeneralValue.value
         assertEquals(actualData?.message, message)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
 }
