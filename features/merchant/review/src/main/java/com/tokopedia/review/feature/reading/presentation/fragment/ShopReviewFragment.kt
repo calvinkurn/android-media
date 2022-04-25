@@ -8,12 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
@@ -74,13 +78,14 @@ class ShopReviewFragment : ReadReviewFragment() {
             emptyStateTitle = findViewById(R.id.read_review_empty_list_title)
             emptyStateSubtitle = findViewById(R.id.read_review_empty_list_subtitle)
             globalError = findViewById(R.id.read_review_network_error)
+            goToTopFab = findViewById(R.id.read_review_go_to_top_fab)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showShopPageReviewHeader()
-        hideHeaderOnScrolled()
+        setupRecyclerViewOnScrollListener()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,11 +130,21 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun hasInitialSwipeRefresh(): Boolean = false
 
-    private fun hideHeaderOnScrolled() {
+    private fun setupRecyclerViewOnScrollListener() {
         view?.let {
             val recyclerView = getRecyclerView(it) ?: return
-
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val firstCompletelyVisibleItemPosition =
+                            (getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
+                                    .orZero()
+                    val rvIsReachTop = currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0
+                    val rvIsScrollingUp = dy < Int.ZERO
+                    currentScrollPosition += dy
+                    goToTopFab?.circleMainMenu?.showWithCondition(!rvIsReachTop && rvIsScrollingUp)
+                }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
