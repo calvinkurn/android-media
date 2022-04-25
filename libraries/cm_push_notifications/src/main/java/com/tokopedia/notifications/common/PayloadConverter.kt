@@ -105,10 +105,12 @@ object PayloadConverter {
         // webHook parameters
         model.webHookParam = data.getString(WEBHOOK_PARAM)
 
+        model.payloadExtra = getPayloadExtras(data)
+
         return model
     }
 
-    fun convertToBaseModel(data: AmplificationBaseNotificationModel): BaseNotificationModel {
+    fun convertToBaseModel(data: SerializedNotificationData): BaseNotificationModel {
         val model = BaseNotificationModel()
         model.icon = data.icon
         model.priorityPreOreo = data.priorityPreOreo ?: 2
@@ -213,6 +215,7 @@ object PayloadConverter {
         // webHook parameters
         model.webHookParam = data.webHookParam
 
+        model.payloadExtra = getPayloadExtras(data)
         return model
     }
 
@@ -264,7 +267,7 @@ object PayloadConverter {
 
 
     private fun setNotificationSound(model: BaseNotificationModel,
-                                     data: AmplificationBaseNotificationModel) {
+                                     data: SerializedNotificationData) {
         model.soundFileName = data.notificationSound ?: ""
         model.channelName = data.notificationChannel ?: ""
     }
@@ -384,5 +387,23 @@ object PayloadConverter {
         }
 
         return null
+    }
+
+    private fun getPayloadExtras(data : Bundle) : PayloadExtra{
+        return PayloadExtra(
+            campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
+            journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
+            journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
+            sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
+        )
+    }
+
+    private fun getPayloadExtras(data : SerializedNotificationData) : PayloadExtra{
+        return PayloadExtra(
+            campaignName = data.campaignName,
+            journeyId = data.journeyId,
+            journeyName = data.journeyName,
+            sessionId = data.sessionId,
+        )
     }
 }

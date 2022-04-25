@@ -284,4 +284,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
+
+    public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
 }

@@ -106,9 +106,8 @@ class AtcVariantHeaderViewHolder(private val view: View,
     }
 
     private fun loadImage(imgUrl: String) {
-        productImage.loadImage(imgUrl)
         productImage?.run {
-            loadImage(imgUrl)
+            setImageUrl(imgUrl)
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }

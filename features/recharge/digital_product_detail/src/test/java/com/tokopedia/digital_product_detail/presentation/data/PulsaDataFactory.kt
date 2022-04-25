@@ -8,20 +8,26 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogProduc
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalDigiPersoGetPersonalizedItem
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class PulsaDataFactory {
 
     private val gson = Gson()
 
-    fun getFavoriteNumberData(): TopupBillsPersoFavNumberData {
-        return gson.fromJson(
+    fun getFavoriteNumberData(withPrefill: Boolean): PersoFavNumberGroup {
+        val responses = gson.fromJson(
             gson.JsonToString(GET_FAVORITE_NUMBER),
-            TopupBillsPersoFavNumberData::class.java
+            Array<TopupBillsPersoFavNumberData>::class.java
+        ).toList()
+        return PersoFavNumberGroup(
+            favoriteNumberChips = responses[0],
+            favoriteNumberList = responses[1],
+            favoriteNumberPrefill = if (withPrefill) responses[2] else TopupBillsPersoFavNumberData()
         )
     }
 
