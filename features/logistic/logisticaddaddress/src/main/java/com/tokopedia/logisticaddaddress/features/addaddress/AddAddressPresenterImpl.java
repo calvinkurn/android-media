@@ -3,21 +3,15 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticCommon.data.entity.address.Destination;
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
 import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -27,7 +21,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 /**
  * Created by nisie on 9/6/16.
@@ -82,7 +75,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 userSession.getUserId(), userSession.getDeviceId(), getParam()
         );
         if (mView.isEdit()) {
-            networkInteractor.editAddress(param, getListener(true));
+            networkInteractor.editAddress(param, getEditAddressListener(true));
         } else {
             networkInteractor.addAddress(param, getListener(false));
         }
@@ -132,6 +125,56 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                 mView.successSaveAddress();
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
                 mView.finishActivity();
+            }
+
+            @Override
+            public void onTimeout() {
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorToaster("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
+            }
+
+            @Override
+            public void onError(String error) {
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorToaster(error);
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
+            }
+
+            @Override
+            public void onNullData() {
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorToaster("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
+            }
+
+            @Override
+            public void onNoNetworkConnection() {
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorToaster("");
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
+            }
+        };
+    }
+
+    private AddressRepository.EditAddressListener getEditAddressListener(boolean isEditOperation) {
+        return new AddressRepository.EditAddressListener() {
+            @Override
+            public void onSuccess(OldEditAddressResponseData response) {
+                mView.finishLoading();
+                if (response.getAddrId() != 0) {
+                    Integer addrId = response.getAddrId();
+                    Destination address = mView.getAddress();
+                    address.setAddressId(addrId.toString());
+                    mView.setAddress(address);
+                }
+                mView.successSaveAddress();
+                if (!isEditOperation) mView.stopPerformaceMonitoring();
+                mView.finishActivityAfterEdit(response);
             }
 
             @Override

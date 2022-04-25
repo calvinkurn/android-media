@@ -32,10 +32,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.data.entity.OldEditAddressResponseData;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -65,6 +65,7 @@ import timber.log.Timber;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_INSTANCE_TYPE;
+import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.INSTANCE_TYPE_DEFAULT;
@@ -298,6 +299,14 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
         intent.putExtra(EXTRA_ADDRESS, address);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void finishActivityAfterEdit(OldEditAddressResponseData data) {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, data.isStateChosenAddressChanged());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

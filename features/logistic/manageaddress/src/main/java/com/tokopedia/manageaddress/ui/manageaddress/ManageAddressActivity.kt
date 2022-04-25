@@ -1,10 +1,13 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
@@ -47,6 +50,19 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
         binding?.btnAdd?.setOnClickListener {
             onClick()
+        }
+    }
+
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.fragments.firstOrNull()
+        if (currentFragment != null && currentFragment.isVisible && currentFragment is ManageAddressFragment) {
+            if (currentFragment.isFromEditChosenAddress == true) {
+                currentFragment.setAddressDataOnBackButton()
+            } else {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
         }
     }
 }

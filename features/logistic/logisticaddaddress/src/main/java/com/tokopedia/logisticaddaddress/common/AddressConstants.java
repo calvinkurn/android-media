@@ -20,6 +20,7 @@ public class AddressConstants {
     public static final int REQUEST_CODE_PARAM_EDIT = 102;
 
     public static final String EXTRA_ADDRESS = "EXTRA_ADDRESS";
+    public static final String EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED = "EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED";
 
     public static final String KERO_TOKEN = "token";
 
