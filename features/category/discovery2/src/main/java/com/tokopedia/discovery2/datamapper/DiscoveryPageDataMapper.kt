@@ -32,11 +32,11 @@ var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
                                    queryParameterMap: MutableMap<String, String?>,
-                                   userAddressData: LocalCacheModel?,isLoggedIn:Boolean): DiscoveryPageData {
+                                   userAddressData: LocalCacheModel?,isLoggedIn:Boolean,shouldHideSingleProdCard:Boolean): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn,shouldHideSingleProdCard)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -53,9 +53,13 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
     return discoveryPageData
 }
 
-class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
-                              private val queryParameterMap: Map<String, String?>,
-                              private val localCacheModel: LocalCacheModel?,private val isLoggedIn: Boolean) {
+class DiscoveryPageDataMapper(
+    private val pageInfo: PageInfo,
+    private val queryParameterMap: Map<String, String?>,
+    private val localCacheModel: LocalCacheModel?,
+    private val isLoggedIn: Boolean,
+    private val shouldHideSingleProdCard: Boolean
+) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoComponentListFromResponse(filterSaleTimer(components))
@@ -120,12 +124,12 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> {
-                shouldAddRecomSingleProduct(component)
+                addRecomQueryProdID(component)
                 listComponents.addAll(parseProductVerticalList(component))
             }
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
-                shouldAddRecomSingleProduct(component)
+                addRecomQueryProdID(component)
                 updateCarouselWithCart(component)
                 listComponents.add(component)
             }
@@ -201,11 +205,16 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
     }
 
     private fun shouldAddRecomSingleProduct(component: ComponentsItem): Boolean {
-        if (queryParameterMap.containsKey(RECOM_PRODUCT_ID) && !queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()) {
+        if (!shouldHideSingleProdCard && !queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()) {
             component.recomQueryProdId = queryParameterMap[RECOM_PRODUCT_ID]
             return true
         }
         return false
+    }
+
+    private fun addRecomQueryProdID(component: ComponentsItem) {
+        if (!queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty())
+            component.recomQueryProdId = queryParameterMap[RECOM_PRODUCT_ID]
     }
 
     private fun saveSectionPosition(pageEndPoint: String, sectionId: String, position: Int) {

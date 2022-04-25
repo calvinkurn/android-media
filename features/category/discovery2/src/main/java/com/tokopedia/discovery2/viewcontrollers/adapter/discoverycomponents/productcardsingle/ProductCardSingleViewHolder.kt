@@ -82,15 +82,13 @@ class ProductCardSingleViewHolder(itemView: View, val fragment: Fragment) :
 
     private fun setupBackgroundData(mixLeft: MixLeft?) {
         if (mixLeft != null && !(mixLeft.backgroundImageUrl.isNullOrEmpty())) {
-            mixLeft.let {
-                try {
-                    backgroundImage.loadImageWithoutPlaceholder(it.backgroundImageUrl)
-                    if (!it.backgroundColor.isNullOrEmpty())
-                        backgroundImage.setColorFilter(Color.parseColor(it.backgroundColor))
-                    backgroundImage.show()
-                } catch (e: Exception) {
-                    backgroundImage.hide()
-                }
+            try {
+                backgroundImage.loadImageWithoutPlaceholder(mixLeft.backgroundImageUrl)
+                if (!mixLeft.backgroundColor.isNullOrEmpty())
+                    backgroundImage.setColorFilter(Color.parseColor(mixLeft.backgroundColor))
+                backgroundImage.show()
+            } catch (e: Exception) {
+                backgroundImage.hide()
             }
         } else {
             backgroundImage.hide()
