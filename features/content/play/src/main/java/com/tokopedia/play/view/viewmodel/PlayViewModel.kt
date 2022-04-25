@@ -1795,6 +1795,7 @@ class PlayViewModel @AssistedInject constructor(
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+        repo.setFinished(_interactive.value.interactive.id.toString())
     }
 
     private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
@@ -1818,6 +1819,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             )
         }
+        repo.setFinished(_interactive.value.interactive.id.toString())
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
