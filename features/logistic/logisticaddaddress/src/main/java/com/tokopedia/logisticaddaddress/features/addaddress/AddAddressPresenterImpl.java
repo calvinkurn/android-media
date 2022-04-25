@@ -167,7 +167,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onSuccess(OldEditAddressResponseData response) {
                 mView.finishLoading();
                 if (response.getAddrId() != 0) {
-                    Integer addrId = response.getAddrId();
+                    Long addrId = response.getAddrId();
                     Destination address = mView.getAddress();
                     address.setAddressId(addrId.toString());
                     mView.setAddress(address);

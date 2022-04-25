@@ -24,5 +24,5 @@ data class OldEditAddressResponseData(
     @SuppressLint("Invalid Data Type")
     @Expose
     @SerializedName("addr_id")
-    val addrId: Int = 0
+    val addrId: Long = 0
 )
