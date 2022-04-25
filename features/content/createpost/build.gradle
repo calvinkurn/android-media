@@ -17,6 +17,13 @@ buildscript {
     }
 }
 
+android {
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)

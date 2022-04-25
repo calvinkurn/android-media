@@ -90,4 +90,6 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="content_creation_barang_text">Barang</string>
     <string name="content_creation_toko_text">Toko</string>
 
+    <!-- Product Tag -->
+    <string name="content_creation_product_tag_title">Tag Produk</string>
 </resources>
