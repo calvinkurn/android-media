@@ -12,9 +12,10 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderLiveTrackingStatusEvent
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.collect
 
 
@@ -53,12 +54,12 @@ class TokoFoodOrderLiveTrackingFragment(
         lifecycleOwner?.lifecycleScope?.launchWhenResumed {
             viewModel.orderLiveTrackingStatus.collect {
                 when (it) {
-                    is OrderLiveTrackingStatusEvent.Success -> {
-                        updateAllOrderLiveTracking(it.orderStatusLiveTrackingUiModel)
-                        viewModel.updateOrderId(it.orderStatusLiveTrackingUiModel.orderStatusKey)
+                    is Success -> {
+                        updateAllOrderLiveTracking(it.data)
+                        viewModel.updateOrderId(it.data.orderStatusKey)
                     }
-                    is OrderLiveTrackingStatusEvent.Error -> {
-
+                    is Fail -> {
+                        viewModel.updateOrderId(viewModel.getOrderId())
                     }
                 }
             }

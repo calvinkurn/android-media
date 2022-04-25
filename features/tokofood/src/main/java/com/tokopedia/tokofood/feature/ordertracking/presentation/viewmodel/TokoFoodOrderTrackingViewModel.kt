@@ -13,7 +13,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOr
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderLiveTrackingStatusEvent
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,9 +21,8 @@ import dagger.Lazy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -38,13 +37,9 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         get() = _orderDetailResult
 
     private val _orderLiveTrackingStatus =
-        MutableSharedFlow<OrderLiveTrackingStatusEvent>(replay = Int.ONE)
+        MutableSharedFlow<Result<OrderStatusLiveTrackingUiModel>>(replay = Int.ONE)
 
-    val orderLiveTrackingStatus = _orderLiveTrackingStatus.shareIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(STOP_TIMEOUT_SUBSCRIBED),
-        Int.ONE
-    )
+    val orderLiveTrackingStatus: SharedFlow<Result<OrderStatusLiveTrackingUiModel>> = _orderLiveTrackingStatus
 
     private val _orderId = MutableStateFlow("")
 
@@ -70,6 +65,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     )
 
     private var foodItems = listOf<BaseOrderTrackingTypeFactory>()
+    private var orderId = ""
 
     init {
         fetchOrderLiveTracking()
@@ -80,7 +76,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
             }
-            foodItems = orderDetailResult.foodItemList
+            this@TokoFoodOrderTrackingViewModel.foodItems = orderDetailResult.foodItemList
             _orderDetailResult.value = Success(orderDetailResult)
         }, onError = {
             _orderDetailResult.value = Fail(it)
@@ -92,7 +88,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
             }
-            foodItems = orderDetailResult.foodItemList
+            this@TokoFoodOrderTrackingViewModel.foodItems = orderDetailResult.foodItemList
             _orderCompletedLiveTracking.value = Success(orderDetailResult)
         }, onError = {
             _orderCompletedLiveTracking.value = Fail(it)
@@ -100,9 +96,11 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     }
 
     fun getFoodItems() = foodItems
+    fun getOrderId() = orderId
 
     fun updateOrderId(orderId: String) {
         _orderId.tryEmit(orderId)
+        this.orderId = orderId
     }
 
     private fun fetchOrderLiveTracking() {
@@ -122,14 +120,12 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
                         fetchOrderCompletedLiveTracking(successOrder)
                     }
                     else -> {
-                        _orderLiveTrackingStatus.emit(
-                            OrderLiveTrackingStatusEvent.Success(orderStatusResult)
-                        )
+                        _orderLiveTrackingStatus.emit(Success(orderStatusResult))
                     }
                 }
             }
         }, onError = {
-            _orderLiveTrackingStatus.emit(OrderLiveTrackingStatusEvent.Error(it))
+            _orderLiveTrackingStatus.emit(Fail(it))
         })
     }
 
