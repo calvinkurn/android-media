@@ -72,6 +72,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -98,6 +99,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
+    private val widgetTrackingSet =  HashSet<String>()
 
     private var catalogUiUpdater: CatalogUiUpdater = CatalogUiUpdater(mutableMapOf())
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
@@ -733,6 +739,43 @@ class CatalogDetailPageFragment : Fragment(),
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 
+    override fun sendWidgetImpressionEvent(
+        widgetImpressionActionName: String,
+        widgetImpressionItemName: String,
+        adapterPosition: Int
+    ) {
+        val uniqueTrackingKey = "$widgetImpressionActionName-$adapterPosition"
+        if(!widgetTrackingSet.contains(uniqueTrackingKey)){
+            CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue,
+                CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
+                widgetImpressionActionName,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                "$catalogName - $catalogId",
+                catalogId,
+                adapterPosition,
+                userSession.userId,
+                catalogId,
+                catalogName,
+                widgetImpressionItemName,
+                widgetImpressionActionName
+            )
+            widgetTrackingSet.add(uniqueTrackingKey)
+        }
+    }
+
+    override fun sendWidgetTrackEvent(actionName: String) {
+        if(!widgetTrackingSet.contains(actionName)){
+            CatalogDetailAnalytics.sendEvent(CatalogDetailAnalytics.EventKeys.EVENT_VIEW_PG_IRIS,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                actionName,
+                "$catalogName - $catalogId",
+                userSession.userId,
+                catalogId
+            )
+            widgetTrackingSet.add(actionName)
+        }
+    }
+
     fun onBackPressed(){
         isBottomSheetOpen = false
         mBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -766,6 +809,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onPause() {
         super.onPause()
+        trackingQueue.sendAll()
         animationHandler.removeCallbacks(scrollToBottomPositionRunnable)
         animationHandler.removeCallbacks(scrollToTopPositionRunnable)
         animationHandler.removeCallbacks(smoothScrollToBottomPositionRunnable)
