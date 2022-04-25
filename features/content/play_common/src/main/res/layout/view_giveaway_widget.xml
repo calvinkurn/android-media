@@ -6,18 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:parentTag="android.widget.LinearLayout"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gl_top"
         />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/header_view"
+        app:layout_constraintStart_toStartOf="@+id/header_view"
+        app:layout_constraintTop_toBottomOf="@+id/header_view"
+        app:layout_constraintVertical_bias="0.0"
         android:background="@color/Unify_Background"
         android:gravity="center_horizontal"
         android:orientation="vertical"
