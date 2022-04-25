@@ -5,25 +5,38 @@ import com.google.gson.annotations.SerializedName
 
 data class FeedContentForm(
     @SerializedName("authors")
-        val authors: List<Author> = listOf(),
+    val authors: List<Author> = listOf(),
+
     @SerializedName("error")
-        val error: String = "",
+    val error: String = "",
+
     @SerializedName("maxTag")
-        val maxTag: Int = 1,
+    val maxTag: Int = 1,
+
     @SerializedName("media")
-        val media: Media = Media(),
+    val media: Media = Media(),
+
     @SerializedName("relatedItems")
-        val relatedItems: List<RelatedItem> = listOf(),
+    val relatedItems: List<RelatedItem> = listOf(),
+
     @SerializedName("token")
-        val token: String = "",
+    val token: String = "",
+
     @SerializedName("type")
-        val type: String = "",
+    val type: String = "",
+
     @SerializedName("defaultPlaceholder")
-        val defaultPlaceholder: String = "",
+    val defaultPlaceholder: String = "",
+
     @SerializedName("caption")
-        @Expose
-        val caption: String = "",
+    @Expose
+    val caption: String = "",
+
     @SerializedName("defaultCaptions")
-        @Expose
-        val defaultCaptions: List<String> = listOf()
+    @Expose
+    val defaultCaptions: List<String> = listOf(),
+
+    @SerializedName("productTagSources")
+    @Expose
+    val productTagSources: List<String> = listOf(),
 )

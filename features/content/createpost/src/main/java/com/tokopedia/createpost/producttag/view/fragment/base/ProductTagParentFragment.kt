@@ -64,16 +64,32 @@ class ProductTagParentFragment @Inject constructor(
 
     companion object {
         private const val TAG = "ProductTagParentFragment"
+        private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
+            productTagSource: String,
         ): ProductTagParentFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
-                classLoader,
-                ProductTagParentFragment::class.java.name
-            ) as ProductTagParentFragment
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource)
+        }
+
+        private fun createFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            productTagSource: String,
+        ): ProductTagParentFragment {
+            return (
+                fragmentManager.fragmentFactory.instantiate(
+                    classLoader,
+                    ProductTagParentFragment::class.java.name
+                ) as ProductTagParentFragment
+            ).apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_PRODUCT_TAG_LIST, productTagSource)
+                }
+            }
         }
     }
 }

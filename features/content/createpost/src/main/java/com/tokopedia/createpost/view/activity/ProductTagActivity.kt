@@ -33,8 +33,10 @@ class ProductTagActivity : BaseActivity() {
         )
         setContentView(binding.root)
 
+        val productTagList = intent.getStringExtra(EXTRA_PRODUCT_TAG_LIST) ?: ""
+
         supportFragmentManager.beginTransaction()
-            .replace(binding.container.id, getParentFragment())
+            .replace(binding.container.id, getParentFragment(productTagList))
             .commit()
     }
 
@@ -46,10 +48,15 @@ class ProductTagActivity : BaseActivity() {
             .inject(this)
     }
 
-    private fun getParentFragment(): ProductTagParentFragment {
+    private fun getParentFragment(productTagList: String): ProductTagParentFragment {
         return ProductTagParentFragment.getFragment(
             supportFragmentManager,
-            classLoader
+            classLoader,
+            productTagList,
         )
+    }
+
+    companion object {
+        private const val EXTRA_PRODUCT_TAG_LIST = "product_tag_source"
     }
 }

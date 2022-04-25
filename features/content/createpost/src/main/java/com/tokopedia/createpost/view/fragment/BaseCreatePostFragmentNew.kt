@@ -146,9 +146,10 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
                     it.type)
             })
         }
+        createPostModel.productTagSources = feedContentForm.productTagSources
         createContentPostViewModel.setNewContentData(createPostModel)
-
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(VIEW_MODEL, createPostModel)

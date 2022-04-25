@@ -85,6 +85,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         private const val PARAM_PRODUCT = "product"
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_BADGE = "shop_badge"
+        private const val PARAM_PRODUCT_TAG_SOURCE = "product_tag_source"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -545,6 +546,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
             intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
             intent.putExtra(PARAM_SHOP_BADGE, createPostModel.shopBadge)
+            intent.putExtra(PARAM_PRODUCT_TAG_SOURCE, createPostModel.productTagSources.joinToString(separator = ","))
             startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
         }
     }
