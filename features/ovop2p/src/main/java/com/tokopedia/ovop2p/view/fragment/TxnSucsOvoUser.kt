@@ -106,8 +106,10 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
             dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
-            activity?.let {
-                (it as LoaderUiListener).showProgressDialog()
+            context?.let {
+                activity?.let {
+                    (it as LoaderUiListener).showProgressDialog()
+                }
             }
             ovoP2PTransactionThankYouVM.makeThankyouDataCall(dataMap)
 
@@ -207,7 +209,6 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     companion object {
-        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
         fun newInstance(): TxnSucsOvoUser {
             return TxnSucsOvoUser()
         }
