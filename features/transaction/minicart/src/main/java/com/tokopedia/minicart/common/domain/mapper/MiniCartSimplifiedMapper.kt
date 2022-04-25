@@ -44,7 +44,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
     private fun mapMiniCartListData(miniCartData: MiniCartData): Map<MiniCartItemKey, MiniCartItem> {
         val miniCartSimplifiedDataList = hashMapOf<MiniCartItemKey, MiniCartItem>()
         miniCartSimplifiedDataList.putAll(getAvailableData(miniCartData))
-        getUnavailableData(miniCartData, miniCartSimplifiedDataList)
+        miniCartSimplifiedDataList.putAll(getUnavailableData(miniCartData, miniCartSimplifiedDataList))
         return miniCartSimplifiedDataList
     }
 

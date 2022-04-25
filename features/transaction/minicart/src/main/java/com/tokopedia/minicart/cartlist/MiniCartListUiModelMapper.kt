@@ -341,6 +341,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 (!bundlingItem && !lastCartItem || !lastProductItem)
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
+            editBundleApplink = cartDetail.bundleDetail.editBundleApplink
 
             if(bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
@@ -408,10 +409,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
     }
 
     fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
-        if (miniCartListUiModel == null) {
-            return MiniCartSimplifiedData()
+        return if (miniCartListUiModel == null) {
+            MiniCartSimplifiedData()
         } else {
-            return MiniCartSimplifiedData().apply {
+            MiniCartSimplifiedData().apply {
                 val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()

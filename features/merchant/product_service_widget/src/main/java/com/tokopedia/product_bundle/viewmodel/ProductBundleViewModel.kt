@@ -164,6 +164,7 @@ class ProductBundleViewModel @Inject constructor(
                         CheckCampaign = true,
                         BundleGroup = true,
                         Preorder = true,
+                        BundleStats = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
