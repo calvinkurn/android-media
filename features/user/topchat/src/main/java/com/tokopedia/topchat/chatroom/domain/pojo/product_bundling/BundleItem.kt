@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.product_bundling
 import com.google.gson.annotations.SerializedName
 
 data class BundleItem (
-    @SerializedName("productID")
+    @SerializedName("product_id")
     var productId: String = "",
     @SerializedName("name")
     var name: String = "",

@@ -241,7 +241,7 @@ open class TopChatTypeFactoryImpl constructor(
             )
             ProductBundlingCarouselViewHolder.LAYOUT -> ProductBundlingCarouselViewHolder(
                 parent, productBundlingListener, adapterListener, productBundlingCarouselListener,
-                deferredAttachment, searchListener, commonListener
+                searchListener, commonListener
             )
             else -> createViewHolder(parent, type)
         }

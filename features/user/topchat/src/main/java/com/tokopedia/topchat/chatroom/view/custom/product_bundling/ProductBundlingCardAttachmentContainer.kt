@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
@@ -31,7 +30,6 @@ import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -45,12 +43,10 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
     private var button: UnifyButton? = null
-    private var loader: LoaderUnify? = null
 
     private var listener: ProductBundlingListener? = null
     private var adapterListener: AdapterListener? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
-    private var deferredAttachment: DeferredViewHolderAttachment? = null
     private var searchListener: SearchListener? = null
     private var commonListener: CommonViewHolderListener? = null
 
@@ -135,7 +131,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
-        loader = findViewById(R.id.loader_product_bundling)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -149,23 +144,18 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         adapterPosition: Int,
         listener: ProductBundlingListener,
         adapterListener: AdapterListener,
-        deferredAttachment: DeferredViewHolderAttachment,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
     ) {
         this.adapterPosition = adapterPosition
-        bindListener(listener, adapterListener, deferredAttachment, searchListener, commonListener)
+        bindListener(listener, adapterListener, searchListener, commonListener)
         bindLayoutGravity(element)
         bindBackground(element)
         bindMargin(element)
-        bindSyncProductBundling(element)
-        bindIsLoading(element)
-        if (!element.isLoading && !element.isError) {
-            bindLayoutStyle(element)
-            bindPrice(element)
-            bindCtaClick(element)
-            listener.onSeenProductBundling(element)
-        }
+        bindLayoutStyle(element)
+        bindPrice(element)
+        bindCtaClick(element)
+        listener.onSeenProductBundling(element)
     }
 
     private fun bindLayoutStyle(element: ProductBundlingUiModel) {
@@ -222,13 +212,11 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private fun bindListener(
         listener: ProductBundlingListener,
         adapterListener: AdapterListener,
-        deferredAttachment: DeferredViewHolderAttachment,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
     ) {
         this.listener = listener
         this.adapterListener = adapterListener
-        this.deferredAttachment = deferredAttachment
         this.searchListener = searchListener
         this.commonListener = commonListener
     }
@@ -238,25 +226,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             gravityRight()
         } else {
             gravityLeft()
-        }
-    }
-
-    private fun bindIsLoading(element: ProductBundlingUiModel) {
-        if (element.isLoading) {
-            loader?.show()
-        } else {
-            loader?.hide()
-        }
-    }
-
-    private fun bindSyncProductBundling(element: ProductBundlingUiModel) {
-        if (!element.isLoading) return
-        val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
-        val attachment = chatAttachments[element.attachmentId] ?: return
-        if (attachment is ErrorAttachment) {
-            element.syncError()
-        } else {
-            element.updateData(attachment.parsedAttributes)
         }
     }
 
