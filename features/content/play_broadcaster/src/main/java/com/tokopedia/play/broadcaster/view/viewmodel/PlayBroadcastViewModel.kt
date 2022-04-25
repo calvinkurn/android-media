@@ -19,8 +19,12 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorListener
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
+import com.tokopedia.play.broadcaster.pusher.isStopped
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -51,11 +55,12 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
-import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
+import com.tokopedia.play.broadcaster.view.state.isRecovered
+import com.tokopedia.play.broadcaster.view.state.isStarted
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
-import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -210,6 +215,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _isExiting = MutableStateFlow(false)
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
 
+    private val _interactive = MutableStateFlow(PlayBroadcastInteractiveStateUiModel.Empty)
     private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
     private val _quizFormState =
         MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
@@ -252,15 +258,24 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
+        _interactive,
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
         _schedule,
         _isExiting,
         _gameConfigUiState,
         _quizFormUiState,
-    ) { channelState, pinnedMessage, productMap, schedule, isExiting, gameConfig, quizForm ->
+    ) { channelState,
+        interactive,
+        pinnedMessage,
+        productMap,
+        schedule,
+        isExiting,
+        gameConfig,
+        quizForm ->
         PlayBroadcastUiState(
             channel = channelState,
+            interactive = interactive,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             schedule = schedule,
@@ -386,6 +401,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
+            PlayBroadcastAction.QuizOngoingEnded -> handleQuizEnded()
         }
     }
 
@@ -716,25 +732,27 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             }
             is InteractiveUiModel.Quiz -> {
-                when (val status = interactive.status) {
-                    is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
-                        endTime = status.endTime,
-                        question = interactive.title
-                    )
-                    is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
+                when (interactive.status) {
+                    is InteractiveUiModel.Quiz.Status.Ongoing ->
+                        _interactive.value =
+                            PlayBroadcastInteractiveStateUiModel(interactive, true)
+                    is InteractiveUiModel.Quiz.Status.Finished ->
+                        _interactive.value =
+                            PlayBroadcastInteractiveStateUiModel(interactive, false)
                     else -> {}
                 }
             }
         }
     }
 
-    private fun onQuizFinished() {
-        _observableQuizState.value = BroadcastQuizState.Finished
-    }
-
-    private fun onQuizOngoing(endTime: Calendar, question: String) {
-        _observableQuizState.value = BroadcastQuizState.Ongoing(endTime, question)
-    }
+//    private fun onQuizFinished() {
+//        _observableQuizState.value = BroadcastQuizState.Finished
+//    }
+//
+//    private fun onQuizOngoing(endTime: Calendar, question: String) {
+//        _interactive.value = PlayBroadcastInteractiveStateUiModel()
+//        _observableQuizState.value = BroadcastQuizState.Ongoing(endTime, question)
+//    }
 
     private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(
@@ -898,11 +916,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     }
                 }
             }
-            is GiveawayResponse -> {
-                //TODO() add channelInteractiveMapper
-                //val currentInteractive = channelInteractiveMapper.mapInteractive(result)
-                //handleActiveInteractiveFromNetwork(currentInteractive)
-            }
+//            is GiveawayResponse -> {
+            //TODO() add channelInteractiveMapper
+            //val currentInteractive = channelInteractiveMapper.mapInteractive(result)
+            //handleActiveInteractiveFromNetwork(currentInteractive)
+//            }
             is PinnedMessageSocketResponse -> {
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
                 _pinnedMessage.value = mappedResult.copy(
@@ -1205,6 +1223,28 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleQuizEnded() {
+        _interactive.update {
+            val finishedInteractive = (_interactive.value.interactive as InteractiveUiModel.Quiz).copy(status = InteractiveUiModel.Quiz.Status.Finished)
+            it.copy(interactive = finishedInteractive)
+        }
+    }
+
+    private fun handlePlayingInteractive(shouldPlay: Boolean) {
+        _interactive.update {
+            val isOngoing = when (it.interactive) {
+                is InteractiveUiModel.Giveaway -> {
+                    it.interactive.status is InteractiveUiModel.Giveaway.Status.Ongoing
+                }
+                is InteractiveUiModel.Quiz -> {
+                    it.interactive.status is InteractiveUiModel.Quiz.Status.Ongoing
+                }
+                else -> false
+            }
+            it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
+        }
+    }
+
     fun getQuizDetailData() {
         _observableQuizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
@@ -1214,8 +1254,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _observableQuizDetailState.value = QuizDetailStateUiModel.Error
         }
     }
-
-
 
     /**
      * Quiz

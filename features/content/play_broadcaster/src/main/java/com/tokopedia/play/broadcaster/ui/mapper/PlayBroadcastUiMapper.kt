@@ -19,7 +19,10 @@ import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.*
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -40,107 +43,119 @@ import java.util.concurrent.TimeUnit
  * Created by jegul on 02/06/20
  */
 class PlayBroadcastUiMapper(
-        private val textTransformer: HtmlTextTransformer
+    private val textTransformer: HtmlTextTransformer
 ) : PlayBroadcastMapper {
 
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> = etalaseList.map {
-        val type = EtalaseType.getByType(it.type, it.id)
-        EtalaseContentUiModel(
+    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
+        etalaseList.map {
+            val type = EtalaseType.getByType(it.type, it.id)
+            EtalaseContentUiModel(
                 id = if (type is EtalaseType.Group) type.fMenu else it.id,
                 name = it.name,
                 productMap = mutableMapOf(),
                 totalProduct = it.count,
                 stillHasProduct = true
-        )
-    }
+            )
+        }
 
     override fun mapProductList(
-            productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (String) -> Boolean,
-            isSelectableHandler: (Boolean) -> SelectableState
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
+        isSelectedHandler: (String) -> Boolean,
+        isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
-                id = it.id,
-                name = it.name,
-                imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-                originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-                stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
-                price = PriceUnknown,
-                isSelectedHandler = isSelectedHandler,
-                isSelectable = isSelectableHandler
+            id = it.id,
+            name = it.name,
+            imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+            originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
+            stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
+            price = PriceUnknown,
+            isSelectedHandler = isSelectedHandler,
+            isSelectable = isSelectableHandler
         )
     }
 
     override fun mapSearchSuggestionList(
-            keyword: String,
-            productsResponse: GetProductsByEtalaseResponse.GetProductListData
+        keyword: String,
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData
     ) = productsResponse.data.map {
         val fullSuggestedText = it.name
         val startIndex = fullSuggestedText.indexOf(keyword)
         val lastIndex = startIndex + keyword.length
 
         SearchSuggestionUiModel(
-                queriedText = keyword,
-                suggestedId = it.id,
-                suggestedText = it.name,
-                spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
-                    if (startIndex >= 0) setSpan(StyleSpan(Typeface.BOLD), startIndex, lastIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-                }
+            queriedText = keyword,
+            suggestedId = it.id,
+            suggestedText = it.name,
+            spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
+                if (startIndex >= 0) setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    lastIndex,
+                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+            }
         )
     }
 
     override fun mapLiveFollowers(
-            response: GetLiveFollowersResponse
-    ) : FollowerDataUiModel {
+        response: GetLiveFollowersResponse
+    ): FollowerDataUiModel {
         val totalRetrievedFollowers = response.shopFollowerList.data.size
         return FollowerDataUiModel(
-                followersList = List(TOTAL_FOLLOWERS) {
-                    if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
-                    else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
-                },
-                totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite ?: 0
+            followersList = List(TOTAL_FOLLOWERS) {
+                if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
+                else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
+            },
+            totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite
+                ?: 0
         )
     }
 
     override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
-            LiveStreamInfoUiModel(
-                    channelId = channelId,
-                    ingestUrl = media.ingestUrl,
-                    streamUrl = media.streamUrl)
+        LiveStreamInfoUiModel(
+            channelId = channelId,
+            ingestUrl = media.ingestUrl,
+            streamUrl = media.streamUrl
+        )
 
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> = mutableListOf(
-                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> =
+        mutableListOf(
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
         )
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
-            totalView.totalViewFmt
+        totalView.totalViewFmt
     )
 
-    override fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel = TotalLikeUiModel(totalLike.totalLikeFmt)
+    override fun mapTotalLike(totalLike: TotalLike): TotalLikeUiModel =
+        TotalLikeUiModel(totalLike.totalLikeFmt)
 
-    override fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> = metric.metricList.map {
-        PlayMetricUiModel(
+    override fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel> =
+        metric.metricList.map {
+            PlayMetricUiModel(
                 iconUrl = it.icon,
                 spannedSentence = textTransformer.transform(it.sentence),
                 type = it.metricType,
                 interval = it.interval
-        )
-    }
+            )
+        }
 
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
-        ProductData(
+    override fun mapProductTag(productTag: ProductTagging): List<ProductData> =
+        productTag.productList.map {
+            ProductData(
                 id = it.id.toString(),
                 name = it.name,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if(it.discount != 0) {
+                price = if (it.discount != 0) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFormatted,
                         originalPriceNumber = it.originalPrice,
@@ -148,24 +163,25 @@ class PlayBroadcastUiMapper(
                         discountedPriceNumber = it.price,
                         discountPercent = it.discount
                     )
+                } else {
+                    OriginalPrice(
+                        price = it.originalPriceFormatted,
+                        priceNumber = it.originalPrice
+                    )
                 }
-                else {
-                    OriginalPrice(price = it.originalPriceFormatted,
-                        priceNumber = it.originalPrice)
-                }
-        )
-    }
+            )
+        }
 
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         val channelStatus = ChannelType.getChannelType(
-                config.activeLiveChannel,
-                config.pausedChannel,
-                config.draftChannel,
-                config.completeDraft
+            config.activeLiveChannel,
+            config.pausedChannel,
+            config.draftChannel,
+            config.completeDraft
         )
 
         val maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration)
-        val remainingTime = when(channelStatus.second) {
+        val remainingTime = when (channelStatus.second) {
             ChannelType.Active -> TimeUnit.SECONDS.toMillis(config.activeChannelRemainingDuration)
             ChannelType.Pause -> TimeUnit.SECONDS.toMillis(config.pausedChannelRemainingDuration)
             else -> maxDuration
@@ -203,45 +219,50 @@ class PlayBroadcastUiMapper(
         )
     }
 
-   override fun mapChannelInfo(channel: GetChannelResponse.Channel) = ChannelInfoUiModel(
-            channelId = channel.basic.channelId,
-            title = channel.basic.title,
-            description = channel.basic.description,
-            ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
-            coverUrl = channel.basic.coverUrl,
-            status = PlayChannelStatusType.getByValue(channel.basic.status.id)
+    override fun mapChannelInfo(channel: GetChannelResponse.Channel) = ChannelInfoUiModel(
+        channelId = channel.basic.channelId,
+        title = channel.basic.title,
+        description = channel.basic.description,
+        ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
+        coverUrl = channel.basic.coverUrl,
+        status = PlayChannelStatusType.getByValue(channel.basic.status.id)
     )
 
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
-        ProductData(
+    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) =
+        productTags.map {
+            ProductData(
                 id = it.productID,
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if(it.discount.toInt() != 0) {
-                            DiscountedPrice(
-                                originalPrice = it.originalPriceFmt,
-                                originalPriceNumber = it.originalPrice.toDouble(),
-                                discountedPrice = it.priceFmt,
-                                discountedPriceNumber = it.price.toDouble(),
-                                discountPercent = it.discount.toInt()
-                            )
-                        }
-                        else {
-                            OriginalPrice(price = it.originalPriceFmt,
-                                priceNumber = it.originalPrice.toDouble())
-                        }
-        )
-    }
+                price = if (it.discount.toInt() != 0) {
+                    DiscountedPrice(
+                        originalPrice = it.originalPriceFmt,
+                        originalPriceNumber = it.originalPrice.toDouble(),
+                        discountedPrice = it.priceFmt,
+                        discountedPriceNumber = it.price.toDouble(),
+                        discountPercent = it.discount.toInt()
+                    )
+                } else {
+                    OriginalPrice(
+                        price = it.originalPriceFmt,
+                        priceNumber = it.originalPrice.toDouble()
+                    )
+                }
+            )
+        }
 
     override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
         return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
         else {
             val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
             BroadcastScheduleUiModel.Scheduled(
-                    time = scheduleDate,
-                    formattedTime = scheduleDate.toFormattedString(DATE_FORMAT_BROADCAST_SCHEDULE, Locale("id", "ID"))
+                time = scheduleDate,
+                formattedTime = scheduleDate.toFormattedString(
+                    DATE_FORMAT_BROADCAST_SCHEDULE,
+                    Locale("id", "ID")
+                )
             )
         }
     }
@@ -253,23 +274,23 @@ class PlayBroadcastUiMapper(
         }
 
         return PlayCoverUiModel(
-                croppedCover = CoverSetupState.Cropped.Uploaded(
-                        localImage = null,
-                        coverImage = Uri.parse(coverUrl),
-                        coverSource = prevSource ?: CoverSource.None
-                ),
-                state = SetupDataState.Uploaded,
+            croppedCover = CoverSetupState.Cropped.Uploaded(
+                localImage = null,
+                coverImage = Uri.parse(coverUrl),
+                coverSource = prevSource ?: CoverSource.None
+            ),
+            state = SetupDataState.Uploaded,
         )
     }
 
     override fun mapShareInfo(channel: GetChannelResponse.Channel) = ShareUiModel(
-            id = channel.basic.channelId,
-            title = channel.share.metaTitle,
-            description = channel.share.metaDescription,
-            imageUrl = channel.basic.coverUrl,
-            textContent = textTransformer.transform(channel.share.text),
-            redirectUrl = channel.share.redirectURL,
-            shortenUrl = channel.share.useShortURL
+        id = channel.basic.channelId,
+        title = channel.share.metaTitle,
+        description = channel.share.metaDescription,
+        imageUrl = channel.basic.coverUrl,
+        textContent = textTransformer.transform(channel.share.text),
+        redirectUrl = channel.share.redirectURL,
+        shortenUrl = channel.share.useShortURL
     )
 
     override fun mapChannelSummary(
@@ -287,28 +308,30 @@ class PlayBroadcastUiMapper(
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
-            messageId = chat.messageId,
-            message = chat.message,
-            userId = chat.user.id,
-            name = chat.user.name,
-            isSelfMessage = false
+        messageId = chat.messageId,
+        message = chat.message,
+        userId = chat.user.id,
+        name = chat.user.name,
+        isSelfMessage = false
     )
 
-    override fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel = EventUiModel(
+    override fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel =
+        EventUiModel(
             freeze = freezeEvent.isFreeze,
-            banned = event?.banned?:false,
+            banned = event?.banned ?: false,
             title = event?.title.orEmpty(),
             message = event?.message.orEmpty(),
             buttonTitle = event?.buttonTitle.orEmpty()
-    )
+        )
 
-    override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel = EventUiModel(
-            freeze = event?.freeze?:false,
+    override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel =
+        EventUiModel(
+            freeze = event?.freeze ?: false,
             banned = true,
             title = bannedEvent.title,
             message = bannedEvent.reason,
             buttonTitle = bannedEvent.btnText
-    )
+        )
 
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
@@ -399,17 +422,20 @@ class PlayBroadcastUiMapper(
     }
 
     override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
-        return QuizDetailDataUiModel(
-            question = response.question,
-            reward = response.reward,
-            countDownEnd = response.countdownEnd,
-            choices = response.choices.map {
-                QuizDetailDataUiModel.Choice(
-                    text = it.text,
-                    isCorrectAnswer = it.isCorrectAnswer,
-                    participantCount = it.participantCount)
-            }
-        )
+        return with(response.playInteractiveQuizDetail) {
+            QuizDetailDataUiModel(
+                question = question,
+                reward = reward,
+                countDownEnd = countdownEnd,
+                choices = choices.map {
+                    QuizDetailDataUiModel.Choice(
+                        text = it.text,
+                        isCorrectAnswer = it.isCorrectAnswer,
+                        participantCount = it.participantCount
+                    )
+                }
+            )
+        }
     }
 
     companion object {

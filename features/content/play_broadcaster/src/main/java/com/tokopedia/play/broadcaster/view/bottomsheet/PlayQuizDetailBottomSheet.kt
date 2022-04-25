@@ -19,7 +19,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     private var _binding: BottomSheetPlayBroQuizDetailBinding? = null
     private val binding: BottomSheetPlayBroQuizDetailBinding
-        get() = binding!!
+        get() = _binding!!
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -33,12 +33,12 @@ class PlayQuizDetailBottomSheet @Inject constructor(
             requireActivity(),
             parentViewModelFactoryCreator.create(requireActivity())
         )[PlayBroadcastViewModel::class.java]
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupView(view)
-        setupObserver()
+        parentViewModel.getQuizDetailData()
+        observeQuizDetail()
     }
 
     override fun onDestroyView() {
@@ -46,21 +46,13 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         _binding = null
     }
 
-    private fun setupView(view: View) = with(view) {
-        parentViewModel.getQuizDetailData()
-    }
-
-    private fun setupObserver() {
-        observeQuizDetail()
-    }
-
     private fun observeQuizDetail() {
         parentViewModel.observableQuizDetailState.observe(viewLifecycleOwner) {
             when (it){
-                QuizDetailStateUiModel.Error -> TODO()
-                QuizDetailStateUiModel.Loading -> TODO()
+                is QuizDetailStateUiModel.Error -> TODO()
+                is QuizDetailStateUiModel.Loading -> {}
                 is QuizDetailStateUiModel.Success -> setUIModel(it.dataUiModel)
-                QuizDetailStateUiModel.Unknown -> TODO()
+                is QuizDetailStateUiModel.Unknown -> TODO()
             }
         }
     }
@@ -76,5 +68,15 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayQuizDetailBottomSheet"
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader
+        ): PlayQuizDetailBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayQuizDetailBottomSheet
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                PlayQuizDetailBottomSheet::class.java.name
+            ) as PlayQuizDetailBottomSheet
+        }
     }
 }

@@ -22,15 +22,13 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.BroadcastQuizState
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
@@ -39,6 +37,7 @@ import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastInteractiveStateUiModel
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -56,6 +55,9 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFor
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
@@ -65,19 +67,18 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.game.GameSmallWidgetView
-import com.tokopedia.play_common.view.game.InteractiveFinishView
-import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -90,7 +91,10 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic
-): PlayBaseBroadcastFragment(), FragmentWithDetachableView {
+) : PlayBaseBroadcastFragment(),
+    FragmentWithDetachableView,
+    InteractiveGameResultViewComponent.Listener,
+    InteractiveActiveViewComponent.Listener {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -105,10 +109,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
     private val actionBarLiveView by viewComponent {
-        ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
+        ActionBarLiveViewComponent(it, object : ActionBarLiveViewComponent.Listener {
             override fun onCameraIconClicked() {
                 parentViewModel.switchCamera()
-                analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+                analytic.clickSwitchCameraOnLivePage(
+                    parentViewModel.channelId,
+                    parentViewModel.channelTitle
+                )
             }
 
             override fun onEndStreamClicked() {
@@ -148,32 +155,34 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private val interactiveSetupView by viewComponent {
-        BroadcastInteractiveSetupViewComponent(it, object : BroadcastInteractiveSetupViewComponent.Listener {
-            override fun onTitleInputChanged(
-                view: BroadcastInteractiveSetupViewComponent,
-                title: String
-            ) {
-                parentViewModel.setInteractiveTitle(title)
-            }
+        BroadcastInteractiveSetupViewComponent(
+            it,
+            object : BroadcastInteractiveSetupViewComponent.Listener {
+                override fun onTitleInputChanged(
+                    view: BroadcastInteractiveSetupViewComponent,
+                    title: String
+                ) {
+                    parentViewModel.setInteractiveTitle(title)
+                }
 
-            override fun onPickerValueChanged(
-                view: BroadcastInteractiveSetupViewComponent,
-                durationInMs: Long
-            ) {
-                parentViewModel.setSelectedInteractiveDuration(durationInMs)
-            }
+                override fun onPickerValueChanged(
+                    view: BroadcastInteractiveSetupViewComponent,
+                    durationInMs: Long
+                ) {
+                    parentViewModel.setSelectedInteractiveDuration(durationInMs)
+                }
 
-            override fun onApplyButtonClicked(
-                view: BroadcastInteractiveSetupViewComponent,
-                title: String,
-                durationInMs: Long
-            ) {
-                parentViewModel.createInteractiveSession(title, durationInMs)
-            }
-        })
+                override fun onApplyButtonClicked(
+                    view: BroadcastInteractiveSetupViewComponent,
+                    title: String,
+                    durationInMs: Long
+                ) {
+                    parentViewModel.createInteractiveSession(title, durationInMs)
+                }
+            })
     }
     private val productTagView by viewComponent {
-        ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
+        ProductTagViewComponent(it, object : ProductTagViewComponent.Listener {
             override fun impressProductTag(view: ProductTagViewComponent) {
                 analytic.impressProductTag(parentViewModel.channelId)
             }
@@ -183,13 +192,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 product: ProductUiModel,
                 position: Int
             ) {
-                productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
+                productTagAnalyticHelper.trackScrollProduct(
+                    parentViewModel.channelId,
+                    product,
+                    position
+                )
             }
         })
     }
 
     /** Game */
-    private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
+    private val gameIconView by viewComponent {
+        GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClick() {
                 openSelectInteractiveSheet()
             }
@@ -197,9 +211,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
 
-    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_ongoing)
-    private val quizFinishedView: InteractiveFinishView by detachableView(R.id.view_game_finished)
-
+    /**
+     * Interactive
+     */
+    private val interactiveActiveView by viewComponentOrNull {
+        InteractiveActiveViewComponent(
+            it,
+            this
+        )
+    }
+    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
+    private val quizResultView by viewComponentOrNull(isEagerInit = true) {
+        InteractiveGameResultViewComponent(
+            it,
+            this
+        )
+    }
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -373,7 +400,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeMetrics()
         observeEvent()
         observeInteractiveConfig()
-        observeQuizState()
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
@@ -713,19 +739,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeQuizState(){
-        parentViewModel.observableQuizState.observe(viewLifecycleOwner) {state ->
-            when (state) {
-                is BroadcastQuizState.Finished -> {
-                    //handleFinishedQuiz
-                }
-                is BroadcastQuizState.Ongoing -> {
-                    handleOngoingQuiz(state)
-                }
-            }
-        }
-    }
-
     private fun observeCreateInteractiveSession() {
         parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -868,6 +881,98 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun renderInteractiveView(
+        prevState: PlayBroadcastInteractiveStateUiModel?,
+        state: PlayBroadcastInteractiveStateUiModel,
+    ) {
+        if (state.isPlaying) {
+            interactiveActiveView?.hide()
+            interactiveFinishView?.hide()
+            return
+        }
+
+        /**
+         * Render:
+         * - if interactive has changed <b>or</b>
+         * - if isPlaying state has changed to not playing
+         */
+        if (prevState?.interactive != state.interactive ||
+            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying)
+        ) {
+            when (state.interactive) {
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
+                is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
+                InteractiveUiModel.Unknown -> {
+                    interactiveActiveView?.hide()
+                    interactiveFinishView?.hide()
+                }
+            }
+        }
+    }
+
+    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+                interactiveActiveView?.setUpcomingGiveaway(
+                    desc = state.title,
+                    targetTime = status.startTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishView?.hide()
+            }
+            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+                interactiveActiveView?.setOngoingGiveaway(
+                    desc = state.title,
+                    targetTime = status.endTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.GiveawayOngoingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishView?.hide()
+            }
+            InteractiveUiModel.Giveaway.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishView?.setupGiveaway()
+                interactiveFinishView?.show()
+            }
+            InteractiveUiModel.Giveaway.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishView?.hide()
+            }
+        }
+    }
+
+    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                interactiveActiveView?.setQuiz(
+                    question = state.title,
+                    targetTime = status.endTime,
+                    onDurationEnd = {
+                        parentViewModel.submitAction(PlayBroadcastAction.QuizOngoingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishView?.hide()
+            }
+            InteractiveUiModel.Quiz.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishView?.setupQuiz()
+                interactiveFinishView?.show()
+            }
+            InteractiveUiModel.Quiz.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishView?.hide()
+            }
+        }
+    }
+
     private fun isPinnedFormVisible(): Boolean {
         val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
         return formView != null && formView.visibility == View.VISIBLE
@@ -947,20 +1052,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
-        quizOngoingView.show()
-        quizOngoingView.setOnClickListener {
-            openQuizDetailSheet()
-        }
-        quizOngoingView.setupQuiz(state.question,state.endTime) {
-            it.hide()
-            quizFinishedView.setupQuiz()
-            quizFinishedView.show()
-            gameIconView.show()
-        }
-        gameIconView.hide()
-    }
-
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
         if(isShow) gameIconView.cancelCoachMark()
@@ -1000,4 +1091,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
     }
+
+    override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+
+    }
+
+    override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+        openQuizDetailSheet()
+    }
+
 }

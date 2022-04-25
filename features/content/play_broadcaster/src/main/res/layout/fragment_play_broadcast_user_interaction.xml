@@ -183,7 +183,7 @@
 
         <include
             android:id="@+id/view_game_widget"
-            layout="@layout/view_play_bro_ongoing_interactive_widget"
+            layout="@layout/view_play_bro_interactive_widget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
