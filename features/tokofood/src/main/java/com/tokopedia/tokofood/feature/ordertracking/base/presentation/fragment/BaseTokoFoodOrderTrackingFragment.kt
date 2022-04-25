@@ -24,10 +24,13 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.RecyclerViewPollerListener
+import com.tokopedia.tokofood.feature.ordertracking.presentation.bottomsheet.DriverCallBottomSheet
 import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFoodOrderLiveTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
@@ -90,6 +93,7 @@ class BaseTokoFoodOrderTrackingFragment :
         fetchOrderDetail(ORDER_TRACKING_RESOURCE)
         observeOrderDetail()
         observeOrderCompletedLiveTracking()
+        observeDriverPhoneNumber()
     }
 
     override fun onDestroy() {
@@ -128,6 +132,10 @@ class BaseTokoFoodOrderTrackingFragment :
             orderTrackingAdapter.updateOrderTracking(orderDetailList)
             updateViewsOrderCompleted(actionButtonsUiModel, toolbarLiveTrackingUiModel, orderStatus)
         }
+    }
+
+    override fun onClickDriverCall() {
+        viewModel.fetchDriverPhoneNumber(viewModel.getOrderId())
     }
 
     override val parentPool: RecyclerView.RecycledViewPool
@@ -171,6 +179,37 @@ class BaseTokoFoodOrderTrackingFragment :
                 }
             }
         }
+    }
+
+    private fun observeDriverPhoneNumber() {
+        observe(viewModel.driverPhoneNumber) {
+            when (it) {
+                is Success -> {
+                    updateDriverCall(it.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun updateDriverCall(driverPhoneNumberUiModel: DriverPhoneNumberUiModel) {
+        updateDriverCallState(driverPhoneNumberUiModel)
+        showDriverCallBottomSheet(driverPhoneNumberUiModel.phoneNumber)
+    }
+
+    private fun updateDriverCallState(driverPhoneNumberUiModel: DriverPhoneNumberUiModel) {
+        val oldItem = orderTrackingAdapter.filterUiModel<DriverSectionUiModel>()
+        oldItem?.let {
+            val newItem = it.copy(isCallable = driverPhoneNumberUiModel.isCallable)
+            orderTrackingAdapter.updateItem(oldItem, newItem)
+        }
+    }
+
+    private fun showDriverCallBottomSheet(driverPhoneNumber: String) {
+        val driverCallBottomSheet = DriverCallBottomSheet.newInstance(driverPhoneNumber)
+        driverCallBottomSheet.show(childFragmentManager)
     }
 
     private fun hideViews() {

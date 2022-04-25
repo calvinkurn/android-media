@@ -159,7 +159,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
                 parent,
                 orderTrackingListener
             )
-            DriverSectionViewHolder.LAYOUT -> DriverSectionViewHolder(parent)
+            DriverSectionViewHolder.LAYOUT -> DriverSectionViewHolder(parent, orderTrackingListener)
             OrderTrackingStatusInfoViewHolder.LAYOUT -> OrderTrackingStatusInfoViewHolder(parent)
             OrderTrackingEstimationViewHolder.LAYOUT -> OrderTrackingEstimationViewHolder(parent)
             FoodItemViewHolder.LAYOUT -> FoodItemViewHolder(parent, recyclerViewPollerListener)

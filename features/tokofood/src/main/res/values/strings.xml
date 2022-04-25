@@ -35,5 +35,9 @@
     <string name="order_completed_buy_again_button_title">Beli Lagi</string>
     <string name="secondary_action_bottomsheet_header">Lainnya</string>
     <string name="order_tracking_toolbar_desc_with_eta">%1s • %2s</string>
+    <string name="driver_call_title_bottomsheet">Telepon Driver</string>
+    <string name="driver_call_now_button">Telepon Sekarang</string>
+    <string name="driver_call_disguised_number_title_bottomsheet">Nomor HP-mu akan disamarkan</string>
+    <string name="driver_call_disguised_number_desc_bottomsheet">Kontakmu aman. Driver tidak bisa lihat nomor HP kamu di panggilan ini.</string>
 
 </resources>

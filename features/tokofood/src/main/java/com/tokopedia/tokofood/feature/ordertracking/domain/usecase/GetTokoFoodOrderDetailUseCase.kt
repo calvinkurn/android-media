@@ -21,19 +21,16 @@ class GetTokoFoodOrderDetailUseCase @Inject constructor(
         useCase.setTypeClass(TokoFoodOrderDetailResponse::class.java)
     }
 
-    suspend fun execute(orderId: String) {
+    suspend fun execute(orderId: String): OrderDetailResultUiModel {
         useCase.setRequestParams(TokoFoodOrderDetailQuery.createRequestParamsOrderDetail(orderId))
-        //todo mapping
-        try {
-            useCase.executeOnBackground()
-        } catch (e: Exception) {
-
-        }
+        val response = useCase.executeOnBackground().tokofoodOrderDetail
+        return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }
 
     fun executeTemp(resourceId: Int): OrderDetailResultUiModel {
         val json = fileUtilsTemp.getJsonFromRaw(context.resources, resourceId)
-        val response = fileUtilsTemp.getJsonResources<TokoFoodOrderDetailResponse>(json).tokofoodOrderDetail
+        val response =
+            fileUtilsTemp.getJsonResources<TokoFoodOrderDetailResponse>(json).tokofoodOrderDetail
         return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }
 }

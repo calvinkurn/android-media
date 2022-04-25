@@ -13,8 +13,10 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverI
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 
-class DriverSectionViewHolder(view: View) :
-    BaseOrderTrackingViewHolder<DriverSectionUiModel>(view) {
+class DriverSectionViewHolder(
+    view: View,
+    private val listener: Listener
+) : BaseOrderTrackingViewHolder<DriverSectionUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -87,7 +89,7 @@ class DriverSectionViewHolder(view: View) :
                 )
             setImage(IconUnify.CALL, nn900Color, nn900Color)
             setOnClickListener {
-                //todo request to BE, call driver
+                listener.onClickDriverCall()
             }
         }
     }
@@ -117,5 +119,9 @@ class DriverSectionViewHolder(view: View) :
         } else {
             rvDriverInformation.hide()
         }
+    }
+
+    interface Listener {
+        fun onClickDriverCall()
     }
 }
