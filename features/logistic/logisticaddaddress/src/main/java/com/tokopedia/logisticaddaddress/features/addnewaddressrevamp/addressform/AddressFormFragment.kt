@@ -582,16 +582,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
-                    validated = false
-                    field.add(getString(R.string.field_alamat))
-                    setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
-                }
-
                 if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field.add(getString(R.string.field_label_alamat))
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
+                    validated = false
+                    field.add(getString(R.string.field_alamat))
+                    setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
                 if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
