@@ -100,7 +100,7 @@ class SearchCategoryTypeBottomSheet : BottomSheetUnify() {
                 add(
                     SearchTypeData(
                         id = 2,
-                        text = it.getString(R.string.content_creation_search_bs_item_terakhir),
+                        text = it.getString(R.string.content_creation_search_bs_item_last_purchase),
                         type = CreatorListItemType.TYPE_CONTENT,
                         iconId = IconUnify.CART
                     )

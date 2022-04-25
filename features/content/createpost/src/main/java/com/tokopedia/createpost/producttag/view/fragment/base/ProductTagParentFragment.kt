@@ -6,18 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
+import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.createpost.view.bottomSheet.SearchCategoryTypeBottomSheet
+import com.tokopedia.createpost.view.bottomSheet.SearchTypeData
+import com.tokopedia.createpost.view.listener.SearchCategoryBottomSheetListener
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.content_item_product_tag_view.*
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
 * Created By : Jonathan Darwin on April 25, 2022
 */
 class ProductTagParentFragment @Inject constructor(
-    private val viewModelFactory: ViewModelFactory
+    private val viewModelFactory: ViewModelFactory,
+    private val userSession: UserSessionInterface,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -50,6 +66,7 @@ class ProductTagParentFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         viewModel.processProductTagSource(arguments?.getString(EXTRA_PRODUCT_TAG_LIST) ?: "")
         setupView()
+        setupObserve()
     }
 
     override fun onDestroyView() {
@@ -60,6 +77,47 @@ class ProductTagParentFragment @Inject constructor(
     private fun setupView() {
         binding.icCcProductTagBack.setOnClickListener {
 
+        }
+
+        binding.tvCcProductTagProductSource.setOnClickListener {
+
+        }
+    }
+
+    private fun setupObserve() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
+            }
+        }
+    }
+
+    private fun renderSelectedProductTagSource(
+        prevState: ProductTagSourceUiState?,
+        currState: ProductTagSourceUiState,
+    ) {
+        if(prevState == currState) return
+
+        binding.tvCcProductTagProductSource.text = getProductTagSourceText(currState.selectedProductTagSource)
+
+        if(currState.selectedProductTagSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+            /** TODO: gonna change this to shop badge */
+            binding.icCcProductTagShopBadge.setImageUrl(userSession.shopAvatar)
+            binding.icCcProductTagShopBadge.show()
+        }
+        else {
+            binding.icCcProductTagShopBadge.hide()
+        }
+    }
+
+    private fun getProductTagSourceText(source: ProductTagSource): String {
+        return when(source) {
+            ProductTagSource.GlobalSearch,
+            ProductTagSource.LastTagProduct -> getString(R.string.content_creation_search_bs_header_item_tokopedia)
+            ProductTagSource.LastPurchase -> getString(R.string.content_creation_search_bs_item_last_purchase)
+            ProductTagSource.Wishlist -> getString(R.string.content_creation_search_bs_item_wishlist)
+            ProductTagSource.MyShop -> userSession.shopName
+            else -> ""
         }
     }
 

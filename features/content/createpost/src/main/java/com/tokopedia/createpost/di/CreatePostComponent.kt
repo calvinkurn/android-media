@@ -1,9 +1,9 @@
 package com.tokopedia.createpost.di
 
-
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostScope
+import com.tokopedia.createpost.producttag.di.ContentCreationProductTagBindModule
 import com.tokopedia.createpost.producttag.di.ContentCreationProductTagModule
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
@@ -16,7 +16,14 @@ import dagger.Component
  * @author by milhamj on 9/26/18.
  */
 @CreatePostScope
-@Component(modules = [CreatePostModule::class, ViewModelModule::class, ContentCreationProductTagModule::class])
+@Component(
+    modules = [
+        CreatePostModule::class,
+        ViewModelModule::class,
+//        ContentCreationProductTagModule::class,
+        ContentCreationProductTagBindModule::class,
+    ]
+)
 interface CreatePostComponent {
     fun inject(fragment: BaseCreatePostFragment)
 
