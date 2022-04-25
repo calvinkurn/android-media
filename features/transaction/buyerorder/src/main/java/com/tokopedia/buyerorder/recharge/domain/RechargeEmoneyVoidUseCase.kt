@@ -1,12 +1,11 @@
 package com.tokopedia.buyerorder.recharge.domain
 
-import com.tokopedia.buyerorder.recharge.data.RechargeOrderDetailGQL
+import com.tokopedia.buyerorder.recharge.data.RechargeEmoneyVoidGql
 import com.tokopedia.buyerorder.recharge.data.response.RechargeEmoneyVoidResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,14 +19,15 @@ class RechargeEmoneyVoidUseCase @Inject constructor(
 ) {
 
     suspend fun execute(orderId: String): Result<RechargeEmoneyVoidResponse> {
-        val params = mapOf(ORDER_ID to orderId.toIntOrZero())
+        val params = mapOf(ORDER_ID to orderId)
         usecase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         usecase.clearRequest()
 
         return try {
             val graphqlRequest = GraphqlRequest(
-                RechargeOrderDetailGQL.VOID_EMONEY_QUERY,
-                RechargeEmoneyVoidResponse.Response::class.java, params
+                RechargeEmoneyVoidGql(),
+                RechargeEmoneyVoidResponse.Response::class.java,
+                params
             )
             usecase.addRequest(graphqlRequest)
             val response = usecase.executeOnBackground()

@@ -183,14 +183,5 @@ class RechargeOrderDetailGQL {
               }
             }
         """.trimIndent()
-
-        val VOID_EMONEY_QUERY = """
-            query rechargeEmoneyVoid(${'$'}orderID: Int!) {
-              rechargeEmoneyVoid(orderID: ${'$'}orderID) {
-                status
-                message
-              }
-            }
-        """.trimIndent()
     }
 }
