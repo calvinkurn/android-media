@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.power_merchant.subscribe.databinding.ItemPmGradeBenefitPagerBinding
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
 
 /**
  * Created By @ilhamsuaib on 02/03/21
  */
 
 class GradeBenefitPagerAdapter(
-    private val pages: List<PMGradeWithBenefitsUiModel>
+    val data: WidgetGradeBenefitUiModel
 ) : RecyclerView.Adapter<GradeBenefitPagerAdapter.GradeBenefitPagerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradeBenefitPagerViewHolder {
@@ -25,11 +26,11 @@ class GradeBenefitPagerAdapter(
     }
 
     override fun onBindViewHolder(holder: GradeBenefitPagerViewHolder, position: Int) {
-        val page = pages[position]
+        val page = data.benefitPages[position]
         holder.bind(page)
     }
 
-    override fun getItemCount(): Int = pages.size
+    override fun getItemCount(): Int = data.benefitPages.size
 
     inner class GradeBenefitPagerViewHolder(private val binding: ItemPmGradeBenefitPagerBinding) :
         RecyclerView.ViewHolder(binding.root) {

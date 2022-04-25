@@ -30,8 +30,7 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                 PMGradeWithBenefitsUiModel(
                     gradeName = it.gradeName.orEmpty(),
                     isActive = it.isActive ?: false,
-                    pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                    benefits = getPMGradeBenefits(it.benefits)
+                    benefits = getPMGradeBenefits(it.benefits),
                 )
             }
         }

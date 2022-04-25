@@ -13,6 +13,26 @@ object Constant {
     const val POWER_MERCHANT_CHARGING = "1,25%"
     const val POWER_MERCHANT_PRO_CHARGING = "1,5%"
 
+    const val PM_TOP_ADS_CREDIT = "5%"
+    const val PM_BROAD_CAST_CHAT = "200"
+    const val PM_PRO_ADV_TOP_ADS_CREDIT = "5,5%"
+    const val PM_PRO_ADV_BROAD_CAST_CHAT = "400"
+    const val PM_PRO_EXP_TOP_ADS_CREDIT = "6%"
+    const val PM_PRO_EXP_BROAD_CAST_CHAT = "600"
+    const val PM_PRO_ULT_TOP_ADS_CREDIT = "6,5%"
+    const val PM_PRO_ULT_BROAD_CAST_CHAT = "1.000"
+    const val PM_SPECIAL_RELEASE = 5
+    const val PM_PRO_ADV_SPECIAL_RELEASE = 10
+    const val PM_PRO_EXP_SPECIAL_RELEASE = 15
+    const val PM_PRO_ULT_SPECIAL_RELEASE = 20
+    const val PM_PRODUCT_BUNDLING = 5
+    const val PM_PRO_ADV_PRODUCT_BUNDLING = 10
+    const val PM_PRO_EXP_PRODUCT_BUNDLING = 15
+    const val PM_PRO_ULT_PRODUCT_BUNDLING = 25
+    const val PM_FREE_DELIVERY = "2,25%"
+    const val PM_PRO_FREE_DELIVERY = "1,5%"
+
+
     const val POWER_MERCHANT = "Power Merchant"
     const val PM_PRO_ADVANCED = "Advanced"
     const val PM_PRO_EXPERT = "Expert"

@@ -10,14 +10,17 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
+import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationBenefitHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -32,14 +35,9 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
     companion object {
-        private const val KEY_PM_TIER_TYPE = "key_pm_tier_type"
 
-        fun createInstance(pmTireType: Int): PMRegistrationFragment {
-            return PMRegistrationFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(KEY_PM_TIER_TYPE, pmTireType)
-                }
-            }
+        fun createInstance(): PMRegistrationFragment {
+            return PMRegistrationFragment()
         }
     }
 
@@ -49,7 +47,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initPmTire()
         observePmRegistrationPage()
     }
 
@@ -88,12 +85,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                 recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
             }
         }
-    }
-
-    private fun initPmTire() {
-        val defaultTire = PMConstant.PMTierType.POWER_MERCHANT
-        currentPmRegistrationTireType = arguments?.getInt(KEY_PM_TIER_TYPE, defaultTire)
-            ?: defaultTire
     }
 
     private fun getPMProNewSellerHeaderWidget(): WidgetPMProNewSellerHeaderUiModel {
@@ -160,10 +151,15 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {
+        val shopInfo = pmBasicInfo?.shopInfo
         return WidgetGradeBenefitUiModel(
-            selectedPmTireType = currentPmRegistrationTireType,
-            benefitPages = pmGradeBenefitList.orEmpty(),
-            ctaAppLink = Constant.Url.POWER_MERCHANT_EDU
+            currentShopLevel = shopInfo?.shopLevel.orZero(),
+            currentCompletedOrder = shopInfo?.itemSoldOneMonth.orZero(),
+            currentIncome = shopInfo?.netItemValueOneMonth.orZero(),
+            benefitPages = PMRegistrationBenefitHelper.getPMBenefitList(requireContext(), shopInfo),
+            ctaAppLink = Constant.Url.POWER_MERCHANT_EDU,
+            isEligiblePm = shopInfo?.isEligiblePm.orFalse(),
+            isEligiblePmPro = shopInfo?.isEligiblePmPro.orFalse()
         )
     }
 

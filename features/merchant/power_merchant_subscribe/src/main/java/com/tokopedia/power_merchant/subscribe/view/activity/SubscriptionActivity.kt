@@ -84,8 +84,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private var pmActiveStatePage: PowerMerchantSubscriptionFragment? = null
     private val pmRegistrationPage: PMRegistrationFragment by lazy {
-        val rpmTire = PMConstant.PMTierType.POWER_MERCHANT
-        PMRegistrationFragment.createInstance(rpmTire)
+        PMRegistrationFragment.createInstance()
     }
 
     private val viewPagerAdapter by lazy {

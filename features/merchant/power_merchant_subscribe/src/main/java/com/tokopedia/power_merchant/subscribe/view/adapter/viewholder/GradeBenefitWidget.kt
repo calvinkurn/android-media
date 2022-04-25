@@ -109,7 +109,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             val mLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean = false
             }
-            val pagerAdapter = GradeBenefitPagerAdapter(element.benefitPages)
+            val pagerAdapter = GradeBenefitPagerAdapter(element)
             layoutManager = mLayoutManager
             adapter = pagerAdapter
 
