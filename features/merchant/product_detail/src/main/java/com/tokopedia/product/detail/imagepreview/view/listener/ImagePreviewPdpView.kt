@@ -1,5 +1,8 @@
 package com.tokopedia.product.detail.imagepreview.view.listener
 
+import android.content.Context
+import com.tokopedia.shop.common.data.source.cloud.model.followshop.Toaster
+
 interface ImagePreviewPdpView {
     fun showLoading()
     fun hideLoading()
@@ -8,7 +11,7 @@ interface ImagePreviewPdpView {
 
     fun addWishlist()
     fun removeWishlist()
-    fun addWishlistV2()
+    fun addWishlistV2(context: Context)
     fun removeWishlistV2()
 
     fun onSuccessAddWishlist()

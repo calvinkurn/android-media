@@ -90,19 +90,12 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.ProductCartHelper
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_ACTIVATE_GOPAY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.RQUEST_CODE_UPDATE_FINTECH_WIDGET
-import com.tokopedia.product.detail.common.ProductTrackingConstant
-import com.tokopedia.product.detail.common.SingleClick
-import com.tokopedia.product.detail.common.VariantConstant
-import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -119,8 +112,6 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.showToasterError
-import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
@@ -224,6 +215,8 @@ import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -231,6 +224,8 @@ import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.util.Locale
@@ -2815,25 +2810,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
                 recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
 
-                val msg: String
-                val ctaText: String
-                val cta: () -> Unit
-
-                if (wishlistResult.isAddWishlist) {
-                    msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-                    cta = { goToWishlist() }
-                } else {
-                    msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-                    cta = {}
-                }
-
-                view?.showToasterSuccess(
-                        message = msg,
-                        ctaText = ctaText,
-                        ctaListener = cta
-                )
+                showToasterWishlist(wishlistResult)
             } else {
                 view?.showToasterError(
                         if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
@@ -2844,6 +2821,53 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
 
         recomWishlistItem = null
+    }
+
+    private fun showToasterWishlist(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (wishlistResult.isAddWishlist) {
+            if (wishlistResult.isUsingWishlistV2) {
+                var messageV2 = ""
+                if (wishlistResult.messageV2.isEmpty()) {
+                    if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                    else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                } else {
+                    messageV2 = wishlistResult.messageV2
+                }
+
+                var ctaTextV2 = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                var typeToasterV2 = TYPE_NORMAL
+                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
+                    typeToasterV2 = TYPE_ERROR
+                    ctaTextV2 = ""
+                }
+
+                if (ctaTextV2.isEmpty()) {
+                    view?.showToaster(message = messageV2, typeToaster = typeToasterV2)
+                } else {
+                    view?.showToaster(message = messageV2, typeToaster = typeToasterV2, ctaText = ctaTextV2, ctaListener = { goToWishlist() })
+                }
+            } else {
+                val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                val cta = { goToWishlist() }
+
+                view?.showToasterSuccess(
+                    message = msg,
+                    ctaText = ctaText,
+                    ctaListener = cta
+                )
+            }
+        } else {
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+            val cta = {}
+
+            view?.showToasterSuccess(
+                message = msg,
+                ctaText = ctaText,
+                ctaListener = cta
+            )
+        }
     }
 
     private fun trackProductView(isElligible: Boolean, boType: Int) {

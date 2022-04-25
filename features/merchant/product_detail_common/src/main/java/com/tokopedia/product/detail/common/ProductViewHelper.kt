@@ -69,3 +69,28 @@ fun View?.showToasterSuccess(message: String,
         }
     }
 }
+
+fun View?.showToaster(message: String,
+                      @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
+                      ctaMaxWidth: Int? = null,
+                      ctaText: String = "",
+                      ctaListener: (() -> Unit?)? = null,
+                      typeToaster: Int) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        ctaMaxWidth?.let {
+            Toaster.toasterCustomCtaWidth = ctaMaxWidth
+        }
+
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        if (ctaText.isNotEmpty()) {
+            Toaster.build(it, message, Snackbar.LENGTH_SHORT, typeToaster, ctaText, clickListener = {
+                ctaListener?.invoke()
+            }).show()
+        } else {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, typeToaster, clickListener = {
+                ctaListener?.invoke()
+            }).show()
+        }
+    }
+}

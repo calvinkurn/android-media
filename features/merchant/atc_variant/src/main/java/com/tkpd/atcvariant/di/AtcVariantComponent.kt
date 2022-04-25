@@ -51,9 +51,4 @@ class AtcVariantModule {
     @Provides
     fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase =
         AddWishListUseCase(context)
-
-    @AtcVariantScope
-    @Provides
-    fun provideAddToWishListV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase =
-            AddToWishlistV2UseCase(graphqlRepository)
 }

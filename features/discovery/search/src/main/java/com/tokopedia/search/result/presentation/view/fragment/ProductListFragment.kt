@@ -1701,7 +1701,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 var typeToaster = TYPE_NORMAL
                 if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
                     typeToaster = TYPE_ERROR
-                    ctaText
+                    ctaText = ""
                 }
 
                 if (ctaText.isEmpty()) {

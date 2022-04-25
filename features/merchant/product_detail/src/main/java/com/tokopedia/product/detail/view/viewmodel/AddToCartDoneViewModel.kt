@@ -26,6 +26,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -100,10 +101,12 @@ class AddToCartDoneViewModel @Inject constructor(
             })
     }
 
-    fun addWishListV2(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+    fun addWishListV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(onSuccess = { callback.invoke(true, null) },
-            onError = { callback.invoke(false, it) })
+        addToWishlistV2UseCase.execute(onSuccess = { result ->
+            if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+        },
+            onError = { wishlistV2ActionListener.onErrorAddWishList(it, productId) })
     }
 
     fun removeWishList(productId: String, callback: (Boolean, Throwable?) -> Unit) {

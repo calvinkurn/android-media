@@ -65,10 +65,15 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
@@ -410,7 +415,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeWishlist() {
-        viewModel.addWishlistResult.observe(viewLifecycleOwner, {
+        viewModel.addWishlistResult.observe(viewLifecycleOwner) {
             if (it is Success) {
                 if (it.data) {
                     //success add wishlist
@@ -425,7 +430,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 showToasterError(getErrorMessage(it.throwable))
                 logException(it.throwable)
             }
-        })
+        }
     }
 
     private fun showToasterError(message: String, ctaBtn: String = "", ctaListener: () -> Unit = {}) {
@@ -756,10 +761,50 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ProductTrackingCommon.onRemindMeClicked(productId, pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 context?.let {
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) viewModel.addWishlistV2(productId, userSessionInterface.userId)
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                        viewModel.addWishlistV2(productId, userSessionInterface.userId, object : WishlistV2ActionListener{
+                            override fun onErrorAddWishList(
+                                throwable: Throwable,
+                                productId: String
+                            ) {
+                                view.showToasterError(getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
+                            }
+
+                            override fun onSuccessAddWishlist(
+                                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                                productId: String
+                            ) {
+                                var msg = ""
+                                if (result.message.isEmpty()) {
+                                    if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                                    else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                                } else {
+                                    msg = result.message
+                                }
+
+                                var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                                var typeToaster = TYPE_NORMAL
+                                if (result.toasterColor == TOASTER_RED || !result.success) {
+                                    typeToaster = TYPE_ERROR
+                                    ctaText = ""
+                                }
+
+                                view?.let { v ->
+                                    if (ctaText.isEmpty()) {
+                                        view.showToaster(message = msg, typeToaster = typeToaster)
+                                    } else {
+                                        view.showToaster(message = msg, typeToaster = typeToaster,
+                                            ctaText = ctaText, ctaListener = { goToWishlist() })
+                                    }
+                                }
+                            }
+
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                            override fun onSuccessRemoveWishlist(productId: String) {}
+                        })
+                    }
                     else viewModel.addWishlist(productId, userSessionInterface.userId)
                 }
-                viewModel.addWishlist(productId, userSessionInterface.userId)
                 return@let
             }
 

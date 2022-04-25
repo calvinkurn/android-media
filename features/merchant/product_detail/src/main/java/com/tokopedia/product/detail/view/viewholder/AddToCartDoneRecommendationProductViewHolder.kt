@@ -14,6 +14,7 @@ import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 
 class AddToCartDoneRecommendationProductViewHolder(
         itemView: View,
@@ -56,10 +57,19 @@ class AddToCartDoneRecommendationProductViewHolder(
                         element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
                         setButtonWishlistImage(element.recommendationItem.isWishlist)
                         if (element.recommendationItem.isWishlist) {
-                            showSuccessAddWishlist(
+                            var isUsingV2 = false
+                            context?.let {
+                                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
+                            }
+
+                            if (isUsingV2) {
+                                showSuccessAddWishlistV2()
+                            } else {
+                                showSuccessAddWishlist(
                                     itemView,
                                     getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                            )
+                                )
+                            }
                         } else {
                             showSuccessRemoveWishlist(
                                     itemView,
@@ -75,6 +85,12 @@ class AddToCartDoneRecommendationProductViewHolder(
     }
 
     private fun showSuccessAddWishlist(view: View, message: String){
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }.show()
+    }
+
+    private fun showSuccessAddWishlistV2(view: View, message: String){
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }.show()

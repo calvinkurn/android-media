@@ -45,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -376,15 +377,17 @@ class AtcVariantViewModel @Inject constructor(
             })
     }
 
-    fun addWishlistV2(productId: String, userId: String) {
+    fun addWishlistV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                updateActivityResult(shouldRefreshPreviousPage = true)
-                updateButtonAndWishlistLocally(productId)
-                _addWishlistResult.postValue(true.asSuccess())},
+            onSuccess = { result ->
+                if (result is Success) {
+                    updateActivityResult(shouldRefreshPreviousPage = true)
+                    updateButtonAndWishlistLocally(productId)
+                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } },
             onError = {
-                _addWishlistResult.postValue(it.asFail())
+                wishlistV2ActionListener.onErrorAddWishList(it, productId)
             })
     }
 
@@ -641,5 +644,10 @@ class AtcVariantViewModel @Inject constructor(
         )
 
         _variantImagesData.postValue(productDetailGalleryData)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addToWishlistV2UseCase.cancelJobs()
     }
 }

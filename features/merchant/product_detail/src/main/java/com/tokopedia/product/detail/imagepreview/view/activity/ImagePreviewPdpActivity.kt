@@ -25,8 +25,14 @@ import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPdpVi
 import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import org.xml.sax.ErrorHandler
 import java.util.*
 import javax.inject.Inject
 
@@ -119,7 +125,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                     if (isWishlistUsingV2) removeWishlistV2()
                     else removeWishlist()
                 } else {
-                    if (isWishlistUsingV2) addWishlistV2()
+                    if (isWishlistUsingV2) addWishlistV2(this)
                     else addWishlist()
                 }
             } else {
@@ -192,21 +198,48 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         )
     }
 
-    override fun addWishlistV2() {
+    override fun addWishlistV2(context: Context) {
         showLoading()
         viewModel.addWishListV2(
                 productId,
-                onSuccessAddWishlist = {
-                    hideLoading()
-                    onSuccessAddWishlist()
-                    updateView()
-                    imagePreviewTracking.onSuccessAdd()
-                },
-                onErrorAddWishList = {
-                    hideLoading()
-                    it?.let {
-                        onErrorAddWishlist(it)
+                object : WishlistV2ActionListener {
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                        Toaster.build(rootView, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                     }
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
+                        var msg = ""
+                        if (result.message.isEmpty()) {
+                            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                        } else {
+                            msg = result.message
+                        }
+
+                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                        var typeToaster = TYPE_NORMAL
+                        if (result.toasterColor == TOASTER_RED || !result.success) {
+                            typeToaster = TYPE_ERROR
+                            ctaText = ""
+                        }
+
+                        if (ctaText.isEmpty()) {
+                            Toaster.build(rootView, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+                        } else {
+                            Toaster.build(rootView, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                                RouteManager.route(context, ApplinkConst.NEW_WISHLIST) }.show()
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+
+                    override fun onSuccessRemoveWishlist(productId: String) {}
                 }
         )
     }
