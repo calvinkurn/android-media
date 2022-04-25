@@ -274,6 +274,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             minBid = it.minBid
             maxBid = it.maxBid
         }
+        observeBidSettings()
         checkForbidValidity(getCurrentBid())
         checkForRekommendedBid(getCurrentRekommendedBid())
     }
@@ -705,12 +706,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun registerObservers() {
-        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
-            groupId = it
-            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
-        })
-
+    private fun observeBidSettings() {
         sharedViewModel.getBidSettings().observe(viewLifecycleOwner, { list ->
             list.forEach {
                 when {
@@ -731,6 +727,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
             updateTextFields()
+        })
+    }
+
+    private fun registerObservers() {
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
+            groupId = it
+            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
     }
 
