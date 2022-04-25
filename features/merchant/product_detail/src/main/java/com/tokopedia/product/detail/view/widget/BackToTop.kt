@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
 class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet) {
 
@@ -22,7 +21,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     private val view = binding.root
 
     private var recyclerView: RecyclerView? = null
-    private var listener: DynamicProductDetailListener? = null
+    private var listener: NavigationListener? = null
 
     private val smoothScroller = SmoothScroller(context)
     private val onScrollListener = OnScrollListener()
@@ -35,13 +34,13 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         addView(view)
         view.setOnClickListener {
             if (!enableClick) return@setOnClickListener
-            listener?.onClickProductDetailnavigation(BUTTON_POSITION, BUTTON_LABEL)
+            listener?.onClickBackToTop(BUTTON_POSITION, BUTTON_LABEL)
             smoothScrollToTop()
             enableClick = false
         }
     }
 
-    fun start(recyclerView: RecyclerView, listener: DynamicProductDetailListener) {
+    fun start(recyclerView: RecyclerView, listener: NavigationListener) {
         recyclerView.removeOnScrollListener(onScrollListener)
 
         this.listener = listener
@@ -54,6 +53,10 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         toggle(false)
     }
 
+    fun onClickTab() {
+        enableClick = true
+    }
+
     private fun toggle(show: Boolean) {
 
         if (isVisibile == show) return
@@ -64,7 +67,7 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         isVisibile = show
 
         if (!impressNavigation && show) {
-            listener?.onImpressBackToTop(BUTTON_LABEL)
+            listener?.onImpressionBackToTop(BUTTON_LABEL)
             impressNavigation = true
         }
     }

@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,14 +25,14 @@ class NavigationTab(
     context: Context, attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), CoroutineScope {
 
-    private val binding = WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context))
+    private val binding = WidgetNavigationTabBinding.inflate(LayoutInflater.from(context))
     private val view = binding.root
     private val pdpNavTab = binding.pdpNavTab
     private val tabLayout = pdpNavTab.tabLayout
 
     private var recyclerView: RecyclerView? = null
     private var items: List<Item> = emptyList()
-    private var listener: DynamicProductDetailListener? = null
+    private var listener: NavigationListener? = null
 
     private val smoothScroller = SmoothScroller(context)
     private val onTabSelectedListener = OnTabSelected()
@@ -57,7 +56,7 @@ class NavigationTab(
     fun start(
         recyclerView: RecyclerView,
         items: List<Item>,
-        listener: DynamicProductDetailListener
+        listener: NavigationListener
     ) {
         recyclerView.removeOnScrollListener(onScrollListener)
         recyclerView.removeOnScrollListener(onContentScrollListener)
@@ -111,7 +110,7 @@ class NavigationTab(
         if (show) {
             view.show()
             if (!impressNavigation) {
-                listener?.onImpressProductDetailNavigation(
+                listener?.onImpressionNavigationTab(
                     items.map { it.label }
                 )
                 impressNavigation = true
@@ -217,7 +216,7 @@ class NavigationTab(
 
         private fun trackOnClickTab(position: Int) {
             val label = items.getOrNull(position)?.label ?: ""
-            listener?.onClickProductDetailnavigation(position, label)
+            listener?.onClickNavigationTab(position, label)
         }
     }
 

@@ -25,7 +25,8 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 05/01/21
  */
-abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
+abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> :
+    BaseDaggerFragment() {
 
     var productAdapter: ProductDetailAdapter? = null
     var productDaggerComponent: ProductDetailComponent? = null
@@ -52,13 +53,22 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -85,7 +95,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
             productAdapter?.submitList(visitables)
-            binding?.pdpNavigationTab?.updateItemPosition()
+            binding?.pdpNavigation?.updateItemPosition()
         }
     }
 
@@ -133,7 +143,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             getRecyclerView()?.post {
                 try {
                     getRecyclerView()?.smoothScrollToPosition(position)
-                } catch (_: Throwable) { }
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -159,7 +170,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     private fun setupRecyclerView(view: View) {
         rvPdp = view.findViewById(R.id.rv_pdp)
         rvPdp?.isNestedScrollingEnabled = false
-        rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        rvPdp?.layoutManager =
+            CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
         showLoading()
 

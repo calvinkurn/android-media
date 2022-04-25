@@ -2326,16 +2326,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
         }
 
-        val navigationTab = binding?.pdpNavigationTab
-        val backToTop = binding?.pdpBackToTop
+        val navigation = binding?.pdpNavigation
         getRecyclerView()?.let { recyclerView ->
-            if (items.isEmpty()) {
-                navigationTab?.stop(recyclerView)
-                backToTop?.stop(recyclerView)
-            } else {
-                navigationTab?.start(recyclerView, items, this)
-                backToTop?.start(recyclerView, this)
-            }
+            if (items.isEmpty()) navigation?.stop(recyclerView)
+            else navigation?.start(recyclerView, items, this)
         }
     }
 
