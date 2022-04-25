@@ -106,7 +106,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
             dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
-            (activity as LoaderUiListener).showProgressDialog()
+            activity?.let {
+                (it as LoaderUiListener).showProgressDialog()
+            }
             ovoP2PTransactionThankYouVM.makeThankyouDataCall(dataMap)
 
         }
@@ -119,6 +121,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     private fun createAndSubscribeToThankYouVM() =
         ovoP2PTransactionThankYouVM.transferThankyouLiveData.observe(
             viewLifecycleOwner){
+            hideLoader()
             when(it)
             {
                 is ThankYouErrPage ->  gotoErrorPage(it.errMsg)
@@ -130,13 +133,14 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun hideLoader()
     {
-        ( activity as LoaderUiListener).hideProgressDialog()
+        activity?.let {
+            (it as LoaderUiListener).hideProgressDialog()
+        }
     }
 
 
 
     private fun gotoErrorPage(errMsg: String) {
-        hideLoader()
         var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
@@ -145,11 +149,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun updateHeader() {
-        (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
+        activity?.let {
+            (it as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
+        }
     }
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
-        hideLoader()
         thankYouDataCntnr = thankYouData
         date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate
         val rpFormattedString = thankYouData.ovoP2pTransferThankyou?.amt?.toDouble()
@@ -215,7 +220,6 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun showErrorSnackBar(errMsg: String) {
-        hideLoader()
         activity?.let {
             errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
             errorSnackbar.show()
