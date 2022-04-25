@@ -65,4 +65,6 @@ interface CatalogDetailListener {
 
     fun setLastDetachedItemPosition(adapterPosition: Int) {}
 
+    fun setLastAttachItemPosition(adapterPosition: Int) {}
+
 }

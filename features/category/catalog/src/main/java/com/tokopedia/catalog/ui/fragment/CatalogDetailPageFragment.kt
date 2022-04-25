@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,9 +131,10 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     var isBottomSheetOpen = false
-    private var lastVisibleItemPosition: Int = 0
     private var userPressedLastTopPosition : Int  = 0
     private var lastDetachedItemPosition : Int = 0
+    private var lastAttachItemPosition : Int = 0
+    private var isScrollDownButtonClicked = false
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -214,10 +216,8 @@ class CatalogDetailPageFragment : Fragment(),
         view.findViewById<LinearLayout>(R.id.toBottomLayout).apply {
             visibility = View.VISIBLE
             setOnClickListener {
-                userPressedLastTopPosition = if(lastVisibleItemPosition != RecyclerView.NO_POSITION)
-                    (lastVisibleItemPosition)
-                else
-                    lastDetachedItemPosition
+                isScrollDownButtonClicked = true
+                userPressedLastTopPosition = (lastDetachedItemPosition + lastAttachItemPosition)/2
                 scrollToBottom()
                 visibility = View.GONE
                 view.findViewById<ImageView>(R.id.toTopImg).visibility = View.VISIBLE
@@ -235,9 +235,6 @@ class CatalogDetailPageFragment : Fragment(),
     private val animationHandler = Handler(Looper.getMainLooper())
 
     private val scrollToTopPositionRunnable = Runnable {
-        if(userPressedLastTopPosition == RecyclerView.NO_POSITION){
-            userPressedLastTopPosition = lastDetachedItemPosition
-        }
         (catalogPageRecyclerView?.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(userPressedLastTopPosition, -OFFSET_FOR_PRODUCT_SECTION_SNAP)
         animationHandler.postDelayed(smoothScrollToTopPositionRunnable,MILLI_SECONDS_FOR_UI_THREAD)
     }
@@ -245,6 +242,7 @@ class CatalogDetailPageFragment : Fragment(),
     private val smoothScrollToTopPositionRunnable = Runnable {
         smoothScrollerToTop?.targetPosition = userPressedLastTopPosition
         catalogPageRecyclerView?.layoutManager?.startSmoothScroll(smoothScrollerToTop)
+        isScrollDownButtonClicked = false
     }
 
     private fun scrollToTop() {
@@ -446,12 +444,6 @@ class CatalogDetailPageFragment : Fragment(),
                 addItemDecoration(DividerItemDecorator(it))
             }
             adapter = catalogDetailAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                }
-            })
         }
     }
 
@@ -760,7 +752,16 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun setLastDetachedItemPosition(adapterPosition: Int) {
         super.setLastDetachedItemPosition(adapterPosition)
-        lastDetachedItemPosition = adapterPosition
+        if(!isScrollDownButtonClicked){
+            lastDetachedItemPosition = adapterPosition
+        }
+    }
+
+    override fun setLastAttachItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        if(!isScrollDownButtonClicked){
+            lastAttachItemPosition = adapterPosition
+        }
     }
 
     override fun onPause() {
