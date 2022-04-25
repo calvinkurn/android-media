@@ -250,10 +250,11 @@ class SelectProductFragment : BaseDaggerFragment() {
 
         viewModel.setRemainingQuota(remainingQuota)
 
-        loadFirstPage()
         if (remainingQuota == ZERO) {
             showNoMoreRemainingQuota()
+            viewModel.setDisableProductSelection(true)
         }
+        loadFirstPage()
     }
 
     private fun handleProducts(data: List<ReservableProduct>) {
@@ -409,8 +410,8 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private fun clearSearchBar() {
         val selectedProductCount = viewModel.getSelectedProducts().size
-        val remainingQuota = viewModel.getRemainingQuota()
-        val shouldDisableSelection = selectedProductCount >= remainingQuota
+        val remainingSelection = getRemainingProductSelection()
+        val shouldDisableSelection = (selectedProductCount >= MAX_PRODUCT_SELECTION) || remainingSelection <= ZERO
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
         clearPreviousData()
