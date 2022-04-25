@@ -1,8 +1,8 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.usecase.coroutines.Fail

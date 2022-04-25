@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.query
+package com.tokopedia.shopadmin.common.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.usecase.RequestParams
@@ -10,8 +10,8 @@ object GetAdminTypeQuery : GqlQueryInterface {
     private const val SOURCE = "admin-type-android"
 
     private val GQL_QUERY = """
-        query ${OPERATION_NAME}(${'$'}source: String!) {
-            ${OPERATION_NAME}(source: ${'$'}source) {
+        query $OPERATION_NAME(${'$'}source: String!) {
+            $OPERATION_NAME(source: ${'$'}source) {
                 admin_data {
                   	detail_information {
                       admin_role_type {

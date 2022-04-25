@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel
+package com.tokopedia.shopadmin.common.presentation.uimodel
 
 data class AdminTypeUiModel(
     val status: String,

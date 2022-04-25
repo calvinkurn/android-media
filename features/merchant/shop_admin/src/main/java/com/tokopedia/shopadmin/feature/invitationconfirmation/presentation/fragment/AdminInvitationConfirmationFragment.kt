@@ -42,9 +42,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     @Inject

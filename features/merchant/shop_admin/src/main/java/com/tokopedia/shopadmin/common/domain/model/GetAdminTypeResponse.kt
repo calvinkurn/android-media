@@ -1,4 +1,4 @@
-package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model
+package com.tokopedia.shopadmin.common.domain.model
 
 
 import com.google.gson.annotations.Expose

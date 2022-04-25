@@ -1,12 +1,9 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.mapper
 
-import com.tokopedia.shopadmin.common.constants.AdminStatus
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.AdminConfirmationRegResponse
-import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAdminTypeResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetShopAdminInfoResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.ValidateAdminEmailResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import javax.inject.Inject
@@ -33,18 +30,6 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
             isSuccess = adminConfirmationRegResponse.success,
             message = adminConfirmationRegResponse.message,
             acceptBecomeAdmin = adminConfirmationRegResponse.acceptBecomeAdmin
-        )
-    }
-
-    fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminTypeResponse): AdminTypeUiModel {
-        val adminType = adminInfoResponse.getAdminType
-        val adminRoleType = adminType.adminData.detailInformation.adminRoleType
-//        return AdminTypeUiModel(adminType.adminData.status, adminType.shopID)
-        return AdminTypeUiModel(
-            AdminStatus.WAITING_CONFIRMATION,
-            adminType.shopID,
-            adminRoleType.isShopAdmin,
-            adminRoleType.isShopOwner
         )
     }
 }

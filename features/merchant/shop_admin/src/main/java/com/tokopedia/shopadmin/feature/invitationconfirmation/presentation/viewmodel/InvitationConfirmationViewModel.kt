@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.shopadmin.common.domain.usecase.GetAdminTypeUseCaseCase
+import com.tokopedia.shopadmin.common.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.InvitationConfirmationParam
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.AdminConfirmationRegUseCase
-import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetAdminTypeUseCaseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.GetShopAdminInfoUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.usecase.ValidateAdminEmailUseCase
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminConfirmationRegUiModel
-import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.AdminTypeUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ShopAdminInfoUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.ValidateAdminEmailUiModel
 import com.tokopedia.usecase.coroutines.Fail
