@@ -295,8 +295,12 @@ class SelectProductFragment : BaseDaggerFragment() {
             productAdapter.update(selectedProduct, updatedProduct)
 
 
-            val remainingQuota = viewModel.getRemainingQuota()
-            val shouldDisableSelection = selectedProductCount >= remainingQuota
+            val remainingSelection = getRemainingProductSelection()
+            if (remainingSelection < ZERO) {
+                showNoMoreRemainingQuota()
+            }
+
+            val shouldDisableSelection = (selectedProductCount >= MAX_PRODUCT_SELECTION) || remainingSelection <= ZERO
             viewModel.setDisableProductSelection(shouldDisableSelection)
 
             val items = productAdapter.getItems()
@@ -306,11 +310,7 @@ class SelectProductFragment : BaseDaggerFragment() {
                 enableProductSelection(items)
             }
 
-            val remainingSelection =
-                viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
-            if (remainingSelection < ZERO) {
-                showNoMoreRemainingQuota()
-            }
+
 
             binding?.btnManage?.text =
                 String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
@@ -332,8 +332,8 @@ class SelectProductFragment : BaseDaggerFragment() {
         disableReason: String
     ) {
         val selectedProductCount = viewModel.getSelectedProducts().size
-        val reachedMaxAllowedSelection = selectedProductCount == MAX_PRODUCT_SELECTION
-        val remainingAllowedSelection = viewModel.getRemainingQuota() - selectedProductCount
+        val reachedMaxAllowedSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
+        val remainingAllowedSelection = getRemainingProductSelection()
         when {
             remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
             reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
@@ -517,4 +517,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         endlessRecyclerViewScrollListener?.resetState()
     }
 
+    private fun getRemainingProductSelection() : Int {
+        return viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+    }
 }
