@@ -94,6 +94,21 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
+    private fun updateProductStatus(inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel>) {
+        val isAllProductDeactivated = inputLayoutModelMap.all { !it.value.isActive }
+        productInputModel.getValueOrDefault().detailInputModel.status = if (isAllProductDeactivated) {
+            ProductStatus.STATUS_INACTIVE
+        } else {
+            ProductStatus.STATUS_ACTIVE
+        }
+    }
+
+    private fun updateProductParentStock() {
+        productInputModel.getValueOrDefault().let {
+            it.shipmentInputModel.weight = it.variantInputModel.getPrimaryVariantData().weight.orZero()
+        }
+    }
+
     fun getInputFieldSize(): Int {
         return inputFieldSize
     }
@@ -197,15 +212,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
 
         updateProductStatus(inputLayoutModelMap)
-    }
-
-    private fun updateProductStatus(inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel>) {
-        val isAllProductDeactivated = inputLayoutModelMap.all { !it.value.isActive }
-        productInputModel.getValueOrDefault().detailInputModel.status = if (isAllProductDeactivated) {
-            ProductStatus.STATUS_INACTIVE
-        } else {
-            ProductStatus.STATUS_ACTIVE
-        }
+        updateProductParentStock()
     }
 
     fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {

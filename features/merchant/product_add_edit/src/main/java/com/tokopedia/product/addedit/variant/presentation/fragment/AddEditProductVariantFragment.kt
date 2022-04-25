@@ -346,8 +346,6 @@ class AddEditProductVariantFragment :
         viewModel.updateSelectedVariantUnitMap(layoutPosition, Unit())
         // update layout - selected unit values map
         viewModel.updateSelectedVariantUnitValuesMap(layoutPosition, mutableListOf())
-        // clear old variant price/ stock
-        viewModel.clearProductVariant()
         // remove viewmodel's variant details
         viewModel.removeSelectedVariantDetails(variantDetail)
         // remove all photo adapter data
@@ -1279,10 +1277,8 @@ class AddEditProductVariantFragment :
     private fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
-            val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID)
-                    ?: ""
+            val cacheManagerId = arguments?.getString(EXTRA_CACHE_MANAGER_ID).orEmpty()
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
-
             val intent = Intent().putExtra(EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()

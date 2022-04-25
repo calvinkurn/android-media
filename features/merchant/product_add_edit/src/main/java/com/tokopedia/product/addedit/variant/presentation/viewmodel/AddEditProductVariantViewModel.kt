@@ -367,11 +367,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         mIsVariantSizechartVisible.value = isSizeUnit && isVariantValueNotEmpty
     }
 
-    fun clearProductVariant() {
-        productInputModel.value?.variantInputModel?.products = emptyList()
-        productInputModel.value?.variantInputModel?.selections = emptyList()
-    }
-
     fun getSelectedVariantUnit(layoutPosition: Int): Unit {
         val selectedVariantUnit = selectedVariantUnitMap.getOrElse(layoutPosition) { Unit() }
         return if (selectedVariantUnit.unitName.isNotBlank()) {
@@ -641,8 +636,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             it.variantID == variantDetail.variantID && it.name == variantDetail.name
         }
 
-        // update isRemovingVariant value based on selectedVariantDetails elements
-        mIsRemovingVariant.value = this.selectedVariantDetails.isEmpty()
+        // reset to non variant product state if there is nothing selected
         if (selectedVariantDetails.isEmpty()) {
             removeVariant()
         }
