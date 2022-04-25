@@ -570,7 +570,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
             textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
-            textFieldNotes.setPlaceholder(element.placeholderNote)
+            textFieldNotes.setPlaceholder(Utils.getHtmlFormat(element.placeholderNote))
             textFieldNotes.context?.let {
                 textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {

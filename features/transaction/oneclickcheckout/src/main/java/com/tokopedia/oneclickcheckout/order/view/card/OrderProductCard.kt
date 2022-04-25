@@ -240,7 +240,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tfNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             tfNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
-            tfNote.setPlaceholder(product.placeholderNote)
+            tfNote.setPlaceholder(Utils.getHtmlFormat(product.placeholderNote))
             tfNote.setCounter(product.maxCharNote)
             if (noteTextWatcher != null) {
                 tfNote.editText.removeTextChangedListener(noteTextWatcher)
