@@ -23,6 +23,7 @@ import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
@@ -47,11 +48,12 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
+class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
+        private const val BUNDLE_KEY_PRODUCT_COUNT = "product_count"
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
@@ -63,12 +65,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         fun newInstance(
             discountStatusName : String,
             discountStatusId: Int,
+            productCount : Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
         ): ProductListFragment {
             val fragment = ProductListFragment()
             fragment.arguments = Bundle().apply {
                 putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
+                putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             }
             fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
@@ -82,6 +86,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private val discountStatusId by lazy {
         arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
+    }
+
+    private val productCount by lazy {
+        arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
     }
 
     private var binding by autoClearedNullable<FragmentProductListBinding>()
@@ -142,8 +150,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         setupMultiSelection()
         setupScrollListener()
         setupButton()
+        setupTabChangeListener()
     }
-
 
     private fun setupSearchBar() {
         binding?.run {
@@ -188,6 +196,15 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             }
             btnBulkDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
+    }
+
+    private fun setupTabChangeListener() {
+        val listener = object : ProductManageFragment.TabChangeListener{
+            override fun onTabChanged() {
+                handleEmptyState(productCount)
+            }
+        }
+        (parentFragment as? ProductManageFragment)?.setTabChangeListener(listener)
     }
 
     private fun observeProducts() {
@@ -257,12 +274,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun displayProducts(data: ProductData) {
-        handleEmptyState(data.totalProduct)
-
         if (data.totalProduct == ZERO) {
-            binding?.recyclerView?.gone()
-            binding?.tpgTotalProduct?.gone()
-            binding?.tpgMultiSelect?.gone()
+            handleEmptyState(data.totalProduct)
         } else {
             if (isFirstLoad) {
                 binding?.searchBar?.visible()
@@ -646,7 +659,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(title)
         binding?.emptyState?.setDescription(description)
-        binding?.emptyState?.requestLayout()
     }
 
     private fun hideEmptyState() {
@@ -676,5 +688,4 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             block()
         }
     }
-
 }

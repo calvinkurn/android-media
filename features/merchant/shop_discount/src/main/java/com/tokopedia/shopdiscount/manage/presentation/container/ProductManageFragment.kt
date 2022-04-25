@@ -65,6 +65,8 @@ class ProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
+    private var listener : TabChangeListener? = null
+
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
@@ -103,6 +105,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
+                    listener?.onTabChanged()
                 }
             })
         }
@@ -190,8 +193,12 @@ class ProductManageFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment =
-                ProductListFragment.newInstance(tab.name, tab.discountStatusId, onDiscountRemoved)
+            val fragment = ProductListFragment.newInstance(
+                tab.name,
+                tab.discountStatusId,
+                tab.count,
+                onDiscountRemoved
+            )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
             fragment.setOnSwipeRefresh { onSwipeRefreshed() }
@@ -261,5 +268,13 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val onSwipeRefreshed: () -> Unit = {
         viewModel.getSlashPriceProductsMeta()
+    }
+
+    fun setTabChangeListener(listener: TabChangeListener) {
+        this.listener = listener
+    }
+
+    interface TabChangeListener {
+        fun onTabChanged()
     }
 }
