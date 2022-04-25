@@ -237,7 +237,37 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
-        viewModel.updateProductInputModel(multipleVariantEditInputModel)
+        val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
+        headerList?.forEach {
+            if (it.isCollapsed) onHeaderClicked(it.position)
+        }
+
+        variantDetailFieldsAdapter?.list?.forEachIndexed { index, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let {
+                if (!multipleVariantEditInputModel.selection.contains(it.combination)) return@let
+
+                // assign new value if input price is not empty
+                if (multipleVariantEditInputModel.price.isNotEmpty()) {
+                    onPriceInputTextChanged(multipleVariantEditInputModel.price, index)
+                }
+                // assign new value if input stock is not empty
+                if (multipleVariantEditInputModel.stock.isNotEmpty()) {
+                    it.stock = multipleVariantEditInputModel.stock.toIntOrZero()
+                    onStockInputTextChanged(multipleVariantEditInputModel.stock, index)
+                }
+                // assign new value if input sku is not empty
+                if (multipleVariantEditInputModel.sku.isNotEmpty()) {
+                    onSkuInputTextChanged(multipleVariantEditInputModel.sku, index)
+                }
+                // assign new value if input weight is not empty
+                if (multipleVariantEditInputModel.weight.isNotEmpty()) {
+                    onWeightInputTextChanged(multipleVariantEditInputModel.weight, index)
+                }
+
+                onStatusSwitchChanged(true, index)
+            }
+            variantDetailFieldsAdapter?.notifyItemChanged(index)
+        }
     }
 
     override fun onMultipleEditInputValidatePrice(price: BigInteger): String {

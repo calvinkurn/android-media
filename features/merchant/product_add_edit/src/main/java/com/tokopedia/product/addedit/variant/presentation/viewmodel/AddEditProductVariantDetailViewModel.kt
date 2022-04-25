@@ -215,42 +215,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         updateProductParentStock()
     }
 
-    fun updateProductInputModel(inputModel: MultipleVariantEditInputModel) {
-        val variantDetailInputMap = mutableMapOf<List<Int>, Boolean>()
-        inputLayoutModelMap.forEach {
-            variantDetailInputMap[it.value.combination] = it.value.isActive
-        }
-
-        productInputModel.value = productInputModel.getValueOrDefault().also {
-            inputModel.selection.forEach { selectedCombination ->
-                // search product variant by comparing combination
-                val productVariant = it.variantInputModel.products
-                        .find { it.combination == selectedCombination }
-                // set value if found
-                productVariant?.apply {
-                    // assign new value if input price is not empty
-                    if (inputModel.price.isNotEmpty()) {
-                        price = inputModel.price.toBigIntegerOrNull().orZero()
-                    }
-                    // assign new value if input stock is not empty
-                    if (inputModel.stock.isNotEmpty()) {
-                        stock = inputModel.stock.toIntOrZero()
-                    }
-                    // assign new value if input sku is not empty
-                    if (inputModel.sku.isNotEmpty()) {
-                        sku = inputModel.sku
-                    }
-                    // assign new value if input weight is not empty
-                    if (inputModel.weight.isNotEmpty()) {
-                        weight = inputModel.weight.toIntOrZero()
-                    }
-
-                    status = if(variantDetailInputMap[selectedCombination] == true) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
-                }
-            }
-        }
-    }
-
     fun updatePrimaryVariant(combination: List<Int>): Int {
         var updatedPosition = -1 // -1 for not found
         val variantInputModels = productInputModel.getValueOrDefault().variantInputModel.products
