@@ -19,11 +19,25 @@ object CameraUtil {
         return "$mediaCount media"
     }
 
-    fun openCamera(fragment: Fragment, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long) {
+    fun openCamera(
+        fragment: Fragment,
+        applinkToNavigateAfterMediaCapture: String?,
+        videoMaxDuration:Long,
+        selectedFeedAccountId: String,
+        requestCode: Int = -1,
+    ) {
         if(fragment.context!=null){
-            fragment.startActivity(
-                CameraActivity.getIntent(fragment.requireContext(),
-                    applinkToNavigateAfterMediaCapture, videoMaxDuration))
+            val intent = CameraActivity.getIntent(
+                fragment.requireContext(),
+                applinkToNavigateAfterMediaCapture,
+                videoMaxDuration,
+                selectedFeedAccountId,
+            )
+
+            fragment.apply {
+                if(requestCode == -1) startActivity(intent)
+                else startActivityForResult(intent, requestCode)
+            }
         }
     }
 

@@ -12,4 +12,5 @@ object BundleData {
     val APPLINK_FOR_BACK_NAVIGATION = "link_back"
     val URIS = "ip_uris"
     val VIDEO_MAX_SECONDS = "v_max_s"
+    val SELECTED_FEED_ACCOUNT_ID = "selected_feed_account_id"
 }

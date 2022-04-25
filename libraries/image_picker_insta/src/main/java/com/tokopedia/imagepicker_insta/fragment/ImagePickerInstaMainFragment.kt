@@ -441,7 +441,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         CameraUtil.openCamera(
             this,
             (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture,
-            queryConfiguration.videoMaxDuration
+            queryConfiguration.videoMaxDuration,
+            viewModel.selectedFeedAccountId,
+            TAKE_PICT_REQUEST_CODE,
         )
     }
 
@@ -870,7 +872,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if((requestCode == CREATE_POST_REQUEST_CODE || requestCode == TAKE_PICT_REQUEST_CODE) &&
+            resultCode == Activity.RESULT_OK
+        ) {
             val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
             viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
         }
@@ -884,5 +888,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     companion object {
         private const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val CREATE_POST_REQUEST_CODE = 101
+        private const val TAKE_PICT_REQUEST_CODE = 102
     }
 }

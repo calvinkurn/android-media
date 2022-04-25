@@ -309,7 +309,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(feedAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-        selectedFeedAccount = mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: FeedAccountUiModel.Empty
+        selectedFeedAccount = if(mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
+        else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: mFeedAccountList.first()
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
