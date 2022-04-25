@@ -145,7 +145,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     fun updateCloseButtonState(enableCloseButton: Boolean) {
-        //TODO check close not working
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
@@ -182,13 +181,12 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         text: CharSequence,
         enableCloseButton: Boolean = false
     ) {
-        //TODO change source value to match the original
         val parentReply = ParentReply(
             attachmentId = referredMsg.attachmentId,
             attachmentType = referredMsg.attachmentType,
             senderId = referredMsg.fromUid ?: "",
             replyTime = referredMsg.replyTime ?: "",
-            mainText = text.toString(),
+            mainText = referredMsg.message,
             subText = "",
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,
@@ -198,14 +196,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         bindParentReplyData(parentReply, null,referredMsg.message,referredMsg.from)
         updateCloseButtonState(enableCloseButton)
         show()
-    }
-
-    fun getTitle() : String{
-        return title?.text.toString()
-    }
-
-    fun getMsg() : String{
-        return description?.text.toString()
     }
 
     companion object {

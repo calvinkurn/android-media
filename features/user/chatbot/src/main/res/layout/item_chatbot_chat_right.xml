@@ -38,7 +38,7 @@
         android:layout_height="72dp"
         android:id="@+id/reply"
         app:layout_constraintTop_toBottomOf="@id/dateContainer"
-        app:layout_constraintStart_toStartOf="@id/chat_layout_container"
+        app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/chatcommon_6dp"
         android:layout_marginRight="@dimen/unify_space_12"
@@ -56,6 +56,8 @@
         android:gravity="right"
         app:layout_constraintTop_toTopOf="@id/reply"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout

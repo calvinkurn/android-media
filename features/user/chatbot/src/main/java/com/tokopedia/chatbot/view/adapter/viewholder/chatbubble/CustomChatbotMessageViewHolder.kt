@@ -39,13 +39,8 @@ abstract class CustomChatbotMessageViewHolder(
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
 
-//        customChatLayout?.setOnClickListener {
-//            Log.d("FATAL", "bind: TESTS ")
-//
-//        }
         //TODO check for msg link
         customChatLayout?.message?.setOnClickListener {
-            Log.d("FATAL", "bind: TESTE TEST")
             replyBubbleListener.showReplyOption(message)
         }
     }

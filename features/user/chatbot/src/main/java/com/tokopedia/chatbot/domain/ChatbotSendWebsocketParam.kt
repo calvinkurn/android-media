@@ -99,7 +99,7 @@ object ChatbotSendWebsocketParam {
         val request = JsonObject()
         request.addProperty("sender_id",referredMsg.senderId.toLongOrZero())
         request.addProperty("reply_time",referredMsg.replyTime.toLongOrZero())
-        request.addProperty("main_text","ABBCD")
+        request.addProperty("main_text",referredMsg.mainText)
         return request
     }
 
