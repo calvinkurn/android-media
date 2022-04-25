@@ -1407,6 +1407,10 @@ class PlayViewModel @AssistedInject constructor(
             it.copy(interactive = quiz)
         }
 
+        if (quiz.status is InteractiveUiModel.Quiz.Status.Ongoing) {
+          repo.setActive(_interactive.value.interactive.id.toString())
+        }
+
         if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
             val channelId = mChannelData?.id ?: return
 
