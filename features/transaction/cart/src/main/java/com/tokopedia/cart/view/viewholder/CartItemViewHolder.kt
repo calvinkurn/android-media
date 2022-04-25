@@ -787,7 +787,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
         } else if (!data.isWishlisted && action.id == Action.ACTION_WISHLIST) {
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
-                actionListener?.onWishlistCheckChanged(data.productId, data.cartId, binding.iuImageProduct)
+                actionListener?.onWishlistCheckChanged(data.productId, data.cartId, binding.iuImageProduct, data.isError, data.errorType)
             }
         }
         textMoveToWishlist.show()

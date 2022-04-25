@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 class ProductDetailGalleryActivity : AppCompatActivity() {
 
     private var data: ProductDetailGallery? = null
-    private var trackingQueue:TrackingQueue? = null
+    private var trackingQueue: TrackingQueue? = null
 
     private var imageGallery: ImageGallery? = null
     private var closeButton: ImageUnify? = null
