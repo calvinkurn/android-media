@@ -48,6 +48,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.processProductTagSource(arguments?.getString(EXTRA_PRODUCT_TAG_LIST) ?: "")
         setupView()
     }
 

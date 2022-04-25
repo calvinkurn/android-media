@@ -92,4 +92,7 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
 
     <!-- Product Tag -->
     <string name="content_creation_product_tag_title">Tag Produk</string>
+    <string name="content_creation_product_tag_source_global_search">Tokopedia</string>
+    <string name="content_creation_product_tag_source_last_purchase">Terakhir Dibeli</string>
+    <string name="content_creation_product_tag_source_wishlist">Wishlist</string>
 </resources>
