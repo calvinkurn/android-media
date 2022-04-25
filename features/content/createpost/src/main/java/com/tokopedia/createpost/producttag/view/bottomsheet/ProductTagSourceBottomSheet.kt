@@ -1,0 +1,93 @@
+package com.tokopedia.createpost.producttag.view.bottomsheet
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.createpost.databinding.BottomSheetProductTagSourceBinding
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.unifycomponents.BottomSheetUnify
+
+/**
+ * Created By : Jonathan Darwin on April 25, 2022
+ */
+class ProductTagSourceBottomSheet : BottomSheetUnify() {
+
+    private var _binding: BottomSheetProductTagSourceBinding? = null
+    private val binding: BottomSheetProductTagSourceBinding
+        get() = _binding!!
+
+    private var mListener: Listener? = null
+    private var mProductTagSourceList = mutableListOf<ProductTagSource>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBottomSheet()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        mListener = null
+    }
+
+    private fun setupBottomSheet() {
+        _binding = BottomSheetProductTagSourceBinding.inflate(
+            LayoutInflater.from(requireContext())
+        )
+        setChild(binding.root)
+    }
+
+    private fun setupView() {
+        setTitle(getString(R.string.cc_product_tag_source_label))
+        updateList()
+    }
+
+    private fun setupObserver() {
+
+    }
+
+    private fun updateList() {
+
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    fun setData(productTagSourceList: List<ProductTagSource>) {
+        mProductTagSourceList.clear()
+        mProductTagSourceList.addAll(productTagSourceList)
+        updateList()
+    }
+
+    fun showNow(fragmentManager: FragmentManager) {
+        if(!isAdded) show(fragmentManager, TAG)
+    }
+
+    companion object {
+        private const val TAG = "FeedAccountTypeBottomSheet"
+
+        fun getFragment(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+        ): ProductTagSourceBottomSheet {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagSourceBottomSheet
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                ProductTagSourceBottomSheet::class.java.name
+            ) as ProductTagSourceBottomSheet
+        }
+    }
+
+    interface Listener {
+        fun onSelectProductTagSource(source: ProductTagSource)
+    }
+}

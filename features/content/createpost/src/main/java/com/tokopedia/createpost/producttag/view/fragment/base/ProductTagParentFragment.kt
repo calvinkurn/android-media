@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
@@ -69,6 +71,22 @@ class ProductTagParentFragment @Inject constructor(
         setupObserve()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when(childFragment) {
+            is ProductTagSourceBottomSheet -> {
+                childFragment.apply {
+                    setListener(object : ProductTagSourceBottomSheet.Listener {
+                        override fun onSelectProductTagSource(source: ProductTagSource) {
+                            /** TODO: handle this */
+                        }
+                    })
+                    setData(viewModel.productTagSourceList)
+                }
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -76,11 +94,14 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun setupView() {
         binding.icCcProductTagBack.setOnClickListener {
-
+            /** TODO: handle this */
         }
 
         binding.tvCcProductTagProductSource.setOnClickListener {
-
+            ProductTagSourceBottomSheet.getFragment(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).showNow(childFragmentManager)
         }
     }
 

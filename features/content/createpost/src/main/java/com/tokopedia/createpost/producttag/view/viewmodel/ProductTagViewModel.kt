@@ -23,6 +23,9 @@ class ProductTagViewModel @Inject constructor(
 
 ): ViewModel() {
 
+    val productTagSourceList: List<ProductTagSource>
+        get() = _productTagSourceList.value
+
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
 
