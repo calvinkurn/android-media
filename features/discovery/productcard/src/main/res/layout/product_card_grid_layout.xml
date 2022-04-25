@@ -243,10 +243,24 @@
             app:srcCompat="@drawable/ic_pdp_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/productCardFooterLayout"
             app:layout_constraintVertical_bias="1.0"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="989jt orang"
             tools:visibility="visible"/>
+
+        <FrameLayout
+            android:id="@+id/productCardFooterLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
+            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
+            app:layout_constraintEnd_toEndOf="@id/mediaAnchorProduct"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_goneMarginTop="8dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

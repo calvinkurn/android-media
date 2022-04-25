@@ -13,8 +13,10 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.ViewId
+import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
-import com.tokopedia.productcard.utils.findViewByIdInViewStub
+import com.tokopedia.productcard.utils.findViewById
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
@@ -28,7 +30,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
@@ -85,19 +86,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         findViewById(R.id.imageProduct)
     }
     private val buttonAddVariant: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonAddVariantStub, R.id.buttonAddVariant)
+        findViewById(ViewStubId(R.id.buttonAddVariantStub), ViewId(R.id.buttonAddVariant))
     }
     private val buttonNotify: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonNotifyStub, R.id.buttonNotify)
+        findViewById(ViewStubId(R.id.buttonNotifyStub), ViewId(R.id.buttonNotify))
     }
     private val buttonThreeDotsWishlist: FrameLayout? by lazy(NONE) {
         findViewById(R.id.buttonThreeDotsWishlist)
     }
     private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonAddToCartWishlistStub, R.id.buttonAddToCartWishlist)
+        findViewById(ViewStubId(R.id.buttonAddToCartWishlistStub), ViewId(R.id.buttonAddToCartWishlist))
     }
     private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonSeeSimilarProductWishlistStub, R.id.buttonSeeSimilarProductWishlist)
+        findViewById(ViewStubId(R.id.buttonSeeSimilarProductWishlistStub), ViewId(R.id.buttonSeeSimilarProductWishlist))
     }
     private val imageShopBadge: ImageView? by lazy(NONE) {
         findViewById(R.id.imageShopBadge)
@@ -106,16 +107,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         findViewById(R.id.imageFreeOngkirPromo)
     }
     private val buttonAddToCart: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonAddToCartStub, R.id.buttonAddToCart)
+        findViewById(ViewStubId(R.id.buttonAddToCartStub), ViewId(R.id.buttonAddToCart))
     }
     private val buttonDeleteProduct: UnifyButton? by lazy(NONE) {
-        findViewByIdInViewStub(R.id.buttonDeleteProductStub, R.id.buttonDeleteProduct)
+        findViewById(ViewStubId(R.id.buttonDeleteProductStub), ViewId(R.id.buttonDeleteProduct))
     }
     private val buttonRemoveFromWishlist: FrameLayout? by lazy(NONE) {
         findViewById(R.id.buttonRemoveFromWishlist)
     }
     private val spaceCampaignBestSeller: Space? by lazy(NONE) {
         findViewById(R.id.spaceCampaignBestSeller)
+    }
+    private val productCardFooterLayout: FrameLayout by lazy(NONE) {
+        findViewById(R.id.productCardFooterLayout)
     }
 
     constructor(context: Context) : super(context) {
@@ -148,13 +152,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         val footerView = if (isUsingViewStub) View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
         else View.inflate(context, R.layout.product_card_footer_layout, null)
 
-        footerView.layoutParams = createFooterLayoutParams()
+        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        val textViewStockLabelLayoutParams = textViewStockLabel?.layoutParams as ConstraintLayout.LayoutParams?
-        textViewStockLabelLayoutParams?.bottomToTop = footerView.id
-        textViewStockLabel?.requestLayout()
-
-        constraintLayoutProductCard?.addView(footerView)
+        productCardFooterLayout.addView(footerView)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
@@ -285,22 +285,6 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         imageProduct?.layoutParams = layoutParams
-    }
-
-    private fun createFooterLayoutParams(): ConstraintLayout.LayoutParams {
-        val footerViewLayoutParams = ConstraintLayout.LayoutParams(0, ConstraintLayout.LayoutParams.WRAP_CONTENT)
-        footerViewLayoutParams.apply {
-            val margin = 8.toPx()
-            marginEnd = margin
-            marginStart = margin
-            verticalBias = 1f
-            startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-            endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-            bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-            topToBottom = R.id.barrierImageContent
-        }
-
-        return footerViewLayoutParams
     }
 
     override fun recycle() {

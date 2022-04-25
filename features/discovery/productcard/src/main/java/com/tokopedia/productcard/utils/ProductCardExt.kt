@@ -448,20 +448,21 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
 
-fun <T: View?> View.findViewByIdInViewStub(viewStubId: Int, viewId: Int): T {
-    val viewStub = findViewById<ViewStub?>(viewStubId)
+fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T {
+    val viewStub = findViewById<ViewStub?>(viewStubId.id)
     if (viewStub == null) {
-        return findViewById<T>(viewId)
+        return findViewById<T>(viewId.id)
     } else {
         viewStub.inflate()
     }
-    return findViewById<T>(viewId)
+    return findViewById<T>(viewId.id)
 }
 
-fun <T: View?> View.showViewInViewStubWithConditional(viewStubId: Int, viewId: Int, isShow: Boolean) {
+fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, isShow: Boolean) {
     if (isShow) {
-        findViewByIdInViewStub<T>(viewStubId, viewId)?.show()
+        findViewById<T>(viewStubId, viewId)?.show()
     } else {
-        findViewById<T>(viewId)?.gone()
+        findViewById<T>(viewId.id)?.gone()
     }
 }
+

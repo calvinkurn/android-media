@@ -20,8 +20,10 @@ import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.productcard.utils.findViewByIdInViewStub
-import com.tokopedia.productcard.utils.showViewInViewStubWithConditional
+import com.tokopedia.productcard.utils.ViewId
+import com.tokopedia.productcard.utils.ViewStubId
+import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.productcard.utils.showWithCondition
 import rx.Subscription
 
 internal class ProductCardCartExtension(private val productCardView: View) {
@@ -30,7 +32,9 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         return productCardView.findViewById(id)
     }
 
-    val buttonAddToCart by lazy { productCardView.findViewByIdInViewStub<UnifyButton?>(R.id.buttonAddToCartStub, R.id.buttonAddToCart) }
+    val buttonAddToCart by lazy { productCardView.findViewById<UnifyButton?>(
+        ViewStubId(R.id.buttonAddToCartStub),
+        ViewId(R.id.buttonAddToCart)) }
     val buttonDeleteCart by lazy { findView<IconUnify?>(R.id.buttonDeleteCart) }
     val quantityEditorNonVariant by lazy {
         findView<QuantityEditorUnify?>(R.id.quantityEditorNonVariant)
@@ -240,7 +244,9 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
-        productCardView.showViewInViewStubWithConditional<UnifyButton?>(R.id.buttonAddVariantStub, R.id.buttonAddVariant, productCardModel.hasVariant())
+        productCardView.showWithCondition<UnifyButton?>(ViewStubId(R.id.buttonAddVariantStub),
+            ViewId(R.id.buttonAddVariant),
+            productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
             productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
