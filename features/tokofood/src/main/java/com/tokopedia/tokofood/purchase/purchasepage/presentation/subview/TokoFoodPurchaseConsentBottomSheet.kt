@@ -6,10 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.tokofood.common.di.TokoFoodComponent
+import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseConsentBinding
+import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
+import com.tokopedia.tokofood.purchase.purchasepage.di.TokoFoodPurchaseComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
-class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetUnify() {
+class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetUnify(),
+    HasComponent<TokoFoodPurchaseComponent> {
 
     companion object {
         @JvmStatic
@@ -36,6 +46,9 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
         private const val TAG = "TokoFoodPurchaseConsentBottomSheet"
     }
 
+    @Inject
+    lateinit var viewModel: TokoFoodPurchaseConsentViewModel
+
     private val title by lazy {
         arguments?.getString(PARAM_TITLE).orEmpty()
     }
@@ -53,6 +66,12 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
 
     interface Listener {
         fun onSuccessAgreeConsent()
+        fun onFailedAgreeConsent(throwable: Throwable)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -65,10 +84,35 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
         viewBinding?.let {
             renderBottomSheet(it)
         }
+        collectAgreeConsentData()
+    }
+
+    override fun getComponent(): TokoFoodPurchaseComponent {
+        return DaggerTokoFoodPurchaseComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
+    }
+
+    private fun collectAgreeConsentData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.agreeConsentData.collect { result ->
+                when(result) {
+                    is Result.Success -> {
+                        listener?.onSuccessAgreeConsent()
+                    }
+                    is Result.Failure -> {
+                        listener?.onFailedAgreeConsent(result.error)
+                    }
+                    is Result.Loading -> {
+                        viewBinding?.buttonContinue?.isLoading = true
+                    }
+                }
+            }
+        }
     }
 
     private fun initializeView(): LayoutBottomSheetPurchaseConsentBinding {
@@ -105,8 +149,7 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
             buttonContinue.run {
                 isEnabled = false
                 setOnClickListener {
-                    // TODO: Load agree consent and redirect to payment
-                    listener?.onSuccessAgreeConsent()
+                    viewModel.agreeConsent()
                 }
             }
         }

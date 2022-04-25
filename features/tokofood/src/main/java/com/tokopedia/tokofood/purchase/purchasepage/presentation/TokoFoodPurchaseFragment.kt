@@ -558,7 +558,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 this
             ).apply {
                 setOnDismissListener {
-                    viewModel.removeButtonLoading()
+                    this@TokoFoodPurchaseFragment.viewModel.removeButtonLoading()
                 }
             }
             consentBottomSheet?.show(childFragmentManager)
@@ -588,6 +588,18 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             }
         )
         bottomSheet.show(parentFragmentManager, "")
+    }
+
+    private fun showToasterError(throwable: Throwable) {
+        view?.let {
+            Toaster.build(
+                view = it,
+                text = throwable.message.orEmpty(),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR,
+                actionText = "Oke"
+            ).show()
+        }
     }
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
@@ -665,5 +677,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onSuccessAgreeConsent() {
         consentBottomSheet?.dismiss()
         // TODO: Go to purchase page
+    }
+
+    override fun onFailedAgreeConsent(throwable: Throwable) {
+        consentBottomSheet?.dismiss()
+        showToasterError(throwable)
     }
 }
