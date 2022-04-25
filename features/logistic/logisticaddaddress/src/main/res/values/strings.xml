@@ -51,7 +51,7 @@
     <string name="pointer">Map Pointer</string>
     <string name="title_bottomsheet_search_location">Cari Lokasi</string>
     <string name="current_location">Current Location</string>
-    <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
+    <string name="tv_current_location_text">Gunakan Lokasi Saat Ini</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
