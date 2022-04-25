@@ -34,12 +34,17 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val DELAY_IN_MILLIS : Long = 300
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -182,9 +187,21 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
-                if (previouslySelectedPosition == position) {
-                    tab.select()
-                }
+                focusToPreviousTab(tab, previouslySelectedPosition, position)
+            }
+        }
+    }
+
+    private fun focusToPreviousTab(
+        tab: TabLayout.Tab,
+        previouslySelectedPosition: Int,
+        onRenderTabPosition: Int
+    ) {
+        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DELAY_IN_MILLIS)
+            if (previouslySelectedPosition == onRenderTabPosition) {
+                tab.select()
             }
         }
     }
