@@ -27,8 +27,8 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
 
     private fun getLayout() = R.layout.imagepicker_insta_com_toolbar
 
-    private var mOnClickListener: (() -> Unit)? = null
-    private var mOnBackListener: (() -> Unit)? = null
+    private var mOnClickListener: AccountClickListener? = null
+    private var mOnBackListener: BackClickListener? = null
 
     init {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
@@ -84,11 +84,14 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         return toolbarParent
     }
 
-    fun setOnBackClickListener(listener: (() -> Unit)?) {
+    fun setOnBackClickListener(listener: AccountClickListener?) {
         mOnBackListener = listener
     }
 
-    fun setOnAccountClickListener(listener: (() -> Unit)?) {
+    fun setOnAccountClickListener(listener: BackClickListener?) {
         mOnClickListener = listener
     }
 }
+
+typealias AccountClickListener = () -> Unit
+typealias BackClickListener = () -> Unit

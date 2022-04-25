@@ -57,26 +57,31 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
 
-    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
-        val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
-        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                /** TODO: show confirmation popup first */
-                selectedFeedAccount = feedAccount
-                toolbarCommon.apply {
-                    subtitle = selectedFeedAccount.name
-                    icon = selectedFeedAccount.iconUrl
-                }
-            }
-        })
-        fragment
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
         UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when(fragment) {
+            is FeedAccountTypeBottomSheet -> {
+                fragment.setData(mFeedAccountList)
+                fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                        /** TODO: show confirmation popup first */
+                        selectedFeedAccount = feedAccount
+                        toolbarCommon.apply {
+                            subtitle = selectedFeedAccount.name
+                            icon = selectedFeedAccount.iconUrl
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         this.intent = intent
@@ -300,8 +305,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     private fun setupToolbar(feedAccountList: List<FeedAccountUiModel>) {
-        feedAccountBottomSheet.setData(feedAccountList)
-
         mFeedAccountList.clear()
         mFeedAccountList.addAll(feedAccountList)
 
@@ -318,7 +321,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             }
 
             setOnAccountClickListener {
-                feedAccountBottomSheet.showNow(supportFragmentManager)
+                FeedAccountTypeBottomSheet
+                    .getFragment(supportFragmentManager, classLoader)
+                    .showNow(supportFragmentManager)
             }
 
             visibility = View.VISIBLE

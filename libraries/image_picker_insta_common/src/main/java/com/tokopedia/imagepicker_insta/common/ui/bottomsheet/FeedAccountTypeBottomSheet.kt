@@ -32,10 +32,6 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private val userSession: UserSessionInterface by lazy {
-        UserSession(context)
-    }
-
     @OptIn(ExperimentalStdlibApi::class)
     private val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
@@ -53,6 +49,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        mListener = null
     }
 
     private fun setupBottomSheet() {
@@ -76,14 +73,16 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
-    fun setData(feedAccountList: List<FeedAccountUiModel>) {
+    fun setData(feedAccountList: List<FeedAccountUiModel>): FeedAccountTypeBottomSheet {
         mFeedAccountList.clear()
         mFeedAccountList.addAll(feedAccountList)
 
         if(isAdded) adapter.updateData(mFeedAccountList)
+
+        return this
     }
 
     companion object {
