@@ -294,9 +294,13 @@ class LiveBroadcasterManager constructor(
         builder.setSurface(surfaceView.surfaceHolder.surface)
         builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
 
-        val activeCamera = mAvailableCameras.firstOrNull {
-            it.lensFacing == CameraType.Front
-        } ?: return
+        val activeCamera = if (mAvailableCameras.isEmpty()) {
+            return
+        } else {
+            mAvailableCameras.firstOrNull {
+                it.lensFacing == CameraType.Front
+            } ?: mAvailableCameras.first()
+        }
 
         builder.setCameraId(activeCamera.cameraId)
 
