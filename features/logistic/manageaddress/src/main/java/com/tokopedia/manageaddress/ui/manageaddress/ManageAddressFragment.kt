@@ -28,6 +28,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
@@ -80,7 +81,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private var manageAddressListener: ManageAddressListener? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var _selectedAddressItem: RecipientAddressModel? = null
-    var editedChosenAddress: RecipientAddressModel? = null
+    private var editedChosenAddress: RecipientAddressModel? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -144,7 +145,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
-            isFromEditChosenAddress = data?.getBooleanExtra("EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED", false)
+            isFromEditChosenAddress = data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
             performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
