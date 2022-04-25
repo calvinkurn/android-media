@@ -82,7 +82,7 @@ class NavigationTab(
         }
     }
 
-    fun onClickBackToTop(){
+    fun onClickBackToTop() {
         enableContentChangeListener = true
     }
 
@@ -260,7 +260,8 @@ class NavigationTab(
 
         private fun updateSelectedTab(recyclerView: RecyclerView) {
             val firstVisibleItemPosition = calculateFirstVisibleItemPosition(recyclerView)
-            val indexTab = items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
+            val indexTab = if (firstVisibleItemPosition == 0) 0
+            else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
 
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
                 if (isSelected) return
