@@ -800,8 +800,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
         private const val SUBSCRIPTION_BOTTOM_SHEET_TAG = "SUBSCRIPTION_BOTTOM_SHEET_TAG"
         private const val LEADING_MARGIN_SPAN = 16
-        private const val GLOBAL_ERROR_500_IMG = "https://images.tokopedia.net/img/digital_globalerrors_500.png"
-        private const val GLOBAL_ERROR_CONNECTION_IMG = "https://images.tokopedia.net/img/digital_globalerrors_connection.png"
 
 
         fun newInstance(
