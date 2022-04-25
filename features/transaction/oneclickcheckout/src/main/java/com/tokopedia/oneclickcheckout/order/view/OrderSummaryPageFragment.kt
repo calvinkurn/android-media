@@ -527,7 +527,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeOrderShipment() {
         viewModel.orderShipment.observe(viewLifecycleOwner) {
-            adapter.shipment = it
+            adapter.setOrderShipment(it)
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
                     adapter.notifyItemChanged(adapter.preferenceIndex)
