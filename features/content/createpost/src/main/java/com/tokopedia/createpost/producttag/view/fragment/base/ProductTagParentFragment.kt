@@ -71,6 +71,7 @@ class ProductTagParentFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.processProductTagSource(arguments?.getString(EXTRA_PRODUCT_TAG_LIST) ?: "")
+        viewModel.setShopBadge(arguments?.getString(EXTRA_SHOP_BADGE) ?: "")
         setupView()
         setupObserve()
     }
@@ -82,11 +83,10 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.apply {
                     setListener(object : ProductTagSourceBottomSheet.Listener {
                         override fun onSelectProductTagSource(source: ProductTagSource) {
-
                             viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
                         }
                     })
-                    setData(viewModel.productTagSourceList)
+                    setData(viewModel.productTagSourceList, viewModel.shopBadge)
                 }
             }
         }
@@ -127,8 +127,7 @@ class ProductTagParentFragment @Inject constructor(
         binding.tvCcProductTagProductSource.text = getProductTagSourceText(currState.selectedProductTagSource)
 
         if(currState.selectedProductTagSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
-            /** TODO: gonna change this to shop badge */
-            binding.icCcProductTagShopBadge.setImageUrl(userSession.shopAvatar)
+            binding.icCcProductTagShopBadge.setImageUrl(viewModel.shopBadge)
             binding.icCcProductTagShopBadge.show()
         }
         else {
@@ -150,6 +149,7 @@ class ProductTagParentFragment @Inject constructor(
     companion object {
         private const val TAG = "ProductTagParentFragment"
         private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
+        private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
         private const val EXTRA_SOURCE = "source"
         const val SOURCE_FEED = "feed"
         const val SOURCE_PLAY = "play"
@@ -158,16 +158,18 @@ class ProductTagParentFragment @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             productTagSource: String,
+            shopBadge: String,
             source: String,
         ): ProductTagParentFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, source)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, source)
         }
 
         private fun createFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             productTagSource: String,
+            shopBadge: String,
             source: String,
         ): ProductTagParentFragment {
             return (
@@ -178,6 +180,7 @@ class ProductTagParentFragment @Inject constructor(
             ).apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PRODUCT_TAG_LIST, productTagSource)
+                    putSerializable(EXTRA_SHOP_BADGE, shopBadge)
                     putString(EXTRA_SOURCE, source)
                 }
             }

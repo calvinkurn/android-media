@@ -24,9 +24,13 @@ class ProductTagViewModel @Inject constructor(
 
 ): ViewModel() {
 
+    val shopBadge: String
+        get() = _shopBadge.value
+
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
+    private val _shopBadge = MutableStateFlow("")
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
 
@@ -61,6 +65,10 @@ class ProductTagViewModel @Inject constructor(
                 ProductTagSource.mapFromString(it)
             }
         }) { }
+    }
+
+    fun setShopBadge(shopBadge: String) {
+        _shopBadge.value = shopBadge
     }
 
     /** Handle Action */

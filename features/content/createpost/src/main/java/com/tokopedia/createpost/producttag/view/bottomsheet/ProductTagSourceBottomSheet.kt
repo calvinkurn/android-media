@@ -26,6 +26,7 @@ class ProductTagSourceBottomSheet @Inject constructor(
 
     private var mListener: Listener? = null
     private var mProductTagSourceList = mutableListOf<ProductTagSource>()
+    private var mShopBadge: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +74,7 @@ class ProductTagSourceBottomSheet @Inject constructor(
 
     private fun setShopInfo() {
         if(userSession.hasShop()) {
-            /** TODO: change this to shop badge */
-            binding.icMyShop.setImageUrl(userSession.shopAvatar)
+            binding.icMyShop.setImageUrl(mShopBadge)
             binding.tvMyShop.text = userSession.shopName
         }
     }
@@ -96,9 +96,14 @@ class ProductTagSourceBottomSheet @Inject constructor(
         mListener = listener
     }
 
-    fun setData(productTagSourceList: List<ProductTagSource>) {
+    fun setData(
+        productTagSourceList: List<ProductTagSource>,
+        shopBadge: String,
+    ) {
         mProductTagSourceList.clear()
         mProductTagSourceList.addAll(productTagSourceList)
+
+        mShopBadge = shopBadge
     }
 
     fun showNow(fragmentManager: FragmentManager) {

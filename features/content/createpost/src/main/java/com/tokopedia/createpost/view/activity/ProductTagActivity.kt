@@ -9,6 +9,7 @@ import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import kotlinx.android.synthetic.main.search_result_item_toko_view.*
 import javax.inject.Inject
 
 /**
@@ -34,9 +35,10 @@ class ProductTagActivity : BaseActivity() {
         setContentView(binding.root)
 
         val productTagList = intent.getStringExtra(EXTRA_PRODUCT_TAG_LIST) ?: ""
+        val shopBadge = intent.getStringExtra(EXTRA_SHOP_BADGE) ?: ""
 
         supportFragmentManager.beginTransaction()
-            .replace(binding.container.id, getParentFragment(productTagList))
+            .replace(binding.container.id, getParentFragment(productTagList, shopBadge))
             .commit()
     }
 
@@ -48,16 +50,21 @@ class ProductTagActivity : BaseActivity() {
             .inject(this)
     }
 
-    private fun getParentFragment(productTagList: String): ProductTagParentFragment {
+    private fun getParentFragment(
+        productTagList: String,
+        shopBadge: String,
+    ): ProductTagParentFragment {
         return ProductTagParentFragment.getFragment(
             supportFragmentManager,
             classLoader,
             productTagList,
+            shopBadge,
             ProductTagParentFragment.SOURCE_FEED
         )
     }
 
     companion object {
         private const val EXTRA_PRODUCT_TAG_LIST = "product_tag_source"
+        private const val EXTRA_SHOP_BADGE = "shop_badge"
     }
 }
