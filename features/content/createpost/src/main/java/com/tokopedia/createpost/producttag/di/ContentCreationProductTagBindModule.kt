@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.createpost.producttag.di.key.FragmentKey
+import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.producttag.view.fragment.factory.ProductTagFragmentFactory
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
@@ -26,6 +27,11 @@ abstract class ContentCreationProductTagBindModule {
     @IntoMap
     @FragmentKey(ProductTagParentFragment::class)
     abstract fun bindProductTagParentFragment(fragment: ProductTagParentFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ProductTagSourceBottomSheet::class)
+    abstract fun bindProductTagSourceBottomSheet(fragment: ProductTagSourceBottomSheet): Fragment
 
     /** View Model */
     @Binds

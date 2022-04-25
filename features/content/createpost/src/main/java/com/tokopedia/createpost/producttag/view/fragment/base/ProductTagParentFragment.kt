@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +35,7 @@ import javax.inject.Inject
 * Created By : Jonathan Darwin on April 25, 2022
 */
 class ProductTagParentFragment @Inject constructor(
+    private val fragmentFactory: FragmentFactory,
     private val viewModelFactory: ViewModelFactory,
     private val userSession: UserSessionInterface,
 ) : TkpdBaseV4Fragment() {
@@ -49,6 +51,7 @@ class ProductTagParentFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory)[ProductTagViewModel::class.java]
+        childFragmentManager.fragmentFactory = fragmentFactory
     }
 
     override fun onCreateView(
@@ -134,7 +137,7 @@ class ProductTagParentFragment @Inject constructor(
     private fun getProductTagSourceText(source: ProductTagSource): String {
         return when(source) {
             ProductTagSource.GlobalSearch,
-            ProductTagSource.LastTagProduct -> getString(R.string.content_creation_search_bs_header_item_tokopedia)
+            ProductTagSource.LastTagProduct -> getString(R.string.content_creation_search_bs_item_tokopedia)
             ProductTagSource.LastPurchase -> getString(R.string.content_creation_search_bs_item_last_purchase)
             ProductTagSource.Wishlist -> getString(R.string.content_creation_search_bs_item_wishlist)
             ProductTagSource.MyShop -> userSession.shopName
