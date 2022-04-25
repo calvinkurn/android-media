@@ -473,7 +473,7 @@ class CreateReviewViewModel @Inject constructor(
         hasOngoingChallenge: Boolean,
         textAreaHasFocus: Boolean
     ): StringRes {
-        val stringResId = if (textAreaHasFocus) {
+        val stringResId = if (textAreaHasFocus && (hasIncentive || hasOngoingChallenge)) {
             when {
                 reviewTextAreaTextUiModel.text.length in 1 until CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
                     R.string.review_create_bottom_sheet_text_area_partial_incentive
