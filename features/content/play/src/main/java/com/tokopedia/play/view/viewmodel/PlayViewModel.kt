@@ -411,6 +411,15 @@ class PlayViewModel @AssistedInject constructor(
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
 
+    private val isMonitoringLogEnabled: Boolean
+        get() {
+            val arrOfPostFix = remoteConfig.getLong(FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING, 0)
+            arrOfPostFix.toString().toCharArray().find {
+                return userSession.userId.last() == it
+            }
+            return false
+        }
+
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
@@ -2214,6 +2223,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun handleInetSpeed(speedInMBps: Int) {
+        //Also, setup remote config value
+        playLog.setupRemoteConfig(isMonitoringLogEnabled)
+
         playLog.logDownloadSpeed("$speedInMBps MBps")
     }
 
@@ -2336,6 +2348,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_VIEWER_MONITORING = "android_mainapp_play_viewer_monitoring"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 

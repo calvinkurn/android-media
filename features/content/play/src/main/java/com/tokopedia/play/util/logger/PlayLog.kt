@@ -25,4 +25,6 @@ interface PlayLog {
     )
 
     fun sendAll(channelId: String, streamingUrl: String)
+
+    fun setupRemoteConfig(isEnabled: Boolean)
 }

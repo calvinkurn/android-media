@@ -12,6 +12,8 @@ import javax.inject.Inject
  */
 class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector): PlayLog{
 
+    private var isRemoteConfigEnabled: Boolean = false
+
     override fun logTimeToFirstByte(timeToFirstByte: String) {
         logCollector.collect(
             Pair("timeToFirstByte", timeToFirstByte)
@@ -44,6 +46,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     override fun sendAll(channelId: String, streamingUrl: String) {
+        if(!isRemoteConfigEnabled) return
         val mapped = hashMapOf("channel_id" to channelId, "url" to streamingUrl)
         logCollector.getAll().chunked(LIMIT_LOG).forEach { logs ->
             logs.forEach {
@@ -56,6 +59,10 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
 
     private fun sendLog(messages: Map<String, String>) {
         ServerLogger.log(Priority.P2, PLAY_LOG_TAG, messages)
+    }
+
+    override fun setupRemoteConfig(isEnabled: Boolean) {
+        isRemoteConfigEnabled = isEnabled
     }
 
     companion object{
