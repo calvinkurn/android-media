@@ -5,8 +5,10 @@ import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.LEFT_
 import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.RIGHT_ANIMATION
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
+import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CANCEL
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CREATE
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.DETAIL
+import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.EDIT
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.EXTEND
 
 @Retention(AnnotationRetention.SOURCE)
@@ -28,12 +30,14 @@ annotation class AnimationType {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(CREATE, DETAIL, EXTEND)
+@IntDef(CREATE, DETAIL, EXTEND, EDIT, CANCEL)
 annotation class ProgramType {
     companion object {
         const val CREATE = 0
         const val DETAIL = 1
         const val EXTEND = 2
+        const val EDIT = 3
+        const val CANCEL = 4
     }
 }
 

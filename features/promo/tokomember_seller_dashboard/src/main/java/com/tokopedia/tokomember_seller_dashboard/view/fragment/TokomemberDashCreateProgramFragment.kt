@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -17,10 +16,14 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -33,7 +36,6 @@ import javax.inject.Inject
 class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
 
     private var fromEdit = false
-    private var editItem: ProgramSellerListItem? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -50,9 +52,6 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         arguments?.getBoolean(BUNDLE_EDIT_PROGRAM, false)?.let {
             fromEdit = it
         }
-        arguments?.getString(BUNDLE_EDIT_PROGRAM_ITEM, "")?.let {
-            editItem = Gson().fromJson(it, ProgramSellerListItem::class.java)
-        }
     }
 
     override fun onCreateView(
@@ -67,7 +66,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        callGQL(arguments?.getInt("PROGRAM_TYPE")?:0 ,arguments?.getInt("SHOP_ID")?:0  )
+        callGQL(arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0 ,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
     }
 
     override fun getScreenName() = ""
@@ -94,8 +93,19 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
             ProgramType.CREATE ->{
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
-            ProgramType.DETAIL ->{}
-            ProgramType.EXTEND ->{}
+            ProgramType.DETAIL ->{
+                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
+            }
+            ProgramType.EXTEND ->{
+                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
+            }
+            ProgramType.EDIT ->{
+                //TODO actionType edit pending from backend
+                tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
+            }
+            ProgramType.CANCEL ->{
+                //TODO
+            }
         }
     }
 
@@ -155,9 +165,9 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
                     ProgramUpdateDataInput(
                         actionType = "edit",
                         apiVersion = "3.0",
-                        name = editItem?.name,
-                        cardID = editItem?.cardID,
-                        timeWindow = TimeWindow(startTime = editItem?.timeWindow?.startTime, endTime = editItem?.timeWindow?.endTime)
+                        name = membershipGetProgramForm?.programForm?.name,
+                        cardID = membershipGetProgramForm?.programForm?.cardID,
+                        timeWindow = TimeWindow(startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime)
                     )
                 )
             }

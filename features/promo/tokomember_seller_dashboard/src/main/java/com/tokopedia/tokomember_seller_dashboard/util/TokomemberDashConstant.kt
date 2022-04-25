@@ -5,12 +5,14 @@ const val BUNDLE_OPEN_BS = "bundleOpenBS"
 const val BUNDLE_SHOP_ID = "bundleShopId"
 const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
-const val BUNDLE_EDIT_PROGRAM_ITEM = "bundleEditProgramItem"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
+const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
 const val ACTION_EXTEND = "extend"
+const val ACTION_EDIT = "edit"
+const val ACTION_CANCEL = "cancel"
 
 const val DRAFT = 1
 const val WAITING = 2

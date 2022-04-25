@@ -14,6 +14,8 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
@@ -31,12 +33,20 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.tm_dash_options_menu_bottomsheet
     private var tripleDotsList: List<TripleDotsItem?>? = null
+    private var shopId = 0
+    private var programId = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         arguments?.getString(BUNDLE_OPTION_MENU)?.let {
             tripleDotsList = Gson().fromJson(it, Actions::class.java).tripleDots
+        }
+        arguments?.getInt(BUNDLE_SHOP_ID)?.let {
+            shopId = it
+        }
+        arguments?.getInt(BUNDLE_PROGRAM_ID)?.let {
+            programId = it
         }
     }
 
@@ -92,7 +102,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text
         container_options_menu.addView(childLayout)
         childLayout.setOnClickListener {
-            programActions.option(type)
+            programActions.option(type, shopId, programId)
             when {
                 type.equals(EXTEND) -> {
 

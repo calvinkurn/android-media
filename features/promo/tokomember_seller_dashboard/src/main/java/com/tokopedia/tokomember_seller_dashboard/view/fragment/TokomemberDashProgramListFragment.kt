@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
@@ -21,6 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +36,7 @@ import javax.inject.Inject
 
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
-    private var shopId = 6553698
+    private var shopId = 0
     private var cardId = 3827
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
@@ -60,7 +67,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
 
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramList(shopId, cardId)
+        tokomemberDashCreateViewModel.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
     }
 
     private fun observeViewModel() {
@@ -84,20 +91,34 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     }
 
     companion object {
-        fun newInstance(): TokomemberDashProgramListFragment {
-            return TokomemberDashProgramListFragment()
+        fun newInstance(extras: Bundle?) = TokomemberDashProgramListFragment().apply {
+            arguments = extras
         }
     }
 
-    override fun option(type: String) {
+    override fun option(type: String, shopId: Int, programId: Int) {
         when {
             type.equals(EXTEND) -> {
+                val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
+                intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
+                intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+                intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
+                requireContext().startActivity(intent)
+            }
+            type.equals(CANCEL) -> {
                 var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle("Yakin batalkan program?")
                 dialog.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
                 dialog.setPrimaryCTAText("Lanjutkan")
                 dialog.setSecondaryCTAText("Batalkan Program")
                 dialog.setPrimaryCTAClickListener {
+                    val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
+                    intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
+                    intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                    intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+                    intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
+                    requireContext().startActivity(intent)
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }
@@ -106,9 +127,13 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 }
                 dialog.show()
             }
-            type.equals(CANCEL) -> {
-            }
             type.equals(EDIT) -> {
+                val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
+                intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
+                intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+                intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
+                requireContext().startActivity(intent)
             }
             type.equals(DELETE) -> {
             }

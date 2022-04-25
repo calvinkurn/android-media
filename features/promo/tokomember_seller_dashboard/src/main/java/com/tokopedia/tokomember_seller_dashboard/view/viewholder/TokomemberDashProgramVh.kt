@@ -11,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM_ITEM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
@@ -87,13 +88,17 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         optionMenu.setOnClickListener {
             val bundle = Bundle()
             bundle.putString(BUNDLE_OPTION_MENU, Gson().toJson(item.actions))
+            item.id?.toInt()?.let { it1 -> bundle.putInt(BUNDLE_PROGRAM_ID, it1) }
+            bundle.putInt(BUNDLE_SHOP_ID, shopId)
             TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager, programActions)
         }
 
         btn_edit.setOnClickListener {
             val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
             intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
-            intent.putExtra(BUNDLE_EDIT_PROGRAM_ITEM, Gson().toJson(item))
+            intent.putExtra(BUNDLE_SHOP_ID, shopId)
+            intent.putExtra(BUNDLE_PROGRAM_ID, item.id)
+            intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
             itemView.context.startActivity(intent)
         }
 

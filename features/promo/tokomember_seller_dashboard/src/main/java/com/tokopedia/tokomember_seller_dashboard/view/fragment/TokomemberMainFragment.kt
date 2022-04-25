@@ -75,7 +75,9 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
-                startActivity(Intent(requireContext(), TokomemberDashHomeActivity::class.java))
+                val intent = Intent(requireContext(), TokomemberDashHomeActivity::class.java)
+                intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                startActivity(intent)
                 requireActivity().finish()
                 // redirect to dashboard
             }

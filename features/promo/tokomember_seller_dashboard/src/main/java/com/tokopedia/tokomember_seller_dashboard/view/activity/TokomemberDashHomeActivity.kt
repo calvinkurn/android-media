@@ -59,7 +59,7 @@ class TokomemberDashHomeActivity : AppCompatActivity() {
 
         var adapter = TokomemberDashHomeViewpagerAdapter(supportFragmentManager)
         adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
-        adapter.addFragment(TokomemberDashProgramListFragment.newInstance(), "Program")
+        adapter.addFragment(TokomemberDashProgramListFragment.newInstance(intent.extras), "Program")
         adapter.addFragment(TokomemberDashCouponFragment.newInstance(), "Kupon Tokomember")
 
         homeViewPager.adapter = adapter
