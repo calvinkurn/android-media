@@ -91,7 +91,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     //make request call
                     rcvrMsg = msgEdtxtv.text.toString()
                     addUserDataToMap()
-                    (activity as LoaderUiListener).showProgressDialog()
+                    activity?.let {
+                        (it as LoaderUiListener).showProgressDialog()
+                    }
                     walletDetailViewModel.makeTransferRequestCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(
@@ -135,7 +137,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 R.id.proceed_dlg -> {
                     //make transfer confirm request
                     if (activity?.isFinishing == false) alertDialog.dismiss()
-                    (activity as LoaderUiListener).showProgressDialog()
+                    activity?.let {
+                        (it as LoaderUiListener).showProgressDialog()
+                    }
                     walletDetailViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(
@@ -149,7 +153,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 }
                 R.id.proceed_dlg_non_ovo -> {
                     if (activity?.isFinishing == false) alertDialog.dismiss()
-                    (activity as LoaderUiListener).showProgressDialog()
+                    activity?.let {
+                        (it as LoaderUiListener).showProgressDialog()
+                    }
                     walletDetailViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(
@@ -265,7 +271,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         createAndSubscribeToWalletBalVM()
         createAndSubscribeTransferRequestVM()
         createAndSubscribeTransferConfirmVM()
-        (activity as LoaderUiListener).showProgressDialog()
+        activity?.let {
+            (it as LoaderUiListener).showProgressDialog()
+        }
         setTextSenderAmountWatcher()
         return view
     }
@@ -297,6 +305,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         walletDetailViewModel.walletLiveData.observe(
             viewLifecycleOwner
         ) {
+            hideLoader()
             when (it) {
                 is WalletData -> {
                     showWalletData(it)
@@ -308,7 +317,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun showWalletData(walletData: WalletData) {
-        hideLoader()
         saldoTextView.text = walletData.cashBalance
         sndrAmt = walletData.rawCashBalance
     }
@@ -318,6 +326,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         walletDetailViewModel.transferReqBaseMutableLiveData.observe(
             viewLifecycleOwner
         ) {
+            hideLoader()
             when (it) {
                 is TransferReqData -> createTransferRequest(it)
                 is TransferReqErrorPage -> gotoErrorPage(it.errMsg)
@@ -328,7 +337,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun createTransferRequest(it: TransferReqData) {
-        hideLoader()
         if (!TextUtils.isEmpty(it.dstAccName)) {
             rcvrName = it.dstAccName
             createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
@@ -340,6 +348,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         walletDetailViewModel.txnConfirmMutableLiveData.observe(
             viewLifecycleOwner
         ) {
+            hideLoader()
             when (it) {
                 is GoToThankYouPage ->
                     goToThankPage(it)
@@ -354,13 +363,11 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun goToThankPage(it: GoToThankYouPage) {
-        hideLoader()
         saveRcvrData()
         gotoThankYouActivity(it.transferId, nonOvoUsr)
     }
 
     private fun openTransferConfirmWebView(it: OpenPinChlngWebView) {
-        hideLoader()
         saveRcvrData()
         if (context != null) {
             var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(
@@ -378,7 +385,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
 
 
     private fun gotoErrorPage(errMsg: String) {
-        hideLoader()
         var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
@@ -538,7 +544,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun showNonOvoUserConfirmDialog() {
-        hideLoader()
         alertDialog = OvoP2pUtil.getNonOvoUserConfirmationDailog(activity, this).create()
         if (activity?.isFinishing == false) {
             alertDialog.show()
@@ -578,7 +583,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun showErrorSnackBar(errMsg: String) {
-        hideLoader()
         activity?.let {
             errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
             errorSnackbar.show()
@@ -586,7 +590,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun hideLoader() {
-        (activity as LoaderUiListener).hideProgressDialog()
+        activity?.let {
+            (it as LoaderUiListener).hideProgressDialog()
+        }
     }
 
     override fun onDestroy() {
