@@ -113,7 +113,7 @@
                 android:id="@+id/tv_discom_current_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_current_location_text"
+                android:text="@string/tv_discom_current_location_text"
                 app:typographyType="body_2" />
         </LinearLayout>
 

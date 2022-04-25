@@ -51,7 +51,7 @@
     <string name="pointer">Map Pointer</string>
     <string name="title_bottomsheet_search_location">Cari Lokasi</string>
     <string name="current_location">Current Location</string>
-    <string name="tv_current_location_text">Gunakan Lokasi Saat Ini</string>
+    <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
@@ -188,6 +188,7 @@
     <string name="tv_discom_item_revamp_district">%1$s, %2$s, &lt;b&gt;%3$s&lt;/b&gt;</string>
     <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, %3$s</string>
     <string name="tv_discom_dialog_secondary">Lain Kali</string>
+    <string name="tv_discom_current_location_text">Gunakan Lokasi Saat Ini</string>
     <string name="discom_on_deny_location_subtitle">Untuk menggunakan fitur ini silahkan aktifkan layanan lokasi perangkat Anda</string>
     <string name="discom_empty_state_title">Oops, lokasi tidak ditemukan</string>
     <string name="txt_empty_state_desc_district"> Coba periksa kembali penulisanmu.</string>
