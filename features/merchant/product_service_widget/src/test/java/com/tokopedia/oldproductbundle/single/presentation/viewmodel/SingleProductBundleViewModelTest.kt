@@ -1,13 +1,13 @@
-package com.tokopedia.product_bundle.single.presentation.viewmodel
+package com.tokopedia.oldproductbundle.single.presentation.viewmodel
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.common.util.AtcVariantMapper
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleErrorEnum
-import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
-import com.tokopedia.product_bundle.util.getOrAwaitValue
+import com.tokopedia.oldproductbundle.common.util.AtcVariantMapper
+import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleErrorEnum
+import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleSelectedItem
+import com.tokopedia.oldproductbundle.util.getOrAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
