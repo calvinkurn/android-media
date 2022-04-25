@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -51,6 +52,8 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     private var infoBtn1: UnifyButton? = null
     private var infoBtn2: UnifyButton? = null
     private var typeParam: String = ""
+    private var errorViewStub: ViewStub? = null
+    private var btnError: UnifyButton? = null
 
     fun show(type: String, fragmentManager: FragmentManager) {
         typeParam = type
@@ -79,17 +82,41 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
     private fun observeData() {
         viewModel.educationalData.observe(viewLifecycleOwner) {
+            btnError?.isClickable = true
+            shimmerContainer?.hide()
+
             when (it) {
                 is Success -> {
+                    errorViewStub?.hide()
                     contentContainer?.show()
                     shimmerContainer?.hide()
                     renderSuccessData(it.data.response)
                 }
                 is Fail -> {
-
+                    onEducationalError()
                 }
             }
         }
+    }
+
+    private fun onEducationalError() {
+        setTitle("")
+
+        val errorView: View? = if (errorViewStub?.parent != null) {
+            errorViewStub?.inflate();
+        } else {
+            viewContent
+        }
+
+        btnError = errorView?.findViewById(R.id.product_educational_error_btn)
+        btnError?.setOnClickListener {
+            errorViewStub?.hide()
+            shimmerContainer?.show()
+            btnError?.isClickable = false
+            viewModel.getEducationalData()
+        }
+        errorViewStub?.show()
+        contentContainer?.hide()
     }
 
     private fun renderSuccessData(data: ProductEducationalResponse) {
@@ -168,6 +195,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
 
         viewContent = View.inflate(context, R.layout.product_educational_container, null)
         viewContent?.let {
+            errorViewStub = it.findViewById(R.id.base_product_educational_error)
             infoImg = it.findViewById(R.id.info_bs_img)
             infoTxt = it.findViewById(R.id.info_bs_txt)
             infoBtn1 = it.findViewById(R.id.info_bs_btn_1)

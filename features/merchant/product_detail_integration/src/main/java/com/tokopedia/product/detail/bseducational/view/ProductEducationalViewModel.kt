@@ -17,13 +17,17 @@ import javax.inject.Named
 class ProductEducationalViewModel @Inject constructor(
         @Named(TYPE_ARG_NAMED) private val typeParam: String,
         private val productEducationalUseCase: GetProductEducationalUseCase,
-        val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
+        dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.io) {
 
     private val _educationalData = MutableLiveData<Result<ProductEducational>>()
     val educationalData: LiveData<Result<ProductEducational>>
         get() = _educationalData
 
     init {
+        getEducationalData()
+    }
+
+    fun getEducationalData() {
         launchCatchError(block = {
             val value = productEducationalUseCase
                     .executeOnBackground(GetProductEducationalUseCase.createParams(typeParam))
