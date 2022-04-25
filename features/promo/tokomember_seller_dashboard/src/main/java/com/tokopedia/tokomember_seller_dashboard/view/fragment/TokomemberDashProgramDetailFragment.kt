@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.TmProgramDetailQuery
+import com.tokopedia.tokomember_seller_dashboard.domain.TM_PROGRAM_FORM
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
@@ -56,10 +56,9 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TmProgramDetailQuery)
+        tokomemberDashCreateViewModel.getProgramInfo(programId, shopId, ACTION_DETAIL, TM_PROGRAM_FORM)
         setHeader()
     }
-
 
     private fun observeViewModel() {
         tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{

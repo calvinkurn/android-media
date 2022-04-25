@@ -41,9 +41,10 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.CardTemplate
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.IntoolsShop
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.unifycomponents.Toaster
 
-class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
+class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener {
 
     @Inject
@@ -139,11 +140,13 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
 
     private fun openProgramCreationPage() {
         val bundle = Bundle()
-        bundle.putInt("PROGRAM_TYPE",0)
-        bundle.putInt("SHOP_ID",shopID)
-        activity?.supportFragmentManager?.beginTransaction()
-            ?.add(R.id.containerParent,TokomemberDashCreateProgramFragment.newInstance(bundle), "program")
-            ?.addToBackStack("program")?.commit()
+        bundle.putInt(PROGRAM_TYPE, 0)
+        bundle.putInt(SHOP_ID, shopID)
+        (activity as TokomemberDashCreateActivity).addFragment(
+            TokomemberProgramFragment.newInstance(
+                bundle
+            ), TAG_PROGRAM_CREATE
+        )
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
@@ -314,9 +317,11 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment(), TokomemberCardCol
     }
 
     companion object {
-
-        fun newInstance(bundle: Bundle): TokomemberDashCreateCardFragment {
-            return TokomemberDashCreateCardFragment().apply {
+        const val PROGRAM_TYPE = "PROGRAM_TYPE"
+        const val SHOP_ID = "SHOP_ID"
+        const val TAG_PROGRAM_CREATE = "Program_Create"
+        fun newInstance(bundle: Bundle): TokomemberCreateCardFragment {
+            return TokomemberCreateCardFragment().apply {
                 arguments = bundle
             }
         }

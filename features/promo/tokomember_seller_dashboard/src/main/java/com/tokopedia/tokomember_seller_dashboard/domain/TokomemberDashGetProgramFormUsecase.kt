@@ -41,32 +41,6 @@ class TokomemberDashGetProgramFormUsecase @Inject constructor(graphqlRepository:
 }
 
 const val TM_PROGRAM_FORM = """
-     query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$'}actionType: String!) {
-    membershipGetProgramForm(programID: ${'$'}programID, shopID: ${'$'}shopID , actionType: ${'$'}actionType) {
-    resultStatus {
-      code
-      message
-      reason
-    }
-    programForm {
-      tierLevels {
-        tierGroupID
-      }
-    }
-    timePeriodList {
-      name
-      months
-      isSelected
-    }
-    programThreshold {
-      minThresholdLevel1
-      minThresholdLevel2
-    }
-  }
-}
-"""
-
-const val TmProgramDetailQuery = """
 query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$'}actionType: String!) {
     membershipGetProgramForm(programID: ${'$'}programID, shopID: ${'$'}shopID , actionType: ${'$'}actionType) {
         resultStatus {
@@ -106,6 +80,17 @@ query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$
         trxCount
         totalIncome
       }
+    }
+    timePeriodList {
+      name
+      months
+      isSelected
+    }
+     programThreshold {
+      minThresholdLevel1
+      maxThresholdLevel1
+      minThresholdLevel2
+      maxThresholdLevel2
     }
   }
 }

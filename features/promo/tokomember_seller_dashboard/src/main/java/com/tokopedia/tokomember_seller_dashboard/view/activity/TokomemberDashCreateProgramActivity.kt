@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCreateProgramFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
 
 class TokomemberDashCreateProgramActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return TokomemberDashCreateProgramFragment.newInstance(intent.extras)
+        return TokomemberProgramFragment.newInstance(intent.extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

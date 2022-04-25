@@ -24,7 +24,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
@@ -160,7 +160,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
     }
 
     override fun onButtonItemClick(position: Int) {
-        startActivity(Intent(this.context, TokomemberDashCreateCardActivity::class.java).putExtra(
+        startActivity(Intent(this.context, TokomemberDashCreateActivity::class.java).putExtra(
             "cardID",cardID?:0
         ))
     }

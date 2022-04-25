@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import java.util.*
 import javax.inject.Inject
 
-class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
+class TokomemberProgramFragment : BaseDaggerFragment() {
 
     private var fromEdit = false
 
@@ -79,13 +79,23 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         tokomemberDashCreateViewModel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
             when(it){
                 is Success -> {
-                    renderProgramUI(it.data.membershipGetProgramForm)
+                    if (it.data.membershipGetProgramForm?.resultStatus?.code == "200") {
+                        renderProgramUI(it.data.membershipGetProgramForm)
+                    }
+                    else{
+
+                    }
                 }
                 is Fail -> {
 
                 }
             }
         })
+    }
+
+
+    private fun handleError(){
+
     }
 
     private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
@@ -109,12 +119,15 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         }
     }
 
+
+
     private fun renderHeader() {
         if(fromEdit) {
             headerProgram?.apply {
                 title = "Ubah Program"
                 isShowBackButton = true
             }
+
             progressProgram?.hide()
             btnCreateProgram.text = "Simpan"
         }
@@ -235,7 +248,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
     companion object {
         const val MAX_YEAR = 10
         const val MIN_YEAR = -90
-        fun newInstance(extras: Bundle?) = TokomemberDashCreateProgramFragment().apply {
+        fun newInstance(extras: Bundle?) = TokomemberProgramFragment().apply {
             arguments = extras
         }
     }

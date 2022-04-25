@@ -16,7 +16,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import javax.inject.Inject
 
-class TokomemberDashPreviewFragment : BaseDaggerFragment() {
+class TokomemberKuponCreateFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>

@@ -60,6 +60,7 @@ class TokomemberDashCreateViewModel @Inject constructor(
     val tokomemberCardModifyLiveData: LiveData<Result<MembershipCreateEditCard>> =
         _tokomemberCardModifyLiveData
 
+    //remove
     private val _tokomemberCardPreviewLiveData = MutableLiveData<Result<PreviewData>>()
     val tokomemberCardPreviewLiveData: LiveData<Result<PreviewData>> =
         _tokomemberCardPreviewLiveData
