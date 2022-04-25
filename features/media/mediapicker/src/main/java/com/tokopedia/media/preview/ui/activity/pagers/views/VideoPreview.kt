@@ -34,7 +34,7 @@ class VideoPreview(
             it.setOnClickListener {
                 if(!videoControl.isVisible) {
                     videoControl.show()
-                    hideJob()
+                    if(videoPlayer.isPlaying()) hideJob()
                 } else {
                     videoControl.hide()
                     cleanHideJob()
@@ -54,6 +54,8 @@ class VideoPreview(
             }
 
             videoControl.setListener(this)
+
+            
         }
     }
 
