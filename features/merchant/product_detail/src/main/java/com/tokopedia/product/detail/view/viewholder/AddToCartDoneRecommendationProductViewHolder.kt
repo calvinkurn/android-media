@@ -62,14 +62,15 @@ class AddToCartDoneRecommendationProductViewHolder(
                                 if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
                             }
 
-                            if (isUsingV2) {
+                            // TODO: handle isUsingV2
+                            /*if (isUsingV2) {
                                 showSuccessAddWishlistV2()
-                            } else {
+                            } else {*/
                                 showSuccessAddWishlist(
                                     itemView,
                                     getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                                 )
-                            }
+                            // }
                         } else {
                             showSuccessRemoveWishlist(
                                     itemView,
