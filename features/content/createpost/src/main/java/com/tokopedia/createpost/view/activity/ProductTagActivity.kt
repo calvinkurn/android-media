@@ -53,6 +53,7 @@ class ProductTagActivity : BaseActivity() {
             supportFragmentManager,
             classLoader,
             productTagList,
+            ProductTagParentFragment.SOURCE_FEED
         )
     }
 
