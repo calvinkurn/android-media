@@ -263,7 +263,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             binding?.recyclerView?.gone()
             binding?.tpgTotalProduct?.gone()
             binding?.tpgMultiSelect?.gone()
-            binding?.emptyState?.visible()
         } else {
             if (isFirstLoad) {
                 binding?.searchBar?.visible()
@@ -641,11 +640,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.gone()
         binding?.searchBar?.gone()
+        binding?.recyclerView?.gone()
 
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
         binding?.emptyState?.setTitle(title)
         binding?.emptyState?.setDescription(description)
+        binding?.emptyState?.requestLayout()
     }
 
     private fun hideEmptyState() {
