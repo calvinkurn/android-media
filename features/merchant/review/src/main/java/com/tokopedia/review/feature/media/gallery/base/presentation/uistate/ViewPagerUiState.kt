@@ -1,0 +1,12 @@
+package com.tokopedia.review.feature.media.gallery.base.presentation.uistate
+
+import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ViewPagerUiState(
+    val currentPagerPosition: Int = Int.ZERO,
+    val previousPagerPosition: Int = Int.ZERO,
+    val enableUserInput: Boolean = true
+) : Parcelable

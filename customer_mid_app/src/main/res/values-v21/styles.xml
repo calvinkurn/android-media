@@ -19,4 +19,14 @@
         <item name="android:activityCloseEnterAnimation">@anim/slide_left_in_medium</item>
         <item name="android:activityCloseExitAnimation">@anim/slide_right_out_medium</item>
     </style>
+
+    <style name="ReviewMediaPlayer.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:ambientShadowAlpha">0</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>

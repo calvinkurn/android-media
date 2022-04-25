@@ -33,7 +33,8 @@ android {
                     pathSources + 'reading',
                     pathSources + 'gallery',
                     pathSources + 'imagepreview',
-                    pathSources + 'common'
+                    pathSources + 'common',
+                    pathSources + 'media'
             ]
         }
         androidTest {

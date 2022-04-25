@@ -2,12 +2,22 @@ package com.tokopedia.reviewcommon.feature.media.gallery.detailed.util
 
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 
 object ReviewMediaGalleryRouter {
+
+    const val EXTRAS_CACHE_MANAGER_ID = "extrasCacheManagerId"
+    const val EXTRAS_PRODUCT_ID = "extrasProductId"
+    const val EXTRAS_SHOP_ID = "extrasShopId"
+    const val EXTRAS_IS_PRODUCT_REVIEW = "extrasIsProductReview"
+    const val EXTRAS_IS_FROM_GALLERY = "extrasIsFromGallery"
+    const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
+    const val EXTRAS_SHOW_SEE_MORE = "extrasShowSeeMore"
+    const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
+
     fun routeToReviewMediaGallery(
         context: Context,
         productID: String,
@@ -19,16 +29,16 @@ object ReviewMediaGalleryRouter {
         preloadedDetailedReviewMediaResult: ProductrevGetReviewMedia? = null
     ): Intent {
         val cacheManager = SaveInstanceCacheManager(context, true)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_PRODUCT_ID, productID)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_SHOP_ID, shopID)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_IS_PRODUCT_REVIEW, isProductReview)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_IS_FROM_GALLERY, isFromGallery)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_PRODUCT_ID, productID)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_TARGET_MEDIA_NUMBER, mediaPosition)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_SHOW_SEE_MORE, showSeeMore)
-        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT, preloadedDetailedReviewMediaResult)
-        return Intent(context, DetailedReviewMediaGalleryActivity::class.java).apply {
-            putExtra(DetailedReviewMediaGalleryActivity.EXTRAS_CACHE_MANAGER_ID, cacheManager.id.orEmpty())
+        cacheManager.put(EXTRAS_PRODUCT_ID, productID)
+        cacheManager.put(EXTRAS_SHOP_ID, shopID)
+        cacheManager.put(EXTRAS_IS_PRODUCT_REVIEW, isProductReview)
+        cacheManager.put(EXTRAS_IS_FROM_GALLERY, isFromGallery)
+        cacheManager.put(EXTRAS_PRODUCT_ID, productID)
+        cacheManager.put(EXTRAS_TARGET_MEDIA_NUMBER, mediaPosition)
+        cacheManager.put(EXTRAS_SHOW_SEE_MORE, showSeeMore)
+        cacheManager.put(EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT, preloadedDetailedReviewMediaResult)
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_MEDIA_GALLERY).apply {
+            putExtra(EXTRAS_CACHE_MANAGER_ID, cacheManager.id.orEmpty())
         }
     }
 }
