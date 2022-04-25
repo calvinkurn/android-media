@@ -1787,6 +1787,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun showLeaderBoard(){
+        if(!repo.hasJoined(_interactive.value.interactive.id)) return
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
@@ -1832,8 +1833,16 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleClickQuizOption(optionId: String){
         updateQuizOptionUi(selectedId = optionId, isLoading = true)
+
+        val interactiveId = _interactive.value.interactive.id.toString()
+
         viewModelScope.launchCatchError(block = {
-            val response = repo.answerQuiz(interactiveId = _interactive.value.interactive.id.toString(), choiceId = optionId)
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+            if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
+
+            val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = optionId)
+            repo.setJoined(interactiveId)
+
             updateQuizOptionUi(selectedId = optionId, correctId = response)
             _uiEvent.emit(QuizAnsweredEvent)
         }) {
