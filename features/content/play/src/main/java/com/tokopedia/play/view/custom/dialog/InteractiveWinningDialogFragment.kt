@@ -28,11 +28,12 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     private var mTitle = ""
     private var mSubtitle = ""
     private var mImageUrl = ""
+    private var mInteractiveUiModel: InteractiveUiModel? = null
 
     private lateinit var tvTitle: Typography
     private lateinit var tvDetail: Typography
     private lateinit var imgUser: ImageUnify
-    private lateinit var rootV: RoundedConstraintLayout
+    private lateinit var vRoot: RoundedConstraintLayout
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -65,25 +66,25 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         show(manager, TAG)
     }
 
-    fun setData(imageUrl: String, title: String, subtitle: String) {
+    fun setData(imageUrl: String, title: String, subtitle: String, interactive: InteractiveUiModel) {
         mImageUrl = imageUrl
         mTitle = title
         mSubtitle = subtitle
+        mInteractiveUiModel = interactive
 
         setupView()
     }
 
-    fun setInteractive(interactive: InteractiveUiModel){
-        val backgroundType = when (interactive){
+    private fun getInteractive(interactive: InteractiveUiModel): Int {
+        return when (interactive){
             is InteractiveUiModel.Giveaway -> {
                 commonR.drawable.bg_play_interactive
             }
             is InteractiveUiModel.Quiz -> {
-                commonR.drawable.bg_play_quiz_widget
+                R.drawable.bg_quiz_winner
             }
             else -> commonR.drawable.bg_play_interactive
         }
-        rootV.background = MethodChecker.getDrawable(context, backgroundType)
     }
 
     private fun initView(view: View) {
@@ -91,7 +92,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
             tvTitle = findViewById(R.id.tv_title)
             tvDetail = findViewById(R.id.tv_detail)
             imgUser = findViewById(R.id.img_user)
-            rootV = findViewById(R.id.rc_winning_dialog)
+            vRoot = findViewById(R.id.rc_winning_dialog)
         }
     }
 
@@ -99,6 +100,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         if (::tvTitle.isInitialized) tvTitle.text = mTitle
         if (::tvDetail.isInitialized) tvDetail.text = mSubtitle
         if (::imgUser.isInitialized) imgUser.loadImage(mImageUrl)
+        if(::vRoot.isInitialized) vRoot.background = MethodChecker.getDrawable(context, getInteractive(mInteractiveUiModel ?: InteractiveUiModel.Unknown))
     }
 
     companion object {

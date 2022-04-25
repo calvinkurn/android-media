@@ -839,8 +839,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowWinningDialogEvent -> {
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
-                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
-                            setInteractive(interactive = event.interactiveType)
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
                         }.show(childFragmentManager)
                     }
                     is OpenPageEvent -> {
@@ -876,7 +875,8 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
-                        doShowToaster(
+                        if (interactiveActiveView?.isHidden() == true)
+                            doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = errMessage
                         )

@@ -89,7 +89,7 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setReward(reward: String){
         binding.viewGameReward.root.shouldShowWithAction(reward.isNotBlank()){
-            binding.viewGameReward.tvGameReward.text = "Hadiah: $reward"
+            binding.viewGameReward.tvGameReward.text = reward
         }
     }
 

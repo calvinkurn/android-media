@@ -11,6 +11,8 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
 
     private val joinedSet = mutableSetOf<Long>()
 
+    private val interactiveStatusMap = mutableMapOf<String, InteractiveStatus>()
+
     /**
      * Detail resembles the detail when inputted
      */

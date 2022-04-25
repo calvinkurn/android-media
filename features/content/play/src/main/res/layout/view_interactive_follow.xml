@@ -6,46 +6,57 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:parentTag="android.widget.LinearLayout"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        />
+        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gl_top" />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/header_view"
+        app:layout_constraintStart_toStartOf="@+id/header_view"
+        app:layout_constraintTop_toBottomOf="@+id/header_view"
+        app:layout_constraintVertical_bias="0.0"
         app:rll_bottomLeftRadius="@dimen/play_dp_12"
-        app:rll_bottomRightRadius="@dimen/play_dp_12"
-        >
+        app:rll_bottomRightRadius="@dimen/play_dp_12">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_partner"
             android:layout_width="@dimen/layout_lvl5"
             android:layout_height="@dimen/layout_lvl5"
             android:layout_marginTop="@dimen/play_dp_12"
-            app:unify_image_type="circle"
-            />
+            app:unify_image_type="circle" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_badge"
                 android:layout_width="@dimen/play_dp_12"
-                android:layout_height="@dimen/play_dp_12"
-                />
+                android:layout_height="@dimen/play_dp_12" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_name"
@@ -55,8 +66,7 @@
                 android:textColor="@color/Unify_Static_Black"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:text="Rockbros Indonesia"
-                />
+                tools:text="Rockbros Indonesia" />
 
         </LinearLayout>
 
@@ -69,8 +79,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/play_follow"
-            app:unifyButtonSize="medium"
-            />
+            app:unifyButtonSize="medium" />
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>
 
