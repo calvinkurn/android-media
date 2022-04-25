@@ -6,14 +6,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -31,7 +29,6 @@ import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.posttag.TagViewProvider
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
@@ -42,7 +39,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import timber.log.Timber
