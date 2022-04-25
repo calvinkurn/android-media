@@ -170,7 +170,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            resources.getLayout(R.layout.topads_create_fragment_budget_list),
+            resources.getLayout(com.tokopedia.topads.common.R.layout.topads_create_fragment_budget_list),
             container,
             false
         )
@@ -189,7 +189,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
         minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
 
-        if(sharedViewModel?.getIsWhiteListedUser()) {
+        if(sharedViewModel.getIsWhiteListedUser()) {
             biayaRekomendasi.visibility = View.VISIBLE
             budgetInputRekomendasi.visibility = View.VISIBLE
             biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
@@ -300,7 +300,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             result < minBid.toDouble() -> {
                 minSuggestedBidPencerian.visibility = View.GONE
-                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, false)
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error_new), minBid, true, false)
                 actionEnable(false)
             }
             (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
@@ -311,13 +311,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             result > maxBid.toDouble() -> {
                 minSuggestedBidPencerian.visibility = View.GONE
                 actionEnable(false)
-                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, false)
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, false)
             }
             result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                 minSuggestedBidPencerian.visibility = View.GONE
                 actionEnable(false)
                 setMessageErrorField(
-                    getString(R.string.topads_common_50_multiply_error),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
                     Constants.MULTIPLY_CONST,
                     true,
                     false
@@ -327,7 +327,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 minSuggestedBidPencerian.visibility = View.GONE
                 actionEnable(true)
                 setMessageErrorField(
-                    getString(R.string.recommendated_bid_message_new),
+                    getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new),
                     suggestBidPerClick,
                     false,
                     false
@@ -344,7 +344,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
             result < minBid.toDouble() -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
-                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, true)
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error_new), minBid, true, true)
                 actionEnable(false)
             }
             (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble() && budgetInputRekomendasi.visibility == View.VISIBLE) -> {
@@ -355,13 +355,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             result > maxBid.toDouble() -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
                 actionEnable(false)
-                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true, true)
+                setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true, true)
             }
             result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                 minSuggestedBidRekomendasi.visibility = View.GONE
                 actionEnable(false)
                 setMessageErrorField(
-                    getString(R.string.topads_common_50_multiply_error),
+                    getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
                     Constants.MULTIPLY_CONST,
                     true,
                     true
@@ -371,7 +371,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 minSuggestedBidRekomendasi.visibility = View.GONE
                 actionEnable(true)
                 setMessageErrorField(
-                    getString(R.string.recommendated_bid_message_new),
+                    getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new),
                     suggestBidPerClick,
                     false,
                     true
@@ -471,14 +471,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun setCount() {
         selectedKeyword.text =
-            String.format(getString(R.string.topads_common_selected_keyword), adapter.items.count())
+            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), adapter.items.count())
     }
 
     private fun mapToModelManual(selected: GetKeywordResponse.KeywordsItem): KeySharedModel {
         return KeySharedModel(
             selected.tag,
             "-1",
-            getString(R.string.topads_common_keyword_competition_unknown),
+            getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_unknown),
             selected.priceBid,
             minSuggestKeyword,
             selected.source,
