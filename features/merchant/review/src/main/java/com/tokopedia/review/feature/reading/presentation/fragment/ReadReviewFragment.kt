@@ -109,6 +109,10 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
+    protected var goToTopFab: FloatingButtonUnify? = null
+    protected var reviewHeader: ReadReviewHeader? = null
+    protected var currentScrollPosition = 0
+
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
@@ -119,18 +123,13 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     private var emptyFilteredState: View? = null
     private var emptyFilteredStateImage: ImageUnify? = null
     private var emptyRatingOnly: ReadReviewRatingOnlyEmptyState? = null
-    private var goToTopFab: FloatingButtonUnify? = null
     private var errorType = GlobalError.NO_CONNECTION
     private var isProductReview: Boolean = false
-
-    private var currentScrollPosition = 0
     private var imageClickedPosition = 0
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
     }
-
-    protected var reviewHeader: ReadReviewHeader? = null
 
     override fun onPause() {
         super.onPause()
