@@ -31,7 +31,10 @@ class PickerVideoPlayer constructor(
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
-                if(playbackState == Player.STATE_ENDED) start()
+                if(playbackState == Player.STATE_ENDED) {
+                    start()
+                    listener?.onVideoLoop()
+                }
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
