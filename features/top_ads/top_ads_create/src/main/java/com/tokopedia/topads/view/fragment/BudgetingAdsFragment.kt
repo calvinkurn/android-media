@@ -67,6 +67,7 @@ private const val CLICK_EDIT_KEYWORD_BID = "click - edit bid kata kunci"
 private const val CLICK_EDIT_KEYWORD_DELETE = "click - delete button kata kunci"
 private const val CLICK_ADDED_KEYWORD = "click - tambah kata kunci"
 
+const val PARAM_MODEL = "model"
 const val COUNT_TO_BE_SHOWN = 5
 
 class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
@@ -103,6 +104,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var imgTooltipIcon: ImageUnify? = null
 
     companion object {
+        private const val REQ_CODE_MODEL = 47
         private const val MAX_BID = "max"
         private const val MIN_BID = "min"
         private const val FROM_CREATE = "fromCreate"
@@ -164,8 +166,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_ADDED_KEYWORD, "")
             val intent = Intent(context, KeywordSuggestionActivity::class.java)
             stepperModel?.selectedKeywordStage = getItemSelected()
-            intent.putExtra("model", stepperModel)
-            startActivityForResult(intent, 47)
+            intent.putExtra(PARAM_MODEL, stepperModel)
+            startActivityForResult(intent, REQ_CODE_MODEL)
         }
     }
 
@@ -457,9 +459,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 47) {
+        if (requestCode == REQ_CODE_MODEL) {
             if (resultCode == Activity.RESULT_OK) {
-                stepperModel = data?.getParcelableExtra("model")
+                stepperModel = data?.getParcelableExtra(PARAM_MODEL)
                 resetView()
             }
         }
