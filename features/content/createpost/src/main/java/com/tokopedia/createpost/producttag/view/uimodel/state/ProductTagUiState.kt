@@ -19,5 +19,6 @@ data class ProductTagSourceUiState(
 
 data class LastTaggedProductUiState(
     val products: List<ProductUiModel>,
+    val nextCursor: String,
     val state: PagedState,
 )

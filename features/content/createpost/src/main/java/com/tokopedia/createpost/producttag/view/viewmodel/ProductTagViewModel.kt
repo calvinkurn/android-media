@@ -63,6 +63,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _lastTaggedProductUiState = _lastTaggedProduct.map {
         LastTaggedProductUiState(
             products = it.products,
+            nextCursor = it.nextCursor,
             state = it.state,
         )
     }

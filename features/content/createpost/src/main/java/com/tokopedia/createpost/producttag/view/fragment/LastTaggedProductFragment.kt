@@ -14,6 +14,7 @@ import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProduct
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
+import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
@@ -87,28 +88,24 @@ class LastTaggedProductFragment @Inject constructor(
     }
 
     private fun renderLastTaggedProducts(prev: LastTaggedProductUiState?, curr: LastTaggedProductUiState) {
+
+        fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
+            val finalProducts = products.map {
+                LastTaggedProductAdapter.Model.Product(product = it)
+            } + if(hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
+
+            adapter.setItemsAndAnimateChanges(finalProducts)
+        }
+
         if(prev == curr || prev?.products == curr.products) return
 
-
         when(curr.state) {
-            is PagedState.Loading -> {
-                val finalProducts = curr.products.map {
-                    LastTaggedProductAdapter.Model.Product(product = it)
-                } + listOf(LastTaggedProductAdapter.Model.Loading)
-
-                adapter.setItemsAndAnimateChanges(finalProducts)
-            }
+            is PagedState.Loading -> updateAdapterData(curr.products, true)
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     /** TODO: show empty state */
                 }
-                else {
-                    val finalProducts = curr.products.map {
-                        LastTaggedProductAdapter.Model.Product(product = it)
-                    } + if(curr.state.hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
-
-                    adapter.setItemsAndAnimateChanges(finalProducts)
-                }
+                else updateAdapterData(curr.products, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
                 /** TODO: show error state */
