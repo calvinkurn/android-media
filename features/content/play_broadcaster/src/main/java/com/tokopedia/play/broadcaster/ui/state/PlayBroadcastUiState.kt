@@ -3,13 +3,13 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
 
 /**
@@ -21,8 +21,10 @@ data class PlayBroadcastUiState(
     val selectedProduct: List<ProductTagSectionUiModel>,
     val schedule: ScheduleUiModel,
     val isExiting: Boolean,
-    val gameConfig: GameConfigUiState,
     val quizForm: QuizFormUiState,
+    val interactive: InteractiveUiModel,
+    val interactiveConfig: InteractiveConfigUiModel,
+    val interactiveSetup: InteractiveSetupUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -38,8 +40,10 @@ data class PlayBroadcastUiState(
                 selectedProduct = emptyList(),
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
-                gameConfig = GameConfigUiState.Empty,
                 quizForm = QuizFormUiState.Empty,
+                interactive = InteractiveUiModel.Unknown,
+                interactiveConfig = InteractiveConfigUiModel.empty(),
+                interactiveSetup = InteractiveSetupUiModel.Empty,
             )
     }
 }
@@ -84,23 +88,6 @@ data class ScheduleConfigUiModel(
                     maxDate = defaultDate,
                     minDate = defaultDate,
                     defaultDate = defaultDate,
-                )
-            }
-    }
-}
-
-data class GameConfigUiState(
-    val tapTapConfig: TapTapConfigUiModel,
-    val quizConfig: QuizConfigUiModel,
-    val gameTypeList: List<GameType>,
-) {
-    companion object {
-        val Empty: GameConfigUiState
-            get() {
-                return GameConfigUiState(
-                    tapTapConfig = TapTapConfigUiModel.empty(),
-                    quizConfig = QuizConfigUiModel.empty(),
-                    gameTypeList = emptyList(),
                 )
             }
     }

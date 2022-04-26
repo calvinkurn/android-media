@@ -6,7 +6,7 @@ package com.tokopedia.play.broadcaster.ui.model.game
 sealed class GameType {
     abstract val name: String
 
-    object Taptap: GameType() {
+    object Giveaway: GameType() {
         override val name: String
             get() = "Game Hadiah"
     }
