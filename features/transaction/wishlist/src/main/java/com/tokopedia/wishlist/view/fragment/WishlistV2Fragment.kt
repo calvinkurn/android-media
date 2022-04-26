@@ -1160,6 +1160,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         doRefresh()
     }
 
+    override fun onTickerCloseIconClicked() {
+        wishlistV2Adapter.hideTicker()
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()

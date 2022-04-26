@@ -2,6 +2,8 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -13,41 +15,52 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
 class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: WishlistV2TypeLayoutData) {
-        binding.run {
-            wishlistv2TickerMaxQty.apply {
-                if (item.dataObject is WishlistV2Response.Data.WishlistV2.TickerState) {
-                    visible()
-                    when (item.dataObject.type) {
-                        WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
-                            tickerType = Ticker.TYPE_ANNOUNCEMENT
-                            closeButtonVisibility = View.VISIBLE
-                        }
-                        WishlistV2Consts.TICKER_TYPE_WARNING -> {
-                            tickerType = Ticker.TYPE_WARNING
-                            closeButtonVisibility = View.VISIBLE
-                        }
-                        WishlistV2Consts.TICKER_TYPE_ERROR -> {
-                            tickerType = Ticker.TYPE_ERROR
-                            closeButtonVisibility = View.GONE
-                        }
-                    }
-
-                    setHtmlDescription(item.dataObject.message + " <a href=\"cta_text\">" + item.dataObject.button.text + "</a>")
-                    setDescriptionClickEvent(object: TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            when (item.dataObject.button.action) {
-                                WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
-                                    actionListener?.onTickerCTAShowBottomSheet()
-                                }
-                                WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
-                                    actionListener?.onTickerCTASortFromLatest()
-                                }
+    fun bind(item: WishlistV2TypeLayoutData, hasClosed: Boolean) {
+        if (hasClosed) {
+            binding.root.gone()
+            val params = (binding.root.layoutParams as StaggeredGridLayoutManager.LayoutParams).apply {
+                height = 0
+                width = 0
+            }
+            binding.root.layoutParams = params
+        } else {
+            binding.run {
+                wishlistv2TickerMaxQty.apply {
+                    if (item.dataObject is WishlistV2Response.Data.WishlistV2.TickerState) {
+                        binding.root.visible()
+                        when (item.dataObject.type) {
+                            WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
+                                tickerType = Ticker.TYPE_ANNOUNCEMENT
+                                closeButtonVisibility = View.VISIBLE
+                            }
+                            WishlistV2Consts.TICKER_TYPE_WARNING -> {
+                                tickerType = Ticker.TYPE_WARNING
+                                closeButtonVisibility = View.VISIBLE
+                            }
+                            WishlistV2Consts.TICKER_TYPE_ERROR -> {
+                                tickerType = Ticker.TYPE_ERROR
+                                closeButtonVisibility = View.GONE
                             }
                         }
 
-                        override fun onDismiss() {}
-                    })
+                        setHtmlDescription(item.dataObject.message + " <a href=\"cta_text\">" + item.dataObject.button.text + "</a>")
+                        setDescriptionClickEvent(object: TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                when (item.dataObject.button.action) {
+                                    WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
+                                        actionListener?.onTickerCTAShowBottomSheet()
+                                    }
+                                    WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
+                                        actionListener?.onTickerCTASortFromLatest()
+                                    }
+                                }
+                            }
+
+                            override fun onDismiss() {
+                                actionListener?.onTickerCloseIconClicked()
+                            }
+                        })
+                    }
                 }
             }
         }

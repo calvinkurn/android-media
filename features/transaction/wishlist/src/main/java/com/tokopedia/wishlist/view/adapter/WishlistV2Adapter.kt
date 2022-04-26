@@ -33,6 +33,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
     private var isShowCheckbox = false
+    private var isTickerCloseClicked = false
     var isRefreshing = false
 
     companion object {
@@ -72,6 +73,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onTickerCTAShowBottomSheet()
         fun onTickerCTASortFromLatest()
+        fun onTickerCloseIconClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -223,7 +225,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2TickerViewHolder).bind(element)
+                    (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked)
                 }
             }
         }
@@ -303,6 +305,11 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun hideCheckbox() {
         isShowCheckbox = false
         clearCheckbox()
+        notifyDataSetChanged()
+    }
+
+    fun hideTicker() {
+        isTickerCloseClicked = true
         notifyDataSetChanged()
     }
 
