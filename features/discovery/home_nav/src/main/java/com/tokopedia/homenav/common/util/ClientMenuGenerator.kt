@@ -38,6 +38,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val IDENTIFIER_TITLE_HELP_CENTER = 102
         const val IDENTIFIER_TITLE_WISHLIST = 103
         const val IDENTIFIER_TITLE_FAVORITE_SHOP = 104
+        const val IDENTIFIER_TITLE_ORDER_HISTORY = 105
     }
 
 
@@ -74,11 +75,13 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                     IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
                     IDENTIFIER_TITLE_WISHLIST -> context.getString(R.string.title_wishlist_section)
                     IDENTIFIER_TITLE_FAVORITE_SHOP -> context.getString(R.string.title_favorite_shop_section)
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> context.getString(R.string.menu_transaction_menu_all_transaction)
                     else -> ""
                 },
                 actionIconId = when(identifier){
                     IDENTIFIER_TITLE_WISHLIST,
-                    IDENTIFIER_TITLE_FAVORITE_SHOP -> IconUnify.CHEVRON_RIGHT
+                    IDENTIFIER_TITLE_FAVORITE_SHOP,
+                    IDENTIFIER_TITLE_ORDER_HISTORY -> IconUnify.CHEVRON_RIGHT
                     else -> null
                 }
         )

@@ -15,6 +15,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ORDER_HISTORY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_WISHLIST
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
@@ -525,10 +526,8 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         InitialShimmerTransactionDataModel(),
-                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
@@ -537,9 +536,8 @@ class MainNavViewModel @Inject constructor(
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
+                        it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
-                        it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
                 )
