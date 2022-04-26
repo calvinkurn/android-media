@@ -110,8 +110,8 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val imageFreeOngkirPromo: ImageView? by lazy(NONE) {
         findViewById(R.id.imageFreeOngkirPromo)
     }
-    private val productCardFooterLayout: FrameLayout by lazy(NONE) {
-        findViewById(R.id.productCardFooterLayout)
+    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+        findViewById(R.id.productCardFooterLayoutContainer)
     }
 
     constructor(context: Context) : super(context) {
@@ -146,7 +146,7 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
 
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        productCardFooterLayout.addView(footerView)
+        productCardFooterLayoutContainer.addView(footerView)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
