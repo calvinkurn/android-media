@@ -168,9 +168,16 @@ class AddEditProductShipmentViewModelTest {
         val resultOutRange = viewModel.validateWeightInput("100.000.000")
         val resultInRange = viewModel.validateWeightInput("1.000")
 
+        viewModel.setProductInputModel(ProductInputModel(variantInputModel = VariantInputModel(
+            listOf(ProductVariantInputModel())
+        )))
+        viewModel.hasVariant.getOrAwaitValue()
+        val resultHasVariant = viewModel.validateWeightInput("1.000")
+
         assertEquals("empty", resultEmpty)
         assertEquals("min range", resultZero)
         assertEquals("out range", resultOutRange)
         assertEquals("", resultInRange)
+        assertEquals("", resultHasVariant)
     }
 }
