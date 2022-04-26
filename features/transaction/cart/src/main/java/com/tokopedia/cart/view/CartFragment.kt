@@ -1457,8 +1457,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessAddWishlist(productId: String) {
-                    this@CartFragment.onSuccessAddWishlist(productId)
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
                     cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
@@ -1564,8 +1567,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessAddWishlist(productId: String) {
-                    this@CartFragment.onSuccessAddWishlist(productId)
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
                     cartPageAnalytics.eventAddWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
