@@ -238,6 +238,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
+                .appendBusinessUnit(BusinessUnit.DEFAULT)
                 .appendCampaignCode(
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
