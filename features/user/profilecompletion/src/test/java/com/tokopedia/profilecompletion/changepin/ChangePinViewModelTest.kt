@@ -9,8 +9,12 @@ import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
 import com.tokopedia.profilecompletion.changepin.data.ResetPinResponse
+import com.tokopedia.profilecompletion.changepin.data.usecase.ResetPinV2UseCase
+import com.tokopedia.profilecompletion.changepin.data.usecase.UpdatePinV2UseCase
 import com.tokopedia.profilecompletion.changepin.view.viewmodel.ChangePinViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +63,11 @@ class ChangePinViewModelTest {
     private var changePinObserver = mockk<Observer<Result<AddChangePinData>>>(relaxed = true)
     private var resetPin2FAObserver = mockk<Observer<Result<ChangePin2FAData>>>(relaxed = true)
 
+    val resetPinV2UseCase = mockk<ResetPinV2UseCase>(relaxed = true)
+    val updatePinV2UseCase = mockk<UpdatePinV2UseCase>(relaxed = true)
+    val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
+    val checkPinHashV2UseCase = mockk<CheckPinHashV2UseCase>(relaxed = true)
+
     @Before
     fun setUp() {
         viewModel = ChangePinViewModel(
@@ -66,10 +75,14 @@ class ChangePinViewModelTest {
                 checkPinUseCase,
                 checkPin2FAUseCase,
                 resetPinUseCase,
+                resetPinV2UseCase,
                 reset2FAPinUseCase,
                 changePinUseCase,
+                updatePinV2UseCase,
                 userSession,
                 rawQueries,
+                checkPinHashV2UseCase,
+                generatePublicKeyUseCase,
                 testDispatcher
         )
         viewModel.resetPinResponse.observeForever(resetPinObserver)

@@ -5,12 +5,20 @@ import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
+import com.tokopedia.profilecompletion.addpin.data.usecase.CreatePinV2UseCase
 import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
+import com.tokopedia.profilecompletion.changepin.data.model.CreatePinV2Response
+import com.tokopedia.profilecompletion.changepin.data.model.ErrorPinModel
+import com.tokopedia.profilecompletion.changepin.data.model.MutatePinV2Data
+import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -34,6 +42,11 @@ class AddChangePinViewModelTest {
     val getStatusPinUseCase = mockk<GraphqlUseCase<StatusPinPojo>>(relaxed = true)
     val validatePinUseCase = mockk<GraphqlUseCase<ValidatePinPojo>>(relaxed = true)
     val skipOtpPinUseCase = mockk<GraphqlUseCase<SkipOtpPinPojo>>(relaxed = true)
+    val checkPinV2UseCase = mockk<CheckPinV2UseCase>(relaxed = true)
+    val checkPinHashV2UseCase = mockk<CheckPinHashV2UseCase>(relaxed = true)
+    val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
+    val createPinV2UseCase = mockk<CreatePinV2UseCase>(relaxed = true)
+
     lateinit var viewModel: AddChangePinViewModel
 
     private val rawQueries = mapOf(
@@ -49,16 +62,21 @@ class AddChangePinViewModelTest {
     private var getStatusPinObserver = mockk<Observer<Result<StatusPinData>>>(relaxed = true)
     private var validatePinObserver = mockk<Observer<Result<ValidatePinData>>>(relaxed = true)
     private var skipOtpPinObserver = mockk<Observer<Result<SkipOtpPinData>>>(relaxed = true)
+    private var mutatePinV2Observer = mockk<Observer<Result<MutatePinV2Data>>>(relaxed = true)
 
     @Before
     fun setUp() {
         viewModel = AddChangePinViewModel(
             addPinUseCase,
+            createPinV2UseCase,
             checkPinUseCase,
+            checkPinV2UseCase,
             getStatusPinUseCase,
             validatePinUseCase,
             skipOtpPinUseCase,
             rawQueries,
+            checkPinHashV2UseCase,
+            generatePublicKeyUseCase,
             CoroutineTestDispatchersProvider
         )
         viewModel.addPinResponse.observeForever(addPinObserver)
@@ -66,6 +84,7 @@ class AddChangePinViewModelTest {
         viewModel.getStatusPinResponse.observeForever(getStatusPinObserver)
         viewModel.validatePinResponse.observeForever(validatePinObserver)
         viewModel.skipOtpPinResponse.observeForever(skipOtpPinObserver)
+        viewModel.mutatePin.observeForever(mutatePinV2Observer)
     }
 
     val token = "abcd1234"
@@ -436,6 +455,53 @@ class AddChangePinViewModelTest {
         Assert.assertThat((viewModel.skipOtpPinResponse.value as Fail).throwable, CoreMatchers.instanceOf(MessageErrorException::class.java))
         Assert.assertEquals(skipOtpPinPojo.data.errorMessage, (viewModel.skipOtpPinResponse.value as Fail).throwable.message)
         verify(atLeast = 1){ skipOtpPinObserver.onChanged(any()) }
+    }
+
+    @Test
+    fun `on Success Create Pin V2`() {
+        val mockData = MutatePinV2Data(success = true)
+        val mockResponse = CreatePinV2Response(mockData)
+
+        /* When */
+        coEvery { createPinV2UseCase(any()) } returns mockResponse
+
+        viewModel.addPinV2("", "", "")
+
+        /* Then */
+        verify { mutatePinV2Observer.onChanged(Success(mockData)) }
+    }
+
+    @Test
+    fun `on Error Create Pin V2 - has Error message`() {
+        val msg = "error"
+        val listOfError = listOf(ErrorPinModel("", msg))
+        val mockData = MutatePinV2Data(success = false, errors = listOfError)
+        val mockResponse = CreatePinV2Response(mockData)
+
+        /* When */
+        coEvery { createPinV2UseCase(any()) } returns mockResponse
+
+        viewModel.addPinV2("", "", "")
+
+        /* Then */
+        Assert.assertThat(viewModel.mutatePin.value, CoreMatchers.instanceOf(Fail::class.java))
+        Assert.assertEquals(msg, (viewModel.mutatePin.value as Fail).throwable.message)
+    }
+
+    @Test
+    fun `on Error Create Pin V2 - others error`() {
+        val msg = ""
+        val listOfError = listOf(ErrorPinModel("", msg))
+        val mockData = MutatePinV2Data(success = false, errors = listOfError)
+        val mockResponse = CreatePinV2Response(mockData)
+
+        /* When */
+        coEvery { createPinV2UseCase(any()) } returns mockResponse
+
+        viewModel.addPinV2("", "", "")
+
+        /* Then */
+        Assert.assertThat(viewModel.mutatePin.value, CoreMatchers.instanceOf(Fail::class.java))
     }
 
 }

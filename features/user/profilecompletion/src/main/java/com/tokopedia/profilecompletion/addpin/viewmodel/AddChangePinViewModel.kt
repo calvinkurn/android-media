@@ -15,7 +15,6 @@ import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
 import com.tokopedia.profilecompletion.common.usecase.CheckPinV2UseCase
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.sessioncommon.data.KeyData
-import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -273,15 +272,6 @@ class AddChangePinViewModel @Inject constructor(
 			Fail(MessageErrorException(it.data.errorMessage))
 		else -> mutableSkipOtpPinResponse.value = Success(it.data)
 	    }
-	}
-    }
-
-    private suspend fun isNeedHash(id: String, type: String): Boolean {
-	return try {
-	    val param = PinStatusParam(id = id, type = type)
-	    checkPinHashV2UseCase(param).data.isNeedHash
-	} catch (e: Exception) {
-	    false
 	}
     }
 
