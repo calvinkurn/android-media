@@ -66,7 +66,6 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -487,7 +486,7 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Interactive
      */
-    private val interactiveFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 5)
+    private val tapGiveawayFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 5)
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -515,7 +514,7 @@ class PlayViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
         viewModelScope.launch {
-            interactiveFlow.collect(::onReceivedInteractiveAction)
+            tapGiveawayFlow.collect(::onReceivedTapGiveawayAction)
         }
 
         viewModelScope.launch {
@@ -841,6 +840,7 @@ class PlayViewModel @AssistedInject constructor(
 
             PlayViewerNewAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
             PlayViewerNewAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
+            PlayViewerNewAction.TapGiveaway -> handleTapGiveaway()
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
@@ -848,7 +848,6 @@ class PlayViewModel @AssistedInject constructor(
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
-            InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
@@ -1629,7 +1628,8 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                val isFinished = when (val interactive = _interactive.value.interactive) {
+                val interactive = _interactive.value.interactive
+                val isFinished = when (interactive) {
                     is InteractiveUiModel.Giveaway -> {
                         interactive.status == InteractiveUiModel.Giveaway.Status.Finished
                     }
@@ -1642,7 +1642,7 @@ class PlayViewModel @AssistedInject constructor(
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
                 _winnerStatus.value = winnerStatus
 
-                if(isFinished) processWinnerStatus(winnerStatus)
+                if(isFinished) processWinnerStatus(winnerStatus, interactive)
             }
             is QuizResponse -> {
                 val interactive = playSocketToModelMapper.mapQuizFromSocket(result) as InteractiveUiModel.Quiz
@@ -1654,14 +1654,15 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Called when user tap
      */
-    private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
+    private suspend fun onReceivedTapGiveawayAction(action: Unit) = withContext(dispatchers.io) {
         try {
-            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@withContext
-            if (repo.hasJoined(activeInteractiveId)) return@withContext
+            val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway
+                ?: return@withContext
+            if (repo.hasJoined(giveaway.id)) return@withContext
 
             val channelId = mChannelData?.id ?: return@withContext
-            val isSuccess = repo.postInteractiveTap(channelId, activeInteractiveId)
-            if (isSuccess) repo.setJoined(activeInteractiveId)
+            val isSuccess = repo.postGiveawayTap(channelId, giveaway.id)
+            if (isSuccess) repo.setJoined(giveaway.id)
         } catch (ignored: MessageErrorException) {}
     }
 
@@ -1741,10 +1742,12 @@ class PlayViewModel @AssistedInject constructor(
                 )
             }
 
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+
             suspend fun checkWinnerStatus(): Boolean {
                 val winnerStatus = _winnerStatus.value
                 return if (winnerStatus != null) {
-                    processWinnerStatus(winnerStatus)
+                    processWinnerStatus(winnerStatus, interactive.interactive)
                     true
                 } else false
             }
@@ -1759,6 +1762,20 @@ class PlayViewModel @AssistedInject constructor(
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
+    }
+
+    private fun handleTapGiveaway() {
+        viewModelScope.launch {
+            tapGiveawayFlow.emit(Unit)
+        }
+
+        val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway ?: return
+
+        playAnalytic.clickTapTap(
+            channelId = channelId,
+            channelType = channelType,
+            interactiveId = giveaway.id,
+        )
     }
 
     private fun handleQuizEnded() {
@@ -1779,7 +1796,7 @@ class PlayViewModel @AssistedInject constructor(
 
             if (isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
                 delay(interactive.interactive.waitingDuration) //waiting duration: wait for user winner message
-                winnerStatus?.let { processWinnerStatus(it) }
+                winnerStatus?.let { processWinnerStatus(it, interactive.interactive) }
             } else {
                 showLeaderBoard()
             }
@@ -1795,21 +1812,23 @@ class PlayViewModel @AssistedInject constructor(
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
-        repo.setFinished(_interactive.value.interactive.id.toString())
+        repo.setHasProcessedWinner(_interactive.value.interactive.id)
     }
 
-    private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
+    private suspend fun processWinnerStatus(
+        status: PlayUserWinnerStatusUiModel,
+        interactive: InteractiveUiModel,
+    ) {
+        if (repo.hasProcessedWinner(interactive.id)) return
+
         val interactiveType = _interactive.value.interactive
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
 
-        val interactive = _interactive.updateAndGet {
-            InteractiveStateUiModel.Empty
-        }
+        _interactive.value = InteractiveStateUiModel.Empty
 
-        if (status.interactiveId == interactive.interactive.id &&
-            repo.hasJoined(interactive.interactive.id)) {
+        if (status.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
@@ -1818,8 +1837,8 @@ class PlayViewModel @AssistedInject constructor(
                     ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
                 }
             )
+            repo.setHasProcessedWinner(_interactive.value.interactive.id)
         }
-        repo.setFinished(_interactive.value.interactive.id.toString())
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
@@ -1935,7 +1954,7 @@ class PlayViewModel @AssistedInject constructor(
 
             if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
                 setNoInteractive()
-                repo.setFinished(activeInteractiveId)
+                repo.setHasProcessedWinner(activeInteractiveId)
 
                 _uiEvent.emit(
                     if(winnerStatus.userId.toString() == userId){
@@ -1960,19 +1979,6 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.clickWinnerBadge(
                 channelId = channelId,
                 channelType = channelType,
-        )
-    }
-
-    private fun handleTapTapAction() {
-        viewModelScope.launch {
-            interactiveFlow.emit(Unit)
-        }
-
-        val interactiveId = repo.getActiveInteractiveId() ?: return
-        playAnalytic.clickTapTap(
-                channelId = channelId,
-                channelType = channelType,
-                interactiveId = interactiveId,
         )
     }
 

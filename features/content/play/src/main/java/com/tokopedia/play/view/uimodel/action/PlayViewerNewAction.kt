@@ -13,6 +13,7 @@ sealed class PlayViewerNewAction {
 
     object GiveawayUpcomingEnded : PlayViewerNewAction()
     object GiveawayOngoingEnded : PlayViewerNewAction()
+    object TapGiveaway : PlayViewerNewAction()
 
     data class ClickQuizOptionAction(val item: QuizChoicesUiModel): PlayViewerNewAction()
     object QuizEnded : PlayViewerNewAction()
@@ -27,8 +28,6 @@ sealed class PlayViewerNewAction {
  */
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 data class InteractiveGameResultBadgeClickedAction(val height: Int) : PlayViewerNewAction()
-
-object InteractiveTapTapAction : PlayViewerNewAction()
 
 object ClickFollowInteractiveAction : PlayViewerNewAction()
 object ClickRetryInteractiveAction : PlayViewerNewAction()

@@ -840,7 +840,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
-                        }.show(childFragmentManager)
+                        }.showNow(childFragmentManager)
                     }
                     is OpenPageEvent -> {
                         openPageByApplink(

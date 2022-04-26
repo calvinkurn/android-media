@@ -66,6 +66,10 @@ class GiveawayWidgetView : ConstraintLayout {
 
     private fun setupView() {
         setTitle("")
+
+        binding.iconTap.setOnClickListener {
+            mListener?.onTapTapClicked(this)
+        }
     }
 
     interface Listener {
