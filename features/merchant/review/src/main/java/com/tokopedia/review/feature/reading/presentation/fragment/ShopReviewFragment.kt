@@ -128,6 +128,17 @@ class ShopReviewFragment : ReadReviewFragment() {
         nestedScrollViewContainer?.visible()
     }
 
+    override fun onFailGetProductReviews(throwable: Throwable) {
+        logToCrashlytics(throwable)
+        if (currentPage == Int.ZERO) {
+            showError()
+        } else {
+            showErrorToaster(getString(R.string.review_reading_connection_error)) {
+                loadData(currentPage)
+            }
+        }
+    }
+
     override fun hasInitialSwipeRefresh(): Boolean = false
 
     private fun setupRecyclerViewOnScrollListener() {
@@ -137,9 +148,9 @@ class ShopReviewFragment : ReadReviewFragment() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val firstCompletelyVisibleItemPosition =
-                            (getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
-                                    .orZero()
+                    val firstCompletelyVisibleItemPosition = (
+                            recyclerView.layoutManager as? LinearLayoutManager
+                    )?.findFirstCompletelyVisibleItemPosition().orZero()
                     val rvIsReachTop = currentScrollPosition == 0 || firstCompletelyVisibleItemPosition == 0
                     val rvIsScrollingUp = dy < Int.ZERO
                     currentScrollPosition += dy
@@ -167,5 +178,15 @@ class ShopReviewFragment : ReadReviewFragment() {
                 Toaster.toasterLength,
                 Toaster.TYPE_NORMAL
         ).show()
+    }
+
+    private fun showErrorToaster(message: String, action: () -> Unit) {
+        Toaster.build(
+                requireView(),
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_refresh)
+        ) { action.invoke() }.show()
     }
 }

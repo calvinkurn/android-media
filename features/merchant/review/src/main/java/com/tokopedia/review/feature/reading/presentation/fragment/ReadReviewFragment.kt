@@ -222,17 +222,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         redirectToPDP(productId)
     }
 
-    private fun redirectToPDP(productId: String) {
-        context?.let {
-            val intent = RouteManager.getIntent(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productId
-            )
-            startActivity(intent)
-        }
-    }
-
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -740,6 +729,25 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         reviewHeader?.showShopPageReviewHeader()
     }
 
+    fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
+    }
+
+    private fun redirectToPDP(productId: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productId
+            )
+            startActivity(intent)
+        }
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -930,7 +938,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    private fun onFailGetProductReviews(throwable: Throwable) {
+    open fun onFailGetProductReviews(throwable: Throwable) {
         logToCrashlytics(throwable)
         if (currentPage == 0) {
             showError()
@@ -1081,14 +1089,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
 
     private fun goToHome() {
         RouteManager.route(context, ApplinkConst.HOME)
-    }
-
-    private fun logToCrashlytics(throwable: Throwable) {
-        if (!BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        } else {
-            throwable.printStackTrace()
-        }
     }
 
     private fun isLiked(likeStatus: Int): Boolean {
