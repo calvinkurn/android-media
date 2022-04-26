@@ -44,6 +44,11 @@ object DeeplinkMapperOrder {
         else deeplink
     }
 
+    fun getReschedulePickupDeeplink(context: Context, uri: Uri, deeplink: String): String {
+        val orderId = uri.getQueryParameter(QUERY_PARAM_ORDER_ID) ?: uri.pathSegments.last()
+        return ApplinkConstInternalOrder.RPU.replace("{order_id}", orderId)
+    }
+
     /**
      * tokopedia://seller/order/{order_id}/
      */

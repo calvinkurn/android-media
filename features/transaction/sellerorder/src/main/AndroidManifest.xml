@@ -142,6 +142,18 @@
             android:exported="false"
             android:label="@string/title_reschedule_pickup_activity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_rpu"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.reschedule_pickup.presentation.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.fragment.ReschedulePickupFragment
 
@@ -12,7 +13,8 @@ class ReschedulePickupActivity : BaseSimpleActivity() {
         if (intent.extras != null) {
             bundle = intent.extras ?: Bundle()
         } else {
-            bundle.putString(SomConsts.PARAM_ORDER_ID, "")
+            val orderId = intent?.data?.getQueryParameter(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
+            bundle.putString(SomConsts.PARAM_ORDER_ID, orderId)
         }
         return ReschedulePickupFragment.newInstance(bundle)
     }

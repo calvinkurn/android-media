@@ -301,6 +301,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_COMPLAINT = "tokopedia://seller/complaint";
     String SELLER_PURCHASE_FINISHED = "tokopedia://seller/finished";
     String SELLER_ORDER_DETAIL = "tokopedia://seller/order";
+    String SELLER_ORDER_RPU = "tokopedia://seller/rpu";
 
     String SALDO = "tokopedia://saldo";
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
