@@ -1,12 +1,15 @@
 package com.tokopedia.tokofood.home.presentation.adapter.viewholder
 
-import android.media.Image
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.data.USPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -32,8 +35,14 @@ class TokoFoodHomeUSPViewHolder(
     private var tgFirstUsp: Typography? = null
     private var tgSecondUsp: Typography? = null
     private var tgThirdUsp: Typography? = null
+    private var shimmeringUSPOne: View? = null
+    private var shimmeringUSPTwo: ConstraintLayout? = null
+    private var shimmeringUSPThree: ConstraintLayout? = null
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
+        shimmeringUSPOne = itemView.findViewById(R.id.shimmering_usp_one)
+        shimmeringUSPTwo = itemView.findViewById(R.id.shimmering_usp_two)
+        shimmeringUSPThree = itemView.findViewById(R.id.shimmering_usp_three)
         imgFirstUsp = itemView.findViewById(R.id.img_first_usp)
         imgSecondUsp = itemView.findViewById(R.id.img_second_usp)
         imgThirdUsp = itemView.findViewById(R.id.img_third_usp)
@@ -42,13 +51,26 @@ class TokoFoodHomeUSPViewHolder(
         tgSecondUsp = itemView.findViewById(R.id.tg_second_usp)
         tgThirdUsp = itemView.findViewById(R.id.tg_third_usp)
 
+        when(element.state){
+            TokoFoodHomeLayoutState.SHOW -> onShowLayout(element)
+            TokoFoodHomeLayoutState.LOADING -> onLoadLayout()
+        }
+    }
+
+    private fun onLoadLayout(){
+        hideLayout()
+        showShimmering()
+    }
+
+    private fun onShowLayout(element: TokoFoodHomeUSPUiModel) {
+        showLayout()
+        hideShimmering()
         element.uspModel?.response?.list?.let {
             if (it.size == USP_SIZE) {
                 imgFirstUsp?.loadImage(it.get(0).iconUrl)
                 imgSecondUsp?.loadImage(it.get(1).iconUrl)
                 imgThirdUsp?.loadImage(it.get(2).iconUrl)
                 imgGoFood?.loadImage(GO_FOOD_IMAGE)
-
                 tgFirstUsp?.text = it.get(0).title
                 tgSecondUsp?.text = it.get(1).title
                 tgThirdUsp?.text = it.get(2).title
@@ -60,6 +82,38 @@ class TokoFoodHomeUSPViewHolder(
                 listener?.onUSPClicked(it)
             }
         }
+    }
+
+    private fun showLayout() {
+        imgFirstUsp?.show()
+        imgSecondUsp?.show()
+        imgThirdUsp?.show()
+        imgGoFood?.show()
+        tgFirstUsp?.show()
+        tgSecondUsp?.show()
+        tgThirdUsp?.show()
+    }
+
+    private fun showShimmering() {
+        shimmeringUSPOne?.show()
+        shimmeringUSPTwo?.show()
+        shimmeringUSPThree?.show()
+    }
+
+    private fun hideLayout() {
+        imgFirstUsp?.hide()
+        imgSecondUsp?.hide()
+        imgThirdUsp?.hide()
+        imgGoFood?.hide()
+        tgFirstUsp?.hide()
+        tgSecondUsp?.hide()
+        tgThirdUsp?.hide()
+    }
+
+    private fun hideShimmering() {
+        shimmeringUSPOne?.hide()
+        shimmeringUSPTwo?.hide()
+        shimmeringUSPThree?.hide()
     }
 
     interface TokoFoodUSPListener {

@@ -325,6 +325,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     // endregion
 
+    // region listener TokoFood
+
     override fun onUSPClicked(uspResponse: USPResponse) {
         showUSPBottomSheet(uspResponse)
     }
