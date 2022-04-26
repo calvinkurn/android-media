@@ -780,8 +780,8 @@ open class TopChatViewModel @Inject constructor(
     ) {
         addToWishlistV2UseCase.setParams(productId, userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                wishlistActionListener.onSuccessAddWishlist(productId)},
+            onSuccess = { result ->
+                if (result is Success) wishlistActionListener.onSuccessAddWishlist(result.data, productId)},
             onError = {
                 wishlistActionListener.onErrorAddWishList(it, productId)
             })
@@ -1173,6 +1173,12 @@ open class TopChatViewModel @Inject constructor(
 
     fun updateMessageId(messageId: String) {
         roomMetaData.updateMessageId(messageId)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addToWishlistV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
     }
 
     companion object {

@@ -146,8 +146,12 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 
 /**
@@ -1958,12 +1962,31 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
             }
 
-            override fun onSuccessAddWishlist(productId: String) {
-                success()
-                val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            override fun onSuccessAddWishlist(
+                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                productId: String
+            ) {
+                var msg = ""
+                if (result.message.isEmpty()) {
+                    if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                    else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                } else {
+                    msg = result.message
+                }
+
+                var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                var typeToaster = TYPE_NORMAL
+                if (result.toasterColor == TOASTER_RED || !result.success) {
+                    typeToaster = TYPE_ERROR
+                    ctaText = ""
+                }
+
                 view?.let {
-                    Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
+                    if (ctaText.isEmpty()) {
+                        Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+                    } else {
+                        Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
+                    }
                 }
             }
 
@@ -2020,7 +2043,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun removeFromWishlistV2(productId: String) {
         viewModel.removeFromWishListV2(productId, session.userId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-            override fun onSuccessAddWishlist(productId: String) {}
+            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
                 view?.let {
