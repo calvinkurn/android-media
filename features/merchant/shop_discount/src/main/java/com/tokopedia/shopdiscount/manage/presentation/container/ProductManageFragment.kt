@@ -155,7 +155,6 @@ class ProductManageFragment : BaseDaggerFragment() {
 
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
-                    viewModel.storeTabsData(discountStatusWithCounter)
                 }
                 is Fail -> {
                     binding?.ticker?.gone()
