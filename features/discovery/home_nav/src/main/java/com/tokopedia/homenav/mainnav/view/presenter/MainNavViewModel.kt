@@ -526,8 +526,8 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        InitialShimmerTransactionDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
+                        InitialShimmerTransactionDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
@@ -537,7 +537,6 @@ class MainNavViewModel @Inject constructor(
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
                 )
