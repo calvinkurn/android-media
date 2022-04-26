@@ -37,7 +37,11 @@ data class KeroEditAddressResponse(
 
                 @Expose
                 @SerializedName("is_success")
-                val isSuccess: Int = 0
+                val isSuccess: Int = 0,
+
+                @Expose
+                @SerializedName("is_state_chosen_address_changed")
+                val isStateChosenAddressChanged: Boolean = false
             )
         }
     }

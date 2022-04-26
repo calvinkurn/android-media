@@ -334,6 +334,7 @@ object KeroLogisticQuery {
           kero_edit_address(input:${'$'}input) {
             data{
               is_success
+              is_state_chosen_address_changed
             }
             status
             config

@@ -290,7 +290,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess == 1) {
-                        onSuccessEditAddress()
+                        onSuccessEditAddress(it.data.isStateChosenAddressChanged)
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
                     } else {
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
@@ -1114,10 +1114,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
-    private fun onSuccessEditAddress() {
+    private fun onSuccessEditAddress(isEditChosenAddress: Boolean) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_EDIT_ADDRESS, saveDataModel)
+                // todo after fetch release please use constant
+                putExtra("EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED", isEditChosenAddress)
             })
             finish()
         }
