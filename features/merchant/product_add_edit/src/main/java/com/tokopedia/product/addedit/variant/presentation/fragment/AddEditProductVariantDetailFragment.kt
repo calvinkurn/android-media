@@ -363,7 +363,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun observeInputDataValid() {
         viewModel.inputDataValid.observe(viewLifecycleOwner, {
-            buttonSave?.isEnabled = it
+            buttonSave?.isEnabled = true
         })
     }
 
@@ -477,6 +477,23 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 onSkuInputTextChanged(it.sku, index)
             }
             variantDetailFieldsAdapter?.notifyItemChanged(index)
+        }
+
+        recyclerViewVariantDetailFields?.post {
+            scrollToFirstError()
+        }
+    }
+
+    private fun scrollToFirstError() {
+        val errorFieldIndex = variantDetailFieldsAdapter?.list?.indexOfFirst {
+            (it as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let { inputModel ->
+                inputModel.isWeightError || inputModel.isPriceError || inputModel.isStockError
+            } ?: false
+        }
+        val layoutManager: LinearLayoutManager =
+            recyclerViewVariantDetailFields?.layoutManager as LinearLayoutManager
+        errorFieldIndex?.let {
+            layoutManager.scrollToPosition(it)
         }
     }
 

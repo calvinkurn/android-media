@@ -27,9 +27,6 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
     val instantTaskExcecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var resourceProvider: ResourceProvider
-
-    @RelaxedMockK
     lateinit var imsResourceProvider: IMSResourceProvider
 
     @RelaxedMockK
@@ -65,7 +62,6 @@ abstract class AddEditProductVariantDetailViewModelTestFixture {
 
     protected val viewModel: AddEditProductVariantDetailViewModel by lazy {
         spyk(AddEditProductVariantDetailViewModel(
-                resourceProvider,
                 imsResourceProvider,
                 userSession,
                 testCoroutineDispatcher

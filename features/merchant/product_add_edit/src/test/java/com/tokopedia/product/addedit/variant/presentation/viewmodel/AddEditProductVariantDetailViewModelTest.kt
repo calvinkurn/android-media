@@ -17,7 +17,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -84,19 +84,6 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         // test input size change
         assert(viewModel.getInputFieldSize() == 2)
     }
-
-    /*@Test
-    fun `When validate MultipleSelect data Expect valid error message`() {
-        val messagePriceMin = viewModel.validateVariantPriceInput(0.toBigInteger())
-        val messagePriceExact = viewModel.validateVariantPriceInput(MIN_PRODUCT_PRICE_LIMIT.toBigInteger())
-        assert(messagePriceMin == viewModel.provider.getMinLimitProductPriceErrorMessage())
-        assert(messagePriceExact.isEmpty())
-
-        val messageStockMin = viewModel.validateProductVariantStockInput(0.toBigInteger())
-        val messageStockExact = viewModel.validateProductVariantStockInput(MIN_PRODUCT_STOCK_LIMIT.toBigInteger())
-        assert(messageStockMin == viewModel.provider.getMinLimitProductStockErrorMessage())
-        assert(messageStockExact.isEmpty())
-    }*/
 
     private fun initVariantDetailInputMap(){
         viewModel.productInputModel.value = productInputModel
@@ -289,24 +276,6 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     }
 
     @Test
-    fun `When update multiple input variant Expect correct variant`() {
-        initVariantDetailInputMap()
-        val multipleVariantEditInputModel = MultipleVariantEditInputModel(price="666", stock="6",
-                sku="SK-U", weight = "1000",  selection= mutableListOf(
-                mutableListOf(0, 0),
-                mutableListOf(0, 1),
-                mutableListOf(1, 0),
-                mutableListOf(1, 1)))
-
-        viewModel.updateProductInputModel(multipleVariantEditInputModel)
-
-        val isChanged = viewModel.productInputModel.value?.variantInputModel?.products?.all {
-            it.price == 666.toBigInteger() && it.stock == 6 && it.sku == "SK-U"
-        } ?: false
-        assert(isChanged)
-    }
-
-    @Test
     fun `When productInput model became null Expect empty objects`() {
         viewModel.productInputModel = MutableLiveData<ProductInputModel>()
         assert(viewModel.productInputModel.value == null)
@@ -374,6 +343,34 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         viewModel.updateVariantDetailInputMap(999, VariantDetailInputLayoutModel())
         val result = viewModel.getVariantDetailHeaderData(999)
         assert(result.isEmpty())
+    }
+
+    @Test
+    fun `When refreshInputDataValidStatus, expect inputDataValid value correctness`() {
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = true, isWeightError = true, isStockError = true))
+        viewModel.refreshInputDataValidStatus()
+        val test0False = viewModel.inputDataValid.getOrAwaitValue()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = true, isStockError = true))
+        viewModel.refreshInputDataValidStatus()
+        val test1False = viewModel.inputDataValid.getOrAwaitValue()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = true, isStockError = false))
+        viewModel.refreshInputDataValidStatus()
+        val test2False = viewModel.inputDataValid.getOrAwaitValue()
+
+        viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
+            isPriceError = false, isWeightError = false, isStockError = false))
+        viewModel.refreshInputDataValidStatus()
+        val test3False = viewModel.inputDataValid.getOrAwaitValue()
+
+        assertFalse(test0False)
+        assertFalse(test1False)
+        assertFalse(test2False)
+        assertTrue(test3False)
     }
 
 }

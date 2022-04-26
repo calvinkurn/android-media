@@ -5,15 +5,14 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
-import com.tokopedia.product.addedit.common.util.InputPriceUtil
-import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.IMSResourceProvider
+import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
@@ -24,9 +23,10 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_WEIGHT_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
+import com.tokopedia.product.addedit.variant.presentation.extension.firstHeaderPosition
 import com.tokopedia.product.addedit.variant.presentation.extension.getSelectionLevelOptionTitle
 import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
-import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
+import com.tokopedia.product.addedit.variant.presentation.extension.lastCurrentHeaderPosition
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +35,6 @@ import java.math.BigInteger
 import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
-    val provider: ResourceProvider,
     private val imsResourceProvider: IMSResourceProvider,
     private val userSession: UserSessionInterface,
     coroutineDispatcher: CoroutineDispatcher
@@ -66,12 +65,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
-
-    private fun refreshInputDataValidStatus() {
-        mInputDataValid.value = !inputLayoutModelMap.any {
-            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
-        }
-    }
 
     private fun refreshCollapsedVariantDetailField() {
         updateProductInputModel() // save the last input
@@ -123,7 +116,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun isVariantDetailHeaderCollapsed(headerPosition: Int): Boolean {
         return if (headerStatusMap.containsKey(headerPosition)) {
-            headerStatusMap[headerPosition] ?: false
+            headerStatusMap[headerPosition].orFalse()
         } else false
     }
 
@@ -136,8 +129,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun collapseHeader(collapsedHeaderPosition: Int, currentHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minByOrNull { it.key } ?: 0
-        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxByOrNull { it.value }?.value ?: 0
+        val firstHeaderPosition = currentHeaderPositionMap.firstHeaderPosition()
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.lastCurrentHeaderPosition()
         // collapsing last header position creates no impact
         if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
@@ -156,8 +149,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     }
 
     fun expandHeader(expandedHeaderPosition: Int, currentHeaderPosition: Int) {
-        val firstHeaderPosition = currentHeaderPositionMap.minByOrNull { it.key } ?: 0
-        val lastCurrentHeaderPosition = currentHeaderPositionMap.maxByOrNull { it.value }?.value ?: 0
+        val firstHeaderPosition = currentHeaderPositionMap.firstHeaderPosition()
+        val lastCurrentHeaderPosition = currentHeaderPositionMap.lastCurrentHeaderPosition()
         // expanding last header position creates no impact
         if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
@@ -369,6 +362,12 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
                 combination = combination)
+    }
+
+    fun refreshInputDataValidStatus() {
+        mInputDataValid.value = !inputLayoutModelMap.any {
+            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
+        }
     }
 
     fun setupMultiLocationValue() {
