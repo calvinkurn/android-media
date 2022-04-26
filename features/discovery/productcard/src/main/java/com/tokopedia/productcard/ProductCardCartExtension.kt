@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.view.ViewStub
 import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.iconunify.IconUnify
@@ -32,7 +33,11 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         return productCardView.findViewById(id)
     }
 
-    val buttonAddToCart by lazy { productCardView.findViewById<UnifyButton?>(
+    private fun <T: View?> findView(viewStubId: ViewStubId, viewId: ViewId): T {
+        return productCardView.findViewById(viewStubId, viewId)
+    }
+
+    val buttonAddToCart by lazy { findView<UnifyButton?>(
         ViewStubId(R.id.buttonAddToCartStub),
         ViewId(R.id.buttonAddToCart)) }
     val buttonDeleteCart by lazy { findView<IconUnify?>(R.id.buttonDeleteCart) }
@@ -62,10 +67,11 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
                 buttonAddToCart?.configureButtonAddToCart()
 
-            else -> {
-                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
-                buttonAddToCart?.gone()
-            }
+            else ->
+                productCardView.showWithCondition<UnifyButton?>(
+                    ViewStubId(R.id.buttonAddToCartStub),
+                    ViewId(R.id.buttonAddToCart),
+                    false)
         }
     }
 
@@ -84,8 +90,10 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
         buttonDeleteCart?.show()
-        val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
-        buttonAddToCart?.gone()
+        productCardView.showWithCondition<UnifyButton?>(
+            ViewStubId(R.id.buttonAddToCartStub),
+            ViewId(R.id.buttonAddToCart),
+            false)
 
         quantityEditorDebounce?.onQuantityChanged(newValue)
     }
@@ -131,7 +139,6 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun deleteCartClick(productCardModel: ProductCardModel) {
         buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
-
         buttonDeleteCart?.gone()
         quantityEditorNonVariant?.gone()
 
@@ -244,7 +251,8 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
-        productCardView.showWithCondition<UnifyButton?>(ViewStubId(R.id.buttonAddVariantStub),
+        productCardView.showWithCondition<UnifyButton?>(
+            ViewStubId(R.id.buttonAddVariantStub),
             ViewId(R.id.buttonAddVariant),
             productCardModel.hasVariant())
 

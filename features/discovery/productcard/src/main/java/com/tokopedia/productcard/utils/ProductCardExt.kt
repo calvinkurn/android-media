@@ -465,4 +465,3 @@ fun <T: View?> View.showWithCondition(viewStubId: ViewStubId, viewId: ViewId, is
         findViewById<T>(viewId.id)?.gone()
     }
 }
-

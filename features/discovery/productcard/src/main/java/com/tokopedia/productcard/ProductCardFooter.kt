@@ -36,7 +36,8 @@ internal fun View.renderProductCardFooter(
 }
 
 private fun View.renderSimilarProductButton(productCardModel: ProductCardModel) {
-    showWithCondition<UnifyButton?>(ViewStubId(R.id.buttonSeeSimilarProductStub),
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeSimilarProductStub),
         ViewId(R.id.buttonSeeSimilarProduct),
         productCardModel.hasSimilarProductButton)
 }
@@ -46,10 +47,12 @@ private fun View.renderWishlistComponents(productCardModel: ProductCardModel) {
     val rlPrimaryButtonWishlist = findViewById<RelativeLayout?>(R.id.rlPrimaryButtonWishlist)
     buttonThreeDotsWishlist?.showWithCondition(productCardModel.hasButtonThreeDotsWishlist)
     rlPrimaryButtonWishlist?.showWithCondition(productCardModel.willShowPrimaryButtonWishlist())
-    showWithCondition<UnifyButton?>(ViewStubId(R.id.buttonAddToCartWishlistStub),
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonAddToCartWishlistStub),
         ViewId(R.id.buttonAddToCartWishlist),
         productCardModel.hasAddToCartWishlist)
-    showWithCondition<UnifyButton?>(ViewStubId(R.id.buttonSeeSimilarProductWishlistStub),
+    showWithCondition<UnifyButton?>(
+        ViewStubId(R.id.buttonSeeSimilarProductWishlistStub),
         ViewId(R.id.buttonSeeSimilarProductWishlist),
         productCardModel.hasSimilarProductWishlist)
 
