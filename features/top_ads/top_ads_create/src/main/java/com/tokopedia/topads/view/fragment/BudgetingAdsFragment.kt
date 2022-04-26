@@ -157,7 +157,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun prepareView() {
         if (stepperModel?.redirectionToSummary == true) {
-            buttonNext.text = getString(R.string.topads_common_save_butt)
+            buttonNext.text = getString(com.tokopedia.topads.common.R.string.topads_common_save_butt)
         }
 
         addKeyword.setOnClickListener {
@@ -314,14 +314,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun setCount() {
         if (bidInfoAdapter.items.count() == 1 && bidInfoAdapter.items[0] is BidInfoEmptyViewModel) {
-            selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), 0)
+            selectedkeyword.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), 0)
         } else {
-            selectedkeyword.text = String.format(getString(R.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
+            selectedkeyword.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_keyword), bidInfoAdapter.items.count())
         }
     }
 
     private fun setRestoreValue() {
-        ticker?.gone()
+        ticker.gone()
         setCount()
         if(stepperModel?.selectedKeywordStage?.isEmpty() == true) {
             onEmptySuggestion()
@@ -343,7 +343,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         budget.textFieldInput.setText(suggestBidPerClick)
 
         if (budget.textFieldInput.text.toString().removeCommaRawString().toDouble() > minBid.toDouble() && budget.textFieldInput.text.toString().removeCommaRawString().toDouble() < maxBid.toDouble()) {
-            setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)
+            setMessageErrorField(getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new), suggestBidPerClick, false)
             isEnable = true
             actionEnable()
         }
@@ -393,7 +393,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             tvToolTipText = this.findViewById(R.id.tooltip_text)
             tvToolTipText?.text = getString(R.string.tip_biaya_iklan)
             imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
+            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
 
         tipButton.visibility = View.VISIBLE
@@ -431,21 +431,21 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 stepperModel?.finalBidPerClick = result
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
+                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error_new), minBid, true)
                         isEnable = false
                     }
                     result > maxBid.toDouble() -> {
                         isEnable = false
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
+                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % (FACTOR.toInt()) != 0 -> {
                         isEnable = false
-                        setMessageErrorField(getString(R.string.topads_common_error_multiple_50), FACTOR, true)
+                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_error_multiple_50), FACTOR, true)
                     }
                     else -> {
                         isEnable = true
-                        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)
+                        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.recommendated_bid_message_new), suggestBidPerClick, false)
                     }
                 }
                 actionEnable()
@@ -486,6 +486,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(CLICK_ADDED_KEYWORD, "",
+                stepperModel?.selectedKeywordStage!!
+            )
+            bidInfoAdapter.notifyDataSetChanged()
         }
         setCount()
     }
