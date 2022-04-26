@@ -718,6 +718,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         setActiveInteractiveTitle(interactive.title)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
+            is InteractiveUiModel.Quiz -> setupQuiz(interactive)
             else -> {}
         }
 //        when (val status = interactive.timeStatus) {
@@ -755,10 +756,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
-        when (val status = interactive.status) {
+        when (val status = quiz.status) {
             is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
                 endTime = status.endTime,
-                question = interactive.title)
+                question = quiz.title
+            )
             is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
             else -> {}
         }
@@ -935,7 +937,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
             }
             is GiveawayResponse -> {
-                val currentInteractive = channelInteractiveMapper.mapGiveaway(
+                val currentInteractive = interactiveMapper.mapGiveaway(
                     result,
                     TimeUnit.SECONDS.toMillis(result.waitingDuration.toLong())
                 )
