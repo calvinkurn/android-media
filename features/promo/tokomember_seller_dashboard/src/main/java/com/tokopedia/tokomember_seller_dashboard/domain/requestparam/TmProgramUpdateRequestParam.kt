@@ -63,7 +63,7 @@ data class TierLevelsItem(
 	val level: Int? = 0,
 	@Expose
 	@SerializedName("activeTime")
-	val activeTime: Int? = null,
+	val activeTime: Int? = 0,
 	@Expose
 	@SerializedName("name")
 	val name: String? = null,

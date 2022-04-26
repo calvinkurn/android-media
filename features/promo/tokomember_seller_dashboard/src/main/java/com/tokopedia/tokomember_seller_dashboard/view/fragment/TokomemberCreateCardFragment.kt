@@ -41,6 +41,8 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.CardTemplate
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.IntoolsShop
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.unifycomponents.Toaster
 
@@ -140,8 +142,8 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
 
     private fun openProgramCreationPage() {
         val bundle = Bundle()
-        bundle.putInt(PROGRAM_TYPE, 0)
-        bundle.putInt(SHOP_ID, shopID)
+        bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
+        bundle.putInt(BUNDLE_SHOP_ID, shopID)
         (activity as TokomemberDashCreateActivity).addFragment(
             TokomemberProgramFragment.newInstance(
                 bundle

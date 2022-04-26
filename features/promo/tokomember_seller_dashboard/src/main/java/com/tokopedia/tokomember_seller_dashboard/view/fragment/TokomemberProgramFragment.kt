@@ -25,6 +25,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -37,6 +38,7 @@ import javax.inject.Inject
 class TokomemberProgramFragment : BaseDaggerFragment() {
 
     private var fromEdit = false
+    private var programType = ProgramType.CREATE
     private var periodInMonth = 0
 
     @Inject
@@ -68,7 +70,8 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        callGQL(arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0 ,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
+        programType = arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0
+        callGQL(programType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
     }
 
     override fun getScreenName() = ""
@@ -85,11 +88,28 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
                         renderProgramUI(it.data.membershipGetProgramForm)
                     }
                     else{
-
+                        handleError()
                     }
                 }
                 is Fail -> {
+                    handleError()
+                }
+            }
+        })
 
+        tokomemberDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> {
+                    if(it.data.membershipCreateEditProgram?.resultStatus?.code=="200"){
+                        onProgramUpdateSuccess()
+                        //TODO handle by Jayant according to update type
+                    }
+                    else{
+                        handleError()
+                    }
+                }
+                is Fail ->{
+                    handleError()
                 }
             }
         })
@@ -121,7 +141,24 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
         }
     }
 
-
+    private fun onProgramUpdateSuccess() {
+        when(programType){
+            ProgramType.CREATE -> {
+                (activity as TokomemberDashCreateActivity).addFragment(
+                    TokomemberKuponCreateFragment.newInstance(),
+                    "Kupon"
+                )
+            }
+            ProgramType.DETAIL ->{
+            }
+            ProgramType.EXTEND ->{
+            }
+            ProgramType.EDIT ->{
+            }
+            ProgramType.CANCEL ->{
+            }
+        }
+    }
 
     private fun renderHeader() {
         if(fromEdit) {
@@ -266,7 +303,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
     }
 
 
-    private fun clickDatePicker(title: String, helpText: String) {
+     private fun clickDatePicker(title: String, helpText: String) {
          var date = ""
          var month = ""
          var year = ""

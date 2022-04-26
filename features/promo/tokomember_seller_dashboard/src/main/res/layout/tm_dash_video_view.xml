@@ -84,7 +84,7 @@
                 app:show_timeout="3000"
                 app:shutter_background_color="@android:color/transparent"
                 app:surface_type="texture_view"
-                app:use_controller="false" />
+                app:use_controller="true" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifyprinciples.Typography

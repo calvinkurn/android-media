@@ -1,4 +1,4 @@
-package com.tokopedia.tokomember_seller_dashboard.view.fragment
+package com.tokopedia.tokomember_seller_dashboard.view.customview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.tm_dash_intro_container.view.*
 
-class TokomemberIntroBottomsheet: BottomSheetUnify() {
+class TokomemberBottomsheet: BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
     private lateinit var imgBottomsheet: ImageUnify
@@ -74,7 +73,7 @@ class TokomemberIntroBottomsheet: BottomSheetUnify() {
             bundle: Bundle,
             childFragmentManager: FragmentManager
         ) {
-            val tokomemberIntroBottomsheet = TokomemberIntroBottomsheet().apply {
+            val tokomemberIntroBottomsheet = TokomemberBottomsheet().apply {
                 arguments = bundle
             }
             tokomemberIntroBottomsheet.show(childFragmentManager, TAG)

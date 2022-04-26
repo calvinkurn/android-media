@@ -30,6 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCre
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberIntroButtonVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -117,8 +118,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
         if(openBS){
             val bundle = Bundle()
             val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png")
-            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-            TokomemberIntroBottomsheet.show(bundle, childFragmentManager)
+            bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+            TokomemberBottomsheet.show(bundle, childFragmentManager)
         }
 
         val animation: Animation =

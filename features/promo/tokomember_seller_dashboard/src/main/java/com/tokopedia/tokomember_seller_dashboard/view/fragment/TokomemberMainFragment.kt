@@ -75,7 +75,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
         {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
-                val intent = Intent(requireContext(), TokomemberDashHomeActivity::class.java)
+                val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 startActivity(intent)
                 requireActivity().finish()
@@ -83,7 +83,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             }
             else{
 
-                val intent = Intent(requireContext(), TokomemberDashHomeActivity::class.java)
+                val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 startActivity(intent)
                 requireActivity().finish()

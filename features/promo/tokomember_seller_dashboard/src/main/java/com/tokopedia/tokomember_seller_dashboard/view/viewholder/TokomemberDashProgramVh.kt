@@ -27,7 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashProgramDetailActivity
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -95,12 +95,12 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         btn_edit.setOnClickListener {
-            val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
+         /*   val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
             intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
             intent.putExtra(BUNDLE_SHOP_ID, shopId)
             intent.putExtra(BUNDLE_PROGRAM_ID, item.id)
             intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
-            itemView.context.startActivity(intent)
+            itemView.context.startActivity(intent)*/
         }
 
         when(item.status){
