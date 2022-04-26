@@ -2,13 +2,10 @@ package com.tokopedia.createpost.producttag.di
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.ViewModel
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.createpost.producttag.di.key.FragmentKey
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.producttag.view.fragment.factory.ProductTagFragmentFactory
-import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -32,10 +29,4 @@ abstract class ContentCreationProductTagBindModule {
     @IntoMap
     @FragmentKey(ProductTagSourceBottomSheet::class)
     abstract fun bindProductTagSourceBottomSheet(fragment: ProductTagSourceBottomSheet): Fragment
-
-    /** View Model */
-    @Binds
-    @IntoMap
-    @ViewModelKey(ProductTagViewModel::class)
-    abstract fun bindProductTagViewModel(viewModel: ProductTagViewModel): ViewModel
 }

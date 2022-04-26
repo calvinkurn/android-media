@@ -11,6 +11,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -20,20 +21,28 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class ProductTagViewModel @Inject constructor(
-
+class ProductTagViewModel @AssistedInject constructor(
+    @Assisted("productTagSourceRaw") productTagSourceRaw: String,
+    @Assisted("shopBadge") val shopBadge: String,
 ): ViewModel() {
 
-    val shopBadge: String
-        get() = _shopBadge.value
+    @AssistedFactory
+    interface Factory {
+        fun create(
+            @Assisted("productTagSourceRaw") productTagSourceRaw: String,
+            @Assisted("shopBadge") shopBadge: String,
+        ): ProductTagViewModel
+    }
 
+    /** Public Getter */
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
-    private val _shopBadge = MutableStateFlow("")
+    /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
 
+    /** Ui State */
     private val _productTagSourceUiState = combine(
         _productTagSourceList, _selectedProductTagSource
     ) { productTagSourceList, selectedProductTagSource ->
@@ -52,23 +61,23 @@ class ProductTagViewModel @Inject constructor(
         )
     }
 
+    init {
+        processProductTagSource(productTagSourceRaw)
+    }
+
     fun submitAction(action: ProductTagAction) {
         when(action) {
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
         }
     }
 
-    fun processProductTagSource(productTagSourceRaw: String) {
+    private fun processProductTagSource(productTagSourceRaw: String) {
         viewModelScope.launchCatchError(block = {
             val split = productTagSourceRaw.split(",")
             _productTagSourceList.value = split.map {
                 ProductTagSource.mapFromString(it)
             }
         }) { }
-    }
-
-    fun setShopBadge(shopBadge: String) {
-        _shopBadge.value = shopBadge
     }
 
     /** Handle Action */

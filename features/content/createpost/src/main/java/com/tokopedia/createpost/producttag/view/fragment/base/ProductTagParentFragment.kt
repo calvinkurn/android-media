@@ -19,6 +19,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.createpost.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.createpost.view.bottomSheet.SearchCategoryTypeBottomSheet
 import com.tokopedia.createpost.view.bottomSheet.SearchTypeData
 import com.tokopedia.createpost.view.listener.SearchCategoryBottomSheetListener
@@ -37,8 +38,8 @@ import javax.inject.Inject
 */
 class ProductTagParentFragment @Inject constructor(
     private val fragmentFactory: FragmentFactory,
-    private val viewModelFactory: ViewModelFactory,
     private val userSession: UserSessionInterface,
+    private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String = "ProductTagParentFragment"
@@ -51,7 +52,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory)[ProductTagViewModel::class.java]
+        viewModel = createProductTagViewModel()
         childFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -70,8 +71,6 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.processProductTagSource(arguments?.getString(EXTRA_PRODUCT_TAG_LIST) ?: "")
-        viewModel.setShopBadge(arguments?.getString(EXTRA_SHOP_BADGE) ?: "")
         setupView()
         setupObserve()
     }
@@ -124,6 +123,7 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if(prevState == currState) return
 
+        /** Update Breadcrumb */
         binding.tvCcProductTagProductSource.text = getProductTagSourceText(currState.selectedProductTagSource)
 
         if(currState.selectedProductTagSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
@@ -133,6 +133,8 @@ class ProductTagParentFragment @Inject constructor(
         else {
             binding.icCcProductTagShopBadge.hide()
         }
+
+        /** TODO: Update Fragment Content */
     }
 
     private fun getProductTagSourceText(source: ProductTagSource): String {
@@ -146,6 +148,21 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
+    private fun createProductTagViewModel(): ProductTagViewModel {
+        return ViewModelProvider(
+            this,
+            viewModelFactoryCreator.create(
+                requireActivity(),
+                getStringArgument(EXTRA_PRODUCT_TAG_LIST),
+                getStringArgument(EXTRA_SHOP_BADGE),
+            )
+        )[ProductTagViewModel::class.java]
+    }
+
+    private fun getStringArgument(key: String): String {
+        return arguments?.getString(key) ?: ""
+    }
+
     companion object {
         private const val TAG = "ProductTagParentFragment"
         private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
@@ -154,15 +171,24 @@ class ProductTagParentFragment @Inject constructor(
         const val SOURCE_FEED = "feed"
         const val SOURCE_PLAY = "play"
 
-        fun getFragment(
+        fun getFragmentWithFeedSource(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             productTagSource: String,
             shopBadge: String,
-            source: String,
         ): ProductTagParentFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, source)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, SOURCE_FEED)
+        }
+
+        fun getFragmentWithPlaySource(
+            fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
+            productTagSource: String,
+            shopBadge: String,
+        ): ProductTagParentFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, SOURCE_PLAY)
         }
 
         private fun createFragment(

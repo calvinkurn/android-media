@@ -54,12 +54,11 @@ class ProductTagActivity : BaseActivity() {
         productTagList: String,
         shopBadge: String,
     ): ProductTagParentFragment {
-        return ProductTagParentFragment.getFragment(
+        return ProductTagParentFragment.getFragmentWithFeedSource(
             supportFragmentManager,
             classLoader,
             productTagList,
             shopBadge,
-            ProductTagParentFragment.SOURCE_FEED
         )
     }
 
