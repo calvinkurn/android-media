@@ -60,7 +60,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun createInteractiveGiveaway(
+    override suspend fun createGiveaway(
         channelId: String,
         title: String,
         durationInMs: Long

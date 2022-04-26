@@ -17,9 +17,9 @@ interface PlayBroadcastInteractiveRepository {
 
     suspend fun getInteractiveLeaderboard(channelId: String, isChatAllowed: () -> Boolean): PlayLeaderboardInfoUiModel
 
-    suspend fun createInteractiveGiveaway(channelId: String,
-                                          title: String,
-                                          durationInMs: Long): InteractiveSessionUiModel
+    suspend fun createGiveaway(channelId: String,
+                               title: String,
+                               durationInMs: Long): InteractiveSessionUiModel
 
     suspend fun createInteractiveQuiz(
         channelId: String,

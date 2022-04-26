@@ -52,7 +52,7 @@ class PlayBroInteractiveInitViewModelTest {
         )
 
         every { mockLivePusher.remainingDurationInMillis } returns 10_000
-        coEvery { mockRepo.createInteractiveGiveaway(any(), any(), any()) } returns mockInteractiveResponse
+        coEvery { mockRepo.createGiveaway(any(), any(), any()) } returns mockInteractiveResponse
 
         val robot = PlayBroadcastViewModelRobot(
             livePusherMediator = mockLivePusher,
@@ -98,7 +98,7 @@ class PlayBroInteractiveInitViewModelTest {
     fun `when user failed create new interactive session, it should return fail state`() {
 
         every { mockLivePusher.remainingDurationInMillis } returns 10_000
-        coEvery { mockRepo.createInteractiveGiveaway(any(), any(), any()) } throws mockException
+        coEvery { mockRepo.createGiveaway(any(), any(), any()) } throws mockException
 
         val robot = PlayBroadcastViewModelRobot(
             livePusherMediator = mockLivePusher,

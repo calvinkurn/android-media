@@ -50,7 +50,6 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -645,7 +644,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launchCatchError(block = {
-            val interactiveUiModel = repo.createInteractiveGiveaway(channelId, title, durationInMs)
+            val interactiveUiModel = repo.createGiveaway(channelId, title, durationInMs)
             setInteractiveId(interactiveUiModel.id)
             setActiveInteractiveTitle(interactiveUiModel.title)
             handleActiveInteractive()
@@ -1326,7 +1325,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            repo.createInteractiveGiveaway(channelId, title, 5000)
+            repo.createGiveaway(channelId, title, durationInMs)
             handleActiveInteractive()
             _interactiveSetup.update {
                 it.copy(

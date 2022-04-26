@@ -1122,7 +1122,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if(isShow) gameIconView.cancelCoachMark()
 
         quizForm.showWithCondition(isShow)
-//        clInteraction.showWithCondition(!isShow)
     }
 
     private fun isQuizFormVisible(): Boolean {

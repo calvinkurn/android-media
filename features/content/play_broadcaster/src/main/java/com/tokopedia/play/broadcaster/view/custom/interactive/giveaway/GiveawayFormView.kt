@@ -82,7 +82,7 @@ class GiveawayFormView : ConstraintLayout {
         if(visibility == View.VISIBLE) {
             scope.launch {
                 delay(SHOW_KEYBOARD_DELAY)
-//                binding.viewGameHeader.setFocus(true)
+                binding.viewGiveaway.getHeaderView().setFocus(true)
             }
         }
     }
