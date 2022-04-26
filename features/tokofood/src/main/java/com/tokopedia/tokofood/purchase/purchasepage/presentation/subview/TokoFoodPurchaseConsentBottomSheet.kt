@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.tokofood.common.di.TokoFoodComponent
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseConsentBinding
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
@@ -18,7 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetUnify(),
+class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
     HasComponent<TokoFoodPurchaseComponent> {
 
     companion object {
@@ -28,13 +27,14 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
                            tnc: String,
                            imageUrl: String,
                            listener: Listener): TokoFoodPurchaseConsentBottomSheet {
-            return TokoFoodPurchaseConsentBottomSheet(listener).apply {
+            return TokoFoodPurchaseConsentBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_TITLE, title)
                     putString(PARAM_DESC, desc)
                     putString(PARAM_TNC, tnc)
                     putString(PARAM_IMAGE_URL, imageUrl)
                 }
+                this.listener = listener
             }
         }
 
@@ -63,6 +63,8 @@ class TokoFoodPurchaseConsentBottomSheet(val listener: Listener?) : BottomSheetU
     }
 
     private var viewBinding: LayoutBottomSheetPurchaseConsentBinding? = null
+
+    private var listener: Listener? = null
 
     interface Listener {
         fun onSuccessAgreeConsent()

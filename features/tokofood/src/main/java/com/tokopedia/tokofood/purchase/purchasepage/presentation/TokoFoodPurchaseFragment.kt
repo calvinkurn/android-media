@@ -34,7 +34,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.TestMerchantFragment
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
@@ -50,7 +50,6 @@ import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.GetConsentStateBottomsheet
-import com.tokopedia.tokofood.purchase.purchasepage.domain.model.response.GetConsentStateData
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
@@ -296,11 +295,27 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     renderRecyclerView()
                     (it.data as? CheckoutTokoFoodResponse)?.let { response ->
                         activityViewModel?.loadCartList(response)
+                        if (response.data.popupMessage.isNotEmpty()) {
+                            showToaster(response.data.popupMessage, "Oke") {}
+                        }
+                        if (response.data.popupErrorMessage.isNotEmpty()) {
+                            showToasterError(response.data.popupErrorMessage, "Oke") {}
+                        }
                     }
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
-                    renderGlobalError(it.throwable ?: ResponseErrorException())
+                    renderRecyclerView()
+                    it.throwable?.let { throwable ->
+                        showToasterError(throwable)
+                    }
+                }
+                PurchaseUiEvent.EVENT_FAILED_LOAD_FIRST_TIME_PURCHASE_PAGE -> {
+                    hideLoading()
+                    renderRecyclerView()
+                    it.throwable?.let { throwable ->
+                        renderGlobalError(throwable)
+                    }
                 }
                 PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
@@ -317,8 +332,33 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         showConsentBottomSheet(data)
                     }
                 }
+                PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT -> {
+                    onSuccessAgreeConsent()
+                }
                 PurchaseUiEvent.EVENT_FAILED_VALIDATE_CONSENT -> {
-                    it.throwable?.let { throwable -> showConsentError(throwable) }
+                    it.throwable?.let { throwable -> showToasterError(throwable) }
+                }
+                PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL -> {
+                    consentBottomSheet?.dismiss()
+                    viewModel.setPaymentButtonLoading()
+                    // TODO: Go to payment page
+                    navigateToNewFragment(TestMerchantFragment.createInstance())
+                }
+                PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL -> {
+                    consentBottomSheet?.dismiss()
+                    viewModel.setPaymentButtonLoading()
+                    val globalErrorType = it.data as? Int
+                    if (globalErrorType == null) {
+                        showToasterError(
+                            "Oops, gagal lanjut ke Pembayaran.",
+                            "Coba Lagi"
+                        ) {
+                            viewModel.setPaymentButtonLoading(true)
+                            viewModel.checkoutGeneral()
+                        }
+                    } else {
+                        showGlobalError(globalErrorType)
+                    }
                 }
             }
         })
@@ -424,6 +464,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewBinding?.let {
             it.layoutGlobalErrorPurchase.show()
             it.recyclerViewPurchase.gone()
+            // TODO: Move to viewmodel for testability
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchase.setType(errorType)
             it.layoutGlobalErrorPurchase.setActionClickListener {
@@ -558,24 +599,25 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 this
             ).apply {
                 setOnDismissListener {
-                    this@TokoFoodPurchaseFragment.viewModel.removeButtonLoading()
+                    this@TokoFoodPurchaseFragment.viewModel.setPaymentButtonLoading()
                 }
             }
             consentBottomSheet?.show(childFragmentManager)
         }
     }
 
-    private fun showConsentError(throwable: Throwable) {
+    private fun showGlobalError(globalErrorType: Int) {
         // Todo : hit checkout API, validate response, show global error / toaster, reload
-        val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet(
-            outOfService = null,
+        val bottomSheet = TokoFoodPurchaseGlobalErrorBottomSheet.createInstance(
+            globalErrorType = globalErrorType,
             listener = object : TokoFoodPurchaseGlobalErrorBottomSheet.Listener {
                 override fun onGoToHome() {
 
                 }
 
                 override fun onRetry() {
-                    loadInitialData()
+                    viewModel.setPaymentButtonLoading(true)
+                    viewModel.checkoutGeneral()
                 }
 
                 override fun onCheckOtherMerchant() {
@@ -586,20 +628,65 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
                 }
             }
-        )
-        bottomSheet.show(parentFragmentManager, "")
+        ).apply {
+            setOnDismissListener {
+                viewModel.setPaymentButtonLoading(false)
+            }
+        }
+        bottomSheet.show(parentFragmentManager)
     }
+
+    private fun showToasterError(errorMessage: String,
+                                 actionMessage: String,
+                                 onActionClicked: () -> Unit) {
+        view?.let {
+            Toaster.build(
+                view = it,
+                text = errorMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR,
+                actionText = actionMessage,
+                clickListener = {
+                    onActionClicked()
+                }
+            ).show()
+        }
+    }
+
+    private fun showToaster(message: String,
+                            actionMessage: String,
+                            onActionClicked: () -> Unit) {
+        view?.let {
+            Toaster.build(
+                view = it,
+                text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL,
+                actionText = actionMessage,
+                clickListener = {
+                    onActionClicked()
+                }
+            ).show()
+        }
+    }
+
 
     private fun showToasterError(throwable: Throwable) {
         view?.let {
             Toaster.build(
                 view = it,
-                text = throwable.message.orEmpty(),
+                text = getErrorMessage(throwable),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR,
                 actionText = "Oke"
             ).show()
         }
+    }
+
+    private fun getErrorMessage(throwable: Throwable): String {
+        return context?.let {
+            ErrorHandler.getErrorMessage(it, throwable)
+        } ?: throwable.message.orEmpty()
     }
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
@@ -675,11 +762,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onSuccessAgreeConsent() {
-        consentBottomSheet?.dismiss()
-        // TODO: Go to purchase page
+        viewModel.checkoutGeneral()
     }
 
     override fun onFailedAgreeConsent(throwable: Throwable) {
+        viewModel.setPaymentButtonLoading()
         consentBottomSheet?.dismiss()
         showToasterError(throwable)
     }

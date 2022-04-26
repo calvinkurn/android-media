@@ -15,7 +15,15 @@ data class CheckoutTokoFoodResponse(
     @SerializedName("data")
     @Expose
     val data: CheckoutTokoFoodData = CheckoutTokoFoodData()
-)
+) {
+
+    companion object {
+        private const val SUCCESS_STATUS = 1
+    }
+
+    fun isSuccess(): Boolean = status == SUCCESS_STATUS
+
+}
 
 data class CheckoutTokoFoodData(
     @SerializedName("popup_message")
