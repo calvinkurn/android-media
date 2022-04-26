@@ -7,14 +7,12 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
  */
 data class InteractiveSetupUiModel(
     val type: GameType,
-    val config: GameConfigUiModel,
     val isSubmitting: Boolean,
 ) {
     companion object {
         val Empty: InteractiveSetupUiModel
             get() = InteractiveSetupUiModel(
                 type = GameType.Unknown,
-                config = GameConfigUiModel.empty(),
                 isSubmitting = false,
             )
     }

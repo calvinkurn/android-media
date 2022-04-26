@@ -246,7 +246,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = GameConfigUiModel(
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
         tapTapConfig = TapTapConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
@@ -265,8 +265,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             maxChoiceLength = 35,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
             eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-            showPrizeCoachmark = true,
-        )
+            showPrizeCoachMark = true,
+        ),
     )
 
     override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,

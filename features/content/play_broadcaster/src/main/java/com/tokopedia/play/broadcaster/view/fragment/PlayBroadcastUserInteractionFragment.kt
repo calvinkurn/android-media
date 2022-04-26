@@ -37,10 +37,10 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveI
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastQuizState
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
-import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
@@ -782,7 +782,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
-                renderQuizForm(prevState?.quizForm, state.quizForm, prevState?.gameConfig, state.gameConfig)
+                renderQuizForm(
+                    prevState?.quizForm,
+                    state.quizForm,
+                    prevState?.interactiveConfig,
+                    state.interactiveConfig
+                )
                 renderInteractiveView(prevState?.interactive, state.interactive)
                 renderGameIconView(prevState?.interactive, state.interactive)
 
@@ -1004,8 +1009,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun renderQuizForm(
         prevState: QuizFormUiState?,
         state: QuizFormUiState,
-        prevConfigState: GameConfigUiState?,
-        configState: GameConfigUiState,
+        prevConfigState: InteractiveConfigUiModel?,
+        configState: InteractiveConfigUiModel,
     ) {
         if(prevConfigState != configState)
             quizForm.applyQuizConfig(configState.quizConfig)

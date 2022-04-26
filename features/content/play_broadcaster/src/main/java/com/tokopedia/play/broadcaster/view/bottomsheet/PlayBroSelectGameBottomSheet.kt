@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSelectGameBi
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.SelectGameItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.game.SelectGameViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SelectGameAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -78,15 +78,18 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderGameOption(it.prevValue?.gameConfig, it.value.gameConfig)
+                renderGameOption(it.prevValue?.interactiveConfig, it.value.interactiveConfig)
             }
         }
     }
 
-    private fun renderGameOption(prevValue: GameConfigUiState?, value: GameConfigUiState) {
+    private fun renderGameOption(
+        prevValue: InteractiveConfigUiModel?,
+        value: InteractiveConfigUiModel
+    ) {
         if(value == prevValue) return
 
-        adapter.setItemsAndAnimateChanges(value.gameTypeList.map {
+        adapter.setItemsAndAnimateChanges(value.availableGameList().map {
             SelectGameAdapter.Model.Item(it)
         })
     }

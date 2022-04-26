@@ -6,7 +6,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveC
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
@@ -34,7 +34,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
-    override suspend fun getInteractiveConfig(): GameConfigUiModel = withContext(dispatchers.io) {
+    override suspend fun getInteractiveConfig(): InteractiveConfigUiModel = withContext(dispatchers.io) {
         val response = getInteractiveConfigUseCase.apply {
             setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
         }.executeOnBackground()

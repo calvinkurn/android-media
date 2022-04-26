@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.view.custom.interactive.giveaway.GiveawayFormView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -103,14 +104,19 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
                 val prevState = cachedState.prevValue
 
                 when (state.interactiveSetup.type) {
-                    is GameType.Giveaway -> renderGiveawaySetup(state.interactiveSetup)
+                    is GameType.Giveaway -> renderGiveawaySetup(
+                        state.interactiveSetup, state.interactiveConfig
+                    )
                     else -> {}
                 }
             }
         }
     }
 
-    private fun renderGiveawaySetup(setup: InteractiveSetupUiModel) {
+    private fun renderGiveawaySetup(
+        setup: InteractiveSetupUiModel,
+        config: InteractiveConfigUiModel
+    ) {
         setChildView {
             val formView = GiveawayFormView(it)
             formView.setListener(object : GiveawayFormView.Listener {
@@ -126,7 +132,7 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
             })
             formView
         }.apply {
-            setEligibleDurations(setup.config.tapTapConfig.availableStartTimeInMs)
+            setEligibleDurations(config.tapTapConfig.availableStartTimeInMs)
             setLoading(setup.isSubmitting)
         }
     }

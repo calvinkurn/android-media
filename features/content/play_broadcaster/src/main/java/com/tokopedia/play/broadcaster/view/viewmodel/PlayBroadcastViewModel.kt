@@ -210,7 +210,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _quizIsNeedToUpdateUI = MutableStateFlow(true)
 
     private val _interactive = MutableStateFlow<InteractiveUiModel>(InteractiveUiModel.Unknown)
-    private val _interactiveSetup = MutableStateFlow<InteractiveSetupUiModel>(InteractiveSetupUiModel.Empty)
+    private val _interactiveConfig = MutableStateFlow(InteractiveConfigUiModel.empty())
+    private val _interactiveSetup = MutableStateFlow(InteractiveSetupUiModel.Empty)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -225,15 +226,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
             editStatus = it.editStatus
-        )
-    }
-
-    private val _gameConfig = MutableStateFlow(GameConfigUiModel.empty())
-    private val _gameConfigUiState = _gameConfig.map {
-        GameConfigUiState(
-            tapTapConfig = it.tapTapConfig,
-            quizConfig = it.quizConfig,
-            gameTypeList = it.generateGameTypeList(),
         )
     }
 
@@ -253,21 +245,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _productSectionList,
         _schedule,
         _isExiting,
-        _gameConfigUiState,
         _quizFormUiState,
         _interactive,
+        _interactiveConfig,
         _interactiveSetup,
     ) { channelState, pinnedMessage, productMap, schedule, isExiting,
-        gameConfig, quizForm, interactive, interactiveSetup ->
+        quizForm, interactive, interactiveConfig, interactiveSetup ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             schedule = schedule,
             isExiting = isExiting,
-            gameConfig = gameConfig,
             quizForm = quizForm,
             interactive = interactive,
+            interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
         )
     }.stateIn(
@@ -668,11 +660,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val gameConfig = repo.getInteractiveConfig()
-            _gameConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
-            _interactiveSetup.update {
-                it.copy(config = gameConfig)
-            }
+            _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
             /** TODO: should save config on flow instead */
             setInteractiveDurations(gameConfig.tapTapConfig.availableStartTimeInMs)
@@ -686,18 +675,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) { }
     }
 
-    private fun mergeInteractiveConfigWithPreference(gameConfig: GameConfigUiModel): GameConfigUiModel {
-        val quizConfig = gameConfig.quizConfig
+    private fun mergeInteractiveConfigWithPreference(
+        gameConfig: InteractiveConfigUiModel
+    ): InteractiveConfigUiModel {
         return gameConfig.copy(
-            quizConfig = quizConfig.copy(
-                showPrizeCoachmark = sharedPref.isFirstQuizPrice()
+            quizConfig = gameConfig.quizConfig.copy(
+                showPrizeCoachMark = sharedPref.isFirstQuizPrice(),
             )
         )
     }
 
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
-            val interactiveConfig = _gameConfig.value
+            val interactiveConfig = _interactiveConfig.value
             if (!interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
@@ -1173,7 +1163,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleInputQuizOption(order: Int, newText: String) {
         val options = _quizFormData.value.options
-        val quizConfig = _gameConfig.value.quizConfig
+        val quizConfig = _interactiveConfig.value.quizConfig
 
         val (newOptions, needUpdate) = options.updateQuizOptionFlow(
             order,
@@ -1348,7 +1338,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         needUpdateQuizForm(true) {
             updateQuizEligibleDuration()
 
-            val quizConfig = _gameConfig.value.quizConfig
+            val quizConfig = _interactiveConfig.value.quizConfig
 
             val initialOptions = List(quizConfig.minChoicesCount) {
                 QuizFormDataUiModel.Option(
@@ -1368,7 +1358,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateOptionsState() {
         val options = _quizFormData.value.options.toMutableList()
-        val quizConfig = _gameConfig.value.quizConfig
+        val quizConfig = _interactiveConfig.value.quizConfig
         val isStateEditable = isQuizStateEditable()
 
         val newOptions = if (isStateEditable) {
@@ -1386,14 +1376,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateQuizEligibleDuration() {
         val remainingDuration = livePusherMediator.remainingDurationInMillis
-        val quizConfig = _gameConfig.value.quizConfig
+        val quizConfig = _interactiveConfig.value.quizConfig
+        val newQuizConfig = quizConfig.copy(
+            eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+        )
 
-        _gameConfig.setValue {
-            copy(
-                quizConfig = quizConfig.copy(
-                    eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
-                )
-            )
+        _interactiveConfig.update {
+            it.copy(quizConfig = newQuizConfig)
         }
     }
 
