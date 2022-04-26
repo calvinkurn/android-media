@@ -308,6 +308,11 @@ class CatalogDetailPageFragment : Fragment(),
         mToTopLayout = parentView.findViewById(R.id.toTopImg)
         initNavToolbar()
         initSmoothScroller()
+        if(isNewProductDesign){
+            bottom_sheet_fragment_container.hide()
+        }else {
+            bottom_sheet_fragment_container.show()
+        }
     }
 
     private fun setUpUniversalShare() {
@@ -466,12 +471,6 @@ class CatalogDetailPageFragment : Fragment(),
         }
         hideShimmer()
         catalogPageRecyclerView?.show()
-        if(isNewProductDesign){
-            bottom_sheet_fragment_container.hide()
-
-        }else {
-            bottom_sheet_fragment_container.show()
-        }
         val newData = catalogUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -495,7 +494,7 @@ class CatalogDetailPageFragment : Fragment(),
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        if(dy > 5.toPx() && !isMoreProductsViewVisible && !isScrollDownButtonClicked){
+                        if(dy > 5.toPx()){
                             slideUpMoreProductsView()
                         }
                     }
@@ -505,11 +504,9 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private var slideDownTimer = Runnable {
-        isMoreProductsViewVisible = false
         slideDownMoreProductsView()
     }
 
-    private var isMoreProductsViewVisible = false
 
     private fun slideUpMoreProductsView() {
         if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE){
@@ -517,10 +514,8 @@ class CatalogDetailPageFragment : Fragment(),
             mToBottomLayout?.startAnimation(slideUp)
             mToBottomLayout?.visibility = View.VISIBLE
         }
-        isMoreProductsViewVisible = true
         animationHandler.removeCallbacks(slideDownTimer)
         slideDownTimer  =  Runnable {
-            isMoreProductsViewVisible = false
             slideDownMoreProductsView()
         }
         animationHandler.postDelayed(slideDownTimer, MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW)
