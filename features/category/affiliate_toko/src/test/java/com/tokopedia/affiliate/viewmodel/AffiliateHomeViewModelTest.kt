@@ -96,7 +96,6 @@ class AffiliateHomeViewModelTest{
     @Test
     fun getAffiliatePerformance(){
         val affiliateUserPerformaListData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
-        val metricData : AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics = mockk(relaxed = true)
         val defaultMetricData = AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics(
             null,"","1",null,null,null,0,null
         )
@@ -119,9 +118,6 @@ class AffiliateHomeViewModelTest{
             null, arrayListOf(item),null)
         affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data = data
         coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any()) } returns affiliatePerformanceListData
-
-        val listResponse = affiliateHomeViewModel.convertDataToVisitables(affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data,affiliateUserPerformaListData,
-            PAGE_ZERO)
 
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
         assertEquals(affiliateHomeViewModel.getAffiliateItemCount().value,0)

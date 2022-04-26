@@ -23,6 +23,3 @@ import org.junit.runners.Suite
 
 )
 class AffiliateTestSuite
-{
-
-}
