@@ -289,15 +289,19 @@ class ReadReviewViewHolder(
         if (response.message.isNotBlank()) {
             showResponseChevron?.apply {
                 setSellerResponseClickListener(shopName, response.createTime, response.message, feedbackId, productId)
+                setImage(IconUnify.CHEVRON_DOWN)
                 show()
             }
             showResponseText?.apply {
                 setSellerResponseClickListener(shopName, response.createTime, response.message, feedbackId, productId)
+                text = getString(R.string.review_reading_show_response)
                 show()
             }
+            sellerResponse?.hide()
         } else {
             showResponseChevron?.hide()
             showResponseText?.hide()
+            sellerResponse?.hide()
         }
     }
 
