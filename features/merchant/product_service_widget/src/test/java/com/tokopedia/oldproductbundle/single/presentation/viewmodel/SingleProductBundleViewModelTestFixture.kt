@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.single.presentation.viewmodel
+package com.tokopedia.oldproductbundle.single.presentation.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -6,8 +6,8 @@ import com.google.gson.JsonObject
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfo
-import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
+import com.tokopedia.oldproductbundle.common.data.model.response.GetBundleInfo
+import com.tokopedia.oldproductbundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -47,11 +47,13 @@ abstract class SingleProductBundleViewModelTestFixture {
     var singleBundleEmpty: GetBundleInfo? = null
 
     protected val viewModel: SingleProductBundleViewModel by lazy {
-        spyk(SingleProductBundleViewModel(
+        spyk(
+            SingleProductBundleViewModel(
             CoroutineTestDispatchersProvider,
             addToCartBundleUseCase,
             userSession
-        ))
+        )
+        )
     }
 
     init {
