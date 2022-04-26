@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView android:id="@+id/order_product_card"
+<com.tokopedia.unifycomponents.CardUnify2 android:id="@+id/order_product_card"
     android:layout_width="250dp"
-    android:layout_height="66dp"
+    android:layout_height="wrap_content"
     app:cardElevation="4dp"
     app:cardCornerRadius="8dp"
     android:layout_marginBottom="4dp"
@@ -14,13 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/order_product_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginVertical="8dp"
             android:contentDescription="@string/content_desc_image_transaction"/>
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -30,8 +32,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="66dp"
-            android:layout_height="66dp"/>
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginVertical="8dp"/>
 
         <View
             android:id="@+id/order_product_image_layer"
@@ -106,4 +110,4 @@
             android:layout_marginBottom="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>
