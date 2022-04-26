@@ -61,7 +61,9 @@ class TopAdsSheetViewModel @Inject constructor(
                 topAdsGetGroupProductDataUseCase.execute(requestParams).topadsDashboardGroupProducts
 
             onSuccess(nonGroupResponse.data)
-        }, onError = {})
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     fun getGroupId(shopId: String, adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
