@@ -1194,8 +1194,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
-
-            isFirstLoad = false
         })
 
         setProgressBarVisibility(true)

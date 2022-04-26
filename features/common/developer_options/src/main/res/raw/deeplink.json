@@ -230,8 +230,28 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.picker.DebugPickerActivity", 
+          "deeplink": "tokopedia-android-internal://global/debug-media-picker", 
+          "deeplink_variable": ""
+     }, 
+     {
           "destination_activity": "com.tokopedia.media.loader.ui.MediaActivity", 
           "deeplink": "tokopedia-android-internal://global/medialoader-lab", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.media.picker.ui.activity.album.AlbumActivity", 
+          "deeplink": "tokopedia-android-internal://global/media-picker-album", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.media.picker.ui.activity.main.PickerActivity", 
+          "deeplink": "tokopedia-android-internal://global/media-picker", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.media.preview.ui.activity.PickerPreviewActivity", 
+          "deeplink": "tokopedia-android-internal://global/media-picker-preview", 
           "deeplink_variable": ""
      }, 
      {
@@ -1821,8 +1841,8 @@
      }, 
      {
           "destination_activity": "com.tokopedia.additional_check.view.activity.TwoFactorActivity", 
-          "deeplink": "tokopedia-android-internal://globaluser", 
-          "deeplink_variable": ""
+          "deeplink": "tokopedia-android-internal://user/two-factor-register", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER"
      }, 
      {
           "destination_activity": "com.tokopedia.additional_check.view.activity.LinkAccountReminderActivity", 
@@ -2148,6 +2168,11 @@
           "destination_activity": "com.tokopedia.home_account.linkaccount.view.LinkAccountActivity", 
           "deeplink": "tokopedia-android-internal://global/link-account", 
           "deeplink_variable": "ApplinkConstInternalGlobal.LINK_ACCOUNT"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.home_account.explicitprofile.features.ExplicitProfileActivity", 
+          "deeplink": "tokopedia-android-internal://user/explicit-profile", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.EXPLICIT_PROFILE"
      }, 
      {
           "destination_activity": "com.tokopedia.settingbank.view.activity.SettingBankActivity", 
