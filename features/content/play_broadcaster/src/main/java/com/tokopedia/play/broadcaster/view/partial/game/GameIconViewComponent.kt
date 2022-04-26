@@ -7,7 +7,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import kotlinx.coroutines.*
 
@@ -26,7 +25,7 @@ class GameIconViewComponent(
 
     init {
         rootView.setOnClickListener {
-            listener.onIconClick()
+            listener.onIconClicked()
         }
     }
 
@@ -70,7 +69,7 @@ class GameIconViewComponent(
     }
 
     interface Listener {
-        fun onIconClick()
+        fun onIconClicked()
     }
 
     companion object {

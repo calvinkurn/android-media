@@ -13,6 +13,22 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
+    <style name="BottomSheet.Setup.Interactive">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustNothing</item>
+    </style>
+
+    <style name="Dialog.Setup.Interactive" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustNothing</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
     <style name="PlayTagPlaceholder">
         <item name="android:background">@drawable/bg_play_tag_placeholder</item>
     </style>

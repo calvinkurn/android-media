@@ -248,8 +248,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = GameConfigUiModel(
-        tapTapConfig = TapTapConfigUiModel(
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+        giveawayConfig = GiveawayConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
@@ -267,8 +267,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             maxChoiceLength = 35,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
             eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-            showPrizeCoachmark = true,
-        )
+            showPrizeCoachMark = true,
+        ),
     )
 
     override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,

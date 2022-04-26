@@ -363,6 +363,7 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
     }
 }
 
+@Deprecated("Use MutableStateFlow.update")
 fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }

@@ -333,15 +333,15 @@ class PlayBroadcastUiMapper(
             buttonTitle = bannedEvent.btnText
         )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
         val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
             TimeUnit.SECONDS.toMillis(it.toLong())
         }
 
-        return GameConfigUiModel(
-            tapTapConfig = TapTapConfigUiModel(
+        return InteractiveConfigUiModel(
+            giveawayConfig = GiveawayConfigUiModel(
                 isActive = response.interactiveConfig.tapTapConfig.isActive,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
                 nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
@@ -362,8 +362,8 @@ class PlayBroadcastUiMapper(
                 maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
-                showPrizeCoachmark = true,
-            )
+                showPrizeCoachMark = true,
+            ),
         )
     }
 

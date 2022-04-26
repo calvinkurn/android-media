@@ -59,6 +59,28 @@
             app:layout_constraintStart_toStartOf="@id/chat_list"
             />
 
+        <FrameLayout
+            android:id="@+id/view_interactive_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_stat_info"
+            />
+
+        <com.tokopedia.play_common.view.game.InteractiveFinishView
+            android:id="@+id/view_interactive_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_stat_info"
+            />
+
         <com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
             android:id="@+id/pinned_msg_view"
             android:layout_width="0dp"

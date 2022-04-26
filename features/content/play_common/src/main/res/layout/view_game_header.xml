@@ -35,7 +35,8 @@
             android:textColor="@color/play_dms_quiz_header_title"
             android:textColorHint="@color/play_dms_quiz_header_title_hint"
             android:textSize="@dimen/fontSize_lvl6"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
     </com.tokopedia.play_common.view.RoundedFrameLayout>
 
