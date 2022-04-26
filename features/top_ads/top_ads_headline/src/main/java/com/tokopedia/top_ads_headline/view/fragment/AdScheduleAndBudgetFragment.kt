@@ -170,7 +170,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         }
     }
 
-    private fun getTimeSelected(): Long? {
+    private fun getTimeSelected(): Long {
         var endDate = selectedEndDate?.time?.time ?: 0
         var startDate = selectedStartDate?.time?.time ?: 0
         context?.let {
@@ -239,7 +239,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         }
     }
 
-    private fun advertisingCostTextWatcher(): NumberTextWatcher? {
+    private fun advertisingCostTextWatcher(): NumberTextWatcher {
         return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
@@ -270,7 +270,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         }
     }
 
-    private fun budgetCostTextWatcher(): NumberTextWatcher? {
+    private fun budgetCostTextWatcher(): NumberTextWatcher {
         return object : NumberTextWatcher(budgetCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
@@ -320,7 +320,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     private fun setUpScheduleView() {
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
         startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         context?.run {
@@ -369,7 +369,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     }
 
     private fun setAdAppearanceMessage() {
-        adAppearanceMessage.text = String.format(getString(R.string.topads_headline_schedule_add_appearance_message), getTimeSelected()?.toInt())
+        adAppearanceMessage.text = String.format(getString(R.string.topads_headline_schedule_add_appearance_message), getTimeSelected().toInt())
     }
 
     private fun onStartDateChanged(calendar: Calendar) {
@@ -436,7 +436,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
             tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
             val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
         }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {

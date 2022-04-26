@@ -20,7 +20,7 @@ const val EXTRA_SUBTITLE = "subTitle"
 const val EXTRA_BUTTON = "button"
 const val EXTRA_HIDE_TOOLBAR = "toolbar"
 class SuccessActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return OnSuccessFragment.newInstance(Bundle().apply {
             intent?.let {
                 putString(EXTRA_TITLE, it.getStringExtra(EXTRA_TITLE))

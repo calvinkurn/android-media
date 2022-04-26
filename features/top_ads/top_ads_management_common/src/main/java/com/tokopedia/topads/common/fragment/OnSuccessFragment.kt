@@ -41,7 +41,7 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ic_ilustration?.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
+        ic_ilustration?.setImageDrawable(view.context?.getResDrawable(R.drawable.ill_success))
         goToDashboard?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 if (isFromPdpSellerMigration(activity?.intent?.extras)) {
