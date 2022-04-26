@@ -1,9 +1,7 @@
 package com.tokopedia.createpost.producttag.view.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -12,11 +10,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import javax.inject.Inject
+
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022

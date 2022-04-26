@@ -9,7 +9,6 @@ import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import kotlinx.android.synthetic.main.search_result_item_toko_view.*
 import javax.inject.Inject
 
 /**
