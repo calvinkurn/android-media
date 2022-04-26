@@ -1,102 +1,102 @@
 [
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://*.tokopedia.com/topads", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://*.tokopedia.com/topads",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://*.tokopedia.com/topads/*", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://*.tokopedia.com/topads/*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://*.tokopedia.com/peluang", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://*.tokopedia.com/peluang",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://*.tokopedia.com/peluang.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://*.tokopedia.com/peluang.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://*.tokopedia.com/invoice.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://*.tokopedia.com/invoice.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://*.tokopedia.com/topads", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://*.tokopedia.com/topads",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://*.tokopedia.com/topads/*", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://*.tokopedia.com/topads/*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://*.tokopedia.com/peluang", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://*.tokopedia.com/peluang",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://*.tokopedia.com/peluang.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://*.tokopedia.com/peluang.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://*.tokopedia.cominvoice.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://*.tokopedia.cominvoice.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://tokopedia.com/topads", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://tokopedia.com/topads",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://tokopedia.com/topads/*", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://tokopedia.com/topads/*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://tokopedia.com/peluang", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://tokopedia.com/peluang",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://tokopedia.com/peluang.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://tokopedia.com/peluang.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "https://tokopedia.com/invoice.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "https://tokopedia.com/invoice.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://tokopedia.com/topads", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://tokopedia.com/topads",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://tokopedia.com/topads/*", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://tokopedia.com/topads/*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://tokopedia.com/peluang", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://tokopedia.com/peluang",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://tokopedia.com/peluang.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://tokopedia.com/peluang.pl",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity", 
-          "deeplink": "http://tokopedia.cominvoice.pl", 
+          "destination_activity": "com.tokopedia.sellerapp.deeplink.DeepLinkActivity",
+          "deeplink": "http://tokopedia.cominvoice.pl",
           "deeplink_variable": ""
      },
      {
@@ -180,150 +180,150 @@
           "deeplink_variable": ""
      },
      {
-          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen", 
-          "deeplink": "https://tokopedia.link", 
+          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen",
+          "deeplink": "https://tokopedia.link",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen", 
-          "deeplink": "https://tokopedia-alternate.app.link", 
+          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen",
+          "deeplink": "https://tokopedia-alternate.app.link",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen", 
-          "deeplink": "https://tokopedia.app.link", 
+          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen",
+          "deeplink": "https://tokopedia.app.link",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen", 
-          "deeplink": "https://tkpd.page.link", 
+          "destination_activity": "com.tokopedia.tkpd.ConsumerSplashScreen",
+          "deeplink": "https://tkpd.page.link",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity", 
-          "deeplink": "https://www.tokopedia.com.*", 
+          "destination_activity": "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity",
+          "deeplink": "https://www.tokopedia.com.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.navigation.presentation.activity.MainParentActivity", 
-          "deeplink": "tokopedia-android-internal://home/navigation", 
+          "destination_activity": "com.tokopedia.navigation.presentation.activity.MainParentActivity",
+          "deeplink": "tokopedia-android-internal://home/navigation",
           "deeplink_variable": "ApplinkConsInternalHome.HOME_NAVIGATION"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/gold-merchant-redirect", 
+          "destination_activity": "com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/gold-merchant-redirect",
           "deeplink_variable": "ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.redirect.RedirectCreateShopActivity", 
-          "deeplink": "tokopedia-android-internal://merchant/redirect-create-shop", 
+          "destination_activity": "com.tokopedia.tkpd.redirect.RedirectCreateShopActivity",
+          "deeplink": "tokopedia-android-internal://merchant/redirect-create-shop",
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity", 
-          "deeplink": "tokopedia-android-internal://global/youtube-video", 
+          "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity",
+          "deeplink": "tokopedia-android-internal://global/youtube-video",
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.broadcaster.log.ui.activity.NetworkLogActivity",
           "deeplink": "tokopedia-android-internal://marketplace/chucker",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.media.loader.ui.MediaActivity",
           "deeplink": "tokopedia-android-internal://global/medialoader-lab",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.mediauploader.MediaUploaderActivity",
           "deeplink": "tokopedia-internal-app://media/uploader",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.flight.homepage.presentation.activity.FlightHomepageActivity", 
-          "deeplink": "tokopedia-android-internal://pesawat/dashboard", 
+          "destination_activity": "com.tokopedia.flight.homepage.presentation.activity.FlightHomepageActivity",
+          "deeplink": "tokopedia-android-internal://pesawat/dashboard",
           "deeplink_variable": "ApplinkConstInternalTravel.DASHBOARD_FLIGHT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.flight.homepage.presentation.activity.FlightHomepageActivity", 
-          "deeplink": "tokopedia://pesawat/search", 
+          "destination_activity": "com.tokopedia.flight.homepage.presentation.activity.FlightHomepageActivity",
+          "deeplink": "tokopedia://pesawat/search",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity", 
-          "deeplink": "tokopedia-android-internal://pesawat/cancellation", 
+          "destination_activity": "com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity",
+          "deeplink": "tokopedia-android-internal://pesawat/cancellation",
           "deeplink_variable": "ApplinkConstInternalTravel.CANCELLATION_FLIGHT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailActivity", 
-          "deeplink": "tokopedia://pesawat/order/.*\\", 
+          "destination_activity": "com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailActivity",
+          "deeplink": "tokopedia://pesawat/order/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailActivity", 
-          "deeplink": "tokopedia://pesawat/cancellation", 
+          "destination_activity": "com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailActivity",
+          "deeplink": "tokopedia://pesawat/cancellation",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity",
           "deeplink": "tokopedia://travelentertainment/home/city",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity",
           "deeplink": "tokopedia-android-internal://hotel/dashboard",
           "deeplink_variable": "ApplinkConstInternalTravel.DASHBOARD_HOTEL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity",
           "deeplink": "tokopedia-android-internal://hotel/result",
           "deeplink_variable": "ApplinkConstInternalTravel.HOTEL_SRP"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity",
           "deeplink": "tokopedia-android-internal://hotel/detail/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.orderdetail.presentation.activity.HotelOrderDetailActivity",
           "deeplink": "tokopedia://hotel/order/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity",
           "deeplink": "tokopedia://hotel/booking/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity",
           "deeplink": "tokopedia://hotel/cancel/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.contactus.home.view.ContactUsHomeActivity", 
-          "deeplink": "tokopedia://contactus", 
+          "destination_activity": "com.tokopedia.contactus.home.view.ContactUsHomeActivity",
+          "deeplink": "tokopedia://contactus",
           "deeplink_variable": "ApplinkConst.CONTACT_US_NATIVE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.contactus.createticket.activity.ContactUsActivity", 
-          "deeplink": "tokopedia://contact-us", 
+          "destination_activity": "com.tokopedia.contactus.createticket.activity.ContactUsActivity",
+          "deeplink": "tokopedia://contact-us",
           "deeplink_variable": "ApplinkConst.CONTACT_US"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity", 
-          "deeplink": "tokopedia-android-internal://customercare/inbox-list", 
+          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity",
+          "deeplink": "tokopedia-android-internal://customercare/inbox-list",
           "deeplink_variable": "ApplinkConstInternalOperational.INTERNAL_INBOX_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity", 
-          "deeplink": "tokopedia://customercare/.*\\", 
+          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity",
+          "deeplink": "tokopedia://customercare/.*\\",
           "deeplink_variable": "ApplinkConst.TICKET_DETAIL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.ClearCacheActivity", 
-          "deeplink": "tokopedia://contactus/clear-cache", 
+          "destination_activity": "com.tokopedia.contactus.inboxticket2.view.activity.ClearCacheActivity",
+          "deeplink": "tokopedia://contactus/clear-cache",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.ovop2p.view.activity.OvoP2PFormActivity",
           "deeplink": "tokopedia-android-internal://ovop2ptransfer",
@@ -366,19 +366,19 @@
      },
      {
           "destination_activity": "com.tokopedia.orderhistory.view.activity.OrderHistoryActivity",
-          "deeplink": "tokopedia-android-internal://marketplace/user-order-history/.*\\/", 
+          "deeplink": "tokopedia-android-internal://marketplace/user-order-history/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.ORDER_HISTORY"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.inbox.view.activity.InboxActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/inbox", 
+          "destination_activity": "com.tokopedia.inbox.view.activity.InboxActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/inbox",
           "deeplink_variable": "ApplinkConstInternalMarketplace.INBOX"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.inbox.view.activity.InboxActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/inbox?.*", 
+          "destination_activity": "com.tokopedia.inbox.view.activity.InboxActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/inbox?.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.attachproduct.view.activity.AttachProductActivity",
           "deeplink": "tokopedia-android-internal://marketplace/user-attach-product",
@@ -391,49 +391,49 @@
      },
      {
           "destination_activity": "com.tokopedia.attachinvoice.view.activity.AttachInvoiceActivity",
-          "deeplink": "tokopedia-android-internal://marketplace/user-attach-invoice", 
+          "deeplink": "tokopedia-android-internal://marketplace/user-attach-invoice",
           "deeplink_variable": "ApplinkConstInternalMarketplace.ATTACH_INVOICE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.feedback_form.feedbackpage.ui.feedbackpage.FeedbackPageActivity",
           "deeplink": "tokopedia-android-internal://global/internal-feedback",
           "deeplink_variable": "ApplinkConstInternalGlobal.FEEDBACK_FORM"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.qrscanner.QrScannerActivity",
           "deeplink": "tokopedia-android-internal://marketplace/qr-scanner/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.QR_SCANNEER"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity",
           "deeplink": "tokopedia://setting/dev-opts",
           "deeplink_variable": "ApplinkConst.DEVELOPER_OPTIONS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity",
           "deeplink": "tokopedia-android-internal://setting/dev-opts",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.view.activity.StepperActivity", 
-          "deeplink": "tokopedia-android-internal://topads/create-manual-ads", 
+          "destination_activity": "com.tokopedia.topads.view.activity.StepperActivity",
+          "deeplink": "tokopedia-android-internal://topads/create-manual-ads",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.view.activity.CreationOnboardingActivity", 
-          "deeplink": "tokopedia-android-internal://topads/creation-onboard", 
+          "destination_activity": "com.tokopedia.topads.view.activity.CreationOnboardingActivity",
+          "deeplink": "tokopedia-android-internal://topads/creation-onboard",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_CREATION_ONBOARD"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.view.activity.AdCreationChooserActivity", 
-          "deeplink": "tokopedia-android-internal://topads/ad-picker", 
+          "destination_activity": "com.tokopedia.topads.view.activity.AdCreationChooserActivity",
+          "deeplink": "tokopedia-android-internal://topads/ad-picker",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.view.activity.AdCreationChooserActivity", 
-          "deeplink": "tokopedia-android-internal://topads/create-ads", 
+          "destination_activity": "com.tokopedia.topads.view.activity.AdCreationChooserActivity",
+          "deeplink": "tokopedia-android-internal://topads/create-ads",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_CREATE_ADS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.topads.auto.view.activity.CreateAutoAdsActivity",
           "deeplink": "tokopedia-android-internal://topads/create-autoads",
@@ -456,78 +456,79 @@
      },
      {
           "destination_activity": "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity",
-          "deeplink": "tokopedia://topads/dashboard", 
+          "deeplink": "tokopedia://topads/dashboard",
           "deeplink_variable": "ApplinkConst.CustomerApp.TOPADS_DASHBOARD"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity", 
-          "deeplink": "tokopedia-android-internal://topads/dashboard", 
+          "destination_activity": "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity",
+          "deeplink": "tokopedia-android-internal://topads/dashboard",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity", 
-          "deeplink": "sellerapp://topads/buy", 
+          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity",
+          "deeplink": "sellerapp://topads/buy",
           "deeplink_variable": "ApplinkConst.SellerApp.TOPADS_CREDIT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity", 
-          "deeplink": "tokopedia-android-internal://topads/buy", 
+          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity",
+          "deeplink": "tokopedia-android-internal://topads/buy",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity", 
-          "deeplink": "tokopedia-android-internal://topads/headline-ad-detail", 
+          "destination_activity": "com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity",
+          "deeplink": "tokopedia-android-internal://topads/headline-ad-detail",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_HEADLINE_DETAIL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity", 
-          "deeplink": "tokopedia-android-internal://topads/history-credit", 
+          "destination_activity": "com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity",
+          "deeplink": "tokopedia-android-internal://topads/history-credit",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_HISTORY_CREDIT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity", 
-          "deeplink": "tokopedia-android-internal://topads/auto-topup", 
+          "destination_activity": "com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity",
+          "deeplink": "tokopedia-android-internal://topads/auto-topup",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_AUTO_TOPUP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.topads.dashboard.view.activity.TopAdsTypeSelectionActivity", 
-          "deeplink": "tokopedia-android-internal://topads/ad-selection", 
+          "destination_activity": "com.tokopedia.topads.dashboard.view.activity.TopAdsTypeSelectionActivity",
+          "deeplink": "tokopedia-android-internal://topads/ad-selection",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION"
      },
+     {
           "destination_activity": "com.tokopedia.topads.edit.view.activity.EditFormAdActivity",
           "deeplink": "tokopedia-android-internal://topads/edit-ads",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_EDIT_ADS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.topads.edit.view.activity.SelectNegKeywordActivity",
           "deeplink": "tokopedia-android-internal://topads/edit-ads-negative-keyword",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_NEGATIVE_KEYWORD_EDIT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.topads.edit.view.activity.EditFormWithoutGroupActivity",
           "deeplink": "tokopedia-android-internal://topads/edit-without-group",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity",
           "deeplink": "tokopedia-android-internal://topads/headline-ad-creation",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.top_ads_headline.view.activity.EditFormHeadlineActivity",
           "deeplink": "tokopedia-android-internal://topads/headline-ad-edit",
           "deeplink_variable": "ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.deals.home.ui.activity.DealsHomeActivity",
           "deeplink": "tokopedia-android-internal://deals/home-new",
           "deeplink_variable": "ApplinkConstInternalDeals.DEALS_HOMEPAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.deals.search.ui.activity.DealsSearchActivity",
           "deeplink": "tokopedia-android-internal://deals/search-new",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.deals.category.ui.activity.DealsCategoryActivity",
           "deeplink": "tokopedia-android-internal://deals/category-new/page",
@@ -537,47 +538,47 @@
           "destination_activity": "com.tokopedia.deals.brand.ui.activity.DealsBrandActivity",
           "deeplink": "tokopedia-android-internal://deals/brand-new/page",
           "deeplink_variable": "ApplinkConstInternalDeals.DEALS_BRAND_PAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.deals.brand_detail.ui.activity.DealsBrandDetailActivity",
           "deeplink": "tokopedia-android-internal://deals/brand-detail-new",
           "deeplink_variable": "ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.search.activity.EventSearchActivity",
           "deeplink": "tokopedia-android-internal://event/search",
           "deeplink_variable": "ApplinkConstInternalEntertainment.EVENT_SEARCH"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.search.activity.EventCategoryActivity",
           "deeplink": "tokopedia-android-internal://event/category",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity",
           "deeplink": "tokopedia-android-internal://event/choose-package/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity",
           "deeplink": "tokopedia-android-internal://event/checkout",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity",
           "deeplink": "tokopedia-android-internal://event/form/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.pdp.activity.EventRedeemActivity",
           "deeplink": "tokopedia-android-internal://event/redeem",
           "deeplink_variable": "ApplinkConstInternalEntertainment.EVENT_REDEEM"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.navigation.EventNavigationActivity",
           "deeplink": "tokopedia-android-internal://event/detail/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.entertainment.navigation.EventNavigationActivity",
           "deeplink": "tokopedia-android-internal://event/home",
@@ -652,17 +653,17 @@
           "destination_activity": "com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity",
           "deeplink": "tokopedia-android-internal://marketplace/review/credibility/.*\\/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.officialstore.OfficialStoreActivity",
           "deeplink": "tokopedia-android-internal://merchant/official-store",
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.favorite.view.FavoriteShopsActivity",
           "deeplink": "tokopedia://home/favorite",
           "deeplink_variable": "ApplinkConst.FAVORITE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.vouchercreation.shop.voucherlist.view.activity.VoucherListActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/voucher-list",
@@ -722,277 +723,277 @@
           "destination_activity": "com.tokopedia.gallery.ImageReviewGalleryActivity",
           "deeplink": "tokopedia-android-internal://marketplace/product/.*\\/review/gallery-old",
           "deeplink_variable": "ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY_OLD"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-product-list", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-product-list",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-chat", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-chat",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_CHAT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-allorder", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-allorder",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-neworder", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-neworder",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-readytoship", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-readytoship",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-inshipping", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-inshipping",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-done", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-done",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-cancelled", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-cancelled",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-othersettings", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-othersettings",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-cancellation-request", 
+          "destination_activity": "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/sellerhome-som-cancellation-request",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/menu-setting", 
+          "destination_activity": "com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/menu-setting",
           "deeplink_variable": "ApplinkConstInternalSellerapp.MENU_SETTING"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.centralizedpromo.view.activity.CentralizedPromoActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/centralized-promo", 
+          "destination_activity": "com.tokopedia.centralizedpromo.view.activity.CentralizedPromoActivity",
+          "deeplink": "tokopedia-android-internal://sellerapp/centralized-promo",
           "deeplink_variable": "ApplinkConstInternalSellerapp.CENTRALIZED_PROMO"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.sellerhome.view.activity.AdminRestrictionActivity",
-          "deeplink": "tokopedia-android-internal://sellerapp/admin-restriction", 
+          "deeplink": "tokopedia-android-internal://sellerapp/admin-restriction",
           "deeplink_variable": "ApplinkConstInternalSellerapp.ADMIN_RESTRICTION"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.centralizedpromo.view.activity.FirstTimePromoActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/first-time-centralized-promo",
           "deeplink_variable": "ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.open.presentation.view.activity.ShopOpenRevampActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-open",
           "deeplink_variable": "ApplinkConstInternalMarketplace.OPEN_SHOP"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-info",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-operational-hours",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-edit-schedule",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-notes",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-settings-etalase/add",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.setting.view.activity.ShopPageSettingActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-page-setting",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop.settings.setting.view.activity.ShopPageSettingActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/settings",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.sellerfeedback.presentation.activity.SellerFeedbackActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/seller-feedback",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_FEEDBACK"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/home", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/home",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_HOME"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/info", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/info",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_INFO"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/review", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/review",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/product", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/product",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/feed", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/feed",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_FEED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/note", 
+          "destination_activity": "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/note",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.product.view.activity.ShopProductListResultActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page-product-list/.*\\/etalase/.*\\/", 
+          "destination_activity": "com.tokopedia.shop.product.view.activity.ShopProductListResultActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page-product-list/.*\\/etalase/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-favourites", 
+          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-favourites",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/shop-favourites", 
+          "destination_activity": "com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-page/.*\\/shop-favourites",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.info.view.activity.ShopInfoActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-info/.*\\/", 
+          "destination_activity": "com.tokopedia.shop.info.view.activity.ShopInfoActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-info/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_INFO"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.detail.view.activity.ProductDetailActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/product-detail/.*\\/", 
+          "destination_activity": "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/product-detail/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.PRODUCT_DETAIL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.detail.view.activity.ProductDetailActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/product-detail/.*\\/.*\\/", 
+          "destination_activity": "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/product-detail/.*\\/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop_widget.mvc_locked_to_product.view.activity.MvcLockedToProductPageActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop/widget/voucher/shop_id/.*\\/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop_widget.operationalhour.view.activity.ShopOperationalHourBottomSheetActivity",
           "deeplink": "tokopedia-android-internal://marketplace/shop/widget/operational-hour/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.campaignlist.page.presentation.activity.CampaignListActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/campaign-list",
           "deeplink_variable": "ApplinkConstInternalSellerapp.CAMPAIGN_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/power-merchant-subscribe", 
+          "destination_activity": "com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/power-merchant-subscribe",
           "deeplink_variable": "ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.power_merchant.subscribe.view.activity.BenefitPackageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/pm-benefit-package", 
+          "destination_activity": "com.tokopedia.power_merchant.subscribe.view.activity.BenefitPackageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/pm-benefit-package",
           "deeplink_variable": "ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity.ShopShowcaseAddActivity",
           "deeplink": "tokopedia-android-internal://merchant/shop-showcase-add",
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity",
           "deeplink": "tokopedia-android-internal://merchant/shop-showcase-list",
           "deeplink_variable": "ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/seller-search",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_SEARCH"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity",
           "deeplink": "tokopedia://seller/seller-migration",
           "deeplink_variable": "ApplinkConst.SELLER_MIGRATION"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.score.performance.presentation.activity.ShopPerformancePageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop/performance", 
+          "destination_activity": "com.tokopedia.shop.score.performance.presentation.activity.ShopPerformancePageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop/performance",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PERFORMANCE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-penalty", 
+          "destination_activity": "com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-penalty",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PENALTY"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyDetailPageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/shop-penalty-detail", 
+          "destination_activity": "com.tokopedia.shop.score.penalty.presentation.activity.ShopPenaltyDetailPageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/shop-penalty-detail",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/product-manage-list", 
+          "destination_activity": "com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/product-manage-list",
           "deeplink_variable": "ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/stock-reminder/.*\\/.*\\/.*", 
+          "destination_activity": "com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/stock-reminder/.*\\/.*\\/.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/set-cashback/.*\\/", 
+          "destination_activity": "com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/set-cashback/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.SET_CASHBACK"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/reserved-stock/.*\\/.*\\/", 
+          "destination_activity": "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/reserved-stock/.*\\/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.RESERVED_STOCK"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.report.view.activity.ProductReportActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/product-report/.*\\/", 
+          "destination_activity": "com.tokopedia.report.view.activity.ProductReportActivity",
+          "deeplink": "tokopedia-android-internal://marketplace/product-report/.*\\/",
           "deeplink_variable": "ApplinkConstInternalMarketplace.REPORT_PRODUCT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.product_bundle.activity.ProductBundleActivity",
           "deeplink": "tokopedia-android-internal://merchant/product-bundle/.*\\/",
@@ -1052,17 +1053,17 @@
           "destination_activity": "com.tokopedia.seller.menu.presentation.activity.SellerSettingsActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/seller-settings",
           "deeplink_variable": "ApplinkConstInternalSellerapp.SELLER_SETTINGS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/admin-authorize/.*\\/",
           "deeplink_variable": "ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.selleronboarding.activity.SellerOnboardingActivity",
           "deeplink": "tokopedia-android-internal://sellerapp/welcome",
           "deeplink_variable": "ApplinkConstInternalSellerapp.WELCOME"
-     }, 
+     },
      {
           "destination_activity": "com.tkpd.atcvariant.view.activity.AtcVariantActivity",
           "deeplink": "tokopedia-android-internal://marketplace/atc-variant/.*\\/.*\\/",
@@ -1072,7 +1073,7 @@
           "destination_activity": "com.tokopedia.layanan_finansial.view.acitivity.LayananAcitivity",
           "deeplink": "tokopedia-android-internal://layanan-finansial/",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity",
           "deeplink": "tokopedia-android-internal://global/saldo",
@@ -1107,17 +1108,17 @@
           "destination_activity": "com.tokopedia.wallet.ovoactivation.view.IntroOvoActivity",
           "deeplink": "tokopedia://ovo/introduction",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.wallet.ovoactivation.view.ActivationOvoActivity",
           "deeplink": "tokopedia://ovo/activation",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.wallet.ovoactivationflashdeals.InactiveOvoActivity",
           "deeplink": "tokopedia://ovo/inactive",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity",
           "deeplink": "tokopedia-android-internal://fintech/paylater",
@@ -1132,7 +1133,7 @@
           "destination_activity": "com.tokopedia.navigation.presentation.activity.InboxMainActivity",
           "deeplink": "tokopedia-android-internal://home/inbox",
           "deeplink_variable": "ApplinkConsInternalHome.HOME_INBOX"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity",
           "deeplink": "tokopedia-android-internal://now/home",
@@ -1142,7 +1143,7 @@
           "destination_activity": "com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity",
           "deeplink": "tokopedia-android-internal://now/category-list",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity",
           "deeplink": "tokopedia-android-internal://now/sort-filter",
@@ -1152,27 +1153,27 @@
           "destination_activity": "com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity",
           "deeplink": "tokopedia-android-internal://now/date-filter",
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.DATE_FILTER"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.search.presentation.view.TokoNowSearchActivity",
           "deeplink": "tokopedia-android-internal://now/search",
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.SEARCH"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryActivity",
           "deeplink": "tokopedia-android-internal://now/category",
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.CATEGORY"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.repurchase.presentation.activity.TokoNowRepurchaseActivity",
           "deeplink": "tokopedia-android-internal://now/repurchase-page",
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.REPURCHASE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity",
           "deeplink": "tokopedia-android-internal://now/category-filter",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.educationalinfo.presentation.activity.TokoNowEducationalInfoActivity",
           "deeplink": "tokopedia-android-internal://now/educational-info",
@@ -1187,22 +1188,22 @@
           "destination_activity": "com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity",
           "deeplink": "tokopedia-android-internal://digital/telcopre",
           "deeplink_variable": "ApplinkConsInternalDigital.TELCO_PREPAID_DIGITAL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity",
           "deeplink": "tokopedia-android-internal://digital/telcopost",
           "deeplink_variable": "ApplinkConsInternalDigital.TELCO_POSTPAID_DIGITAL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity",
           "deeplink": "tokopedia-android-internal://digital/searchnumber",
           "deeplink_variable": "ApplinkConsInternalDigital.SEARCH_NUMBER"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.brizzi.activity.BrizziCheckBalanceActivity",
           "deeplink": "tokopedia-android-internal://digital/smartcard/brizzi",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.rechargeocr.RechargeCameraActivity",
           "deeplink": "tokopedia-android-internal://recharge/ocr",
@@ -1217,7 +1218,7 @@
           "destination_activity": "com.tokopedia.smartbills.presentation.activity.SmartBillsAddTelcoActivity",
           "deeplink": "tokopedia-android-internal://recharge/add_telco",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity",
           "deeplink": "tokopedia-android-internal://digital/favoritenumber",
@@ -1247,7 +1248,7 @@
           "destination_activity": "com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity",
           "deeplink": "tokopedia-android-internal://digital/general",
           "deeplink_variable": "ApplinkConsInternalDigital.GENERAL_TEMPLATE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.digital_checkout.presentation.activity.DigitalCartActivity",
           "deeplink": "tokopedia-android-internal://digital/checkout",
@@ -1257,107 +1258,107 @@
           "destination_activity": "com.tokopedia.digital_checkout.presentation.activity.DigitalCartActivity",
           "deeplink": "tokopedia://digital/checkout",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.recharge_credit_card.RechargeCCActivity",
           "deeplink": "tokopedia-android-internal://recharge/cc",
           "deeplink_variable": "ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.emoney.view.activity.EmoneyCheckBalanceActivity",
           "deeplink": "tokopedia-android-internal://digital/smartcard/emoney",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.digital.home.old.presentation.activity.DigitalHomePageActivity",
           "deeplink": "tokopedia-android-internal://recharge/home",
           "deeplink_variable": "ApplinkConsInternalDigital.SUBHOMEPAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity",
           "deeplink": "tokopedia-android-internal://recharge/home/dynamic",
           "deeplink_variable": "ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity",
           "deeplink": "tokopedia-android-internal://digital/electronicmoney",
           "deeplink_variable": "ApplinkConsInternalDigital.ELECTRONIC_MONEY_PDP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/new-order", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/new-order",
           "deeplink_variable": "ApplinkConstInternalOrder.NEW_ORDER"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/ready-to-ship", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/ready-to-ship",
           "deeplink_variable": "ApplinkConstInternalOrder.READY_TO_SHIP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/shipped", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/shipped",
           "deeplink_variable": "ApplinkConstInternalOrder.SHIPPED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/delivered", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/delivered",
           "deeplink_variable": "ApplinkConstInternalOrder.DELIVERED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/history", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/history",
           "deeplink_variable": "ApplinkConstInternalOrder.HISTORY"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/cancelled", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/cancelled",
           "deeplink_variable": "ApplinkConstInternalOrder.CANCELLED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/waiting-pickup", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/waiting-pickup",
           "deeplink_variable": "ApplinkConstInternalOrder.WAITING_PICKUP"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/waiting-awb", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/waiting-awb",
           "deeplink_variable": "ApplinkConstInternalOrder.WAITING_AWB"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/awb-invalid", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/awb-invalid",
           "deeplink_variable": "ApplinkConstInternalOrder.AWB_INVALID"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/awb-change", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/awb-change",
           "deeplink_variable": "ApplinkConstInternalOrder.AWB_CHANGE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/retur", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/retur",
           "deeplink_variable": "ApplinkConstInternalOrder.RETUR"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/complaint", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/complaint",
           "deeplink_variable": "ApplinkConstInternalOrder.COMPLAINT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/finished", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/finished",
           "deeplink_variable": "ApplinkConstInternalOrder.FINISHED"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity", 
-          "deeplink": "tokopedia-android-internal://seller/cancellationrequest", 
+          "destination_activity": "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+          "deeplink": "tokopedia-android-internal://seller/cancellationrequest",
           "deeplink_variable": "ApplinkConstInternalOrder.CANCELLATION_REQUEST"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity", 
-          "deeplink": "tokopedia-android-internal://seller/order", 
+          "destination_activity": "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity",
+          "deeplink": "tokopedia-android-internal://seller/order",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.wishlist.view.activity.WishlistV2Activity",
           "deeplink": "tokopedia-android-internal://transaction/wishlist",
@@ -1405,9 +1406,9 @@
      },
      {
           "destination_activity": "com.tokopedia.addongifting.AddOnActivity",
-          "deeplink": "tokopedia-android-internal://marketplace/add-on-gifting", 
+          "deeplink": "tokopedia-android-internal://marketplace/add-on-gifting",
           "deeplink_variable": "ApplinkConstInternalMarketplace.ADD_ON_GIFTING"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity",
           "deeplink": "tokopedia-android-internal://feedcommunicationdetail",
@@ -1417,22 +1418,22 @@
           "destination_activity": "com.tokopedia.feedplus.view.activity.PlayVideoLiveListActivity",
           "deeplink": "tokopedia-android-internal://feedplaylivedetail",
           "deeplink_variable": "ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity",
           "deeplink": "tokopedia-android-internal://content/comment/.*\\",
           "deeplink_variable": "ApplinkConstInternalContent.COMMENT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity",
           "deeplink": "tokopedia-android-internal://content/comment-new/.*\\",
           "deeplink_variable": "ApplinkConstInternalContent.COMMENT_NEW"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity",
           "deeplink": "tokopedia-android-internal://content/post-detail/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kol.feature.post.view.activity.KolPostYouTubeActivity",
           "deeplink": "tokopedia-android-internal://kolyoutube",
@@ -1577,102 +1578,102 @@
           "destination_activity": "com.tokopedia.search.result.presentation.view.activity.SearchActivity",
           "deeplink": "tokopedia-android-internal://discovery/search-result",
           "deeplink_variable": "ApplinkConstInternalDiscovery.SEARCH_RESULT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeNewActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/home", 
+          "destination_activity": "com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeNewActivity",
+          "deeplink": "tokopedia-android-internal://rewards/home",
           "deeplink_variable": "ApplinkConstInternalPromo.TOKOPOINTS_HOME"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/tukar-point", 
+          "destination_activity": "com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity",
+          "deeplink": "tokopedia-android-internal://rewards/tukar-point",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/kupon-saya", 
+          "destination_activity": "com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity",
+          "deeplink": "tokopedia-android-internal://rewards/kupon-saya",
           "deeplink_variable": "ApplinkConstInternalPromo.TOKOPOINTS_COUPON"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/tukar-detail", 
+          "destination_activity": "com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity",
+          "deeplink": "tokopedia-android-internal://rewards/tukar-detail",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/kupon-detail", 
+          "destination_activity": "com.tokopedia.tokopoints.view.coupondetail.CouponDetailActivity",
+          "deeplink": "tokopedia-android-internal://rewards/kupon-detail",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tokopoints.view.intro.RewardIntroActivity", 
-          "deeplink": "tokopedia-android-internal://rewards/introduction", 
+          "destination_activity": "com.tokopedia.tokopoints.view.intro.RewardIntroActivity",
+          "deeplink": "tokopedia-android-internal://rewards/introduction",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListDigitalActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/digital", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListDigitalActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/digital",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_DIGITAL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListFlightActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/flight", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListFlightActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/flight",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_FLIGHT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListHotelActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/hotel", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListHotelActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/hotel",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_HOTEL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListDealsActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/deals", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListDealsActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/deals",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_DEALS"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/marketplace", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/marketplace",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_MARKETPLACE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/marketplace", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/marketplace",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/digital", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/digital",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/flight", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/flight",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailHotelActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/hotel", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailHotelActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/hotel",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListUmrahActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/umroh", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListUmrahActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/umroh",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_UMROH"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListEventActivity", 
-          "deeplink": "tokopedia-android-internal://promo/list/event", 
+          "destination_activity": "com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListEventActivity",
+          "deeplink": "tokopedia-android-internal://promo/list/event",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST_EVENT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/event", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailEventActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/event",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_EVENT"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity", 
-          "deeplink": "tokopedia-android-internal://promo/detail/deals", 
+          "destination_activity": "com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity",
+          "deeplink": "tokopedia-android-internal://promo/detail/deals",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_DEALS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxDailyActivity",
           "deeplink": "tokopedia-android-internal://global/gamification_gift_daily",
@@ -1682,37 +1683,37 @@
           "destination_activity": "com.tokopedia.gamification.giftbox.presentation.activities.GiftBoxTapTapActivity",
           "deeplink": "tokopedia-android-internal://global/gamification_gift_60s",
           "deeplink_variable": "ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.loyalty.view.activity.PromoDetailActivity",
           "deeplink": "tokopedia-android-internal://promo/promo-detail",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.loyalty.view.activity.PromoListActivity",
           "deeplink": "tokopedia-android-internal://promo/promo-list",
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_LIST"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerActivity",
           "deeplink": "tokopedia-android-internal://logistic/dropoff/",
           "deeplink_variable": "ApplinkConstInternalLogistic.DROPOFF_PICKER"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticCommon.ui.userconsent.TncWebViewActivity",
           "deeplink": "tokopedia-android-internal://logistic/logistictnc",
           "deeplink_variable": "ApplinkConstInternalLogistic.TNC_WEBVIEW"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticorder.view.TrackingPageActivity",
           "deeplink": "tokopedia-android-internal://logistic/shipping/tracking/.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity",
           "deeplink": "tokopedia-android-internal://logistic/shipping-confirmation/.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity",
           "deeplink": "tokopedia-android-internal://logistic/manageaddress/",
@@ -2189,16 +2190,6 @@
           "deeplink_variable": "ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE"
      },
      {
-          "destination_activity": "com.tokopedia.kyc.view.activity.StartUpgradeToOvoActivity",
-          "deeplink": "tokopedia-android-internal://ovo/upgrade",
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE"
-     },
-     {
-          "destination_activity": "com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity",
-          "deeplink": "tokopedia-android-internal://ovo/upgradestatus",
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE_STATUS"
-     },
-     {
           "destination_activity": "com.tokopedia.referral.view.activity.ReferralActivity",
           "deeplink": "tokopedia://referral",
           "deeplink_variable": "ApplinkConst.REFERRAL"
@@ -2212,82 +2203,82 @@
           "destination_activity": "com.tokopedia.referral.view.activity.ReferralPhoneNumberVerificationActivity",
           "deeplink": "tokopedia-android-internal://global/setting-referral-phone-verification",
           "deeplink_variable": "ApplinkConstInternalGlobal.SETTING_REFERRAL_PHONE_VERIFICATION"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity", 
-          "deeplink": "tokopedia-android-internal://money_in/device_validation", 
+          "destination_activity": "com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity",
+          "deeplink": "tokopedia-android-internal://money_in/device_validation",
           "deeplink_variable": "ApplinkConstInternalCategory.MONEYIN_INTERNAL"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.kategori.view.activity.CategoryBrowseActivity",
           "deeplink": "tokopedia-android-internal://category_belanja",
           "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInInfoActivity", 
-          "deeplink": "tokopedia-android-internal://category/tradein_tnc", 
+          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInInfoActivity",
+          "deeplink": "tokopedia-android-internal://category/tradein_tnc",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInInfoActivity", 
-          "deeplink": "tokopedia-android-internal://category/tradein_black_market", 
+          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInInfoActivity",
+          "deeplink": "tokopedia-android-internal://category/tradein_black_market",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity", 
-          "deeplink": "tokopedia-android-internal://category/tradein", 
+          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity",
+          "deeplink": "tokopedia-android-internal://category/tradein",
           "deeplink_variable": "ApplinkConstInternalCategory.TRADEIN"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity", 
-          "deeplink": "tokopedia-android-internal://category/tradein/.*\\", 
+          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity",
+          "deeplink": "tokopedia-android-internal://category/tradein/.*\\",
           "deeplink_variable": ""
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity", 
-          "deeplink": "tokopedia-android-internal://category/host_final_price", 
+          "destination_activity": "com.tokopedia.tradein.view.viewcontrollers.activity.TradeInHomeActivity",
+          "deeplink": "tokopedia-android-internal://category/host_final_price",
           "deeplink_variable": "ApplinkConstInternalCategory.FINAL_PRICE"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity", 
-          "deeplink": "tokopedia-android-internal://category/age_restriction", 
+          "destination_activity": "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity",
+          "deeplink": "tokopedia-android-internal://category/age_restriction",
           "deeplink_variable": "ApplinkConstInternalCategory.AGE_RESTRICTION"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.categorylevels.view.activity.CategoryRevampActivity", 
-          "deeplink": "tokopedia-android-internal://category", 
+          "destination_activity": "com.tokopedia.categorylevels.view.activity.CategoryRevampActivity",
+          "deeplink": "tokopedia-android-internal://category",
           "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_CATEGORY"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity", 
-          "deeplink": "tokopedia-android-internal://catalog", 
+          "destination_activity": "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity",
+          "deeplink": "tokopedia-android-internal://catalog",
           "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_CATALOG"
-     }, 
+     },
      {
-          "destination_activity": "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity", 
-          "deeplink": "tokopedia-android-internal://discovery/catalog", 
+          "destination_activity": "com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity",
+          "deeplink": "tokopedia-android-internal://discovery/catalog",
           "deeplink_variable": "ApplinkConstInternalDiscovery.CATALOG"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity",
           "deeplink": "tokopedia-android-internal://global/discovery/.*",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.exploreCategory.ui.activity.ECHomeActivity",
           "deeplink": "tokopedia-android-internal://category-explore",
           "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.find_native.view.activity.FindNavActivity",
           "deeplink": "tokopedia-android-internal://find",
           "deeplink_variable": "ApplinkConstInternalCategory.INTERNAL_FIND"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.find_native.view.activity.FindNavActivity",
           "deeplink": "tokopedia-android-internal://amp/find",
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.affiliate.ui.activity.AffiliateActivity",
           "deeplink": "tokopedia-android-internal://affiliate",
