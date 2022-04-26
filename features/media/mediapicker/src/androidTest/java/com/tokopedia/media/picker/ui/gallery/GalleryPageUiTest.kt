@@ -30,9 +30,9 @@ class GalleryPageUiTest : GalleryPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
-    // ⏳ should be able to fetch image only
-    // ⏳ should be able to fetch video only
-    // ⏳ should be able to fetch image and video
+    // ✅ should be able to fetch image only
+    // ✅ should be able to fetch video only
+    // ✅ should be able to fetch image and video
     // ⏳ should be able to single selection
     // ⏳ should be able to multiple selection with shown on drawer
     // ⏳ should be able to remove item on drawer

@@ -19,5 +19,10 @@
         <activity
             android:name=".picker.common.ui.activity.TestPickerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".picker.common.ui.activity.TestPreviewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>
