@@ -35,6 +35,7 @@ import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapt
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
@@ -266,19 +267,33 @@ class PdpGamificationView : LinearLayout {
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
                 if (viewModel.userSession.isLoggedIn) {
-                    var isUsingWishlistV2 = false
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) isUsingWishlistV2 = true
 
                     if (isAddWishlist) {
-                        viewModel.addToWishlist(item, callback, isUsingWishlistV2)
+                        viewModel.addToWishlist(item, callback)
                     } else {
-                        if (isUsingWishlistV2) viewModel.removeFromWishlistV2(item, callback)
-                        else viewModel.removeFromWishlist(item, callback)
+                        viewModel.removeFromWishlist(item, callback)
                     }
                 } else {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
 
+            }
+
+            override fun onWishlistV2Click(
+                item: RecommendationItem,
+                isAddWishlist: Boolean,
+                actionListener: WishlistV2ActionListener
+            ) {
+                if (viewModel.userSession.isLoggedIn) {
+
+                    if (isAddWishlist) {
+                        viewModel.addToWishlistV2(item, actionListener)
+                    } else {
+                        viewModel.removeFromWishlistV2(item, actionListener)
+                    }
+                } else {
+                    RouteManager.route(context, ApplinkConst.LOGIN)
+                }
             }
         }
 

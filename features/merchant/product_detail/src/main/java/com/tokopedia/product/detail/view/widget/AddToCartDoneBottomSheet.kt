@@ -72,7 +72,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 open class AddToCartDoneBottomSheet :
@@ -456,35 +455,41 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        var isUsingWishlistV2 = false
-        context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingWishlistV2 = true
-        }
         if (isAddWishlist) {
-            if (isUsingWishlistV2) addToCartDoneViewModel.addWishListV2(item.productId.toString(),
-            object: WishlistV2ActionListener{
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                    view.showToasterError(message = errorMsg)
-                }
-
-                override fun onSuccessAddWishlist(
-                    result: AddToWishlistV2Response.Data.WishlistAddV2,
-                    productId: String
-                ) {
-                    handleAddToWishlistV2Validation(result)
-                }
-
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-
-                override fun onSuccessRemoveWishlist(productId: String) {}
-            })
-            else addToCartDoneViewModel.addWishList(item.productId.toString(), callback)
+            addToCartDoneViewModel.addWishList(item.productId.toString(), callback)
         } else {
-            if (isUsingWishlistV2) addToCartDoneViewModel.removeWishListV2(item.productId.toString(), callback)
-            else addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
+            addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
         DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
+    }
+
+    override fun onWishlistV2Click(
+        item: RecommendationItem,
+        isAddWishlist: Boolean,
+        actionListener: WishlistV2ActionListener
+    ) {
+        if (isAddWishlist) {
+            addToCartDoneViewModel.addWishListV2(item.productId.toString(),
+                object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                        view.showToasterError(message = errorMsg)
+                    }
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        handleAddToWishlistV2Validation(result)
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+
+                    override fun onSuccessRemoveWishlist(productId: String) {}
+                })
+        } else {
+            addToCartDoneViewModel.removeWishListV2(item.productId.toString(), actionListener)
+        }
     }
 
     private fun handleAddToWishlistV2Validation(result: AddToWishlistV2Response.Data.WishlistAddV2) {

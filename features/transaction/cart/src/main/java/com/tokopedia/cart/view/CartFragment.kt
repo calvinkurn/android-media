@@ -151,6 +151,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -158,7 +160,9 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -1297,6 +1301,43 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyRecentView(productId, true)
     }
 
+    private fun onSuccessAddWishlistV2(
+        result: AddToWishlistV2Response.Data.WishlistAddV2,
+        productId: String
+    ) {
+        var msg = ""
+        if (result.message.isEmpty()) {
+            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        } else {
+            msg = result.message
+        }
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var typeToaster = TYPE_NORMAL
+        if (result.toasterColor == TOASTER_RED || !result.success) {
+            typeToaster = TYPE_ERROR
+            ctaText = ""
+        }
+
+        view?.let {
+            if (ctaText.isEmpty()) {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+            } else {
+                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                   goToWishlist()
+                }.show()
+            }
+        }
+        cartAdapter.notifyByProductId(productId, true)
+        cartAdapter.notifyWishlist(productId, true)
+        cartAdapter.notifyRecentView(productId, true)
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
     private fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, true)
@@ -1353,8 +1394,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessAddWishlist(productId: String) {
-                    this@CartFragment.onSuccessAddWishlist(productId)
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
                     if (FLAG_IS_CART_EMPTY) {
                         cartPageAnalytics.eventClickAddWishlistOnProductRecommendationEmptyCart()
                     } else {
@@ -1465,8 +1509,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessAddWishlist(productId: String) {
-                    this@CartFragment.onSuccessAddWishlist(productId)
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessAddWishlistV2(result, productId)
                     cartPageAnalytics.eventAddWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
                 }
 

@@ -68,6 +68,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.wishlist_common.R as Rwishlist
@@ -352,16 +353,10 @@ class OfficialHomeFragment :
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if (viewModel.isLoggedIn()) {
-            var isUsingV2 = false
-            context?.let {
-                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
-            }
-
             if (isAddWishlist) {
-                viewModel.addWishlist(item, callback, isUsingV2)
+                viewModel.addWishlist(item, callback)
             } else {
-                if (isUsingV2) viewModel.removeWishlistV2(item, callback)
-                else viewModel.removeWishlist(item, callback)
+                viewModel.removeWishlist(item, callback)
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -373,6 +368,30 @@ class OfficialHomeFragment :
                 viewModel.isLoggedIn(),
                 item.productId,
                 item.isTopAds
+        )
+    }
+
+    override fun onWishlistV2Click(
+        item: RecommendationItem,
+        isAddWishlist: Boolean,
+        actionListener: WishlistV2ActionListener
+    ) {
+        if (viewModel.isLoggedIn()) {
+            if (isAddWishlist) {
+                viewModel.addWishlistV2(item, actionListener)
+            } else {
+                viewModel.removeWishlistV2(item, actionListener)
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+
+        tracking?.eventClickWishlist(
+            category?.title.toEmptyStringIfNull(),
+            isAddWishlist,
+            viewModel.isLoggedIn(),
+            item.productId,
+            item.isTopAds
         )
     }
 

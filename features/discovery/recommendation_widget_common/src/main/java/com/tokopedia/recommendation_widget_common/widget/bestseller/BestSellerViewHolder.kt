@@ -29,6 +29,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 /**
  * Created by Lukas on 05/11/20.
@@ -183,6 +184,11 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
+    override fun onWishlistV2Click(
+        item: RecommendationItem,
+        isAddWishlist: Boolean,
+        actionListener: WishlistV2ActionListener
+    ) {}
 
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder

@@ -136,6 +136,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlist_common.R as Rwishlist
 import org.json.JSONArray
@@ -955,6 +956,10 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+
+    }
+
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean, actionListener: WishlistV2ActionListener) {
 
     }
 

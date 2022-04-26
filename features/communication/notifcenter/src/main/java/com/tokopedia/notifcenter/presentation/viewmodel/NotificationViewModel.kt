@@ -43,12 +43,15 @@ import kotlinx.coroutines.withContext
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 interface INotificationViewModel {
-    fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit, context: Context)
-    fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit, context: Context)
+    fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
+    fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit)
+    fun addWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener)
+    fun removeWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener)
 }
 
 class NotificationViewModel @Inject constructor(
@@ -299,73 +302,76 @@ class NotificationViewModel @Inject constructor(
         filter = NotifcenterDetailUseCase.FILTER_NONE
     }
 
-    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit, context: Context) {
+    override fun addWishlist(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit) {
         if (model.isTopAds) {
             addWishListTopAds(model, callback)
         } else {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                addWishListV2Normal(model.productId.toString(), object : WishlistV2ActionListener {
-                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                        callback.invoke(false, throwable)
-                    }
+            addWishListNormal(model.productId.toString(), object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
+                }
 
-                    override fun onSuccessAddWishlist(productId: String) {
-                        callback.invoke(true, null)
-                    }
+                override fun onSuccessAddWishlist(productId: String) {
+                    callback.invoke(true, null)
+                }
 
-                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                    override fun onSuccessRemoveWishlist(productId: String) {}
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                })
-            } else {
-                addWishListNormal(model.productId.toString(), object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                        callback.invoke(false, Throwable(errorMessage))
-                    }
-
-                    override fun onSuccessAddWishlist(productId: String) {
-                        callback.invoke(true, null)
-                    }
-
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                    override fun onSuccessRemoveWishlist(productId: String) {}
-                })
-            }
+                override fun onSuccessRemoveWishlist(productId: String) {}
+            })
         }
     }
 
-    override fun removeWishList(model: RecommendationItem, callback: (Boolean, Throwable?) -> Unit, context: Context) {
-        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-            doRemoveWishlistV2(model.productId.toString(), object : WishlistV2ActionListener {
-                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
-                override fun onSuccessAddWishlist(productId: String) {}
-
-                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-                    callback.invoke(false, throwable)
+    override fun removeWishList(
+        model: RecommendationItem,
+        callback: (Boolean, Throwable?) -> Unit
+    ) {
+        removeWishListUseCase.createObservable(
+            model.productId.toString(),
+            userSessionInterface.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+                override fun onSuccessAddWishlist(productId: String?) {}
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
                 }
 
-                override fun onSuccessRemoveWishlist(productId: String) {
+                override fun onSuccessRemoveWishlist(productId: String?) {
                     callback.invoke(true, null)
                 }
-            })
-        } else {
-            removeWishListUseCase.createObservable(
-                model.productId.toString(),
-                userSessionInterface.userId,
-                object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-                    override fun onSuccessAddWishlist(productId: String?) {}
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                        callback.invoke(false, Throwable(errorMessage))
-                    }
+            }
+        )
+    }
 
-                    override fun onSuccessRemoveWishlist(productId: String?) {
-                        callback.invoke(true, null)
-                    }
+    override fun addWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener) {
+        if (model.isTopAds) {
+            addWishListV2TopAds(model, actionListener)
+        } else {
+            addWishListV2Normal(model.productId.toString(), object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    actionListener.onErrorAddWishList(throwable, productId)
                 }
-            )
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    actionListener.onSuccessAddWishlist(result, productId)
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                override fun onSuccessRemoveWishlist(productId: String) {}
+
+            })
         }
+    }
+
+    override fun removeWishlistV2(
+        model: RecommendationItem,
+        actionListener: WishlistV2ActionListener) {
+        doRemoveWishlistV2(model.productId.toString(), actionListener)
     }
 
     fun clearNotifCounter(
@@ -406,6 +412,26 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
+    fun addWishListV2TopAds(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
+        launchCatchError(dispatcher.io,
+            {
+                val params = RequestParams.create()?.apply {
+                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
+                }
+                val response = topAdsWishlishedUseCase.createObservable(params)
+                    .toBlocking().single()
+                if (response.data != null) {
+                    wishlistV2ActionListener.onSuccessAddWishlist(
+                        AddToWishlistV2Response.Data.WishlistAddV2(success = true),
+                        model.productId.toString())
+                }
+            },
+            {
+                wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
+            }
+        )
+    }
+
     fun addWishListNormal(
         productId: String,
         wishListActionListener: WishListActionListener
@@ -427,11 +453,11 @@ class NotificationViewModel @Inject constructor(
                     callback.onErrorAddWishList(it, productId) })
     }
 
-    private fun doRemoveWishlistV2(productId: String, callback: WishlistV2ActionListener) {
+    private fun doRemoveWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { callback.onSuccessRemoveWishlist(productId) },
-            onError = { callback.onErrorRemoveWishlist(it, productId) })
+            onSuccess = { actionListener.onSuccessRemoveWishlist(productId) },
+            onError = { actionListener.onErrorRemoveWishlist(it, productId) })
     }
 
 
@@ -489,6 +515,12 @@ class NotificationViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        addWishListV2UseCase.cancelJobs()
+        deleteWishlistV2UseCase.cancelJobs()
     }
 
     companion object {

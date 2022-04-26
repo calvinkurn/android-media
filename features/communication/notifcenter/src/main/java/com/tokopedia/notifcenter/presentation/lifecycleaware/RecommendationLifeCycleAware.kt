@@ -28,6 +28,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 class RecommendationLifeCycleAware constructor(
@@ -127,7 +128,7 @@ class RecommendationLifeCycleAware constructor(
         val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
         val ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
         if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, {}).show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {}.show()
     }
 
     private fun handleWishlistActionFailed() {
@@ -180,12 +181,21 @@ class RecommendationLifeCycleAware constructor(
             item: RecommendationItem, isAddWishlist: Boolean,
             callback: (Boolean, Throwable?) -> Unit
     ) {
-        context?.let {
-            if (isAddWishlist) {
-                viewModel?.addWishlist(item, callback, it)
-            } else {
-                viewModel?.removeWishList(item, callback, it)
-            }
+        if (isAddWishlist) {
+            viewModel?.addWishlist(item, callback)
+        } else {
+            viewModel?.removeWishList(item, callback)
+        }
+    }
+
+    override fun onWishlistV2Click(
+        item: RecommendationItem,
+        isAddWishlist: Boolean,
+        actionListener: WishlistV2ActionListener) {
+        if (isAddWishlist) {
+            viewModel?.addWishlistV2(item, actionListener)
+        } else {
+            viewModel?.removeWishlistV2(item, actionListener)
         }
     }
 

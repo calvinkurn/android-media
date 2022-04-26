@@ -143,7 +143,7 @@ class PdpDialogViewModelTest {
         val recommendationItem: RecommendationItem = RecommendationItem(isTopAds = true)
         val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
         coEvery { topAdsWishlishedUseCase.execute(any(), any()) } just runs
-        viewModel.addToWishlist(recommendationItem, callback, true)
+        viewModel.addToWishlist(recommendationItem, callback)
         verify { topAdsWishlishedUseCase.execute(any(), any()) }
     }
 
@@ -157,7 +157,7 @@ class PdpDialogViewModelTest {
         coEvery {
             addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
             addToWishlistV2UseCase.executeOnBackground() }
-        viewModel.addToWishlist(recommendationItem, callback, true)
+        viewModel.addToWishlist(recommendationItem, callback)
         coVerify {
             addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
             addToWishlistV2UseCase.executeOnBackground()}

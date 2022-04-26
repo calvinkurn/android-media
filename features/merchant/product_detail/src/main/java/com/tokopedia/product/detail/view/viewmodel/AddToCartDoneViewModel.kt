@@ -103,9 +103,10 @@ class AddToCartDoneViewModel @Inject constructor(
 
     fun addWishListV2(productId: String, wishlistV2ActionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.execute(onSuccess = { result ->
-            if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
-        },
+        addToWishlistV2UseCase.execute(
+            onSuccess = { result ->
+                if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+            },
             onError = { wishlistV2ActionListener.onErrorAddWishList(it, productId) })
     }
 
@@ -130,10 +131,11 @@ class AddToCartDoneViewModel @Inject constructor(
             })
     }
 
-    fun removeWishListV2(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+    fun removeWishListV2(productId: String, actionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.execute(onSuccess = { callback.invoke(true, null) },
-            onError = { callback.invoke(false, it) })
+        deleteWishlistV2UseCase.execute(
+            onSuccess = { actionListener.onSuccessRemoveWishlist(productId) },
+            onError = { actionListener.onErrorRemoveWishlist(it, productId) })
     }
 
     fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn

@@ -66,6 +66,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -762,8 +763,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processAddToWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                wishListActionListener.onSuccessAddWishlist(productId)},
+            onSuccess = { result ->
+                if (result is Success) wishListActionListener.onSuccessAddWishlist(result.data, productId)},
             onError = {
                 wishListActionListener.onErrorAddWishList(it, productId)
             })

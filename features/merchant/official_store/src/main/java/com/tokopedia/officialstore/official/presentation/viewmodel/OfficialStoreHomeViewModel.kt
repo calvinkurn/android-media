@@ -43,8 +43,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -304,8 +306,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     fun addWishlist(
         model: RecommendationItem,
-        callback: (Boolean, Throwable?) -> Unit,
-        isUsingV2: Boolean
+        callback: (Boolean, Throwable?) -> Unit
     ) {
         if (model.isTopAds) {
             launchCatchError(block = {
@@ -315,8 +316,30 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(false, it)
             }
         } else {
-            if (isUsingV2) doAddWishlistV2(model, callback)
-            else doAddWishlist(model, callback)
+            doAddWishlist(model, callback)
+        }
+    }
+
+    fun addWishlistV2(
+        model: RecommendationItem,
+        wishlistV2ActionListener: WishlistV2ActionListener
+    ) {
+        if (model.isTopAds) {
+            launchCatchError(block = {
+                _topAdsWishlistResult.value = addTopAdsWishlist(model)
+                _topAdsWishlistResult.value?.apply {
+                    when (this) {
+                        is Success -> wishlistV2ActionListener.onSuccessAddWishlist(
+                            AddToWishlistV2Response.Data.WishlistAddV2(success = true), model.productId.toString())
+                        is Fail -> wishlistV2ActionListener.onSuccessAddWishlist(
+                            AddToWishlistV2Response.Data.WishlistAddV2(success = false), model.productId.toString())
+                    }
+                }
+            }) {
+                wishlistV2ActionListener.onErrorAddWishList(it, model.productId.toString())
+            }
+        } else {
+            doAddWishlistV2(model, wishlistV2ActionListener)
         }
     }
 
@@ -337,13 +360,14 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
-    private fun doAddWishlistV2(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+    private fun doAddWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                callback.invoke(true, null)},
+            onSuccess = { result ->
+                 if (result is Success) actionListener.onSuccessAddWishlist(result.data, model.productId.toString())
+            },
             onError = {
-                callback.invoke(false, it)
+                actionListener.onErrorAddWishList(it, model.productId.toString())
             })
     }
 
@@ -363,11 +387,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
         })
     }
 
-    fun removeWishlistV2(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+    fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { callback.invoke(true, null) },
-            onError = { callback.invoke(false, it) })
+            onSuccess = { wishlistV2ActionListener.onSuccessRemoveWishlist(model.productId.toString()) },
+            onError = { wishlistV2ActionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
     private fun getDisplayTopAdsHeader(featuredShopDataModel: FeaturedShopDataModel){
