@@ -1,9 +1,9 @@
 package com.tokopedia.minicart.cartlist
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -55,6 +55,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     companion object {
         private const val LONG_DELAY = 500L
         private const val SHORT_DELAY = 200L
+
+        private const val REQUEST_EDIT_BUNDLE = 101
+
+        private const val KEY_OLD_BUNDLE_ID = "old_bundle_id"
+        private const val KEY_NEW_BUNLDE_ID = "new_bundle_id"
+        private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
@@ -108,10 +114,29 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
+    private fun onResultFromEditBundle(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val oldBundleId = data?.getStringExtra(KEY_OLD_BUNDLE_ID) ?: ""
+            val newBundleId = data?.getStringExtra(KEY_NEW_BUNLDE_ID) ?: ""
+            val isChangeVariant = data?.getBooleanExtra(KEY_IS_CHANGE_VARIANT, false) ?: false
+            if ((oldBundleId.isNotBlank() && newBundleId.isNotBlank() && oldBundleId != newBundleId) || isChangeVariant) {
+                val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
+                val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId }
+                if (deletedItems.isNotEmpty()) {
+                    viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>)
+                }
+            } else {
+                viewModel?.getCartList()
+            }
+        }
+    }
+
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
         bottomSheet = MiniCartBottomSheetUnify(object : MiniCartBottomSheetUnifyListener {
             override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-                Log.i("qwertyuiop", "qwer")
+                if (requestCode == REQUEST_EDIT_BUNDLE) {
+                    onResultFromEditBundle(resultCode, data)
+                }
             }
         }).apply {
             showCloseIcon = false
@@ -359,12 +384,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         if (data?.isLastItem == true) return
 
         hideProgressLoading()
-        val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
+        val message = if (data?.isFromEditBundle == true) {
+            bottomSheet?.context?.getString(R.string.mini_cart_message_toaster_change_bundle_success)
+        } else {
+            data?.removeFromCartData?.data?.message?.firstOrNull()
+        } ?: ""
         if (message.isNotBlank()) {
-            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel)
-                    ?: ""
+            val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel) ?: ""
             viewModel.getCartList()
-            if (data?.isBulkDelete == true) {
+            if (data?.isFromEditBundle == true || data?.isBulkDelete == true) {
                 viewBinding.bottomsheetContainer.let { view ->
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL)
                 }
@@ -529,7 +557,15 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         analytics.eventClickDeleteFromTrashBin()
         bottomSheetListener?.showProgressLoading()
-        viewModel?.deleteSingleCartItem(element)
+        if (element.isBundlingItem) {
+            val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
+            val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == element.bundleId && it.bundleGroupId == element.bundleGroupId } as List<MiniCartProductUiModel>
+            if (deletedItems.isNotEmpty()) {
+                viewModel?.deleteMultipleCartItems(deletedItems)
+            }
+        } else {
+            viewModel?.deleteSingleCartItem(element)
+        }
     }
 
     override fun onBulkDeleteUnavailableItems() {
@@ -626,12 +662,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     override fun onChangeBundleClicked(element: MiniCartProductUiModel) {
-        viewBinding?.root?.context?.let {
+        bottomSheet?.context?.let {
+            val intent = RouteManager.getIntentNoFallback(it, element.editBundleApplink) ?: return
             analytics.eventClickChangeProductBundle()
-            RouteManager.route(
-                    it,
-                    element.editBundleApplink
-            )
+            bottomSheet?.startActivityForResult(intent, REQUEST_EDIT_BUNDLE)
         }
     }
 }
