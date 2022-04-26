@@ -91,15 +91,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", locale)
     }
 
-    fun getShopDeposit(onSuccess: ((dataDeposit: DepositAmount) -> Unit)) {
-        topAdsGetShopDepositUseCase.execute({
-            onSuccess(it.topadsDashboardDeposits.data)
-        }
-                , {
-            it.printStackTrace()
-        })
-    }
-
     fun getGroupData(page: Int, search: String, sort: String, status: Int?, startDate: String,
                      endDate: String, groupType: Int, onSuccess: (GroupItemResponse.GetTopadsDashboardGroups) -> Unit) {
         val requestParams = topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate, groupType)
@@ -217,7 +208,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             topAdsProductActionUseCase.execute(params)
             onSuccess()
         }, onError = {
-
+            it.printStackTrace()
         })
     }
 
@@ -280,7 +271,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         getExpiryDateUseCase.execute({
             expiryDateHiddenTrial.postValue(it.topAdsGetFreeDeposit.expiryDate)
         }, {
-
+            it.printStackTrace()
         })
     }
 
@@ -302,6 +293,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             }
             isShopWhiteListed.postValue(data)
         }, {
+            it.printStackTrace()
         })
     }
 
@@ -326,21 +318,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", it.localizedMessage)
         })
     }
-
-    fun getAutoTopUpStatus(resources: Resources, onSuccess: ((data: AutoTopUpStatus) -> Unit)) {
-        autoTopUpUSeCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
-        autoTopUpUSeCase.setParams()
-        autoTopUpUSeCase.execute({ data ->
-            when {
-                data.response == null ->  Exception("Tidak ada data").printStackTrace()
-                data.response.errors.isEmpty() -> onSuccess(data.response.data)
-                else -> ResponseErrorException(data.response.errors).printStackTrace()
-            }
-        }, {
-            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPUP#%s", it.localizedMessage)
-        })
-    }
-
 
     @GqlQuery("ProductRecommend", PRODUCT_RECOMMENDATION)
     fun getProductRecommendation(onSuccess: ((ProductRecommendationModel)) -> Unit) {

@@ -441,14 +441,12 @@ class GroupDetailViewModelTest {
     @Test
     fun `check detach view`() {
         viewModel.onCleared()
-        verify {
-            topAdsGetAdKeywordUseCase.cancelJobs()
-            topAdsKeywordsActionUseCase.cancelJobs()
-            topAdsGetProductStatisticsUseCase.cancelJobs()
-            headlineInfoUseCase.cancelJobs()
-            topAdsGetProductKeyCountUseCase.cancelJobs()
-            bidInfoUseCase.cancelJobs()
-            groupInfoUseCase.cancelJobs()
-        }
+        verify { topAdsGetAdKeywordUseCase.cancelJobs() }
+        verify { topAdsKeywordsActionUseCase.cancelJobs() }
+        verify { topAdsGetProductStatisticsUseCase.cancelJobs() }
+        verify { headlineInfoUseCase.cancelJobs() }
+        verify { topAdsGetProductKeyCountUseCase.cancelJobs() }
+        verify { bidInfoUseCase.cancelJobs() }
+        verify { groupInfoUseCase.cancelJobs() }
     }
 }
