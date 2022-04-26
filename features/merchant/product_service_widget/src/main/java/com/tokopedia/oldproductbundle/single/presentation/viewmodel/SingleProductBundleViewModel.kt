@@ -10,8 +10,6 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.oldproductbundle.common.data.model.response.BundleInfo
 import com.tokopedia.oldproductbundle.common.data.model.uimodel.AddToCartDataResult
@@ -23,6 +21,8 @@ import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBun
 import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleSelectedItem
 import com.tokopedia.oldproductbundle.single.presentation.model.SingleProductBundleUiModel
 import com.tokopedia.oldproductbundle.single.presentation.model.TotalAmountUiModel
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.withContext
@@ -138,7 +138,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
             }
-            pageSource == ProductBundleConstants.PAGE_SOURCE_CART &&
+            (pageSource == ProductBundleConstants.PAGE_SOURCE_CART || pageSource == ProductBundleConstants.PAGE_SOURCE_MINI_CART) &&
                     selectedData.bundleId == selectedBundleId &&
                     selectedData.productId == selectedProductId -> {
                 // selected bundleId is not changed

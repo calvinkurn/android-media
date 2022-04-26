@@ -232,7 +232,7 @@ class EntrypointFragment : BaseDaggerFragment() {
         val title: String
         val message: String
         val buttonText: String
-        if (viewModel.pageSource == ProductBundleConstants.PAGE_SOURCE_CART) {
+        if (viewModel.pageSource == ProductBundleConstants.PAGE_SOURCE_CART || viewModel.pageSource == ProductBundleConstants.PAGE_SOURCE_MINI_CART) {
             when (errorResult.type) {
                 InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE -> {
                     title = getString(R.string.dialog_error_title_empty)

@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.oldproductbundle.common.data.mapper.InventoryError
 import com.tokopedia.oldproductbundle.common.data.mapper.InventoryErrorMapper
 import com.tokopedia.oldproductbundle.common.data.mapper.InventoryErrorType
@@ -146,7 +147,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         val title: String
         val message: String
         val buttonText: String
-        if (viewModel.pageSource == PAGE_SOURCE_CART) {
+        if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
             when (errorResult.type) {
                 InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE -> {
                     title = getString(R.string.dialog_error_title_empty)

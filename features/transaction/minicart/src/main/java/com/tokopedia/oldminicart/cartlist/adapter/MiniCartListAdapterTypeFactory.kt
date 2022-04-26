@@ -17,23 +17,23 @@ import com.tokopedia.minicart.databinding.ItemMiniCartUnavailableHeaderBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartUnavailableReasonBinding
 import com.tokopedia.minicart.databinding.ItemOldMiniCartProductBinding
 import com.tokopedia.oldminicart.cartlist.MiniCartListActionListener
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartSeparatorUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartShopUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartTickerErrorUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartTickerWarningUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartAccordionViewHolder
-import com.tokopedia.minicart.cartlist.viewholder.MiniCartLoadingViewHolder
+import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartLoadingViewHolder
 import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartProductViewHolder
-import com.tokopedia.minicart.cartlist.viewholder.MiniCartSeparatorViewHolder
-import com.tokopedia.minicart.cartlist.viewholder.MiniCartShopViewHolder
+import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartSeparatorViewHolder
+import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartShopViewHolder
 import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartTickerErrorViewHolder
-import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerWarningViewHolder
+import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartTickerWarningViewHolder
 import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartUnavailableHeaderViewHolder
-import com.tokopedia.minicart.cartlist.viewholder.MiniCartUnavailableReasonViewHolder
+import com.tokopedia.oldminicart.cartlist.viewholder.MiniCartUnavailableReasonViewHolder
 
 class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionListener) :
     BaseAdapterTypeFactory(), MiniCartListTypeFactory {
