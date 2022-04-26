@@ -13,6 +13,7 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.activity.EXTRA_BUTTON
 import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
 import com.tokopedia.topads.common.activity.EXTRA_TITLE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_TOPADS_HOMEPAGE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -47,7 +48,7 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
                     putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
                     putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
                 }
-                putExtra(TOPADS_MOVE_TO_DASHBOARD, arguments?.getInt(TOPADS_MOVE_TO_DASHBOARD, 0))
+                putExtra(TOPADS_MOVE_TO_DASHBOARD, arguments?.getInt(TOPADS_MOVE_TO_DASHBOARD, PARAM_TOPADS_HOMEPAGE))
             }
             startActivity(intent)
             activity?.finish()

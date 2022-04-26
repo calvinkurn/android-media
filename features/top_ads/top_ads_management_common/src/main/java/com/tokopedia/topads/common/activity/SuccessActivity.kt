@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_TOPADS_HOMEPAGE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.fragment.OnSuccessFragment
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
@@ -25,7 +26,7 @@ class SuccessActivity : BaseSimpleActivity() {
                 putString(EXTRA_TITLE, it.getStringExtra(EXTRA_TITLE))
                 putString(EXTRA_SUBTITLE, it.getStringExtra(EXTRA_SUBTITLE))
                 putString(EXTRA_BUTTON, it.getStringExtra(EXTRA_BUTTON))
-                putInt(TOPADS_MOVE_TO_DASHBOARD, it.getIntExtra(TOPADS_MOVE_TO_DASHBOARD, 0))
+                putInt(TOPADS_MOVE_TO_DASHBOARD, it.getIntExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_TOPADS_HOMEPAGE))
             }
         })
     }
