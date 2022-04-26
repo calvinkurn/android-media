@@ -1,0 +1,46 @@
+{
+  "readme": "Play Broadcaster - Interactive Analytic",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickSellerBroadcast",
+      "eventAction":"click - atur jadwal",
+      "eventCategory":"seller broadcast",
+      "eventLabel":"\\d+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId":".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventAction":"click save content scheduling",
+      "eventCategory":"seller broadcast",
+      "eventLabel":"\\d+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId":".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventAction":"click - x content scheduling",
+      "eventCategory":"seller broadcast",
+      "eventLabel":"\\d+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId":".*"
+    },
+    {
+      "event":"clickSellerBroadcast",
+      "eventAction":"click - delete content scheduled",
+      "eventCategory":"seller broadcast",
+      "eventLabel":"\\d+",
+      "businessUnit":"play",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
+      "sessionIris":".*",
+      "userId":".*"
+    }
+  ]
+}

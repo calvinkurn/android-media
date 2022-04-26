@@ -40,6 +40,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -86,7 +87,6 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
-import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -97,7 +97,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
+import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -107,6 +107,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
+import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
@@ -257,28 +259,16 @@ class NewShopPageFragment :
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
-    private val iconTabHomeInactive: Int
-        get() = R.drawable.ic_shop_tab_home_inactive
 
-    private val iconTabHomeActive: Int
-        get() = R.drawable.ic_shop_tab_home_active
-
-    private val iconTabProductInactive: Int
-        get() = R.drawable.ic_shop_tab_product_inactive
-
-    private val iconTabProductActive: Int
-        get() = R.drawable.ic_shop_tab_product_active
-
-    private val iconTabShowcaseInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_inactive
-
-    private val iconTabShowcaseActive: Int
-        get() = R.drawable.ic_shop_tab_showcase_active
-    private val iconTabFeedInactive: Int
-        get() = R.drawable.ic_shop_tab_feed_inactive
-
-    private val iconTabFeedActive: Int
-        get() = R.drawable.ic_shop_tab_feed_active
+    // tab icons
+    private val iconTabHomeInactive: Int get() = IconUnify.SHOP
+    private val iconTabHomeActive: Int get() = IconUnify.SHOP_FILLED
+    private val iconTabProductInactive: Int get() = IconUnify.PRODUCT
+    private val iconTabProductActive: Int get() = IconUnify.PRODUCT_FILLED
+    private val iconTabShowcaseInactive: Int get() = IconUnify.CABINET
+    private val iconTabShowcaseActive: Int get() = IconUnify.CABINET_FILLED
+    private val iconTabFeedInactive: Int get() = IconUnify.FEED
+    private val iconTabFeedActive: Int get() = IconUnify.FEED_FILLED
 
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
@@ -513,7 +503,29 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                    if(throwable is ShopAsyncErrorException){
+                        val actionName  = when(throwable.asyncQueryType){
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1 -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_P1
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_HEADER_WIDGET
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_INITIAL_PRODUCT_LIST
+                            }
+                            else -> {
+                                ""
+                            }
+                        }
+                        sendEmbraceBreadCrumbLogger(
+                            actionName,
+                            shopId,
+                            throwable.stackTraceToString()
+                        )
+                    }
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
@@ -521,7 +533,7 @@ class NewShopPageFragment :
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
@@ -574,7 +586,7 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
@@ -681,6 +693,20 @@ class NewShopPageFragment :
             }
         })
 
+    }
+
+    private fun sendEmbraceBreadCrumbLogger(
+        actionName: String,
+        shopId: String,
+        stackTraceString: String
+    ) {
+        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
+            actionName,
+            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
+                shopId,
+                stackTraceString
+            )
+        )
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -1408,7 +1434,6 @@ class NewShopPageFragment :
                 view.setOnClickListener {
                     isTabClickByUser = true
                 }
-                setIcon(it.tabIconInactive)
             }?.let {
                 tabLayout?.addTab(it, false)
             }

@@ -32,6 +32,7 @@ class OfficialHomeAdapterTypeFactory(
         private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null,
         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+        private val specialReleaseComponentListener: SpecialReleaseComponentListener,
         private val onTopAdsHeadlineClicked: (applink: String) -> Unit
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
@@ -147,6 +148,10 @@ class OfficialHomeAdapterTypeFactory(
         return OfficialTopAdsHeadlineViewHolder.LAYOUT
     }
 
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
@@ -172,6 +177,11 @@ class OfficialHomeAdapterTypeFactory(
                     homeComponentListener = homeComponentListener,
                     featuredBrandListener = featuredBrandListener )
             EmptyBlankViewHolder.LAYOUT -> EmptyBlankViewHolder(view)
+            SpecialReleaseViewHolder.LAYOUT -> SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                specialReleaseComponentListener
+            )
             else -> super.createViewHolder(view, type)
         }  as AbstractViewHolder<Visitable<*>>
     }
