@@ -1,31 +1,25 @@
 package com.tokopedia.shopdiscount.bulk.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shopdiscount.bulk.data.request.GetSlashPriceBenefitRequest
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetSlashPriceBenefitUseCase @Inject constructor(
     private val repository: GraphqlRepository
-) : UseCase<GetSlashPriceBenefitResponse>(), GqlQueryInterface {
+) : GraphqlUseCase<GetSlashPriceBenefitResponse>() {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
-    }
-
-    override fun getOperationNameList(): List<String> {
-        return emptyList()
-    }
-
-    override fun getQuery(): String {
-        return """
-             query GetSlashPriceBenefit(${'$'}params: GetSlashPriceBenefitRequest) {
+        private const val REQUEST_QUERY_NAME = "GetSlashPriceBenefit"
+        private const val REQUEST_QUERY = """
+            query GetSlashPriceBenefit(${'$'}params: GetSlashPriceBenefitRequest) {
                 GetSlashPriceBenefit(params: ${'$'}params) {
                    response_header {
                        status
@@ -47,25 +41,28 @@ class GetSlashPriceBenefitUseCase @Inject constructor(
                    }
                 }  
             }
-        """.trimIndent()
+        """
     }
 
-    override fun getTopOperationName(): String {
-        return EMPTY_STRING
+    init {
+        setupUseCase()
     }
 
-    private var params = emptyMap<String, Any>()
-
-    suspend fun execute(source: String = CAMPAIGN, ip: String = "", useCase: String = ""): GetSlashPriceBenefitResponse {
-        val request = GetSlashPriceBenefitRequest(source, ip, useCase)
-        params = mapOf(REQUEST_PARAM_KEY to request)
-        return executeOnBackground()
+    @GqlQuery(REQUEST_QUERY_NAME, REQUEST_QUERY)
+    private fun setupUseCase() {
+        setGraphqlQuery(GetSlashPriceBenefit())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(GetSlashPriceBenefitResponse::class.java)
     }
 
-    override suspend fun executeOnBackground(): GetSlashPriceBenefitResponse {
-        val request = GraphqlRequest(this, GetSlashPriceBenefitResponse::class.java, params, true)
-        return repository.response(listOf(request)).getSuccessData()
+    fun setParams(
+        source: String = CAMPAIGN,
+        ip: String = EMPTY_STRING,
+        useCase: String = EMPTY_STRING
+    ) {
+        val requestHeader = RequestHeader(source, ip, useCase)
+        val params = mapOf(REQUEST_PARAM_KEY to requestHeader)
+        setRequestParams(params)
     }
-
 
 }

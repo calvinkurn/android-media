@@ -82,7 +82,8 @@ class SelectProductViewModel @Inject constructor(
     fun getSellerBenefits() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val response = getSlashPriceBenefitUseCase.execute()
+                getSlashPriceBenefitUseCase.setParams()
+                val response = getSlashPriceBenefitUseCase.executeOnBackground()
                 shopBenefitMapper.map(response)
             }
             _benefit.value = Success(result)
