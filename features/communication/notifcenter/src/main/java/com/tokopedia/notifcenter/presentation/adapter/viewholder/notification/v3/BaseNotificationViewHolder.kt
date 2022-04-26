@@ -41,7 +41,7 @@ abstract class BaseNotificationViewHolder constructor(
     private val layoutPinBot: View? = itemView?.findViewById(R.id.layout_pin_bot)
     private val tvPinExpired: Typography? = itemView?.findViewById(R.id.tv_pin_expired)
 
-    private val clickedColor = MethodChecker.getColor(
+    private val unClickedColor = MethodChecker.getColor(
             itemView?.context, R.color.notifcenter_dms_unread_notification
     )
 
@@ -123,7 +123,7 @@ abstract class BaseNotificationViewHolder constructor(
             if (element.isPinned) {
                 container?.setBackgroundColor(pinnedColor)
             } else {
-                container?.setBackgroundColor(clickedColor)
+                container?.setBackgroundColor(unClickedColor)
             }
         } else {
             container?.background = null

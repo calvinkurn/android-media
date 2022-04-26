@@ -152,6 +152,28 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val defaultNotificationsUnread: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                newList.get(0).asJsonObject.apply {
+                    addProperty(READ_STATUS, 1)
+                }
+            }
+        }
+
+    val defaultNotificationsWithPin: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                newList.get(0).asJsonObject.apply {
+                    addProperty(IS_PINNED, true)
+                    addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
+                    addProperty(READ_STATUS, 1)
+                }
+            }
+        }
+
     private fun getNewExpiredTime(extendedTime: Long): Long {
         return (System.currentTimeMillis() / UNIX_DIVIDER) + extendedTime
     }
@@ -202,6 +224,9 @@ class FakeNotifcenterDetailUseCase(
         private const val WIDGET = "widget"
         private const val MESSAGE = "message"
         private const val EXPIRE_TIME_UNIX = "expire_time_unix"
+        private const val IS_PINNED = "is_pinned"
+        private const val PINNED_TEXT = "pinned_text"
+        private const val READ_STATUS = "read_status"
 
         private const val THREE_HOURS = 10000L
         private const val THREE_DAYS = 240000L
