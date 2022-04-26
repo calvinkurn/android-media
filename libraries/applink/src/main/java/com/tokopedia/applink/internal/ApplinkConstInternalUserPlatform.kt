@@ -47,6 +47,6 @@ object ApplinkConstInternalUserPlatform {
     // HomeAccountUserActivity
     const val NEW_HOME_ACCOUNT = "${NEW_INTERNAL_USER}/new-home-account"
 
-    // HomeAccountUserActivity
+    // BiometricOfferingActivity
     const val BIOMETRIC_OFFERING = "${NEW_INTERNAL_USER}/biometric-offering"
 }

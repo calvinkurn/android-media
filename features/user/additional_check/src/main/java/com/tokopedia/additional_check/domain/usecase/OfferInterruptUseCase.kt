@@ -18,8 +18,8 @@ class OfferInterruptUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-	query offerInterrupt(${'$'}supportBiometric: Boolean!){
-	  offer_interrupt(supportBiometric: ${'$'}supportBiometric){
+	query offerInterrupt(${'$'}supportBiometric: Boolean!, ${'$'}device_biometrics: String!){
+	  offer_interrupt(supportBiometric: ${'$'}supportBiometric, device_biometrics: ${'$'}device_biometrics){
 	    errorMessage
 	    offers {
 		name
@@ -32,5 +32,6 @@ class OfferInterruptUseCase @Inject constructor(
 
     companion object {
         const val PARAM_SUPPORT_BIOMETRIC = "supportBiometric"
+        const val PARAM_DEVICE_BIOMETRIC = "device_biometrics"
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +22,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
                                               private val additionalCheckPreference: AdditionalCheckPreference,
                                               private val showInterruptUseCase: ShowInterruptUseCase,
                                               private val offerInterruptUseCase: OfferInterruptUseCase,
+                                              private val fingerprintPreference: FingerprintPreference,
                                               dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
 
@@ -29,7 +31,8 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
             launch {
                 try {
                     val offering = offerInterruptUseCase(mapOf(
-                        OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric
+                        OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
+                        OfferInterruptUseCase.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
                     ))
                     additionalCheckPreference.setInterval(offering.data.interval)
                     if (offering.data.errorMessages.isNotEmpty() && offering.data.errorMessages.first().isEmpty()) {

@@ -26,8 +26,9 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
     }
 
     fun setInterval(interval: Int){
-        val milis = interval * 1000
-        val nextCheck = milis + System.currentTimeMillis()
+        // interval is in minute, so we need to convert it to ms and then save to sharedpreference
+        val days = interval * 60000
+        val nextCheck = days + System.currentTimeMillis()
         sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, nextCheck)?.apply()
     }
 
