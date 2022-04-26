@@ -305,7 +305,7 @@ public class MainParentActivity extends BaseActivity implements
         List<String> moduleNameList = new ArrayList<>();
         if (userSession.get().isLoggedIn()) {
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_TOKOPOINTS);
-//            moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
+            moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
             moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
             moduleNameList.add(DeeplinkDFMapper.DF_PROMO_GAMIFICATION);
             moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_LOGIN);

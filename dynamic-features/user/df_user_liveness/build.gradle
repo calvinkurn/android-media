@@ -57,5 +57,4 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
     implementation projectOrAar(rootProject.ext.features.liveness)
-    implementation projectOrAar(rootProject.ext.features.profileCompletion)
 }
