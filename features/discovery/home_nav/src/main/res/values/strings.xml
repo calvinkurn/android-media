@@ -42,6 +42,8 @@
     <string name="title_transaction_section">Aktivitas saya</string>
     <string name="title_category_section">Kategori</string>
     <string name="title_helpcenter_section">Pusat bantuan</string>
+    <string name="title_wishlist_section">Wishlist</string>
+    <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>
@@ -50,6 +52,8 @@
     <string name="transaction_item_total_product">%s\nBarang</string>
     <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
+
+    <string name="favorite_shop_others_count">%d Toko\nLainnya</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
     <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>

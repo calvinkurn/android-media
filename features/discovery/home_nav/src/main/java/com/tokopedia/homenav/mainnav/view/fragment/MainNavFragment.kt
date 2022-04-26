@@ -24,6 +24,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -302,6 +303,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onErrorAffiliateInfoRefreshClicked(position: Int) {
         viewModel.refreshUserAffiliateData()
+    }
+
+    override fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel) {
+        RouteManager.route(context, homeNavTitleDataModel.applink)
     }
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {

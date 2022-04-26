@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.interactor
 
+import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -24,4 +25,6 @@ interface MainNavListener : HomeNavListener{
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun onErrorAffiliateInfoRefreshClicked(position: Int)
+
+    fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel)
 }

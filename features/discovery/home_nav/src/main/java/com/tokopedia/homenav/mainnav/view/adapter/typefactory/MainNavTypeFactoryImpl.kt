@@ -16,9 +16,17 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ShimmeringFavoriteShopViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ShimmeringWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
@@ -49,6 +57,14 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return TransactionListViewHolder.LAYOUT
     }
 
+    override fun type(wishlistDataModel: WishlistDataModel): Int {
+        return WishlistViewHolder.LAYOUT
+    }
+
+    override fun type(favoriteShopListDataModel: FavoriteShopListDataModel): Int {
+        return FavoriteShopViewHolder.LAYOUT
+    }
+
     override fun type(visitable: HomeNavTickerDataModel): Int {
         return HomeNavTickerViewHolder.LAYOUT
     }
@@ -65,11 +81,30 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
+    override fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
+    }
+
+    override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
+        return ShimmeringWishlistViewHolder.LAYOUT
+    }
+
     override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
         return ErrorStateBuViewHolder.LAYOUT
     }
 
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
     }
 
@@ -83,13 +118,17 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
-            HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view)
+            HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
             ErrorStateBuViewHolder.LAYOUT -> ErrorStateBuViewHolder(view, mainNavListener)
             ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
+            WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, mainNavListener)
+            FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
+            ShimmeringFavoriteShopViewHolder.LAYOUT -> ShimmeringFavoriteShopViewHolder(view)
+            ShimmeringWishlistViewHolder.LAYOUT -> ShimmeringWishlistViewHolder(view)
             HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
