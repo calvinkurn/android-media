@@ -786,7 +786,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderInteractiveView(prevState?.interactive, state.interactive)
                 renderGameIconView(prevState?.interactive, state.interactive)
 
-                renderInteractionView(state.interactiveSetup)
+                renderInteractionView(state.interactiveSetup, state.quizForm, state.pinnedMessage)
 
                 renderSetupDialog(
                     prevState?.interactiveSetup,
@@ -849,13 +849,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 else interactiveView.cancelCoachMark()
                 formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
                 formView.visibility = View.VISIBLE
-                clInteraction.visibility = View.GONE
             }
             PinnedMessageEditStatus.Nothing -> {
                 if (!hasPinnedFormView()) return
                 val formView = getPinnedFormView()
                 formView.visibility = View.GONE
-                clInteraction.visibility = View.VISIBLE
             }
         }
     }
@@ -904,11 +902,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractionView(
-        state: InteractiveSetupUiModel
+        state: InteractiveSetupUiModel,
+        quizFormState: QuizFormUiState,
+        pinnedState: PinnedMessageUiState,
     ) {
         //Have to be invisible because gone will resulting in not-rounded unify timer
-        if (state.type == GameType.Unknown) clInteraction.visible()
-        else clInteraction.invisible()
+        if (state.type == GameType.Unknown &&
+            quizFormState.quizFormState == QuizFormStateUiModel.Nothing &&
+            pinnedState.editStatus == PinnedMessageEditStatus.Nothing
+        ) {
+            clInteraction.visible()
+        } else clInteraction.invisible()
     }
 
     private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
@@ -984,7 +988,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
         //If seller is not going to setup or if there is active interactive
         //then hide the setup dialog
-        if (setup.type == GameType.Unknown || interactive !is InteractiveUiModel.Unknown) {
+        if (setup.type == GameType.Unknown ||
+            setup.type == GameType.Quiz ||
+            interactive !is InteractiveUiModel.Unknown) {
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {
@@ -1116,7 +1122,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if(isShow) gameIconView.cancelCoachMark()
 
         quizForm.showWithCondition(isShow)
-        clInteraction.showWithCondition(!isShow)
+//        clInteraction.showWithCondition(!isShow)
     }
 
     private fun isQuizFormVisible(): Boolean {

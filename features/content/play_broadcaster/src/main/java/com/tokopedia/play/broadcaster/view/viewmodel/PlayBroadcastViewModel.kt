@@ -1128,13 +1128,23 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     /** Handle Game Action */
     private fun handleClickGameOption(gameType: GameType) {
-        _interactiveSetup.update {
-            it.copy(type = gameType)
-        }
         when(gameType) {
-            GameType.Giveaway -> {}
-            GameType.Quiz -> _quizFormState.setValue { next() }
-            else -> {}
+            GameType.Giveaway -> {
+                _interactiveSetup.update {
+                    it.copy(type = gameType)
+                }
+            }
+            GameType.Quiz -> {
+                /**
+                 * TODO("Quiz to also use [_interactiveSetup], because only 1 interactive can be active at a time")
+                 */
+                _quizFormState.setValue { next() }
+            }
+            else -> {
+                _interactiveSetup.update {
+                    it.copy(type = GameType.Unknown)
+                }
+            }
         }
     }
 
