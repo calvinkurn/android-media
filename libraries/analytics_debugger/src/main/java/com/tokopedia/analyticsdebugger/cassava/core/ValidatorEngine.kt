@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.cassava.core
 
+import android.util.Log
 import com.tokopedia.analyticsdebugger.cassava.utils.AnalyticsParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaValidateResult
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
@@ -43,6 +44,9 @@ class ValidatorEngine @Inject constructor(
     private fun compute(testCases: List<Validator>, logs: List<GtmLogDB>): List<Validator> {
         var ordering: Long = 0
         val newResult: MutableList<Validator> = mutableListOf()
+        logs.forEach {
+            Log.d("GtmLogs", "$it")
+        }
         testCases.forEach { case ->
             val tests = logs.findAllContaining(case)
             val matched = tests.listGtmLog.map { it.toUiModel() }

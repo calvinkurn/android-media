@@ -1,4 +1,4 @@
-package com.tokopedia.digital_product_detail
+package com.tokopedia.digital_product_detail.pulsa
 
 class DigitalPDPPulsaActivityTest: BaseDigitalPDPPulsaTest() {
 

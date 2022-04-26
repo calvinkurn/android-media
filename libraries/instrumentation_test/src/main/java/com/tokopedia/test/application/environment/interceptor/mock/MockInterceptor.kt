@@ -1,5 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
+import android.util.Log
 import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
@@ -26,10 +27,12 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                 val requestString = buffer.readUtf8()
 
                 var responseString = ""
+//                Log.d("MockInterceptor", "$requestString")
                 responseConfig.getResponseList().forEach {
                     if (it.value.findType == FIND_BY_CONTAINS) {
                         if (requestString.contains(it.key)) {
                             responseString = it.value.value
+//                            Log.d("MockInterceptor", "RESPONSE : $responseString")
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
                     } else if (it.value.findType == FIND_BY_QUERY_NAME) {

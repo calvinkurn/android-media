@@ -16,6 +16,39 @@
               "validations": [],
               "dataCollections": [
                 {
+                  "name": "Promo Spesial Buat Kamu",
+                  "cluster_type": "MCCM",
+                  "products": [
+                    {
+                      "id": "1111",
+                      "attributes": {
+                        "status": 1,
+                        "product_labels": [],
+                        "desc": "Rp 30.000",
+                        "detail": "Rp 30.000",
+                        "detail_url": "",
+                        "detail_url_text": "",
+                        "info": "Rp30.000",
+                        "price": "Rp30.000",
+                        "price_plain": 3000,
+                        "detail_compact": "Rp 30.000",
+                        "category_id": 55,
+                        "operator_id": 5,
+                        "product_descriptions": [],
+                        "custom_attributes": [],
+                        "promo": {
+                          "id": "0",
+                          "bonus_text": "",
+                          "new_price": "Rp30.000",
+                          "new_price_plain": 30000,
+                          "value_text": "",
+                          "discount": "0%"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
                   "name": "",
                   "cluster_type": "",
                   "products": [
