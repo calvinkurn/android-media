@@ -3,6 +3,7 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -43,6 +44,8 @@ class ProductTagViewModel @AssistedInject constructor(
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
+
+    private val _lastTaggedProduct = MutableStateFlow<LastTaggedProductUiModel>(LastTaggedProductUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -91,6 +94,17 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleLoadLastTaggedProduct() {
+        viewModelScope.launchCatchError(block = {
+            val lastTaggedProduct = repo.getLastTaggedProducts(
+                authorId = authorId,
+                authorType = authorType,
+                cursor = _lastTaggedProduct.value.nextCursor,
+                limit = 10, /** TODO: gonna change this later */
+            )
 
+            _lastTaggedProduct.value = lastTaggedProduct
+        }) {
+
+        }
     }
 }

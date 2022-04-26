@@ -70,7 +70,7 @@ class ProductTagActivity : BaseActivity() {
     companion object {
         private const val EXTRA_PRODUCT_TAG_LIST = "product_tag_source"
         private const val EXTRA_SHOP_BADGE = "shop_badge"
-        private const val EXTRA_AUTHOR_ID = "authorId"
-        private const val EXTRA_AUTHOR_TYPE = "authorType"
+        private const val EXTRA_AUTHOR_ID = "author_id"
+        private const val EXTRA_AUTHOR_TYPE = "author_type"
     }
 }

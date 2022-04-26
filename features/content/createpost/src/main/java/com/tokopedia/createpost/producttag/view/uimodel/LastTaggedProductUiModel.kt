@@ -6,4 +6,11 @@ package com.tokopedia.createpost.producttag.view.uimodel
 data class LastTaggedProductUiModel(
     val products: List<Product>,
     val nextCursor: String,
-)
+) {
+    companion object {
+        val Empty = LastTaggedProductUiModel(
+            products = emptyList(),
+            nextCursor = ""
+        )
+    }
+}

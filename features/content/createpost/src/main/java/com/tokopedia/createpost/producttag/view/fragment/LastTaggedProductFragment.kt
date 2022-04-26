@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class LastTaggedProductFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct)
     }
 
     override fun onDestroyView() {
