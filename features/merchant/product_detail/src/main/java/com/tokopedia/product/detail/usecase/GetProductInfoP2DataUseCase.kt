@@ -9,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -429,6 +428,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                  }
                  mediaCountFmt
                  mediaCount
+                 mediaCountTitle
                }
               hasNext
               hasPrev
@@ -576,9 +576,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.buyerPhotosCount = reviewImage.detail?.mediaCount.toIntOrZero()
-            p2UiData.reviewMediaThumbnails = DynamicProductDetailMapper.generateReviewMediaThumbnails(reviewImage)
-            p2UiData.detailedMediaResult = DynamicProductDetailMapper.generateDetailedMediaResult(reviewImage)
+            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating

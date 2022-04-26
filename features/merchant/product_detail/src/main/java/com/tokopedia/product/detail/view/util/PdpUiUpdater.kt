@@ -441,7 +441,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.buyerPhotosCount
+                    buyerPhotosCount = it.imageReview.buyerPhotosCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -451,7 +452,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.buyerPhotosCount
+                    buyerPhotosCount = it.imageReview.buyerPhotosCount
+                    buyerPhotoStaticText = it.imageReview.staticSocialProofText
                     setSocialProofData()
                 }
             }
@@ -494,8 +496,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
-                    mediaThumbnails = it.reviewMediaThumbnails
-                    detailedMediaResult = it.detailedMediaResult
+                    mediaThumbnails = it.imageReview.reviewMediaThumbnails
+                    detailedMediaResult = it.imageReview.detailedMediaResult
                     formattedRating = it.rating.ratingScore
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage

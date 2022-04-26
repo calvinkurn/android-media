@@ -57,6 +57,9 @@ class ImageReviewGqlResponse {
         @SerializedName("mediaCount")
         @Expose
         var mediaCount: String = ""
+        @SerializedName("mediaCountTitle")
+        @Expose
+        var mediaTitle: String = ""
     }
 
     class Image {

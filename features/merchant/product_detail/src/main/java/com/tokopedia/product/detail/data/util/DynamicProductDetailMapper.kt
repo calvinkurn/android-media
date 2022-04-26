@@ -60,7 +60,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataMo
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
-import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
@@ -369,7 +369,16 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
+    fun generateImageReview(reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewImage {
+        return ReviewImage(
+                buyerPhotosCount = reviewImage.detail?.mediaCount.toIntOrZero(),
+                reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
+                detailedMediaResult = generateDetailedMediaResult(reviewImage),
+                staticSocialProofText = reviewImage.detail?.mediaTitle ?: ""
+        )
+    }
+
+    private fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
         val totalVideoToShow = data.detail?.videos?.size.orZero()
         val totalImageToShow = data.detail?.images?.size.orZero()
         val totalMediaToShow = totalVideoToShow + totalImageToShow
@@ -420,7 +429,7 @@ object DynamicProductDetailMapper {
         return ReviewMediaThumbnailUiModel(mappedMediaThumbnails)
     }
 
-    fun generateDetailedMediaResult(reviewMedia: ImageReviewGqlResponse.ProductReviewImageListQuery): ProductrevGetReviewMedia? {
+    private fun generateDetailedMediaResult(reviewMedia: ImageReviewGqlResponse.ProductReviewImageListQuery): ProductrevGetReviewMedia? {
         val mappedReviewMediaVideoData = reviewMedia.detail?.videos?.mapIndexed { index, video ->
             ReviewMedia(
                 videoId = video.attachmentID.toString(),
@@ -467,15 +476,6 @@ object DynamicProductDetailMapper {
                 mediaCount = reviewMedia.detail?.mediaCount.toLongOrZero()
             )
         )
-    }
-
-    fun generateProductInfoParcel(productInfoP1: DynamicProductInfoP1?, variantGuideLine: String, productInfoContent: List<ProductDetailInfoContent>, forceRefresh: Boolean): ProductInfoParcelData {
-        val data = productInfoP1?.data
-        val basic = productInfoP1?.basic
-        return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
-                ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
