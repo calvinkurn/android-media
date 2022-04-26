@@ -40,12 +40,16 @@ class QuickCouponViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkConstructor(UserSession::class)
+        every { application.applicationContext } returns context
     }
 
     @After
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkConstructor(UserSession::class)
     }
 
     @Test
@@ -54,83 +58,114 @@ class QuickCouponViewModelTest {
                 spyk(QuickCouponViewModel(application, componentsItem, 99))
 
         val quickCouponUseCase = mockk<QuickCouponUseCase>()
+
         viewModel.quickCouponUseCase = quickCouponUseCase
+
         assert(viewModel.quickCouponUseCase === quickCouponUseCase)
     }
 
-
+    /**************************** test for fetchCouponDetailData() *******************************************/
     @Test
-    fun `test for fetchCouponDetailData`(){
+    fun `test for fetchCouponDetailData when getCouponDetail returns error`() {
         viewModel.quickCouponUseCase = quickCouponUseCase
-        runBlocking {
-            coEvery {
-                quickCouponUseCase.getCouponDetail(componentsItem.pagePath)} throws Exception("Error")
-            viewModel.onAttachToViewHolder()
-            coVerify { quickCouponUseCase.getCouponDetail(componentsItem.pagePath)}
+        coEvery {
+            quickCouponUseCase.getCouponDetail(componentsItem.pagePath)
+        } throws Exception("Error")
 
+        viewModel.onAttachToViewHolder()
 
-            val quickCouponDetailResponse: QuickCouponDetailResponse = mockk(relaxed = true)
-            coEvery {
-                quickCouponUseCase.getCouponDetail(componentsItem.pagePath)} returns quickCouponDetailResponse
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.getCouponVisibilityStatus().value != null, true)
-        }
+        coVerify { quickCouponUseCase.getCouponDetail(componentsItem.pagePath) }
+
     }
 
+    @Test
+    fun `test for fetchCouponDetailData when getCouponDetail returns quickCouponDetailResponse`() {
+        viewModel.quickCouponUseCase = quickCouponUseCase
+        val quickCouponDetailResponse: QuickCouponDetailResponse = mockk(relaxed = true)
+        coEvery {
+            quickCouponUseCase.getCouponDetail(componentsItem.pagePath)
+        } returns quickCouponDetailResponse
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.getCouponVisibilityStatus().value != null, true)
+    }
+    /**************************** end of fetchCouponDetailData() *******************************************/
+
+    /**************************** test for checkMobileVerificationStatus() *******************************************/
+    @Test
+    fun `test for checkMobileVerificationStatus when getMobileVerificationStatus returns error`() {
+        viewModel.quickCouponUseCase = quickCouponUseCase
+        coEvery {
+            quickCouponUseCase.getMobileVerificationStatus()
+        } throws Exception("Error")
+
+        viewModel.checkMobileVerificationStatus()
+
+        coVerify { quickCouponUseCase.getMobileVerificationStatus() }
+    }
 
     @Test
-    fun `test for checkMobileVerificationStatus`(){
+    fun `test for checkMobileVerificationStatus when getMobileVerificationStatus returns phoneVerificationResponse`() {
         viewModel.quickCouponUseCase = quickCouponUseCase
-        runBlocking {
-            coEvery {
-                quickCouponUseCase.getMobileVerificationStatus()} throws Exception("Error")
-            viewModel.checkMobileVerificationStatus()
-            coVerify { quickCouponUseCase.getMobileVerificationStatus()}
-
-
             val phoneVerificationResponse: PhoneVerificationResponse = mockk(relaxed = true)
             coEvery {
                 quickCouponUseCase.getMobileVerificationStatus()} returns phoneVerificationResponse
+
             viewModel.checkMobileVerificationStatus()
+
             TestCase.assertEquals(viewModel.getPhoneVerificationStatus().value != null, true)
-        }
     }
+    /**************************** end of checkMobileVerificationStatus() *******************************************/
 
     @Test
     fun `test for getCouponDetail`(){
         val clickCouponData: ClickCouponData = mockk(relaxed = true)
+
         viewModel.getCouponDetail()
+
         assert(clickCouponData.componentID == componentsItem.id)
     }
 
     @Test
     fun `test for getCouponAppliedStatus`(){
         val clickCouponData: ClickCouponData = mockk(relaxed = true)
+
         viewModel.onAttachToViewHolder()
         viewModel.getCouponAppliedStatus()
+
         assert(clickCouponData.couponApplied != null)
     }
 
     @Test
     fun `test for getCouponApplicableStatus`(){
         val clickCouponData: ClickCouponData = mockk(relaxed = true)
+
         viewModel.onAttachToViewHolder()
         viewModel.getCouponApplicableStatus()
+
         assert(clickCouponData.isApplicable != null)
     }
 
+    /**************************** test for User Logged in *******************************************/
     @Test
-    fun `isUser Logged in`(){
-        mockkConstructor(UserSession::class)
-        every { application.applicationContext } returns context
+    fun `isUser Logged in when isLoggedIn is false`() {
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
+
         viewModel.loggedInStatus()
-        TestCase.assertEquals(viewModel.getLoggedInStatusLiveData().value,false)
-        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
-        viewModel.loggedInStatus()
-        TestCase.assertEquals(viewModel.getLoggedInStatusLiveData().value,true)
-        unmockkConstructor(UserSession::class)
+
+        TestCase.assertEquals(viewModel.getLoggedInStatusLiveData().value, false)
     }
+
+    @Test
+    fun `isUser Logged in when isLoggedIn is true`(){
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+
+        viewModel.loggedInStatus()
+
+        TestCase.assertEquals(viewModel.getLoggedInStatusLiveData().value,true)
+    }
+    /**************************** end of User Logged in *******************************************/
 
     @Test
     fun `test for position passed`(){

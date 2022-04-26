@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -29,7 +28,16 @@ class ErrorLoadViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkStatic(::getComponent)
         every { componentsItem.data } returns null
+        val list = ArrayList<DataItem>()
+        list.add(mockk(relaxed = true))
+        coEvery { componentsItem.data } returns list
+        coEvery { componentsItem.id } returns ""
+        coEvery { componentsItem.parentComponentId } returns ""
+        coEvery { componentsItem.pageEndPoint } returns ""
+        coEvery { getComponent(any(), any()) } returns componentsItem
     }
 
     @Test
@@ -40,16 +48,7 @@ class ErrorLoadViewModelTest {
     /**************************** reloadComponentData() *******************************************/
 
     @Test
-    fun reloadComponentData() {
-        runBlocking {
-            val list = ArrayList<DataItem>()
-            list.add(mockk(relaxed = true))
-            coEvery { componentsItem.data } returns list
-            coEvery { componentsItem.parentComponentId } returns ""
-            coEvery { componentsItem.pageEndPoint } returns ""
-            mockkStatic(::getComponent)
-            coEvery { getComponent(any(), any()) } returns componentsItem
-
+    fun `reloadComponentData when loadFirstPageComponents returns true for MerchantVoucherList and noOfPagesLoaded is 0`() {
             coEvery { componentsItem.noOfPagesLoaded } returns 0
             coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
             coEvery { viewModel.merchantVoucherUseCase.loadFirstPageComponents(any(), any()) } returns true
@@ -57,23 +56,33 @@ class ErrorLoadViewModelTest {
             viewModel.reloadComponentData()
 
             Assert.assertEquals(viewModel.syncData.value, true)
+        }
 
-            coEvery { componentsItem.noOfPagesLoaded } returns 0
-            coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-            coEvery { viewModel.productCardUseCase.loadFirstPageComponents(any(), any()) } returns true
+    @Test
+    fun `reloadComponentData when loadFirstPageComponents returns true for ProductCardCarousel and noOfPagesLoaded is 0`() {
+        coEvery { componentsItem.noOfPagesLoaded } returns 0
+        coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
+        coEvery { viewModel.productCardUseCase.loadFirstPageComponents(any(), any()) } returns true
 
-            viewModel.reloadComponentData()
+        viewModel.reloadComponentData()
 
-            Assert.assertEquals(viewModel.syncData.value, true)
+        Assert.assertEquals(viewModel.syncData.value, true)
+    }
 
-            coEvery { componentsItem.noOfPagesLoaded } returns 1
-            coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-            coEvery { viewModel.merchantVoucherUseCase.getVoucherUseCase(any(), any()) } returns true
+    @Test
+    fun `reloadComponentData when getVoucherUseCase returns true for MerchantVoucherList and noOfPagesLoaded is 1`() {
+        coEvery { componentsItem.noOfPagesLoaded } returns 1
+        coEvery { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
+        coEvery { viewModel.merchantVoucherUseCase.getVoucherUseCase(any(), any()) } returns true
 
-            viewModel.reloadComponentData()
+        viewModel.reloadComponentData()
 
-            Assert.assertEquals(viewModel.syncData.value, true)
+        Assert.assertEquals(viewModel.syncData.value, true)
 
+    }
+
+    @Test
+    fun `reloadComponentData when getProductCardsUseCase returns true for ProductCardCarousel and noOfPagesLoaded is 1`() {
             coEvery { componentsItem.noOfPagesLoaded } returns 1
             coEvery { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
             coEvery { viewModel.productCardUseCase.getProductCardsUseCase(any(), any()) } returns true
@@ -81,7 +90,6 @@ class ErrorLoadViewModelTest {
             viewModel.reloadComponentData()
 
             Assert.assertEquals(viewModel.syncData.value, true)
-        }
 
     }
     /**************************** reloadComponentData() *******************************************/

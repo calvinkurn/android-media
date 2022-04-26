@@ -45,25 +45,30 @@ class TopQuestViewModelTest {
         assert(viewModel.components === componentsItem)
     }
 
+    /**************************** test for onResume() *******************************************/
     @Test
-    fun `test for onResume`() {
+    fun `test for onResume when shouldUpdate is true`() {
         viewModel.shouldUpdate = true
         viewModel.loggedInUpdate = true
         viewModel.onResume()
 
         assert(viewModel.updateQuestData.value == true)
+    }
 
+    @Test
+    fun `test for onResume when loggedInUpdate is true`() {
         viewModel.loggedInUpdate = true
         viewModel.onResume()
 
         assert(!viewModel.loggedInUpdate)
-
     }
+    /**************************** end of onResume() *******************************************/
 
-
+    /**************************** test for loggedInCallback() *******************************************/
     @Test
     fun `test for loggedInCallback`(){
         viewModel.loggedInCallback()
+
         assert(viewModel.navigateData.value == QuestUrls.QUEST_URL)
 
     }

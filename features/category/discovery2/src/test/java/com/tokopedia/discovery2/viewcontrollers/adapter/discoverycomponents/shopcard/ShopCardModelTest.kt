@@ -48,12 +48,13 @@ class ShopCardModelTest {
 
         val shopCardUseCase = mockk<ShopCardUseCase>()
         viewModel.shopCardUseCase = shopCardUseCase
+
         assert(viewModel.shopCardUseCase === shopCardUseCase)
     }
 
+    /**************************** test for refreshProductCarouselError() *******************************************/
     @Test
     fun `test for refreshProductCarouselError`() {
-
         viewModel.refreshProductCarouselError()
         coVerify { viewModel.refreshProductCarouselError() }
 
@@ -63,16 +64,31 @@ class ShopCardModelTest {
         TestCase.assertEquals(viewModel.isLoadingData(), false)
     }
 
+    /**************************** test for pagination() *******************************************/
     @Test
-    fun `is last page for pagination`(){
+    fun `is last page for pagination when nextPageKey is not empty`() {
         every { componentsItem.nextPageKey } returns "p"
+
         assert(!viewModel.isLastPage())
+    }
+
+    @Test
+    fun `is last page for pagination when nextPageKey is empty`() {
         every { componentsItem.nextPageKey } returns ""
-        assert(viewModel.isLastPage())
-        every { componentsItem.nextPageKey } returns null
+
         assert(viewModel.isLastPage())
     }
 
+    @Test
+    fun `is last page for pagination when nextPageKey is null`() {
+        every { componentsItem.nextPageKey } returns null
+
+        assert(viewModel.isLastPage())
+    }
+
+    /**************************** end of pagination() *******************************************/
+
+    /**************************** test for handleErrorState() *******************************************/
     @Test
     fun `test for handleErrorState`(){
         every { componentsItem.verticalProductFailState } returns true
@@ -82,128 +98,195 @@ class ShopCardModelTest {
         TestCase.assertEquals(viewModel.getShopLoadState().value, true)
     }
 
+    /**************************** test for fetchShopCardData() *******************************************/
     @Test
-    fun `test for fetchShopCardData`() {
+    fun `test for fetchShopCardData when loadFirstPageComponents returns error`() {
         viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
+
         viewModel.fetchShopCardData()
 
         TestCase.assertEquals(viewModel.hideShimmer().value, true)
-        TestCase.assertEquals(viewModel.getShopLoadState().value, true)
-
+    }
+    @Test
+    fun `test for fetchShopCardData when loadFirstPageComponents does not returns error`() {
+        viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
+
         viewModel.fetchShopCardData()
 
         TestCase.assertEquals(viewModel.getShopList() != null, true)
     }
 
+    /**************************** end of fetchShopCardData() *******************************************/
+
+    /**************************** test for shouldShowShimmer() *******************************************/
     @Test
     fun `shouldShowShimmer test`() {
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties?.dynamic } returns true
         every { componentsItem.verticalProductFailState } returns false
+
         assert(viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties?.dynamic } returns true
         every { componentsItem.verticalProductFailState } returns true
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties?.dynamic } returns false
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties?.dynamic } returns false
         every { componentsItem.verticalProductFailState } returns true
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns true
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 0
         every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns true
         every { componentsItem.verticalProductFailState } returns true
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns true
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns false
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties?.dynamic } returns false
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.properties } returns null
         every { componentsItem.verticalProductFailState } returns false
+
         assert(!viewModel.shouldShowShimmer())
 
     }
 
+    /**************************** test for fetchShopCardPaginatedData() *******************************************/
+
     @Test
-    fun `test for fetchShopCardPaginatedData`() {
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return error`() {
         viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
+
         viewModel.fetchShopCardPaginatedData()
-        coVerify { shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) }
-        TestCase.assertEquals(viewModel.getShopList() != null, true)
+
         TestCase.assertEquals(viewModel.isLoadingData(), false)
+    }
+
+    @Test
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return error and shopList returns null`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
         every { viewModel.getShopList() } returns null
+
         viewModel.fetchShopCardPaginatedData()
+
         TestCase.assertEquals(viewModel.isLoadingData(), true)
+    }
 
-
+    @Test
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return true`() {
+        viewModel.shopCardUseCase = shopCardUseCase
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
                     componentsItem.id, componentsItem.pageEndPoint)
         } returns true
-        viewModel.fetchShopCardPaginatedData()
         val list = ArrayList<ComponentsItem>()
         every { viewModel.getShopList() } returns list
+
         viewModel.fetchShopCardPaginatedData()
+
         TestCase.assertEquals(viewModel.isLoadingData(), false)
+    }
+
+    @Test
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return true and shopList is null`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
         every { viewModel.getShopList() } returns null
+
         viewModel.fetchShopCardPaginatedData()
+
         TestCase.assertEquals(viewModel.isLoadingData(), true)
 
+    }
 
+    @Test
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return false and shopList is null`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        every { viewModel.getShopList() } returns null
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(
                     componentsItem.id, componentsItem.pageEndPoint)
         } returns false
+
         viewModel.fetchShopCardPaginatedData()
+
         TestCase.assertEquals(viewModel.getShopList() == null, true)
-        every { viewModel.getShopList() } returns null
-        viewModel.fetchShopCardPaginatedData()
-        TestCase.assertEquals(viewModel.isLoadingData(), true)
     }
+
+    @Test
+    fun `test for fetchShopCardPaginatedData when getShopCardPaginatedData return false and shopList is not null`() {
+        val list = ArrayList<ComponentsItem>()
+        every { viewModel.getShopList() } returns list
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+
+        viewModel.fetchShopCardPaginatedData()
+
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
+    }
+
+    /**************************** end of fetchShopCardPaginatedData() *******************************************/
 
     @Test
     fun `test for paginatedErrorData`(){

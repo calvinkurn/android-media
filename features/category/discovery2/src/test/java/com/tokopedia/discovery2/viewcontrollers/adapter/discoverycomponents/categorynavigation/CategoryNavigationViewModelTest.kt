@@ -41,6 +41,7 @@ class CategoryNavigationViewModelTest {
 
         val useCase = mockk<CategoryNavigationUseCase>()
         viewModel.categoryNavigationUseCase = useCase
+
         assert(viewModel.categoryNavigationUseCase === useCase)
     }
 

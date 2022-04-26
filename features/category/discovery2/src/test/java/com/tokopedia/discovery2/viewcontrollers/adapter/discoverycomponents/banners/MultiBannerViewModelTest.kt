@@ -6,14 +6,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
 import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -29,8 +27,6 @@ class MultiBannerViewModelTest {
 
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
     private val application: Application = mockk()
-    private val pushSubscriptionResponse: PushSubscriptionResponse = mockk(relaxed = true)
-    private val multiBannerDataUseCase: BannerUseCase = mockk(relaxed = true)
 
     private val viewModel: MultiBannerViewModel by lazy {
         spyk(MultiBannerViewModel(application, componentsItem, 99))
@@ -49,6 +45,18 @@ class MultiBannerViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkObject(Utils)
+        mockkConstructor(UserSession::class)
+        coEvery { application.applicationContext } returns context
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkObject(Utils)
+        unmockkConstructor(UserSession::class)
     }
 
     @Test
@@ -125,44 +133,40 @@ class MultiBannerViewModelTest {
 
     }
 
+    /****************************************** onAttachToViewHolder() ****************************************/
     @Test
-    fun `test for onAttachToViewHolder`(){
+    fun `test for onAttachToViewHolder`() {
         viewModel.bannerUseCase = bannerUseCase
-        runBlocking {
-            every { componentsItem.properties?.dynamic } returns true
-            coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
+        coEvery { componentsItem.properties?.dynamic } returns true
+        coEvery { bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint) } returns true
 
-            val list = ArrayList<ComponentsItem>()
-            every { componentsItem.getComponentsItem() } returns list
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.getComponentData().value != null, true)
-        }
+        val list = ArrayList<ComponentsItem>()
+        coEvery { componentsItem.getComponentsItem() } returns list
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.getComponentData().value != null, true)
     }
 
 
+    /****************************************** banner width ****************************************/
     @Test
     fun `test for banner width`(){
-        mockkObject(Utils)
         every { Utils.extractDimension(any(),any()) } returns 100
         val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
 
         assert(viewModel.getBannerUrlWidth() == 100)
-
-        unmockkObject(Utils)
     }
 
 
+    /****************************************** onAttachToViewHolder() ****************************************/
     @Test
     fun `test for banner height`(){
-        mockkObject(Utils)
         every { Utils.extractDimension(any()) } returns 100
         val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
 
         assert(viewModel.getBannerUrlHeight() == 100)
-
-        unmockkObject(Utils)
     }
 
     @Test
@@ -175,17 +179,16 @@ class MultiBannerViewModelTest {
         assert(viewModel.getComponentData().value == componentsItem)
     }
 
+    /****************************************** user LogIn() ****************************************/
     @Test
     fun `isUser Logged in`(){
-        mockkConstructor(UserSession::class)
-        every { application.applicationContext } returns context
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
         assert(!viewModel.isUserLoggedIn())
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
         assert(viewModel.isUserLoggedIn())
     }
-    /****************************************** onBannerClicked() ****************************************/
 
+    /****************************************** onBannerClicked() ****************************************/
     @Test
     fun `banner action is APPLINK`() {
         list.clear()
@@ -195,6 +198,7 @@ class MultiBannerViewModelTest {
         every { dataItem.applinks } returns "tokopedia://xyz"
         every { viewModel.navigate(context,any()) } just Runs
         viewModel.onBannerClicked(0, context)
+
         coVerify { viewModel.navigate(context,"tokopedia://xyz") }
     }
     @Test
@@ -206,25 +210,37 @@ class MultiBannerViewModelTest {
         every { dataItem.applinks } returns "tokopedia://xyz"
         every { viewModel.navigate(context,any()) } just Runs
         viewModel.onBannerClicked(0, context)
+
         coVerify { viewModel.navigate(context,"tokopedia://xyz") }
     }
 
     @Test
-    fun `banner action is Login`(){
+    fun `banner action is Login when isUserLoggedIn is true`() {
         list.clear()
-        coEvery { componentsItem.data} returns list
+        coEvery { componentsItem.data } returns list
         list.add(dataItem)
         every { dataItem.action } returns "LOGIN"
         every { dataItem.applinks } returns "tokopedia://xyz"
-        every { viewModel.navigate(context,any()) } just Runs
+        every { viewModel.navigate(context, any()) } just Runs
+        every { viewModel.isUserLoggedIn() } returns true
 
-        every { viewModel.isUserLoggedIn()} returns true
-        viewModel.onBannerClicked(0,context)
+        viewModel.onBannerClicked(0, context)
+
         assert(viewModel.isPageRefresh().value != true)
-        verify { viewModel.navigate(context,"tokopedia://xyz") }
+    }
 
+    @Test
+    fun `banner action is Login when isUserLoggedIn is false`() {
+        list.clear()
+        coEvery { componentsItem.data } returns list
+        list.add(dataItem)
+        every { dataItem.action } returns "LOGIN"
+        every { dataItem.applinks } returns "tokopedia://xyz"
+        every { viewModel.navigate(context, any()) } just Runs
         every { viewModel.isUserLoggedIn()} returns false
+
         viewModel.onBannerClicked(0,context)
+
         assert(viewModel.isPageRefresh().value == true)
     }
 
@@ -243,10 +259,5 @@ class MultiBannerViewModelTest {
 //        coVerify {
 //        }
 
-    }
-
-    @After
-    fun shutDown() {
-        Dispatchers.resetMain()
     }
 }

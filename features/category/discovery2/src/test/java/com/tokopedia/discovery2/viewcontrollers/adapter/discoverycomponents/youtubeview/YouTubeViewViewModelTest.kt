@@ -24,102 +24,173 @@ class YouTubeViewViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
     }
-
+    /**************************** test for getVideoId() *******************************************/
     @Test
-    fun `test for video id`() {
+    fun `test for getVideoId when data is null`() {
         every { componentsItem.data } returns null
 
         assert(viewModel.getVideoId().value == null)
 
+    }
+
+    @Test
+    fun `test for getVideoId when datalist is empty`() {
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
 
         assert(viewModel.getVideoId().value == null)
 
+    }
+
+    @Test
+    fun `test for getVideoId when data is not empty`() {
+        val list = ArrayList<DataItem>()
+
+        every { componentsItem.data } returns list
+
         val item = DataItem()
         list.add(item)
+
         assert(viewModel.getVideoId().value === item)
     }
+
+    /**************************** end of getVideoId() *******************************************/
 
     @Test
     fun `test for position passed to VM`() {
         assert(viewModel.position == 99)
     }
 
+    /**************************** test for shouldAutoPlay() *******************************************/
     @Test
-    fun `test for shouldAutoPlay`() {
+    fun `test for shouldAutoPlay when autoPlayController is not null`() {
         every { componentsItem.autoPlayController?.shouldAutoPlay(componentsItem.id) } returns true
-        assert(viewModel.shouldAutoPlay())
 
+        assert(viewModel.shouldAutoPlay())
+    }
+
+    @Test
+    fun `test for shouldAutoPlay when autoPlayController is null`() {
         every { componentsItem.autoPlayController } returns null
+
         assert(!viewModel.shouldAutoPlay())
     }
 
-    @Test
-    fun `test for shouldPause`() {
-        every { componentsItem.autoPlayController?.shouldPause(componentsItem.id) } returns true
-        assert(viewModel.shouldPause())
+    /**************************** end of shouldAutoPlay() *******************************************/
 
+    /**************************** test for shouldPause() *******************************************/
+    @Test
+    fun `test for shouldPause when autoPlayController is not null`() {
+        every { componentsItem.autoPlayController?.shouldPause(componentsItem.id) } returns true
+
+        assert(viewModel.shouldPause())
+    }
+
+    @Test
+    fun `test for shouldPause when autoPlayController is null`() {
         every { componentsItem.autoPlayController } returns null
+
         assert(!viewModel.shouldPause())
     }
 
-    @Test
-    fun `test for autoPlayNext`() {
-        viewModel.autoPlayNext()
-        verify { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
+    /**************************** end of shouldPause() *******************************************/
 
-        every { componentsItem.autoPlayController } returns null
+    /**************************** test for autoPlayNext() *******************************************/
+    @Test
+    fun `test for autoPlayNext when autoPlayController is not null`() {
         viewModel.autoPlayNext()
+
         verify { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
     }
 
     @Test
-    fun `test for isAutoPlayEnabled`() {
-        every { componentsItem.autoPlayController?.isAutoPlayEnabled } returns true
-        assert(viewModel.isAutoPlayEnabled())
-
+    fun `test for autoPlayNext when autoPlayController is null`() {
         every { componentsItem.autoPlayController } returns null
+
+        viewModel.autoPlayNext()
+
+        verify(inverse = true) { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
+    }
+
+    /**************************** end of autoPlayNext() *******************************************/
+
+    /**************************** test for isAutoPlayEnabled() *******************************************/
+    @Test
+    fun `test for isAutoPlayEnabled when autoPlayController is not null`() {
+        every { componentsItem.autoPlayController?.isAutoPlayEnabled } returns true
+
+        assert(viewModel.isAutoPlayEnabled())
+    }
+
+    @Test
+    fun `test for isAutoPlayEnabled when autoPlayController is null`() {
+        every { componentsItem.autoPlayController } returns null
+
         assert(!viewModel.isAutoPlayEnabled())
     }
 
+    /**************************** end of isAutoPlayEnabled() *******************************************/
+
+    /**************************** test for disableAutoplay() *******************************************/
     @Test
-    fun `test for disableAutoplay`() {
+    fun `test for disableAutoplay when autoPlayController is not null `() {
         viewModel.disableAutoplay()
 
         TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
 
-        viewModel.disableAutoplay()
+    }
 
-        TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
-
+    @Test
+    fun `test for disableAutoplay when autoPlayController is null`() {
         every { componentsItem.autoPlayController } returns null
+
         viewModel.disableAutoplay()
 
         TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == null, true)
     }
 
+    /**************************** end of disableAutoplay() *******************************************/
+
+    /**************************** test for pauseOtherVideos() *******************************************/
     @Test
-    fun `test for pauseOtherVideos`() {
+    fun `test for pauseOtherVideos when autoPlayController is not null`() {
         every { componentsItem.autoPlayController?.pauseAutoPlayedVideo(componentsItem.id) } returns true
+
         assert(viewModel.pauseOtherVideos())
+    }
+
+    @Test
+    fun `test for pauseOtherVideos when autoPlayController is null`() {
 
         every { componentsItem.autoPlayController } returns null
         assert(!viewModel.pauseOtherVideos())
     }
 
+    /**************************** end of pauseOtherVideos() *******************************************/
+
+    /**************************** test for currentlyAutoPlaying() *******************************************/
     @Test
-    fun `test for currentlyAutoPlaying`() {
-
+    fun `test for currentlyAutoPlaying when autoPlayController is null `() {
         every { componentsItem.autoPlayController } returns null
+
         TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true)
 
+    }
+
+    @Test
+    fun `test for currentlyAutoPlaying when currentlyAutoPlaying is null`() {
         every { componentsItem.autoPlayController?.currentlyAutoPlaying } returns null
-        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true)
 
+        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true)
+    }
+
+    @Test
+    fun `test for currentlyAutoPlaying when currentlyAutoPlaying is not null`() {
         every { componentsItem.autoPlayController?.currentlyAutoPlaying?.value } returns "currentLvAuto"
+
         TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == "currentLvAuto", true)
 
     }
+    /**************************** end of currentlyAutoPlaying() *******************************************/
 
 }

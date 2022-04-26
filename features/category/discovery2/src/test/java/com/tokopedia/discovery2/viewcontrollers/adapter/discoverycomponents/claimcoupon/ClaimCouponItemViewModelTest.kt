@@ -73,14 +73,16 @@ class ClaimCouponItemViewModelTest {
     /**************************** redeemCoupon() *******************************************/
 
     @Test
-    fun redeemCoupon() {
-        runBlocking {
-            every { viewModel.userSession.isLoggedIn } returns false
+    fun `redeemCoupon when isLoggedIn is false`() {
+        coEvery { viewModel.userSession.isLoggedIn } returns false
 
-            viewModel.redeemCoupon { }
+        viewModel.redeemCoupon { }
 
-            assertEquals(viewModel.getRedeemCouponCode().value, NOT_LOGGEDIN)
+        assertEquals(viewModel.getRedeemCouponCode().value, NOT_LOGGEDIN)
+    }
 
+    @Test
+    fun `redeemCoupon when isLoggedIn is true`() {
             val applink = "applink"
             val code = "code"
             val data = RedeemCouponResponse(hachikoRedeem =
@@ -94,7 +96,6 @@ class ClaimCouponItemViewModelTest {
             viewModel.redeemCoupon { }
 
             assertEquals(viewModel.getRedeemCouponCode().value, code)
-        }
     }
 
     /**************************** redeemCoupon() *******************************************/

@@ -63,6 +63,7 @@ class DiscoMerchantVoucherViewModelTest {
 
     }
 
+    /**************************** test for update data *******************************************/
     @Test
     fun`test for update data`(){
         val viewModel: DiscoMerchantVoucherViewModel = spyk(DiscoMerchantVoucherViewModel(application, componentsItem, 99))
@@ -73,9 +74,11 @@ class DiscoMerchantVoucherViewModelTest {
         every { mockDataItem.shopIds} returns listOfShopIds
         listOfShopIds.add(101)
         listOfShopIds.add(102)
+
         viewModel.updateData("105",false, mockk())
+
         assert(viewModel.errorState.value == null)
-        assert(viewModel.mvcData.value == null)
+
         viewModel.updateData("101",false, mockk())
         assert(viewModel.errorState.value == true)
         assert(viewModel.mvcData.value == null)
@@ -83,4 +86,5 @@ class DiscoMerchantVoucherViewModelTest {
         assert(viewModel.errorState.value == false)
         assert(viewModel.mvcData.value != null)
     }
+    /**************************** end of update data *******************************************/
 }

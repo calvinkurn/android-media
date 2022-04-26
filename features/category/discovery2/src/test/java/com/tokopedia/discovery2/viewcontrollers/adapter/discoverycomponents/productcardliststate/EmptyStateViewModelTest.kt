@@ -47,6 +47,7 @@ class EmptyStateViewModelTest{
     fun getEmptyStateData() {
         val emptyStateModel = mockk<EmptyStateModel>(relaxed = true)
         every { viewModel.emptyStateRepository.getEmptyStateData(any()) } returns emptyStateModel
+
         assertEquals(viewModel.getEmptyStateData(), emptyStateModel)
 
     }

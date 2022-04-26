@@ -61,6 +61,7 @@ class LoadMoreViewModelTest {
 
         val productCardUseCase = mockk<ProductCardsUseCase>()
         viewModel.productCardUseCase = productCardUseCase
+
         assert(viewModel.productCardUseCase === productCardUseCase)
     }
 
@@ -71,51 +72,80 @@ class LoadMoreViewModelTest {
 
         val merchantVoucherUseCase = mockk<MerchantVoucherUseCase>()
         viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+
         assert(viewModel.merchantVoucherUseCase === merchantVoucherUseCase)
     }
 
+    /**************************** test getViewOrientation() *******************************************/
     @Test
-    fun `get Component Orientation`() {
+    fun `get Component Orientation when loadForHorizontal is true`() {
         every { componentsItem.loadForHorizontal } returns true
-        assert(viewModel.getViewOrientation())
 
-        every { componentsItem.loadForHorizontal } returns false
-        assert(!viewModel.getViewOrientation())
+        assert(viewModel.getViewOrientation())
     }
 
     @Test
-    fun `test for onAttachViewHolder`() {
+    fun `get Component Orientation when loadForHorizontal is false`() {
+        every { componentsItem.loadForHorizontal } returns false
+
+        assert(!viewModel.getViewOrientation())
+    }
+    /**************************** end of getViewOrientation() *******************************************/
+
+    /**************************** test onAttachViewHolder() *******************************************/
+    @Test
+    fun `test for onAttachViewHolder for when MerchantVoucherList when getPaginatedData returns error`() {
         viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         every { componentsItem.loadForHorizontal } returns false
         every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
+
         viewModel.onAttachToViewHolder()
+
         verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
         TestCase.assertEquals(viewModel.syncData.value, true)
-
+    }
+    @Test
+    fun `test for onAttachViewHolder for when MerchantVoucherList when getPaginatedData returns true`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.loadForHorizontal } returns false
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
         viewModel.onAttachToViewHolder()
         TestCase.assertEquals(viewModel.syncData.value, true)
-
+    }
+    @Test
+    fun `test for onAttachViewHolder for when MerchantVoucherList when getPaginatedData returns false`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.loadForHorizontal } returns false
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns false
         viewModel.onAttachToViewHolder()
         TestCase.assertEquals(viewModel.syncData.value, false)
+    }
 
+    @Test
+    fun `test for onAttachViewHolder for when MerchantVoucherList when getPaginatedData returns true and loadForHorizontal is true`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
         every { componentsItem.loadForHorizontal } returns true
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
+
         viewModel.onAttachToViewHolder()
+
         verify { viewModel.getViewOrientation() }
+    }
 
-
+    @Test
+    fun `test for onAttachViewHolder for when ProductCardCarousel when getProductCardsUseCase returns error`() {
         viewModel.productCardUseCase = productCardUseCase
         every { componentsItem.loadForHorizontal } returns false
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
@@ -123,22 +153,42 @@ class LoadMoreViewModelTest {
             productCardUseCase.getProductCardsUseCase(
                     componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
+
         viewModel.onAttachToViewHolder()
+
         verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
         TestCase.assertEquals(viewModel.syncData.value, true)
+    }
 
+    @Test
+    fun `test for onAttachViewHolder for when ProductCardCarousel when getProductCardsUseCase returns true`() {
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.loadForHorizontal } returns false
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
-        viewModel.onAttachToViewHolder()
-        TestCase.assertEquals(viewModel.syncData.value, true)
 
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.syncData.value, true)
+    }
+
+    @Test
+    fun `test for onAttachViewHolder for when ProductCardCarousel when getProductCardsUseCase returns false`() {
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.loadForHorizontal } returns false
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
         } returns false
+
         viewModel.onAttachToViewHolder()
+
         TestCase.assertEquals(viewModel.syncData.value, false)
 
     }
+
+    /**************************** end of onAttachViewHolder() *******************************************/
 
 }

@@ -100,6 +100,7 @@ class BannerCarouselViewModelTest {
         list.add(mockedDataItem)
         every { componentsItem.data } returns list
         every { mockedDiscoDataMapper.mapListToComponentList(any(),any(),any(),any()) } returns ArrayList()
+
         viewModel.onAttachToViewHolder()
 
         TestCase.assertEquals(viewModel.getComponents().value != null, true)
@@ -116,6 +117,7 @@ class BannerCarouselViewModelTest {
         list.clear()
         every { componentsItem.data } returns list
         every { DiscoveryDataMapper.mapListToComponentList(any(),any(),any(),any()) } returns ArrayList()
+
         viewModel.onAttachToViewHolder()
 
         TestCase.assertEquals(viewModel.hideShimmer.value , true)
@@ -136,6 +138,7 @@ class BannerCarouselViewModelTest {
 
         val bannerUseCase = mockk<BannerUseCase>()
         viewModel.bannerUseCase = bannerUseCase
+
         assert(viewModel.bannerUseCase === bannerUseCase)
     }
 
@@ -145,6 +148,7 @@ class BannerCarouselViewModelTest {
     @Test
     fun `test for reload`() {
         viewModel.reload()
+
         assert(componentsItem.noOfPagesLoaded == 0)
     }
     /**************************** end reload() *******************************************/

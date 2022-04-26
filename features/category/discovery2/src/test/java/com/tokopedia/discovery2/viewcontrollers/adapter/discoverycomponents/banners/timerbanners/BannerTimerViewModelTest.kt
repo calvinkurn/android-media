@@ -28,6 +28,7 @@ class BannerTimerViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         every { componentsItem.data } returns null
+        mockkObject(Utils.Companion)
     }
 
     @Test
@@ -44,7 +45,6 @@ class BannerTimerViewModelTest {
     @Test
     fun startTimer() {
         var timeDiff : Long = 0
-        mockkObject(Utils.Companion)
         every { Utils.getElapsedTime(any()) } returns timeDiff
 
         viewModel.startTimer(mockk())
@@ -134,15 +134,17 @@ class BannerTimerViewModelTest {
     /**************************** checkTimerEnd() *******************************************/
 
     @Test
-    fun checkTimerEnd() {
-        var timeDiff : Long = 1
-        mockkObject(Utils.Companion)
+    fun `checkTimerEnd when timeDiff is 1`() {
+        val timeDiff: Long = 1
         every { Utils.getElapsedTime(any()) } returns timeDiff
         viewModel.checkTimerEnd()
 
         assertEquals(viewModel.syncData.value, null)
+    }
 
-        timeDiff = 0
+    @Test
+    fun `checkTimerEnd when timeDiff is 0`() {
+        val timeDiff: Long = 0
         every { Utils.getElapsedTime(any()) } returns timeDiff
         viewModel.checkTimerEnd()
 
@@ -154,23 +156,27 @@ class BannerTimerViewModelTest {
     /**************************** getTimerVariant() *******************************************/
 
     @Test
-    fun getTimerVariant() {
-        var dataItem = arrayListOf(DataItem(variant = "main", color = "redDark"))
+    fun `getTimerVariant when data variant is main and color is redDark`() {
+        val dataItem = arrayListOf(DataItem(variant = "main", color = "redDark"))
         every { componentsItem.data } returns dataItem
-        var variant = 0
+        val variant = 0
         assertEquals(viewModel.getTimerVariant(), variant)
+    }
 
-
-        dataItem = arrayListOf(DataItem(variant = "main", color = "redLight"))
+    @Test
+    fun `getTimerVariant when data variant is main and color is redLight`() {
+        val dataItem = arrayListOf(DataItem(variant = "main", color = "redLight"))
         every { componentsItem.data } returns dataItem
-        variant = 1
+        val variant = 1
 
         assertEquals(viewModel.getTimerVariant(), variant)
+    }
 
-
-        dataItem = arrayListOf(DataItem(variant = "alternate"))
+    @Test
+    fun `getTimerVariant when data variant is alternate`() {
+        val dataItem = arrayListOf(DataItem(variant = "alternate"))
         every { componentsItem.data } returns dataItem
-        variant = 2
+        val variant = 2
 
         assertEquals(viewModel.getTimerVariant(), variant)
     }

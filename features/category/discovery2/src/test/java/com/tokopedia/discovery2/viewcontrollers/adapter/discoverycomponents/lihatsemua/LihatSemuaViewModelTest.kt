@@ -26,6 +26,13 @@ class LihatSemuaViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        mockkObject(Utils)
+    }
+
+    @After
+    @Throws(Exception::class)
+    fun tearDown() {
+        unmockkObject(Utils)
     }
 
     @Test
@@ -50,95 +57,94 @@ class LihatSemuaViewModelTest {
 
     @Test
     fun `text for startTimer`(){
-        mockkObject(Utils)
         every { viewModel.getStartDate() } returns "2021-11-01T10:00:00+07:00"
         every { Utils.isFutureSale(any(),any()) } returns true
+
         viewModel.startTimer(mockedTimerUnifySingleItem)
+
         verify { Utils.parseData(any(), any()) }
+    }
 
-        every { Utils.parseData(any(), any()) } returns null
-        viewModel.startTimer(mockedTimerUnifySingleItem)
-        unmockkObject(Utils)
+    /**************************** test getStartDate() *******************************************/
+    @Test
+    fun `start Date when data is null`() {
+        every { componentsItem.data } returns null
+
+        Assert.assertEquals(viewModel.getStartDate(), "")
+    }
+    @Test
+    fun `start Date if no data present and list is empty`() {
+        list.clear()
+        every { componentsItem.data } returns list
+
+        Assert.assertEquals(viewModel.getStartDate(), "")
     }
 
     @Test
-    fun `start Date if no data present`() {
-        every { componentsItem.data } returns null
-        Assert.assertEquals(viewModel.getStartDate(), "")
+    fun `start Date if no data present and when startDate is null`() {
         list.clear()
-        every { componentsItem.data } returns list
-        Assert.assertEquals(viewModel.getStartDate(), "")
         list.add(mockedDataItem)
+        every { componentsItem.data } returns list
         every { mockedDataItem.startDate } returns null
+
         Assert.assertEquals(viewModel.getStartDate(), "")
     }
+
     @Test
-    fun `start Date if data is present`() {
+    fun `start Date if data is present and startDate is not empty`() {
         list.clear()
         list.add(mockedDataItem)
         every { componentsItem.data } returns list
-        every { mockedDataItem.startDate  } returns "test date"
+        every { mockedDataItem.startDate } returns "test date"
+
         Assert.assertEquals(viewModel.getStartDate(), "test date")
+    }
 
-        list.clear()
-        list.add(mockedDataItem)
-        every { componentsItem.data } returns list
-        every { mockedDataItem.startDate  } returns null
-        Assert.assertEquals(viewModel.getStartDate(), "")
+    /**************************** end of getStartDate() *******************************************/
 
-        list.clear()
-        list.add(mockedDataItem)
+    /**************************** test getEndDate() *******************************************/
+    @Test
+    fun `end Date when data is null`() {
         every { componentsItem.data } returns null
-        Assert.assertEquals(viewModel.getStartDate(), "")
 
-        list.clear()
-        list.add(mockedDataItem)
-        every { componentsItem.data?.firstOrNull() } returns null
-        Assert.assertEquals(viewModel.getStartDate(), "")
+        Assert.assertEquals(viewModel.getEndDate(), "")
     }
 
     @Test
-    fun `end Date if no data present`() {
-        every { componentsItem.data } returns null
-        Assert.assertEquals(viewModel.getEndDate(), "")
+    fun `end Date if no data present and list is empty`() {
         list.clear()
         every { componentsItem.data } returns list
+
         Assert.assertEquals(viewModel.getEndDate(), "")
+    }
+
+    @Test
+    fun `end Date if no data present when endDate is null`() {
+        list.clear()
         list.add(mockedDataItem)
+        every { componentsItem.data } returns list
         every { mockedDataItem.endDate } returns null
+
         Assert.assertEquals(viewModel.getEndDate(), "")
     }
 
     @Test
-    fun `end Date if data is present`() {
+    fun `end Date if data is present and end is not null`() {
         list.clear()
         list.add(mockedDataItem)
         every { componentsItem.data } returns list
         every { mockedDataItem.endDate } returns "test date"
+
         Assert.assertEquals(viewModel.getEndDate(), "test date")
 
-
-        list.clear()
-        list.add(mockedDataItem)
-        every { componentsItem.data } returns list
-        every { mockedDataItem.endDate  } returns null
-        Assert.assertEquals(viewModel.getEndDate(), "")
-
-        list.clear()
-        list.add(mockedDataItem)
-        every { componentsItem.data } returns null
-        Assert.assertEquals(viewModel.getEndDate(), "")
-
-        list.clear()
-        list.add(mockedDataItem)
-        every { componentsItem.data?.firstOrNull() } returns null
-        Assert.assertEquals(viewModel.getEndDate(), "")
-
     }
+
+    /**************************** end of getEndDate() *******************************************/
 
     @Test
     fun `onResume called without onStop`(){
         viewModel.onResume()
+
         assert(viewModel.getRestartTimerAction().value == null)
     }
 
@@ -146,6 +152,7 @@ class LihatSemuaViewModelTest {
     fun `onResume called after onStop`(){
         viewModel.onStop()
         viewModel.onResume()
+
         assert(viewModel.getRestartTimerAction().value == true)
     }
 
@@ -158,12 +165,14 @@ class LihatSemuaViewModelTest {
     @Test
     fun `onDetachViewHolder calls stopTimer`(){
         viewModel.onDetachToViewHolder()
+
         verify { viewModel.stopTimer() }
     }
 
     @Test
     fun `onDestroy calls stopTimer`(){
         viewModel.onDestroy()
+
         verify { viewModel.stopTimer() }
     }
 }

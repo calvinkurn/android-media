@@ -37,6 +37,7 @@ class TokopointsItemViewModelTest {
         assert(viewModel.position == 99)
     }
 
+    /**************************** test for component value *******************************************/
     @Test
     fun `component value is present in live data`() {
         val list = ArrayList<DataItem>()
@@ -48,7 +49,9 @@ class TokopointsItemViewModelTest {
         TestCase.assertEquals(viewModel.getDataItemValue().value?.slug == componentsItem.data?.firstOrNull()?.slug, true)
 
     }
+    /**************************** end of component value *******************************************/
 
+    /**************************** test for onTokopointsItemClicked() *******************************************/
     @Test
     fun `test for onTokopointsItemClicked`() {
         val list = mutableListOf(DataItem(slug = "xyz"))
@@ -60,6 +63,7 @@ class TokopointsItemViewModelTest {
 
         verify { viewModel.navigate(any(),any()) }
     }
+    /**************************** end of onTokopointsItemClicked() *******************************************/
 
     @After
     fun shutDown() {

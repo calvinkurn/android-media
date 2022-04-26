@@ -34,6 +34,9 @@ class TopAdsHeadlineViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkConstructor(UserSession::class)
+        every { application.applicationContext } returns context
     }
 
 
@@ -52,30 +55,41 @@ class TopAdsHeadlineViewModelTest {
         assert(viewModel.application == application)
     }
 
+    /**************************** test for getHeadlineAdsParam() *******************************************/
     @Test
     fun `test for getHeadlineAdsParam`(){
         viewModel.topAdsHeadlineRepository = topAdsHeadlineRepository
         val list = ArrayList<DataItem>()
         val item = DataItem()
         list.add(item)
+
         every { componentsItem.data } returns list
         coEvery { topAdsHeadlineRepository.getHeadlineAdsParams(componentsItem.pageEndPoint,componentsItem.data?.firstOrNull()?.paramsMobile ?: "") } returns "xyz"
+
         assert(viewModel.getHeadlineAdsParam() == "xyz")
+    }
+    /**************************** end of getHeadlineAdsParam() *******************************************/
+
+    /**************************** test for isUser Logged in *******************************************/
+    @Test
+    fun `isUser Logged in when isLoggedIn is false`() {
+        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
+
+        assert(!viewModel.isUserLoggedIn())
     }
 
     @Test
-    fun `isUser Logged in`(){
-        mockkConstructor(UserSession::class)
-        every { application.applicationContext } returns context
-        every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns false
-        assert(!viewModel.isUserLoggedIn())
+    fun `isUser Logged in when isLoggedIn is true`(){
         every { constructedWith<UserSession>(OfTypeMatcher<Context>(Context::class)).isLoggedIn } returns true
+
         assert(viewModel.isUserLoggedIn())
-        unmockkConstructor(UserSession::class)
     }
+
+    /**************************** end of isUser Logged in *******************************************/
 
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+        unmockkConstructor(UserSession::class)
     }
 }

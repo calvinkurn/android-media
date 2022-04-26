@@ -7,7 +7,6 @@ import com.tokopedia.discovery2.usecase.tokopointsusecase.TokopointsListDataUseC
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -41,12 +40,13 @@ class TokopointsViewModelTest {
 
         val tokopointsListDataUseCase = mockk<TokopointsListDataUseCase>()
         viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
+
         assert(viewModel.tokopointsListDataUseCase === tokopointsListDataUseCase)
     }
 
 
     @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
 
@@ -55,28 +55,44 @@ class TokopointsViewModelTest {
         assert(viewModel.getTokopointsComponentData().value == componentsItem)
     }
 
+    /**************************** test for fetchTokopointsListData() *******************************************/
+
     @Test
-    fun `test for fetchTokopointsListData`() {
+    fun `test for fetchTokopointsListData when getTokopointsDataUseCase returns error`() {
         viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
         coEvery {
             tokopointsListDataUseCase.getTokopointsDataUseCase(any(), any())
         } throws Exception("Error")
+
         viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
+
         TestCase.assertEquals(viewModel.getTokopointsItemsListData().value == null, true)
 
+    }
 
+    @Test
+    fun `test for fetchTokopointsListData when getTokopointsDataUseCase returns false`() {
+        viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
         coEvery {
             tokopointsListDataUseCase.getTokopointsDataUseCase(any(), any())
         } returns false
         viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
-        TestCase.assertEquals(viewModel.getTokopointsItemsListData().value == null, true)
 
+        TestCase.assertEquals(viewModel.getTokopointsItemsListData().value == null, true)
+    }
+
+    @Test
+    fun `test for fetchTokopointsListData when getTokopointsDataUseCase returns true`() {
+        viewModel.tokopointsListDataUseCase = tokopointsListDataUseCase
         coEvery {
             tokopointsListDataUseCase.getTokopointsDataUseCase(any(), any())
         } returns true
         viewModel.fetchTokopointsListData(componentsItem.pageEndPoint)
+
         TestCase.assertEquals(viewModel.getTokopointsItemsListData().value != null, true)
     }
+
+    /**************************** end of fetchTokopointsListData() *******************************************/
 
     @After
     fun shutDown() {

@@ -38,20 +38,25 @@ class TextComponentViewModelTest {
         assert(viewModel.position == 99)
     }
 
+    /**************************** test for component value *******************************************/
     @Test
-    fun `component value is present in live data`() {
+    fun `component value is present in live data when list is not null`() {
         val list = ArrayList<DataItem>()
         val item = DataItem()
         list.add(item)
         every { componentsItem.data } returns list
 
         TestCase.assertEquals(viewModel.getTextComponentLiveData().value == componentsItem.data?.firstOrNull(), true)
+    }
 
+    @Test
+    fun `component value is present in live data when list is null`() {
         every { componentsItem.data } returns null
         val viewModelTest = spyk(TextComponentViewModel(application, componentsItem, 0))
 
         assert(viewModelTest.getTextComponentLiveData().value == null)
     }
+    /**************************** end of component value *******************************************/
 
     @After
     fun shutDown() {

@@ -46,23 +46,28 @@ class TabsItemViewModelTest {
         assert(viewModel.application === application)
     }
 
+    /**************************** test for setSelectionTabItem() *******************************************/
+
     @Test
-    fun `test for setSelectionTabItem`(){
-        val list = ArrayList<DataItem>()
-        val item = DataItem()
-        item.isSelected = true
-        list.add(item)
+    fun `test for setSelectionTabItem when isSelected is true`() {
+        val list = mutableListOf(DataItem(isSelected = true))
         coEvery { componentsItem.data } returns list
 
         viewModel.setSelectionTabItem(true)
 
         assert(viewModel.getSelectionChangeLiveData().value == true)
-
+    }
+    @Test
+    fun `test for setSelectionTabItem  when isSelected is false`(){
+        val list = mutableListOf(DataItem(isSelected = false))
+        coEvery { componentsItem.data } returns list
 
         viewModel.setSelectionTabItem(false)
 
         assert(viewModel.getSelectionChangeLiveData().value == false)
     }
+
+    /**************************** end of setSelectionTabItem() *******************************************/
 
     @After
     fun shutDown() {

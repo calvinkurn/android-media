@@ -52,7 +52,9 @@ class CarouselErrorLoadViewModelTest {
     @Test
     fun `test for getParentComponentPosition`(){
         mockkObject(Utils)
+
         assert(viewModel.getParentComponentPosition() == Utils.getParentPosition(componentsItem))
+
         unmockkObject(Utils)
     }
 
@@ -63,6 +65,7 @@ class CarouselErrorLoadViewModelTest {
 
         val productCardUseCase = mockk<ProductCardsUseCase>()
         viewModel.productCardUseCase = productCardUseCase
+
         assert(viewModel.productCardUseCase === productCardUseCase)
     }
 
@@ -73,53 +76,93 @@ class CarouselErrorLoadViewModelTest {
 
         val shopCardUseCase = mockk<ShopCardUseCase>()
         viewModel.shopCardUseCase = shopCardUseCase
+
         assert(viewModel.shopCardUseCase === shopCardUseCase)
     }
 
+    /**************************** test for loadData() *******************************************/
+
     @Test
-    fun `test for loadData`() {
+    fun `test for loadData for ShopCardView when getShopCardPaginatedData returns error`() {
         viewModel.shopCardUseCase = shopCardUseCase
         every { componentsItem.parentComponentName } returns ComponentNames.ShopCardView.componentName
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
-        viewModel.loadData()
-        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
 
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
+    }
+
+    @Test
+    fun `test for loadData for ShopCardView when getShopCardPaginatedData returns false`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.ShopCardView.componentName
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns false
-        viewModel.loadData()
-        TestCase.assertEquals(viewModel.syncData.value, false)
 
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.syncData.value, false)
+    }
+
+    @Test
+    fun `test for loadData for ShopCardView when getShopCardPaginatedData returns true`() {
+        viewModel.shopCardUseCase = shopCardUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.ShopCardView.componentName
         coEvery {
             shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
+
         viewModel.loadData()
+
         TestCase.assertEquals(viewModel.syncData.value, true)
 
+    }
 
+    @Test
+    fun `test for loadData for ProductCardCarousel when getCarouselPaginatedData returns error`() {
         viewModel.productCardUseCase = productCardUseCase
         every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(
                     componentsItem.id, componentsItem.pageEndPoint)
         } throws Exception("Error")
-        viewModel.loadData()
-        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
 
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
+    }
+
+    @Test
+    fun `test for loadData for ProductCardCarousel when getCarouselPaginatedData returns false`() {
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns false
-        viewModel.loadData()
-        TestCase.assertEquals(viewModel.syncData.value , false)
 
+        viewModel.loadData()
+
+        TestCase.assertEquals(viewModel.syncData.value, false)
+    }
+
+    @Test
+    fun `test for loadData for ProductCardCarousel when getCarouselPaginatedData returns true`() {
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
         coEvery {
             productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
+
         viewModel.loadData()
+
         TestCase.assertEquals(viewModel.syncData.value, true)
 
     }
+
+    /**************************** end of loadData() *******************************************/
 
 }
