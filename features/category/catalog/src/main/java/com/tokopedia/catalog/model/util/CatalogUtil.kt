@@ -10,7 +10,10 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.usecase.RequestParams
 
 object CatalogUtil {
 
@@ -99,5 +102,24 @@ object CatalogUtil {
         val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (inputMethodManager?.isAcceptingText == true)
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    fun getProductsParams(catalogId: String): RequestParams {
+        val param = RequestParams.create()
+        val searchProductRequestParams = RequestParams.create()
+        searchProductRequestParams.apply {
+            //putString(CategoryNavConstants.START, (0 * CatalogDetailProductListingFragment.PAGING_ROW_COUNT).toString())
+            putString(CategoryNavConstants.DEVICE, CatalogConstant.DEVICE)
+            //putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+            //putString(CategoryNavConstants.ROWS, CatalogDetailProductListingFragment.PAGING_ROW_COUNT.toString())
+            putString(CategoryNavConstants.SOURCE, CatalogConstant.SOURCE)
+            putString(CategoryNavConstants.CTG_ID, catalogId)
+        }
+        param.putString(CatalogConstant.PRODUCT_PARAMS, createParametersForQuery(searchProductRequestParams.parameters))
+        return param
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 }

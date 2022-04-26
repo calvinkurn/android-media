@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,9 +89,10 @@ import javax.inject.Inject
 
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_NEW_DESIGN
+import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_BS_NEW_DESIGN
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 
 class CatalogDetailPageFragment : Fragment(),
@@ -132,6 +132,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
     private var mToBottomLayout : LinearLayout? = null
+    private var mProductsCountText : Typography? = null
     private var mToTopLayout : ImageView ? = null
 
     private lateinit var userSession: UserSession
@@ -192,6 +193,7 @@ class CatalogDetailPageFragment : Fragment(),
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId,comparisonCatalogId,userSession.userId,CatalogConstant.DEVICE)
+            catalogDetailPageViewModel.fetchProductListing(CatalogUtil.getProductsParams(catalogId))
             showShimmer()
         }
 
@@ -288,11 +290,11 @@ class CatalogDetailPageFragment : Fragment(),
     private fun initRollence() {
         isNewProductDesign =
             when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                CATALOG_PRODUCT_NEW_DESIGN,
+                CATALOG_PRODUCT_BS_NEW_DESIGN,
                 ""
             )) {
-                CATALOG_PRODUCT_NEW_DESIGN -> true
-                else -> true
+                CATALOG_PRODUCT_BS_NEW_DESIGN -> true
+                else -> false
             }
     }
 
@@ -302,6 +304,7 @@ class CatalogDetailPageFragment : Fragment(),
             cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
         }
         mToBottomLayout = parentView.findViewById(R.id.toBottomLayout)
+        mProductsCountText = parentView.findViewById(R.id.products_count_text)
         mToTopLayout = parentView.findViewById(R.id.toTopImg)
         initNavToolbar()
         initSmoothScroller()
@@ -376,6 +379,12 @@ class CatalogDetailPageFragment : Fragment(),
                 }
             }
 
+        })
+
+        catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
+            totalProducts?.let {
+                mProductsCountText?.text = "$it Produk Pilihan"
+            }
         })
     }
 
@@ -519,7 +528,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun slideDownMoreProductsView() {
         if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
-            val slideDown: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+            val slideDown: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_down_products_view)
             mToBottomLayout?.startAnimation(slideDown)
             mToBottomLayout?.visibility = View.INVISIBLE
         }

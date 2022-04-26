@@ -59,6 +59,6 @@ object CatalogConstant {
     const val DEBOUNCE_SEARCH = 250L
     const val KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING  = "Catalog For You List Analytics"
 
-    const val CATALOG_PRODUCT_NEW_DESIGN = "CATALOG_PRODUCT_NEW_DESIGN"
+    const val CATALOG_PRODUCT_BS_NEW_DESIGN = "catalog_product_list"
 
 }
