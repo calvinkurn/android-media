@@ -35,14 +35,10 @@ class TokoFoodHomeUSPViewHolder(
     private var tgFirstUsp: Typography? = null
     private var tgSecondUsp: Typography? = null
     private var tgThirdUsp: Typography? = null
-    private var shimmeringUSPOne: View? = null
-    private var shimmeringUSPTwo: ConstraintLayout? = null
-    private var shimmeringUSPThree: ConstraintLayout? = null
+    private var shimmeringLayout: View? = null
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
-        shimmeringUSPOne = itemView.findViewById(R.id.shimmering_usp_one)
-        shimmeringUSPTwo = itemView.findViewById(R.id.shimmering_usp_two)
-        shimmeringUSPThree = itemView.findViewById(R.id.shimmering_usp_three)
+        shimmeringLayout = itemView.findViewById(R.id.usp_load_layout)
         imgFirstUsp = itemView.findViewById(R.id.img_first_usp)
         imgSecondUsp = itemView.findViewById(R.id.img_second_usp)
         imgThirdUsp = itemView.findViewById(R.id.img_third_usp)
@@ -95,9 +91,7 @@ class TokoFoodHomeUSPViewHolder(
     }
 
     private fun showShimmering() {
-        shimmeringUSPOne?.show()
-        shimmeringUSPTwo?.show()
-        shimmeringUSPThree?.show()
+        shimmeringLayout?.show()
     }
 
     private fun hideLayout() {
@@ -111,9 +105,7 @@ class TokoFoodHomeUSPViewHolder(
     }
 
     private fun hideShimmering() {
-        shimmeringUSPOne?.hide()
-        shimmeringUSPTwo?.hide()
-        shimmeringUSPThree?.hide()
+        shimmeringLayout?.hide()
     }
 
     interface TokoFoodUSPListener {
