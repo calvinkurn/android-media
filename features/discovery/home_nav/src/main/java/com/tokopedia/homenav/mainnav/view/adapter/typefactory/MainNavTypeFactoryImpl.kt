@@ -112,6 +112,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return HomeNavExpandableViewHolder.LAYOUT
     }
 
+    override fun type(dividerDataModel: DividerDataModel): Int {
+        return DividerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             HomeNavMenuViewHolder.LAYOUT -> HomeNavMenuViewHolder(view, mainNavListener)
@@ -130,6 +134,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             ShimmeringFavoriteShopViewHolder.LAYOUT -> ShimmeringFavoriteShopViewHolder(view)
             ShimmeringWishlistViewHolder.LAYOUT -> ShimmeringWishlistViewHolder(view)
             HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
+            DividerViewHolder.LAYOUT -> DividerViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

@@ -230,10 +230,10 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        this.add(SeparatorDataModel())
+        this.add(DividerDataModel())
         allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
         this.add(allCategories)
-        this.add(SeparatorDataModel())
+        this.add(DividerDataModel())
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -528,6 +528,7 @@ class MainNavViewModel @Inject constructor(
                         SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         InitialShimmerTransactionDataModel(),
+                        DividerDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),
