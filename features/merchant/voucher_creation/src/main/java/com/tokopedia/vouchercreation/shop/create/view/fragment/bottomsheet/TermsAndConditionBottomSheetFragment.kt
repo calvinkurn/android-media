@@ -7,21 +7,24 @@ import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcTncBinding
 import kotlinx.android.synthetic.main.bottomsheet_mvc_tnc.*
 
 class TermsAndConditionBottomSheetFragment : BottomSheetUnify() {
     companion object {
         @JvmStatic
         fun createInstance(context: Context) : TermsAndConditionBottomSheetFragment = TermsAndConditionBottomSheetFragment().apply {
-            val view = View.inflate(context, R.layout.bottomsheet_mvc_tnc, null)
-            setChild(view)
+            setChild(binding?.root)
             setTitle(context.getString(R.string.mvc_terms_and_condition_title).toBlankOrString())
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
 
         const val TAG = "TermsAndConditionBottomSheet"
     }
+
+    private var binding by autoClearedNullable<BottomsheetMvcTncBinding>()
 
     var tncContent: String = ""
 

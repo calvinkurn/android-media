@@ -27,6 +27,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -34,6 +35,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
+import com.tokopedia.vouchercreation.databinding.MvcBannerVoucherFragmentBinding
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.shop.create.view.fragment.vouchertype.CashbackVoucherCreateFragment
 import com.tokopedia.vouchercreation.shop.create.view.painter.VoucherPreviewPainter
@@ -42,7 +44,6 @@ import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.Banne
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 import com.tokopedia.vouchercreation.shop.create.view.viewmodel.PromotionBudgetAndTypeViewModel
-import kotlinx.android.synthetic.main.mvc_banner_voucher_fragment.*
 import javax.inject.Inject
 
 class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
@@ -94,6 +95,8 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private var binding by autoClearedNullable<MvcBannerVoucherFragmentBinding>()
+
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -135,7 +138,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         bannerVoucherUiModel = getVoucherUiModel()
-        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
+        binding?.bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
         super.onResume()
     }
 
@@ -210,8 +213,8 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     private fun drawInitialVoucherPreview() {
-        bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
-        bannerImage?.run {
+        binding?.bannerInfo?.setPromoName(bannerVoucherUiModel.promoName)
+        binding?.bannerImage?.run {
             Glide.with(context)
                     .asDrawable()
                     .load(getBannerBaseUiModel().bannerBaseUrl)
@@ -247,9 +250,9 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
             }
             Handler().post {
                 if (voucherImageType is VoucherImageType.Percentage) {
-                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, getBannerBaseUiModel().cashbackUntilLabelUrl)
+                    binding?.bannerInfo?.setPreviewInfo(voucherImageType, labelUrl, getBannerBaseUiModel().cashbackUntilLabelUrl)
                 } else {
-                    bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
+                    binding?.bannerInfo?.setPreviewInfo(voucherImageType, labelUrl)
                 }
             }
         } else {
@@ -259,7 +262,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
 
     private fun onSuccessGetBanner(bitmap: Bitmap) {
         activity?.runOnUiThread {
-            bannerImage?.setImageBitmap(bitmap)
+            binding?.bannerImage?.setImageBitmap(bitmap)
             isReadyToDraw = true
             onShouldChangeBannerValue(tempVoucherType)
         }

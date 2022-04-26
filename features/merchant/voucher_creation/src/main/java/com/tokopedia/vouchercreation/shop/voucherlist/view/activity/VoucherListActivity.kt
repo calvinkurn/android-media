@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringInterface
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringType
+import com.tokopedia.vouchercreation.databinding.ActivityMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.view.fragment.VoucherListFragment
 import timber.log.Timber
 
@@ -52,11 +54,13 @@ class VoucherListActivity : BaseActivity(),
 
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
 
+    private var binding: ActivityMvcVoucherListBinding? by viewBinding()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mvc_voucher_list)
+        setContentView(binding?.root)
 
         window.decorView.setBackgroundColor(Color.WHITE)
         setWhiteStatusBar()

@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
@@ -22,6 +23,7 @@ import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
 import com.tokopedia.vouchercreation.common.view.promotionexpense.PromotionExpenseEstimationUiModel
 import com.tokopedia.vouchercreation.common.view.textfield.vouchertype.VoucherTextFieldUiModel
+import com.tokopedia.vouchercreation.databinding.FragmentVoucherPromotionTypeBinding
 import com.tokopedia.vouchercreation.shop.create.data.source.PromotionTypeUiListStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
@@ -58,6 +60,8 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private val binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -163,7 +167,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
-        return inflater.inflate(R.layout.fragment_voucher_promotion_type, container, false)
+        return binding?.root
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rvMvcVoucherType

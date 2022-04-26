@@ -61,7 +61,6 @@ import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicData
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.shop.voucherlist.view.widget.sharebottomsheet.ShareVoucherBottomSheet
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.*
 import javax.inject.Inject
 
 /**
@@ -383,7 +382,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         voucherUiModel = result.data
                         sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
-                        rvMvcVoucherDetail?.setOnLayoutListenerReady()
+                        binding?.rvMvcVoucherDetail?.setOnLayoutListenerReady()
                     }
                     is Fail -> {
                         clearAllData()

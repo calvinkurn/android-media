@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -9,19 +8,18 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.getSpannableString
-import kotlinx.android.synthetic.main.bottomsheet_mvc_review_back.view.*
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcReviewBackBinding
 
 class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
 
     companion object {
         @JvmStatic
-        fun createInstance(context: Context,
-                           onCancelVoucher: () -> Unit): ChangeDetailPromptBottomSheetFragment {
+        fun createInstance(onCancelVoucher: () -> Unit): ChangeDetailPromptBottomSheetFragment {
             return ChangeDetailPromptBottomSheetFragment().apply {
-                val view = View.inflate(context, R.layout.bottomsheet_mvc_review_back, null)
-                setChild(view)
+                setChild(binding?.root)
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 this.onCancelVoucher = onCancelVoucher
             }
@@ -29,6 +27,8 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
 
         const val TAG = "ChangeDetailPromptBottomSheet"
     }
+
+    private var binding by autoClearedNullable<BottomsheetMvcReviewBackBinding>()
 
     private var onCancelVoucher: () -> Unit = {}
 
@@ -57,11 +57,11 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
 
     private fun initView() {
         view?.run {
-            reviewBackConfirmButton?.setOnClickListener {
+            binding?.reviewBackConfirmButton?.setOnClickListener {
                 onBackButtonClicked()
                 dismiss()
             }
-            reviewBackCancelText?.run {
+            binding?.reviewBackCancelText?.run {
                 text = getSpannableString(spanColor, cancelDescription, clickableSpan, ::onClickCancelVoucher)
                 isClickable = true
                 movementMethod = LinkMovementMethod.getInstance()

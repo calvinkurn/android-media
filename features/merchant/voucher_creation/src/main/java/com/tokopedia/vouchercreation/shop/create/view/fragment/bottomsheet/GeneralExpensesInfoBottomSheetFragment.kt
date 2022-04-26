@@ -9,11 +9,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcVoucherBottomSheetViewBinding
 import com.tokopedia.vouchercreation.shop.create.data.source.TipsAndTrickStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.view.typefactory.vouchertarget.VoucherTipsItemAdapterTypeFactory
 import com.tokopedia.vouchercreation.shop.create.view.typefactory.vouchertarget.VoucherTipsItemTypeFactory
-import kotlinx.android.synthetic.main.mvc_voucher_bottom_sheet_view.*
 
 class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
@@ -22,8 +23,7 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         fun createInstance(context: Context?) : GeneralExpensesInfoBottomSheetFragment {
             return GeneralExpensesInfoBottomSheetFragment().apply {
                 context.run {
-                    val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
-                    setChild(view)
+                    setChild(binding?.root)
                     setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     bottomSheetViewTitle = context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
@@ -35,6 +35,8 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
     }
 
     override var bottomSheetViewTitle: String? = null
+
+    private var binding by autoClearedNullable<MvcVoucherBottomSheetViewBinding>()
 
     private val adapterTypeFactory by lazy {
         VoucherTipsItemAdapterTypeFactory()
@@ -61,7 +63,7 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
-        voucherTipsRecyclerView?.run {
+        binding?.voucherTipsRecyclerView?.run {
             adapter = bottomSheetAdapter
             layoutManager = adapterLayoutManager
         }

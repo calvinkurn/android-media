@@ -10,10 +10,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.databinding.MvcVoucherBottomSheetViewBinding
 import com.tokopedia.vouchercreation.shop.create.data.source.TipsAndTrickStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget.VoucherTipsAdapter
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
@@ -29,14 +31,15 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         fun createInstance(context: Context) : TipsAndTrickBottomSheetFragment {
             return TipsAndTrickBottomSheetFragment().apply {
                 context.run {
-                    val view = View.inflate(this, R.layout.mvc_voucher_bottom_sheet_view, null)
-                    setChild(view)
+                    setChild(binding?.root)
                     setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     bottomSheetViewTitle = getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()
                 }
             }
         }
     }
+
+    private var binding by autoClearedNullable<MvcVoucherBottomSheetViewBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
