@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -105,27 +106,29 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleLoadLastTaggedProduct() {
         viewModelScope.launchCatchError(block = {
-            val currState = _lastTaggedProduct.value.state
+            val currLastProduct = _lastTaggedProduct.value
 
-            if(currState.isLoading || currState.isNextPage.not()) return@launchCatchError
+            if(currLastProduct.state.isLoading || currLastProduct.state.isNextPage.not()) return@launchCatchError
 
             _lastTaggedProduct.setValue {
                 copy(state = PagedState.Loading)
             }
 
+            delay(3000)
+
             val pagedDataList = repo.getLastTaggedProducts(
                 authorId = authorId,
                 authorType = authorType,
-                cursor = if(currState is PagedState.Success) currState.nextCursor else "",
-                limit = 10, /** TODO: gonna change this later */
+                cursor = currLastProduct.nextCursor,
+                limit = 6, /** TODO: gonna change this later */
             )
 
             _lastTaggedProduct.setValue {
                 copy(
                     products = products + pagedDataList.dataList,
+                    nextCursor = pagedDataList.nextCursor,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
-                        nextCursor = pagedDataList.nextCursor,
                     )
                 )
             }

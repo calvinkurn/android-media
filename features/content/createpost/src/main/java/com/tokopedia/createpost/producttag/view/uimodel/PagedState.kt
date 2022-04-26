@@ -5,7 +5,7 @@ package com.tokopedia.createpost.producttag.view.uimodel
  */
 sealed interface PagedState {
 
-    data class Success(val hasNextPage: Boolean, val nextCursor: String): PagedState
+    data class Success(val hasNextPage: Boolean): PagedState
     data class Error(val error: Throwable): PagedState
     object Loading: PagedState
     object Unknown: PagedState

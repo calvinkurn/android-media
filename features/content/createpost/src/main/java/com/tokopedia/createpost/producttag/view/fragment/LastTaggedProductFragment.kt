@@ -87,9 +87,17 @@ class LastTaggedProductFragment @Inject constructor(
     }
 
     private fun renderLastTaggedProducts(prev: LastTaggedProductUiState?, curr: LastTaggedProductUiState) {
-        if(prev == curr) return
+        if(prev == curr || prev?.products == curr.products) return
+
 
         when(curr.state) {
+            is PagedState.Loading -> {
+                val finalProducts = curr.products.map {
+                    LastTaggedProductAdapter.Model.Product(product = it)
+                } + listOf(LastTaggedProductAdapter.Model.Loading)
+
+                adapter.setItemsAndAnimateChanges(finalProducts)
+            }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     /** TODO: show empty state */
@@ -97,9 +105,7 @@ class LastTaggedProductFragment @Inject constructor(
                 else {
                     val finalProducts = curr.products.map {
                         LastTaggedProductAdapter.Model.Product(product = it)
-                    }.apply {
-                        if(curr.state.hasNextPage) plus(LastTaggedProductAdapter.Model.Loading)
-                    }
+                    } + if(curr.state.hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
 
                     adapter.setItemsAndAnimateChanges(finalProducts)
                 }
@@ -107,7 +113,6 @@ class LastTaggedProductFragment @Inject constructor(
             is PagedState.Error -> {
                 /** TODO: show error state */
             }
-            else -> { }
         }
     }
 

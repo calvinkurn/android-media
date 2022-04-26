@@ -37,7 +37,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     bebasOngkirURL = it.bebasOngkirURL,
                 )
             },
-            hasNextPage = response.data.products.isNotEmpty(),
+            hasNextPage = response.data.nextCursor.isNotEmpty(),
             nextCursor = response.data.nextCursor,
         )
     }
