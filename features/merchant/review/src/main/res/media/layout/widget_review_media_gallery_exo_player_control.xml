@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:background="#CC000000"
-    android:paddingBottom="12dp">
+    android:paddingBottom="12dp"
+    tools:viewBindingIgnore="true">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_controller_top"
