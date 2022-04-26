@@ -465,20 +465,27 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         }
     }
 
+    private fun removeEmptyViewIfSelectedKeywordsNotEmpty() {
+        stepperModel?.let {
+            if (it.selectedKeywordStage.size > 0 &&
+                bidInfoAdapter.items.getOrNull(0) is BidInfoEmptyViewModel
+            ) {
+                bidInfoAdapter.items.removeAt(0)
+            }
+        }
+    }
+
     private fun resetView() {
         if (bidInfoAdapter.items.size == 0) {
             onEmptySuggestion()
         } else {
-            bidInfoAdapter.items.clear()
+            removeEmptyViewIfSelectedKeywordsNotEmpty()
+
             stepperModel?.selectedKeywordStage?.forEach {
                 if(it.bidSuggest == "0")
                     it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendKeywordAddEvent(CLICK_ADDED_KEYWORD, "",
-                stepperModel?.selectedKeywordStage!!
-            )
-            bidInfoAdapter.notifyDataSetChanged()
         }
         setCount()
     }
