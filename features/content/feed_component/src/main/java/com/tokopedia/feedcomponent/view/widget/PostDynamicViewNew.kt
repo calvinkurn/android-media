@@ -18,7 +18,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -502,11 +501,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
-                    ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G500)
+                    MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G500)
             likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
         } else {
             val colorGrey =
-                    ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
+                    MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_N700_96)
             likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
         }
         if (view.count != 0) {
@@ -737,7 +736,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private val colorLinkHashtag: Int
-        get() = ContextCompat.getColor(context, unifyPrinciplesR.color.Unify_G400)
+        get() = MethodChecker.getColor(context, unifyPrinciplesR.color.Unify_G400)
 
     private fun onHashtagClicked(hashtag: String, feed: FeedXCard) {
         listener?.onHashtagClickedFeed(hashtag, feed)
