@@ -14,7 +14,7 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
     /**
      * Detail resembles the detail when inputted
      */
-    private val interactiveDetailMap = mutableMapOf<Long, InteractiveUiModel>()
+    private val interactiveDetailMap = mutableMapOf<String, InteractiveUiModel>()
 
     override fun save(model: InteractiveUiModel) {
         interactiveDetailMap[model.id] = model

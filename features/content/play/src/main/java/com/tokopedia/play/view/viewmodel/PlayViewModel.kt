@@ -1801,7 +1801,7 @@ class PlayViewModel @AssistedInject constructor(
             InteractiveStateUiModel.Empty
         }
 
-        if (status.interactiveId == interactive.interactive.id &&
+        if (status.interactiveId.toString() == interactive.interactive.id &&
             repo.hasJoined(interactive.interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
