@@ -88,6 +88,13 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_NEW_DESIGN
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.toPx
+
+
 class CatalogDetailPageFragment : Fragment(),
         HasComponent<CatalogComponent>, CatalogDetailListener,
         ShareBottomsheetListener,
@@ -124,6 +131,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
+    private var mToBottomLayout : LinearLayout? = null
+    private var mToTopLayout : ImageView ? = null
 
     private lateinit var userSession: UserSession
 
@@ -142,12 +151,15 @@ class CatalogDetailPageFragment : Fragment(),
     private var lastAttachItemPosition : Int = 0
     private var isScrollDownButtonClicked = false
 
+    private var isNewProductDesign = false
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
         const val MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL = 250f
         const val MILLI_SECONDS_PER_INCH_TOP_SCROLL = 250f
         const val MILLI_SECONDS_FOR_UI_THREAD = 100L
+        const val MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW = 2000L
         const val OFFSET_FOR_PRODUCT_SECTION_SNAP = 300
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -170,7 +182,8 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
-        initViews()
+        initRollence()
+        initViews(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
@@ -185,7 +198,8 @@ class CatalogDetailPageFragment : Fragment(),
         setupRecyclerView(view)
         setObservers()
         setUpUniversalShare()
-        setUpAnimationViews(view)
+        if(isNewProductDesign)
+            setUpAnimationViews()
     }
 
     private var smoothScrollerToTop: RecyclerView.SmoothScroller? = null
@@ -218,22 +232,20 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    private fun setUpAnimationViews(view : View) {
-        view.findViewById<LinearLayout>(R.id.toBottomLayout).apply {
-            visibility = View.VISIBLE
+    private fun setUpAnimationViews() {
+        mToBottomLayout?.apply {
             setOnClickListener {
                 isScrollDownButtonClicked = true
                 userPressedLastTopPosition = (lastDetachedItemPosition + lastAttachItemPosition)/2
                 scrollToBottom()
-                visibility = View.GONE
-                view.findViewById<ImageView>(R.id.toTopImg).visibility = View.VISIBLE
+                slideDownMoreProductsView()
             }
         }
-        view.findViewById<ImageView>(R.id.toTopImg).apply {
+
+        mToTopLayout?.apply {
             setOnClickListener {
                 scrollToTop()
-                visibility = View.GONE
-                view.findViewById<LinearLayout>(R.id.toBottomLayout).visibility = View.VISIBLE
+                slideUpMoreProductsView()
             }
         }
     }
@@ -273,11 +285,24 @@ class CatalogDetailPageFragment : Fragment(),
         return catalogUiUpdater.mapOfData.size - 1
     }
 
-    private fun initViews() {
+    private fun initRollence() {
+        isNewProductDesign =
+            when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                CATALOG_PRODUCT_NEW_DESIGN,
+                ""
+            )) {
+                CATALOG_PRODUCT_NEW_DESIGN -> true
+                else -> true
+            }
+    }
+
+    private fun initViews(parentView : View) {
         shimmerLayout = view?.findViewById(R.id.shimmer_layout)
         activity?.let {
             cartLocalCacheHandler = LocalCacheHandler(it, CatalogConstant.CART_LOCAL_CACHE_NAME)
         }
+        mToBottomLayout = parentView.findViewById(R.id.toBottomLayout)
+        mToTopLayout = parentView.findViewById(R.id.toTopImg)
         initNavToolbar()
         initSmoothScroller()
     }
@@ -426,11 +451,18 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun updateUi() {
         if(requireActivity().supportFragmentManager.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG) == null){
-            //setUpBottomSheet()
+            if(!isNewProductDesign){
+                setUpBottomSheet()
+            }
         }
         hideShimmer()
         catalogPageRecyclerView?.show()
-        bottom_sheet_fragment_container.hide()
+        if(isNewProductDesign){
+            bottom_sheet_fragment_container.hide()
+
+        }else {
+            bottom_sheet_fragment_container.show()
+        }
         val newData = catalogUiUpdater.mapOfData.values.toList()
         submitList(newData)
     }
@@ -450,7 +482,59 @@ class CatalogDetailPageFragment : Fragment(),
                 addItemDecoration(DividerItemDecorator(it))
             }
             adapter = catalogDetailAdapter
+            if(isNewProductDesign){
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        if(dy > 5.toPx() && !isMoreProductsViewVisible && !isScrollDownButtonClicked){
+                            slideUpMoreProductsView()
+                        }
+                    }
+                })
+            }
         }
+    }
+
+    private var slideDownTimer = Runnable {
+        isMoreProductsViewVisible = false
+        slideDownMoreProductsView()
+    }
+
+    private var isMoreProductsViewVisible = false
+
+    private fun slideUpMoreProductsView() {
+        if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE){
+            val slideUp: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+            mToBottomLayout?.startAnimation(slideUp)
+            mToBottomLayout?.visibility = View.VISIBLE
+        }
+        isMoreProductsViewVisible = true
+        animationHandler.removeCallbacks(slideDownTimer)
+        slideDownTimer  =  Runnable {
+            isMoreProductsViewVisible = false
+            slideDownMoreProductsView()
+        }
+        animationHandler.postDelayed(slideDownTimer, MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW)
+    }
+
+    private fun slideDownMoreProductsView() {
+        if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
+            val slideDown: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+            mToBottomLayout?.startAnimation(slideDown)
+            mToBottomLayout?.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun slideUpToTopView(){
+        val slideUp: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
+        mToTopLayout?.startAnimation(slideUp)
+        mToTopLayout?.visibility = View.VISIBLE
+    }
+
+    private fun slideDownToTopView() {
+        val slideDown: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_down)
+        mToTopLayout?.startAnimation(slideDown)
+        mToTopLayout?.visibility = View.INVISIBLE
     }
 
     private fun viewMoreClicked(openPage : String, jumpToFullSpecIndex : Int = 0) {
@@ -720,14 +804,21 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun hideFloatingLayout() {
-        //TODO Remove findview calls
-        view?.findViewById<LinearLayout>(R.id.toBottomLayout)?.visibility = View.GONE
-        view?.findViewById<ImageView>(R.id.toTopImg)?.visibility = View.VISIBLE
+        if(!isNewProductDesign)
+            bottom_sheet_fragment_container.hide()
+        else {
+            slideDownMoreProductsView()
+            slideUpToTopView()
+        }
     }
 
     override fun showFloatingLayout() {
-        view?.findViewById<LinearLayout>(R.id.toBottomLayout)?.visibility = View.VISIBLE
-        view?.findViewById<ImageView>(R.id.toTopImg)?.visibility = View.GONE
+        if(!isNewProductDesign)
+            bottom_sheet_fragment_container.show()
+        else{
+            slideDownToTopView()
+            slideUpMoreProductsView()
+        }
     }
 
     override fun onViewMoreDescriptionClick() {
@@ -810,9 +901,11 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-        animationHandler.removeCallbacks(scrollToBottomPositionRunnable)
-        animationHandler.removeCallbacks(scrollToTopPositionRunnable)
-        animationHandler.removeCallbacks(smoothScrollToBottomPositionRunnable)
-        animationHandler.removeCallbacks(smoothScrollToTopPositionRunnable)
+        if(isNewProductDesign){
+            animationHandler.removeCallbacks(scrollToBottomPositionRunnable)
+            animationHandler.removeCallbacks(scrollToTopPositionRunnable)
+            animationHandler.removeCallbacks(smoothScrollToBottomPositionRunnable)
+            animationHandler.removeCallbacks(smoothScrollToTopPositionRunnable)
+        }
     }
 }
