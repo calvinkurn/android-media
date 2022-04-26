@@ -39,7 +39,7 @@ class AffiliateRecyclerViewModelTest{
     }
 
     @Test
-    fun affiliateRecyclerViewModelTest() {
+    fun affiliateRecyclerViewModelListTest() {
         assertEquals(aff.itemList.size, 0)
     }
 }

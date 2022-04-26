@@ -71,6 +71,9 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val IDENTIFIER_HOME = "home_fragment"
         const val IDENTIFIER_WITHDRAWAL = "income_fragment"
         const val IDENTIFIER = "indentifier"
+        const val SHIMMER_COUNT = 4
+        const val TIME_START = 0
+        const val TIME_END = 8
         fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
                 arguments = Bundle().apply {
@@ -109,7 +112,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         affiliateDatePickerBottomSheetViewModel.getShimmerVisibility().observe(this,{shimmer ->
             if(shimmer!=null && shimmer){
                 val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
-                repeat(4){ itemList.add(AffiliateShimmerViewModel()) }
+                repeat(SHIMMER_COUNT){ itemList.add(AffiliateShimmerViewModel()) }
                 adapter.submitList(itemList as List<Visitable<*>>?)
             }
         })
@@ -128,7 +131,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private fun setTicker(info: String) {
         contentView?.findViewById<Ticker>(R.id.affiliate_filter_announcement_ticker)?.setTextDescription(info)
             when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-                in 0..8 -> tickerCv?.show()
+                in TIME_START..TIME_END -> tickerCv?.show()
                 else -> tickerCv?.hide()
             }
 
