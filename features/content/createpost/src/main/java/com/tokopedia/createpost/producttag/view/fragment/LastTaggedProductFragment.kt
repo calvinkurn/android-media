@@ -25,15 +25,12 @@ class LastTaggedProductFragment @Inject constructor(
     private val binding: FragmentLastTaggedProductBinding
         get() = _binding!!
 
-    private lateinit var viewModelFactoryCreator: ViewModelProvider.Factory
+    private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var viewModel: ProductTagViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            requireParentFragment(),
-            viewModelFactoryCreator
-        )[ProductTagViewModel::class.java]
+        viewModel = viewModelProvider[ProductTagViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -58,8 +55,8 @@ class LastTaggedProductFragment @Inject constructor(
         _binding = null
     }
 
-    fun setViewModelFactory(viewModelFactoryCreator: ViewModelProvider.Factory) {
-        this.viewModelFactoryCreator = viewModelFactoryCreator
+    fun setViewModelProvider(viewModelProvider: ViewModelProvider) {
+        this.viewModelProvider = viewModelProvider
     }
 
     companion object {

@@ -45,10 +45,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            createViewModelFactory()
-        )[ProductTagViewModel::class.java]
+        viewModel = createViewModelProvider()[ProductTagViewModel::class.java]
         childFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -85,7 +82,7 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
             is LastTaggedProductFragment -> {
-                childFragment.setViewModelFactory(createViewModelFactory())
+                childFragment.setViewModelProvider(createViewModelProvider())
             }
         }
     }
@@ -158,13 +155,16 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    private fun createViewModelFactory(): ViewModelProvider.Factory {
-        return viewModelFactoryCreator.create(
-            requireActivity(),
-            getStringArgument(EXTRA_PRODUCT_TAG_LIST),
-            getStringArgument(EXTRA_SHOP_BADGE),
-            getStringArgument(EXTRA_AUTHOR_ID),
-            getStringArgument(EXTRA_AUTHOR_TYPE),
+    private fun createViewModelProvider(): ViewModelProvider {
+        return ViewModelProvider(
+            this,
+            viewModelFactoryCreator.create(
+                requireActivity(),
+                getStringArgument(EXTRA_PRODUCT_TAG_LIST),
+                getStringArgument(EXTRA_SHOP_BADGE),
+                getStringArgument(EXTRA_AUTHOR_ID),
+                getStringArgument(EXTRA_AUTHOR_TYPE),
+            )
         )
     }
 
