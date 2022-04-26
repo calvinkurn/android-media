@@ -8,6 +8,7 @@ import com.tokopedia.createpost.createpost.databinding.ItemLastTaggedProductList
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
 import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.productcard.ProductCardGridView
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022

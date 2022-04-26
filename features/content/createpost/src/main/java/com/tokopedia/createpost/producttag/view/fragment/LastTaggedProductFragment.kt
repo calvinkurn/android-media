@@ -84,7 +84,6 @@ class LastTaggedProductFragment @Inject constructor(
                 renderLastTaggedProducts(it.prevValue?.lastTaggedProduct, it.value.lastTaggedProduct)
             }
         }
-
     }
 
     private fun renderLastTaggedProducts(prev: LastTaggedProductUiState?, curr: LastTaggedProductUiState) {

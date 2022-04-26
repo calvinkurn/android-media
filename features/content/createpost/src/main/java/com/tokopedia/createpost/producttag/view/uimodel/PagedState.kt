@@ -14,5 +14,5 @@ sealed interface PagedState {
         get() = this == Loading
 
     val isNextPage: Boolean
-        get() = this is Success && this.hasNextPage
+        get() = (this is Success && this.hasNextPage) || this !is Success
 }
