@@ -1407,6 +1407,10 @@ class PlayViewModel @AssistedInject constructor(
             it.copy(interactive = quiz)
         }
 
+        if (quiz.status is InteractiveUiModel.Quiz.Status.Ongoing) {
+          repo.setActive(_interactive.value.interactive.id.toString())
+        }
+
         if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
             val channelId = mChannelData?.id ?: return
 
@@ -1787,12 +1791,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun showLeaderBoard(){
+        if(!repo.hasJoined(_interactive.value.interactive.id)) return
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+        repo.setFinished(_interactive.value.interactive.id.toString())
     }
 
     private suspend fun processWinnerStatus(status: PlayUserWinnerStatusUiModel) {
+        val interactiveType = _interactive.value.interactive
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
@@ -1805,13 +1812,14 @@ class PlayViewModel @AssistedInject constructor(
             repo.hasJoined(interactive.interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
-                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, _interactive.value.interactive)
+                    ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
                     ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
                 }
             )
         }
+        repo.setFinished(_interactive.value.interactive.id.toString())
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
@@ -1830,9 +1838,17 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickQuizOption(optionId: String){
-        updateQuizOptionUi(selectedId = optionId, isLoading = true)
+        val interactiveId = _interactive.value.interactive.id.toString()
+
         viewModelScope.launchCatchError(block = {
-            val response = repo.answerQuiz(interactiveId = _interactive.value.interactive.id.toString(), choiceId = optionId)
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+            if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
+
+            updateQuizOptionUi(selectedId = optionId, isLoading = true)
+
+            val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = optionId)
+            repo.setJoined(interactiveId)
+
             updateQuizOptionUi(selectedId = optionId, correctId = response)
             _uiEvent.emit(QuizAnsweredEvent)
         }) {

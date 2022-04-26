@@ -12,26 +12,37 @@
         android:id="@+id/iv_game_reward"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="GIFT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon_name="GIFT"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_light_disabled="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_color_night_disabled="@color/Unify_Static_White"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_reward_type"
+        android:layout_width="0dp"
+        app:typographyType="body_2"
+        android:layout_marginStart="@dimen/play_dp_6"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        android:text="@string/play_game_reward_type"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_game_reward"
+        app:layout_constraintStart_toEndOf="@+id/iv_game_reward"
+        app:layout_constraintTop_toTopOf="@+id/iv_game_reward" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_game_reward"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_dp_6"
-        app:typographyType="heading_5"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_game_reward"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_game_reward"
-        app:layout_constraintTop_toTopOf="@+id/iv_game_reward"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
-        tools:text="Hadiah: Kacamata Kuda" />
+        app:layout_constraintBottom_toBottomOf="@+id/tv_reward_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_reward_type"
+        app:layout_constraintTop_toTopOf="@+id/tv_reward_type"
+        app:typographyType="heading_5"
+        tools:text="Kacamata Kuda" />
 </com.tokopedia.play_common.view.RoundedConstraintLayout>

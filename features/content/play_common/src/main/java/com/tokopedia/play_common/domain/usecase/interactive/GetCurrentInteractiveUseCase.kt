@@ -25,7 +25,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
           }){
             meta {
               active
-              waitingDuration
+              waiting_duration: waitingDuration
             }
             interactive {
               interactive_id: interactiveID
@@ -42,7 +42,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               status
               question
               prize
-              countdownEnd
+              countdown_end: countdownEnd
               choices {
                 id
                 text
