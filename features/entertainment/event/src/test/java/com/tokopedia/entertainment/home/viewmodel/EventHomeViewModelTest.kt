@@ -5,19 +5,19 @@ import com.google.gson.Gson
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.utils.MapperHomeData.mappingItem
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
-import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
-import kotlinx.coroutines.Dispatchers
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,10 +25,12 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.lang.reflect.Type
 
+@ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class EventHomeViewModelTest{
     @get:Rule
     val rule = InstantTaskExecutorRule()
+    private val coroutineDispatcher = CoroutineTestDispatchers
 
     lateinit var eventHomeViewModel: EventHomeViewModel
 
@@ -38,7 +40,7 @@ class EventHomeViewModelTest{
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
-        eventHomeViewModel = EventHomeViewModel(Dispatchers.Unconfined, graphqlRepository)
+        eventHomeViewModel = EventHomeViewModel(coroutineDispatcher.io, graphqlRepository)
     }
 
     @Test
@@ -73,6 +75,8 @@ class EventHomeViewModelTest{
 
         assert(!mappedResultData.data.isNullOrEmpty())
         assertEquals(mappedResultData.data.size, mappedData.data.size)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
     @Test
@@ -94,5 +98,7 @@ class EventHomeViewModelTest{
 
         //then
         assert(eventHomeViewModel.eventHomeListData.value is Fail)
+
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 }
