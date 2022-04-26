@@ -13,7 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
@@ -46,7 +46,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(containerTimePicker)
 
-    private lateinit var mConfig: TapTapConfigUiModel
+    private lateinit var mConfig: GiveawayConfigUiModel
 
     private val title: String
         get() = editTextTitle.text.toString()
@@ -141,8 +141,8 @@ class BroadcastInteractiveSetupViewComponent(
         btnApply.isLoading = isLoading
     }
 
-    fun setConfig(tapTapConfig: TapTapConfigUiModel) {
-        mConfig = tapTapConfig
+    fun setConfig(giveawayConfig: GiveawayConfigUiModel) {
+        mConfig = giveawayConfig
         setupLabelGuideline(false)
     }
 

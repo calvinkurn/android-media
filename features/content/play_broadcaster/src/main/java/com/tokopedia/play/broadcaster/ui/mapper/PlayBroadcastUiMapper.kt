@@ -316,7 +316,7 @@ class PlayBroadcastUiMapper(
         }
 
         return InteractiveConfigUiModel(
-            tapTapConfig = TapTapConfigUiModel(
+            giveawayConfig = GiveawayConfigUiModel(
                 isActive = response.interactiveConfig.tapTapConfig.isActive,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
                 nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,

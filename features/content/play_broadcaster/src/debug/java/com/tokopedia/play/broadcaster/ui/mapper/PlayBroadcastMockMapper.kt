@@ -247,7 +247,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     )
 
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
-        tapTapConfig = TapTapConfigUiModel(
+        giveawayConfig = GiveawayConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",

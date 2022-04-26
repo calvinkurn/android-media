@@ -664,7 +664,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
             /** TODO: should save config on flow instead */
-            setInteractiveDurations(gameConfig.tapTapConfig.availableStartTimeInMs)
+            setInteractiveDurations(gameConfig.giveawayConfig.availableStartTimeInMs)
 
             if (gameConfig.isNoGameActive()) {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden

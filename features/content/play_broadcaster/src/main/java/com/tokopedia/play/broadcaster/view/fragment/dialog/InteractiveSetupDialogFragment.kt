@@ -15,8 +15,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
@@ -24,7 +22,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.view.custom.interactive.giveaway.GiveawayFormView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -132,7 +129,7 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
             })
             formView
         }.apply {
-            setEligibleDurations(config.tapTapConfig.availableStartTimeInMs)
+            setEligibleDurations(config.giveawayConfig.availableStartTimeInMs)
             setLoading(setup.isSubmitting)
         }
     }

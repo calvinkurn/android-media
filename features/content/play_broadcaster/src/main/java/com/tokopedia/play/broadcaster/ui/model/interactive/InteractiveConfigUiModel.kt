@@ -6,29 +6,29 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
  * Created by jegul on 07/07/21
  */
 data class InteractiveConfigUiModel(
-    val tapTapConfig: TapTapConfigUiModel,
+    val giveawayConfig: GiveawayConfigUiModel,
     val quizConfig: QuizConfigUiModel,
 ) {
 
-    fun isNoGameActive(): Boolean = !tapTapConfig.isActive && !quizConfig.isActive
+    fun isNoGameActive(): Boolean = !giveawayConfig.isActive && !quizConfig.isActive
 
     @OptIn(ExperimentalStdlibApi::class)
     fun availableGameList(): List<GameType> {
         return buildList {
             if (quizConfig.isActive) add(GameType.Quiz)
-            if (tapTapConfig.isActive) add(GameType.Giveaway)
+            if (giveawayConfig.isActive) add(GameType.Giveaway)
         }
     }
 
     companion object {
         fun empty() = InteractiveConfigUiModel(
-            tapTapConfig = TapTapConfigUiModel.empty(),
+            giveawayConfig = GiveawayConfigUiModel.empty(),
             quizConfig = QuizConfigUiModel.empty(),
         )
     }
 }
 
-data class TapTapConfigUiModel(
+data class GiveawayConfigUiModel(
     val isActive: Boolean,
     val nameGuidelineHeader: String,
     val nameGuidelineDetail: String,
@@ -38,7 +38,7 @@ data class TapTapConfigUiModel(
     val availableStartTimeInMs: List<Long>,
 ) {
     companion object {
-        fun empty() = TapTapConfigUiModel(
+        fun empty() = GiveawayConfigUiModel(
             isActive = false,
             nameGuidelineHeader = "",
             nameGuidelineDetail = "",
