@@ -1,16 +1,26 @@
 package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.TimeBar
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.R
 import com.tokopedia.media.R.color as mediaColorR
 import com.tokopedia.unifycomponents.ContainerUnify
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+
 
 class VideoControlView(context: Context, attributeSet: AttributeSet) :
     PlayerControlView(context, attributeSet) {
@@ -20,20 +30,30 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
 
-    init {
-        val controllerContainer = findViewById<ContainerUnify>(R.id.nav_container)
+    private val videoControlContainer: LinearLayout = findViewById(R.id.nav_container)
 
-        // lint force to use full path resource ref
-        val controllerEndColor =
-            ContextCompat.getColor(context, mediaColorR.dms_bg_gradient_video_player_end)
-        val controllerStartColor =
-            ContextCompat.getColor(context, mediaColorR.dms_bg_gradient_video_player_start)
-        controllerContainer.setCustomContainerColor(Pair(controllerStartColor, controllerEndColor))
+    private val videoControlHandler = Handler(Looper.getMainLooper())
+    private val videoPauseButtonHandler = Handler(Looper.getMainLooper())
+
+    private val fadeOutAlphaAnimation = AlphaAnimation(1f, 0f)
+    private val fadeInAlphaAnimation = AlphaAnimation(0f, 1f)
+
+    init {
+        setupGradientBackground()
+        setupAnimation()
+
+        this.setOnClickListener {
+            if (videoControlContainer.isVisible){
+                hideController()
+            } else {
+                showController(!centerPlayButton.isVisible)
+            }
+        }
     }
 
-    fun updateCenterButton(isPlaying: Boolean) {
-        centerPlayButton.showWithCondition(!isPlaying)
-//        centerPauseButton.showWithCondition(isPlaying)
+    fun updateCenterButtonState(isPlaying: Boolean){
+        centerPlayButtonConditionalShow(!isPlaying)
+        centerPauseButtonConditionalShow(isPlaying)
     }
 
     fun setListener(listener: Listener) {
@@ -42,6 +62,8 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         }
 
         centerPauseButton.setOnClickListener {
+            it.hide()
+            centerPlayButton.show()
             listener.onCenterPauseButtonClicked()
         }
 
@@ -60,11 +82,95 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         })
     }
 
+    fun cleanHideJob(){
+        videoControlHandler.removeCallbacksAndMessages(null)
+    }
+
+    private fun hideController(){
+        videoControlContainer.startAnimation(fadeOutAlphaAnimation)
+        cleanHideJob()
+    }
+
+    private fun showController(isAutoHide: Boolean = true){
+        cleanHideJob()
+        videoControlContainer.startAnimation(fadeInAlphaAnimation)
+        if(isAutoHide) hideControllerJob()
+    }
+
+    private fun centerPlayButtonConditionalShow(isShowing: Boolean) {
+        cleanHideJob()
+        centerPlayButton.showWithCondition(isShowing)
+        if(!isShowing) hideControllerJob()
+    }
+
+    private fun centerPauseButtonConditionalShow(isShowing: Boolean){
+        centerPauseButton.showWithCondition(isShowing)
+        if(isShowing) hideCenterPauseJob()
+    }
+
+    private fun hideCenterPauseJob(){
+        videoPauseButtonHandler.postDelayed({
+            centerPauseButtonConditionalShow(false)
+        },PLAY_DELAY_SCRUBBER)
+    }
+
+    private fun hideControllerJob(){
+        videoControlHandler.postDelayed({
+            hideController()
+        }, HIDE_DELAY_SCRUBBER)
+    }
+
+    private fun setupAnimation(){
+        fadeInAlphaAnimation.duration = ANIMATION_DURATION
+
+        fadeOutAlphaAnimation.duration = ANIMATION_DURATION
+
+        fadeOutAlphaAnimation.setAnimationListener(object: Animation.AnimationListener{
+            override fun onAnimationEnd(animation: Animation?) {
+                videoControlContainer.hide()
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationStart(animation: Animation?) {}
+        })
+
+        fadeInAlphaAnimation.setAnimationListener(object: Animation.AnimationListener{
+            override fun onAnimationEnd(animation: Animation?) {
+                videoControlContainer.show()
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationStart(animation: Animation?) {}
+        })
+    }
+
+    private fun setupGradientBackground(){
+        val controllerContainer = findViewById<ContainerUnify>(R.id.nav_container)
+
+        val controllerEndColor =
+            ContextCompat.getColor(context, mediaColorR.dms_bg_gradient_video_player_end)
+        val controllerStartColor =
+            ContextCompat.getColor(context, mediaColorR.dms_bg_gradient_video_player_start)
+        controllerContainer.setCustomContainerColor(Pair(controllerStartColor, controllerEndColor))
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        videoControlHandler.removeCallbacksAndMessages(null)
+        videoPauseButtonHandler.removeCallbacksAndMessages(null)
+    }
+
     interface Listener {
         fun onCenterPlayButtonClicked()
         fun onCenterPauseButtonClicked()
         fun onScrubStart()
         fun onScrubStop()
         fun onScrubMove(position: Long)
+    }
+
+    companion object {
+        private const val HIDE_DELAY_SCRUBBER = 3000L
+        private const val PLAY_DELAY_SCRUBBER = 1000L
+        private const val ANIMATION_DURATION = 200L
     }
 }

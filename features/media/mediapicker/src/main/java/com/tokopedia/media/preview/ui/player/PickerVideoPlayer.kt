@@ -30,19 +30,14 @@ class PickerVideoPlayer constructor(
     init {
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                when (playbackState) {
-                    Player.STATE_READY -> {
-                        listener?.onPlayStateChanged(true)
-                    }
-                    Player.STATE_ENDED -> {
-                        start()
-                    }
-                    else -> {
-                        listener?.onPlayStateChanged(false)
-                    }
-                }
+                super.onPlayerStateChanged(playWhenReady, playbackState)
+                if(playbackState == Player.STATE_ENDED) start()
             }
 
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                listener?.onIsPlayingChanged(isPlaying)
+            }
         })
     }
 
@@ -79,10 +74,6 @@ class PickerVideoPlayer constructor(
         }
     }
 
-    fun isPlaying(): Boolean {
-        return exoPlayer.isPlaying
-    }
-
     private fun getOrCreateMediaSource(uri: Uri): MediaSource {
         val userAgent = Util.getUserAgent(context, "Tokopedia")
         val dataSourceFactory = DefaultDataSourceFactory(context, userAgent)
@@ -104,7 +95,7 @@ class PickerVideoPlayer constructor(
     }
 
     interface Listener {
-        fun onPlayStateChanged(isPlaying: Boolean)
+        fun onIsPlayingChanged(isPlaying: Boolean)
     }
 
 }

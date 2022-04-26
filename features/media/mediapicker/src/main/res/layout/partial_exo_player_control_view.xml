@@ -36,15 +36,15 @@
         android:layout_height="48dp" />
 
     <com.tokopedia.unifycomponents.ContainerUnify
-        android:paddingTop="20dp"
-        android:paddingBottom="8dp"
+        android:gravity="center_vertical"
         android:id="@+id/nav_container"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:animateLayoutChanges="true"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="56dp">
 
         <LinearLayout
             android:id="@+id/exo_player_action_container"
@@ -84,8 +84,8 @@
             android:layout_marginRight="7dp"
             android:layout_weight="1"
             app:buffered_color="@color/Unify_NN500"
-            app:played_color="@color/Unify_Static_White"
-            app:scrubber_color="@color/Unify_Static_White"
+            app:played_color="@color/Unify_NN0"
+            app:scrubber_color="@color/Unify_NN0"
             app:unplayed_color="@color/Unify_NN500" />
 
         <LinearLayout
@@ -102,8 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="display_3"
                 app:layout_constraintBottom_toBottomOf="@id/exo_progress"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/exo_progress"
@@ -113,8 +113,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/Unify_Static_White"
-                android:textSize="14sp"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="display_3"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:text="/"
@@ -129,8 +129,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="right"
-                android:textColor="@color/Unify_Static_White"
-                android:textSize="14sp"
+                android:textColor="@color/Unify_NN0"
+                app:typographyType="display_3"
                 tool:text="02:10" />
 
         </LinearLayout>
