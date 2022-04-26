@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.util.extension
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlin.reflect.KProperty1
 
@@ -33,4 +34,8 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
         cachedValue = it
         CachedState(prevValue, it)
     }
+}
+
+fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+    value = value.fn()
 }

@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
 import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,7 +24,7 @@ class ProductTagRepositoryImpl @Inject constructor(
         authorType: String,
         cursor: String,
         limit: Int
-    ): LastTaggedProductUiModel {
+    ): PagedDataUiModel<ProductUiModel> {
         return withContext(dispatchers.io) {
             val response = getFeedLastTaggedProductUseCase.apply {
                 setRequestParams(GetFeedLastTaggedProductUseCase.createParams(
