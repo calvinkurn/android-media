@@ -722,6 +722,7 @@ class TopAdsDashboardPresenterTest {
     }
 
     private fun checkTimber() {
+        //todo correct it
         Assert.assertTrue(true)
     }
 }
