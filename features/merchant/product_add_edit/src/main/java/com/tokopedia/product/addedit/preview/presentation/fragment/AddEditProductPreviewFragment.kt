@@ -245,8 +245,8 @@ class AddEditProductPreviewFragment :
             val productId = previewFragmentArgs.productId
             val isDuplicate = previewFragmentArgs.isProductDuplicate
 
-            viewModel.setProductId(productId)
             viewModel.setIsDuplicate(isDuplicate)
+            viewModel.setProductId(productId)
             if (draftId.isNotBlank()) {
                 viewModel.setDraftId(draftId)
                 viewModel.getProductDraft(draftId.toLongOrZero())
@@ -870,6 +870,10 @@ class AddEditProductPreviewFragment :
         return viewModel.isAdding
     }
 
+    private fun isDuplicate(): Boolean {
+        return viewModel.isDuplicate
+    }
+
     private fun dataBackPressedLoss(): Boolean {
         // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
         // dataBackPressed is a sign of activity where data is obtained
@@ -960,6 +964,13 @@ class AddEditProductPreviewFragment :
     private fun enableVariantEdit() {
         addEditProductVariantLayout?.showWithCondition(GlobalConfig.isSellerApp())
         sellerFeatureCarousel?.showWithCondition(!GlobalConfig.isSellerApp())
+    }
+
+    private fun enableShipmentAdd() {
+        addEditProductShipmentButton?.text = getString(R.string.action_add)
+        addEditProductShipmentButton?.animateExpand()
+        addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(context ?: return,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 
     private fun enableShipmentEdit() {
@@ -1090,7 +1101,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductVariant() {
         viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
-            if (isEditing() || isDrafting()) {
+            if (isDuplicate() || isEditing() || isDrafting()) {
                 showEmptyVariantState(it)
             }
         })
@@ -1260,11 +1271,12 @@ class AddEditProductPreviewFragment :
     private fun observeMustFillParentWeight() {
         viewModel.mustFillParentWeight.observe(viewLifecycleOwner, {
             if (it) {
-                addEditProductShipmentButton?.text = getString(R.string.action_add)
-                addEditProductShipmentButton?.animateExpand()
-                addEditProductShipmentTitle?.setTextColor(
-                    ContextCompat.getColor(context ?: return@observe,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                // only greyed at add mode
+                if (isEditing()) {
+                    enableShipmentEdit()
+                } else {
+                    enableShipmentAdd()
+                }
             } else {
                 enableShipmentEdit()
             }

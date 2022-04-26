@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
