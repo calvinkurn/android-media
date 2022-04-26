@@ -7,6 +7,6 @@ package com.tokopedia.gm.common.data.source.local.model
 data class PMGradeWithBenefitsUiModel(
     val gradeName: String = "",
     val isActive: Boolean = false,
-    val benefits: List<PMGradeBenefitUiModel>? = null,
-    val benefitList: List<PMBenefitItemUiModel> = emptyList()
+    val benefitList: List<PMBenefitItemUiModel> = emptyList(),
+    val benefits: List<PMGradeBenefitUiModel>? = null
 )

@@ -39,7 +39,7 @@ class PMProTargetView : ConstraintLayout {
     }
 
     fun showInfo(
-        completedOrder: Int,
+        completedOrder: Long,
         netIncome: Long,
         shopLevel: Int
     ) {

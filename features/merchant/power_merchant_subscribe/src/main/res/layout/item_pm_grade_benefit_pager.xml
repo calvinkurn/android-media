@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,11 +10,12 @@
         android:id="@+id/tickerPmAchievementInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:visibility="gone"
         app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
         app:tickerType="announcement"
         tools:descriptionText="Raih Level 3 untuk mendapatkan paket keuntungan PM PRO Expert, ya."
         tools:visibility="visible" />
@@ -23,16 +24,36 @@
         android:id="@+id/viewPmTargetAchievement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tickerPmAchievementInfo"
         android:visibility="gone"
         tools:layout_height="100dp"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerPmGradeBenefit"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/viewPmTargetAchievement"
+        android:layout_marginTop="16dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/lblPmGradeBenefitSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dividerPmGradeBenefit"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/pm_grade_benefit_widget_section" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPmGradeBenefitItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/lblPmGradeBenefitSection"
+        android:layout_marginTop="8dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         tools:itemCount="6"
         tools:listitem="@layout/item_pm_grade_benefit" />
-</LinearLayout>
+</RelativeLayout>

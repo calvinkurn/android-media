@@ -36,7 +36,7 @@ object PMRegistrationBenefitHelper {
     ): PMGradeWithBenefitsUiModel {
         return PMGradeWithBenefitsUiModel(
             gradeName = Constant.PM_PRO_ULTIMATE,
-            isActive = shopInfo.isEligiblePmPro && shopInfo.shopLevel == PMConstant.ShopLevel.FOUR,
+            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.FOUR,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -58,7 +58,7 @@ object PMRegistrationBenefitHelper {
     ): PMGradeWithBenefitsUiModel {
         return PMGradeWithBenefitsUiModel(
             gradeName = Constant.PM_PRO_EXPERT,
-            isActive = shopInfo.isEligiblePmPro && shopInfo.shopLevel == PMConstant.ShopLevel.THREE,
+            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.THREE,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -80,7 +80,7 @@ object PMRegistrationBenefitHelper {
     ): PMGradeWithBenefitsUiModel {
         return PMGradeWithBenefitsUiModel(
             gradeName = Constant.PM_PRO_ADVANCED,
-            isActive = shopInfo.isEligiblePmPro && shopInfo.shopLevel == PMConstant.ShopLevel.TWO,
+            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.TWO,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -102,7 +102,7 @@ object PMRegistrationBenefitHelper {
     ): PMGradeWithBenefitsUiModel {
         return PMGradeWithBenefitsUiModel(
             gradeName = Constant.POWER_MERCHANT,
-            isActive = !shopInfo.isEligiblePmPro,
+            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.ONE,
             benefitList = listOf(
                 getTopAdsBenefit(context, Constant.PM_TOP_ADS_CREDIT, Constant.PM_BROAD_CAST_CHAT),
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),

@@ -1,7 +1,6 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.view.orZero
