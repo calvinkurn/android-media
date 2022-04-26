@@ -47,6 +47,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
@@ -56,12 +57,10 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
@@ -177,7 +176,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
     private val _interactive = MutableStateFlow<InteractiveStateUiModel>(InteractiveStateUiModel.Empty)
-    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
+    private val _leaderboard = MutableStateFlow(LeaderboardUiModel.Empty)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
@@ -189,10 +188,10 @@ class PlayViewModel @AssistedInject constructor(
     private val _loadingBuy = MutableStateFlow(false)
 
     private val _winnerBadgeUiState = combine(
-        _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
-    ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
+        _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
+    ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
         PlayWinnerBadgeUiState(
-            leaderboards = leaderboardInfo,
+            leaderboards = leaderboard,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.channelStatus.statusType.isActive &&
                     leaderboardUserBadgeState.showLeaderboard &&
@@ -267,9 +266,11 @@ class PlayViewModel @AssistedInject constructor(
         _kebabMenuUiState.distinctUntilChanged(),
         _selectedVariant,
         _loadingBuy,
+        _leaderboard,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy ->
+        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy,
+        leaderboard ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -371,7 +372,7 @@ class PlayViewModel @AssistedInject constructor(
                 quickReplyInfo = _quickReply.value,
                 videoMetaInfo = newVideoMeta,
                 status = _status.value,
-                leaderboardInfo = _leaderboardInfo.value,
+                leaderboard = _leaderboard.value,
                 tagItems = _tagItems.value,
                 upcomingInfo = channelData.upcomingInfo
             )
@@ -413,7 +414,6 @@ class PlayViewModel @AssistedInject constructor(
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
-    private val _observableUserWinnerStatus = MutableLiveData<PlayUserWinnerStatusUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(_observableBottomInsetsState) { insets ->
             _bottomInsets.value = insets
@@ -912,7 +912,7 @@ class PlayViewModel @AssistedInject constructor(
         handleChannelReportInfo(channelData.channelReportInfo)
         handleLikeInfo(channelData.likeInfo)
         handlePinnedInfo(channelData.pinnedInfo)
-        handleLeaderboardInfo(channelData.leaderboardInfo)
+        handleLeaderboardInfo(channelData.leaderboard)
 
         _partnerInfo.value = channelData.partnerInfo
         _status.value = channelData.status
@@ -1233,10 +1233,13 @@ class PlayViewModel @AssistedInject constructor(
         _observablePinnedMessage.value = pinnedInfo.pinnedMessage
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardWrapperUiModel) {
-        _leaderboardInfo.value = leaderboardInfo
-        if(leaderboardInfo is PlayLeaderboardWrapperUiModel.Success)
-            setLeaderboardBadgeState(leaderboardInfo.data)
+    private fun handleLeaderboardInfo(leaderboard: LeaderboardUiModel) {
+        _leaderboard.value = leaderboard
+        _leaderboard.value = LeaderboardUiModel(
+            data = leaderboard.data,
+            state = ResultState.Success,
+        )
+        setLeaderboardBadgeState(leaderboard.data)
     }
 
     /**
@@ -1347,11 +1350,19 @@ class PlayViewModel @AssistedInject constructor(
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+
+            _leaderboard.update {
+                it.copy(
+                    data = interactiveLeaderboard,
+                    state = ResultState.Success,
+                )
+            }
 
             setLeaderboardBadgeState(interactiveLeaderboard)
-        }) {
-            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
+        }) { err ->
+            _leaderboard.update {
+                it.copy(state = ResultState.Fail(err))
+            }
         }
     }
 
@@ -1382,22 +1393,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
-        _interactive.update {
-            it.copy(interactive = giveaway)
-        }
-
         if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
-            val channelId = mChannelData?.id ?: return
-
-            try {
-                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-                setLeaderboardBadgeState(interactiveLeaderboard)
-
-                _interactive.update {
-                    it.copy(interactive = InteractiveUiModel.Unknown)
-                }
-            } catch (e: Throwable) {}
+            _interactive.update {
+                it.copy(interactive = InteractiveUiModel.Unknown)
+            }
+            checkLeaderboard(channelId)
+        } else {
+            _interactive.update {
+                it.copy(interactive = giveaway)
+            }
         }
     }
 
@@ -1415,7 +1419,12 @@ class PlayViewModel @AssistedInject constructor(
 
             try {
                 val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                _leaderboard.update {
+                    it.copy(
+                        data = interactiveLeaderboard,
+                        state = ResultState.Success,
+                    )
+                }
                 setLeaderboardBadgeState(interactiveLeaderboard)
 
                 _interactive.update {
@@ -1423,31 +1432,6 @@ class PlayViewModel @AssistedInject constructor(
                 }
             } catch (e: Throwable) {}
         }
-    }
-
-    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
-//        if (!isInteractiveAllowed) return
-//        val interactiveUiState = mapInteractiveToState(interactive)
-//        repo.setDetail(interactive.id.toString(), interactive)
-//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
-//            repo.setActive(interactive.id.toString())
-//        } else {
-//            repo.setFinished(interactive.id.toString())
-//        }
-//
-//        _interactive.value = if (repo.getActiveInteractiveId() != null) interactiveUiState else PlayInteractiveUiState.NoInteractive
-//
-//        if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
-//            val channelId = mChannelData?.id ?: return
-//
-//            try {
-//                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-//                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-//                setLeaderboardBadgeState(interactiveLeaderboard)
-//
-//                _interactive.value = PlayInteractiveUiState.NoInteractive
-//            } catch (e: Throwable) {}
-//        }
     }
 
     private fun prepareSelfLikeBubbleIcon() {
@@ -2174,7 +2158,9 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleRefreshLeaderboard() {
         if(_leaderboardUserBadgeState.value.shouldRefreshData) {
-            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+            _leaderboard.update {
+                it.copy(state = ResultState.Loading)
+            }
             _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
         }
 

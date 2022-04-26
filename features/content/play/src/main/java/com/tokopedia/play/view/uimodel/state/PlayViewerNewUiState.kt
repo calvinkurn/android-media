@@ -7,10 +7,10 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 28/06/21
@@ -34,7 +34,7 @@ data class PlayViewerNewUiState(
 )
 
 data class PlayWinnerBadgeUiState(
-    val leaderboards: PlayLeaderboardWrapperUiModel,
+    val leaderboards: LeaderboardUiModel,
     val shouldShow: Boolean
 )
 
