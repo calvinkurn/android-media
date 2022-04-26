@@ -233,7 +233,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorBuListClicked(position: Int) {
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
     }
 
     override fun onErrorTransactionListClicked(position: Int) {

@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
@@ -52,6 +53,7 @@ class TestMainNavViewModel {
 
     private lateinit var viewModel : MainNavViewModel
     private val shopId = 1224
+    private val mockListAllCategory = listOf(HomeNavMenuDataModel())
 
     @Before
     fun setup(){
@@ -882,17 +884,46 @@ class TestMainNavViewModel {
         viewModel.getMainNavData(true)
 
         val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModel = dataList.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
+        val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val errorStateBuDataModel = homeNavExpandableDataModel.menus.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
         Assert.assertNotNull(errorStateBuDataModel) //error state bu data model existed
 
         coEvery {
             getBuListUseCase.executeOnBackground()
         }.answers { listOf() }
 
-        viewModel.refreshBuListdata()
+        viewModel.refreshBuListData()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel }
+        val homeNavExpandableDataModelRefreshed = dataListRefreshed.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val errorStateBuDataModelRefreshed = homeNavExpandableDataModelRefreshed.menus.find { it is ErrorStateBuDataModel }
         Assert.assertNull(errorStateBuDataModelRefreshed)
     }
 
+    @Test
+    fun `given default data from cache when load all categories with exception then success get data from cache`() {
+        val getCategoryGroupUseCase = mockk<GetCategoryGroupUseCase>()
+        coEvery {
+            getCategoryGroupUseCase.executeOnBackground()
+        } returns mockListAllCategory
+
+        coEvery {
+            getCategoryGroupUseCase.setStrategyCloudThenCache()
+        } throws MessageErrorException("")
+
+        every {
+            getCategoryGroupUseCase.createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
+        } answers { }
+
+        every {
+            getCategoryGroupUseCase.setStrategyCache()
+        } answers { }
+
+        viewModel = createViewModel(getBuListUseCase = getCategoryGroupUseCase)
+        viewModel.getMainNavData(true)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val homeNavExpandableDataModel = dataList.find { it is HomeNavExpandableDataModel } as HomeNavExpandableDataModel
+        val homeNavMenuDataModel = homeNavExpandableDataModel.menus.find { it is HomeNavMenuDataModel } as HomeNavMenuDataModel
+        Assert.assertNotNull(homeNavMenuDataModel)
+    }
 }
