@@ -23,6 +23,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -43,7 +44,7 @@ object TokoFoodHomeMapper {
     )
 
     fun MutableList<TokoFoodHomeItemUiModel>.addLoadingIntoList() {
-        val loadingLayout = TokoFoodHomeLoadingStateUiModel(id = "")
+        val loadingLayout = TokoFoodHomeLoadingStateUiModel(id = LOADING_STATE)
         add(TokoFoodHomeItemUiModel(loadingLayout, TokoFoodHomeLayoutItemState.LOADED))
     }
 

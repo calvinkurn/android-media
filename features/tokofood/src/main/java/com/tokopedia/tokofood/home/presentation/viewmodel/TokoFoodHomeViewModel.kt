@@ -71,7 +71,6 @@ class TokoFoodHomeViewModel @Inject constructor(
         }
     }
 
-
     fun getLayoutComponentData(){
         launchCatchError(block = {
             homeLayoutItemList.filter { it.state == TokoFoodHomeLayoutItemState.NOT_LOADED }.forEach {
