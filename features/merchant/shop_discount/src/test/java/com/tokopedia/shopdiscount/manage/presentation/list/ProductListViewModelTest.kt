@@ -405,12 +405,23 @@ class ProductListViewModelTest {
     }
 
     @Test
-    fun `When disable product, should update data model to make it on disable state`() {
+    fun `When disabling product, non ticked product should be updated to disable state`() {
         //Given
         val firstProduct = buildDummyProduct("first-product-id-111212")
         val secondProduct = buildDummyProduct("second-product-id-123123")
-        val products = listOf(firstProduct, secondProduct)
-        val expected = products.map { it.copy(disableClick = true) }
+        val thirdProduct = buildDummyProduct("third-product-id-1231245")
+
+        val products = listOf(
+            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
+            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
+            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
+        )
+
+        val expected = listOf(
+            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
+            secondProduct.copy(isCheckboxTicked = false, disableClick = true),
+            thirdProduct.copy(isCheckboxTicked = false, disableClick = true)
+        )
 
         //When
         val actual = viewModel.disableProducts(products)
@@ -420,12 +431,23 @@ class ProductListViewModelTest {
     }
 
     @Test
-    fun `When enable product, should update data model to make it on enabled state`() {
+    fun `When enabling product, non ticked product should be updated to enabled state`() {
         //Given
         val firstProduct = buildDummyProduct("first-product-id-111212")
         val secondProduct = buildDummyProduct("second-product-id-123123")
-        val products = listOf(firstProduct, secondProduct)
-        val expected = products.map { it.copy(disableClick = false) }
+        val thirdProduct = buildDummyProduct("third-product-id-1231245")
+
+        val products = listOf(
+            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
+            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
+            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
+        )
+
+        val expected = listOf(
+            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
+            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
+            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
+        )
 
         //When
         val actual = viewModel.enableProduct(products)
