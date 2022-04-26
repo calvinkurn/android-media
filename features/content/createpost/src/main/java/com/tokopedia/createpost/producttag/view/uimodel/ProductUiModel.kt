@@ -4,7 +4,7 @@ package com.tokopedia.createpost.producttag.view.uimodel
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
-data class Product(
+data class ProductUiModel(
     val id: String = "",
     val shopID: String = "",
     val name: String = "",

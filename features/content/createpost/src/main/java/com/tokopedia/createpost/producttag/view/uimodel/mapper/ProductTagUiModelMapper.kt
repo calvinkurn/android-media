@@ -2,7 +2,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.mapper
 
 import com.tokopedia.createpost.producttag.model.GetFeedLastTaggedProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.Product
+import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import javax.inject.Inject
 
 /**
@@ -13,7 +13,7 @@ class ProductTagUiModelMapper @Inject constructor() {
     fun mapLastTaggedProduct(response: GetFeedLastTaggedProductResponse): LastTaggedProductUiModel {
         return LastTaggedProductUiModel(
             products = response.data.products.map {
-                Product(
+                ProductUiModel(
                     id = it.id,
                     shopID = it.shopID,
                     name = it.name,
