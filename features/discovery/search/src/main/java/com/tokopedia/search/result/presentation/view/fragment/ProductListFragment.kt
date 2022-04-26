@@ -1731,13 +1731,30 @@ class ProductListFragment: BaseDaggerFragment(),
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
-    override fun showMessageFailedWishlistAction(isWishlisted: Boolean) {
+    override fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view = view ?: return
 
-        if (isWishlisted)
-            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
-        else
-            Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+        if (wishlistResult.isUsingWishlistV2) {
+            var typeToaster = TYPE_NORMAL
+            var errorMsg = if (wishlistResult.isAddWishlist) {
+                getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+            } else {
+                getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
+            }
+            if (wishlistResult.messageV2.isNotEmpty()) {
+                errorMsg = wishlistResult.messageV2
+            }
+            if (wishlistResult.toasterColorV2 == TOASTER_RED) {
+                typeToaster = TYPE_ERROR
+            }
+            Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, typeToaster).show()
+
+        } else {
+            if (wishlistResult.isAddWishlist)
+                Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_add_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            else
+                Toaster.build(view, ErrorHandler.getErrorMessage(context, MessageErrorException(getString(R.string.msg_remove_wishlist_failed))), Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+        }
     }
     //endregion
 

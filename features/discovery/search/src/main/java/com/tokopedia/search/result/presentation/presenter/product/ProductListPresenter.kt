@@ -1894,7 +1894,7 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
             view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
@@ -1920,7 +1920,11 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult.isAddWishlist)
+            if (wishlistResult.isUsingWishlistV2) {
+
+            } else {
+                view.showMessageFailedWishlistAction(wishlistResult)
+            }
         } else {
             view.trackWishlistProduct(createWishlistTrackingModel(
                     productCardOptionsModel,

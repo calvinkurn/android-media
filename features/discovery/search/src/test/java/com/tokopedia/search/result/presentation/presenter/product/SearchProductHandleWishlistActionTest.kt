@@ -182,7 +182,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when failed wishlist recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult.isAddWishlist)
+            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
         confirmVerified(productListView)
@@ -206,7 +206,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
 
     private fun `Then verify view interaction when failed wishlist non-recommendation product`(productCardOptionsModel: ProductCardOptionsModel) {
         verifyOrder {
-            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult.isAddWishlist)
+            productListView.showMessageFailedWishlistAction(productCardOptionsModel.wishlistResult)
         }
 
         confirmVerified(productListView)
