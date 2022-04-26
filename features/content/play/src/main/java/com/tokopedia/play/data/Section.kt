@@ -32,7 +32,6 @@ data class Section (
 
     @SerializedName("source_id")
     val id: String = "",
-
 ){
     data class Background(
         @SerializedName("gradient")

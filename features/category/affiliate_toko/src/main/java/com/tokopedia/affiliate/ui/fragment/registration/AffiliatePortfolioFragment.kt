@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.hideKeyboard
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
@@ -196,12 +197,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     override fun onNextKeyPressed(position: Int, b: Boolean) {
-        affiliateAdapter.notifyItemChanged(position)
         affiliatePortfolioViewModel.affiliatePortfolioData.value?.let {
             if(position + 1 < it.size &&
                     it[position + 1] is AffiliatePortfolioUrlModel) {
                 affiliatePortfolioViewModel.updateFocus(position + 1, b)
-                affiliateAdapter.notifyItemChanged(position + 1)
+                affiliatePortfolioViewModel.updateFocus(position,false)
+            }
+            else{
+                view?.hideKeyboard(context)
             }
         }
     }
@@ -215,12 +218,13 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         updateList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
         for (item in checkedSocialList){
             val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
+            val firstItem = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.firstTime
             if(portfolioDataItemText?.isNotBlank() == true){
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex ,firstTime = firstItem)))
             }else {
                 updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex)))
+                        item.defaultText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)))
             }
         }
         updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
@@ -228,9 +232,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     override fun addSocialMediaButtonClicked() {
-        view?.requestFocus()
-        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.showSoftInput(view, 0)
+        view?.hideKeyboard(context)
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 this, affiliatePortfolioViewModel.getCurrentSocialIds(),
                 "", "", "", "",
@@ -244,13 +246,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
             val arrayListOfChannels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
             affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
                 (channelItem as? AffiliatePortfolioUrlModel)?.let {
-                    if(channelItem.portfolioItm.text?.isNotEmpty() == true){
+                    if(channelItem.portfolioItm.text?.isNotEmpty() == true && channelItem.portfolioItm.firstTime != true){
                         arrayListOfChannels.add(OnboardAffiliateRequest.OnboardAffiliateChannelRequest(channelItem.portfolioItm.serviceFormat
                                 ,channelItem.portfolioItm.id,channelItem.portfolioItm.text))
                     }
                 }
             }
             affiliateNavigationInterface?.navigateToTermsFragment(arrayListOfChannels)
+            view?.hideKeyboard(context)
         }else {
             view?.let { view ->
                 Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_please_fill_one_social_media),

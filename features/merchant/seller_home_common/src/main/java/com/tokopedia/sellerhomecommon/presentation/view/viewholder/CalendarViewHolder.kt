@@ -96,7 +96,7 @@ class CalendarViewHolder(
     private fun observeState(element: CalendarWidgetUiModel) {
         bindViewData(element)
         when {
-            element.data == null -> showLoadingState()
+            element.data == null || element.showLoadingState -> showLoadingState()
             !element.data?.error.isNullOrBlank() -> showErrorState(element)
             else -> showSuccessState(element)
         }
@@ -111,6 +111,7 @@ class CalendarViewHolder(
             tvShcCalendarTitle.visible()
             tvShcCalendarDate.visible()
             icShcCalendarDate.visible()
+            luvShcCalendar.visible()
             rvShcCalendar.visible()
 
             showEvents(element)
@@ -123,7 +124,26 @@ class CalendarViewHolder(
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCalendarImpressionEvent(element)
             }
+
+            setupLastUpdated(element)
         }
+    }
+
+    private fun setupLastUpdated(element: CalendarWidgetUiModel) {
+        with(binding.luvShcCalendar) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: CalendarWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun showEmptyState() {
@@ -140,12 +160,13 @@ class CalendarViewHolder(
             viewShcCommonLayout.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             viewShcCalendarError.visible()
             btnShcCalendarReload.setOnClickListener {
-                listener.reloadCalendarWidget(element)
+                listener.onReloadWidget(element)
             }
         }
         emptyStateBinding.commonWidgetErrorState.gone()
         loadingStateBinding.viewShcCalendarLoading.gone()
         with(binding) {
+            luvShcCalendar.gone()
             rvShcCalendar.gone()
             pageControlShcCalendar.gone()
         }
@@ -156,6 +177,7 @@ class CalendarViewHolder(
         errorStateBinding.viewShcCalendarError.gone()
         emptyStateBinding.commonWidgetErrorState.gone()
         with(binding) {
+            luvShcCalendar.gone()
             rvShcCalendar.gone()
             pageControlShcCalendar.gone()
         }
@@ -286,8 +308,6 @@ class CalendarViewHolder(
 
     interface Listener : BaseViewHolderListener {
         fun showCalendarWidgetDateFilter(element: CalendarWidgetUiModel) {}
-
-        fun reloadCalendarWidget(element: CalendarWidgetUiModel) {}
 
         fun sendCalendarImpressionEvent(element: CalendarWidgetUiModel) {}
 

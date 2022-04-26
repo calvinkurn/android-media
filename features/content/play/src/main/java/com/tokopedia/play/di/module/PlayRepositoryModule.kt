@@ -7,6 +7,7 @@ import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerLikeRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerPartnerRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerRepositoryImpl
+import com.tokopedia.play.data.repository.PlayViewerSocketRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerTagItemRepositoryImpl
 import com.tokopedia.play.data.repository.PlayViewerUserReportRepositoryImpl
 import com.tokopedia.play.di.PlayScope
@@ -17,6 +18,7 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
 import com.tokopedia.play.domain.repository.PlayViewerRepository
+import com.tokopedia.play.domain.repository.PlayViewerSocketRepository
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
@@ -65,6 +67,10 @@ abstract class PlayRepositoryModule {
     @Binds
     @PlayScope
     abstract fun bindUserReportRepository(repo: PlayViewerUserReportRepositoryImpl): PlayViewerUserReportRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindSocketRepository(repo: PlayViewerSocketRepositoryImpl): PlayViewerSocketRepository
 
     @Binds
     @PlayScope

@@ -23,6 +23,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.playseemore.PlaySeeMoreAda
 import com.tokopedia.feedplus.view.analytics.widget.FeedPlayVideoDetailPageAnalyticsListener
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -71,6 +72,8 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     @Inject
     lateinit var analyticListener: PlayAnalyticsTracker
 
+    @Inject
+    lateinit var playWidgetPreference: PlayWidgetPreference
 
 
     override fun getScreenName(): String {
@@ -140,7 +143,14 @@ class PlayFeedSeeMoreFragment : BaseDaggerFragment() , PlayWidgetListener {
     private fun onSuccessPlayTabData(playDataResponse: PlayGetContentSlotResponse) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentLivePageCursor.isNotEmpty())
-        adapter.addItemsAndAnimateChanges(FeedPlayVideoTabMapper.map(playDataResponse.data, playDataResponse.meta, shopId = userSession.shopId))
+        adapter.addItemsAndAnimateChanges(
+            FeedPlayVideoTabMapper.map(
+                playDataResponse.data,
+                playDataResponse.meta,
+                shopId = userSession.shopId,
+                playWidgetPreference = playWidgetPreference
+            )
+        )
 
     }
 

@@ -22,4 +22,6 @@ interface MainNavListener : HomeNavListener{
     fun getTrackingQueueObj(): TrackingQueue?
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
+
+    fun onErrorAffiliateInfoRefreshClicked(position: Int)
 }

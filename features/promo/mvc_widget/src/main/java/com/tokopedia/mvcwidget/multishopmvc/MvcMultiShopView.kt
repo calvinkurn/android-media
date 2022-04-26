@@ -81,6 +81,9 @@ class MvcMultiShopView @JvmOverloads constructor(
         item.shopIcon.let {
             if (it.isNotEmpty()) {
                 ivShopIcon?.loadImage(it)
+                ivShopIcon?.show()
+            }else{
+                ivShopIcon?.hide()
             }
         }
         if (item.products?.size != null && item.products.isNotEmpty()) {
@@ -139,6 +142,8 @@ class MvcMultiShopView @JvmOverloads constructor(
         tvCashBackTitle?.text = item.cashBackTitle
         tvCashBackValue?.text = item.cashBackValue
         tvCouponCount?.text = item.couponCount
+        val redirectAppLinkProductOne = item.products?.getOrNull(0)?.redirectAppLink
+        val redirectAppLinkProductTwo = item.products?.getOrNull(1)?.redirectAppLink
 
         if ((this.context).isDarkMode()) {
             parentContainer?.background?.colorFilter = PorterDuffColorFilter(
@@ -158,7 +163,9 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
 
         ivCouponOne?.setOnClickListener {
-            RouteManager.route(this.context, item.products?.get(0)?.redirectAppLink)
+            redirectAppLinkProductOne?.let {
+                RouteManager.route(this.context, redirectAppLinkProductOne)
+            }
             sendCouponClickEvent(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
@@ -169,7 +176,9 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
 
         ivCouponTwo?.setOnClickListener {
-            RouteManager.route(this.context, item.products?.get(1)?.redirectAppLink)
+            redirectAppLinkProductTwo?.let {
+                RouteManager.route(this.context, redirectAppLinkProductTwo)
+            }
             sendCouponClickEvent(
                 item.shopName,
                 CLICK_PRODUCT_CARD,

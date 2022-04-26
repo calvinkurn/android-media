@@ -13,8 +13,9 @@ import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteract
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
 import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
 import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
@@ -33,6 +34,8 @@ import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -59,6 +62,11 @@ class PlayBroadcastModule {
         } else {
             PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
         }
+    }
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides
@@ -93,14 +101,24 @@ class PlayBroadcastModule {
     @Provides
     fun providePlayBroadcastAnalytic(
         userSession: UserSessionInterface,
-        contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
         interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
         setupMenuAnalytic: PlayBroSetupMenuAnalytic,
         setupTitleAnalytic: PlayBroSetupTitleAnalytic,
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
         setupProductAnalytic: PlayBroSetupProductAnalytic,
+        summaryAnalytic: PlayBroadcastSummaryAnalytic,
+        scheduleAnalytic: PlayBroScheduleAnalytic,
     ): PlayBroadcastAnalytic {
-        return PlayBroadcastAnalytic(userSession, contentTaggingAnalytic, interactiveAnalytic, setupMenuAnalytic, setupTitleAnalytic, setupCoverAnalytic, setupProductAnalytic)
+        return PlayBroadcastAnalytic(
+            userSession,
+            interactiveAnalytic,
+            setupMenuAnalytic,
+            setupTitleAnalytic,
+            setupCoverAnalytic,
+            setupProductAnalytic,
+            summaryAnalytic,
+            scheduleAnalytic,
+        )
     }
 
     @ActivityRetainedScope

@@ -176,7 +176,7 @@ class PlayAnalyticsTracker @Inject constructor(
     //12
     fun impressOnFilterChipsInVideoTab(filterCategory: String) {
         createAnalyticsData(
-            EventName.CLICK_HOMEPAGE,
+            EventName.VIEW_HOMEPAGE_IRIS,
             EventAction.IMPRESSION_FILTER_CHIPS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
             EventLabel.getFilterCategory(filterCategory)
@@ -691,31 +691,31 @@ class PlayAnalyticsTracker @Inject constructor(
     private object EventLabel {
 
         fun liveVodUpcoming(channelId: String, shopId: String, type: String) =
-            "{${channelId}} - {${shopId}} - {${type}}"
+            "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategory(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}} - {${filterCategory}}"
+        ) = "$channelId - $shopId - $type - $filterCategory"
 
         fun liveVodUpcoming(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}}"
+        ) = "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategoryEntryPointCarousel(
             channelId: String, shopId: String, type: String, filterCategory: String, entryPoint: String =""
         ) =
-            "{${channelId}} - {${shopId}} - {${type}} - {${filterCategory}} - {${entryPoint}}"
+            "$channelId - $shopId - $type - $FILTER_CATEGORY_EMPTY - $entryPoint"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"
 
-        fun getFilterCategory(filterCategory: String) = "{${filterCategory}}"
+        fun getFilterCategory(filterCategory: String) = "$filterCategory"
 
         fun getScreenName(position: Int): String {
             return when (position) {
@@ -728,6 +728,7 @@ class PlayAnalyticsTracker @Inject constructor(
     }
 
     companion object {
+        private const val FILTER_CATEGORY_EMPTY = ""
         private const val FEED_VIDEO_TAB_CONTENT_CARDS_UPCOMING =
             "/feed video tab - content cards - upcoming"
         private const val FEED_VIDEO_TAB_CONTENT_LIST_PAGE_CONTENT_CARDS =
