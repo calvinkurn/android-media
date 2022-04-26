@@ -29,6 +29,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.MerchantVoucherType
 import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.type.VideoOrientation
@@ -112,10 +113,7 @@ class PlayViewerIdGenerator {
             },
             PlayBottomSheetViewModel::class.java to {
                 PlayBottomSheetViewModel(
-                    mockk(relaxed = true),
                     userSession,
-                    CoroutineDispatchersProvider,
-                    repo
                 )
             }
         )
@@ -129,9 +127,7 @@ class PlayViewerIdGenerator {
                 videoStateProcessorFactory = mockk(relaxed = true),
                 channelStateProcessorFactory = mockk(relaxed = true),
                 videoBufferGovernorFactory = mockk(relaxed = true),
-                getSocketCredentialUseCase = mockk(relaxed = true),
                 getReportSummariesUseCase = mockk(relaxed = true),
-                trackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
                 playSocketToModelMapper = mockk(relaxed = true),
                 playUiModelMapper = mapper,
                 userSession = mockk(relaxed = true),
@@ -240,7 +236,8 @@ class PlayViewerIdGenerator {
                             background = ProductSectionUiModel.Section.BackgroundUiModel(
                                 gradients = emptyList(), imageUrl = ""
                             ),
-                            endTime = ""
+                            endTime = "",
+                            reminder = PlayUpcomingBellStatus.Unknown,
                         ),
                         id = "1"
                     )
