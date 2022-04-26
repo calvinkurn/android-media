@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashProgramVh
@@ -13,9 +14,11 @@ class TokomemberDashProgramAdapter(
     var programSellerList: ArrayList<ProgramSellerListItem>,
     val fragmentManager: FragmentManager,
     val shopId: Int,
-    val programActions: ProgramActions
+    val programActions: ProgramActions,
+    val homeFragmentCallback: HomeFragmentCallback
 ) :
     RecyclerView.Adapter<TokomemberDashProgramVh>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokomemberDashProgramVh {
         return TokomemberDashProgramVh(
             View.inflate(
@@ -28,7 +31,7 @@ class TokomemberDashProgramAdapter(
     }
 
     override fun onBindViewHolder(holder: TokomemberDashProgramVh, position: Int) {
-        holder.bind(programSellerList[position], shopId, programActions)
+        holder.bind(programSellerList[position], shopId, programActions, homeFragmentCallback)
     }
 
     override fun getItemCount() = programSellerList.size

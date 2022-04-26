@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
@@ -36,6 +37,7 @@ import javax.inject.Inject
 class TokomemberProgramFragment : BaseDaggerFragment() {
 
     private var fromEdit = false
+    private var periodInMonth = 0
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -160,44 +162,111 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
             chipOne.chipType  = ChipsUnify.TYPE_SELECTED
             chipTwo.chipType = ChipsUnify.TYPE_NORMAL
             chipThree.chipType = ChipsUnify.TYPE_NORMAL
+            periodInMonth = chipOne.chipText.toIntSafely()
         }
         chipTwo.setOnClickListener {
             chipTwo.chipType = ChipsUnify.TYPE_SELECTED
             chipOne.chipType  = ChipsUnify.TYPE_NORMAL
             chipThree.chipType  = ChipsUnify.TYPE_NORMAL
+            periodInMonth = chipTwo.chipText.toIntSafely()
         }
         chipThree.setOnClickListener {
             chipThree.chipType = ChipsUnify.TYPE_SELECTED
             chipOne.chipType  = ChipsUnify.TYPE_NORMAL
             chipTwo.chipType = ChipsUnify.TYPE_NORMAL
+            periodInMonth = chipThree.chipText.toIntSafely()
         }
         //TODO 1. get program name
         btnCreateProgram?.setOnClickListener {
-            if(fromEdit){
-                tokomemberDashCreateViewModel.updateProgram(
-                    ProgramUpdateDataInput(
-                        actionType = "edit",
-                        apiVersion = "3.0",
-                        name = membershipGetProgramForm?.programForm?.name,
-                        cardID = membershipGetProgramForm?.programForm?.cardID,
-                        timeWindow = TimeWindow(startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime)
-                    )
-                )
-            }
-            else {
-                tokomemberDashCreateViewModel.updateProgram(
-                    ProgramUpdateDataInput(
-                        actionType = "create",
-                        apiVersion = "3.0",
-                        name = "name",
-                        )
-                )
-            }
+            val programUpdateResponse = formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0)
+            tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
         }
     }
 
+    private fun formToUpdateMapper(membershipGetProgramForm: MembershipGetProgramForm?, programType: Int): ProgramUpdateDataInput {
+        var actionType = ""
+        val timeWindow = TimeWindow(id = 0, startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime, periodInMonth = periodInMonth)
+        val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
+        programAttributes.apply {
+            this?.forEach {
+                it?.isUseMultiplier = true
+                it?.multiplierRates = 0
+                it?.minimumTransaction = 5000
+            }
+        }
+        var programUpdateResponse = ProgramUpdateDataInput()
+        when(programType){
+            ProgramType.CREATE ->{
+                timeWindow.id = 0
+                actionType = "create"
+                val tierLevels = membershipGetProgramForm?.programForm?.tierLevels.apply {
+                    this?.forEach {
+                        it?.id = 0
+                    }
+                }
+                programAttributes.apply {
+                    this?.forEach {
+                        it?.id = 0
+                        it?.programID = 0
+                        it?.tierLevelID = 0
+                    }
+                }
+                ProgramUpdateDataInput(
+                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
+                    cardID = membershipGetProgramForm?.programForm?.cardID,
+                    name = membershipGetProgramForm?.programForm?.name,
+                    tierLevels = tierLevels,
+                    programAttributes = programAttributes,
+                    actionType = actionType,
+                    apiVersion = "3.0",
+                    timeWindow = timeWindow
+                )
+            }
+            ProgramType.EXTEND ->{
+                actionType = "Extend"
+                ProgramUpdateDataInput(
+                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
+                    cardID = membershipGetProgramForm?.programForm?.cardID,
+                    name = membershipGetProgramForm?.programForm?.name,
+                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
+                    programAttributes = programAttributes,
+                    actionType = actionType,
+                    apiVersion = "3.0",
+                    timeWindow = timeWindow
+                )
+            }
+            ProgramType.EDIT ->{
+                actionType = "edit"
+                ProgramUpdateDataInput(
+                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
+                    cardID = membershipGetProgramForm?.programForm?.cardID,
+                    name = membershipGetProgramForm?.programForm?.name,
+                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
+                    programAttributes = programAttributes,
+                    actionType = actionType,
+                    apiVersion = "3.0",
+                    timeWindow = timeWindow
+                )
+            }
+            ProgramType.CANCEL ->{
+                actionType = "cancel"
+                ProgramUpdateDataInput(
+                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
+                    cardID = membershipGetProgramForm?.programForm?.cardID,
+                    name = membershipGetProgramForm?.programForm?.name,
+                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
+                    programAttributes = programAttributes,
+                    actionType = actionType,
+                    apiVersion = "3.0",
+                    timeWindow = timeWindow
+                )
+            }
+        }
+        return programUpdateResponse
+    }
 
-     private fun clickDatePicker(title: String, helpText: String) {
+
+    private fun clickDatePicker(title: String, helpText: String) {
          var date = ""
          var month = ""
          var year = ""

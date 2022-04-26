@@ -2,6 +2,8 @@ package com.tokopedia.tokomember_seller_dashboard.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramAttributesItem
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TierLevelsItem
 
 data class TmGetProgramDetailResponse(
 
@@ -116,7 +118,7 @@ data class ProgramForm(
 	val timeWindow: TimeWindow? = null,
 
 	@SerializedName("programAttributes")
-	val programAttributes: List<ProgramAttribute?>? = null,
+	val programAttributes: List<ProgramAttributesItem?>? = null,
 
 	@SerializedName("cardID")
 	val cardID: Int? = null,
@@ -128,7 +130,7 @@ data class ProgramForm(
 	val id: String? = null,
 
 	@SerializedName("tierLevels")
-	val tierLevels: List<Any?>? = null,
+	val tierLevels: List<TierLevelsItem?>? = null,
 
 	@SerializedName("status")
 	val status: Int? = null,

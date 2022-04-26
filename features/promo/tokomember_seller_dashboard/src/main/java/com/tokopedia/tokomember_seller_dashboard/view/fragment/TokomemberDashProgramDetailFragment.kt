@@ -79,9 +79,10 @@ class TokomemberDashProgramDetailFragment : BaseDaggerFragment() {
         tvIncome.text = membershipGetProgramForm?.programForm?.analytics?.totalIncome
         tvName.text = membershipGetProgramForm?.programForm?.name
         tvTransactionPremium.text = membershipGetProgramForm?.programForm?.programAttributes?.firstOrNull()?.minimumTransaction.toString()
-        tvTransactionVip.text = membershipGetProgramForm?.programForm?.programAttributes?.get(1)?.minimumTransaction.toString()
         tvMemberCountPremium.text = membershipGetProgramForm?.levelInfo?.levelList?.firstOrNull()?.totalMember
-        tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.get(1)?.totalMember
+        tvTransactionVip.text = membershipGetProgramForm?.programForm?.programAttributes?.getOrNull(1)?.minimumTransaction.toString()
+        tvMemberCountVip.text = membershipGetProgramForm?.levelInfo?.levelList?.getOrNull(1)?.totalMember
+
     }
 
     private fun setHeader() {

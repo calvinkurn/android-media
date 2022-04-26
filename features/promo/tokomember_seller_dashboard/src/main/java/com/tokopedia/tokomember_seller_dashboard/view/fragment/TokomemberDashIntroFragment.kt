@@ -17,11 +17,13 @@ import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
@@ -114,9 +116,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
 
         if(openBS){
             val bundle = Bundle()
-            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_TITLE, "Haa bai ki haal")
-            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_DESC, "Main changa veere tu suna")
-            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_IMG, "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png")
+            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png")
+            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
             TokomemberIntroBottomsheet.show(bundle, childFragmentManager)
         }
 

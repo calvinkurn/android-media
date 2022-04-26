@@ -45,7 +45,7 @@ data class TimeWindow(
 	val startTime: String? = null,
 	@Expose
 	@SerializedName("id")
-	val id: Int? = 0,
+	var id: Int? = 0,
 	@Expose
 	@SerializedName("endTime")
 	val endTime: String? = null
@@ -72,26 +72,26 @@ data class TierLevelsItem(
 	val threshold: Int? = null,
 	@Expose
 	@SerializedName("id")
-	val id: Int? = 0
+	var id: Int? = 0
 )
 
 data class ProgramAttributesItem(
 	@Expose
 	@SerializedName("minimumTransaction")
-	val minimumTransaction: Int? = null,
+	var minimumTransaction: Int? = null,
 	@Expose
 	@SerializedName("multiplierRates")
-	val multiplierRates: Int? = null,
+	var multiplierRates: Int? = null,
 	@Expose
 	@SerializedName("tierLevelID")
-	val tierLevelID: Int? = null,
+	var tierLevelID: Int? = null,
 	@Expose
 	@SerializedName("id")
-	val id: Int? = 0,
+	var id: Int? = 0,
 	@Expose
 	@SerializedName("isUseMultiplier")
-	val isUseMultiplier: Boolean? = null,
+	var isUseMultiplier: Boolean? = null,
 	@Expose
 	@SerializedName("programID")
-	val programID: Int? = 0
+	var programID: Int? = 0
 )

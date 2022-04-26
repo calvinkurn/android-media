@@ -68,7 +68,7 @@ data class TimeWindow(
 	val startTime: String? = null,
 
 	@SerializedName("id")
-	val id: String? = null,
+	var id: String? = null,
 
 	@SerializedName("endTime")
 	val endTime: String? = null,

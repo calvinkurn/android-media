@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -45,9 +47,11 @@ class TokomemberIntroBottomsheet: BottomSheetUnify() {
         tvDesc = view.findViewById(R.id.tv_desc)
         btnProceed = view.findViewById(R.id.btn_proceed)
 
-        tvHeading.text = arguments?.getString(ARG_BOTTOMSHEET_TITLE, "")
-        tvDesc.text = arguments?.getString(ARG_BOTTOMSHEET_DESC, "")
-        imgBottomsheet.loadImage(arguments?.getString(ARG_BOTTOMSHEET_IMG, ""))
+        val tmIntroBottomsheetModel = Gson().fromJson(arguments?.getString(ARG_BOTTOMSHEET, ""), TmIntroBottomsheetModel::class.java)
+
+        tvHeading.text = tmIntroBottomsheetModel.title
+        tvDesc.text = tmIntroBottomsheetModel.desc
+        imgBottomsheet.loadImage(tmIntroBottomsheetModel.image)
         btnProceed.setOnClickListener {
 
         }
@@ -64,9 +68,7 @@ class TokomemberIntroBottomsheet: BottomSheetUnify() {
     companion object {
 
         const val TAG = "PayLaterTokopediaGopayBottomsheet"
-        const val ARG_BOTTOMSHEET_TITLE = "arg_bottomsheet_title"
-        const val ARG_BOTTOMSHEET_DESC = "arg_bottomsheet_desc"
-        const val ARG_BOTTOMSHEET_IMG = "arg_bottomsheet_img"
+        const val ARG_BOTTOMSHEET = "arg_bottomsheet"
 
         fun show(
             bundle: Bundle,

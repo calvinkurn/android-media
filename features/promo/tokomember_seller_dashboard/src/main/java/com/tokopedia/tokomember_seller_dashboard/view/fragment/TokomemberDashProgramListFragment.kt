@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
@@ -38,10 +40,25 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     private var shopId = 0
     private var cardId = 3827
+    private lateinit var homeFragmentCallback: HomeFragmentCallback
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
-        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId, this)
+        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId, this, homeFragmentCallback)
     }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let {
+            shopId = it
+        }
+
+        if (context is HomeFragmentCallback) {
+            homeFragmentCallback =  context as HomeFragmentCallback
+        } else {
+            throw RuntimeException(requireContext().toString() )
+        }
+    }
+
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>

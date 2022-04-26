@@ -1,0 +1,114 @@
+package com.tokopedia.tokomember_seller_dashboard.view.fragment
+
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
+import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
+import com.tokopedia.unifycomponents.TabsUnify
+import javax.inject.Inject
+
+class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
+
+    private lateinit var homeHeader: HeaderUnify
+    private lateinit var homeTabs: TabsUnify
+    private lateinit var homeViewPager: ViewPager
+    private lateinit var homeFragmentCallback: HomeFragmentCallback
+
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TokomemberDashHomeViewmodel::class.java)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is HomeFragmentCallback) {
+            homeFragmentCallback =  context as HomeFragmentCallback
+        } else {
+            throw RuntimeException(requireContext().toString() )
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.tm_dash_home_main, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        homeHeader = view.findViewById(R.id.home_header)
+        homeTabs = view.findViewById(R.id.home_tabs)
+        homeViewPager = view.findViewById(R.id.home_viewpager)
+
+        homeHeader.apply {
+            title = "TokoMember"
+            isShowBackButton = true
+
+            setNavigationOnClickListener {
+
+            }
+
+            val feedbackIcon = addRightIcon(0)
+            feedbackIcon.clearImage()
+            feedbackIcon.setImageDrawable(getIconUnifyDrawable(context, IconUnify.CHAT_REPORT))
+            feedbackIcon.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
+                ),
+                android.graphics.PorterDuff.Mode.MULTIPLY
+            )
+            feedbackIcon.hide()
+            feedbackIcon.setOnClickListener {
+                Toast.makeText(context, "Google form", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        homeTabs.setupWithViewPager(homeViewPager)
+        homeTabs.getUnifyTabLayout().setupWithViewPager(homeViewPager)
+
+        var adapter = TokomemberDashHomeViewpagerAdapter(childFragmentManager)
+        adapter.addFragment(TokomemberDashHomeFragment.newInstance(), "Home")
+        adapter.addFragment(TokomemberDashProgramListFragment.newInstance(arguments), "Program")
+        adapter.addFragment(TokomemberDashCouponFragment.newInstance(), "Kupon Tokomember")
+
+        homeViewPager.adapter = adapter
+
+    }
+
+    override fun getScreenName() = ""
+
+    override fun initInjector() {
+        DaggerTokomemberDashComponent.builder().build().inject(this)
+    }
+
+    companion object {
+        const val TAG_HOME = "tag_home"
+        fun newInstance(extras: Bundle?) = TokomemberDashHomeMainFragment().apply {
+            arguments = extras
+        }
+    }
+}
