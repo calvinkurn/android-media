@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/order_product_card"
-    android:layout_width="250dp"
+    android:layout_width="254dp"
+    app:cardUseCompatPadding="true"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:foreground="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
