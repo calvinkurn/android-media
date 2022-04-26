@@ -7,4 +7,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
  */
 sealed interface ProductTagAction {
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
+
+    /** Last Tagged Product */
+    object LoadLastTaggedProduct: ProductTagAction
 }

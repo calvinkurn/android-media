@@ -26,6 +26,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
@@ -86,6 +87,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_BADGE = "shop_badge"
         private const val PARAM_PRODUCT_TAG_SOURCE = "product_tag_source"
+        private const val PARAM_AUTHOR_ID = "author_id"
+        private const val PARAM_AUTHOR_TYPE = "author_type"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -547,6 +550,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
             intent.putExtra(PARAM_SHOP_BADGE, createPostModel.shopBadge)
             intent.putExtra(PARAM_PRODUCT_TAG_SOURCE, createPostModel.productTagSources.joinToString(separator = ","))
+            intent.putExtra(PARAM_AUTHOR_ID, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.id)
+            intent.putExtra(PARAM_AUTHOR_TYPE, (requireActivity() as CreatePostActivityNew).selectedFeedAccount.type)
             startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
         }
     }

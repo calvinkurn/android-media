@@ -35,9 +35,11 @@ class ProductTagActivity : BaseActivity() {
 
         val productTagList = intent.getStringExtra(EXTRA_PRODUCT_TAG_LIST) ?: ""
         val shopBadge = intent.getStringExtra(EXTRA_SHOP_BADGE) ?: ""
+        val authorId = intent.getStringExtra(EXTRA_AUTHOR_ID) ?: ""
+        val authorType = intent.getStringExtra(EXTRA_AUTHOR_TYPE) ?: ""
 
         supportFragmentManager.beginTransaction()
-            .replace(binding.container.id, getParentFragment(productTagList, shopBadge))
+            .replace(binding.container.id, getParentFragment(productTagList, shopBadge, authorId, authorType,))
             .commit()
     }
 
@@ -52,17 +54,23 @@ class ProductTagActivity : BaseActivity() {
     private fun getParentFragment(
         productTagList: String,
         shopBadge: String,
+        authorId: String,
+        authorType: String,
     ): ProductTagParentFragment {
         return ProductTagParentFragment.getFragmentWithFeedSource(
             supportFragmentManager,
             classLoader,
             productTagList,
             shopBadge,
+            authorId,
+            authorType,
         )
     }
 
     companion object {
         private const val EXTRA_PRODUCT_TAG_LIST = "product_tag_source"
         private const val EXTRA_SHOP_BADGE = "shop_badge"
+        private const val EXTRA_AUTHOR_ID = "authorId"
+        private const val EXTRA_AUTHOR_TYPE = "authorType"
     }
 }

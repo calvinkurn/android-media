@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -20,6 +21,9 @@ import kotlinx.coroutines.flow.combine
 class ProductTagViewModel @AssistedInject constructor(
     @Assisted("productTagSourceRaw") productTagSourceRaw: String,
     @Assisted("shopBadge") val shopBadge: String,
+    @Assisted("authorId") private val authorId: String,
+    @Assisted("authorType") private val authorType: String,
+    private val repo: ProductTagRepository,
 ): ViewModel() {
 
     @AssistedFactory
@@ -27,6 +31,8 @@ class ProductTagViewModel @AssistedInject constructor(
         fun create(
             @Assisted("productTagSourceRaw") productTagSourceRaw: String,
             @Assisted("shopBadge") shopBadge: String,
+            @Assisted("authorId") authorId: String,
+            @Assisted("authorType") authorType: String,
         ): ProductTagViewModel
     }
 
@@ -61,12 +67,6 @@ class ProductTagViewModel @AssistedInject constructor(
         processProductTagSource(productTagSourceRaw)
     }
 
-    fun submitAction(action: ProductTagAction) {
-        when(action) {
-            is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
-        }
-    }
-
     private fun processProductTagSource(productTagSourceRaw: String) {
         viewModelScope.launchCatchError(block = {
             val split = productTagSourceRaw.split(",")
@@ -76,8 +76,21 @@ class ProductTagViewModel @AssistedInject constructor(
         }) { }
     }
 
+    fun submitAction(action: ProductTagAction) {
+        when(action) {
+            is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
+
+            /** Load Tagged Product */
+            ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
+        }
+    }
+
     /** Handle Action */
     private fun handleSelectProductTagSource(source: ProductTagSource) {
         _selectedProductTagSource.value = source
+    }
+
+    private fun handleLoadLastTaggedProduct() {
+
     }
 }

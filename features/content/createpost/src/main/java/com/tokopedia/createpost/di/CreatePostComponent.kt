@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.di
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostScope
@@ -20,7 +21,7 @@ import dagger.Component
         CreatePostModule::class,
         ViewModelModule::class,
         ContentCreationProductTagBindModule::class,
-    ]
+    ],
 )
 interface CreatePostComponent {
     fun inject(fragment: BaseCreatePostFragment)

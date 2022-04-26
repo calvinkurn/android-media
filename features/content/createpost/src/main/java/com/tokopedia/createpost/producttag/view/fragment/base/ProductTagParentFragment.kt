@@ -147,6 +147,8 @@ class ProductTagParentFragment @Inject constructor(
                 requireActivity(),
                 getStringArgument(EXTRA_PRODUCT_TAG_LIST),
                 getStringArgument(EXTRA_SHOP_BADGE),
+                getStringArgument(EXTRA_AUTHOR_ID),
+                getStringArgument(EXTRA_AUTHOR_TYPE),
             )
         )[ProductTagViewModel::class.java]
     }
@@ -159,7 +161,10 @@ class ProductTagParentFragment @Inject constructor(
         private const val TAG = "ProductTagParentFragment"
         private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
         private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
+        private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
+        private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
         private const val EXTRA_SOURCE = "source"
+
         const val SOURCE_FEED = "feed"
         const val SOURCE_PLAY = "play"
 
@@ -168,9 +173,11 @@ class ProductTagParentFragment @Inject constructor(
             classLoader: ClassLoader,
             productTagSource: String,
             shopBadge: String,
+            authorId: String,
+            authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, SOURCE_FEED)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_FEED)
         }
 
         fun getFragmentWithPlaySource(
@@ -178,9 +185,11 @@ class ProductTagParentFragment @Inject constructor(
             classLoader: ClassLoader,
             productTagSource: String,
             shopBadge: String,
+            authorId: String,
+            authorType: String,
         ): ProductTagParentFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
-            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, SOURCE_PLAY)
+            return oldInstance ?: createFragment(fragmentManager, classLoader, productTagSource, shopBadge, authorId, authorType, SOURCE_PLAY)
         }
 
         private fun createFragment(
@@ -188,6 +197,8 @@ class ProductTagParentFragment @Inject constructor(
             classLoader: ClassLoader,
             productTagSource: String,
             shopBadge: String,
+            authorId: String,
+            authorType: String,
             source: String,
         ): ProductTagParentFragment {
             return (
@@ -199,6 +210,8 @@ class ProductTagParentFragment @Inject constructor(
                 arguments = Bundle().apply {
                     putString(EXTRA_PRODUCT_TAG_LIST, productTagSource)
                     putSerializable(EXTRA_SHOP_BADGE, shopBadge)
+                    putSerializable(EXTRA_AUTHOR_ID, authorId)
+                    putSerializable(EXTRA_AUTHOR_TYPE, authorType)
                     putString(EXTRA_SOURCE, source)
                 }
             }

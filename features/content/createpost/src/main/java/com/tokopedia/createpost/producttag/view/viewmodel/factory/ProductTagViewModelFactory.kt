@@ -16,6 +16,8 @@ class ProductTagViewModelFactory @AssistedInject constructor(
     @Assisted activity: FragmentActivity,
     @Assisted("productTagSourceRaw") private val productTagSourceRaw: String,
     @Assisted("shopBadge") private val shopBadge: String,
+    @Assisted("authorId") private val authorId: String,
+    @Assisted("authorType") private val authorType: String,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(activity, null) {
 
@@ -25,6 +27,8 @@ class ProductTagViewModelFactory @AssistedInject constructor(
             activity: FragmentActivity,
             @Assisted("productTagSourceRaw") productTagSourceRaw: String,
             @Assisted("shopBadge") shopBadge: String,
+            @Assisted("authorId") authorId: String,
+            @Assisted("authorType") authorType: String,
         ): ProductTagViewModelFactory
     }
 
@@ -33,6 +37,11 @@ class ProductTagViewModelFactory @AssistedInject constructor(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        return productTagViewModelFactory.create(productTagSourceRaw, shopBadge) as T
+        return productTagViewModelFactory.create(
+            productTagSourceRaw,
+            shopBadge,
+            authorId,
+            authorType,
+        ) as T
     }
 }

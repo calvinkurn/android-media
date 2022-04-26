@@ -53,7 +53,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    protected var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
+    var selectedFeedAccount: FeedAccountUiModel = FeedAccountUiModel.Empty
 
     protected val mFeedAccountList = mutableListOf<FeedAccountUiModel>()
 

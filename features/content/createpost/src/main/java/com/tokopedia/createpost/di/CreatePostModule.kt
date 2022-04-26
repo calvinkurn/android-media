@@ -1,6 +1,8 @@
 package com.tokopedia.createpost.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
@@ -19,5 +21,11 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
         return createPostPresenter
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }

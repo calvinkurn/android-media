@@ -11,13 +11,13 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
-@GqlQuery(GetFeedLastTaggedProduct.QUERY_NAME, GetFeedLastTaggedProduct.QUERY)
-class GetFeedLastTaggedProduct @Inject constructor(
+@GqlQuery(GetFeedLastTaggedProductUseCase.QUERY_NAME, GetFeedLastTaggedProductUseCase.QUERY)
+class GetFeedLastTaggedProductUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetFeedLastTaggedProductResponse>(gqlRepository) {
 
     init {
-        setGraphqlQuery(GetFeedLastTaggedProductQuery())
+        setGraphqlQuery(GetFeedLastTaggedProductUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
             .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -30,7 +30,7 @@ class GetFeedLastTaggedProduct @Inject constructor(
         private const val PARAM_CURSOR = "cursor"
         private const val PARAM_LIMIT = "limit"
 
-        const val QUERY_NAME = "GetFeedLastTaggedProductQuery"
+        const val QUERY_NAME = "GetFeedLastTaggedProductUseCaseQuery"
         const val QUERY = """
             query FeedXGetLastTaggedProducts(${"$$PARAM_AUTHOR_ID"}: String!, ${"$$PARAM_AUTHOR_TYPE"}: String!, ${"$$PARAM_CURSOR"}: String!, ${"$$PARAM_LIMIT"}: Int!) {
               feedXGetLastTaggedProducts(req: {
