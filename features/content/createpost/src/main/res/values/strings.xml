@@ -95,4 +95,6 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_product_tag_source_label">Pilih produk dari</string>
     <string name="cc_product_tag_source_my_account_label">Akun saya</string>
     <string name="cc_product_tag_source_my_shop_label">Toko saya</string>
+
+    <string name="cc_product_tag_search_hint">Cari di Tokopedia</string>
 </resources>

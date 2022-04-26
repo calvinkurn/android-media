@@ -14,6 +14,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -44,7 +45,10 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = createProductTagViewModel()
+        viewModel = ViewModelProvider(
+            this,
+            createViewModelFactory()
+        )[ProductTagViewModel::class.java]
         childFragmentManager.fragmentFactory = fragmentFactory
     }
 
@@ -79,6 +83,9 @@ class ProductTagParentFragment @Inject constructor(
                     })
                     setData(viewModel.productTagSourceList, viewModel.shopBadge)
                 }
+            }
+            is LastTaggedProductFragment -> {
+                childFragment.setViewModelFactory(createViewModelFactory())
             }
         }
     }
@@ -127,6 +134,17 @@ class ProductTagParentFragment @Inject constructor(
         }
 
         /** TODO: Update Fragment Content */
+        when(currState.selectedProductTagSource) {
+            ProductTagSource.LastTagProduct -> {
+                val fragment = LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+                childFragmentManager.beginTransaction()
+                    .replace(binding.flCcProductTagContainer.id, fragment, LastTaggedProductFragment.TAG)
+                    .commit()
+            }
+            ProductTagSource.GlobalSearch -> {
+
+            }
+        }
     }
 
     private fun getProductTagSourceText(source: ProductTagSource): String {
@@ -140,17 +158,14 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    private fun createProductTagViewModel(): ProductTagViewModel {
-        return ViewModelProvider(
-            this,
-            viewModelFactoryCreator.create(
-                requireActivity(),
-                getStringArgument(EXTRA_PRODUCT_TAG_LIST),
-                getStringArgument(EXTRA_SHOP_BADGE),
-                getStringArgument(EXTRA_AUTHOR_ID),
-                getStringArgument(EXTRA_AUTHOR_TYPE),
-            )
-        )[ProductTagViewModel::class.java]
+    private fun createViewModelFactory(): ViewModelProvider.Factory {
+        return viewModelFactoryCreator.create(
+            requireActivity(),
+            getStringArgument(EXTRA_PRODUCT_TAG_LIST),
+            getStringArgument(EXTRA_SHOP_BADGE),
+            getStringArgument(EXTRA_AUTHOR_ID),
+            getStringArgument(EXTRA_AUTHOR_TYPE),
+        )
     }
 
     private fun getStringArgument(key: String): String {
