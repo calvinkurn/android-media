@@ -118,7 +118,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     val objectAnimator: ObjectAnimator =
         ObjectAnimator.ofPropertyValuesHolder(view, pvhScaleX, pvhScaleY)
     objectAnimator.interpolator = FastOutSlowInInterpolator()
-    objectAnimator.duration = 300
+    objectAnimator.duration = BUBBLE_MAIN_ANIMATION_DURATION
     objectAnimator.addListener(object : Animator.AnimatorListener {
         override fun onAnimationStart(animation: Animator) {
             pointerView.postDelayed({
