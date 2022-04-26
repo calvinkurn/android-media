@@ -18,8 +18,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_search"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_12"
@@ -31,28 +31,23 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-        <EditText
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/et_search"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@android:color/transparent"
-            android:imeOptions="actionSearch"
-            android:inputType="textNoSuggestions"
-            android:lines="1"
-            android:textColor="@color/Unify_N700_68"
-            android:textColorHint="@color/Unify_N700_32"
-            android:textCursorDrawable="@drawable/ic_cc_search_cursor"
-            android:textSize="@dimen/fontSize_lvl3"
-            android:hint="@string/cc_product_tag_search_hint"
+            android:text="@string/cc_product_tag_search_hint"
+            android:textColor="@color/Unify_N700_32"
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_search"
             app:layout_constraintTop_toTopOf="@id/iv_search"
-            />
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
