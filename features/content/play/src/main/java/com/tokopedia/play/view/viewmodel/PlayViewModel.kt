@@ -1837,7 +1837,7 @@ class PlayViewModel @AssistedInject constructor(
                     ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
                 }
             )
-            repo.setHasProcessedWinner(_interactive.value.interactive.id)
+            repo.setHasProcessedWinner(interactive.id)
         }
     }
 
