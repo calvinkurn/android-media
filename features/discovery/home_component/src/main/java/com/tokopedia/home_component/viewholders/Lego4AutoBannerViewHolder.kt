@@ -13,7 +13,6 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.Lego4AutoTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.Lego4AutoBannerAdapter
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
