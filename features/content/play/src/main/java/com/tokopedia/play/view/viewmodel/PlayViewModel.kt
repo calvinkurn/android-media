@@ -53,6 +53,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -65,6 +66,7 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
@@ -840,10 +842,12 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
+            is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item.id)
 
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
+            is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)
@@ -1383,6 +1387,7 @@ class PlayViewModel @AssistedInject constructor(
         repo.save(interactive)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> handleGiveawayFromNetwork(interactive)
+            is InteractiveUiModel.Quiz -> handleQuizFromNetwork(interactive)
             else -> {}
         }
     }
@@ -1393,6 +1398,26 @@ class PlayViewModel @AssistedInject constructor(
         }
 
         if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
+            val channelId = mChannelData?.id ?: return
+
+            try {
+                val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                setLeaderboardBadgeState(interactiveLeaderboard)
+
+                _interactive.update {
+                    it.copy(interactive = InteractiveUiModel.Unknown)
+                }
+            } catch (e: Throwable) {}
+        }
+    }
+
+    private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
+        _interactive.update {
+            it.copy(interactive = quiz)
+        }
+
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished) {
             val channelId = mChannelData?.id ?: return
 
             try {
@@ -1619,6 +1644,10 @@ class PlayViewModel @AssistedInject constructor(
 //                    handleUserWinnerStatus(winnerStatus)
 //                }
             }
+            is QuizResponse -> {
+                val interactive = playSocketToModelMapper.mapQuizFromSocket(result) as InteractiveUiModel.Quiz
+                handleQuizFromNetwork(interactive)
+            }
         }
     }
 
@@ -1717,17 +1746,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleQuizEnded() {
-        viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.getAndUpdate {
-                if (it.interactive !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
-                val interactive = it.interactive.copy(
-                    status = InteractiveUiModel.Quiz.Status.Finished
-                )
-                it.copy(interactive = interactive)
-            }
-        }) {
-            _interactive.value = InteractiveStateUiModel.Empty
-        }
+
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
@@ -1742,6 +1761,37 @@ class PlayViewModel @AssistedInject constructor(
                 else -> false
             }
             it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
+        }
+    }
+
+    private fun handleClickQuizOption(optionId: String){
+        updateQuizOptionUi(selectedId = optionId, isLoading = true)
+        viewModelScope.launchCatchError(block = {
+            val response = repo.answerQuiz(interactiveId = _interactive.value.interactive.id.toString(), choiceId = optionId)
+            updateQuizOptionUi(selectedId = optionId, correctId = response)
+            _uiEvent.emit(QuizAnsweredEvent)
+        }) {
+            _uiEvent.emit(
+                ShowErrorEvent(it)
+            )
+            _uiEvent.emit(QuizAnsweredEvent)
+        }
+    }
+
+    private fun updateQuizOptionUi(selectedId: String, correctId: String = "", isLoading: Boolean? = null){
+        _interactive.update {
+            val quiz = it.interactive as InteractiveUiModel.Quiz
+            val new = quiz.copy(
+                listOfChoices =  quiz.listOfChoices.map { choice ->
+                    when {
+                        isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
+                        choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
+                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
+                        else -> choice
+                    }
+                }
+            )
+            it.copy(interactive = new)
         }
     }
 
@@ -1808,7 +1858,7 @@ class PlayViewModel @AssistedInject constructor(
 
                 _uiEvent.emit(
                     if(winnerStatus.userId.toString() == userId){
-                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText, _interactive.value.interactive)
                     }
                     else {
                         ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)

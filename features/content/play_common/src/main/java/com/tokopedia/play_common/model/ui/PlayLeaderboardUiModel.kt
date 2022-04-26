@@ -11,19 +11,32 @@ sealed class PlayLeaderboardWrapperUiModel {
     object Unknown: PlayLeaderboardWrapperUiModel()
 }
 
+/**
+ * Fetching from network
+ */
 data class PlayLeaderboardInfoUiModel(
         val leaderboardWinners: List<PlayLeaderboardUiModel> = emptyList(),
         val totalParticipant: String = "",
         val config: PlayLeaderboardConfigUiModel = PlayLeaderboardConfigUiModel()
 )
 
+/***
+ * For leaderboard view type
+ */
 data class PlayLeaderboardUiModel(
     val title: String,
     val winners: List<PlayWinnerUiModel>,
+    val choices: List<QuizChoicesUiModel> = emptyList(), //opt = not empty when QUIZ, soon Polling
     val otherParticipantText: String,
-    val otherParticipant: Long
+    val otherParticipant: Long,
+    val emptyLeaderBoardCopyText: String = "",
+    val reward: String = "",
+    val leaderBoardType: LeadeboardType = LeadeboardType.Unknown
 )
 
+/***
+ * For inside leaderboard view type; winner
+ */
 data class PlayWinnerUiModel(
     val rank: Int,
     val id: String,
@@ -38,5 +51,12 @@ data class PlayLeaderboardConfigUiModel(
         val winnerMessage: String = "",
         val winnerDetail: String = "",
         val loserMessage: String = "",
-        val loserDetail: String = "",
+        val loserDetail: String = ""
 )
+
+enum class LeadeboardType{
+    Giveaway,
+    Quiz,
+    Polling,
+    Unknown
+}

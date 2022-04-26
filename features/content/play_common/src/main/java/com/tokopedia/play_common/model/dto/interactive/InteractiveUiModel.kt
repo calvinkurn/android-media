@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.model.dto.interactive
 
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
 
 /**
@@ -48,11 +49,14 @@ sealed interface InteractiveUiModel {
         override val title: String,
         override val waitingDuration: Long,
         val status: Status,
+        val listOfChoices: List<QuizChoicesUiModel>,
+        val reward: String,
     ) : InteractiveUiModel {
 
         sealed interface Status {
 
             data class Ongoing(val endTime: Calendar) : Status
+            object Failed: Status
             object Finished : Status
             object Unknown : Status
         }

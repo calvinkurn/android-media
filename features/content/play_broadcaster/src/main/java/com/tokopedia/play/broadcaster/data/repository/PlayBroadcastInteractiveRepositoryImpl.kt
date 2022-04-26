@@ -42,13 +42,13 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         return@withContext mapper.mapInteractiveConfig(response)
     }
 
-    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
-        val response = getCurrentInteractiveUseCase.apply {
-            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-        }.executeOnBackground()
-
-        return@withContext interactiveMapper.mapInteractive(response.data)
-    }
+    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
+        withContext(dispatchers.io) {
+            val response = getCurrentInteractiveUseCase.apply {
+                setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+            }.executeOnBackground()
+            return@withContext interactiveMapper.mapInteractive(response.data)
+        }
 
     override suspend fun getInteractiveLeaderboard(
         channelId: String,

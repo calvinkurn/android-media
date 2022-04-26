@@ -38,17 +38,17 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               waiting_duration: waitingDuration
             }
             quiz {
-              interactiveID
+              interactive_id: interactiveID
               status
               question
               prize
-              countdownEnd
+              countdown_end: countdownEnd
               choices {
                 id
                 text
                 isCorrect
               }
-              userChoice
+              user_choice: userChoice
             }
           }
         }
