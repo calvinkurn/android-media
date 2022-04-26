@@ -77,6 +77,8 @@ private const val SPAN_SIZE_SINGLE = 2
 private const val MAX_FEED_SIZE = 6
 private const val MAX_FEED_SIZE_SMALL = 3
 private const val LAST_FEED_POSITION = 5
+private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
+private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f
 private const val LAST_FEED_POSITION_SMALL = 2
 private val scope = CoroutineScope(Dispatchers.Main)
 private var productVideoJob: Job? = null
@@ -85,6 +87,9 @@ private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
 private const val TIME_TWO_SEC = 2000L
 private const val TIME_FIVE_SEC = 5000L
+private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
+private const val ROUND_OFF_TO_ONE_DECIMAL_VALUE = 10
+
 
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
@@ -96,6 +101,9 @@ private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
 private const val VOD_VIDEO_RATIO = "4:5"
+private const val MEDIA_RATIO_PORTRAIT_THRESHOLD_FLOAT = 0.8f
+private const val MEDIA_RATIO_LANDSCAPE_THRESHOLD_FLOAT = 1.91f
+private const val MEDIA_RATIO_SQUARE_VALUE_FLOAT = 1f
 private const val SQUARE_RATIO = "1:1"
 private const val LONG_VIDEO_RATIO = "1.91:1"
 private const val FOLLOW_COUNT_THRESHOLD = 100
@@ -1562,7 +1570,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                         feedAddViewJob?.cancel()
                         feedAddViewJob = scope.launch {
-                                    delay(5000L)
+                                    delay(TIME_FIVE_SEC)
                                     if (!isPaused) {
                                         val view = feedXCard.views
                                         val count = view.count +1
@@ -1653,6 +1661,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun toggleVolume(isMute: Boolean) {
         videoPlayer?.toggleVideoVolume(isMute)
     }
+    @SuppressLint("ClickableViewAccessibility")
     private fun setNewASGCLayout(feedXCard: FeedXCard){
         val postId = feedXCard.id.toIntOrZero()
         val products = feedXCard.products
@@ -1665,7 +1674,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             if (products.size > 1) {
                 pageControl.show()
-                pageControl.setIndicator(if (totalProducts <= 5) totalProducts else 5)
+                pageControl.setIndicator(if (totalProducts <= MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL) totalProducts else MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL)
                 pageControl.indicatorCurrentPosition = feedXCard.lastCarouselIndex
                 pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
                 carouselView.activeIndex = feedXCard.lastCarouselIndex
@@ -1684,7 +1693,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             type = "image",
                             appLink = feedXCard.appLink,
                             mediaUrl = coverURL,
-                            tagging = arrayListOf(FeedXMediaTagging(index, 0.5f, 0.44f, mediaIndex = index)),
+                            tagging = arrayListOf(FeedXMediaTagging(index, TOPADS_TAGGING_CENTER_POS_X, TOPADS_TAGGING_CENTER_POS_Y, mediaIndex = index)),
                             isImageImpressedFirst = true,
                             productName = name,
                             price = priceFmt,
@@ -1717,7 +1726,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
             mediaList.forEachIndexed { index, feedXMedia ->
                 val tagProducts = mutableListOf<FeedXProduct>()
                 tagProducts.add(products[index])
-                if (index >= 5)
+
+                /** we need to add only upto 5 products in asgc carousel  */
+
+                if (index >= MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL)
                     return@forEachIndexed
 
                     var imageWidth = 0
@@ -2475,10 +2487,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         return PORTRAIT
     }
     private fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
-        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
-        return if (ratio <= 0.8)
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * ROUND_OFF_TO_ONE_DECIMAL_VALUE) / ROUND_OFF_TO_ONE_DECIMAL_VALUE
+        return if (ratio <= MEDIA_RATIO_PORTRAIT_THRESHOLD_FLOAT)
             VOD_VIDEO_RATIO
-        else if (ratio > 0.8 && ratio < 1)
+        else if (ratio > MEDIA_RATIO_PORTRAIT_THRESHOLD_FLOAT && ratio < MEDIA_RATIO_SQUARE_VALUE_FLOAT)
             ratio.toString() //original ratio
         else
             SQUARE_RATIO
@@ -2486,10 +2498,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
     private fun getRatioIfLandscape(mediaRatio: FeedXMediaRatio):String{
 
-        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
-        return if (ratio >= 1.91)
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * ROUND_OFF_TO_ONE_DECIMAL_VALUE) / ROUND_OFF_TO_ONE_DECIMAL_VALUE
+        return if (ratio >= MEDIA_RATIO_LANDSCAPE_THRESHOLD_FLOAT)
             LONG_VIDEO_RATIO
-        else if (ratio > 1 && ratio < 1.91)
+        else if (ratio > MEDIA_RATIO_SQUARE_VALUE_FLOAT && ratio < MEDIA_RATIO_LANDSCAPE_THRESHOLD_FLOAT)
             ratio.toString() //original ratio
         else
             SQUARE_RATIO
