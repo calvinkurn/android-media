@@ -1,15 +1,16 @@
-package com.tokopedia.homenav.mainnav.view.datamodel
+package com.tokopedia.homenav.mainnav.view.datamodel.wishlist
 
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
+import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class InitialShimmerFavoriteShopDataModel(
-        val id: Int = 126
+data class ShimmerWishlistDataModel(
+        val id: Int = 127
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
     override fun isContentTheSame(visitable: MainNavVisitable): Boolean {
-        return visitable is InitialShimmerFavoriteShopDataModel && id == visitable.id
+        return visitable is ShimmerWishlistDataModel && id == visitable.id
     }
 
     override fun type(factory: MainNavTypeFactory): Int {

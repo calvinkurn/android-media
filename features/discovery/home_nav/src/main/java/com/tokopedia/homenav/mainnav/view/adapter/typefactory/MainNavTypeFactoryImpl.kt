@@ -14,9 +14,17 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ShimmeringFavoriteShopViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ShimmeringWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.user.session.UserSessionInterface
 
 class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
@@ -47,12 +55,12 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return TransactionListViewHolder.LAYOUT
     }
 
-    override fun type(wishlistListItemDataModel: WishlistListItemDataModel): Int {
-        return WishlistListViewHolder.LAYOUT
+    override fun type(wishlistDataModel: WishlistDataModel): Int {
+        return WishlistViewHolder.LAYOUT
     }
 
-    override fun type(favoriteShopListItemDataModel: FavoriteShopListItemDataModel): Int {
-        return FavoriteShopListViewHolder.LAYOUT
+    override fun type(favoriteShopListDataModel: FavoriteShopListDataModel): Int {
+        return FavoriteShopViewHolder.LAYOUT
     }
 
     override fun type(visitable: HomeNavTickerDataModel): Int {
@@ -71,9 +79,13 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
-    override fun type(initialShimmerFavoriteShopDataModel: InitialShimmerFavoriteShopDataModel): Int {
+    override fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel): Int {
         //Temporary, set to be changed into separate viewholder
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
+    }
+
+    override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
+        return ShimmeringWishlistViewHolder.LAYOUT
     }
 
     override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
@@ -85,6 +97,11 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     }
 
     override fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int {
         //Temporary, set to be changed into separate viewholder
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
     }
@@ -102,9 +119,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
-            WishlistListViewHolder.LAYOUT -> WishlistListViewHolder(view, mainNavListener)
-            FavoriteShopListViewHolder.LAYOUT -> FavoriteShopListViewHolder(view, mainNavListener)
-            InitialShimmeringFavoriteShopDataViewHolder.LAYOUT -> InitialShimmeringFavoriteShopDataViewHolder(view)
+            WishlistViewHolder.LAYOUT -> WishlistViewHolder(view, mainNavListener)
+            FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
+            ShimmeringFavoriteShopViewHolder.LAYOUT -> ShimmeringFavoriteShopViewHolder(view)
+            ShimmeringWishlistViewHolder.LAYOUT -> ShimmeringWishlistViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

@@ -1,14 +1,11 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshoplist
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderOtherFavoriteShopBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshoplist.OtherFavoriteShopModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.OtherFavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.utils.view.binding.viewBinding
 

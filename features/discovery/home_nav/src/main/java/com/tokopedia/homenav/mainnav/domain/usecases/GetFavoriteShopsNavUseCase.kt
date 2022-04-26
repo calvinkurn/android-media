@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.domain.usecases
 
-import android.util.Log
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -63,29 +62,24 @@ class GetFavoriteShopsNavUseCase @Inject constructor (
 
     override suspend fun executeOnBackground(): List<NavFavoriteShopModel> {
         return try {
-            Log.d("favshop", "executeOnBackground: ")
             val responseData = Success(graphqlUseCase.executeOnBackground().favoriteShops?:FavoriteShops())
             val favoriteShopList = mutableListOf<NavFavoriteShopModel>()
-            Log.d("favshop", "executeOnBackground: ${responseData}")
             responseData.data.shops?.map {
                 favoriteShopList.add(NavFavoriteShopModel(
                     id = it.id,
                     name = it.name,
                     imageUrl = it.imageUrl,
                     location = it.location,
-                    badgeImageUrl = it.badge?.get(0)?.imageUrl
+                    badgeImageUrl = it.badge?.firstOrNull()?.imageUrl ?: ""
                 ))
             }
-            Log.d("favshop", "executeOnBackground list size ${favoriteShopList.size}: ")
             favoriteShopList
         } catch (e: Throwable){
-            Log.d("favshop", "executeOnBackground error: ")
             listOf()
         }
     }
 
     private fun setParams(page: Int = 1, itemsPerPage: Int = 5) = RequestParams.create().apply {
-        Log.d("favshop", "setParams: ")
         parameters.clear()
         putInt(PARAM_PAGE, page)
         putInt(PARAM_ITEMS_PER_PAGE, itemsPerPage)

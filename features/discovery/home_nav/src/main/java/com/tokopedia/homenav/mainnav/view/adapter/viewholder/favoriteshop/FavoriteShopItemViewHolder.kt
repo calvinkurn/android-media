@@ -1,27 +1,17 @@
-package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshoplist
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop
 
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderFavoriteShopBinding
-import com.tokopedia.homenav.databinding.HolderTransactionProductBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
-import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshoplist.FavoriteShopModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.utils.view.binding.viewBinding
 
-class FavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<FavoriteShopModel>(itemView) {
+class FavoriteShopItemViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<FavoriteShopModel>(itemView) {
     private var binding: HolderFavoriteShopBinding? by viewBinding()
     companion object {
         @LayoutRes
@@ -44,6 +34,9 @@ class FavoriteShopViewHolder(itemView: View, val mainNavListener: MainNavListene
         }
 
         binding?.textShopLocation?.text = favoriteShopModel.navFavoriteShopModel.location
+        if(!favoriteShopModel.navFavoriteShopModel.badgeImageUrl.isNullOrEmpty()){
+            binding?.iconShopBadge?.setImageUrl(favoriteShopModel.navFavoriteShopModel.badgeImageUrl)
+        } else binding?.iconShopBadge?.gone()
 
         itemView.setOnClickListener {
             //tracker to be added

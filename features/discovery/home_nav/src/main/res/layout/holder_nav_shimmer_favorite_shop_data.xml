@@ -7,12 +7,12 @@
     android:orientation="horizontal">
 
         <include
-            layout="@layout/holder_transaction_payment_shimmer"/>
+            layout="@layout/holder_favorite_shop_shimmer"/>
 
         <include
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginLeft="8dp"
-            layout="@layout/holder_transaction_payment_shimmer"/>
+            layout="@layout/holder_favorite_shop_shimmer"/>
 
 </LinearLayout>
