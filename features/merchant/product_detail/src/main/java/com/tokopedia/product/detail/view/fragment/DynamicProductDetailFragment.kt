@@ -112,6 +112,7 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMultilocation
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
@@ -340,6 +341,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
+    private var alreadyShowMultilocBottomSheet: Boolean = false
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -2203,8 +2205,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
 
         setupProductVideoCoordinator()
-
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
+        showWarehouseChangeBs(productInfo.basic.productMultilocation)
+    }
+
+    private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
+        if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
+            alreadyShowMultilocBottomSheet = true
+            goToApplink(productMultiloc.applink)
+        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -2304,13 +2313,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 context = context,
                 p2Data = it,
                 productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: "",
-                isProductWarehouse = viewModel.getDynamicProductInfoP1?.basic?.isWarehouse()
-                        ?: false,
-                isProductInCampaign = viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive
-                        ?: false,
-                isOutOfStock = viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0,
-                boeImageUrl = boeData.imageURL,
-                isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
+                boeImageUrl = boeData.imageURL)
 
         updateUi()
     }
