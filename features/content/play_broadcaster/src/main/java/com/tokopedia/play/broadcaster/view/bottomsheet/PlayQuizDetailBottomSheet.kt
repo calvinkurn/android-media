@@ -10,12 +10,24 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 class PlayQuizDetailBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-) : BottomSheetUnify() {
+) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
+
+    private val leaderboardSheetView by viewComponent {
+        PlayInteractiveLeaderboardViewComponent(
+            it,
+            this
+        )
+    }
 
     private var _binding: BottomSheetPlayBroQuizDetailBinding? = null
     private val binding: BottomSheetPlayBroQuizDetailBinding
@@ -41,6 +53,11 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         observeQuizDetail()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -48,7 +65,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
 
     private fun observeQuizDetail() {
         parentViewModel.observableQuizDetailState.observe(viewLifecycleOwner) {
-            when (it){
+            when (it) {
                 is QuizDetailStateUiModel.Error -> TODO()
                 is QuizDetailStateUiModel.Loading -> {}
                 is QuizDetailStateUiModel.Success -> setUIModel(it.dataUiModel)
@@ -58,8 +75,24 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     private fun setUIModel(dataUiModel: QuizDetailDataUiModel) {
-        binding.tvBroQuizDetailQuestion.text = dataUiModel.question
-        binding.tvRewards.text = dataUiModel.reward
+        leaderboardSheetView.show()
+        val lb = PlayLeaderboardUiModel(
+            title = dataUiModel.question,
+            reward = dataUiModel.reward,
+            choices = dataUiModel.choices.map {
+                QuizChoicesUiModel(
+                    id = it.id,
+                    text = it.text,
+                    type = PlayQuizOptionState.Unknown,
+                    isLoading = false,
+                )
+            },
+            endsIn = dataUiModel.countDownEnd,
+            otherParticipant = 0,
+            otherParticipantText = "",
+            winners = emptyList()
+        )
+        leaderboardSheetView.setData(listOf(lb))
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -78,5 +111,13 @@ class PlayQuizDetailBottomSheet @Inject constructor(
                 PlayQuizDetailBottomSheet::class.java.name
             ) as PlayQuizDetailBottomSheet
         }
+    }
+
+    override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
+        TODO("Not yet implemented")
     }
 }

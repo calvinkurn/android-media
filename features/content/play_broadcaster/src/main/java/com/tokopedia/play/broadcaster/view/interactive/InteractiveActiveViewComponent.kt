@@ -20,6 +20,7 @@ class InteractiveActiveViewComponent(
 
     private val parent = rootView as ViewGroup
 
+
     init {
         rootView.setOnClickListener {
             listener.onWidgetClicked(this@InteractiveActiveViewComponent)

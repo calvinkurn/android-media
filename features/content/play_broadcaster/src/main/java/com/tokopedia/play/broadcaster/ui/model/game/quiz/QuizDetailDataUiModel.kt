@@ -7,6 +7,7 @@ data class QuizDetailDataUiModel(
     val choices: List<Choice> = listOf(),
 ) {
     data class Choice(
+        val id: String,
         val text: String,
         val isCorrectAnswer: Boolean,
         val participantCount: Int,

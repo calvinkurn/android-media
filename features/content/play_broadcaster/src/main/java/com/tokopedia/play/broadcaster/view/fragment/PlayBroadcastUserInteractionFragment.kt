@@ -31,10 +31,12 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastQuizState
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -62,8 +64,6 @@ import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComp
 import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
-import com.tokopedia.play.broadcaster.view.partial.game.InteractiveActiveViewComponent
-import com.tokopedia.play.broadcaster.view.partial.game.InteractiveFinishedViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -128,8 +128,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
-    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
+    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
@@ -210,8 +210,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
-
-    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_widget)
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify

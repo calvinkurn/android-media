@@ -19,10 +19,10 @@ import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -429,6 +429,7 @@ class PlayBroadcastUiMapper(
                 countDownEnd = countdownEnd,
                 choices = choices.map {
                     QuizDetailDataUiModel.Choice(
+                        id = it.id,
                         text = it.text,
                         isCorrectAnswer = it.isCorrectAnswer,
                         participantCount = it.participantCount

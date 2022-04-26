@@ -1,70 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fl_knob"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/play_bro_knob_height"
-        android:background="@drawable/bg_play_bro_knob"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_quiz_detail_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="16dp"
-        android:text="Respon quiz"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_knob"
-        app:typographyType="heading_1" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_quiz_detail_question"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_bro_quiz_detail_title"
-        app:typographyType="heading_2"
-        tools:text="Pertanyaan" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_label_ends_in"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="berakhir : "
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_bro_quiz_detail_question" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_rewards"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Reward"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_label_ends_in"
-        app:layout_constraintVertical_bias="0.0" />
+    <include
+        layout="@layout/view_play_interactive_leaderboard"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

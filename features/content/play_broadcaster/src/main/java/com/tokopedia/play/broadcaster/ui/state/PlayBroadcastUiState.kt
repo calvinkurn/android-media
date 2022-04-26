@@ -17,7 +17,6 @@ import java.util.*
  */
 data class PlayBroadcastUiState(
     val channel: PlayChannelUiState,
-    val interactive: PlayBroadcastInteractiveStateUiModel,
     val pinnedMessage: PinnedMessageUiState,
     val selectedProduct: List<ProductTagSectionUiModel>,
     val schedule: ScheduleUiModel,
@@ -34,7 +33,6 @@ data class PlayBroadcastUiState(
                     canStream = true,
                     tnc = emptyList(),
                 ),
-                interactive = PlayBroadcastInteractiveStateUiModel.Empty,
                 pinnedMessage = PinnedMessageUiState(
                     message = "",
                     editStatus = PinnedMessageEditStatus.Nothing,
