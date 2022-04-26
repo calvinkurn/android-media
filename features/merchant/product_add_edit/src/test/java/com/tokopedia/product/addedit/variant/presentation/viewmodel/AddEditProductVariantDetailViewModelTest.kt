@@ -349,23 +349,19 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     fun `When refreshInputDataValidStatus, expect inputDataValid value correctness`() {
         viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
             isPriceError = true, isWeightError = true, isStockError = true))
-        viewModel.refreshInputDataValidStatus()
-        val test0False = viewModel.inputDataValid.getOrAwaitValue()
+        val test0False = viewModel.getInputDataValidStatus()
 
         viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
             isPriceError = false, isWeightError = true, isStockError = true))
-        viewModel.refreshInputDataValidStatus()
-        val test1False = viewModel.inputDataValid.getOrAwaitValue()
+        val test1False = viewModel.getInputDataValidStatus()
 
         viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
             isPriceError = false, isWeightError = true, isStockError = false))
-        viewModel.refreshInputDataValidStatus()
-        val test2False = viewModel.inputDataValid.getOrAwaitValue()
+        val test2False = viewModel.getInputDataValidStatus()
 
         viewModel.addToVariantDetailInputMap(0, VariantDetailInputLayoutModel(
             isPriceError = false, isWeightError = false, isStockError = false))
-        viewModel.refreshInputDataValidStatus()
-        val test3False = viewModel.inputDataValid.getOrAwaitValue()
+        val test3False = viewModel.getInputDataValidStatus()
 
         assertFalse(test0False)
         assertFalse(test1False)

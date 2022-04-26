@@ -173,7 +173,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         }
 
         observeSelectedVariantSize()
-        observeInputDataValid()
         observeHasWholesale()
 
         enableSku()
@@ -361,12 +360,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeInputDataValid() {
-        viewModel.inputDataValid.observe(viewLifecycleOwner, {
-            buttonSave?.isEnabled = true
-        })
-    }
-
     private fun enableSku() {
         switchUnifySku?.isChecked = true
     }
@@ -445,7 +438,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
     private fun submitVariantInput() {
         invokeFieldsValidation()
-        if (viewModel.inputDataValid.value == true) {
+        if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
             viewModel.productInputModel.value?.apply {
                 val cacheManagerId = arguments?.getString(

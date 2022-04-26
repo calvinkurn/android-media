@@ -44,9 +44,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     var isMultiLocationShop: Boolean = false
         private set
 
-    private val mInputDataValid = MutableLiveData(true)
-    val inputDataValid: LiveData<Boolean> get() = mInputDataValid
-
     val selectedVariantSize = MediatorLiveData<Int>().apply {
         addSource(productInputModel) {
             productInputModel.value?.run {
@@ -175,7 +172,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         if (inputLayoutModelMap.containsKey(fieldPosition)) {
             inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
-            refreshInputDataValidStatus()
         }
     }
 
@@ -364,10 +360,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 combination = combination)
     }
 
-    fun refreshInputDataValidStatus() {
-        mInputDataValid.value = !inputLayoutModelMap.any {
-            it.value.isPriceError || it.value.isStockError || it.value.isWeightError
-        }
+    fun getInputDataValidStatus() = !inputLayoutModelMap.any {
+        it.value.isPriceError || it.value.isStockError || it.value.isWeightError
     }
 
     fun setupMultiLocationValue() {
