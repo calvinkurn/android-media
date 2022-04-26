@@ -15,6 +15,8 @@ import java.util.*
 
 object CameraUtil {
 
+    private const val NO_REQUEST_CODE = -1
+
     fun getMediaCountText(mediaCount: Int): String {
         return "$mediaCount media"
     }
@@ -24,7 +26,7 @@ object CameraUtil {
         applinkToNavigateAfterMediaCapture: String?,
         videoMaxDuration:Long,
         selectedFeedAccountId: String,
-        requestCode: Int = -1,
+        requestCode: Int = NO_REQUEST_CODE,
     ) {
         if(fragment.context!=null){
             val intent = CameraActivity.getIntent(
@@ -35,7 +37,7 @@ object CameraUtil {
             )
 
             fragment.apply {
-                if(requestCode == -1) startActivity(intent)
+                if(requestCode == NO_REQUEST_CODE) startActivity(intent)
                 else startActivityForResult(intent, requestCode)
             }
         }
