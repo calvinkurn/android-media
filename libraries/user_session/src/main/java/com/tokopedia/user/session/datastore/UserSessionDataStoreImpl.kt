@@ -3,8 +3,6 @@ package com.tokopedia.user.session.datastore
 import android.content.Context
 import android.provider.Settings
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
-import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.user.session.UserSessionProto
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import kotlinx.coroutines.flow.Flow
@@ -14,10 +12,7 @@ import okhttp3.internal.toLongOrDefault
 import java.security.MessageDigest
 import kotlin.experimental.and
 
-class UserSessionDataStoreImpl(
-    private val context: Context,
-    private val store: DataStore<UserSessionProto>
-) : UserSessionDataStore {
+class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) : UserSessionDataStore {
 
     fun getUserSessionFlow(): Flow<UserSessionProto> {
         return store.data
@@ -454,18 +449,6 @@ class UserSessionDataStoreImpl(
         return getUserSessionFlow().map { it.userId }
     }
 
-    override fun getAndroidId(): Flow<String> {
-        return getUserSessionFlow().map { it.androidId }
-    }
-
-    override suspend fun setAndroidId(androidId: String) {
-        val android_id =
-            md5(Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID))
-        userSessionSetter { setAndroidId(android_id) }
-    }
-
-    override fun getAdsId() = DeviceInfo.getAdsId(context)
-
     override fun isAffiliate(): Flow<Boolean> {
         return getUserSessionFlow().map { it.isAffiliateStatus }
     }
@@ -517,6 +500,28 @@ class UserSessionDataStoreImpl(
     override suspend fun clearDataStore() {
         store.updateData {
             it.toBuilder().clear().build()
+        }
+    }
+
+    override suspend fun setAndroidId(androidId: String) {
+        userSessionSetter {
+            setAndroidId(androidId)
+        }
+    }
+
+    override suspend fun getAndroidId(context: Context): Flow<String> {
+        val adsId = getUserSessionFlow().map { it.androidId }
+        return if(adsId.first().isEmpty()) {
+            val newAndroidId = md5(
+                Settings.Secure.getString(
+                    context.contentResolver,
+                    Settings.Secure.ANDROID_ID
+                )
+            )
+            setAndroidId(newAndroidId)
+            adsId
+        } else {
+            adsId
         }
     }
 

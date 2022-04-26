@@ -140,7 +140,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	fun scheduleWorker(context: Context) {
 	    try {
 		val periodicWorker = PeriodicWorkRequest
-		    .Builder(DataStoreMigrationWorker::class.java, 2, TimeUnit.DAYS)
+		    .Builder(DataStoreMigrationWorker::class.java, 5, TimeUnit.DAYS)
 		    .setConstraints(Constraints.NONE)
 		    .build()
 

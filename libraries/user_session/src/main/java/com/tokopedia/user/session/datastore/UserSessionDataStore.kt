@@ -1,5 +1,6 @@
 package com.tokopedia.user.session.datastore
 
+import android.content.Context
 import kotlinx.coroutines.flow.Flow
 
 interface UserSessionDataStore {
@@ -168,10 +169,6 @@ interface UserSessionDataStore {
 
     fun getGTMLoginID(): Flow<String>
 
-    fun getAndroidId(): Flow<String>
-
-    fun getAdsId(): String
-
     fun isAffiliate(): Flow<Boolean>
 
     fun hasShownSaldoIntroScreen(): Flow<Boolean>
@@ -191,6 +188,8 @@ interface UserSessionDataStore {
     fun isMultiLocationShop(): Flow<Boolean>
 
     suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
+
+    suspend fun getAndroidId(context: Context): Flow<String>
 
     suspend fun setAndroidId(androidId: String)
 }
