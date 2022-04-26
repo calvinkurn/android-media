@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
