@@ -21,11 +21,11 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                     when (item.dataObject.type) {
                         WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
                             tickerType = Ticker.TYPE_ANNOUNCEMENT
-                            closeButtonVisibility = View.GONE
+                            closeButtonVisibility = View.VISIBLE
                         }
                         WishlistV2Consts.TICKER_TYPE_WARNING -> {
                             tickerType = Ticker.TYPE_WARNING
-                            closeButtonVisibility = View.GONE
+                            closeButtonVisibility = View.VISIBLE
                         }
                         WishlistV2Consts.TICKER_TYPE_ERROR -> {
                             tickerType = Ticker.TYPE_ERROR

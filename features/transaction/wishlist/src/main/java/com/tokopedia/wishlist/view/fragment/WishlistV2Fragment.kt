@@ -165,6 +165,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_STOCK_LABEL = "Stok"
         private const val FILTER_CATEGORIES_LABEL = "Kategori"
         private const val PADDING_RV = 10
+        private const val OPTION_ID_SORT_OLDEST = "6"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1150,7 +1151,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onTickerCTASortFromLatest() {
-        println("++ onTickerCTASortFromLatest")
+        val listOptionIdSelected = mutableListOf<String>()
+        listOptionIdSelected.add(OPTION_ID_SORT_OLDEST)
+            paramWishlistV2.sortFilters.clear()
+            paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                name = FILTER_SORT, selected = listOptionIdSelected as ArrayList<String>))
+
+        doRefresh()
     }
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
