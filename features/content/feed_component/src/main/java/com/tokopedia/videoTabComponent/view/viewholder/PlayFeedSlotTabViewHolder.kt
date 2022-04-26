@@ -31,7 +31,6 @@ class PlayFeedSlotTabViewHolder private constructor() {
         fun bind(item: PlaySlotTabMenuUiModel) {
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
-
             rvSlotTab.scrollLayout(activity.getTabMenuPosition())
         }
 

@@ -8,7 +8,7 @@ const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
 const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
 const val LINK_HISTORY_BUTTON_CLICKED = 403
-const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help"
+const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help?navigation=hide"
 const val AFFILIATE_TANDC_URL = "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
 const val AFFILIATE_FRAUD_URL = "https://www.tokopedia.com/help/article/cara-gabung-tokopedia-affiliate"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
@@ -23,7 +23,7 @@ const val ANNOUNCEMENT__TYPE_USER_BLACKLIST = "userBlacklisted"
 const val ANNOUNCEMENT__TYPE_SUCCESS = 1
 const val TRANSACTION_ID = "TransactionID"
 
-val bodyTypoMap = mapOf(12 to Typography.BODY_1, 14 to Typography.BODY_2, 12 to Typography.BODY_3)
+val bodyTypoMap = mapOf(16 to Typography.BODY_1, 14 to Typography.BODY_2, 12 to Typography.BODY_3)
 val headerTypoMap = mapOf(12 to Typography.HEADING_6, 14 to Typography.HEADING_5, 16 to Typography.HEADING_4,18 to Typography.HEADING_3,20 to Typography.HEADING_2)
 
 const val ON_BOARDING_TUTORIAL_IMAGE_1 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"
@@ -37,6 +37,8 @@ const val AFFILIATE_WALLET_TRANSACTION_ENABLE = "app_affiliate_wallet_transactio
 const val AFFILIATE_TRX_ENABLED = "aff_trx_history"
 
 const val AFFILIATE_WITHDRAWAL = "Aff_withdrawal"
+
+const val AFFILIATE_TRAFFIC_ADB = "traffic_att_adp"
 
 const val DEFAULT_VALUE = false
 
@@ -97,3 +99,27 @@ const val TWITTER_DEFAULT = "https://www.twitter.com/"
 const val YOUTUBE_DEFAULT = "https://www.youtube.com/"
 
 const val WWW = "www."
+
+const val AVAILABLE = 1
+
+const val ALMOST_OOS = 2
+
+const val EMPTY_STOCK = 3
+
+const val PRODUCT_INACTIVE = 4
+
+const val SHOP_INACTIVE = 5
+
+const val TRAFFIC_TYPE = "TRAFFIC"
+
+const val TYPE_DIVIDER = "divider"
+
+const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+
+const val dd_MMM_yyyy_HH_mm = "dd MMM yyyy, HH:mm"
+
+const val UTC = "UTC"
+
+const val CLICK_TYPE = "totalClick"
+
+const val COMMISSION_TYPE = "totalCommission"

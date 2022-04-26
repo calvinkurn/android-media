@@ -56,6 +56,7 @@ object SuggestionRequestUtils {
                 tracking_option
                 component_id
                 child_items {
+                  component_id
                   template
                   type
                   applink
