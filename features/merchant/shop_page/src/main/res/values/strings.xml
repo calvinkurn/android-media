@@ -61,6 +61,9 @@
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
     <string name="shop_info_title_tab_feed">Feed</string>
+    <string name="shop_info_go_apotik_sia_number_title">Nomor SIA:</string>
+    <string name="shop_info_go_apotik_sipa_number_title">Nomor SIPA:</string>
+    <string name="shop_info_go_apotik_apj_title">APJ:</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
