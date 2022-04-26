@@ -1,6 +1,11 @@
 package com.tokopedia.affiliate.adapter.bottomSheetsAdapter
 
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateBottomDividerItemModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributionModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithrawalInfoAttributionModel
+
 
 interface AffiliateBottomSheetTypeFactory {
     fun type(viewModelShared: AffiliateDateRangePickerModel): Int

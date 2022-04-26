@@ -13,14 +13,19 @@ import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
-import com.tokopedia.affiliate.usecase.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
+import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
+import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
+import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 

@@ -2,7 +2,19 @@ package com.tokopedia.affiliate.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.affiliate.viewmodel.*
+import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePromotionHistoryViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateRecyclerViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
+import com.tokopedia.affiliate.viewmodel.WithdrawalDetailViewModel
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import dagger.Binds
