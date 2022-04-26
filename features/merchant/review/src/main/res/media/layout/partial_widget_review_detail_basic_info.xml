@@ -50,15 +50,8 @@
         android:layout_height="1dp"
         app:barrierDirection="start"
         app:constraint_referenced_ids="ic_review_detail_like_button,ic_review_detail_liked_button"
-        tools:layout_constraintEnd_toStartOf="@id/ic_review_detail_like_button" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_end_like_dislike_button"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        app:barrierDirection="end"
-        app:constraint_referenced_ids="ic_review_detail_like_button,ic_review_detail_liked_button"
-        tools:layout_constraintEnd_toEndOf="@id/ic_review_detail_like_button" />
+        tools:layout_constraintEnd_toStartOf="@id/ic_review_detail_like_button"
+        tools:viewBindingIgnore="true" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_top_like_dislike_button"
@@ -67,7 +60,8 @@
         app:barrierDirection="top"
         app:constraint_referenced_ids="ic_review_detail_like_button,ic_review_detail_liked_button"
         tools:layout_constraintEnd_toEndOf="@id/ic_review_detail_like_button"
-        tools:layout_constraintTop_toTopOf="@id/ic_review_detail_like_button" />
+        tools:layout_constraintTop_toTopOf="@id/ic_review_detail_like_button"
+        tools:viewBindingIgnore="true" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_bottom_like_dislike_button"
@@ -76,7 +70,8 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="ic_review_detail_like_button,ic_review_detail_liked_button"
         tools:layout_constraintBottom_toBottomOf="@id/ic_review_detail_like_button"
-        tools:layout_constraintEnd_toEndOf="@id/ic_review_detail_like_button" />
+        tools:layout_constraintEnd_toEndOf="@id/ic_review_detail_like_button"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_like_button"
@@ -139,7 +134,8 @@
         android:layout_height="1dp"
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="review_detail_rating,tv_review_detail_create_time,tv_review_detail_like_count,ic_review_detail_like_button,ic_review_detail_toggle_expand_button"
-        tools:layout_constraintTop_toBottomOf="@id/ic_review_detail_toggle_expand_button" />
+        tools:layout_constraintTop_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_review_detail_reviewer_profile_picture"

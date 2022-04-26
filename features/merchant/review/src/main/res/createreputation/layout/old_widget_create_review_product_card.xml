@@ -6,7 +6,8 @@
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl2"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:viewBindingIgnore="true">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/review_form_product_image"

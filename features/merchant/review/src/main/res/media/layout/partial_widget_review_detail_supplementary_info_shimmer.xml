@@ -15,7 +15,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="rect" />
+        app:loader_type="rect"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_review_detail_review_first_row"
@@ -24,7 +25,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_review_detail_variant"
-        app:loader_type="rect" />
+        app:loader_type="rect"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_review_detail_review_second_row"
@@ -33,7 +35,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_review_detail_review_first_row"
-        app:loader_type="rect" />
+        app:loader_type="rect"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_review_detail_review_third_row"
@@ -42,6 +45,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_review_detail_review_second_row"
-        app:loader_type="rect" />
+        app:loader_type="rect"
+        tools:viewBindingIgnore="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -104,7 +104,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="badRatingReasonReview, badRatingReasonDisclaimer, review_media_thumbnails, tvFeedbackReview" />
+        app:constraint_referenced_ids="badRatingReasonReview, badRatingReasonDisclaimer, review_media_thumbnails, tvFeedbackReview"
+        tools:viewBindingIgnore="true" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerFeedbackReply"
@@ -114,7 +115,8 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/reply_feedback_item_barrier"
-        app:layout_goneMarginTop="16dp" />
+        app:layout_goneMarginTop="16dp"
+        tools:viewBindingIgnore="true" />
 
     <View
         android:id="@+id/replyFeedbackState"

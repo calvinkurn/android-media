@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_review_create_add_photo">
+    android:background="@drawable/bg_review_create_add_photo"
+    tools:viewBindingIgnore="true">
 
-    <androidx.appcompat.widget.AppCompatImageView
+<androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/create_review_add_photo_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

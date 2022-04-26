@@ -8,7 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:viewBindingIgnore="true" >
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -18,12 +19,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toTopOf="@id/submit_button_container">
+            app:layout_constraintBottom_toTopOf="@id/submit_button_container"
+            tools:viewBindingIgnore="true" >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="@dimen/layout_lvl1">
+                android:paddingBottom="@dimen/layout_lvl1"
+                tools:viewBindingIgnore="true" >
 
                 <com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewProductCard
                     android:id="@+id/review_form_product_card"
@@ -46,7 +49,8 @@
                     android:layout_height="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_12"
                     android:background="@color/Unify_N75"
-                    app:layout_constraintTop_toBottomOf="@id/review_form_rating" />
+                    app:layout_constraintTop_toBottomOf="@id/review_form_rating"
+                    tools:viewBindingIgnore="true" />
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/review_form_incentives_ticker"
@@ -151,7 +155,8 @@
                     android:layout_height="wrap_content"
                     app:barrierDirection="bottom"
                     app:constraint_referenced_ids="review_form_add_photo, review_form_photos_rv"
-                    tools:visibility="gone" />
+                    tools:visibility="gone"
+                    tools:viewBindingIgnore="true" />
 
                 <com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewAnonymousOption
                     android:id="@+id/review_form_anonymous_option"
@@ -169,7 +174,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:viewBindingIgnore="true" >
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/review_form_progress_bar_divider"
