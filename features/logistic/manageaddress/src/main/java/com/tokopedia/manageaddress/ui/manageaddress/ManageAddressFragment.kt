@@ -148,7 +148,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
-            val addressData = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_EDIT_ADDRESS)
+            val addressData = data?.getStringExtra(EXTRA_EDIT_ADDRESS)
             if (addressData != null) {
                 view?.let {
                     Toaster.build(it, getString(R.string.edit_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()

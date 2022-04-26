@@ -1117,7 +1117,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private fun onSuccessEditAddress(isEditChosenAddress: Boolean) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_EDIT_ADDRESS, saveDataModel)
+                putExtra(EXTRA_EDIT_ADDRESS, saveDataModel?.id?.toString())
                 // todo after fetch release please use constant
                 putExtra("EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED", isEditChosenAddress)
             })

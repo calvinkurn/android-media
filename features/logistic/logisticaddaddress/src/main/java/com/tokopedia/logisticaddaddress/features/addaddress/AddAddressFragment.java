@@ -294,7 +294,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_EDIT_ADDRESS, address);
+        intent.putExtra(EXTRA_EDIT_ADDRESS, address.getAddressId());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
