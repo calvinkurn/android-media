@@ -65,6 +65,7 @@ fun SuggestionItem.convertToBaseSuggestionShopAds(
         title = cpmData.cpm.name,
         subtitle = cpmData.cpm.cpmShop.location,
         iconTitle = cpmData.cpm.badges.firstOrNull()?.imageUrl ?: "",
+        iconSubtitle = iconSubtitle,
         imageUrl = cpmData.cpm.cpmImage.fullEcs,
         position = position,
         dimension90 = dimension90,
