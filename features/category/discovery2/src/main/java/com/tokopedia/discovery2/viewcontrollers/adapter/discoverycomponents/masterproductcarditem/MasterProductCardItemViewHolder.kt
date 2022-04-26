@@ -54,6 +54,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 openVariantSheet()
             }
             masterProductCardListView?.setAddToCartNonVariantClickListener(this)
+            masterProductCardListView?.setAddToCartWishlistOnClickListener {
+                handleATC(
+                    masterProductCardItemViewModel.getProductDataItem()?.minQuantity ?: 1,
+                    true
+                )
+            }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -144,12 +150,25 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         updateNotifyMeState(dataItem?.notifyMe)
 
         setWishlist()
+        set3DotsWishlistWithAtc(dataItem)
+    }
+
+    private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
+        if (dataItem?.hasThreeDotsWishlist == true)
+            masterProductCardListView?.setThreeDotsWishlistOnClickListener {
+                if (itemView.context != null && itemView.context is FragmentActivity)
+                    showProductCardOptions(
+                        itemView.context as FragmentActivity,
+                        masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+                    )
+            }
     }
 
     private fun setWishlist() {
         masterProductCardGridView?.setThreeDotsOnClickListener {
-            showProductCardOptions(itemView.context as FragmentActivity,
-                    masterProductCardItemViewModel.getProductCardOptionsModel()
+            showProductCardOptions(
+                itemView.context as FragmentActivity,
+                masterProductCardItemViewModel.getProductCardOptionsModel()
             )
         }
     }
@@ -230,6 +249,10 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     override fun onQuantityChanged(quantity: Int) {
+        handleATC(quantity,false)
+    }
+
+    private fun handleATC(quantity: Int, isGeneralCartATC: Boolean) {
         masterProductCardItemViewModel.updateProductQuantity(quantity)
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
             masterProductCardItemViewModel.components,
@@ -238,16 +261,18 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 if (!productItem.productId.isNullOrEmpty())
-                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                    fragment.addOrUpdateItemCart(
                         masterProductCardItemViewModel.getParentPositionForCarousel(),
                         masterProductCardItemViewModel.position,
                         productItem.productId!!,
-                        quantity
+                        quantity,
+                        if (isGeneralCartATC) productItem.shopId else null,
+                        isGeneralCartATC
                     )
             }
         } else {
             masterProductCardItemViewModel.handleATCFailed()
-            (fragment as DiscoveryFragment).openLoginScreen()
+            fragment.openLoginScreen()
         }
     }
 }
