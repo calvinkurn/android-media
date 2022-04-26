@@ -190,7 +190,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
         programAttributes.apply {
             this?.forEach {
                 it?.isUseMultiplier = true
-                it?.multiplierRates = 0
+                it?.multiplierRates = 1
                 it?.minimumTransaction = 5000
             }
         }
@@ -211,7 +211,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
                         it?.tierLevelID = 0
                     }
                 }
-                ProgramUpdateDataInput(
+                programUpdateResponse = ProgramUpdateDataInput(
                     id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
                     cardID = membershipGetProgramForm?.programForm?.cardID,
                     name = membershipGetProgramForm?.programForm?.name,
@@ -224,7 +224,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
             }
             ProgramType.EXTEND ->{
                 actionType = "Extend"
-                ProgramUpdateDataInput(
+                programUpdateResponse = ProgramUpdateDataInput(
                     id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
                     cardID = membershipGetProgramForm?.programForm?.cardID,
                     name = membershipGetProgramForm?.programForm?.name,
@@ -237,7 +237,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
             }
             ProgramType.EDIT ->{
                 actionType = "edit"
-                ProgramUpdateDataInput(
+                programUpdateResponse = ProgramUpdateDataInput(
                     id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
                     cardID = membershipGetProgramForm?.programForm?.cardID,
                     name = membershipGetProgramForm?.programForm?.name,
@@ -250,7 +250,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
             }
             ProgramType.CANCEL ->{
                 actionType = "cancel"
-                ProgramUpdateDataInput(
+                programUpdateResponse = ProgramUpdateDataInput(
                     id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
                     cardID = membershipGetProgramForm?.programForm?.cardID,
                     name = membershipGetProgramForm?.programForm?.name,
