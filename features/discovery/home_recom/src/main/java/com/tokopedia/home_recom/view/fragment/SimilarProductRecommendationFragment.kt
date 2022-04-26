@@ -53,9 +53,14 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
@@ -501,6 +506,24 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationViewModel.isLoggedIn()){
+            SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
+            if(isAddWishlist){
+                recommendationViewModel.addWishlist(item, callback)
+            } else {
+                recommendationViewModel.removeWishlist(item, callback)
+            }
+        }else{
+            SimilarProductRecommendationTracking.eventClickWishlistNonLogin()
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    override fun onWishlistV2Click(
+        item: RecommendationItem,
+        isAddWishlist: Boolean,
+        actionListener: WishlistV2ActionListener
+    ) {
+        if(recommendationViewModel.isLoggedIn()){
             var isUsingV2 = false
             context?.let {
                 isUsingV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
@@ -508,9 +531,60 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
             SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
             if(isAddWishlist){
-                recommendationViewModel.addWishlist(item, callback, isUsingV2)
+                recommendationViewModel.addWishlistV2(item, object : WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        showToastError(throwable)
+                    }
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        var msg = ""
+                        if (result.message.isEmpty()) {
+                            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                        } else {
+                            msg = result.message
+                        }
+
+                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                        var typeToaster = TYPE_NORMAL
+                        if (result.toasterColor == TOASTER_RED || !result.success) {
+                            typeToaster = TYPE_ERROR
+                            ctaText = ""
+                        }
+
+                        view?.let {
+                            if (ctaText.isEmpty()) {
+                                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
+                            } else {
+                                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
+                            }
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                    override fun onSuccessRemoveWishlist(productId: String) {}
+
+                })
             } else {
-                recommendationViewModel.removeWishlist(item, callback, isUsingV2)
+                recommendationViewModel.removeWishlistV2(item, object : WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+
+                    override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {}
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        showToastError(throwable)
+                    }
+
+                    override fun onSuccessRemoveWishlist(productId: String) {
+                        showToastSuccessWithAction(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                        actionString = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                        action = { })
+                    }
+
+                })
             }
         }else{
             SimilarProductRecommendationTracking.eventClickWishlistNonLogin()

@@ -42,6 +42,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -234,6 +235,10 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+    }
+
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean, actionListener: WishlistV2ActionListener) {
+
     }
 
     override fun onChooseAddressUpdated() {

@@ -148,9 +148,9 @@ class TestRecommendationPageViewModel {
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onSuccessAddWishlist(recommendation.productId.toString())
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds, { state, _ ->
+        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds) { state, _ ->
             status = state
-        }, true)
+        }
         assert(status == true)
     }
 
@@ -161,9 +161,9 @@ class TestRecommendationPageViewModel {
         every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
             slot.captured.onErrorAddWishList("", recommendation.productId.toString())
         }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds, { state, _ ->
+        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds) { state, _ ->
             status = state
-        }, true)
+        }
         assert(status == false)
     }
 
@@ -179,9 +179,9 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onNext(mockWishlistModel)
         }
-        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true, { success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == true)
     }
 
@@ -193,9 +193,9 @@ class TestRecommendationPageViewModel {
         every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
             slot.captured.onError(mockk())
         }
-        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true, { success, _ ->
+        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
             status = success
-        }, true)
+        }
         assert(status == false)
     }
 

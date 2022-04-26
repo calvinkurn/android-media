@@ -35,12 +35,15 @@ import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
@@ -254,7 +257,7 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
-    fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit), isUsingV2: Boolean){
+    fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit)){
         if(isTopAds && wishlistUrl.isNotEmpty()){
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
@@ -275,8 +278,31 @@ open class RecommendationPageViewModel @Inject constructor(
                 }
             })
         } else {
-            if (isUsingV2) doAddToWishlistV2(productId, callback)
-            else doAddToWishlist(productId, callback)
+            doAddToWishlist(productId, callback)
+        }
+    }
+
+    fun addWishlistV2(productId: String, wishlistUrl: String, isTopAds: Boolean, actionListener: WishlistV2ActionListener){
+        if(isTopAds && wishlistUrl.isNotEmpty()){
+            val params = RequestParams.create()
+            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
+            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
+                override fun onCompleted() {}
+
+                override fun onError(e: Throwable) {
+                    actionListener.onErrorAddWishList(e, productId)
+                }
+
+                override fun onNext(wishlistModel: WishlistModel) {
+                    if (wishlistModel.data != null && wishlistModel.data.isSuccess) {
+                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = true), productId)
+                    } else {
+                        actionListener.onSuccessAddWishlist(AddToWishlistV2Response.Data.WishlistAddV2(success = false), productId)
+                    }
+                }
+            })
+        } else {
+            doAddToWishlistV2(productId, actionListener)
         }
     }
 
@@ -300,13 +326,13 @@ open class RecommendationPageViewModel @Inject constructor(
         })
     }
 
-    private fun doAddToWishlistV2(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+    private fun doAddToWishlistV2(productId: String, actionListener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
         addToWishlistV2UseCase.execute(
-            onSuccess = {
-                callback.invoke(true, null)},
+            onSuccess = { result ->
+                if (result is Success) actionListener.onSuccessAddWishlist(result.data, productId)},
             onError = {
-                callback.invoke(false, it)
+                actionListener.onErrorAddWishList(it, productId)
             })
     }
 
@@ -335,11 +361,11 @@ open class RecommendationPageViewModel @Inject constructor(
         })
     }
 
-    fun removeWishlistV2(productId: String, wishlistCallback: (Boolean, Throwable?) -> Unit){
+    fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
         deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-                onSuccess = { wishlistCallback.invoke(true, null) },
-                onError = { wishlistCallback.invoke(false, it) })
+                onSuccess = { actionListener.onSuccessRemoveWishlist(productId) },
+                onError = { actionListener.onErrorRemoveWishlist(it, productId) })
     }
 
     fun onAddToCart(productInfoDataModel: ProductInfoDataModel){
