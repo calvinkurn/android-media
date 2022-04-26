@@ -1,7 +1,9 @@
 package com.tokopedia.minicart.cartlist
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -18,6 +20,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.minicart.MiniCartBottomSheetUnify
+import com.tokopedia.minicart.MiniCartBottomSheetUnifyListener
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
@@ -105,7 +109,11 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
-        bottomSheet = BottomSheetUnify().apply {
+        bottomSheet = MiniCartBottomSheetUnify(object : MiniCartBottomSheetUnifyListener {
+            override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+                Log.i("qwertyuiop", "qwer")
+            }
+        }).apply {
             showCloseIcon = false
             showHeader = true
             isDragable = true
@@ -617,4 +625,13 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         analytics.eventClickChangeNotes()
     }
 
+    override fun onChangeBundleClicked(element: MiniCartProductUiModel) {
+        viewBinding?.root?.context?.let {
+            analytics.eventClickChangeProductBundle()
+            RouteManager.route(
+                    it,
+                    element.editBundleApplink
+            )
+        }
+    }
 }

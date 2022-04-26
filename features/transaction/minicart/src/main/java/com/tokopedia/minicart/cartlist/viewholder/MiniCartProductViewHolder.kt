@@ -601,7 +601,8 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textBundlePrice.text = element.bundlePriceFmt
                 imageBundle.loadImage(element.bundleIconUrl)
                 textChangeBundle.setOnClickListener {
-                    openBundleSelectionPage(element)
+                    listener.onChangeBundleClicked(element)
+//                    openBundleSelectionPage(element)
                 }
                 containerBundleHeader.show()
             } else {
@@ -610,12 +611,12 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         }
     }
 
-    private fun openBundleSelectionPage(element: MiniCartProductUiModel) {
-        RouteManager.route(
-            itemView.context,
-            element.editBundleApplink
-        )
-    }
+//    private fun openBundleSelectionPage(element: MiniCartProductUiModel) {
+//        RouteManager.route(
+//            itemView.context,
+//            element.editBundleApplink
+//        )
+//    }
 
     private fun renderBundleDiscount(element: MiniCartProductUiModel) {
         with(viewBinding.layoutBundleHeader) {

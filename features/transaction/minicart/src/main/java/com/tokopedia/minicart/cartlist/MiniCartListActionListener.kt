@@ -29,4 +29,6 @@ interface MiniCartListActionListener {
     fun onWriteNotesClicked()
 
     fun onChangeNotesClicked()
+
+    fun onChangeBundleClicked(element: MiniCartProductUiModel)
 }
