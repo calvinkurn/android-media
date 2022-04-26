@@ -13,7 +13,7 @@ import android.util.Log
 class VideoPreview(
     private val context: Context,
     val videoPlayer: PickerVideoPlayer
-) : BasePagerPreview, VideoControlView.Listener {
+) : BasePagerPreview, VideoControlView.Listener, PickerVideoPlayer.Listener {
 
     override val layout: Int
         get() = R.layout.view_item_preview_video
@@ -31,17 +31,20 @@ class VideoPreview(
 
             videoPlayer.videoUrl = media.data.path
 
-            videoPlayer.listener = object : PickerVideoPlayer.Listener {
-                override fun onIsPlayingChanged(isPlaying: Boolean) {
-                    if(isSkipUpdateState){
-                        return
-                    }
-                    videoControl.updateCenterButtonState(isPlaying)
-                }
-            }
-
-            videoControl.setListener(this)
+            videoPlayer.listener = this
+            videoControl.listener = this
         }
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        if(isSkipUpdateState){
+            return
+        }
+        videoControl.updateCenterButtonState(isPlaying)
+    }
+
+    override fun onVideoLoop() {
+        videoControl.showController()
     }
 
     override fun onCenterPauseButtonClicked() {

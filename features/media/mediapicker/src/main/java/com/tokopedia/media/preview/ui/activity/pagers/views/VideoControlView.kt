@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.R
 import com.tokopedia.media.R.color as mediaColorR
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -38,6 +37,12 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private val fadeOutAlphaAnimation = AlphaAnimation(1f, 0f)
     private val fadeInAlphaAnimation = AlphaAnimation(0f, 1f)
 
+    var listener: Listener? = null
+    set(value) {
+        field = value
+        setupListener()
+    }
+
     init {
         setupGradientBackground()
         setupAnimation()
@@ -56,28 +61,29 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         centerPauseButtonConditionalShow(isPlaying)
     }
 
-    fun setListener(listener: Listener) {
+    private fun setupListener() {
         centerPlayButton.setOnClickListener {
-            listener.onCenterPlayButtonClicked()
+            listener?.onCenterPlayButtonClicked()
+            showController()
         }
 
         centerPauseButton.setOnClickListener {
             it.hide()
             centerPlayButton.show()
-            listener.onCenterPauseButtonClicked()
+            listener?.onCenterPauseButtonClicked()
         }
 
         scrubber.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubMove(timeBar: TimeBar, position: Long) {
-                listener.onScrubMove(position)
+                listener?.onScrubMove(position)
             }
 
             override fun onScrubStart(timeBar: TimeBar, position: Long) {
-                listener.onScrubStart()
+                listener?.onScrubStart()
             }
 
             override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
-                listener.onScrubStop()
+                listener?.onScrubStop()
             }
         })
     }
@@ -86,15 +92,15 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         videoControlHandler.removeCallbacksAndMessages(null)
     }
 
-    private fun hideController(){
-        videoControlContainer.startAnimation(fadeOutAlphaAnimation)
-        cleanHideJob()
-    }
-
-    private fun showController(isAutoHide: Boolean = true){
+    fun showController(isAutoHide: Boolean = true){
         cleanHideJob()
         videoControlContainer.startAnimation(fadeInAlphaAnimation)
         if(isAutoHide) hideControllerJob()
+    }
+
+    private fun hideController(){
+        videoControlContainer.startAnimation(fadeOutAlphaAnimation)
+        cleanHideJob()
     }
 
     private fun centerPlayButtonConditionalShow(isShowing: Boolean) {

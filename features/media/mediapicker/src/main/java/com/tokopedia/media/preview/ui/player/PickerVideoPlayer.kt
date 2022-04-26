@@ -96,6 +96,7 @@ class PickerVideoPlayer constructor(
 
     interface Listener {
         fun onIsPlayingChanged(isPlaying: Boolean)
+        fun onVideoLoop()
     }
 
 }
