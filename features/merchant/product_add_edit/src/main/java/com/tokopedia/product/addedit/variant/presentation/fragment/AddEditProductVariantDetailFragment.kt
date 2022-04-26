@@ -479,21 +479,24 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             variantDetailFieldsAdapter?.notifyItemChanged(index)
         }
 
-        recyclerViewVariantDetailFields?.post {
+        recyclerViewVariantDetailFields?.postDelayed({
             scrollToFirstError()
-        }
+        }, 500)
     }
 
     private fun scrollToFirstError() {
-        val errorFieldIndex = variantDetailFieldsAdapter?.list?.indexOfFirst {
-            (it as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let { inputModel ->
-                inputModel.isWeightError || inputModel.isPriceError || inputModel.isStockError
-            } ?: false
-        }
-        val layoutManager: LinearLayoutManager =
-            recyclerViewVariantDetailFields?.layoutManager as LinearLayoutManager
-        errorFieldIndex?.let {
-            layoutManager.scrollToPosition(it)
+        try {
+            val errorFieldIndex = variantDetailFieldsAdapter?.list?.indexOfFirst {
+                (it as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let { inputModel ->
+                    inputModel.isWeightError || inputModel.isPriceError || inputModel.isStockError
+                } ?: false
+            }
+
+            errorFieldIndex?.let {
+                recyclerViewVariantDetailFields?.smoothScrollToPosition(it)
+            }
+        } catch (scrollingException: Exception) {
+            // no-op
         }
     }
 
