@@ -1920,11 +1920,7 @@ class ProductListPresenter @Inject constructor(
         val wishlistResult = productCardOptionsModel.wishlistResult
 
         if (!wishlistResult.isSuccess) {
-            if (wishlistResult.isUsingWishlistV2) {
-
-            } else {
-                view.showMessageFailedWishlistAction(wishlistResult)
-            }
+            view.showMessageFailedWishlistAction(wishlistResult)
         } else {
             view.trackWishlistProduct(createWishlistTrackingModel(
                     productCardOptionsModel,

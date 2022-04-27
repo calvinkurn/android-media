@@ -1735,7 +1735,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (wishlistResult.isUsingWishlistV2) {
-            var typeToaster = TYPE_NORMAL
+            var typeToaster = TYPE_ERROR
             var errorMsg = if (wishlistResult.isAddWishlist) {
                 getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
             } else {
@@ -1744,8 +1744,8 @@ class ProductListFragment: BaseDaggerFragment(),
             if (wishlistResult.messageV2.isNotEmpty()) {
                 errorMsg = wishlistResult.messageV2
             }
-            if (wishlistResult.toasterColorV2 == TOASTER_RED) {
-                typeToaster = TYPE_ERROR
+            if (wishlistResult.toasterColorV2 != TOASTER_RED) {
+                typeToaster = TYPE_NORMAL
             }
             Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, typeToaster).show()
 
