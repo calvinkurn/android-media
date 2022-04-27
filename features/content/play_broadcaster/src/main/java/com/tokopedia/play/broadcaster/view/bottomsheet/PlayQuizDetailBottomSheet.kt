@@ -53,11 +53,6 @@ class PlayQuizDetailBottomSheet @Inject constructor(
         observeQuizDetail()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -66,16 +61,15 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     private fun observeQuizDetail() {
         parentViewModel.observableQuizDetailState.observe(viewLifecycleOwner) {
             when (it) {
-                is QuizDetailStateUiModel.Error -> TODO()
-                is QuizDetailStateUiModel.Loading -> {}
+                QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
+                QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
                 is QuizDetailStateUiModel.Success -> setUIModel(it.dataUiModel)
-                is QuizDetailStateUiModel.Unknown -> TODO()
+                QuizDetailStateUiModel.Unknown -> TODO()
             }
         }
     }
 
     private fun setUIModel(dataUiModel: QuizDetailDataUiModel) {
-        leaderboardSheetView.show()
         val lb = PlayLeaderboardUiModel(
             title = dataUiModel.question,
             reward = dataUiModel.reward,

@@ -1144,7 +1144,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-        openQuizDetailSheet()
+        if (parentViewModel.uiState.value.interactive is InteractiveUiModel.Quiz)
+            openQuizDetailSheet()
     }
 
 }
