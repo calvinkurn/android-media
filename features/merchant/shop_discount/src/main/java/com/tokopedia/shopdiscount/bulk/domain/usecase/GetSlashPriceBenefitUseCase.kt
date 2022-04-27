@@ -2,7 +2,6 @@ package com.tokopedia.shopdiscount.bulk.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
@@ -11,9 +10,7 @@ import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import javax.inject.Inject
 
-class GetSlashPriceBenefitUseCase @Inject constructor(
-    private val repository: GraphqlRepository
-) : GraphqlUseCase<GetSlashPriceBenefitResponse>() {
+class GetSlashPriceBenefitUseCase @Inject constructor() : GraphqlUseCase<GetSlashPriceBenefitResponse>() {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"

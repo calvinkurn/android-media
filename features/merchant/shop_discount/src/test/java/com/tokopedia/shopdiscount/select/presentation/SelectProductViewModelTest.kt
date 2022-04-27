@@ -14,7 +14,6 @@ import com.tokopedia.shopdiscount.select.data.mapper.ShopBenefitMapper
 import com.tokopedia.shopdiscount.select.data.response.GetSlashPriceProductListToReserveResponse
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ShopBenefit
-import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserve
 import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserveUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,8 +32,8 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 
 class SelectProductViewModelTest {
+
     companion object {
-        private const val DISCOUNT_STATUS_ID_ONGOING = 2
         private const val FIRST_PAGE = 1
     }
 
