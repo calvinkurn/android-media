@@ -31,8 +31,6 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
-import com.tokopedia.shopdiscount.utils.extension.slideDown
-import com.tokopedia.shopdiscount.utils.extension.slideUp
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -116,7 +114,6 @@ class SelectProductFragment : BaseDaggerFragment() {
         observeReserveProducts()
         observeShopBenefits()
         viewModel.getSellerBenefits()
-
     }
 
     private fun setupView() {
@@ -257,6 +254,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         if (remainingQuota == ZERO) {
             showNoMoreRemainingQuota()
         }
+
         loadFirstPage()
     }
 
@@ -289,36 +287,44 @@ class SelectProductFragment : BaseDaggerFragment() {
 
             if (isSelected) {
                 val currentSelectedProductCount = viewModel.getSelectedProducts().size
-                val nextCounter = currentSelectedProductCount + 1
-
-                if (nextCounter > MAX_PRODUCT_SELECTION) {
-                    untickProduct(selectedProduct)
-                    showDisableReason(getString(R.string.sd_select_product_max_count_reached))
-                } else {
-                    val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
-
-                    if (remainingSelection > ZERO) {
-                        tickProduct(selectedProduct)
-                        viewModel.addProductToSelection(selectedProduct)
-                    } else {
-                        untickProduct(selectedProduct)
-                        showNoMoreRemainingQuota()
-                    }
-                }
-
-                refreshButtonTitle()
-
+                handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
             } else {
-                viewModel.removeProductFromSelection(selectedProduct)
-                untickProduct(selectedProduct)
-
-                refreshButtonTitle()
+                handleRemoveProductFromSelection(selectedProduct)
             }
-
 
             val selectedProductCount = viewModel.getSelectedProducts().size
             handleTickerAppearance(selectedProductCount)
         }
+
+    private fun handleAddProductToSelection(
+        currentSelectedProductCount: Int,
+        selectedProduct: ReservableProduct
+    ) {
+        val nextCounter = currentSelectedProductCount + 1
+        if (nextCounter > MAX_PRODUCT_SELECTION) {
+            untickProduct(selectedProduct)
+            showDisableReason(getString(R.string.sd_select_product_max_count_reached))
+        } else {
+            val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+
+            if (remainingSelection > ZERO) {
+                tickProduct(selectedProduct)
+                viewModel.addProductToSelection(selectedProduct)
+            } else {
+                untickProduct(selectedProduct)
+                showNoMoreRemainingQuota()
+            }
+        }
+
+        refreshButtonTitle()
+    }
+
+    private fun handleRemoveProductFromSelection(selectedProduct: ReservableProduct) {
+        viewModel.removeProductFromSelection(selectedProduct)
+        untickProduct(selectedProduct)
+
+        refreshButtonTitle()
+    }
 
     private fun handleProductClick(
         isDisabled: Boolean,
@@ -437,9 +443,9 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private fun handleTickerAppearance(selectedProductCount: Int) {
         if (selectedProductCount >= MAX_PRODUCT_SELECTION) {
-            binding?.ticker.slideUp()
+            binding?.ticker?.visible()
         } else {
-            binding?.ticker?.slideDown()
+            binding?.ticker?.gone()
         }
     }
 
