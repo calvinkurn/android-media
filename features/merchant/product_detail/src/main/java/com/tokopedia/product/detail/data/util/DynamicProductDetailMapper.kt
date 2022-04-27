@@ -373,7 +373,6 @@ object DynamicProductDetailMapper {
         return ReviewImage(
                 buyerPhotosCount = reviewImage.detail?.mediaCount.toIntOrZero(),
                 reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
-                detailedMediaResult = generateDetailedMediaResult(reviewImage),
                 staticSocialProofText = reviewImage.detail?.mediaTitle ?: ""
         )
     }
@@ -429,7 +428,7 @@ object DynamicProductDetailMapper {
         return ReviewMediaThumbnailUiModel(mappedMediaThumbnails)
     }
 
-    private fun generateDetailedMediaResult(reviewMedia: ImageReviewGqlResponse.ProductReviewImageListQuery): ProductrevGetReviewMedia? {
+    fun generateDetailedMediaResult(reviewMedia: ImageReviewGqlResponse.ProductReviewImageListQuery): ProductrevGetReviewMedia? {
         val mappedReviewMediaVideoData = reviewMedia.detail?.videos?.mapIndexed { index, video ->
             ReviewMedia(
                 videoId = video.attachmentID.toString(),
