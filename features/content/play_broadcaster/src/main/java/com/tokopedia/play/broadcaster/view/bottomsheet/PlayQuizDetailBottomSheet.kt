@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
@@ -14,9 +15,11 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class PlayQuizDetailBottomSheet @Inject constructor(
@@ -61,12 +64,14 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     private fun observeQuizDetail() {
-        parentViewModel.observableQuizDetailState.observe(viewLifecycleOwner) {
-            when (it) {
-                QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
-                QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
-                is QuizDetailStateUiModel.Success -> setUIModel(it.dataUiModel)
-                QuizDetailStateUiModel.Unknown -> TODO()
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            parentViewModel.uiState.collectLatest {
+                when (it.quizDetail) {
+                    QuizDetailStateUiModel.Error -> leaderboardSheetView.setError()
+                    QuizDetailStateUiModel.Loading -> leaderboardSheetView.setLoading()
+                    is QuizDetailStateUiModel.Success -> setUIModel(it.quizDetail.dataUiModel)
+                    QuizDetailStateUiModel.Unknown -> leaderboardSheetView.setError()
+                }
             }
         }
     }

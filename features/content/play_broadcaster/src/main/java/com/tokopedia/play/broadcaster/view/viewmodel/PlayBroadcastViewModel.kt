@@ -139,8 +139,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableEvent
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
-    val observableQuizDetailState: LiveData<QuizDetailStateUiModel>
-        get() = _observableQuizDetailState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
@@ -190,7 +188,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
-    private val _observableQuizDetailState = MutableLiveData<QuizDetailStateUiModel>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession =
@@ -224,6 +221,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             )
         }
 
+    private val _quizDetailState = MutableStateFlow<QuizDetailStateUiModel>(QuizDetailStateUiModel.Unknown)
+
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
@@ -251,8 +250,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive,
         _interactiveConfig,
         _interactiveSetup,
+        _quizDetailState,
     ) { channelState, pinnedMessage, productMap, schedule, isExiting,
-        quizForm, interactive, interactiveConfig, interactiveSetup ->
+        quizForm, interactive, interactiveConfig, interactiveSetup, quizDetail ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -263,6 +263,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             interactive = interactive,
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
+            quizDetail = quizDetail,
         )
     }.stateIn(
         viewModelScope,
@@ -1022,12 +1023,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     fun getQuizDetailData() {
-        _observableQuizDetailState.value = QuizDetailStateUiModel.Loading
+        _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
-            _observableQuizDetailState.value = QuizDetailStateUiModel.Success(quizDetailUiModel)
+            _quizDetailState.value = QuizDetailStateUiModel.Success(quizDetailUiModel)
         }) {
-            _observableQuizDetailState.value = QuizDetailStateUiModel.Error
+            _quizDetailState.value = QuizDetailStateUiModel.Error
         }
     }
 
