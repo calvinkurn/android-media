@@ -4,12 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed interface ReviewMediaVideoThumbnailUiState : Parcelable {
+    val attachmentID: String
     val reviewID: String
     val url: String
 
     @Parcelize
     data class Showing(
         val playable: Boolean = true,
+        override val attachmentID: String = "",
         override val reviewID: String = "",
         override val url: String = ""
     ) : ReviewMediaVideoThumbnailUiState
@@ -18,6 +20,7 @@ sealed interface ReviewMediaVideoThumbnailUiState : Parcelable {
     data class ShowingSeeMore(
         val playable: Boolean = false,
         val totalImageCount: Int,
+        override val attachmentID: String = "",
         override val reviewID: String = "",
         override val url: String = ""
     ) : ReviewMediaVideoThumbnailUiState

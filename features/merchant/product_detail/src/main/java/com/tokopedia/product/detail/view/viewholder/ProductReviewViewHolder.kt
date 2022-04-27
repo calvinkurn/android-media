@@ -11,12 +11,17 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
@@ -217,32 +222,37 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
-                //TODO CUPS MAPPING DETAIL IMAGE REVIEW WHEN CLICK
-//                if (item is ReviewMediaImageThumbnailUiModel) {
-//                    if (item.uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
-//                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
-//                    } else {
-//                        it.mediaThumbnails?.let { mediaThumbnails ->
-//                            it.detailedMediaResult?.let { detailedMediaResult ->
-//                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
-//                            }
-//                        }
-//                    }
-//                } else if (item is ReviewMediaVideoThumbnailUiModel) {
-//                    if (item.uiState is ReviewMediaVideoThumbnailUiState.ShowingSeeMore) {
-//                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
-//                    } else {
-//                        it.mediaThumbnails?.let { mediaThumbnails ->
-//                            it.detailedMediaResult?.let { detailedMediaResult ->
-//                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
-//                            }
-//                        }
-//                    }
-//                }
-//                return@let
+                if (item is ReviewMediaImageThumbnailUiModel) {
+                    if (item.uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
+                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
+                    } else {
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
+                    }
+                } else if (item is ReviewMediaVideoThumbnailUiModel) {
+                    if (item.uiState is ReviewMediaVideoThumbnailUiState.ShowingSeeMore) {
+                        listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
+                    } else {
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
+                    }
+                }
+                return@let
             }
         }
     }

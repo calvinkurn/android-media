@@ -9,4 +9,7 @@ interface ReviewMediaThumbnailVisitable : Visitable<ReviewMediaThumbnailTypeFact
     fun areContentsTheSame(newItem: ReviewMediaThumbnailVisitable?): Boolean
     fun getChangePayload(newItem: ReviewMediaThumbnailVisitable?): List<String>
     fun getReviewID(): String
+    fun getAttachmentID(): String
+    fun getTotalMediaCount(): Long
+    fun isShowingSeeMore(): Boolean
 }
