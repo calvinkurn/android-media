@@ -15,7 +15,7 @@ data class GetInteractiveQuizDetailResponse(
     @SerializedName("countdownEnd")
     val countdownEnd: Int = 0,
     @SerializedName("choices")
-    val choices: List<Choice> = listOf()
+    val choices: List<Choice> = emptyList(),
   ) {
     data class Choice(
       @SerializedName("id")
