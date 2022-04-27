@@ -65,7 +65,7 @@ data class MembershipGetProgramList(
 data class TimeWindow(
 
 	@SerializedName("startTime")
-	val startTime: String? = null,
+    var startTime: String? = null,
 
 	@SerializedName("id")
 	var id: String? = null,

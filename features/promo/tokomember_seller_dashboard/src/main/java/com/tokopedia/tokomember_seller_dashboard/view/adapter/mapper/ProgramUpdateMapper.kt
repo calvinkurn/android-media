@@ -1,0 +1,85 @@
+package com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper
+
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokomember_common_widget.util.ProgramType
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
+
+object ProgramUpdateMapper {
+    fun formToUpdateMapper(
+        membershipGetProgramForm: MembershipGetProgramForm?,
+        programType: Int,
+        periodInMonth: Int
+    ): ProgramUpdateDataInput {
+        var actionType = ""
+        val timeWindow = TimeWindow(id = 0, startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime, periodInMonth = periodInMonth)
+        val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
+        programAttributes.apply {
+            this?.forEach {
+                it?.isUseMultiplier = true
+                it?.multiplierRates = 1
+                it?.minimumTransaction = 5000
+            }
+        }
+        val tierLevels = membershipGetProgramForm?.programForm?.tierLevels
+        tierLevels?.apply {
+            this.forEach{
+                it?.metadata = "metadata"
+            }
+        }
+        var programUpdateResponse = ProgramUpdateDataInput(
+            id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
+            cardID = membershipGetProgramForm?.programForm?.cardID,
+            name = membershipGetProgramForm?.programForm?.name,
+            tierLevels = tierLevels,
+            programAttributes = programAttributes,
+            actionType = actionType,
+            apiVersion = "3.0",
+            timeWindow = timeWindow
+        )
+        when(programType){
+            ProgramType.CREATE ->{
+                timeWindow.id = 0
+                actionType = "create"
+                tierLevels.apply {
+                    this?.forEach {
+                        it?.id = 0
+                    }
+                }
+                programAttributes.apply {
+                    this?.forEach {
+                        it?.id = 0
+                        it?.programID = 0
+                        it?.tierLevelID = 0
+                    }
+                }
+                programUpdateResponse.apply {
+                    this.tierLevels = tierLevels
+                    this.programAttributes = programAttributes
+                    this.actionType = actionType
+                }
+            }
+            ProgramType.EXTEND ->{
+                actionType = "Extend"
+                programUpdateResponse.apply {
+                    this.actionType = actionType
+                }
+            }
+            ProgramType.EDIT ->{
+                actionType = "edit"
+                programUpdateResponse.apply {
+                    this.actionType = actionType
+                }
+            }
+            ProgramType.CANCEL ->{
+                actionType = "cancel"
+                programUpdateResponse.apply {
+                    this.actionType = actionType
+                }
+            }
+        }
+        return programUpdateResponse
+    }
+
+}

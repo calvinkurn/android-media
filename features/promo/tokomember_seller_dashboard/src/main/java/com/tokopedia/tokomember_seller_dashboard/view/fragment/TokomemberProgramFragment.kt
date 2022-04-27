@@ -14,8 +14,6 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
@@ -26,17 +24,21 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.toDate
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 class TokomemberProgramFragment : BaseDaggerFragment() {
 
+    private var selectedTime = ""
     private var fromEdit = false
     private var programType = ProgramType.CREATE
     private var periodInMonth = 0
@@ -149,13 +151,11 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
                     "Kupon"
                 )
             }
-            ProgramType.DETAIL ->{
-            }
             ProgramType.EXTEND ->{
+
             }
             ProgramType.EDIT ->{
-            }
-            ProgramType.CANCEL ->{
+
             }
         }
     }
@@ -186,6 +186,13 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
     }
 
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+        membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {
+            periodInMonth = it
+        }
+        membershipGetProgramForm?.programForm?.timeWindow?.startTime?.let {
+            selectedTime = it
+            setDate()
+        }
         chipOne.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.name
         chipTwo.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(1)?.name
         chipThree.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(2)?.name
@@ -199,111 +206,50 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
             chipOne.chipType  = ChipsUnify.TYPE_SELECTED
             chipTwo.chipType = ChipsUnify.TYPE_NORMAL
             chipThree.chipType = ChipsUnify.TYPE_NORMAL
-            periodInMonth = chipOne.chipText.toIntSafely()
+            membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {
+                periodInMonth = it
+            }
         }
         chipTwo.setOnClickListener {
             chipTwo.chipType = ChipsUnify.TYPE_SELECTED
             chipOne.chipType  = ChipsUnify.TYPE_NORMAL
             chipThree.chipType  = ChipsUnify.TYPE_NORMAL
-            periodInMonth = chipTwo.chipText.toIntSafely()
+            membershipGetProgramForm?.timePeriodList?.getOrNull(1)?.months?.let {
+                periodInMonth = it
+            }
         }
         chipThree.setOnClickListener {
             chipThree.chipType = ChipsUnify.TYPE_SELECTED
             chipOne.chipType  = ChipsUnify.TYPE_NORMAL
             chipTwo.chipType = ChipsUnify.TYPE_NORMAL
-            periodInMonth = chipThree.chipText.toIntSafely()
-        }
+            membershipGetProgramForm?.timePeriodList?.getOrNull(2)?.months?.let {
+                periodInMonth = it
+            }        }
         //TODO 1. get program name
         btnCreateProgram?.setOnClickListener {
-            val programUpdateResponse = formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0)
+            val pre = textFieldTranskPremium.editText.text.toString()
+            val vip = textFieldTranskVip.editText.text.toString()
+            val duration = textFieldDuration.editText.text.toString()
+            if (membershipGetProgramForm != null) {
+                membershipGetProgramForm.programForm?.timeWindow?.startTime = duration
+                membershipGetProgramForm.programForm?.tierLevels?.getOrNull(0)?.threshold = pre.toIntSafely()
+                membershipGetProgramForm.programForm?.tierLevels?.getOrNull(1)?.threshold = vip.toIntSafely()
+            }
+            val programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0, periodInMonth)
             tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
         }
     }
 
-    private fun formToUpdateMapper(membershipGetProgramForm: MembershipGetProgramForm?, programType: Int): ProgramUpdateDataInput {
-        var actionType = ""
-        val timeWindow = TimeWindow(id = 0, startTime = membershipGetProgramForm?.programForm?.timeWindow?.startTime, endTime = membershipGetProgramForm?.programForm?.timeWindow?.endTime, periodInMonth = periodInMonth)
-        val programAttributes = membershipGetProgramForm?.programForm?.programAttributes
-        programAttributes.apply {
-            this?.forEach {
-                it?.isUseMultiplier = true
-                it?.multiplierRates = 1
-                it?.minimumTransaction = 5000
-            }
-        }
-        var programUpdateResponse = ProgramUpdateDataInput()
-        when(programType){
-            ProgramType.CREATE ->{
-                timeWindow.id = 0
-                actionType = "create"
-                val tierLevels = membershipGetProgramForm?.programForm?.tierLevels.apply {
-                    this?.forEach {
-                        it?.id = 0
-                    }
-                }
-                programAttributes.apply {
-                    this?.forEach {
-                        it?.id = 0
-                        it?.programID = 0
-                        it?.tierLevelID = 0
-                    }
-                }
-                programUpdateResponse = ProgramUpdateDataInput(
-                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
-                    cardID = membershipGetProgramForm?.programForm?.cardID,
-                    name = membershipGetProgramForm?.programForm?.name,
-                    tierLevels = tierLevels,
-                    programAttributes = programAttributes,
-                    actionType = actionType,
-                    apiVersion = "3.0",
-                    timeWindow = timeWindow
-                )
-            }
-            ProgramType.EXTEND ->{
-                actionType = "Extend"
-                programUpdateResponse = ProgramUpdateDataInput(
-                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
-                    cardID = membershipGetProgramForm?.programForm?.cardID,
-                    name = membershipGetProgramForm?.programForm?.name,
-                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
-                    programAttributes = programAttributes,
-                    actionType = actionType,
-                    apiVersion = "3.0",
-                    timeWindow = timeWindow
-                )
-            }
-            ProgramType.EDIT ->{
-                actionType = "edit"
-                programUpdateResponse = ProgramUpdateDataInput(
-                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
-                    cardID = membershipGetProgramForm?.programForm?.cardID,
-                    name = membershipGetProgramForm?.programForm?.name,
-                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
-                    programAttributes = programAttributes,
-                    actionType = actionType,
-                    apiVersion = "3.0",
-                    timeWindow = timeWindow
-                )
-            }
-            ProgramType.CANCEL ->{
-                actionType = "cancel"
-                programUpdateResponse = ProgramUpdateDataInput(
-                    id = membershipGetProgramForm?.programForm?.id.toIntSafely(),
-                    cardID = membershipGetProgramForm?.programForm?.cardID,
-                    name = membershipGetProgramForm?.programForm?.name,
-                    tierLevels = membershipGetProgramForm?.programForm?.tierLevels,
-                    programAttributes = programAttributes,
-                    actionType = actionType,
-                    apiVersion = "3.0",
-                    timeWindow = timeWindow
-                )
-            }
-        }
-        return programUpdateResponse
+    private fun setDate() {
+        selectedTime = selectedTime.substringBefore(" ")
+        val date = selectedTime.toDate("yyyy-MM-dd")
+        val day = SimpleDateFormat("dd").format(date)
+        val month = SimpleDateFormat("MMMM").format(date)
+        val year = selectedTime.substringBefore("-")
+        textFieldDuration.editText.setText("$day $month $year")
     }
 
-
-     private fun clickDatePicker(title: String, helpText: String) {
+    private fun clickDatePicker(title: String, helpText: String) {
          var date = ""
          var month = ""
          var year = ""
@@ -331,6 +277,7 @@ class TokomemberProgramFragment : BaseDaggerFragment() {
                 datePickerButton.let { button ->
                     button.setOnClickListener {
                         selectedCalendar = getDate()
+                        selectedTime = selectedCalendar?.time.toString()
                          date = selectedCalendar?.get(Calendar.DATE).toString()
                          month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
                          year = selectedCalendar?.get(Calendar.YEAR).toString()

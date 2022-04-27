@@ -117,7 +117,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
 
         if(openBS){
             val bundle = Bundle()
-            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png")
+            val tmIntroBottomsheetModel = TmIntroBottomsheetModel("Title", "Desc", "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", "")
             bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
             TokomemberBottomsheet.show(bundle, childFragmentManager)
         }

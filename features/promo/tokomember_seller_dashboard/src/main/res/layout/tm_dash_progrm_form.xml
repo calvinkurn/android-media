@@ -52,7 +52,7 @@
         app:centerText="true"
         app:chipSize="medium"
         app:chipText="6 Bulan"
-        app:chipType="selected"
+        app:chipType="normal"
         app:isDashed="false"
         app:layout_constraintStart_toStartOf="@id/tvDetail"
         app:layout_constraintTop_toBottomOf="@id/tvDurasi"

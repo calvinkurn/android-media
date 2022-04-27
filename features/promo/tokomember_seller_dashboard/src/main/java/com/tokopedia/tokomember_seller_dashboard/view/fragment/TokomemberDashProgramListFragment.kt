@@ -1,12 +1,10 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +27,9 @@ import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
 import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -113,14 +113,15 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     }
 
     override fun option(type: String, shopId: Int, programId: Int) {
+
+        val bundle = Bundle()
+        bundle.putBoolean(BUNDLE_EDIT_PROGRAM, true)
+        bundle.putInt(BUNDLE_SHOP_ID, shopId)
+        bundle.putInt(BUNDLE_PROGRAM_ID, programId)
         when {
             type.equals(EXTEND) -> {
-                /*val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
-                intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
-                intent.putExtra(BUNDLE_SHOP_ID, shopId)
-                intent.putExtra(BUNDLE_PROGRAM_ID, programId)
-                intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
-                requireContext().startActivity(intent)*/
+                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
+                (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
             }
             type.equals(CANCEL) -> {
                 var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
@@ -144,12 +145,8 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 dialog.show()
             }
             type.equals(EDIT) -> {
-               /* val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
-                intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
-                intent.putExtra(BUNDLE_SHOP_ID, shopId)
-                intent.putExtra(BUNDLE_PROGRAM_ID, programId)
-                intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
-                requireContext().startActivity(intent)*/
+                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
+                (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
             }
             type.equals(DELETE) -> {
             }

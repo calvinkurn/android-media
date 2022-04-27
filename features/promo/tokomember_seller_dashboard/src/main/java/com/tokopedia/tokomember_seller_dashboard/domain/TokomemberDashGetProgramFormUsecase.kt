@@ -61,6 +61,7 @@ query membershipGetProgramForm(${'$'}programID: Int! , ${'$'}shopID: Int! , ${'$
       tierLevels {
         id
         tierGroupID
+        activeTime
         name
         level
         threshold

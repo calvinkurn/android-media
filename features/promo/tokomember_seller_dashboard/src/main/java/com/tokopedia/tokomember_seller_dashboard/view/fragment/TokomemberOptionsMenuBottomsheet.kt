@@ -103,23 +103,6 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         container_options_menu.addView(childLayout)
         childLayout.setOnClickListener {
             programActions.option(type, shopId, programId)
-            when {
-                type.equals(EXTEND) -> {
-
-                }
-                type.equals(CANCEL) -> {
-                }
-                type.equals(EDIT) -> {
-                }
-                type.equals(DELETE) -> {
-                }
-                type.equals(STOP) -> {
-                }
-                type.equals(SHARE) -> {
-                }
-                type.equals(DUPLICATE) -> {
-                }
-            }
             dismiss()
         }
     }

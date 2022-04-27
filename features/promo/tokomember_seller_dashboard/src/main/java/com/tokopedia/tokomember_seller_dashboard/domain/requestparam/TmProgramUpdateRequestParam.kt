@@ -12,7 +12,7 @@ data class TmProgramUpdateResponse(
 data class ProgramUpdateDataInput(
 	@Expose
 	@SerializedName("actionType")
-	val actionType: String? = null,
+	var actionType: String? = null,
 	@Expose
 	@SerializedName("timeWindow")
 	val timeWindow: TimeWindow? = null,
@@ -21,7 +21,7 @@ data class ProgramUpdateDataInput(
 	val apiVersion: String? = null,
 	@Expose
 	@SerializedName("programAttributes")
-	val programAttributes: List<ProgramAttributesItem?>? = null,
+	var programAttributes: List<ProgramAttributesItem?>? = null,
 	@Expose
 	@SerializedName("cardID")
 	val cardID: Int? = 0,
@@ -33,7 +33,7 @@ data class ProgramUpdateDataInput(
 	val id: Int? = 0,
 
 	@SerializedName("tierLevels")
-	val tierLevels: List<TierLevelsItem?>? = null
+    var tierLevels: List<TierLevelsItem?>? = null
 )
 
 data class TimeWindow(
@@ -54,7 +54,7 @@ data class TimeWindow(
 data class TierLevelsItem(
 	@Expose
 	@SerializedName("metadata")
-	val metadata: String? = null,
+    var metadata: String? = null,
 	@Expose
 	@SerializedName("tierGroupID")
 	val tierGroupID: Int? = 0,
@@ -69,7 +69,7 @@ data class TierLevelsItem(
 	val name: String? = null,
 	@Expose
 	@SerializedName("threshold")
-	val threshold: Int? = null,
+    var threshold: Int? = null,
 	@Expose
 	@SerializedName("id")
 	var id: Int? = 0
