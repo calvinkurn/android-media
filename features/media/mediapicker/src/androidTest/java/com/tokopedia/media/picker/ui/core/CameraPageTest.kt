@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.unifycomponents.TabsUnify
@@ -155,7 +156,7 @@ open class CameraPageTest : PickerTest() {
 
         fun verifyOpenPreviewActivity() {
             Thread.sleep(3000)
-            intended(hasComponent(PickerPreviewActivity::class.java.name))
+            intended(hasComponent(TestPreviewActivity::class.java.name))
         }
 
         fun assertActivityDestroy(pickerTest: PickerTest) {
