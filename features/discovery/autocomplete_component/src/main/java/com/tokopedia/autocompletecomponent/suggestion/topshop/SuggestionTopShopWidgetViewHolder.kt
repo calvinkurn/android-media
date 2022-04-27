@@ -22,6 +22,7 @@ class SuggestionTopShopWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.suggestion_top_shop_widget_layout
+        const val FOUR = 4
     }
     private var binding : SuggestionTopShopWidgetLayoutBinding? by viewBinding()
 
@@ -103,7 +104,7 @@ class SuggestionTopShopWidgetViewHolder(
             return if (parent.getChildAdapterPosition(cardView) == 0) {
                 left - (cardViewHorizontalOffset / 2)
             } else {
-                (left / 4) - (cardViewHorizontalOffset / 2)
+                (left / FOUR) - (cardViewHorizontalOffset / 2)
             }
         }
 
@@ -115,7 +116,7 @@ class SuggestionTopShopWidgetViewHolder(
             return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
                 right - (cardViewHorizontalOffset / 2)
             } else {
-                (right / 4) - (cardViewHorizontalOffset / 2)
+                (right / FOUR) - (cardViewHorizontalOffset / 2)
             }
         }
 

@@ -16,6 +16,8 @@ class SuggestionTopShopCardViewHolder(
 
     companion object {
         val LAYOUT = R.layout.suggestion_top_shop_card_layout
+        const val TWO_PRODUCTS = 2
+        const val THREE_PRODUCTS = 3
     }
     private var binding: SuggestionTopShopCardLayoutBinding? by viewBinding()
 
@@ -55,8 +57,8 @@ class SuggestionTopShopCardViewHolder(
     private fun bindProductImage(element: SuggestionTopShopCardDataView) {
         if (element.productData.isNotEmpty()) {
             bindProductImage1(element.productData[0].imageUrl)
-            if (element.productData.size >= 2) bindProductImage2(element.productData[1].imageUrl)
-            if (element.productData.size >= 3) bindProductImage3(element.productData[2].imageUrl)
+            if (element.productData.size >= TWO_PRODUCTS) bindProductImage2(element.productData[1].imageUrl)
+            if (element.productData.size >= THREE_PRODUCTS) bindProductImage3(element.productData[2].imageUrl)
         }
     }
 
