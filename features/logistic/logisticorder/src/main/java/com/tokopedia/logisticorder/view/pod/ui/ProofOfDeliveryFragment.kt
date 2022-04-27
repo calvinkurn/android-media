@@ -1,0 +1,147 @@
+package com.tokopedia.logisticorder.view.pod.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.logisticorder.R
+import com.tokopedia.logisticorder.databinding.FragmentProofOfDeliveryBinding
+import com.tokopedia.logisticorder.utils.TrackingPageUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.DEFAULT_OS_TYPE
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.IMAGE_LARGE_SIZE
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
+import com.tokopedia.logisticorder.view.pod.data.ProofOfDeliveryModel
+import com.tokopedia.logisticorder.view.pod.di.DaggerProofOfDeliveryComponent
+import com.tokopedia.logisticorder.view.pod.di.ProofOfDeliveryComponent
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
+
+class ProofOfDeliveryFragment : BaseDaggerFragment() {
+
+    companion object {
+
+        private const val ARGUMENTS_IMAGE_ID = "ARGUMENTS_IMAGE_ID"
+        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
+        private const val ARGUMENTS_DESCRIPTION = "ARGUMENTS_DESCRIPTION"
+
+        fun createFragment(orderId: Long?, imageId: String?, description: String?): ProofOfDeliveryFragment {
+
+            return ProofOfDeliveryFragment().apply {
+                if (orderId != null) {
+
+                    arguments = Bundle().apply {
+                        putString(ARGUMENTS_IMAGE_ID, imageId)
+                        putLong(ARGUMENTS_ORDER_ID, orderId)
+                        putString(ARGUMENTS_DESCRIPTION, description)
+                    }
+                } else {
+                    finishWithToastError()
+                }
+            }
+        }
+    }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var binding by autoClearedNullable<FragmentProofOfDeliveryBinding>()
+
+    private var podData: ProofOfDeliveryModel? = null
+
+    override fun getScreenName(): String = ""
+
+    override fun initInjector() {
+        val component: ProofOfDeliveryComponent = DaggerProofOfDeliveryComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+        component.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            val imageId = arguments?.getString(ARGUMENTS_IMAGE_ID)
+            val orderId = arguments?.getLong(ARGUMENTS_ORDER_ID)
+            val description = arguments?.getString(ARGUMENTS_DESCRIPTION)
+            if (imageId != null && orderId != null && description != null) {
+                initDataArgs(imageId, orderId, description)
+            } else return finishWithToastError()
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentProofOfDeliveryBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        onBackButtonListener()
+        initImage()
+
+    }
+
+    private fun onBackButtonListener() {
+        binding?.buttonBack?.setOnClickListener {
+//            requireActivity().finish()
+            finishWithToastError()
+
+        }
+    }
+
+    private fun initDataArgs(imageId: String, orderId: Long, description: String) {
+        podData = ProofOfDeliveryModel(imageId, orderId, description)
+    }
+
+    private fun showLoading() {
+        binding?.mainProgressBar?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        binding?.mainProgressBar?.visibility = View.GONE
+    }
+
+    private fun initImage() {
+
+        val pod = podData ?: return finishWithToastError()
+
+        val url = getDeliveryImage(
+            pod.imageId, pod.orderId, IMAGE_LARGE_SIZE, userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId
+        )
+        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+        val newUrl = GlideUrl(url, LazyHeaders.Builder().addHeader(HEADER_KEY_AUTH, authKey).build())
+
+        binding?.root?.let {
+            binding?.imgProof?.let { imgProof ->
+                Glide.with(it.context)
+                    .load(newUrl)
+                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
+                    .error(it.context.getDrawable(R.drawable.ic_image_error))
+                    .dontAnimate()
+                    .into(imgProof)
+            }
+        }
+
+        binding?.run {
+            proofDescription.text = pod.description
+            imagePreviewLarge.visibility = View.VISIBLE
+        }
+
+    }
+
+    private fun finishWithToastError() {
+        requireActivity().setResult(ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE)
+        requireActivity().finish()
+    }
+
+
+}
+

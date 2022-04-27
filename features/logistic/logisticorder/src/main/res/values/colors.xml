@@ -7,4 +7,8 @@
     <color name="_dms_zxing_custom_result_view">#b0000000</color>
     <color name="_dms_zxing_custom_viewfinder_mask">#60000000</color>
     <color name="_dms_zxing_status_text">#ffffffff</color>
+
+    <color name="bg_image_dark">#31353B</color>
+    <color name="bg_button_green">#03AC0E</color>
+
 </resources>

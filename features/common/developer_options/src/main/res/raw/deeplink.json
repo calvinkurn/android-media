@@ -1708,7 +1708,7 @@
           "destination_activity": "com.tokopedia.logisticorder.view.TrackingPageActivity", 
           "deeplink": "tokopedia-android-internal://logistic/shipping/tracking/.*", 
           "deeplink_variable": ""
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity", 
           "deeplink": "tokopedia-android-internal://logistic/shipping-confirmation/.*", 
