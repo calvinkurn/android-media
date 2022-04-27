@@ -15,20 +15,23 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import kotlinx.android.synthetic.main.fragment_liveness_error.*
+import com.tokopedia.liveness.databinding.FragmentLivenessErrorBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
-
-    private var failedType = -1
 
     @Inject
     lateinit var analytics: LivenessDetectionAnalytics
     private var projectId = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_liveness_error, container, false)
+    private var viewBinding by autoClearedNullable<FragmentLivenessErrorBinding>()
+
+    private var failedType = -1
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewBinding = FragmentLivenessErrorBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -63,16 +66,18 @@ class LivenessErrorFragment : BaseDaggerFragment(), OnBackListener {
             }
         }
 
-        button.setOnClickListener {
+        viewBinding?.button?.setOnClickListener {
             buttonListener()
         }
     }
 
     private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String){
-        title?.text = failedReasonTitle
-        subtitle?.text = failedReason
-        main_image?.let {
-            ImageHandler.LoadImage(main_image, failedImage)
+        viewBinding?.apply {
+            title.text = failedReasonTitle
+            subtitle.text = failedReason
+            mainImage.let {
+                ImageHandler.LoadImage(mainImage, failedImage)
+            }
         }
     }
 

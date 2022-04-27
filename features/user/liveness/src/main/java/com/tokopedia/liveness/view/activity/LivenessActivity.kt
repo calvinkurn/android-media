@@ -1,6 +1,7 @@
 package com.tokopedia.liveness.view.activity
 
 import ai.advance.common.utils.ScreenUtil
+import ai.advance.enums.DeviceType
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
 import android.Manifest
 import android.app.Activity
@@ -12,8 +13,6 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -52,12 +51,12 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
 
         GuardianLivenessDetectionSDK.initOffLine(application)
         GuardianLivenessDetectionSDK.letSDKHandleCameraPermission()
-        GuardianLivenessDetectionSDK.setDeviceType(GuardianLivenessDetectionSDK.DeviceType.RealPhone)
+        GuardianLivenessDetectionSDK.setDeviceType(DeviceType.RealPhone)
 
         setContentView(R.layout.activity_liveness)
         ScreenUtil.init(this)
 
-        if (GuardianLivenessDetectionSDK.isSDKHandleCameraPermission && !allPermissionsGranted()) {
+        if (GuardianLivenessDetectionSDK.isSDKHandleCameraPermission() && !allPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE)
         }
     }
@@ -69,7 +68,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
 
     private fun attachFragment() {
         if (allPermissionsGranted()) {
-            if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
+            if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness()) {
                 intent.extras?.let {
                     extras = it
 
@@ -79,7 +78,7 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
                 livenessFragment = LivenessFragment.newInstance(extras)
                 if (livenessFragment?.isAdded == false) {
                     livenessFragment?.let { fragment ->
-                        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss()
+                        supportFragmentManager.beginTransaction().replace(R.id.livenessContainer, fragment).commitAllowingStateLoss()
                     }
                 }
             } else {

@@ -35,7 +35,7 @@
         android:padding="@dimen/spacing_lvl4"
         android:scaleType="centerInside"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:srcCompat="@drawable/liveness_ic_icon_md_arrow_back"
+        app:srcCompat="@drawable/liveness_ic_arrow_back"
         android:contentDescription="@string/liveness_cancel"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -72,7 +72,7 @@
         tools:text="Silakan berkedip"/>
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/tip_lottie_animation_view"
+        android:id="@+id/lottieLivenessTips"
         android:layout_width="@dimen/liveness_104"
         android:layout_height="@dimen/liveness_104"
         android:layout_marginTop="@dimen/spacing_lvl4"

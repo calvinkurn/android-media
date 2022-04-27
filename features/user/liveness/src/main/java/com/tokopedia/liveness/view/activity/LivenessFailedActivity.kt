@@ -12,7 +12,6 @@ import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
 import com.tokopedia.liveness.view.OnBackListener
 import com.tokopedia.liveness.view.fragment.LivenessErrorFragment
-import com.tokopedia.unifyprinciples.R
 
 class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetectionComponent> {
 
@@ -23,7 +22,7 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
 
     fun updateToolbarTitle(strId: Int){
         supportActionBar?.setTitle(strId)
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, R.color.Unify_N700_96))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
     override fun onBackPressed() {

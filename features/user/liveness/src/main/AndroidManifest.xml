@@ -9,8 +9,9 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
+
         <activity
-            android:name="com.tokopedia.liveness.view.activity.LivenessActivity"
+            android:name="com.tokopedia.liveness.view.revamp.RevampLinvenessActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

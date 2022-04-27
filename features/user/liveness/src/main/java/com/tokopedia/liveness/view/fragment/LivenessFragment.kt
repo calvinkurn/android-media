@@ -1,9 +1,9 @@
 package com.tokopedia.liveness.view.fragment
 
-import ai.advance.common.entity.BaseResultEntity
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
+import ai.advance.liveness.lib.http.entity.ResultEntity
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
 import android.animation.ValueAnimator
@@ -82,7 +82,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private fun findViews() {
         activity?.run {
             livenessView = findViewById(R.id.liveness_view)
-            tipLottieAnimationView = findViewById(R.id.tip_lottie_animation_view)
+            tipLottieAnimationView = findViewById(R.id.lottieLivenessTips)
             tipTextView = findViewById(R.id.tip_text_view)
             mainLayout = findViewById(R.id.main_layout)
             bgOverlay = findViewById(R.id.background_overlay)
@@ -187,7 +187,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (initProgressDialog != null) {
             initProgressDialog?.dismiss()
         }
-        livenessView?.destroy()
+        livenessView?.onDestroy()
     }
 
     override fun onDetectorInitComplete(isValid: Boolean, errorCode: String,
@@ -261,13 +261,13 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
             override fun onGetFaceDataStart() {}
 
-            override fun onGetFaceDataSuccess(entity: BaseResultEntity) {
+            override fun onGetFaceDataSuccess(p0: ResultEntity?) {
                 setSuccessResultData()
             }
 
-            override fun onGetFaceDataFailed(entity: BaseResultEntity) {
-                if (!entity.success && LivenessView.NO_RESPONSE == entity.code) {
-                    setFailedResultData(Detector.DetectionFailedType.BADNETWORK)
+            override fun onGetFaceDataFailed(p0: ResultEntity?) {
+                if (p0?.success == false && LivenessView.NO_RESPONSE == p0.code) {
+                    setFailedResultData(Detector.DetectionFailedType.DetectionFailedType)
                 }
             }
         })
@@ -275,7 +275,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
 
     private fun setSuccessResultData() {
         activity?.run {
-            val mImageBitmap = LivenessResult.livenessBitmap
+            val mImageBitmap = LivenessResult.getLivenessBitmap()
             facePath = saveToFile(mImageBitmap)
             if(!isFileExists(facePath)) {
                 setResult(LivenessConstants.KYC_LIVENESS_FILE_NOT_FOUND)
@@ -292,7 +292,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
 
             when (failedType) {
-                Detector.DetectionFailedType.BADNETWORK -> {
+                Detector.DetectionFailedType.WEAKLIGHT -> {
                     intent.putExtra(LivenessConstants.ARG_FAILED_TYPE, LivenessConstants.FAILED_BADNETWORK)
                 }
                 Detector.DetectionFailedType.TIMEOUT -> {
