@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 
 class PlayQuizDetailBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
+    private val playBroadcastMapper: PlayBroadcastMapper,
+    ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -70,23 +72,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     private fun setUIModel(dataUiModel: QuizDetailDataUiModel) {
-        val lb = PlayLeaderboardUiModel(
-            title = dataUiModel.question,
-            reward = dataUiModel.reward,
-            choices = dataUiModel.choices.map {
-                QuizChoicesUiModel(
-                    id = it.id,
-                    text = it.text,
-                    type = PlayQuizOptionState.Unknown,
-                    isLoading = false,
-                )
-            },
-            endsIn = dataUiModel.countDownEnd,
-            otherParticipant = 0,
-            otherParticipantText = "",
-            winners = emptyList()
-        )
-        leaderboardSheetView.setData(listOf(lb))
+        leaderboardSheetView.setData(listOf(playBroadcastMapper.mapQuizDetailToLeaderBoard(dataUiModel)))
     }
 
     fun show(fragmentManager: FragmentManager) {

@@ -33,8 +33,11 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -437,6 +440,25 @@ class PlayBroadcastUiMapper(
                 }
             )
         }
+    }
+
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
+        return PlayLeaderboardUiModel(
+            title = dataUiModel.question,
+            reward = dataUiModel.reward,
+            choices = dataUiModel.choices.map {
+                QuizChoicesUiModel(
+                    id = it.id,
+                    text = it.text,
+                    type = PlayQuizOptionState.Unknown,
+                    isLoading = false,
+                )
+            },
+            endsIn = dataUiModel.countDownEnd,
+            otherParticipant = 0,
+            otherParticipantText = "",
+            winners = emptyList()
+        )
     }
 
     companion object {

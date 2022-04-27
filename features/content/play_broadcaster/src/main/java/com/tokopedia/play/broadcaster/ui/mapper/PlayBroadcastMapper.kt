@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
@@ -111,4 +112,6 @@ interface PlayBroadcastMapper {
     fun mapQuizDetail(
         response: GetInteractiveQuizDetailResponse
     ): QuizDetailDataUiModel
+
+    fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel
 }
