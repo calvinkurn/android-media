@@ -391,9 +391,10 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        presenter.getShopAdsInfo {}
+        var successCalled = false
+        presenter.getShopAdsInfo { successCalled = true }
 
-        checkTimber()
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -499,7 +500,7 @@ class TopAdsDashboardPresenterTest {
 
         presenter.getAdsStatus(res)
 
-        checkTimber()
+        verify(exactly = 0) { view.onSuccessAdStatus(any()) }
     }
 
     @Test
@@ -525,8 +526,9 @@ class TopAdsDashboardPresenterTest {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
 
-        presenter.getAutoAdsStatus(res) {}
-        checkTimber()
+        var successCalled = false
+        presenter.getAutoAdsStatus(res) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -547,9 +549,9 @@ class TopAdsDashboardPresenterTest {
         every { productRecomUseCase.execute(any(), captureLambda()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-
-        presenter.getProductRecommendation {}
-        checkTimber()
+        var successCalled = false
+        presenter.getProductRecommendation {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -569,9 +571,9 @@ class TopAdsDashboardPresenterTest {
         every { budgetRecomUseCase.execute(any(), captureLambda()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-
-        presenter.getDailyBudgetRecommendation {}
-        checkTimber()
+        var successCalled = false
+        presenter.getDailyBudgetRecommendation {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -634,8 +636,9 @@ class TopAdsDashboardPresenterTest {
         every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        presenter.createGroup(hashMapOf()) {}
-        checkTimber()
+        var successCalled = false
+        presenter.createGroup(hashMapOf()) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -654,8 +657,9 @@ class TopAdsDashboardPresenterTest {
         every { bidInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-        presenter.getBidInfo(listOf()) {}
-        checkTimber()
+        var successCalled = false
+        presenter.getBidInfo(listOf()) {successCalled = true}
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
@@ -721,8 +725,4 @@ class TopAdsDashboardPresenterTest {
         }
     }
 
-    private fun checkTimber() {
-        //todo correct it
-        Assert.assertTrue(true)
-    }
 }
