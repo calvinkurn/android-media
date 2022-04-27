@@ -51,6 +51,7 @@ class ShopBannerInfiniteModelTest {
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkStatic(::getComponent)
     }
 
     /**************************** useCase test *******************************************/
