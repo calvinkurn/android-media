@@ -158,15 +158,15 @@ class TradeInHomePageVM @Inject constructor(
         progBarVisibility.value = true
         launchCatchError(block = {
             val diagnosticsData = getDiagnosticData(intent)
-            val data = insertLogisticPreferenceUseCase.insertLogistic(
+            val insertData = insertLogisticPreferenceUseCase.insertLogistic(
                 is3PL = is3PLSelected.value ?: false,
-                finalPrice = finalPriceDouble,
-                tradeInPrice = tradeInPriceDouble,
+                finalPrice = data?.productPrice?.minus(diagnosticsData.tradeInPrice?.toDouble() ?: tradeInPriceDouble) ?: finalPriceDouble,
+                tradeInPrice = diagnosticsData.tradeInPrice?.toDouble() ?: tradeInPriceDouble,
                 imei = imei,
                 diagnosticsData = diagnosticsData,
                 campaignTagId = campaginTagId
             )
-            data.insertTradeInLogisticPreference.apply {
+            insertData.insertTradeInLogisticPreference.apply {
                 if (isSuccess) {
                     goToCheckout()
                 } else {
