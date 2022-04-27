@@ -26,20 +26,11 @@ class CameraPageUiTest : CameraPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
-    // should be able to record video and provide thumbnail
-    // should be able to capture photo and provide thumbnail
-    // should be able to switch camera usage between front camera and back camera
-    // should be able to finish picker activity
-    // should be able to open preview activity when click lanjut button
-    // should be able to change flash camera state (if camera is supported by flash, emulator that not support will fail)
-    // should be able open to gallery page via bottom nav tab
-    // should be able to open preview activity when click thumbnail
-
     @Test
     fun should_show_thumbnail_from_captured_video_onCaptureButtonClicked() {
         // When
         startCameraPage()
-        Robot.captureVideo(2000)
+        Robot.captureVideo(CAPTURED_VIDEO_DURATION)
 
         // Then
         Assert.assertCaptureImage()
@@ -123,9 +114,14 @@ class CameraPageUiTest : CameraPageTest() {
             this.pageSource(PageSource.Feed)
             this.pageType(PageType.COMMON)
             this.modeType(ModeType.COMMON)
-            this.minVideoDuration(1000)
+            this.minVideoDuration(VIDEO_MIN_DURATION)
         }
 
         startPickerActivity(pickerParam)
+    }
+
+    private companion object {
+        private const val CAPTURED_VIDEO_DURATION = 2000L
+        private const val VIDEO_MIN_DURATION = 1000
     }
 }
