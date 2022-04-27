@@ -257,8 +257,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
-        //showHomeLayout(data)
-        showLayout()
+        showHomeLayout(data)
+        getHomeLayout()
     }
 
     private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
