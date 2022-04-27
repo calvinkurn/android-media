@@ -66,7 +66,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginLeft="@dimen/unify_space_12"
         android:gravity="left"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -74,15 +73,14 @@
         app:layout_constraintTop_toBottomOf="@id/senderName"
         tools:ignore="RtlHardcoded">
 
-        <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
-            android:id="@+id/customChatLayout"
+        <com.tokopedia.chatbot.view.customview.MessageBubbleLayout
+            android:id="@+id/message_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/dp_chatbot_10"
             android:paddingRight="@dimen/spacing_lvl4"
-            android:paddingBottom="@dimen/dp_chatbot_10"
-            app:showCheckMark="false" />
+            android:paddingBottom="@dimen/dp_chatbot_10" />
 
     </LinearLayout>
 
