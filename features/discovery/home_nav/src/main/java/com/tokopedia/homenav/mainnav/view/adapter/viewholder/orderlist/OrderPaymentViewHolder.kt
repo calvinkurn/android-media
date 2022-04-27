@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
@@ -91,9 +92,11 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
                 else
                     context.getString(R.string.transaction_item_default_status)
 
-        binding?.orderPaymentStatus?.setTextColor(
-                ContextCompat.getColor(context, R.color.Unify_Y400)
-        )
+        var paymentStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
+        if (paymentModel.navPaymentModel.statusTextColor.isNotEmpty()) {
+            paymentStatusColor = Color.parseColor(paymentModel.navPaymentModel.statusTextColor)
+        }
+        binding?.orderPaymentStatus?.setTextColor(paymentStatusColor)
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(

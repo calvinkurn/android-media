@@ -37,42 +37,31 @@
             android:layout_width="56dp"
             android:layout_height="56dp"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_order_payment_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:padding="4dp"
-            android:background="@drawable/bg_order_status"
-            app:layout_constraintStart_toEndOf="@id/order_payment_image"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/order_payment_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_YN500"
                 android:textSize="@dimen/sp_10"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/order_payment_image"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 app:typographyWeight="bold"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 tools:text="Menunggu Pembayaran" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_payment_name"
-            app:typographyType="paragraph_3"
-            app:layout_constraintTop_toBottomOf="@id/container_order_payment_status"
-            app:layout_constraintStart_toStartOf="@id/container_order_payment_status"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintTop_toBottomOf="@id/order_payment_status"
+            app:layout_constraintStart_toStartOf="@id/order_payment_status"
             app:layout_constraintBottom_toTopOf="@id/order_payment_description"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="This is product name ndawondowaindowandoiwnoidnoawdn"
+            tools:text="Rp 250,000"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="2dp"
             android:ellipsize="end"
@@ -87,9 +76,10 @@
             tools:text="Bayar sebelum 28 Jan, 13:04 WIB djaiwdnwaiojdwajdwa"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="2dp"
+            android:layout_marginBottom="4dp"
             android:lines="1"
             app:layout_constraintBottom_toBottomOf="@id/order_payment_image"
-            app:layout_constraintStart_toStartOf="@id/container_order_payment_status"
+            app:layout_constraintStart_toStartOf="@id/order_payment_status"
             app:layout_constraintEnd_toEndOf="parent"
             android:ellipsize="end"
             android:layout_width="0dp"

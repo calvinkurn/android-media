@@ -14,10 +14,8 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ORDER_HISTORY
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_WISHLIST
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_QR_CODE
@@ -230,10 +228,10 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        this.add(DividerDataModel())
+        this.add(SeparatorDataModel())
         allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
         this.add(allCategories)
-        this.add(DividerDataModel())
+        this.add(SeparatorDataModel())
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -528,7 +526,6 @@ class MainNavViewModel @Inject constructor(
                         SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
                         InitialShimmerTransactionDataModel(),
-                        DividerDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),

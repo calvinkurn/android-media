@@ -37,8 +37,8 @@
 
         <View
             android:id="@+id/order_product_image_layer"
-            android:layout_width="66dp"
-            android:layout_height="66dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:background="@color/Unify_N700_44"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/order_product_image"
@@ -61,33 +61,23 @@
             tools:text="+4\nBarang"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container_order_product_status"
-            android:layout_width="wrap_content"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/order_product_status"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_YN500"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="bold"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_order_status"
-            android:padding="4dp"
+            android:layout_marginTop="12dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/order_product_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/Unify_YN500"
-                android:textSize="@dimen/sp_10"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small"
-                app:typographyWeight="bold"
-                tools:text="Menunggu Pembayaran" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Menunggu Pembayaran" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_product_name"
@@ -95,8 +85,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            app:layout_constraintTop_toBottomOf="@id/container_order_product_status"
-            app:layout_constraintStart_toStartOf="@id/container_order_product_status"
+            app:layout_constraintTop_toBottomOf="@id/order_product_status"
+            app:layout_constraintStart_toStartOf="@id/order_product_status"
             app:layout_constraintBottom_toTopOf="@id/order_product_description"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
@@ -109,12 +99,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="2dp"
+            android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintBottom_toBottomOf="@id/order_product_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/container_order_product_status"
+            app:layout_constraintStart_toStartOf="@id/order_product_status"
             app:typographyType="small"
             tools:text="Bayar sebelum 28 Jan, 13:04 WIB dsadawdawdsadaw" />
     </androidx.constraintlayout.widget.ConstraintLayout>

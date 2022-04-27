@@ -84,9 +84,11 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
 
         //status
         binding?.orderProductStatus?.text = productModel.navProductModel.statusText
-        binding?.orderProductStatus?.setTextColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-        )
+        var productStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
+        if (productModel.navProductModel.statusTextColor.isNotEmpty()) {
+            productStatusColor = Color.parseColor(productModel.navProductModel.statusTextColor)
+        }
+        binding?.orderProductStatus?.setTextColor(productStatusColor)
 
         //more than 1 product
         if (productModel.navProductModel.additionalProductCount != 0) {
