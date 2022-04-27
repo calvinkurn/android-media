@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,10 +9,9 @@
         android:id="@+id/tvPmTargetAchievement"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
         android:text="@string/pm_achievement_target"
         app:layout_constraintEnd_toStartOf="@+id/icPmTargetChevron"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,12 +51,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
-        android:text="@string/pm_completed_order"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/icPmTargetCompletedOrder"
         app:layout_constraintTop_toBottomOf="@+id/tvPmTargetAchievement"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/pm_completed_order" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lblPmTargetCompletedOrderDesc"
@@ -84,12 +84,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="@string/pm_net_income"
         app:layout_constraintStart_toEndOf="@+id/icPmTargetNetIncome"
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetCompletedOrderDesc"
         app:layout_goneMarginTop="24dp"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/pm_net_income" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lblPmTargetNetIncomeDesc"
@@ -106,10 +106,12 @@
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
         android:padding="2dp"
+        android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_NN500"
         app:icon_name="CHECK_BIG"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel" />
+        app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lblPmTargetShopLevel"
@@ -117,21 +119,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="@string/pm_shop_level"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/icPmTargetShopLevel"
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetNetIncomeDesc"
         app:layout_goneMarginTop="24dp"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/pm_shop_level"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lblPmTargetShopLevelDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pm_shop_level_desc"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/lblPmTargetShopLevel"
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetShopLevel"
-        app:typographyType="small" />
+        app:typographyType="small"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerVerPmTarget1"
@@ -150,8 +156,10 @@
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/icPmTargetShopLevel"
         app:layout_constraintEnd_toEndOf="@+id/dividerVerPmTarget1"
         app:layout_constraintStart_toStartOf="@+id/dividerVerPmTarget1"
-        app:layout_constraintTop_toBottomOf="@+id/icPmTargetNetIncome" />
+        app:layout_constraintTop_toBottomOf="@+id/icPmTargetNetIncome"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,18 +65,22 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             } catch (e: Exception) {
                 Timber.e(e)
             }
-
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val selectedTabIndex = tabLayout.selectedTabPosition
-                    setOnTabSelected(selectedTabIndex)
+                    setOnTabSelected(tabLayout.selectedTabPosition)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+            post {
+                val selectedTabPosition = element.benefitPages.indexOfFirst { it.isActive }
+                if (selectedTabPosition != RecyclerView.NO_POSITION) {
+                    tabLayout.getTabAt(selectedTabPosition)?.select()
+                }
+            }
         }
     }
 

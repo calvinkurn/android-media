@@ -10,19 +10,25 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
-import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.analytics.performance.PerformanceMonitoringConst
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationBenefitHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
-import com.tokopedia.power_merchant.subscribe.view.model.*
+import com.tokopedia.power_merchant.subscribe.view.model.ItemPMProNewSellerRequirement
+import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetBannerPMRegistration
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetPMProNewSellerHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetPmProNewSellerBenefitUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,13 +47,28 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         }
     }
 
-    private var pmGradeBenefitList: List<PMGradeWithBenefitsUiModel>? = null
     private var currentPmRegistrationTireType = PMConstant.PMTierType.POWER_MERCHANT
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observePmRegistrationPage()
+        setOnSwipeToRefresh()
+    }
+
+    override fun observePowerMerchantBasicInfo() {
+        observe(sharedViewModel.powerMerchantBasicInfo) {
+            when (it) {
+                is Success -> {
+                    initBasicInfo(it.data)
+                    renderPmRegistrationWidgets()
+                }
+                is Fail -> logToCrashlytic(
+                    PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR,
+                    it.throwable
+                )
+            }
+            dismissRefreshIndicator()
+        }
     }
 
     override fun onMoreDetailPMEligibilityClicked() {
@@ -77,13 +98,24 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     private fun renderPmRegistrationWidgets() {
         pmBasicInfo?.shopInfo?.let { shopInfo ->
             val isRegularMerchant = pmBasicInfo?.pmStatus?.isRegularMerchant() == true
-            val registrationHeaderWidget = getRegistrationHeaderWidgetData(shopInfo, isRegularMerchant)
+            val registrationHeaderWidget =
+                getRegistrationHeaderWidgetData(shopInfo, isRegularMerchant)
 
             renderPmRegistrationWidget(registrationHeaderWidget)
 
             recyclerView?.post {
                 recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
             }
+        }
+    }
+
+    private fun dismissRefreshIndicator() {
+        binding?.swipeRefreshPm?.isRefreshing = false
+    }
+
+    private fun setOnSwipeToRefresh() {
+        binding?.swipeRefreshPm?.setOnRefreshListener {
+            fetchPowerMerchantBasicInfo()
         }
     }
 
@@ -126,28 +158,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         recyclerView?.visible()
         adapter.clearAllElements()
         renderList(widgets, false)
-    }
-
-    private fun observePmRegistrationPage() {
-        mViewModel.pmGradeBenefitInfo.observe(viewLifecycleOwner, {
-            hideSwipeRefreshLoading()
-            when (it) {
-                is Success -> {
-                    this.pmGradeBenefitList = it.data
-                    renderPmRegistrationWidgets()
-                }
-                is Fail -> {
-                    showErrorState(it.throwable)
-                    logToCrashlytic(
-                        PowerMerchantErrorLogger.PM_REGISTRATION_PAGE_ERROR,
-                        it.throwable
-                    )
-                }
-            }
-
-            stopCustomMetricPerformanceMonitoring(PerformanceMonitoringConst.PM_REGISTRATION_DATA_METRICS)
-            stopRenderPerformanceMonitoring()
-        })
     }
 
     private fun getPmGradeBenefitWidget(): WidgetGradeBenefitUiModel {

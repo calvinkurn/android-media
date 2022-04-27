@@ -9,7 +9,6 @@ import com.tokopedia.config.GlobalConfig
 
 object PowerMerchantErrorLogger {
 
-    const val PM_REGISTRATION_PAGE_ERROR = "PM registration page error"
     const val PM_ACTIVE_PAGE_ERROR = "PM active page error"
     const val PM_SHOP_MODERATION_STATUS_ERROR = "PM shop moderation status error"
     const val PM_BASIC_INFO_ERROR = "PM basic info error"

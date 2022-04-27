@@ -25,7 +25,6 @@ import javax.inject.Inject
  */
 
 class PowerMerchantSubscriptionViewModel @Inject constructor(
-        private val getPmGradeBenefitListUseCase: Lazy<GetPMGradeBenefitListUseCase>,
         private val getPmGradeBenefitInfoUseCase: Lazy<GetPMGradeBenefitInfoUseCase>,
         private val activatePmUseCase: Lazy<PowerMerchantActivateUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
@@ -34,34 +33,14 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
 
     val pmPmActiveData: LiveData<Result<PMGradeBenefitInfoUiModel>>
         get() = _pmActiveData
-    val pmGradeBenefitInfo: LiveData<Result<List<PMGradeWithBenefitsUiModel>>>
-        get() = _pmGradeBenefitInfo
     val pmActivationStatus: LiveData<Result<PMActivationStatusUiModel>>
         get() = _pmActivationStatus
     val pmCancelDeactivationStatus: LiveData<Result<PMActivationStatusUiModel>>
         get() = _pmCancelDeactivationStatus
 
     private val _pmActiveData: MutableLiveData<Result<PMGradeBenefitInfoUiModel>> = MutableLiveData()
-    private val _pmGradeBenefitInfo: MutableLiveData<Result<List<PMGradeWithBenefitsUiModel>>> = MutableLiveData()
     private val _pmActivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
     private val _pmCancelDeactivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
-
-    fun getPmRegistrationData(shouldFromCache: Boolean) {
-        launchCatchError(block = {
-            val cacheStrategy = GetPMGradeBenefitListUseCase.getCacheStrategy(shouldFromCache)
-            getPmGradeBenefitListUseCase.get().setCacheStrategy(cacheStrategy)
-            getPmGradeBenefitListUseCase.get().params = GetPMGradeBenefitListUseCase.createParams(
-                    shopId = userSession.get().shopId,
-                    source = PMConstant.PM_SETTING_INFO_SOURCE
-            )
-            val result = withContext(dispatchers.io) {
-                getPmGradeBenefitListUseCase.get().executeOnBackground()
-            }
-            _pmGradeBenefitInfo.value = Success(result)
-        }, onError = {
-            _pmGradeBenefitInfo.value = Fail(it)
-        })
-    }
 
     fun getPmActiveStateData(pmTire: Int) {
         launchCatchError(block = {

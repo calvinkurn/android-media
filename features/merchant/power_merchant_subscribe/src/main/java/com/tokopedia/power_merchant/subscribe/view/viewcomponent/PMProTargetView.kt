@@ -76,16 +76,12 @@ class PMProTargetView : ConstraintLayout {
             showShopLevel(shopLevel)
 
             tvPmTargetAchievement.setOnClickListener {
+                showShopLevel(shopLevel)
                 setupExpandableView(groupPmTargetAchievement.isVisible)
-                if (groupPmTargetAchievement.isVisible) {
-                    showShopLevel(shopLevel)
-                }
             }
             icPmTargetChevron.setOnClickListener {
+                showShopLevel(shopLevel)
                 setupExpandableView(groupPmTargetAchievement.isVisible)
-                if (groupPmTargetAchievement.isVisible) {
-                    showShopLevel(shopLevel)
-                }
             }
         }
     }
@@ -107,17 +103,16 @@ class PMProTargetView : ConstraintLayout {
                 icPmTargetShopLevel.gone()
                 lblPmTargetShopLevel.gone()
                 lblPmTargetShopLevelDesc.gone()
-                return
+            } else {
+                dividerVerPmTarget2.visible()
+                icPmTargetShopLevel.visible()
+                lblPmTargetShopLevel.visible()
+                lblPmTargetShopLevelDesc.visible()
+
+                lblPmTargetShopLevel.text = root.context.getString(
+                    R.string.pm_shop_level, shopLevel.toString()
+                ).parseAsHtml()
             }
-
-            dividerVerPmTarget2.visible()
-            icPmTargetShopLevel.visible()
-            lblPmTargetShopLevel.visible()
-            lblPmTargetShopLevelDesc.visible()
-
-            lblPmTargetShopLevel.text = root.context.getString(
-                R.string.pm_shop_level, shopLevel.toString()
-            ).parseAsHtml()
         }
     }
 }
