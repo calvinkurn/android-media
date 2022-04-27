@@ -23,7 +23,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".preview.ui.activity.PickerPreviewActivity"
+            android:name=".picker.common.ui.activity.TestPreviewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 </manifest>
