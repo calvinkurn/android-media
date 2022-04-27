@@ -10,6 +10,7 @@ import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -35,6 +36,20 @@ class KeywordAdsViewModelTest {
     @After
     fun tearDown() {
         unmockkAll()
+    }
+
+    @Test
+    fun `getSuggestionKeyword exception check`() {
+        every {
+            suggestionKeywordUseCase.executeQuerySafeMode(any(), captureLambda())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockk())
+        }
+
+        var successCalled = false
+        viewModel.getSuggestionKeyword("", 1) { successCalled = true }
+
+        Assert.assertTrue(!successCalled)
     }
 
     @Test
