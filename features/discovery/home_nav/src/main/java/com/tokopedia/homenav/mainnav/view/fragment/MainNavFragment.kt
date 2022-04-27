@@ -58,6 +58,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
 
@@ -241,22 +242,25 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
-        view?.let {
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
-                if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
-                        RouteManager.route(context, homeNavMenuDataModel.applink)
-                    }
-                } else {
-                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
-                }
-                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
-            } else {
-                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
-                hitClickTrackingBasedOnId(homeNavMenuDataModel)
-            }
-        }
+        val CREATE_REVIEW_REQUEST_CODE = 99
+        startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode("tokopedia://product-review/create/708913441/2123103827", "UTF-8")), CREATE_REVIEW_REQUEST_CODE)
+
+//        view?.let {
+//            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+//                if(homeNavMenuDataModel.applink.isNotEmpty()){
+//                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+//                        RouteManager.route(context, homeNavMenuDataModel.applink)
+//                    }
+//                } else {
+//                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+//                            bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
+//                }
+//                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuDataModel.itemTitle, userSession.userId)
+//            } else {
+//                RouteManager.route(requireContext(), homeNavMenuDataModel.applink)
+//                hitClickTrackingBasedOnId(homeNavMenuDataModel)
+//            }
+//        }
     }
 
     private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
