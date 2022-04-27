@@ -28,13 +28,6 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
-    // should be able to capture photo and provide thumbnail
-    // should be able to switch camera usage between front camera and back camera
-    // should be able to finish picker activity
-    // should be able to open preview activity when click lanjut button
-    // should be able to change flash camera state (if camera is supported by flash, emulator that not support will fail)
-    // should be able to open preview activity when click thumbnail
-
     @Test
     fun should_show_thumbnail_from_captured_photo_onCaptureButtonClicked() {
         // When
