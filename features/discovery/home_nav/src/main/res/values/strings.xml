@@ -75,8 +75,8 @@
     <string name="error_state_bu_title">Gagal memuat menu ini</string>
     <string name="error_state_bu_description">Klik untuk coba lagi.</string>
 
-    <string name="error_state_transaction_title">Gagal memuat transaksi</string>
-    <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
+    <string name="error_state_transaction_title">Konten gagal ditampilkan</string>
+    <string name="error_state_transaction_description">Klik ikon di samping buat coba lagi.</string>
 
     <string name="error_state_shop_info">Gagal Memuat</string>
 
