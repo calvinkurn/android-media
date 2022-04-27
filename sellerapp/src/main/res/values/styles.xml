@@ -38,4 +38,11 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="ReviewMediaPlayer.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden|stateHidden</item>
+        <item name="isLightTheme">false</item>
+    </style>
 </resources>
