@@ -1115,7 +1115,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         }
                     }
                 }
-               resetCaraouselActiveListener(feedXCard)
+               resetCarouselActiveListener(feedXCard)
             }
 
         } else if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
@@ -1935,7 +1935,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             feedXCard.media = mediaList
             feedXCard.tags = feedXCard.products
-            resetCaraouselActiveListener(feedXCard)
+            resetCarouselActiveListener(feedXCard)
         }
     }
 
@@ -2112,9 +2112,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
              model: Visitable<*>? = null
     ) {
         if (model is DynamicPostUiModel) {
-            resetCaraouselActiveListener(model?.feedXCard)
+            resetCarouselActiveListener(model?.feedXCard)
         }else if (model is TopadsHeadLineV2Model){
-            resetCaraouselActiveListener(model?.feedXCard)
+            resetCarouselActiveListener(model?.feedXCard)
         }
     }
 
@@ -2238,7 +2238,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         else
             videoPlayer?.pause()
     }
-    private fun resetCaraouselActiveListener(feedXCard: FeedXCard?){
+    private fun resetCarouselActiveListener(feedXCard: FeedXCard?){
         carouselView.apply {
             if (onActiveIndexChangedListener == null) {
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -2246,20 +2246,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         pageControl.setCurrentIndicator(current)
                         feedXCard?.lastCarouselIndex = current
                         if (feedXCard?.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
-                            val list = mutableListOf<FeedXProduct>()
-                            list.add(feedXCard.products[current])
-                            if (list.isNotEmpty())
-                            imagePostListener.userProductImpression(
+                            if (!feedXCard.products.isNullOrEmpty()
+                                && feedXCard.products.size > current) {
+                                imagePostListener.userProductImpression(
                                     positionInFeed,
                                     feedXCard.id,
                                     feedXCard.typename,
                                     feedXCard.author.id,
-                                    list
-                            )
+                                    listOf(feedXCard.products[current])
+                                )
+                            }
                             if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current)
-                            bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
+                                bindImage(feedXCard.products, feedXCard.media[current], feedXCard)
                         } else if (feedXCard != null) {
-                            if (feedXCard.media.isNotEmpty() && feedXCard.media.size > current) {
+                            if (feedXCard.media.isEmpty()) return
+                            if (feedXCard.media.size > current) {
                                 imagePostListener.userCarouselImpression(
                                         feedXCard.id,
                                         feedXCard.media[current],
