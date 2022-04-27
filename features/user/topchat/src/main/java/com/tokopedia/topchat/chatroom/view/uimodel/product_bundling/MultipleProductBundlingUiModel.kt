@@ -35,6 +35,7 @@ class MultipleProductBundlingUiModel constructor(
             val listResult = arrayListOf<ProductBundlingUiModel>()
             for (i in listProductBundling.indices) {
                 val productBundling = ProductBundlingUiModel.Builder()
+                    .withIsSender(isSender)
                     .withProductBundling(listProductBundling[i])
                     .build()
                 listResult.add(productBundling)

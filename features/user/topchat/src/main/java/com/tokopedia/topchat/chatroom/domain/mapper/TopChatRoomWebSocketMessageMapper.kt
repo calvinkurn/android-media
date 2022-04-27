@@ -136,6 +136,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             ProductBundlingPojo::class.java
         )
         return MultipleProductBundlingUiModel.Builder()
+            .withIsSender(!payload.isOpposite)
             .withResponseFromWs(payload)
             .withProductBundlingResponse(pojo.listProductBundling)
             .build()
