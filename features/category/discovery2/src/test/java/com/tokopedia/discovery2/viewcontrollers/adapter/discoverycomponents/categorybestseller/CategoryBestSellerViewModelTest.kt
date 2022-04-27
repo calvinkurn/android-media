@@ -48,7 +48,8 @@ class CategoryBestSellerViewModelTest{
     @Test
     fun onAttachToViewHolder() {
         runBlocking {
-            val componentItem = mockk<ArrayList<ComponentsItem>>(relaxed = true)
+            val componentItem = arrayListOf<ComponentsItem>()
+            componentItem.add(mockk(relaxed = true))
             every { componentsItem.id } returns "s"
             every { componentsItem.pageEndPoint } returns "s"
             every { application.applicationContext } returns mockk()

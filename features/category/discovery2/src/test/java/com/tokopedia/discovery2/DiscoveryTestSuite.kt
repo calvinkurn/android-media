@@ -63,6 +63,7 @@ import org.junit.runners.Suite
 
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
+        CategoryBestSellerViewModelTest::class,
         MultiBannerViewModelTest::class,
         TimerSprintSaleItemViewModelTest::class,
         UtilsTest::class,
@@ -105,8 +106,6 @@ import org.junit.runners.Suite
         DiscoveryTNDBannerViewModelTest::class,
         TokopointsViewModelTest::class,
         TokopointsItemViewModelTest::class,
-        MyCouponModelTest::class,
-        MyCouponItemModelTest::class,
         SpacingViewModelTest::class,
         TabsViewModelTest::class,
         TabsItemViewModelTest::class,
@@ -115,7 +114,6 @@ import org.junit.runners.Suite
         QuickCouponViewModelTest::class,
         TopQuestViewModelTest::class,
         BannerTimerViewModelTest::class,
-        CategoryBestSellerViewModelTest::class,
         TopAdsHeadlineViewModelTest:: class,
         SectionViewModelTest::class,
         ProductCardRevampViewModelTest::class,
