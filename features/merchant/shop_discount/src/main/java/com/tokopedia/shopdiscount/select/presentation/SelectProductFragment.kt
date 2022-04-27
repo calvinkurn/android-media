@@ -16,11 +16,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
@@ -325,13 +326,10 @@ class SelectProductFragment : BaseDaggerFragment() {
     ) {
         val selectedProductCount = viewModel.getSelectedProducts().size
         val reachedMaxAllowedSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
-        val remainingAllowedSelection = getRemainingProductSelection()
         when {
-            remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
             reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
             isDisabled -> showDisableReason(disableReason)
-            else -> {
-            }
+            else -> {}
         }
     }
 
@@ -502,10 +500,6 @@ class SelectProductFragment : BaseDaggerFragment() {
     private fun clearPreviousData() {
         productAdapter.clearData()
         endlessRecyclerViewScrollListener?.resetState()
-    }
-
-    private fun getRemainingProductSelection() : Int {
-        return viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
     }
 
     private fun tickProduct(selectedProduct: ReservableProduct) {
