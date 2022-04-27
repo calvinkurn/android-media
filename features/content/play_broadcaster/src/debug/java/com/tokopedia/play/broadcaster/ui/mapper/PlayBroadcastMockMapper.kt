@@ -317,7 +317,21 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     }
 
     override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
-        TODO("Not yet implemented")
+        return with(response.playInteractiveQuizDetail) {
+            QuizDetailDataUiModel(
+                question = question,
+                reward = reward,
+                countDownEnd = countdownEnd,
+                choices = choices.map {
+                    QuizDetailDataUiModel.Choice(
+                        id = it.id,
+                        text = it.text,
+                        isCorrectAnswer = it.isCorrectAnswer,
+                        participantCount = it.participantCount
+                    )
+                }
+            )
+        }
     }
 
     companion object {
