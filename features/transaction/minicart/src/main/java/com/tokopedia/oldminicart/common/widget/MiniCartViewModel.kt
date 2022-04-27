@@ -157,11 +157,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
-    fun updateChatVisitables(visitables: MutableList<Visitable<*>>) {
-        miniCartChatListBottomSheetUiModel.value?.visitables = visitables
-        _miniCartChatListBottomSheetUiModel.value = miniCartChatListBottomSheetUiModel.value
-    }
-
     fun setMiniCartABTestData(isOCCFlow: Boolean, buttonBuyWording: String) {
         _miniCartABTestData.value = MiniCartABTestData(
                 isOCCFlow = isOCCFlow,
