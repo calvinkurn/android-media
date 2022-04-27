@@ -20,7 +20,10 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
@@ -28,7 +31,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINICART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -196,30 +199,17 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
-                when (viewModel.pageSource) {
-                    PAGE_SOURCE_CART -> {
-                        val intent = Intent()
-                        val oldBundleId = viewModel.selectedBundleId.toString()
-                        intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
-                        intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
-                        intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
-                            atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
-                        activity?.setResult(Activity.RESULT_OK, intent)
-                        activity?.finish()
-                    }
-                    PAGE_SOURCE_MINICART -> {
-                        val intent = Intent()
-                        val oldBundleId = viewModel.selectedBundleId.toString()
-                        intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
-                        intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
-                        intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
-                            atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
-                        activity?.setResult(Activity.RESULT_OK, intent)
-                        activity?.finish()
-                    }
-                    else -> {
-                        RouteManager.route(context, ApplinkConst.CART)
-                    }
+                if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+                    val intent = Intent()
+                    val oldBundleId = viewModel.selectedBundleId.toString()
+                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
+                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
+                    intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
+                        atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
+                } else {
+                    RouteManager.route(context, ApplinkConst.CART)
                 }
             }
         })

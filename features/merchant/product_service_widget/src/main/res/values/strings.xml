@@ -40,6 +40,7 @@
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
+    <string name="action_choose_package">Pilih Paket</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>

@@ -31,6 +31,7 @@ import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstant
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.oldproductbundle.common.data.model.response.BundleInfo
 import com.tokopedia.oldproductbundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.oldproductbundle.common.extension.setBackgroundToWhite
@@ -200,7 +201,7 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
-            if (pageSource == PAGE_SOURCE_CART) {
+            if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)

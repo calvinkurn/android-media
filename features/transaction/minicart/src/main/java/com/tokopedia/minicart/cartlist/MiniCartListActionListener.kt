@@ -30,5 +30,5 @@ interface MiniCartListActionListener {
 
     fun onChangeNotesClicked()
 
-    fun onDirectToBundlingSelectionBottomSheet(appLink: String)
+    fun onChangeBundleClicked(element: MiniCartProductUiModel)
 }

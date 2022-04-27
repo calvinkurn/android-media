@@ -30,7 +30,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
-import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINICART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -204,28 +204,16 @@ class SingleProductBundleFragment(
     private fun observeAddToCartResult() {
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             hideLoadingDialog()
-            when (pageSource) {
-                PAGE_SOURCE_CART -> {
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
-                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
-                    intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
-                        it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
-                    activity?.setResult(Activity.RESULT_OK, intent)
-                    activity?.finish()
-                }
-                PAGE_SOURCE_MINICART -> {
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
-                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
-                    intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
-                        it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
-                    activity?.setResult(Activity.RESULT_OK, intent)
-                    activity?.finish()
-                }
-                else -> {
-                    RouteManager.route(context, ApplinkConst.CART)
-                }
+            if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+                val intent = Intent()
+                intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
+                intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
+                intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
+                    it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
+            } else {
+                RouteManager.route(context, ApplinkConst.CART)
             }
         })
     }

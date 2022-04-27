@@ -8,28 +8,29 @@ import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
+import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.oldproductbundle.common.data.model.request.Bundle
+import com.tokopedia.oldproductbundle.common.data.model.request.ProductData
+import com.tokopedia.oldproductbundle.common.data.model.request.UserLocation
 import com.tokopedia.oldproductbundle.common.data.model.response.BundleInfo
 import com.tokopedia.oldproductbundle.common.data.model.response.BundleItem
 import com.tokopedia.oldproductbundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.oldproductbundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.oldproductbundle.common.data.model.uimodel.ProductBundleState
-import com.tokopedia.common.ProductServiceWidgetConstant
-import com.tokopedia.oldproductbundle.common.data.model.request.Bundle
-import com.tokopedia.oldproductbundle.common.data.model.request.ProductData
-import com.tokopedia.oldproductbundle.common.data.model.request.UserLocation
 import com.tokopedia.oldproductbundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.oldproductbundle.common.util.AtcVariantMapper
 import com.tokopedia.oldproductbundle.common.util.DiscountUtil
 import com.tokopedia.oldproductbundle.common.util.ResourceProvider
 import com.tokopedia.oldproductbundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.oldproductbundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -351,7 +352,7 @@ class ProductBundleViewModel @Inject constructor(
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
         } else if (
-            pageSource == PAGE_SOURCE_CART &&
+                (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) &&
             selectedProductBundleMaster.bundleId == selectedBundleId &&
             variantProductNotChanged(productBundleDetails)) {
                 isAddToCartInputValid = false

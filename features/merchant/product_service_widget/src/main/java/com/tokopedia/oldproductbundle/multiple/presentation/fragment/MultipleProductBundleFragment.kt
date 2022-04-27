@@ -19,15 +19,18 @@ import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.oldproductbundle.activity.ProductBundleActivity
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.oldproductbundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
 import com.tokopedia.oldproductbundle.common.data.model.response.BundleInfo
 import com.tokopedia.oldproductbundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.oldproductbundle.common.extension.setBackgroundToWhite
@@ -44,6 +47,7 @@ import com.tokopedia.oldproductbundle.multiple.presentation.model.ProductBundleD
 import com.tokopedia.oldproductbundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.oldproductbundle.tracking.MultipleProductBundleTracking
 import com.tokopedia.oldproductbundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
@@ -189,7 +193,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
-                if (viewModel.pageSource == PAGE_SOURCE_CART) {
+                if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)

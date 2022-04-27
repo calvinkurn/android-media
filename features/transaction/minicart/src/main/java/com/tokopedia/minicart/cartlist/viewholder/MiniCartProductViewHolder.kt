@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
@@ -600,18 +599,19 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textBundleTitle.text = element.bundleName
                 textBundlePrice.text = element.bundlePriceFmt
                 imageBundle.loadImage(element.bundleIconUrl)
-                textChangeBundle.setOnClickListener {
-                    openBundleSelectionPage(element)
+                if (element.isProductDisabled) {
+                    textChangeBundle.gone()
+                } else {
+                    textChangeBundle.visible()
+                    textChangeBundle.setOnClickListener {
+                        listener.onChangeBundleClicked(element)
+                    }
                 }
                 containerBundleHeader.show()
             } else {
                 containerBundleHeader.hide()
             }
         }
-    }
-
-    private fun openBundleSelectionPage(element: MiniCartProductUiModel) {
-        listener.onDirectToBundlingSelectionBottomSheet(element.editBundleApplink)
     }
 
     private fun renderBundleDiscount(element: MiniCartProductUiModel) {

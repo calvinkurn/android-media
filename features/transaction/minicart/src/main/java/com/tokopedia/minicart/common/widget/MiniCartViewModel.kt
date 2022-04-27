@@ -95,7 +95,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
-    var lastDeletedProductItem: MiniCartProductUiModel? = null
+    var lastDeletedProductItems: List<MiniCartProductUiModel>? = null
         private set
 
     // Used for mocking _miniCartListBottomSheetUiModel value.
@@ -112,8 +112,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     // Used for mocking lastDeletedProductItem value.
     // Should only be called from unit test.
-    fun setLastDeleteProductItem(miniCartProductUiModel: MiniCartProductUiModel) {
-        lastDeletedProductItem = miniCartProductUiModel
+    fun setLastDeleteProductItems(miniCartProductUiModels: List<MiniCartProductUiModel>) {
+        lastDeletedProductItems = miniCartProductUiModels
     }
 
     // Setter & Getter
@@ -245,11 +245,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
-    fun deleteSingleCartItem(product: MiniCartProductUiModel, isUpdatingBundleItem: Boolean = false) {
+    fun deleteSingleCartItem(product: MiniCartProductUiModel) {
         deleteCartUseCase.setParams(listOf(product.cartId))
         deleteCartUseCase.execute(
                 onSuccess = {
-                    onSuccessDeleteSingleCartItem(product, it, isUpdatingBundleItem)
+                    onSuccessDeleteSingleCartItem(product, it)
                 },
                 onError = {
                     onErrorDeleteSingleCartItem(it)
@@ -257,13 +257,25 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData, isUpdatingBundleItem: Boolean) {
+    fun deleteMultipleCartItems(products: List<MiniCartProductUiModel>, isFromEditBundle: Boolean = true) {
+        deleteCartUseCase.setParams(products.map { it.cartId })
+        deleteCartUseCase.execute(
+                onSuccess = {
+                    onSuccessDeleteMultipleCartItems(products, it, isFromEditBundle)
+                },
+                onError = {
+                    onErrorDeleteMultipleCartItems(it, isFromEditBundle)
+                }
+        )
+    }
+
+    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
         val visitables = getVisitables()
         val tmpVisitables = getVisitables()
         loop@ for ((index, visitable) in visitables.withIndex()) {
             if (visitable is MiniCartProductUiModel && visitable.cartId == product.cartId) {
                 val deletedItem = visitables[index] as MiniCartProductUiModel
-                lastDeletedProductItem = deletedItem
+                lastDeletedProductItems = listOf(deletedItem)
 
                 tmpVisitables.removeAt(index)
 
@@ -277,14 +289,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                     }
                 }
 
-                val state = if (isUpdatingBundleItem) {
-                    GlobalEvent.STATE_SUCCESS_UPDATE_PRODUCT_BUNDLE_CART_ITEM
-                } else {
-                    GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM
-                }
-
                 _globalEvent.value = GlobalEvent(
-                        state = state,
+                        state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
                         data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = false)
                 )
                 break@loop
@@ -293,6 +299,35 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onErrorDeleteSingleCartItem(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                throwable = throwable
+        )
+    }
+
+    private fun onSuccessDeleteMultipleCartItems(products: List<MiniCartProductUiModel>, removeFromCartData: RemoveFromCartData, isFromEditBundle: Boolean) {
+        val visitables = getVisitables()
+        val tmpVisitables = getVisitables().toMutableList()
+        val deletedItems = arrayListOf<MiniCartProductUiModel>()
+        tmpVisitables.removeAll { visitable ->
+            if (visitable is MiniCartProductUiModel && products.find { it.cartId == visitable.cartId } != null) {
+                deletedItems.add(visitable)
+                return@removeAll true
+            }
+            return@removeAll false
+        }
+        if (tmpVisitables.size < visitables.size) {
+            val isLastItem = tmpVisitables.find { it is MiniCartProductUiModel } == null
+            updateVisitables(tmpVisitables)
+            lastDeletedProductItems = deletedItems
+            _globalEvent.value = GlobalEvent(
+                    state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
+                    data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem && !isFromEditBundle, isBulkDelete = false, isFromEditBundle = isFromEditBundle)
+            )
+        }
+    }
+
+    private fun onErrorDeleteMultipleCartItems(throwable: Throwable, isFromEditBundle: Boolean) {
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
                 throwable = throwable
@@ -360,8 +395,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun undoDeleteCartItem(isLastItem: Boolean) {
-        lastDeletedProductItem?.let { miniCartProductUiModel ->
-            undoDeleteCartUseCase.setParams(listOf(miniCartProductUiModel.cartId))
+        lastDeletedProductItems?.let { deletedItems ->
+            undoDeleteCartUseCase.setParams(deletedItems.map { it.cartId })
             undoDeleteCartUseCase.execute(
                     onSuccess = {
                         onSuccessUndoDeleteCartItem(it, isLastItem)
@@ -374,7 +409,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onSuccessUndoDeleteCartItem(undoDeleteCartDataResponse: UndoDeleteCartDataResponse, isLastItem: Boolean) {
-        lastDeletedProductItem = null
+        lastDeletedProductItems = null
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
                 data = UndoDeleteCartDomainModel(undoDeleteCartDataResponse, isLastItem)
@@ -794,7 +829,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 val productOriginalPrice = visitable.getOriginalPrice()
 
                 if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
-                totalQty += productQty
                 val price = when {
                     visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
                         visitable.productWholeSalePrice
@@ -822,6 +856,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         allProductList.forEach { visitable ->
             if(!visitable.isProductDisabled) {
                 totalWeight += visitable.productWeight * visitable.productQty
+                totalQty += visitable.productQty
             }
         }
 

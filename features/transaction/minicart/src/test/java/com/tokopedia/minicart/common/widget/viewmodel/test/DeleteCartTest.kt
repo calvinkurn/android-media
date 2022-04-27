@@ -90,7 +90,7 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem != null)
+        assert(viewModel.lastDeletedProductItems != null)
     }
 
     @Test
@@ -111,7 +111,9 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItem?.productId == productId)
+        viewModel.lastDeletedProductItems?.forEach {
+            assert(it.productId == productId)
+        }
     }
 
     @Test

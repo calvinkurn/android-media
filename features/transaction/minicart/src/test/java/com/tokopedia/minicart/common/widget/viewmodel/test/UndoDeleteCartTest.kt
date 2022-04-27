@@ -53,7 +53,7 @@ class UndoDeleteCartTest {
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
                 ?: MiniCartProductUiModel()
-        viewModel.setLastDeleteProductItem(miniCartProductUiModel)
+        viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
         coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
@@ -76,7 +76,7 @@ class UndoDeleteCartTest {
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
                 ?: MiniCartProductUiModel()
-        viewModel.setLastDeleteProductItem(miniCartProductUiModel)
+        viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
         coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
@@ -88,7 +88,7 @@ class UndoDeleteCartTest {
         viewModel.undoDeleteCartItem(false)
 
         //then
-        assert(viewModel.lastDeletedProductItem == null)
+        assert(viewModel.lastDeletedProductItems == null)
     }
 
     @Test
@@ -99,7 +99,7 @@ class UndoDeleteCartTest {
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
                 ?: MiniCartProductUiModel()
-        viewModel.setLastDeleteProductItem(miniCartProductUiModel)
+        viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
         coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
@@ -123,7 +123,7 @@ class UndoDeleteCartTest {
         val productId = "1920796612"
         val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId)
                 ?: MiniCartProductUiModel()
-        viewModel.setLastDeleteProductItem(miniCartProductUiModel)
+        viewModel.setLastDeleteProductItems(listOf(miniCartProductUiModel))
 
         val errorMessage = "Error Message"
         val throwable = ResponseErrorException(errorMessage)
