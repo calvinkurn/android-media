@@ -570,19 +570,27 @@ class HomeDynamicChannelUseCase @Inject constructor(
      * 1. Provide initial HomeData
      * 2. Get above the fold skeleton
      *    2.1 Get home flag response
-     * 3. Save immediately to produce shimmering for ATF data
-     * 4. Get above the fold content
-     * 5. Submit current data to database, to trigger HomeViewModel flow
-     *      if there is no cache, then submit immediately
-     *      if cache exist, don't submit to database because it will trigger jumpy experience
-     * 6. Get dynamic channel data
-     *    6.1. If channel cache is empty, proceed to channel pagination
-     *    6.2. If channel cache is not empty, proceed to full channel request
-     *      if there is token and cache is not exist
-     *      if cache is exist
-     * 7. Submit current data to database, to trigger HomeViewModel flow
-     *    7.1 Emit error pagination only when atf is empty
-     *      Because there is no content that we can show, we showing error page
+     * 3. Get above the fold content
+     * 4. Get dynamic channel data
+     *    4.1. If remote config pagination enabled, proceed with pagination
+     *      4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+     *      4.1.2 If get dynamic channel with page = 1 failed, then emit error
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.3 If channel cache is not empty, proceed to full channel request
+     *              - if there is token and cache is not exist
+     *              - if cache is exist
+     *      4.1.4. If full channel request is success
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *              Because there is no content that we can show, we showing error page
+     *      4.1.5 If full channel request is failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
+     *    4.2. If remote config pagination disabled, proceed with no pagination
+     *      4.2.1 If full dynamic channel request succeed
+     *              Then submit current data to database, to trigger HomeViewModel flow
+     *      4.2.2 If full dynamic channel request failed
+     *              Then emit error pagination
+     *              Because there is no content that we can show, we showing error page
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
@@ -641,7 +649,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             }
 
             /**
-             * 4. Get above the fold content
+             * 3. Get above the fold content
              */
             if (homeData.atfData?.dataList?.isNotEmpty() == true) {
                 var nonTickerResponseFinished = false
@@ -776,10 +784,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                 }
             }
 
+            /**
+             * 4. Get dynamic channel data
+             */
             paginationRemoteConfigCondition(
                 remoteConfigPaginationEnabled = {
                     /**
-                     * 6.1. If channel cache is empty, proceed to channel pagination
+                     * 4.1. If remote config pagination enabled, proceed with pagination
                      */
                     if (!isCacheExistForProcess) {
                         val dynamicChannelResponseValue = try {
@@ -804,6 +815,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         }
 
                         if (dynamicChannelResponseValue != null) {
+                            /**
+                             * 4.1.1 If get dynamic channel with page = 1 succeed, then save token to homeData
+                             */
                             val extractPair = extractToken(dynamicChannelResponseValue)
 
                             homeData.let {
@@ -823,9 +837,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 saveToDatabase(homeData, false)
                             }
                         } else {
-
                             /**
-                             * 7.1 Emit error pagination only when atf is empty
+                             * 4.1.2 If get dynamic channel with page = 1 failed, then emit error
                              * Because there is no content that we can show, we showing error page
                              */
                             if (!isCacheExistForProcess &&
@@ -841,7 +854,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
 
                     /**
-                     * 6.2. If channel cache is not empty, proceed to full channel request
+                     * 4.1.3 If channel cache is not empty, proceed to full channel request
                      * - if there is token and cache is not exist
                      * - if cache is exist
                      *
@@ -849,8 +862,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     if ((!isCacheExistForProcess && currentToken.isNotEmpty()) ||
                         isCacheExistForProcess) {
                         try {
-                            homeData = processFullPageDynamicChannel(
-                                homeDataResponse = homeData)
+                            homeData = processFullPageDynamicChannel(homeDataResponse = homeData)
                                 ?: HomeData()
                             homeData.dynamicHomeChannel.channels.forEach {
                                 it.timestamp = currentTimeMillisString
@@ -859,7 +871,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 emit(Result.success(null))
 
                                 /**
-                                 * 7. Submit current data to database, to trigger HomeViewModel flow
+                                 * 4.1.4. If full channel request is success
+                                 * Then submit current data to database, to trigger HomeViewModel flow
                                  */
                                 homeData.isProcessingDynamicChannel = false
                                 if (isAtfSuccess) {
@@ -871,7 +884,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         } catch (e: Exception) {
 
                             /**
-                             * 7.1 Emit error pagination only when atf is empty
+                             * 4.1.5 If full channel request is failed
+                             * Then emit error pagination
                              * Because there is no content that we can show, we showing error page
                              */
                             if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
@@ -887,6 +901,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     }
                 },
                 remoteConfigPaginationDisabled = {
+                    /**
+                     * 4.2. If remote config pagination disabled, proceed with no pagination
+                     */
                     try {
                         homeData = processFullPageDynamicChannel(
                             homeDataResponse = homeData)
@@ -898,7 +915,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             emit(Result.success(null))
 
                             /**
-                             * 6.1 Submit current data to database, to trigger HomeViewModel flow
+                             * 4.2.1 If full dynamic channel request succeed
+                             * Then submit current data to database, to trigger HomeViewModel flow
                              */
                             it.isProcessingDynamicChannel = false
                             if (isAtfSuccess) {
@@ -910,7 +928,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     } catch (e: Exception) {
 
                         /**
-                         * 6.2 Emit error pagination only when atf is empty
+                         * 4.2.2 If full dynamic channel request failed
+                         * Then emit error pagination
                          * Because there is no content that we can show, we showing error page
                          */
                         if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
