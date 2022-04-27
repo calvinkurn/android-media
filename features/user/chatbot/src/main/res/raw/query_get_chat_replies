@@ -1,5 +1,5 @@
 query get_chat_replies($msgId: Int!, $page: Int!) {
-  chatReplies(msgId: $msgId, page: $page) {
+  chatReplies(msgId: $msgId, page: $page, isTextOnly:true) {
     hasNext
     textareaReply
     contacts {
@@ -43,12 +43,19 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
             }
           }
           parentReply {
-            attachmentID
-            senderID
-            name
-            replyID
-            mainText
-            replyTimeUnixNano
+             attachmentID
+             attachmentType
+                      senderID
+                      name
+                      replyID
+                      replyTimeUnixNano
+                      fraudStatus
+                      source
+                      mainText
+                      subText
+                      imageURL
+                      isExpired
+                      localID
           }
         }
       }

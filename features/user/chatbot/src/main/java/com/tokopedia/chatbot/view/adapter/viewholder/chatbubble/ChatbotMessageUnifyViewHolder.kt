@@ -42,9 +42,9 @@ abstract class ChatbotMessageUnifyViewHolder(
         setHeaderDate(message)
 
         //TODO check for msg link
-//        customChatLayout?.message?.setOnClickListener {
-//            replyBubbleListener.showReplyOption(message)
-//        }
+        customChatLayout?.fxChat?.setOnClickListener {
+            replyBubbleListener.showReplyOption(message)
+        }
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {
