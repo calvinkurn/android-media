@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
@@ -290,38 +291,27 @@ class SelectProductFragment : BaseDaggerFragment() {
                 val nextCounter = currentSelectedProductCount + 1
 
                 if (nextCounter > MAX_PRODUCT_SELECTION) {
-                    val updatedProduct = selectedProduct.copy(isCheckboxTicked = false)
-                    productAdapter.update(selectedProduct, updatedProduct)
-
+                    untickProduct(selectedProduct)
                     showDisableReason(getString(R.string.sd_select_product_max_count_reached))
                 } else {
-                    val updatedProduct = selectedProduct.copy(isCheckboxTicked = true)
-                    productAdapter.update(selectedProduct, updatedProduct)
+                    val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
 
-                    viewModel.addProductToSelection(selectedProduct)
-
-                    val remainingSelection = getRemainingProductSelection()
-
-                    if (remainingSelection < ZERO) {
+                    if (remainingSelection > ZERO) {
+                        tickProduct(selectedProduct)
+                        viewModel.addProductToSelection(selectedProduct)
+                    } else {
+                        untickProduct(selectedProduct)
                         showNoMoreRemainingQuota()
                     }
-
                 }
 
-                val selectedProductCount = viewModel.getSelectedProducts().size
-                binding?.btnManage?.text =
-                    String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
-                binding?.btnManage?.isEnabled = selectedProductCount > ZERO
+                refreshButtonTitle()
 
             } else {
                 viewModel.removeProductFromSelection(selectedProduct)
-                val updatedProduct = selectedProduct.copy(isCheckboxTicked = false)
-                productAdapter.update(selectedProduct, updatedProduct)
+                untickProduct(selectedProduct)
 
-                val selectedProductCount = viewModel.getSelectedProducts().size
-                binding?.btnManage?.text =
-                    String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
-                binding?.btnManage?.isEnabled = selectedProductCount > ZERO
+                refreshButtonTitle()
             }
 
 
@@ -518,32 +508,20 @@ class SelectProductFragment : BaseDaggerFragment() {
         return viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
     }
 
-    /*private fun determineShouldDisableSelection() : Boolean {
+    private fun tickProduct(selectedProduct: ReservableProduct) {
+        val updatedProduct = selectedProduct.copy(isCheckboxTicked = true)
+        productAdapter.update(selectedProduct, updatedProduct)
+    }
 
+    private fun untickProduct(selectedProduct: ReservableProduct) {
+        val updatedProduct = selectedProduct.copy(isCheckboxTicked = false)
+        productAdapter.update(selectedProduct, updatedProduct)
+    }
+
+    private fun refreshButtonTitle() {
         val selectedProductCount = viewModel.getSelectedProducts().size
-
-        val items = productAdapter.getItems()
-
-        //disabled reason
-           // - max selection -> disable all product
-           // - disable by be
-           // - empty vps quota
-
-        //if partial
-        // < 5 selected produk shouldDisableSelection = false
-        // >=5  selected produk shouldDisableSelection = true
-
-        //not partial
-        // < 5 selected produk shouldDisableSelection = false
-        // >=5 selected produk  shouldDisableSelection = true
-        // <=0 remaining selection shouldDisableSelection = true
-        // >0 remaining selection shouldDisableSelection = false
-        val hasPartiallyDiscountProduct = items.filter { it.countVariant > ZERO }.size > ZERO
-        return if (hasPartiallyDiscountProduct) {
-            (selectedProductCount >= MAX_PRODUCT_SELECTION)
-        } else {
-            val remainingSelection = getRemainingProductSelection()
-            (selectedProductCount >= MAX_PRODUCT_SELECTION) || remainingSelection <= ZERO
-        }
-    }*/
+        binding?.btnManage?.text =
+            String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
+        binding?.btnManage?.isEnabled = selectedProductCount > ZERO
+    }
 }
