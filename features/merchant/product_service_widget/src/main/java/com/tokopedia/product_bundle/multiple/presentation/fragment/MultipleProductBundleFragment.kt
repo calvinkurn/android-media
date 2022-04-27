@@ -209,6 +209,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     }
                     PAGE_SOURCE_MINICART -> {
                         val intent = Intent()
+                        val oldBundleId = viewModel.selectedBundleId.toString()
+                        intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
+                        intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
+                        intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
+                            atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                         activity?.setResult(Activity.RESULT_OK, intent)
                         activity?.finish()
                     }

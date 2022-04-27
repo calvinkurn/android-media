@@ -245,11 +245,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
-    fun deleteSingleCartItem(product: MiniCartProductUiModel) {
+    fun deleteSingleCartItem(product: MiniCartProductUiModel, isUpdatingBundleItem: Boolean = false) {
         deleteCartUseCase.setParams(listOf(product.cartId))
         deleteCartUseCase.execute(
                 onSuccess = {
-                    onSuccessDeleteSingleCartItem(product, it)
+                    onSuccessDeleteSingleCartItem(product, it, isUpdatingBundleItem)
                 },
                 onError = {
                     onErrorDeleteSingleCartItem(it)
@@ -257,7 +257,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
+    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData, isUpdatingBundleItem: Boolean) {
         val visitables = getVisitables()
         val tmpVisitables = getVisitables()
         loop@ for ((index, visitable) in visitables.withIndex()) {
@@ -277,8 +277,14 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                     }
                 }
 
+                val state = if (isUpdatingBundleItem) {
+                    GlobalEvent.STATE_SUCCESS_UPDATE_PRODUCT_BUNDLE_CART_ITEM
+                } else {
+                    GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM
+                }
+
                 _globalEvent.value = GlobalEvent(
-                        state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
+                        state = state,
                         data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = false)
                 )
                 break@loop

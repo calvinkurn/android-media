@@ -19,7 +19,6 @@ import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
@@ -52,9 +51,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     : MiniCartListActionListener {
 
     companion object {
-        private const val REQUEST_CODE_BUNDLING_SELECTION = 12334
         private const val LONG_DELAY = 500L
         private const val SHORT_DELAY = 200L
+
+        const val REQUEST_CODE_BUNDLING_SELECTION = 12334
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
@@ -109,8 +109,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomsheetMiniCartListBinding, fragmentManager: FragmentManager) {
-        bottomSheet = MiniCartBottomSheet {
-            initializeCartData(viewBinding, viewModel)
+        bottomSheet = MiniCartListExtendedBottomSheet { oldBundleId ->
+            updateProductBundlingCartData(oldBundleId)
         }.apply {
             showCloseIcon = false
             showHeader = true
@@ -488,6 +488,14 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
+    private fun updateProductBundlingCartData(oldBundleId: String) {
+        bottomSheetListener?.showProgressLoading()
+        val model = adapter?.getMiniCartProduct(oldBundleId)
+        model?.apply {
+            viewModel?.deleteSingleCartItem(this, true)
+        }
+    }
+
     private fun showLoading() {
         adapter?.let {
             it.removeErrorNetwork()
@@ -631,30 +639,4 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         bottomSheet?.startActivityForResult(intent, REQUEST_CODE_BUNDLING_SELECTION)
     }
 
-    class MiniCartBottomSheet(private var onRefresh: () -> Unit): BottomSheetUnify() {
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-
-            if (requestCode == REQUEST_CODE_BUNDLING_SELECTION && resultCode == Activity.RESULT_OK) {
-                showToaster(
-                    text = context?.getString(R.string.mini_cart_bundling_package_has_been_changed_desc).orEmpty(),
-                    actionText = context?.getString(R.string.mini_cart_bundling_package_has_been_changed_action_text).orEmpty()
-                )
-                onRefresh.invoke()
-            }
-        }
-
-        private fun showToaster(text: String, actionText: String, clickListener: View.OnClickListener = View.OnClickListener {}) {
-            Toaster.toasterCustomBottomHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_72).orZero()
-            dialog?.window?.decorView?.apply {
-                Toaster.build(
-                    view = this,
-                    text = text,
-                    duration = Toaster.TYPE_NORMAL,
-                    actionText = actionText,
-                    clickListener = clickListener
-                ).show()
-            }
-        }
-    }
 }

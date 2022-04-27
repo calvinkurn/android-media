@@ -216,6 +216,10 @@ class SingleProductBundleFragment(
                 }
                 PAGE_SOURCE_MINICART -> {
                     val intent = Intent()
+                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
+                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
+                    intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
+                        it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
