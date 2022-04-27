@@ -133,7 +133,8 @@ class SingleProductBundleViewModel @Inject constructor(
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
             }
-            pageSource == ProductBundleConstants.PAGE_SOURCE_CART &&
+            pageSource == ProductBundleConstants.PAGE_SOURCE_CART ||
+                    pageSource == ProductBundleConstants.PAGE_SOURCE_MINICART &&
                     selectedData.bundleId == selectedBundleId &&
                     selectedData.productId == selectedProductId -> {
                 // selected bundleId is not changed

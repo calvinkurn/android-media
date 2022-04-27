@@ -52,7 +52,7 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
 
     private fun initView(view: View) {
         setChild(view)
-        setTitle(getString(R.string.product_bundle_page_title))
+        setTitle(getString(R.string.product_bundle_bottomsheet_title))
         isFullpage = true
         clearContentPadding = true
     }

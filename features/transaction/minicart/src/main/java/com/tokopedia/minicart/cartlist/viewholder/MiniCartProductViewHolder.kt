@@ -611,10 +611,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     }
 
     private fun openBundleSelectionPage(element: MiniCartProductUiModel) {
-        RouteManager.route(
-            itemView.context,
-            element.editBundleApplink
-        )
+        listener.onDirectToBundlingSelectionBottomSheet(element.editBundleApplink)
     }
 
     private fun renderBundleDiscount(element: MiniCartProductUiModel) {

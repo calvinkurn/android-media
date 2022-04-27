@@ -28,6 +28,7 @@ import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINICART
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -195,17 +196,25 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
-                if (viewModel.pageSource == PAGE_SOURCE_CART) {
-                    val intent = Intent()
-                    val oldBundleId = viewModel.selectedBundleId.toString()
-                    intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
-                    intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
-                    intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
-                        atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
-                    activity?.setResult(Activity.RESULT_OK, intent)
-                    activity?.finish()
-                } else {
-                    RouteManager.route(context, ApplinkConst.CART)
+                when (viewModel.pageSource) {
+                    PAGE_SOURCE_CART -> {
+                        val intent = Intent()
+                        val oldBundleId = viewModel.selectedBundleId.toString()
+                        intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
+                        intent.putExtra(EXTRA_NEW_BUNDLE_ID, atcResult.requestParams.bundleId)
+                        intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
+                            atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
+                        activity?.setResult(Activity.RESULT_OK, intent)
+                        activity?.finish()
+                    }
+                    PAGE_SOURCE_MINICART -> {
+                        val intent = Intent()
+                        activity?.setResult(Activity.RESULT_OK, intent)
+                        activity?.finish()
+                    }
+                    else -> {
+                        RouteManager.route(context, ApplinkConst.CART)
+                    }
                 }
             }
         })

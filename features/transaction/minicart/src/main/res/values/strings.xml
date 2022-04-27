@@ -25,4 +25,6 @@
     <string name="mini_cart_coachmark_title">Barang berhasil masuk keranjang!</string>
     <string name="mini_cart_coachmark_desc">Cek keranjang khusus transaksi Tokopedia NOW! di sini, atau bisa juga langsung beli.</string>
     <string name="mini_cart_cta_change">Ubah</string>
+    <string name="mini_cart_bundling_package_has_been_changed_desc">Paket Bundling berhasil diubah.</string>
+    <string name="mini_cart_bundling_package_has_been_changed_action_text">Oke</string>
 </resources>

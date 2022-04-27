@@ -22,6 +22,7 @@ import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResp
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.common.ProductServiceWidgetConstant
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINICART
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -350,7 +351,8 @@ class ProductBundleViewModel @Inject constructor(
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
         } else if (
-            pageSource == PAGE_SOURCE_CART &&
+            pageSource == PAGE_SOURCE_CART ||
+            pageSource == PAGE_SOURCE_MINICART &&
             selectedProductBundleMaster.bundleId == selectedBundleId &&
             variantProductNotChanged(productBundleDetails)) {
                 isAddToCartInputValid = false
