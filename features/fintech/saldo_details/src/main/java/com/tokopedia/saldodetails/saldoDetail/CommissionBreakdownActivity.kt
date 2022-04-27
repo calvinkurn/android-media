@@ -1,0 +1,34 @@
+package com.tokopedia.saldodetails.saldoDetail
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+
+/**
+ * For navigating to this class
+ * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT]
+ */
+
+
+class CommissionBreakdownActivity : BaseSimpleActivity(){
+
+    override fun getNewFragment(): Fragment {
+        return CommissionBreakdownFragment.createInstance()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        super.setupLayout(savedInstanceState)
+        initializeView()
+    }
+    private fun initializeView() {
+
+    }
+
+    override fun getTagFragment() = TAG
+    override fun getScreenName() = null
+
+    companion object {
+        private val TAG = "DEPOSIT_FRAGMENT"
+
+    }
+}

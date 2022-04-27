@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
+class CommissionBreakdownFragment : TkpdBaseV4Fragment(),
     OnDateRangeSelectListener {
     private val animationDuration: Long = 300
     private var selectedDateFrom: Date = Date()
@@ -27,8 +27,8 @@ class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
     private var downloadButton: UnifyButton? = null
 
     companion object {
-        fun createInstance(): SaldoDownloadTransactionFeeReportFragment {
-            return SaldoDownloadTransactionFeeReportFragment()
+        fun createInstance(): CommissionBreakdownFragment {
+            return CommissionBreakdownFragment()
         }
     }
 
@@ -42,7 +42,7 @@ class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            R.layout.fragment_saldo_transaction_fee_report_download_section,
+            R.layout.fragment_commission_breakdown,
             container,
             false
         )

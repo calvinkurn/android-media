@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.saldoDetail.SaldoDownloadTransactionFeeReportActivity
+import com.tokopedia.saldodetails.saldoDetail.CommissionBreakdownActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.TickerDownloadFeeTransactionModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -20,7 +20,7 @@ class TickerDownloadFeeTransactionViewHolder(itemView: View) :
         }
 
         itemView.setOnClickListener {
-            it.context?.startActivity(Intent(it.context, SaldoDownloadTransactionFeeReportActivity::class.java))
+            it.context?.startActivity(Intent(it.context, CommissionBreakdownActivity::class.java))
         }
 
     }
