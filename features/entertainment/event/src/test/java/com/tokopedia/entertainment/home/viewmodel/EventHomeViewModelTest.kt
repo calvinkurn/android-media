@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.home.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.entertainment.home.adapter.viewmodel.LoadingHomeModel
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 import com.tokopedia.entertainment.home.utils.MapperHomeData.mappingItem
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
@@ -18,6 +19,7 @@ import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,11 +47,17 @@ class EventHomeViewModelTest{
 
     @Test
     fun loadingTest_SuccessInitialTest(){
+        //given
+        val expected = Success(listOf(LoadingHomeModel()))
+
         //when
         eventHomeViewModel.getIntialList()
 
         //then
-        assertNotNull(eventHomeViewModel.eventHomeListData.value)
+        assertTrue(eventHomeViewModel.eventHomeListData.value is Success)
+        val data = eventHomeViewModel.eventHomeListData.value as Success
+        assertNotNull(data)
+        assertEquals(expected.data.size, data.data.size)
     }
 
     @Test
