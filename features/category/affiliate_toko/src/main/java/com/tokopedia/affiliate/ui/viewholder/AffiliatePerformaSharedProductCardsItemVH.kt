@@ -24,9 +24,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
     itemView: View,
     private val productClickInterface: ProductClickInterface?
 ) : AbstractViewHolder<AffiliatePerformaSharedProductCardsModel>(itemView) {
-    private var adapterMetrics = AffiliateAdapter(AffiliateAdapterFactory())
-    private var metricRv = itemView.findViewById<RecyclerView>(R.id.metric_rv)
-    private var rvLayoutManager = GridLayoutManager(itemView.context,3)
+    private val adapterMetrics = AffiliateAdapter(AffiliateAdapterFactory())
+    private val metricRv = itemView.findViewById<RecyclerView>(R.id.metric_rv)
+    private val rvLayoutManager = GridLayoutManager(itemView.context,SPAN_COUNT)
     init {
         metricRv?.apply {
             layoutManager = rvLayoutManager
@@ -39,6 +39,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
         var LAYOUT = R.layout.affiliate_performa_vertical_product_card_item_layout
 
         const val PRODUCT_ACTIVE = 1
+        const val SPAN_COUNT = 3
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {

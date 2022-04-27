@@ -19,6 +19,9 @@ class AffiliateProductMetricVH(itemView: View)
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_product_metrics_layout_item
+        private const val ZERO = 0
+        private const val R_90 = 90f
+        private const val R_270 = 90f
     }
 
     override fun bind(element: AffiliateProductCardMetricsModel?) {
@@ -34,7 +37,7 @@ class AffiliateProductMetricVH(itemView: View)
     private fun setTrend(view: IconUnify?, metricIntValue: Double?) {
         metricIntValue?.let {
             when {
-                it > 0 -> {
+                it > ZERO -> {
                     view?.apply {
                         show()
                         setImage(
@@ -43,10 +46,10 @@ class AffiliateProductMetricVH(itemView: View)
                                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
                             )
                         )
-                        rotation = 90f
+                        rotation = R_90
                     }
                 }
-                it < 0 -> {
+                it < ZERO -> {
                     view?.apply {
                         show()
                         setImage(
@@ -55,7 +58,7 @@ class AffiliateProductMetricVH(itemView: View)
                                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
                             )
                         )
-                        rotation = 270f
+                        rotation = R_270
                     }
                 }
                 else -> {
