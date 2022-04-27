@@ -1,10 +1,10 @@
-package com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity
+package com.tokopedia.shopdiscount.manage_product_discount.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment.ShopDiscountManageProductDiscountMultiLocFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment.ShopDiscountManageProductDiscountMultiLocFragment
 
 class ShopDiscountManageProductDiscountMultiLocActivity : BaseSimpleActivity() {
 

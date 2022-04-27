@@ -23,7 +23,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
-import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
+import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailAdapter
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailTypeFactoryImpl
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailItemViewHolder
@@ -273,7 +273,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             Int.ZERO,
             MARGIN_TOP_BOTTOM_VALUE_DIVIDER.toPx()
         )
-        val dividerItemDecoration = ShopDiscountProductDetailDividerItemDecoration(
+        val dividerItemDecoration = ShopDiscountDividerItemDecoration(
             drawableInset
         )
         if (itemDecorationCount > 0)

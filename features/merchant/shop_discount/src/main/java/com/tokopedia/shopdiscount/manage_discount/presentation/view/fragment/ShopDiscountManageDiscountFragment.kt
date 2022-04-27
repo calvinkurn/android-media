@@ -25,6 +25,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
+import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
@@ -34,15 +35,15 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholde
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity.ShopDiscountManageProductDiscountActivity
-import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
+import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -83,8 +84,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private var rvProductList: RecyclerView? = null
     private var containerButtonSubmit: ViewGroup? = null
     private var buttonSubmit: UnifyButton? = null
-    private var cardLabelBulkManage: CardUnify2? = null
-    private var bulkManageTitle: Typography? = null
+    private var labelBulkApply: ShopDiscountLabelBulkApply? = null
     private var headerUnify: HeaderUnify? = null
     private var tickerAbusiveProducts: Ticker? = null
 
@@ -209,8 +209,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         rvProductList = viewBinding?.rvSetupProductList
         containerButtonSubmit = viewBinding?.containerButtonSubmit
         buttonSubmit = viewBinding?.buttonSubmit
-        cardLabelBulkManage = viewBinding?.labelBulkApply?.cardLabelBulkManage
-        bulkManageTitle = viewBinding?.labelBulkApply?.textLabelTitle
+        labelBulkApply = viewBinding?.labelBulkApply
         headerUnify = viewBinding?.headerUnify
         tickerAbusiveProducts = viewBinding?.tickerAbusiveProducts
     }
@@ -227,9 +226,9 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private fun RecyclerView.setDecoration() {
         val dividerDrawable = MethodChecker.getDrawable(
             context,
-            R.drawable.shop_discount_manage_discount_bg_line_separator_thin
+            R.drawable.shop_discount_manage_discount_bg_line_separator
         )
-        val dividerItemDecoration = ShopDiscountProductDetailDividerItemDecoration(dividerDrawable)
+        val dividerItemDecoration = ShopDiscountDividerItemDecoration(dividerDrawable)
         if (itemDecorationCount > 0)
             removeItemDecorationAt(0)
         addItemDecoration(dividerItemDecoration)
@@ -237,7 +236,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun getSetupProductListData() {
         showLoading()
-        viewModel.getSetupProductListData(requestId, selectedProductVariantId)
+        viewModel.getSetupProductListData(requestId, selectedProductVariantId, mode, status)
     }
 
     private fun observeLiveData() {
@@ -407,22 +406,22 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun setupLabelBulkApply(totalProduct: Int) {
-        cardLabelBulkManage?.apply {
+        val labelTitle = String.format(
+            getString(R.string.shop_discount_manage_discount_bulk_manage_label_format),
+            totalProduct
+        )
+        labelBulkApply?.apply {
             show()
-            cardType = CardUnify2.TYPE_CLEAR
+            setTitle(labelTitle)
             setOnClickListener {
                 openBottomSheetBulkApply()
             }
         }
-        bulkManageTitle?.text = String.format(
-            getString(R.string.shop_discount_manage_discount_bulk_manage_label_format),
-            totalProduct
-        )
     }
 
     private fun openBottomSheetBulkApply() {
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
-        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(mode)
+        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(status)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode
@@ -433,16 +432,13 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun getBulkApplyBottomSheetMode(mode: String): DiscountBulkApplyBottomSheet.Mode {
+    private fun getBulkApplyBottomSheetMode(mode: Int): DiscountBulkApplyBottomSheet.Mode {
         return when (mode) {
-            ShopDiscountManageDiscountMode.CREATE -> {
+            SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
                 DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
-            }
-            ShopDiscountManageDiscountMode.UPDATE -> {
-                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
             }
             else -> {
-                DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
+                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
             }
         }
     }
@@ -467,7 +463,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun bulkUpdateProductData(bulkApplyDiscountResult: DiscountSettings) {
         val listProductData = adapter.getAllProductData()
-        viewModel.applyBulkUpdate(listProductData, bulkApplyDiscountResult)
+        viewModel.applyBulkUpdate(listProductData, bulkApplyDiscountResult, mode, status)
     }
 
     private fun showButtonSubmit() {
@@ -487,7 +483,26 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
-        redirectToManageProductDiscountPage(model)
+        if(model.productStatus.isVariant)
+            redirectToManageProductVariantDiscountPage(model)
+        else
+            redirectToManageProductDiscountPage(model)
+    }
+
+    private fun redirectToManageProductVariantDiscountPage(model: ShopDiscountSetupProductUiModel.SetupProductData) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_VARIANT_DISCOUNT
+        )
+        intent.putExtra(ShopDiscountManageProductVariantDiscountActivity.MODE_PARAM, mode)
+        intent.putExtra(
+            ShopDiscountManageProductVariantDiscountActivity.PRODUCT_MANAGE_UI_MODEL,
+            model.copy()
+        )
+        startActivityForResult(
+            intent,
+            ShopDiscountManageProductVariantDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT
+        )
     }
 
     private fun redirectToManageProductDiscountPage(model: ShopDiscountSetupProductUiModel.SetupProductData) {
@@ -566,6 +581,15 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     }
                 }
             }
+            ShopDiscountManageProductVariantDiscountActivity.REQUEST_CODE_APPLY_PRODUCT_VARIANT_DISCOUNT -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.extras?.getParcelable<ShopDiscountSetupProductUiModel.SetupProductData>(
+                        ShopDiscountManageProductDiscountActivity.PRODUCT_DATA_RESULT
+                    )?.let {
+                        applyUpdatedProductData(it)
+                    }
+                }
+            }
             else -> {
             }
         }
@@ -574,7 +598,9 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private fun applyUpdatedProductData(updatedProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
         viewModel.updateSingleProductData(
             adapter.getAllProductData(),
-            updatedProductData
+            updatedProductData,
+            mode,
+            status
         )
     }
 

@@ -7,6 +7,8 @@ import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountManageDiscountGlobalErrorUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductShimmeringUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 
 class ShopDiscountManageDiscountAdapter(
     typeFactory: ShopDiscountManageDiscountTypeFactoryImpl
@@ -80,8 +82,8 @@ class ShopDiscountManageDiscountAdapter(
     fun getTotalAbusiveProduct(): Int {
         return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
             .count {
-                it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR ||
-                        it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+                it.productStatus.errorType == ALL_ABUSIVE_ERROR ||
+                        it.productStatus.errorType == PARTIAL_ABUSIVE_ERROR
             }
     }
 

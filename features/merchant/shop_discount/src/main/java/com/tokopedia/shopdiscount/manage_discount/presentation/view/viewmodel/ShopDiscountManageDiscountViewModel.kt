@@ -19,9 +19,14 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlash
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceStopUiModel
 import com.tokopedia.shopdiscount.manage_discount.domain.GetSlashPriceSetupProductListUseCase
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -37,9 +42,10 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private val mutationDoSlashPriceProductReservationUseCase: MutationDoSlashPriceProductReservationUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
-    companion object{
-        private const val GET_PRODUCT_LIST_DELAY : Long = 1000
+    companion object {
+        private const val GET_PRODUCT_LIST_DELAY: Long = 1000
     }
+
     val setupProductListLiveData: LiveData<Result<ShopDiscountSetupProductUiModel>>
         get() = _setupProductListLiveData
     private val _setupProductListLiveData =
@@ -64,7 +70,12 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private val _resultDeleteSlashPriceProductLiveData =
         MutableLiveData<Result<ShopDiscountSlashPriceStopUiModel>>()
 
-    fun getSetupProductListData(requestId: String, selectedProductVariantId: String) {
+    fun getSetupProductListData(
+        requestId: String,
+        selectedProductVariantId: String,
+        mode: String,
+        slashPriceStatus: Int
+    ) {
         launchCatchError(dispatcherProvider.io, block = {
             delay(GET_PRODUCT_LIST_DELAY)
             val response = getSetupProductListResponse(requestId)
@@ -74,7 +85,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                     selectedProductVariantId
                 ).apply {
                     listSetupProductData.forEach { setupProductData ->
-                        updateProductStatusAndMappedData(setupProductData)
+                        updateProductStatusAndMappedData(setupProductData, mode, slashPriceStatus)
                     }
                 }
             _setupProductListLiveData.postValue(Success(mappedUiModel))
@@ -83,13 +94,49 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         }
     }
 
-    private fun updateProductStatusAndMappedData(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
-        setupProductData.productStatus = setToProductStatus(setupProductData)
+    private fun updateProductStatusAndMappedData(
+        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData,
+        mode: String,
+        slashPriceStatus: Int
+    ) {
+        setupProductData.productStatus = setToProductStatus(setupProductData, slashPriceStatus)
+        setupProductData.listProductVariant.forEach {
+            it.variantStatus = mapToVariantStatus(it, mode)
+        }
         setupProductData.mappedResultData = mapToMappedResultData(setupProductData)
     }
 
+    private fun mapToVariantStatus(
+        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData,
+        mode: String
+    ): ShopDiscountSetupProductUiModel.SetupProductData.VariantStatus {
+        return ShopDiscountSetupProductUiModel.SetupProductData.VariantStatus(
+            isMultiLoc = isMultiLoc(setupProductData, false),
+            isVariantEnabled = getIsVariantEnabled(
+                setupProductData.variantStatus.isVariantEnabled,
+                mode
+            )
+        )
+    }
+
+    private fun getIsVariantEnabled(isVariantEnabled: Boolean?, mode: String): Boolean {
+        return isVariantEnabled
+            ?: when (mode) {
+                ShopDiscountManageDiscountMode.CREATE -> {
+                    false
+                }
+                ShopDiscountManageDiscountMode.UPDATE -> {
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+    }
+
     private fun setToProductStatus(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        slashPriceStatus: Int
     ): ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus {
         val isVariant = isVariant(setupProductUiModel)
         var isProductDiscounted = getIsProductDiscounted(setupProductUiModel, isVariant)
@@ -99,14 +146,15 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             isVariant,
             isProductDiscounted
         )
-        if (errorType != ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR) {
+        if (errorType != NO_ERROR) {
             isProductDiscounted = false
         }
         return ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
             isProductDiscounted = isProductDiscounted,
             isVariant = isVariant,
             isMultiLoc = isMultiLoc,
-            errorType = errorType
+            errorType = errorType,
+            slashPriceStatus = slashPriceStatus
         )
     }
 
@@ -114,12 +162,12 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData {
         return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
-            minOriginalPrice = getMinOriginalPrice(setupProductUiModel),
-            maxOriginalPrice = getMaxOriginalPrice(setupProductUiModel),
-            minDisplayedPrice = getMinDisplayedPrice(setupProductUiModel),
-            maxDisplayedPrice = getMaxDisplayedPrice(setupProductUiModel),
-            minDiscountPercentage = getMinDiscountPercentage(setupProductUiModel),
-            maxDiscountPercentage = getMaxDiscountPercentage(setupProductUiModel),
+            minOriginalPrice = getOriginalPrice(setupProductUiModel).minOrNull().orZero(),
+            maxOriginalPrice = getOriginalPrice(setupProductUiModel).maxOrNull().orZero(),
+            minDisplayedPrice = getDisplayedPrice(setupProductUiModel).minOrNull().orZero(),
+            maxDisplayedPrice = getDisplayedPrice(setupProductUiModel).maxOrNull().orZero(),
+            minDiscountPercentage = getDiscountPercentage(setupProductUiModel).minOrNull().orZero(),
+            maxDiscountPercentage = getDiscountPercentage(setupProductUiModel).maxOrNull().orZero(),
             totalVariant = getTotalVariant(setupProductUiModel),
             totalDiscountedVariant = getTotalDiscountedVariant(setupProductUiModel),
             totalLocation = getTotalLocation(setupProductUiModel)
@@ -133,19 +181,19 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Int {
         return when {
             isAllAbusiveError(setupProductUiModel, isVariant) -> {
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR
+                ALL_ABUSIVE_ERROR
             }
             isPartialAbusiveError(
                 setupProductUiModel,
                 isVariant
             ) -> {
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+                PARTIAL_ABUSIVE_ERROR
             }
             isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.VALUE_ERROR
+                VALUE_ERROR
             }
             else -> {
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
+                NO_ERROR
             }
         }
     }
@@ -269,112 +317,64 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         }
     }
 
-    private fun getMaxOriginalPrice(
+    private fun getOriginalPrice(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
+    ): List<Int> {
         return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMaxOriginalPriceFromProductWarehouse(it)
-            }.maxOrNull().orZero()
+            return mutableListOf<Int>().apply {
+                setupProductDataUiModel.listProductVariant.forEach {
+                    addAll(getOriginalPriceFromProductWarehouse(it))
+                }
+            }.toList()
         } else {
-            getMaxOriginalPriceFromProductWarehouse(setupProductDataUiModel)
+            getOriginalPriceFromProductWarehouse(setupProductDataUiModel)
         }
     }
 
-    private fun getMaxOriginalPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
-        return setupProductData.listProductWarehouse.map {
-            it.originalPrice
-        }.maxOrNull().orZero()
-    }
-
-    private fun getMinOriginalPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMinOriginalPriceFromProductWarehouse(it)
-            }.minOrNull().orZero()
-        } else {
-            getMinOriginalPriceFromProductWarehouse(setupProductDataUiModel)
-        }
-    }
-
-    private fun getMinOriginalPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+    private fun getOriginalPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): List<Int> {
         return setupProductData.getListEnabledProductWarehouse().map {
             it.originalPrice
-        }.minOrNull().orZero()
-    }
-
-    private fun getMaxDisplayedPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMaxDisplayedPriceFromProductWarehouse(it)
-            }.maxOrNull().orZero()
-        } else {
-            getMaxDisplayedPriceFromProductWarehouse(setupProductDataUiModel)
         }
     }
 
-    private fun getMaxDisplayedPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+    private fun getDisplayedPrice(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): List<Int> {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            return mutableListOf<Int>().apply {
+                setupProductDataUiModel.listProductVariant.forEach {
+                    addAll(getDisplayedPriceFromProductWarehouse(it))
+                }
+            }.toList()
+        } else {
+            getDisplayedPriceFromProductWarehouse(setupProductDataUiModel)
+        }
+    }
+
+    private fun getDisplayedPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): List<Int> {
         return setupProductData.getListEnabledProductWarehouse().map {
             it.discountedPrice
-        }.maxOrNull().orZero()
-    }
-
-    private fun getMinDisplayedPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMinDisplayedPriceFromProductWarehouse(it)
-            }.minOrNull().orZero()
-        } else {
-            getMinDisplayedPriceFromProductWarehouse(setupProductDataUiModel)
         }
     }
 
-    private fun getMinDisplayedPriceFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
-        return setupProductData.getListEnabledProductWarehouse().map {
-            it.discountedPrice
-        }.minOrNull().orZero()
-    }
-
-    private fun getMaxDiscountPercentage(
+    private fun getDiscountPercentage(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
+    ): List<Int> {
         return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMaxDiscountPercentageFromProductWarehouse(it)
-            }.maxOrNull().orZero()
+            return mutableListOf<Int>().apply {
+                setupProductDataUiModel.listProductVariant.forEach {
+                    addAll(getDiscountPercentageFromProductWarehouse(it))
+                }
+            }.toList()
         } else {
-            getMaxDiscountPercentageFromProductWarehouse(setupProductDataUiModel)
+            getDiscountPercentageFromProductWarehouse(setupProductDataUiModel)
         }
     }
 
-    private fun getMaxDiscountPercentageFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+    private fun getDiscountPercentageFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): List<Int> {
         return setupProductData.getListEnabledProductWarehouse().map {
             it.discountedPercentage
-        }.maxOrNull().orZero()
-    }
-
-    private fun getMinDiscountPercentage(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (setupProductDataUiModel.productStatus.isVariant) {
-            setupProductDataUiModel.listProductVariant.map {
-                getMinDiscountPercentageFromProductWarehouse(it)
-            }.minOrNull().orZero()
-        } else {
-            getMinDiscountPercentageFromProductWarehouse(setupProductDataUiModel)
         }
-    }
-
-    private fun getMinDiscountPercentageFromProductWarehouse(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData): Int {
-        return setupProductData.getListEnabledProductWarehouse().map {
-            it.discountedPercentage
-        }.minOrNull().orZero()
     }
 
     private fun isVariant(setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData): Boolean {
@@ -392,63 +392,74 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
 
     fun applyBulkUpdate(
         listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
-        bulkApplyDiscountResult: DiscountSettings
+        bulkApplyDiscountResult: DiscountSettings,
+        mode: String,
+        slashPriceStatus: Int
     ) {
         launchCatchError(dispatcherProvider.io, {
             listProductData.forEach { productData ->
                 val minOriginalPrice = productData.mappedResultData.minOriginalPrice
                 if (productData.productStatus.isVariant) {
                     productData.listProductVariant.forEach { variantProductData ->
-                        bulkApplyNonVariantProduct(
+                        updateProductData(
                             variantProductData,
                             bulkApplyDiscountResult,
-                            minOriginalPrice
+                            minOriginalPrice,
+                            slashPriceStatus
                         )
                     }
                 } else {
-                    bulkApplyNonVariantProduct(
+                    updateProductData(
                         productData,
                         bulkApplyDiscountResult,
-                        minOriginalPrice
+                        minOriginalPrice,
+                        slashPriceStatus
                     )
                 }
-                updateProductStatusAndMappedData(productData)
+                updateProductStatusAndMappedData(productData, mode, slashPriceStatus)
             }
             _updatedProductListData.postValue(listProductData)
         }) {}
     }
 
-    private fun bulkApplyNonVariantProduct(
+    private fun updateProductData(
         productData: ShopDiscountSetupProductUiModel.SetupProductData,
         bulkApplyDiscountResult: DiscountSettings,
-        minOriginalPrice: Int
+        minOriginalPrice: Int,
+        slashPriceStatus: Int
     ) {
-        productData.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
-        productData.slashPriceInfo.endDate = bulkApplyDiscountResult.endDate ?: Date()
-        productData.getListEnabledProductWarehouse().forEach {
-            when (bulkApplyDiscountResult.discountType) {
-                DiscountType.RUPIAH -> {
-                    val diffPrice = minOriginalPrice - bulkApplyDiscountResult.discountAmount
-                    val discountedPrice = it.originalPrice - diffPrice
-                    val discountedPercent =
-                        round(diffPrice.toDouble() / it.originalPrice.toDouble() * 100f)
-                    it.discountedPrice = discountedPrice
-                    it.discountedPercentage = discountedPercent.toInt()
-                }
-                DiscountType.PERCENTAGE -> {
-                    val discountedPercent = bulkApplyDiscountResult.discountAmount
-                    val discountedPrice = (100 - discountedPercent) * it.originalPrice / 100
-                    it.discountedPrice = discountedPrice
-                    it.discountedPercentage = discountedPercent
-                }
+        val discountedPrice: Int
+        val discountedPercentage: Int
+        when (bulkApplyDiscountResult.discountType) {
+            DiscountType.RUPIAH -> {
+                val diffPrice = minOriginalPrice - bulkApplyDiscountResult.discountAmount
+                discountedPrice = minOriginalPrice - diffPrice
+                discountedPercentage =
+                    round(diffPrice.toDouble() / minOriginalPrice.toDouble() * 100f).toInt()
             }
+            DiscountType.PERCENTAGE -> {
+                discountedPercentage = bulkApplyDiscountResult.discountAmount
+                discountedPrice = (100 - discountedPercentage) * minOriginalPrice / 100
+            }
+        }
+        when (slashPriceStatus) {
+            SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+                productData.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
+            }
+        }
+        productData.slashPriceInfo.endDate = bulkApplyDiscountResult.endDate ?: Date()
+        productData.slashPriceInfo.discountedPrice = discountedPrice
+        productData.slashPriceInfo.discountPercentage = discountedPercentage
+        productData.getListEnabledProductWarehouse().forEach {
+            it.discountedPrice = discountedPrice
+            it.discountedPercentage = discountedPercentage
             it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
         }
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
         val isEnableButtonSubmit = allProductData.all {
-            it.productStatus.isProductDiscounted && it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
+            it.productStatus.isProductDiscounted && it.productStatus.errorType == NO_ERROR
         }
         _enableButtonSubmitLiveData.postValue(isEnableButtonSubmit)
     }
@@ -525,14 +536,20 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
 
     fun updateSingleProductData(
         currentProductListData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
-        newProdData: ShopDiscountSetupProductUiModel.SetupProductData
+        newProdData: ShopDiscountSetupProductUiModel.SetupProductData,
+        mode: String,
+        slashPriceStatus: Int
     ) {
         val matched = currentProductListData.firstOrNull {
             it.productId == newProdData.productId
         }
         val newList = currentProductListData.toMutableList()
         newList[currentProductListData.indexOf(matched)] = newProdData
-        updateProductStatusAndMappedData(newList[currentProductListData.indexOf(matched)])
+        updateProductStatusAndMappedData(
+            newList[currentProductListData.indexOf(matched)],
+            mode,
+            slashPriceStatus
+        )
         _updatedProductListData.postValue(newList.toList())
     }
 

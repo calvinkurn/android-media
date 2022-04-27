@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.product_detail.presentation
+package com.tokopedia.shopdiscount.utils.rv_decoration
 
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class ShopDiscountProductDetailDividerItemDecoration(
+class ShopDiscountDividerItemDecoration(
     private val dividerDrawable: Drawable
 ) : RecyclerView.ItemDecoration() {
 

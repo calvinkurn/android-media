@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.RangeFormatterUtil
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountProductDetailItemLayoutBinding
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant

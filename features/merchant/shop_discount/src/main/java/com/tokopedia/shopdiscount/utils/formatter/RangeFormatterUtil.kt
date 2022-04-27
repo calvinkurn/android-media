@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.utils
+package com.tokopedia.shopdiscount.utils.formatter
 
 import com.tokopedia.kotlin.extensions.view.isZero
 
