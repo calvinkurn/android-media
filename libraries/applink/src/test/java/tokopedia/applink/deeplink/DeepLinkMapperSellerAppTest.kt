@@ -320,6 +320,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check shop admin redirection appLink then should return tokopedia internal shop admin redirection in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/redirection-page"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.ADMIN_REDIRECTION, expectedDeepLink)
+    }
+
+    @Test
     fun `check shop admin accepted appLink then should return tokopedia internal shop admin accepted in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-admin/accepted-page"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.ADMIN_ACCEPTED, expectedDeepLink)

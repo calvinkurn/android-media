@@ -280,6 +280,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
+    private fun goToShopAdminRedirection() {
+
+    }
+
     private fun goToPhoneShopCreation() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)

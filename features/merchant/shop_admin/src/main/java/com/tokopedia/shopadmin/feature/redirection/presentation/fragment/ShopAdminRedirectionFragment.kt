@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -79,58 +79,30 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     private fun redirectionShopAdmin(adminTypeUiModel: AdminTypeUiModel) {
         if (GlobalConfig.isSellerApp()) {
             redirectionShopAdminToLoginSA(adminTypeUiModel)
-        } else {
-            redirectionShopAdminToGlobalNav(adminTypeUiModel)
         }
-    }
-
-    private fun redirectionShopAdminToGlobalNav(adminTypeUiModel: AdminTypeUiModel) {
-         val appLink = if (adminTypeUiModel.isShopOwner) {
-            ApplinkConstInternalSellerapp.SELLER_MENU
-        } else {
-            //need to confirm BE, isShopAdmin has shopId
-            if (adminTypeUiModel.isShopAdmin) {
-                if(adminTypeUiModel.status == AdminStatus.ACTIVE) {
-                    ApplinkConstInternalSellerapp.SELLER_MENU
-                } else {
-                    if (adminTypeUiModel.shopID == DEFAULT_SHOP_ID_NOT_OPEN) {
-                        ApplinkConst.CREATE_SHOP
-                    } else {
-                        ApplinkConstInternalMarketplace.ADMIN_INVITATION
-                    }
-                }
-            } else {
-                ApplinkConst.CREATE_SHOP
-            }
-        }
-        val intent = RouteManager.getIntent(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION)
-        intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
-        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_GLOBAL_NAV)
-        activity?.finish()
     }
 
     private fun redirectionShopAdminToLoginSA(adminTypeUiModel: AdminTypeUiModel) {
-        val appLink =  if (adminTypeUiModel.isShopOwner) {
+        val appLink = if (adminTypeUiModel.isShopOwner) {
             ApplinkConstInternalSellerapp.SELLER_HOME
         } else {
-            //need to confirm BE, isShopAdmin has shopId
-            if (adminTypeUiModel.isShopAdmin) {
-                if(adminTypeUiModel.status == AdminStatus.ACTIVE) {
-                    ApplinkConstInternalSellerapp.SELLER_HOME
-                } else {
-                    if (adminTypeUiModel.shopID == DEFAULT_SHOP_ID_NOT_OPEN) {
-                        ApplinkConst.CREATE_SHOP
+            if (adminTypeUiModel.shopID !in DEFAULT_SHOP_ID_NOT_OPEN) {
+                if (adminTypeUiModel.isShopAdmin) {
+                    if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
+                        ApplinkConstInternalSellerapp.SELLER_HOME
                     } else {
                         ApplinkConstInternalMarketplace.ADMIN_INVITATION
                     }
+                } else {
+                    ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
                 }
             } else {
-                ApplinkConst.CREATE_SHOP
+                ApplinkConstInternalGlobal.PHONE_SHOP_CREATION
             }
         }
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         intent.putExtra(ShopAdminDeepLinkMapper.ARGS_APPLINK_FROM_SHOP_ADMIN, appLink)
-        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_LOGIN_SA)
+        startActivityForResult(intent, ShopAdminDeepLinkMapper.REQUEST_CODE_SHOP_ADMIN_SA)
         activity?.finish()
     }
 
@@ -139,7 +111,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
             return ShopAdminRedirectionFragment()
         }
 
-        const val DEFAULT_SHOP_ID_NOT_OPEN = "-1"
+        private val DEFAULT_SHOP_ID_NOT_OPEN = listOf("-1", '0')
     }
 
 }

@@ -207,6 +207,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ADMIN_ACCEPTED = "$INTERNAL_MARKETPLACE/shop-admin/accepted-page"
 
+    //ShopAdminRedirectionActivity
+    @JvmField
+    val ADMIN_REDIRECTION = "$INTERNAL_MARKETPLACE/shop-admin/redirection-page"
+
     //ShopScorePerformanceActivity
     @JvmField
     val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
