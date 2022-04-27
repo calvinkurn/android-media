@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -18,8 +19,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
@@ -243,8 +246,26 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         val CREATE_REVIEW_REQUEST_CODE = 99
-        startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode("tokopedia://product-review/create/708913441/2123103827", "UTF-8")), CREATE_REVIEW_REQUEST_CODE)
+//        startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode("tokopedia://product-review/create/708913441/2123103827", "UTF-8")), CREATE_REVIEW_REQUEST_CODE)
 
+        context?.let {
+            val intent = RouteManager.getIntent(
+                it,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.CREATE_REVIEW,
+                        "708913441",
+                        "2123103827"
+                    )
+                )
+                    .buildUpon()
+                    .appendQueryParameter("rating", "3")
+                    .appendQueryParameter("source", "homenav")
+                    .build()
+                    .toString()
+            )
+            startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
+        }
 //        view?.let {
 //            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
 //                if(homeNavMenuDataModel.applink.isNotEmpty()){
