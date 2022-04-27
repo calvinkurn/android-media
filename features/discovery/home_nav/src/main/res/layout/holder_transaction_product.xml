@@ -2,15 +2,16 @@
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/order_product_card"
     android:layout_width="254dp"
     app:cardUseCompatPadding="true"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/order_product_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/order_product_image"

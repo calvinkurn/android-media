@@ -244,7 +244,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun addHomeBackButtonMenu() {
         val listOfHomeMenuSection = mutableListOf<Visitable<*>>()
-        listOfHomeMenuSection.add(SeparatorDataModel(sectionId = MainNavConst.Section.HOME))
         listOfHomeMenuSection.add(clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         addWidgetList(listOfHomeMenuSection, INDEX_HOME_BACK_SEPARATOR)
     }

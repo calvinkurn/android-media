@@ -98,7 +98,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         }
         binding?.orderPaymentStatus?.setTextColor(paymentStatusColor)
 
-        itemView.setOnClickListener {
+        binding?.orderPaymentContainer?.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     binding?.orderPaymentStatus?.text.toString())

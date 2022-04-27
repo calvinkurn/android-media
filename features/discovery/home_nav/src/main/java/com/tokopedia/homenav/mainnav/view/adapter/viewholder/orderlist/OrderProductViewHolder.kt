@@ -103,7 +103,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
             binding?.orderProductCount?.visibility = View.GONE
         }
 
-        itemView.setOnClickListener {
+        binding?.orderProductContainer?.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     productModel.navProductModel.statusText)
