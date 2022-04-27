@@ -26,6 +26,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
@@ -83,20 +84,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10
-        private const val PARAM_PRODUCT = "product"
+        private const val PARAM_PRODUCT = "product" /** TODO: gonna delete it soon */
         private const val PARAM_SHOP_NAME = "shop_name"
         private const val PARAM_SHOP_BADGE = "shop_badge"
         private const val PARAM_PRODUCT_TAG_SOURCE = "product_tag_source"
         private const val PARAM_AUTHOR_ID = "author_id"
         private const val PARAM_AUTHOR_TYPE = "author_type"
-
-        private const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
-        private const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
-        private const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
-        private const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
-        private const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
-        private const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
-        private const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
@@ -609,13 +602,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
         return RelatedProductItem(
-            id = data?.getStringExtra(RESULT_PRODUCT_ID) ?: "",
-            name = data?.getStringExtra(RESULT_PRODUCT_NAME) ?: "",
-            price = data?.getStringExtra(RESULT_PRODUCT_PRICE) ?: "",
-            image = data?.getStringExtra(RESULT_PRODUCT_IMAGE) ?: "",
-            priceOriginalFmt = data?.getStringExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
-            priceDiscountFmt = data?.getStringExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
-            isDiscount = data?.getBooleanExtra(RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
+            id = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_ID) ?: "",
+            name = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_NAME) ?: "",
+            price = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE) ?: "",
+            image = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_IMAGE) ?: "",
+            priceOriginalFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
+            priceDiscountFmt = data?.getStringExtra(ProductTagParentFragment.RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
+            isDiscount = data?.getBooleanExtra(ProductTagParentFragment.RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
         )
     }
 
