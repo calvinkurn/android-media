@@ -9,7 +9,7 @@ import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
-import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
 import com.tokopedia.graphql.GraphqlConstant
@@ -40,7 +40,7 @@ import javax.inject.Inject
 class TopupBillsViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-    private val getRechargeFavoriteNumberUseCase: GetRechargeFavoriteNumberUseCase,
+    private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 

@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.unifycomponents.setBodyText
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
 import java.util.*
@@ -110,7 +109,7 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
-        itemView.doubleLineTitle?.setBodyText(FONT_LEVEL_14_SP, true)
+        itemView.doubleLineTitle?.setWeight(Typography.BOLD)
         itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
     }
 

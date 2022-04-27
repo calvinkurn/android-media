@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="grey_calendar_holiday">#f9f9f9</color>
+
+    <color name="travelcalendar_dms_main_green">#42b549</color>
 </resources>
