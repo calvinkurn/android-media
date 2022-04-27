@@ -10,6 +10,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
@@ -34,7 +35,8 @@ open class InactivePhonePinVerificationFragment : VerificationFragment() {
             otpType = otpData.otpType.toString(),
             mode = modeListData.modeText,
             userIdEnc = otpData.userIdEnc,
-            validateToken = otpData.accessToken
+            validateToken = otpData.accessToken,
+            userId = otpData.userId.toIntOrZero()
         )
     }
 

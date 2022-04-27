@@ -18,8 +18,8 @@ class CheckPinHashV2UseCase @Inject constructor(@ApplicationContext val reposito
 
     override fun graphqlQuery(): String = """
 	query checkPinV2(${'$'}id: String!, ${'$'}type: String!) {
-	  check_pin_v2(id: ${'$'}id, type:${'$'}type) {
-	    valid
+	  pinV2Check(id: ${'$'}id, type:${'$'}type) {
+	    uh
 	    error_message
 	  }
 	}""".trimIndent()

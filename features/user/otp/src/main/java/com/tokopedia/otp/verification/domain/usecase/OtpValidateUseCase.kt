@@ -33,10 +33,6 @@ open class OtpValidateUseCase @Inject constructor(
 	signature: String = "",
 	timeUnix: String = "",
 	userId: Int,
-	/* For hashed PIN only */
-	hashedPin: String = "",
-	usePinHash: Boolean = false,
-	hash: String = ""
     ): Map<String, Any> {
 	val param = mutableMapOf(
 	    PARAM_CODE to code,
@@ -48,10 +44,7 @@ open class OtpValidateUseCase @Inject constructor(
 	    PARAM_MODE to mode,
 	    PARAM_SIGNATURE to signature,
 	    PARAM_TIME_UNIX to timeUnix,
-	    PARAM_USERID to userId,
-	    PARAM_PIN to hashedPin,
-	    PARAM_PIN_HASH to hash,
-	    PARAM_USE_PIN_HASH to usePinHash
+	    PARAM_USERID to userId
 	)
 	return param
     }
@@ -69,7 +62,7 @@ open class OtpValidateUseCase @Inject constructor(
 	}.getSuccessData()
 
     companion object {
-	private const val PARAM_CODE = "code"
+	const val PARAM_CODE = "code"
 	private const val PARAM_OTP_TYPE = "otpType"
 	private const val PARAM_MSISDN = "msisdn"
 	private const val PARAM_FP_DATA = "fpData"

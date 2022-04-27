@@ -400,7 +400,7 @@ class VerificationViewModelTest {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
 
-        viewmodel.otpValidate2FA("", "", "", "", "")
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -417,7 +417,7 @@ class VerificationViewModelTest {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
 
-        viewmodel.otpValidate2FA("", "", "", "", "")
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.otpValidateResult.value is Fail)
@@ -431,7 +431,7 @@ class VerificationViewModelTest {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
 
-        viewmodel.otpValidate2FA("", "", "", "", "")
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.otpValidateResult.value is Fail)
@@ -439,10 +439,14 @@ class VerificationViewModelTest {
 
     @Test
     fun `Failed validate otp method 2fa`() {
-        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
-        coEvery { otpValidateUseCase2FA.getData(any()) } coAnswers { throw throwable }
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
 
-        viewmodel.otpValidate2FA("", "", "", "", "")
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+        coEvery { otpValidateUseCase2FA.getData(any()) } throws throwable
+
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.otpValidateResult.value is Fail)
@@ -462,7 +466,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -471,7 +475,7 @@ class VerificationViewModelTest {
         assert(result.data == successOtpValidationResponse.data)
 
         verify {
-            otpValidateUseCase.getParams(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), hashedPin = hashedPin, usePinHash = true, hash = hash)
+            otpValidateUseCase.getParams(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         }
     }
 
@@ -485,17 +489,13 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
 
         val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
         assert(result.data == successOtpValidationResponse.data)
-
-        verify {
-            otpValidateUseCase.getParams(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), hashedPin = "", usePinHash = false, hash = "")
-        }
     }
 
     @Test
@@ -522,7 +522,6 @@ class VerificationViewModelTest {
         }
     }
 
-
     @Test
     fun `Success get pub key`() {
         val mocKeyData = KeyData("abc", "bca", "aaa")
@@ -535,6 +534,26 @@ class VerificationViewModelTest {
         verify {
             generatePublicKeyUseCase.setParams("pinv2")
         }
+    }
+
+    @Test
+    fun `Success validate otp method 2fa with hashing`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        mockkObject(RsaUtils)
+        val hash = "asd"
+        every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns ""
+        coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
+
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0, usePinV2 = true)
+
+        verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
+        assert(viewmodel.otpValidateResult.value is Success)
+
+        val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
+        assert(result.data == successOtpValidationResponse.data)
     }
 
     @Test

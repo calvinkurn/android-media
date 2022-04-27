@@ -18,9 +18,9 @@ object OtpValidateQuery {
     private const val userId = "\$userId"
 
     /* For hashed PIN only */
-    private const val PIN = "\$PIN"
-    private const val usePinHash = "\$UsePINHash"
-    private const val pinHash = "\$PINHash"
+    const val PIN = "\$PIN"
+    const val usePinHash = "\$UsePINHash"
+    const val pinHash = "\$PINHash"
 
     val query: String = """
         query otp_validate(

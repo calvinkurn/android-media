@@ -202,16 +202,18 @@ open class VerificationViewModel @Inject constructor(
     }
 
     fun otpValidate2FA(
-            otpType: String,
-            validateToken: String,
-            userIdEnc: String,
-            mode: String,
-            code: String,
-            msisdn: String = ""
+        otpType: String,
+        validateToken: String,
+        userIdEnc: String,
+        mode: String,
+        code: String,
+        msisdn: String = "",
+        userId: Int,
+        usePinV2: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase2FA.getParams(
+            var params = otpValidateUseCase2FA.getParams(
                 otpType = otpType,
                 validateToken = validateToken,
                 userIdEnc = userIdEnc,
@@ -219,6 +221,14 @@ open class VerificationViewModel @Inject constructor(
                 code = code,
                 msisdn = msisdn
             )
+
+            if(usePinV2 && isNeedHash(id = userId.toString(), type = "userid")) {
+                val keyData = getPublicKey()
+                val encryptedPin = RsaUtils.encryptWithSalt(code, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
+                if(encryptedPin.isNotEmpty()) {
+                    params = combineWithV2param(params, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
+                }
+            }
 
             val data = otpValidateUseCase2FA.getData(params).data
             when {
@@ -251,17 +261,18 @@ open class VerificationViewModel @Inject constructor(
             mode: String,
             signature: String,
             timeUnix: String,
-            userId: Int
+            userId: Int,
+            usePinV2: Boolean = false
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
             var params = otpValidateUseCase.getParams(code, otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId)
-            if(mode == OtpConstant.OtpMode.PIN) {
+            if(mode == OtpConstant.OtpMode.PIN && usePinV2) {
                 if(isNeedHash(msisdn.ifEmpty { email }, if(msisdn.isNotEmpty()) "phone" else "email")) {
                     val keyData = getPublicKey()
                     val encryptedPin = RsaUtils.encryptWithSalt(code, keyData.key.replace("=", ""), salt = OtpConstant.PIN_V2_SALT)
                     if(encryptedPin.isNotEmpty()) {
-                        params = otpValidateUseCase.getParams("", otpType, msisdn, fpData, getSL, email, mode, signature, timeUnix, userId, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
+                        params = combineWithV2param(params, hashedPin = encryptedPin, usePinHash = true, hash = keyData.hash)
                     }
                 }
             }
@@ -286,6 +297,20 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
+    fun combineWithV2param(oldParam: Map<String, Any>,
+                                   hashedPin: String,
+                                   usePinHash: Boolean,
+                                   hash: String
+    ): Map<String, Any> {
+        val newMap: MutableMap<String, Any> = mutableMapOf()
+        newMap.putAll(oldParam)
+        newMap[OtpValidateUseCase.PARAM_CODE] = ""
+        newMap[OtpValidateUseCase.PARAM_PIN] = hashedPin
+        newMap[OtpValidateUseCase.PARAM_PIN_HASH] = hash
+        newMap[OtpValidateUseCase.PARAM_USE_PIN_HASH] = usePinHash
+        return newMap
+    }
+
     suspend fun isNeedHash(id: String, type: String): Boolean {
         val param = PinStatusParam(id = id, type = type)
         return checkPinHashV2UseCase(param).data.isNeedHash
@@ -306,5 +331,9 @@ open class VerificationViewModel @Inject constructor(
             }
         }
         super.onCleared()
+    }
+
+    companion object {
+        const val VALIDATE_PIN_V2_ROLLENCE = "pdh_val_and"
     }
 }
