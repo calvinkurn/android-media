@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.coroutines.domain.interactor
 
-import android.util.Log
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -31,7 +30,6 @@ class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: Grap
         if (requests.isEmpty()) {
             throw RuntimeException("Please set valid request parameter before executing the use-case");
         }
-        Log.d("MockInterceptor", "RequestNum: ${requests.size}")
         return graphqlRepository.response(requests, cacheStrategy)
     }
 
