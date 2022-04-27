@@ -106,7 +106,7 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private fun centerPlayButtonConditionalShow(isShowing: Boolean) {
         cleanHideJob()
         centerPlayButton.showWithCondition(isShowing)
-        if(!isShowing) hideControllerJob()
+        hideControllerJob()
     }
 
     private fun centerPauseButtonConditionalShow(isShowing: Boolean){
