@@ -230,9 +230,6 @@ class ChangePinViewModel @Inject constructor(
     }
 
     fun changePin(pin: String, pinConfirm: String, pinOld: String) {
-//	val isNeedHash = withContext(Dispatchers.IO) {
-//	    isNeedHash("", "")
-//	}
 	rawQueries[ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN]?.let { query ->
 	    val params = mapOf(
 		ProfileCompletionQueryConstant.PARAM_PIN to pin,
