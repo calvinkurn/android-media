@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 /**
  * For navigating to this class
- * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SALDO_DEPOSIT]
+
  */
 
 

@@ -17,10 +17,9 @@ class TickerDownloadFeeTransactionViewHolder(itemView: View) :
 
         itemView.findViewById<Ticker>(R.id.ticker_download_fee).apply {
             setHtmlDescription(combinedHtmlDescription)
-        }
-
-        itemView.setOnClickListener {
-            it.context?.startActivity(Intent(it.context, CommissionBreakdownActivity::class.java))
+            setOnClickListener {
+                it.context?.startActivity(Intent(it.context, CommissionBreakdownActivity::class.java))
+            }
         }
 
     }
