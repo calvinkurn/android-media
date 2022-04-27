@@ -7,7 +7,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 object ShopAdminDeepLinkMapper {
 
     const val ARGS_APPLINK_FROM_SHOP_ADMIN = "args_applink_from_shop_admin"
-    const val REQUEST_CODE_SHOP_ADMIN_SA = 939
+    const val ARGS_ERROR_MESSAGE_FROM_SHOP_ADMIN = "args_error_message_from_shop_admin"
+    const val REQUEST_CODE_SHOP_ADMIN_REDIRECTION = 939
 
     const val SHOP_NAME = "shop_name"
 

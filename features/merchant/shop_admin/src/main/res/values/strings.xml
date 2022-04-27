@@ -45,4 +45,7 @@
     
     <string name="error_message_article_detail">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="error_admin_try_again_action">Coba Lagi</string>
+
+    <!-- Shop Admin Redirection -->
+    <string name="error_message_shop_admin_redirection">Gagal memuat konten. Coba lagi, ya.</string>
 </resources>

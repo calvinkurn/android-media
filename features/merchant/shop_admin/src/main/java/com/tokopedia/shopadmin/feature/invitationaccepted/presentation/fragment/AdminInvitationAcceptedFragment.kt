@@ -1,8 +1,5 @@
 package com.tokopedia.shopadmin.feature.invitationaccepted.presentation.fragment
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +14,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.APPLINK_PLAYSTORE
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.PACKAGE_SELLER_APP
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.SELLER_MIGRATION_KEY_AUTO_LOGIN
-import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
+import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
@@ -67,14 +61,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(
-                ContextCompat.getColor(
-                    it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-        }
+        setShopAdminBackground()
         setShopNameFromArgs()
         hideViewGroup()
         setupActionButton()
@@ -84,6 +71,17 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(AdminInvitationAcceptedComponent::class.java).inject(this)
+    }
+
+    private fun setShopAdminBackground() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
     }
 
     private fun setShopNameFromArgs() {
@@ -143,35 +141,11 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun goToPlayStoreOrSellerApp() {
-        try {
-            val intent = activity?.packageManager?.getLaunchIntentForPackage(PACKAGE_SELLER_APP)
-            if (intent != null) {
-                intent.putExtra(SELLER_MIGRATION_KEY_AUTO_LOGIN, true)
-                activity?.startActivity(intent)
-            } else {
-                activity?.startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(APPLINK_PLAYSTORE + PACKAGE_SELLER_APP)
-                    )
-                )
-            }
-        } catch (e: ActivityNotFoundException) {
-            activity?.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(URL_PLAYSTORE + PACKAGE_SELLER_APP)
-                )
-            )
-        }
-    }
-
     private fun setupActionButton() {
         binding?.btnGoToShop?.setOnClickListener {
             val isChecked = binding?.cbTnc?.isChecked == true
             if (isChecked) {
-                goToPlayStoreOrSellerApp()
+                activity?.goToPlayStoreOrSellerApp()
             } else {
                 showRequiredTncToaster()
             }

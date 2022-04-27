@@ -14,8 +14,7 @@ class AdminTypeMapper @Inject constructor() {
         return AdminTypeUiModel(
             AdminStatus.WAITING_CONFIRMATION,
             adminType.shopID,
-            adminRoleType.isShopAdmin,
-            adminRoleType.isShopOwner
+            adminRoleType.isShopAdmin
         )
     }
 }

@@ -25,7 +25,7 @@ class InvitationConfirmationViewModelTest : InvitationConfirmationViewModelTestF
         runBlocking {
             //given
             val adminTypeUiModel =
-                AdminTypeUiModel(status = "2", "1234")
+                AdminTypeUiModel(status = "2", "1234", isShopAdmin = true)
             onGetAdminTypeUseCase_thenReturn(adminTypeUiModel)
 
             //when

@@ -2,9 +2,9 @@ package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.acti
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.shopadmin.common.utils.ShopAdminComponentInstance
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.component.AdminInvitationConfirmationComponent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.di.component.DaggerAdminInvitationConfirmationComponent
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.fragment.AdminInvitationConfirmationFragment
@@ -23,7 +23,7 @@ class AdminInvitationConfirmationActivity: BaseSimpleActivity(), HasComponent<Ad
     override fun getComponent(): AdminInvitationConfirmationComponent {
         return DaggerAdminInvitationConfirmationComponent
             .builder()
-            .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
+            .shopAdminComponent(ShopAdminComponentInstance.getShopAdminComponent(application))
             .build()
     }
 
