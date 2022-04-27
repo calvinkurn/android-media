@@ -35,6 +35,7 @@ class TokoFoodHomeUSPViewHolder(
     private var tgFirstUsp: Typography? = null
     private var tgSecondUsp: Typography? = null
     private var tgThirdUsp: Typography? = null
+    private var tgPowered: Typography? = null
     private var shimmeringLayout: View? = null
 
     override fun bind(element: TokoFoodHomeUSPUiModel) {
@@ -46,6 +47,7 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp = itemView.findViewById(R.id.tg_first_usp)
         tgSecondUsp = itemView.findViewById(R.id.tg_second_usp)
         tgThirdUsp = itemView.findViewById(R.id.tg_third_usp)
+        tgPowered = itemView.findViewById(R.id.tg_powered)
 
         when(element.state){
             TokoFoodHomeLayoutState.SHOW -> onShowLayout(element)
@@ -88,6 +90,7 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp?.show()
         tgSecondUsp?.show()
         tgThirdUsp?.show()
+        tgPowered?.show()
     }
 
     private fun showShimmering() {
@@ -102,6 +105,7 @@ class TokoFoodHomeUSPViewHolder(
         tgFirstUsp?.hide()
         tgSecondUsp?.hide()
         tgThirdUsp?.hide()
+        tgPowered?.hide()
     }
 
     private fun hideShimmering() {
