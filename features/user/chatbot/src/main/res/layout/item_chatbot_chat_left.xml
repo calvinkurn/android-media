@@ -61,18 +61,6 @@
         tools:text="Tanya"
         tools:visibility="visible"/>
 
-    <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
-        android:layout_width="0dp"
-        android:layout_height="72dp"
-        android:id="@+id/reply"
-        app:layout_constraintTop_toBottomOf="@id/senderName"
-        android:layout_marginTop="@dimen/chatcommon_6dp"
-        app:layout_constraintEnd_toEndOf="@id/custom_chat_layout_container"
-        app:layout_constraintStart_toStartOf="@id/custom_chat_layout_container"
-        >
-    </com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage>
-
-
     <LinearLayout
         android:id="@+id/custom_chat_layout_container"
         android:layout_width="@dimen/layout_lvl0"
@@ -81,11 +69,10 @@
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginLeft="@dimen/unify_space_12"
         android:gravity="left"
-        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="RtlHardcoded"
-        app:layout_constraintTop_toTopOf="@+id/reply">
+        app:layout_constraintTop_toBottomOf="@id/senderName"
+        tools:ignore="RtlHardcoded">
 
         <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
             android:id="@+id/customChatLayout"

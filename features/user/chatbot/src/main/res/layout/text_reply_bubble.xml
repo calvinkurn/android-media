@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        android:text="@tools:sample/lorem/random" />
+        android:text="aa" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reply_message"
@@ -56,7 +56,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reply_from"
         app:typographyType="display_3"
-        android:text="@tools:sample/lorem/random"
+        android:text="aa"
         android:paddingBottom="@dimen/unify_space_12"/>
 
     <com.tokopedia.iconunify.IconUnify

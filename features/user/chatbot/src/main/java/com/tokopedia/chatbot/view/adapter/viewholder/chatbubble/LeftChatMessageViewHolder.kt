@@ -29,7 +29,7 @@ class LeftChatMessageViewHolder(
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
-    private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
+ //   private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -61,20 +61,20 @@ class LeftChatMessageViewHolder(
 //        }
 
         customChatLayout?.background = bg
-        replyBubbleArea?.updateReplyButtonState(true)
-        replyBubbleArea?.updateBackground(true)
-        replyBubbleArea?.updateCloseButtonState(false)
-        replyBubbleArea?.show()
+//        replyBubbleArea?.updateReplyButtonState(true)
+//        replyBubbleArea?.updateBackground(true)
+//        replyBubbleArea?.updateCloseButtonState(false)
+//        replyBubbleArea?.show()
 
     }
 
-    private fun bindReplyBubbleListener() {
-        replyBubbleArea?.setReplyListener(replyBubbleListener)
-    }
-
-    private fun bindReplyReference(msg: MessageUiModel) {
-        replyBubbleArea?.bindReplyData(msg)
-    }
+//    private fun bindReplyBubbleListener() {
+//        replyBubbleArea?.setReplyListener(replyBubbleListener)
+//    }
+//
+//    private fun bindReplyReference(msg: MessageUiModel) {
+//        replyBubbleArea?.bindReplyData(msg)
+//    }
 
     private fun hideSenderInfo() {
         senderAvatar?.hide()
@@ -100,7 +100,7 @@ class LeftChatMessageViewHolder(
 
     private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
-        replyBubbleArea?.updateBackground(true)
+   //     replyBubbleArea?.updateBackground(true)
     }
 
     private fun bindMessageInfo(message: MessageUiModel) {

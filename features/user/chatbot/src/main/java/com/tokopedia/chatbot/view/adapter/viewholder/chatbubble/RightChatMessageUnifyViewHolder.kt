@@ -7,18 +7,17 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDp
 
-class RightChatMessageViewHolder(
+class RightChatMessageUnifyViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         replyBubbleListener: ReplyBubbleAreaMessage.Listener
-) : CustomChatbotMessageViewHolder(itemView, listener, replyBubbleListener) {
-
-  //  private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
+) : ChatbotMessageUnifyViewHolder(itemView, listener, replyBubbleListener) {
 
      val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -48,23 +47,26 @@ class RightChatMessageViewHolder(
 
     override fun bind(message: MessageUiModel) {
         super.bind(message)
-        ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
+        ChatbotMessageViewHolderBinder2.bindChatReadStatus(message, customChatLayout)
         bindBackground(message)
+
+        customChatLayout?.background = bgForChatReplyBubble
+
 //        if (message.parentReply!=null){
         //    replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
      //       replyBubbleArea?.background = bg
-        customChatLayout?.background = bgForChatReplyBubble
-//        replyBubbleArea?.updateReplyButtonState(true)
-//        replyBubbleArea?.updateBackground(false)
-//        replyBubbleArea?.updateCloseButtonState(false)
-//        replyBubbleArea?.show()
+     //   customChatLayout?.fxChat?.background = bgForChatReplyBubble
+        customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
+        customChatLayout?.replyBubbleContainer?.updateBackground(false)
+        customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
+        customChatLayout?.replyBubbleContainer?.show()
 //        }else{
 //            replyBubbleArea?.hide()
 //        }
     }
 
     private fun bindBackground(message: MessageUiModel) {
-        customChatLayout?.background = bg
+    //    customChatLayout?.background = bg
     //    replyBubbleArea?.updateBackground(false)
     }
 

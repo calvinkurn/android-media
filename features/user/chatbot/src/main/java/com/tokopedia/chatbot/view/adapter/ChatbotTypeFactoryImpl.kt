@@ -71,7 +71,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
             CustomChatbotMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
-            CustomChatbotMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
+            CustomChatbotMessageViewHolder.TYPE_RIGHT -> RightChatMessageUnifyViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -146,7 +146,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, replyBubbleListener)
+            RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener)
             ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)
