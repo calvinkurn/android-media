@@ -3,9 +3,6 @@ package com.tokopedia.tkpd.thankyou.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
-// [Misael] ada ApplicationContext lain
-// com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-//import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;

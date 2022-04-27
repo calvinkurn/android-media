@@ -5,12 +5,12 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.app.common.MainApplication;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
 
 import dagger.Component;
 
-@ApplicationScope // [Misael] mungkin nnti ini perlu bikin scope baru, atau pindahin aja
+@ApplicationScope
 @Component(
         dependencies = {
                 BaseAppComponent.class

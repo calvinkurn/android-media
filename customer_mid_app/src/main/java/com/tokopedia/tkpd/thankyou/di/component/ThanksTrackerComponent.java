@@ -10,7 +10,6 @@ import dagger.Component;
 /**
  * Created by okasurya on 12/4/17.
  */
-// [Misael] Check apakah masih ada instance yang dipakai disini tapi belum di provide sama CommonAppComponent
 @ThanksTrackerScope
 @Component(modules = ThanksTrackerModule.class, dependencies = BaseAppComponent.class)
 public interface ThanksTrackerComponent {

@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
 
 import com.tokopedia.app.common.MainApplication;
-import com.tokopedia.app.common.di.CommonAppComponent;
 import com.tokopedia.tkpd.thankyou.di.component.DaggerThanksTrackerComponent;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
