@@ -24,36 +24,55 @@ class ProductMiniSocialProofChipViewHolder(
 
         when (socialProof.key) {
             ProductMiniSocialProofDataModel.RATING -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onReviewClick() }
-                firstSocialProofTxt?.run {
-                    text = socialProof.reviewTitle
-                    setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small), null, null, null)
-                }
-                firstSocialProofValue?.run {
-                    text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
-                }
+                renderChipRating(socialProof)
             }
             ProductMiniSocialProofDataModel.TALK -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
-                firstSocialProofTxt?.run {
-                    text = view.context.getString(R.string.product_detail_discussion_label)
-                }
-                firstSocialProofValue?.run {
-                    text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
-                }
+                renderChipTalk(socialProof, componentTrackDataModel)
             }
             else -> {
-                view.isClickable = true
-                view.setOnClickListener { listener.onBuyerPhotosClicked(componentTrackDataModel) }
-                firstSocialProofTxt?.run {
-                    text = view.context.getString(R.string.label_buyer_photos)
-                }
-                firstSocialProofValue?.run {
-                    text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
-                }
+                renderChipBuyerPhotos(socialProof, componentTrackDataModel)
             }
+        }
+    }
+
+    private fun renderChipBuyerPhotos(socialProof: ProductMiniSocialProofItemDataModel,
+                                      componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
+        isClickable = true
+        setOnClickListener { listener.onBuyerPhotosClicked(componentTrackDataModel) }
+        firstSocialProofTxt?.run {
+            text = socialProof.buyerPhotosTitle
+        }
+        firstSocialProofValue?.run {
+            text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
+        }
+    }
+
+    private fun renderChipTalk(socialProof: ProductMiniSocialProofItemDataModel,
+                               componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
+        isClickable = true
+        setOnClickListener { listener.onDiscussionClicked(componentTrackDataModel) }
+        firstSocialProofTxt?.run {
+            text = view.context.getString(R.string.product_detail_discussion_label)
+        }
+        firstSocialProofValue?.run {
+            text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
+        }
+    }
+
+
+    private fun renderChipRating(socialProof: ProductMiniSocialProofItemDataModel) = with(view) {
+        isClickable = true
+        setOnClickListener { listener.onReviewClick() }
+        firstSocialProofTxt?.run {
+            text = socialProof.reviewTitle
+            setCompoundDrawablesWithIntrinsicBounds(
+                    MethodChecker.getDrawable(view.context, R.drawable.ic_review_one_small),
+                    null,
+                    null,
+                    null)
+        }
+        firstSocialProofValue?.run {
+            text = view.context.getString(R.string.bracket_formated, socialProof.formattedCount)
         }
     }
 

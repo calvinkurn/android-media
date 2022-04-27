@@ -20,7 +20,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -84,7 +83,7 @@ interface DynamicProductDetailListener {
      * ProductReviewViewHolder
      */
     fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onMediaReviewClick(mediaThumbnailUiModel: ReviewMediaThumbnailUiModel, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String, detailedMediaResult: ProductrevGetReviewMedia)
+    fun onMediaReviewClick(reviewID: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 

@@ -209,7 +209,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1176,15 +1175,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onMediaReviewClick(
-        mediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
+        reviewID: String,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        imageCount: String,
         detailedMediaResult: ProductrevGetReviewMedia
     ) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                    ?: ComponentTrackDataModel(), mediaThumbnailUiModel.mediaThumbnails[position].getReviewID())
+                    ?: ComponentTrackDataModel(), reviewID)
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = it,
                 productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),

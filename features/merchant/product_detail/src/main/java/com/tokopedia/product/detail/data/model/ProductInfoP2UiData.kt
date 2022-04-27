@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.data.model
 
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -16,12 +15,11 @@ import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVo
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
@@ -51,9 +49,7 @@ data class ProductInfoP2UiData(
     var bebasOngkir: BebasOngkir = BebasOngkir(),
     var uspImageUrl: String = "",
     var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
-    var buyerPhotosCount: Int = Int.ZERO,
-    var reviewMediaThumbnails: ReviewMediaThumbnailUiModel? = null,
-    var detailedMediaResult: ProductrevGetReviewMedia? = null,
+    var imageReview: ReviewImage = ReviewImage(),
     var helpfulReviews: List<Review>? = null,
     var miniCart: MutableMap<String, MiniCartItem>? = null,
     var alternateCopy: List<AlternateCopy> = listOf(),

@@ -11,6 +11,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
@@ -28,7 +29,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val GRID_LAYOUT_MANAGER_SPAN_COUNT = 5
         const val RATING_ONE = 1
         const val RATING_TWO = 2
         const val RATING_THREE = 3
@@ -47,7 +47,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         this.element = element
         element?.let {
-            if (it.mediaThumbnails == null && it.listOfReviews == null) {
+            if (it.mediaThumbnails == null && element.review == null) {
                 showShimmering()
                 hideAllOtherElements()
                 return
@@ -65,7 +65,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 element.totalRatingCount,
                 element.totalReviewCount
             )
-            val reviewData = it.listOfReviews?.firstOrNull()
+            val reviewData = it.review
             reviewData?.let { review ->
                 setReviewStars(review)
                 setReviewAuthor(reviewData)
@@ -222,28 +222,34 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         }
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 if (item is ReviewMediaImageThumbnailUiModel) {
                     if (item.uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
-                        it.mediaThumbnails?.let { mediaThumbnails ->
-                            it.detailedMediaResult?.let { detailedMediaResult ->
-                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
-                            }
-                        }
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
                     }
                 } else if (item is ReviewMediaVideoThumbnailUiModel) {
                     if (item.uiState is ReviewMediaVideoThumbnailUiState.ShowingSeeMore) {
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
-                        it.mediaThumbnails?.let { mediaThumbnails ->
-                            it.detailedMediaResult?.let { detailedMediaResult ->
-                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
-                            }
-                        }
+                        listener.onMediaReviewClick(
+                            item.getReviewID(),
+                            position,
+                            getComponentTrackData(it),
+                            DynamicProductDetailMapper.generateDetailedMediaResult(
+                                it.mediaThumbnails
+                            )
+                        )
                     }
                 }
                 return@let
