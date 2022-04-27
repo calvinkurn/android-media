@@ -19,7 +19,7 @@ import java.util.*
 class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private val maxDate = Date()
-    private var minDate = Date(System.currentTimeMillis() - FIFTY_YEAR_MILLIS)
+    private var minDate = Date(System.currentTimeMillis() - TWO_YEAR_MILLIS)
 
     private var defaultDateFrom: Date? = null
     private var defaultDateTo: Date? = null
@@ -173,7 +173,6 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        const val FIFTY_YEAR_MILLIS = (50 * 365 * 24 * 3600 * 1000L)
         const val TWO_YEAR_MILLIS = (2 * 365 * 24 * 3600 * 1000L)
         const val MAX_RANGE = 30L
         const val MAX_RANGE_90 = 90L

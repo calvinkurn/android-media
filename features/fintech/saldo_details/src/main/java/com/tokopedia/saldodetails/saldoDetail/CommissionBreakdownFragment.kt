@@ -4,27 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.collapseView
+import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.expandView
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
-import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.DateRangePickerBottomSheet
-import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.OnDateRangeSelectListener
+
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 
-class CommissionBreakdownFragment : TkpdBaseV4Fragment(),
-    OnDateRangeSelectListener {
+class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListener {
     private val animationDuration: Long = 300
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
     private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
     private var downloadButton: UnifyButton? = null
+
+    @Inject
+    lateinit var userSession: UserSession
 
     companion object {
         fun createInstance(): CommissionBreakdownFragment {
@@ -34,6 +38,14 @@ class CommissionBreakdownFragment : TkpdBaseV4Fragment(),
 
     override fun getScreenName(): String {
         return ""
+    }
+
+
+    override fun initInjector() {
+        activity?.let {
+            val saldoDetailsComponent = getComponent(SaldoDetailsComponent::class.java)
+            saldoDetailsComponent.inject(this)
+        }
     }
 
     override fun onCreateView(
@@ -106,8 +118,8 @@ class CommissionBreakdownFragment : TkpdBaseV4Fragment(),
         CommissionBreakdownDateRangePickerBottomSheet.getInstanceRange(
             selectedDateFrom,
             selectedDateTo,
-            DateRangePickerBottomSheet.MAX_RANGE_90,
-            DateRangePickerBottomSheet.TWO_YEAR_MILLIS
+            CommissionBreakdownDateRangePickerBottomSheet.MAX_RANGE_90,
+            CommissionBreakdownDateRangePickerBottomSheet.TWO_YEAR_MILLIS
         )
             .show(childFragmentManager, "")
     }
