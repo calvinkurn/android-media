@@ -81,7 +81,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
     }
 
     @Test
-    fun should_open_preview_activity_onThumbnailClicker() {
+    fun should_open_preview_activity_onThumbnailClicked() {
         // When
         startCameraPage()
         Robot.clickCaptureButton()
