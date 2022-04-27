@@ -416,14 +416,24 @@
     <string name="content_desc_ovo_success">OvoSuccess</string>
     <string name="external_account_success_btn_text">Mulai Belanja</string>
     <string name="desc_banner_register">banner_register</string>
-  
+
     <string name="text_term_and_privacy_1">Dengan mendaftar, saya menyetujui </string>
     <string name="text_term_and_privacy_2"> serta </string>
     <string name="text_term_condition">Syarat dan Ketentuan</string>
     <string name="text_privacy_policy">Kebijakan Privasi</string>
-    
+
     <string name="color_ticker_default">#cde4c3</string>
     <string name="color_ticker_warning">#ecdb77</string>
-  
+
     <string name="text_loading_please_wait">please wait…</string>
+
+    <!-- INVALID PHONE NUMBER -->
+    <string name="ipn_required">Wajib diisi.</string>
+    <string name="ipn_too_short">Min. 9 digit.</string>
+    <string name="ipn_too_long">Maks. 15 digit.</string>
+    <string name="ipn_number_not_registered">Nomor ini tidak terdaftar di Tokopedia.</string>
+    <string name="ipn_toolbar_title">Ubah Nomor HP</string>
+    <string name="ipn_title">Masukkan nomor HP lama</string>
+    <string name="ipn_old_phone_number">Nomor HP lama</string>
+    <string name="ipn_next">Lanjut</string>
 </resources>

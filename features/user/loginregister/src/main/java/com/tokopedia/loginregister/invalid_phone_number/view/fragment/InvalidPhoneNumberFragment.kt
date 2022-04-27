@@ -1,0 +1,151 @@
+package com.tokopedia.loginregister.invalid_phone_number.view.fragment
+
+import android.os.Bundle
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.invalid_phone_number.di.InvalidPhoneNumberComponent
+import com.tokopedia.loginregister.invalid_phone_number.view.model.StatusPhoneNumberResult
+import com.tokopedia.loginregister.invalid_phone_number.view.viewmodel.InvalidPhoneNumberViewModel
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
+
+class InvalidPhoneNumberFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    val viewModel by lazy { viewModelProvider.get(InvalidPhoneNumberViewModel::class.java) }
+
+    private lateinit var btnNext: UnifyButton
+    private lateinit var tfu2Phone: TextFieldUnify2
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_invalid_phone_number, container, false)
+
+        btnNext = view.findViewById(R.id.ub_next)
+        tfu2Phone = view.findViewById(R.id.tfu2_old_phone_number)
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        formAction()
+        onClickListener()
+        formStateObserver()
+        statusPhoneNumberObserver()
+    }
+
+    override fun getScreenName(): String {
+        return "TODO"
+    }
+
+    override fun initInjector() {
+        getComponent(InvalidPhoneNumberComponent::class.java).inject(this)
+    }
+
+    private fun formStateObserver(){
+        viewModel.formState.observe(viewLifecycleOwner){
+
+            tfu2Phone.setMessage(
+                if (it.numberError != null) getString(it.numberError)
+                else " "
+            )
+
+            tfu2Phone.isInputError = !it.isDataValid
+            isLoading(it.isDataValid)
+        }
+    }
+
+    private fun onClickListener(){
+        btnNext.setOnClickListener {
+            submitData()
+        }
+    }
+
+    private fun formAction(){
+        tfu2Phone.editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                submitData()
+                true
+            } else false
+        }
+
+        tfu2Phone.editText.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
+                submitData()
+                true
+            } else false
+        }
+    }
+
+    private fun statusPhoneNumberObserver(){
+        viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
+            when(it){
+                is Success -> {
+
+                }
+                is Fail -> {
+                    onError(it.throwable)
+                }
+            }
+
+            isLoading(false)
+        }
+    }
+
+    private fun onError(throwable: Throwable){
+        val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
+        tfu2Phone.setMessage(message)
+        tfu2Phone.isInputError = true
+    }
+
+    private fun isLoading(isLoading: Boolean){
+        btnNext.isLoading = isLoading
+    }
+
+    private fun hideKeyboard(){
+        activity?.let {
+            KeyboardHandler.hideSoftKeyboard(it)
+        }
+    }
+
+    private fun submitData(){
+        hideKeyboard()
+        viewModel.submitNumber(tfu2Phone.getEditableValue().toString())
+    }
+
+    private fun getErrorMsgWithLogging(throwable: Throwable, flow: String, withErrorCode: Boolean = true): String {
+        val mClassName = if(flow.isEmpty()) InvalidPhoneNumberFragment::class.java.name else "${InvalidPhoneNumberFragment::class.java.name} - $flow"
+        val message = ErrorHandler.getErrorMessage(context, throwable,
+            ErrorHandler.Builder().apply {
+                withErrorCode(withErrorCode)
+                className = mClassName
+            }.build())
+        return message
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(bundle: Bundle) =
+            InvalidPhoneNumberFragment().apply {
+                arguments = bundle
+            }
+    }
+}
