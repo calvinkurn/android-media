@@ -81,6 +81,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var quantity = 1
     var isDisabled = false
     private var variantName = ""
+    var itemProductStock = 1
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
         BottomSheetNavigator(childFragmentManager)
@@ -379,14 +380,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureData(tenureSelectedModel: TenureSelectedModel?) {
-        tenureSelectedModel?.also { tenureSelectedModel ->
-            tenureSelectedModel.installmentDetails?.let { installmentDetails ->
+        tenureSelectedModel?.also { tenureSelectedData ->
+            tenureSelectedData.installmentDetails?.let { installmentDetails ->
                 this.installmentModel = installmentDetails
             }
-            tenureSelectedModel.tenure?.let { tenure ->
+            tenureSelectedData.tenure?.let { tenure ->
                 paymentDuration.text = "x$tenure"
             }
-            amountToPay.text = tenureSelectedModel.priceText.orEmpty()
+            amountToPay.text = tenureSelectedData.priceText.orEmpty()
         }
     }
 
@@ -443,6 +444,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             shopId = productShopId
         }
         productData.stock?.let { productStock ->
+            itemProductStock = productStock
             productStockLogic(productStock)
         }
         productData.pictures?.get(0)?.let { pictures ->
@@ -467,8 +469,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock
-        detailHeader.quantityEditor.addButton.isEnabled = productStock != 1
-        detailHeader.quantityEditor.subtractButton.isEnabled = productStock != 1
+        detailHeader.quantityEditor.addButton.isEnabled = productStock > 1
+        detailHeader.quantityEditor.subtractButton.isEnabled = productStock > 1
         val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
         try {
             if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
@@ -476,8 +478,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 quantity = productStock
             }
         } catch (e: java.lang.Exception) {
-            detailHeader.quantityEditor.editText.setText("1")
-            quantity = 1
+            detailHeader.quantityEditor.editText.setText("0")
+            quantity = 0
         }
     }
 
@@ -707,22 +709,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     1
                 }
 
-                when {
-                    mQuantity > detailHeader.quantityEditor.maxValue -> {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text =
-                            "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
-                    }
-                    mQuantity < 1 -> {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text =
-                            getString(R.string.paylater_occ_min_quantity)
-                    }
-                    else -> detailHeader.limiterMessage.visibility = View.GONE
-                }
+                if (mQuantity >= detailHeader.quantityEditor.maxValue || itemProductStock == 0) {
+                    detailHeader.limiterMessage.visibility = View.VISIBLE
+                    detailHeader.limiterMessage.text =
+                        "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
+                } else if (mQuantity < 1) {
+                    detailHeader.limiterMessage.visibility = View.VISIBLE
+                    detailHeader.limiterMessage.text =
+                        getString(R.string.paylater_occ_min_quantity)
+                } else
+                    detailHeader.limiterMessage.visibility = View.GONE
             }
         }
     }
+
 
     private fun closeKeyboard() {
         context?.let {
