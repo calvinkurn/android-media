@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.view.activity.notifcenter
 
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.inbox.view.activity.notifcenter.robot.NotificationGeneralRobot.clickChipFilter
 import com.tokopedia.inbox.view.activity.notifcenter.robot.NotificationGeneralRobot.clickNotification
 import com.tokopedia.inbox.view.activity.notifcenter.robot.NotificationGeneralRobot.scrollToProductPosition
 import com.tokopedia.inbox.view.activity.notifcenter.robot.NotificationPinResult.assertBackgroundColor
@@ -63,6 +64,27 @@ class NotifcenterNotificationPinTest: InboxNotifcenterTest() {
         // Then
         assertNotificationPinned(2)
         assertBackgroundColor(2, com.tokopedia.unifyprinciples.R.color.Unify_YN50)
+    }
+
+    @Test
+    fun should_show_pin_layout_when_get_pinned_notification_in_filtered_notification() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response =
+                notifcenterDetailUseCase.defaultNotificationsWithPin
+        }
+        startInboxActivity()
+
+        //When
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response =
+                notifcenterDetailUseCase.filteredNotificationsWithPin //change the response
+        }
+        clickChipFilter(1)
+
+        // Then
+        assertNotificationPinned(0)
+        assertBackgroundColor(0, com.tokopedia.unifyprinciples.R.color.Unify_YN50)
     }
 
     @Test

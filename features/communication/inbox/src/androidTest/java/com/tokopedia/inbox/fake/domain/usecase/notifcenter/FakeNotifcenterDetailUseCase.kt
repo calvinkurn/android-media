@@ -174,6 +174,21 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
+    val filteredNotificationsWithPin: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                newList.get(0).asJsonObject.apply {
+                    addProperty(IS_PINNED, true)
+                    addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
+                    addProperty(READ_STATUS, 1)
+                }
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3)
+                    .getAsJsonArray(LIST)[0] = newList.get(0)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST).removeAll { true }
+            }
+        }
+
     private fun getNewExpiredTime(extendedTime: Long): Long {
         return (System.currentTimeMillis() / UNIX_DIVIDER) + extendedTime
     }

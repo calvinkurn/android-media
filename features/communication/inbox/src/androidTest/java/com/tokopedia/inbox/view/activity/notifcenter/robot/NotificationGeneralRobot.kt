@@ -23,4 +23,12 @@ object NotificationGeneralRobot {
             )
         ).perform(click())
     }
+
+    fun clickChipFilter(position: Int) {
+        onView(
+            withRecyclerView(R.id.rv_filter).atPositionOnView(
+                position, R.id.chips_filter
+            )
+        ).perform(click())
+    }
 }
