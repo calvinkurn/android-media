@@ -130,12 +130,12 @@ class ProductTagViewModel @AssistedInject constructor(
                 authorId = authorId,
                 authorType = authorType,
                 cursor = currLastProduct.nextCursor,
-                limit = 6, /** TODO: gonna change this later */
+                limit = LIMIT_PER_PAGE,
             )
 
             _lastTaggedProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList.take(2),
+                    products = products + pagedDataList.dataList,
                     nextCursor = pagedDataList.nextCursor,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
@@ -149,5 +149,9 @@ class ProductTagViewModel @AssistedInject constructor(
                 )
             }
         }
+    }
+
+    companion object {
+        private const val LIMIT_PER_PAGE = 20
     }
 }
