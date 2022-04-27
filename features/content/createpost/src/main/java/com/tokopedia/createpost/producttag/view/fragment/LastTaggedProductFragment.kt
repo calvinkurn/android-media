@@ -20,6 +20,9 @@ import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -104,7 +107,9 @@ class LastTaggedProductFragment @Inject constructor(
                 LastTaggedProductAdapter.Model.Product(product = it)
             } + if(hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
 
-            adapter.setItemsAndAnimateChanges(finalProducts)
+            if(binding.rvLastTaggedProduct.isComputingLayout.not())
+                adapter.setItemsAndAnimateChanges(finalProducts)
+
             binding.rvLastTaggedProduct.show()
             binding.globalError.hide()
         }
@@ -123,9 +128,16 @@ class LastTaggedProductFragment @Inject constructor(
                 else updateAdapterData(curr.products, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                /** TODO: show toaster error */
-                binding.rvLastTaggedProduct.show()
-                binding.globalError.hide()
+                updateAdapterData(curr.products, false)
+
+                Toaster.build(
+                    binding.root,
+                    text = getString(R.string.cc_failed_load_product),
+                    type = TYPE_ERROR,
+                    duration = LENGTH_LONG,
+                    actionText = getString(R.string.feed_content_coba_lagi_text),
+                    clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
+                ).show()
             }
         }
     }

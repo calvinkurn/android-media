@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -122,20 +121,9 @@ class ProductTagViewModel @AssistedInject constructor(
                 limit = 6, /** TODO: gonna change this later */
             )
 
-//            delay(2000)
-//
-//            _lastTaggedProduct.setValue {
-//                copy(
-//                    products = emptyList(),
-//                    nextCursor = "",
-//                    state = PagedState.Success(
-//                        hasNextPage = false,
-//                    )
-//                )
-//            }
             _lastTaggedProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
+                    products = products + pagedDataList.dataList.take(2),
                     nextCursor = pagedDataList.nextCursor,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
