@@ -598,7 +598,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_POSITION] = componentsItems.position + 1
             productMap[LIST] = productCardItemList
             productMap[DIMENSION83] = getProductDime83(it)
-            addSourceData(productMap)
+            productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
             productMap[DIMENSION38] = ""
@@ -659,7 +659,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[DIMENSION38] = ""
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION84] = ""
-            addSourceData(productMap)
+            productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
             productMap[KEY_QUANTITY] = it.quantity
@@ -738,7 +738,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[KEY_POSITION] = componentsItems.position + 1
                 listMap[LIST] = productCardItemList
                 listMap[DIMENSION83] = getProductDime83(it)
-                addSourceData(listMap)
+                listMap[DIMENSION90] = sourceIdentifier
                 listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                         "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
                 listMap[DIMENSION38] = ""
