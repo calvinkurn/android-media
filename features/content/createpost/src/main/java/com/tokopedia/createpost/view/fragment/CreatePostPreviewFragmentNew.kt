@@ -90,6 +90,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         private const val PARAM_AUTHOR_ID = "author_id"
         private const val PARAM_AUTHOR_TYPE = "author_type"
 
+        private const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
+        private const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
+        private const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
+        private const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
+        private const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
+        private const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
+        private const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = CreatePostPreviewFragmentNew()
             fragment.arguments = bundle
@@ -566,17 +574,13 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun getAttachProductResult(data: Intent?) {
-        val product = data?.getSerializableExtra(
-            PARAM_PRODUCT) as ShopPageProduct
-
-        product.let {
-            val relatedProductItem = mapResultToRelatedProductItem(it)
-            if(!isProductAlreadyAddedOnImage(relatedProductItem)) {
-                createPostModel.productIdList.add(it.pId!!)
-                createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
-                    relatedProductItem)
-            }
+        val relatedProductItem = mapResultToRelatedProductItem(data)
+        if(!isProductAlreadyAddedOnImage(relatedProductItem)) {
+            createPostModel.productIdList.add(relatedProductItem.id)
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].products.add(
+                relatedProductItem)
         }
+
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
 
@@ -603,17 +607,18 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         updateResultIntent()
     }
 
-    private fun mapResultToRelatedProductItem(item: ShopPageProduct): RelatedProductItem {
+    private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
         return RelatedProductItem(
-            id = item.pId!!,
-            name = item.name!!,
-            price = item.price?.priceIdr!!,
-            image = item.pImage?.img!!,
-            priceOriginalFmt = item.campaign?.oPriceFormatted!!,
-            priceDiscountFmt = item.campaign?.dPriceFormatted!!,
-            isDiscount = (item.campaign?.dPrice?.toInt()?:0)!=0
+            id = data?.getStringExtra(RESULT_PRODUCT_ID) ?: "",
+            name = data?.getStringExtra(RESULT_PRODUCT_NAME) ?: "",
+            price = data?.getStringExtra(RESULT_PRODUCT_PRICE) ?: "",
+            image = data?.getStringExtra(RESULT_PRODUCT_IMAGE) ?: "",
+            priceOriginalFmt = data?.getStringExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT) ?: "",
+            priceDiscountFmt = data?.getStringExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT) ?: "",
+            isDiscount = data?.getBooleanExtra(RESULT_PRODUCT_IS_DISCOUNT, false) ?: false,
         )
     }
+
     private fun getLatestTotalProductCount() : Int{
         var count = 0
         createPostModel.completeImageList.forEach { mediaModel ->

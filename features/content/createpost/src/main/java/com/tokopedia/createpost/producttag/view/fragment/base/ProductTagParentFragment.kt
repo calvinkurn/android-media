@@ -1,5 +1,7 @@
 package com.tokopedia.createpost.producttag.view.fragment.base
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +19,14 @@ import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBott
 import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.createpost.producttag.view.viewmodel.factory.ProductTagViewModelFactory
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -111,6 +115,29 @@ class ProductTagParentFragment @Inject constructor(
                 renderSelectedProductTagSource(it.prevValue?.productTagSource, it.value.productTagSource)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    is ProductTagUiEvent.ProductSelected -> {
+                        val product = it.product
+
+                        val data = Intent().apply {
+                            putExtra(RESULT_PRODUCT_ID, product.id)
+                            putExtra(RESULT_PRODUCT_NAME, product.name)
+                            putExtra(RESULT_PRODUCT_PRICE, product.priceFmt)
+                            putExtra(RESULT_PRODUCT_IMAGE, product.coverURL)
+                            putExtra(RESULT_PRODUCT_PRICE_ORIGINAL_FMT, product.priceOriginalFmt)
+                            putExtra(RESULT_PRODUCT_PRICE_DISCOUNT_FMT, product.discountFmt)
+                            putExtra(RESULT_PRODUCT_IS_DISCOUNT, product.isDiscount)
+                        }
+                        requireActivity().setResult(Activity.RESULT_OK, data)
+                        requireActivity().finish()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun renderSelectedProductTagSource(
@@ -179,6 +206,14 @@ class ProductTagParentFragment @Inject constructor(
         private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
         private const val EXTRA_AUTHOR_TYPE = "EXTRA_AUTHOR_TYPE"
         private const val EXTRA_SOURCE = "source"
+
+        private const val RESULT_PRODUCT_ID = "RESULT_PRODUCT_ID"
+        private const val RESULT_PRODUCT_NAME = "RESULT_PRODUCT_NAME"
+        private const val RESULT_PRODUCT_PRICE = "RESULT_PRODUCT_PRICE"
+        private const val RESULT_PRODUCT_IMAGE = "RESULT_PRODUCT_IMAGE"
+        private const val RESULT_PRODUCT_PRICE_ORIGINAL_FMT = "RESULT_PRODUCT_PRICE_ORIGINAL_FMT"
+        private const val RESULT_PRODUCT_PRICE_DISCOUNT_FMT = "RESULT_PRODUCT_PRICE_DISCOUNT_FMT"
+        private const val RESULT_PRODUCT_IS_DISCOUNT = "RESULT_PRODUCT_IS_DISCOUNT"
 
         const val SOURCE_FEED = "feed"
         const val SOURCE_PLAY = "play"

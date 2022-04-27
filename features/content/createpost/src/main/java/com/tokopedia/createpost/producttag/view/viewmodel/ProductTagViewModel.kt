@@ -6,6 +6,7 @@ import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepositor
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
@@ -13,9 +14,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 /**
@@ -59,6 +59,11 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    /** Ui Event */
+    private val _uiEvent = MutableSharedFlow<ProductTagUiEvent>()
+    val uiEvent: Flow<ProductTagUiEvent>
+        get() = _uiEvent
+
     private val _lastTaggedProductUiState = _lastTaggedProduct.map {
         LastTaggedProductUiState(
             products = it.products,
@@ -93,6 +98,7 @@ class ProductTagViewModel @AssistedInject constructor(
     fun submitAction(action: ProductTagAction) {
         when(action) {
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
+            is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
             /** Load Tagged Product */
             ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
@@ -102,6 +108,12 @@ class ProductTagViewModel @AssistedInject constructor(
     /** Handle Action */
     private fun handleSelectProductTagSource(source: ProductTagSource) {
         _selectedProductTagSource.value = source
+    }
+
+    private fun handleProductSelected(product: ProductUiModel) {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductTagUiEvent.ProductSelected(product))
+        }
     }
 
     private fun handleLoadLastTaggedProduct() {
