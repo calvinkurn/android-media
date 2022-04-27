@@ -48,19 +48,21 @@ class RightChatMessageUnifyViewHolder(
     override fun bind(message: MessageUiModel) {
         super.bind(message)
         ChatbotMessageViewHolderBinder2.bindChatReadStatus(message, customChatLayout)
-   //     bindBackground(message)
+        bindBackground(message)
 
         customChatLayout?.background = bgForChatReplyBubble
 
-        if (message.parentReply != null) {
-            customChatLayout?.replyBubbleContainer?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
-            customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-            customChatLayout?.replyBubbleContainer?.updateBackground(false)
-            customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
-            customChatLayout?.replyBubbleContainer?.show()
-        } else {
-            customChatLayout?.replyBubbleContainer?.hide()
-        }
+//        if (message.parentReply!=null){
+        //    replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+     //       replyBubbleArea?.background = bg
+     //   customChatLayout?.fxChat?.background = bgForChatReplyBubble
+        customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
+        customChatLayout?.replyBubbleContainer?.updateBackground(false)
+        customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
+        customChatLayout?.replyBubbleContainer?.show()
+//        }else{
+//            replyBubbleArea?.hide()
+//        }
     }
 
     private fun bindBackground(message: MessageUiModel) {
