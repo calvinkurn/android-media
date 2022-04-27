@@ -5,9 +5,11 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.KYCStatusId
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmRegistrationHeaderBinding
@@ -39,18 +41,35 @@ class RegistrationHeaderWidget(
     override fun bind(element: WidgetRegistrationHeaderUiModel) {
         setupView(element)
         setupTermsList(element)
+        setupPmEligibilityView(element)
+    }
+
+    private fun setupPmEligibilityView(element: WidgetRegistrationHeaderUiModel) {
+        binding?.run {
+            val isEligiblePM = getPmEligibilityStatus(element)
+            horLinePmHeader.isVisible = isEligiblePM
+            tvPmHeaderEligibleFor.isVisible = isEligiblePM
+            tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
+
+            if (!isEligiblePM) return
+
+            val text = when (element.shopInfo.shopLevel) {
+                PMConstant.ShopLevel.TWO -> getString(R.string.pm_pro_advanced)
+                PMConstant.ShopLevel.THREE -> getString(R.string.pm_pro_expert)
+                PMConstant.ShopLevel.FOUR -> getString(R.string.pm_pro_ultimate)
+                else -> getString(R.string.pm_power_merchant)
+            }
+            tvPmHeaderEligibleFor.text = root.context.getString(R.string.pm_eligible_pm_grade, text)
+                .parseAsHtml()
+            tvPmHeaderEligiblePMDetail.setOnClickListener {
+                listener.onMoreDetailPMEligibilityClicked()
+            }
+        }
     }
 
     private fun setupView(element: WidgetRegistrationHeaderUiModel) = binding?.run {
         tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
             setOnExpandChanged(isExpanded, element)
-        }
-        val isEligiblePM = getPmEligibilityStatus(element)
-        horLinePmHeader.isVisible = isEligiblePM
-        tvPmHeaderEligibleFor.isVisible = isEligiblePM
-        tvPmHeaderEligiblePMDetail.isVisible = isEligiblePM
-        tvPmHeaderEligiblePMDetail.setOnClickListener {
-            listener.onMoreDetailPMEligibilityClicked()
         }
     }
 
@@ -92,9 +111,6 @@ class RegistrationHeaderWidget(
             adapter = termAdapter
         }
         showTermList(element.registrationTerms)
-
-        val isEligible = element.registrationTerms.all { it.isChecked }
-        setOnExpandChanged(!isEligible, element)
     }
 
     private fun onTermCtaClickedListener(term: RegistrationTermUiModel) {

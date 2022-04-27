@@ -22,7 +22,7 @@
         android:id="@+id/icPmHeaderTerms"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:icon_name="CHEVRON_DOWN"
+        app:icon_name="CHEVRON_UP"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

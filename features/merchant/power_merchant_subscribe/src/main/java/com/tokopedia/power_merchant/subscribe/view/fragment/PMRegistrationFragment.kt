@@ -72,7 +72,13 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     override fun onMoreDetailPMEligibilityClicked() {
-
+        val widgetIndex = adapter.data.indexOfFirst { it is WidgetGradeBenefitUiModel }
+        if (widgetIndex != RecyclerView.NO_POSITION) {
+            recyclerView?.post {
+                adapter.notifyItemChanged(widgetIndex)
+            }
+            recyclerView?.smoothScrollToPosition(widgetIndex)
+        }
     }
 
     fun setOnFooterCtaClickedListener(
@@ -117,34 +123,6 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         binding?.swipeRefreshPm?.setOnRefreshListener {
             fetchPowerMerchantBasicInfo()
         }
-    }
-
-    private fun getPMProNewSellerHeaderWidget(): WidgetPMProNewSellerHeaderUiModel {
-        return WidgetPMProNewSellerHeaderUiModel(
-            imageUrl = Constant.Image.IC_HERO_PM_NEW_SELLER,
-            itemRequiredPMProNewSeller = listOf(
-                ItemPMProNewSellerRequirement(
-                    title = getString(R.string.title_requirement_pm_pro_new_seller_1),
-                    imageUrl = Constant.Image.IC_PM_PRO_NEW_SELLER_VERIFIED
-                ),
-                ItemPMProNewSellerRequirement(
-                    title = getString(R.string.title_requirement_pm_pro_new_seller_2),
-                    imageUrl = Constant.Image.IC_PM_PRO_NEW_SELLER_SCORE
-                ),
-                ItemPMProNewSellerRequirement(
-                    title = getString(R.string.title_requirement_pm_pro_new_seller_3),
-                    imageUrl = Constant.Image.IC_PM_PRO_NEW_SELLER_TRANSACTION
-                )
-            )
-        )
-    }
-
-    private fun getPMProNewSellerBenefitWidget(): WidgetPmProNewSellerBenefitUiModel {
-        return WidgetPmProNewSellerBenefitUiModel(
-            items = context?.let {
-                PMRegistrationTermHelper.getBenefitListPmProNewSeller(it)
-            } ?: emptyList()
-        )
     }
 
     private fun renderPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
@@ -334,18 +312,10 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         return WidgetRegistrationHeaderUiModel(
             shopInfo = shopInfo,
-            registrationTerms = if (currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT) {
-                PMRegistrationTermHelper.getPmRegistrationTerms(
-                    requireContext(), shopInfo,
-                    currentPMProRegistrationSelected, isRegularMerchant
-                )
-            } else {
-                PMRegistrationTermHelper.getPmProRegistrationTerms(
-                    requireContext(),
-                    shopInfo,
-                    currentPMProRegistrationSelected
-                )
-            },
+            registrationTerms = PMRegistrationTermHelper.getPmRegistrationTerms(
+                requireContext(), shopInfo,
+                currentPMProRegistrationSelected, isRegularMerchant
+            ),
             selectedPmType = currentPmRegistrationTireType
         )
     }

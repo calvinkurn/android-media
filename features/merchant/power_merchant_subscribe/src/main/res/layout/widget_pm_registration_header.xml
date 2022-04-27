@@ -58,11 +58,10 @@
         app:tickerType="announcement"
         tools:visibility="visible" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/horLinePmHeader"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/Unify_NN200"
         app:layout_constraintEnd_toStartOf="@+id/guidelinePmSectionEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmSectionStart"
         app:layout_constraintTop_toBottomOf="@+id/rvPmRegistrationTerm" />

@@ -134,7 +134,7 @@ object PMRegistrationBenefitHelper {
 
     private fun getFreeDeliveryBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
-            resIcon = R.drawable.ic_pm_product_bundling,
+            resIcon = R.drawable.ic_pm_free_delivery,
             benefitDescription = context.getString(
                 R.string.pm_benefit_free_delivery_pm_pro,
                 Constant.PM_PRO_FREE_DELIVERY
