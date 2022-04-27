@@ -388,7 +388,7 @@ class CatalogDetailPageFragment : Fragment(),
 
         catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
             totalProducts?.let {
-                mProductsCountText?.text = "$it Produk Pilihan"
+                mProductsCountText?.text = getString(com.tokopedia.catalog.R.string.catalog_product_count_view_text,it)
             }
         })
     }

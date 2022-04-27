@@ -55,6 +55,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -104,6 +105,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+
+    private var lastDetachedItemPosition : Int = 0
+    private var lastAttachItemPosition : Int = 0
+    private var userScrolledList = false
 
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
@@ -198,6 +203,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             layoutManager = getLinearLayoutManager()
             setHasFixedSize(true)
             adapter = productNavListAdapter
+            if(viewModel.lastSeenProductPosition != 0){
+                scrollToPosition(viewModel.lastSeenProductPosition)
+            }
         }
     }
 
@@ -208,6 +216,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         loadMoreTriggerListener?.let {
             product_recyclerview.addOnScrollListener(it)
         }
+        product_recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!userScrolledList){
+                    if(dy > 15.toPx()){
+                        userScrolledList = true
+                    }
+                }
+            }
+        })
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
@@ -488,6 +506,16 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         )
     }
 
+    override fun setLastDetachedItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastDetachedItemPosition = adapterPosition
+    }
+
+    override fun setLastAttachItemPosition(adapterPosition: Int) {
+        super.setLastDetachedItemPosition(adapterPosition)
+        lastAttachItemPosition = adapterPosition
+    }
+
     /*********************************   WishList  ******************************/
 
     override fun onWishlistButtonClicked(productItem: CatalogProductItem, position: Int) {
@@ -592,6 +620,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+        if(userScrolledList)
+            viewModel.lastSeenProductPosition = (lastAttachItemPosition + lastDetachedItemPosition)/2
         productNavListAdapter?.onPause()
     }
 
