@@ -19,6 +19,12 @@ class SmallGridProductItemViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_result_product_card_small_grid
         val LAYOUT_WITH_VIEW_STUB = R.layout.search_result_product_card_small_grid_with_viewstub
+
+        @LayoutRes
+        fun layout(isUsingViewStub: Boolean): Int {
+            if (isUsingViewStub) return LAYOUT_WITH_VIEW_STUB
+            return LAYOUT
+        }
     }
 
     private var binding: SearchResultProductCardSmallGridBinding? by viewBinding()

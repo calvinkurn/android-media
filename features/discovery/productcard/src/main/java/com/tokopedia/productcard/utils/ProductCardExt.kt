@@ -448,7 +448,7 @@ private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typograph
             MethodChecker.getColor(it.context, unifyRColor.Unify_N700_68)
     }
 
-fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T {
+fun <T: View?> View.findViewById(viewStubId: ViewStubId, viewId: ViewId): T? {
     val viewStub = findViewById<ViewStub?>(viewStubId.id)
     if (viewStub == null) {
         return findViewById<T>(viewId.id)

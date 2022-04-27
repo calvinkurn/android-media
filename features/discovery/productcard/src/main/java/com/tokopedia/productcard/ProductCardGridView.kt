@@ -99,10 +99,14 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
         findViewById(R.id.buttonThreeDotsWishlist)
     }
     private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
-        findViewById(ViewStubId(R.id.buttonAddToCartWishlistStub), ViewId(R.id.buttonAddToCartWishlist))
+        findViewById(
+            ViewStubId(R.id.buttonAddToCartWishlistStub),
+            ViewId(R.id.buttonAddToCartWishlist))
     }
     private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
-        findViewById(ViewStubId(R.id.buttonSeeSimilarProductWishlistStub), ViewId(R.id.buttonSeeSimilarProductWishlist))
+        findViewById(
+            ViewStubId(R.id.buttonSeeSimilarProductWishlistStub),
+            ViewId(R.id.buttonSeeSimilarProductWishlist))
     }
     private val imageShopBadge: ImageView? by lazy(NONE) {
         findViewById(R.id.imageShopBadge)
@@ -113,36 +117,45 @@ class ProductCardGridView : BaseCustomView, IProductCardView {
     private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
     }
+    private var isUsingViewStub = false
 
     constructor(context: Context) : super(context) {
         init()
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(attrs)
+        initWithAttrs(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(attrs)
+        initWithAttrs(attrs)
     }
 
-    private fun init(attrs: AttributeSet? = null) {
-        var isUsingViewStub = false
+    private fun init() {
+        View.inflate(context, R.layout.product_card_grid_layout, this)
 
-        if (attrs != null) {
-            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+        val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
+        footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-            try {
-                isUsingViewStub = typedArray.getBoolean(R.styleable.ProductCardView_useViewStub, false)
-            } finally {
-                typedArray.recycle()
-            }
+        productCardFooterLayoutContainer.addView(footerView)
+    }
+
+    private fun initWithAttrs(attrs: AttributeSet?) {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ProductCardView, 0, 0)
+
+        try {
+            isUsingViewStub = typedArray.getBoolean(R.styleable.ProductCardView_useViewStub, false)
+        } finally {
+            typedArray.recycle()
         }
 
         View.inflate(context, R.layout.product_card_grid_layout, this)
 
-        val footerView = if (isUsingViewStub) View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
-            else View.inflate(context, R.layout.product_card_footer_layout, null)
+        val footerView =
+            if (isUsingViewStub)
+                View.inflate(context, R.layout.product_card_footer_with_viewstub_layout, null)
+            else
+                View.inflate(context, R.layout.product_card_footer_layout, null)
 
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 

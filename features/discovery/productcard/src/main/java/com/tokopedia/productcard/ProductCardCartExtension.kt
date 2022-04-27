@@ -33,7 +33,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         return productCardView.findViewById(id)
     }
 
-    private fun <T: View?> findView(viewStubId: ViewStubId, viewId: ViewId): T {
+    private fun <T: View?> findView(viewStubId: ViewStubId, viewId: ViewId): T? {
         return productCardView.findViewById(viewStubId, viewId)
     }
 
