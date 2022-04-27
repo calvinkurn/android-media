@@ -35,12 +35,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.SaldoDownloadTransactionFeeReportFragment
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
-import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
 import com.tokopedia.saldodetails.commom.utils.SaldoCoachMarkController
 import com.tokopedia.saldodetails.commom.utils.Success
@@ -49,7 +47,6 @@ import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityF
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlDetailsResponse
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
-import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.DateRangePickerBottomSheet
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -62,7 +59,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_saldo_deposit.*
 import kotlinx.android.synthetic.main.saldo_deposit_header.*
-import java.util.*
 import javax.inject.Inject
 
 
@@ -308,10 +304,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         } else {
             merchantDetailLL?.show()
         }
-
-        childFragmentManager.beginTransaction().replace(
-            com.tokopedia.saldodetails.R.id.transaction_fee_report_download_widget,
-            SaldoDownloadTransactionFeeReportFragment(), "saldo download report").commit()
     }
 
     private fun setViewModelObservers() {

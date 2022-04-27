@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/merchant_status_ll"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/Unify_Background"
     android:orientation="vertical"
     android:paddingTop="16dp"
@@ -14,7 +14,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/download_trx_fee_report_title"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="@string/download_trx_fee_report"
         android:textColor="@color/Unify_N700_96"
         android:layout_marginStart="16dp"
@@ -22,20 +22,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/download_trx_fee_report_expand"
-        app:layout_constraintBottom_toBottomOf="@id/download_trx_fee_report_expand"
         app:typographyType="heading_4"
         android:gravity="center_vertical"
+        android:visibility="gone"
         app:typographyWeight="bold" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/download_trx_fee_report_expand"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:visibility="visible"
+        android:layout_height="wrap_content"
         app:icon_name="CHEVRON_DOWN"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -46,7 +46,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="4dp"
         app:card_type="shadow"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/download_trx_fee_report_expand"
         tools:visibility="visible">
 
@@ -161,20 +161,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/trx_download_date_card"
                     android:layout_marginTop="8dp"
+                    android:enabled="false"
                     android:text="@string/trx_fee_download"
+                    android:visibility="gone"
                     app:unifyButtonSize="medium"
                     app:unifyButtonType="main"
-                    app:unifyButtonVariant="ghost"
-                    android:enabled="false"/>
+                    app:unifyButtonVariant="ghost" />
             </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.CardUnify>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="#F3F4F5"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/trx_fee_card_view"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,7 @@
     <string name="path_activation_ovo">/activation</string>
 
     <string name="path_saldo_deposit">/saldo</string>
+    <string name="path_transaction_fee_download">/transaction-fee-download</string>
     <string name="path_saldo_intro">/saldo-intro</string>
     <string name="path_paylater" translatable="false">/paylater</string>
     <string name="path_optimized_checkout" translatable="false">/opt-checkout</string>

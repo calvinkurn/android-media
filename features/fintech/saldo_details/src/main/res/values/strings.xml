@@ -56,6 +56,9 @@
     <string name="modal_toko">Modal Toko</string>
     <string name="financial_services">Layanan finansial</string>
     <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
+    <string name="download_trx_fee_report_ticker_title">Download laporan biaya transaksi &lt;a href="#"&gt;%1$s&lt;/a&gt;</string>
+    <string name="download_trx_fee_report_ticker_title_link">di sini</string>
+    <string name="download_trx_fee_report_ticker_activity_title">Biaya layanan transaksi</string>
     <string name="trx_fee_title">Biaya layanan transaksi</string>
     <string name="trx_fee_desc">Transaksi periode laporan yang dapat diunduh (Maksimum 90 hari)</string>
     <string name="trx_fee_date">Pilih tanggal</string>

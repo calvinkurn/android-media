@@ -1,18 +1,12 @@
-package com.tokopedia.saldodetails
+package com.tokopedia.saldodetails.saldoDetail
 
-import android.app.DownloadManager
-import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.collapseView
 import com.tokopedia.saldodetails.commom.expandView
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
@@ -31,6 +25,12 @@ class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
     private var selectedDateTo: Date = Date()
     private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
     private var downloadButton: UnifyButton? = null
+
+    companion object {
+        fun createInstance(): SaldoDownloadTransactionFeeReportFragment {
+            return SaldoDownloadTransactionFeeReportFragment()
+        }
+    }
 
     override fun getScreenName(): String {
         return ""
@@ -78,6 +78,7 @@ class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
     }
 
     private fun downloadFile() {
+        downloadButton?.isLoading = true
 //        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("url"))
 //        val fileName = "commission_report_$startDateStr_$endDateStr.XLS"
 //        request.addRequestHeader("Origin", "tokopedia.com")
@@ -119,6 +120,7 @@ class SaldoDownloadTransactionFeeReportFragment : TkpdBaseV4Fragment(),
         val endDateStr = dateFormat.format(endDate)
         datePlaceholderText?.text = "$startDateStr - $endDateStr"
         downloadButton?.isEnabled = true
+        downloadButton?.visibility = View.VISIBLE
     }
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
