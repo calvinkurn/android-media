@@ -900,7 +900,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
                             /**
                              * 6.1 Submit current data to database, to trigger HomeViewModel flow
                              */
-                            homeData.isProcessingDynamicChannel = false
+                            it.isProcessingDynamicChannel = false
                             if (isAtfSuccess) {
                                 saveToDatabase(it, true)
                             } else {
