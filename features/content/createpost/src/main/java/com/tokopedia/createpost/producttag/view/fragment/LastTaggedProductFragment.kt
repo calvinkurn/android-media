@@ -109,7 +109,7 @@ class LastTaggedProductFragment @Inject constructor(
             binding.globalError.hide()
         }
 
-        if(prev == curr || prev?.products == curr.products) return
+        if(prev?.products == curr.products && prev.state == curr.state) return
 
         when(curr.state) {
             is PagedState.Loading -> {
@@ -117,7 +117,6 @@ class LastTaggedProductFragment @Inject constructor(
             }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
-                    /** TODO: show empty state */
                     binding.rvLastTaggedProduct.hide()
                     binding.globalError.show()
                 }

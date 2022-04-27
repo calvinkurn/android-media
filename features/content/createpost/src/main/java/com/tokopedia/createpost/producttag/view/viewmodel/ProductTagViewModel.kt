@@ -122,6 +122,17 @@ class ProductTagViewModel @AssistedInject constructor(
                 limit = 6, /** TODO: gonna change this later */
             )
 
+//            delay(2000)
+//
+//            _lastTaggedProduct.setValue {
+//                copy(
+//                    products = emptyList(),
+//                    nextCursor = "",
+//                    state = PagedState.Success(
+//                        hasNextPage = false,
+//                    )
+//                )
+//            }
             _lastTaggedProduct.setValue {
                 copy(
                     products = products + pagedDataList.dataList,
