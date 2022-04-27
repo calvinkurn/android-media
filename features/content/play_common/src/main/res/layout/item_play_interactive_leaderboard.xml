@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/ll_title"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -80,7 +80,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_reward"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -94,7 +94,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_choices"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_14"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -111,7 +111,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_empty"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="start"
@@ -140,7 +140,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_other_participant"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
