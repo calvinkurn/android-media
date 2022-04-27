@@ -254,7 +254,6 @@ class SelectProductFragment : BaseDaggerFragment() {
 
         if (remainingQuota == ZERO) {
             showNoMoreRemainingQuota()
-            viewModel.setDisableProductSelection(true)
         }
         loadFirstPage()
     }
