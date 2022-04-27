@@ -10,6 +10,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
@@ -90,6 +92,13 @@ class LastTaggedProductFragment @Inject constructor(
             errorAction.gone()
             errorSecondaryAction.gone()
         }
+
+        binding.clSearch.setOnClickListener {
+            RouteManager.route(
+                requireContext(),
+                "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?${buildAutoCompletePageParam()}"
+            )
+        }
     }
 
     private fun setupObserver() {
@@ -144,6 +153,16 @@ class LastTaggedProductFragment @Inject constructor(
 
     fun setViewModelProvider(viewModelProvider: ViewModelProvider) {
         this.viewModelProvider = viewModelProvider
+    }
+
+    private fun buildAutoCompletePageParam(): String {
+        return buildString {
+            append("navsource=feed_product")
+            append("&")
+            append("srp_page_title=Tokopedia%20Feed")
+            append("&")
+            append("srp_page_id=0")
+        }
     }
 
     companion object {
