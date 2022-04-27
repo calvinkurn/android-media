@@ -12,7 +12,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class InteractiveFinishViewComponent(
     container: ViewGroup,
-) : ViewComponent(container, R.id.view_game_finished) {
+) : ViewComponent(container, R.id.view_interactive_finish) {
 
     private val view = rootView as InteractiveFinishView
 

@@ -8,14 +8,14 @@
     tools:background="@color/green_1000">
 
     <com.tokopedia.play_common.view.game.GameSmallWidgetView
-        android:id="@+id/view_game_ongoing"
+        android:id="@+id/view_interactive_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible" />
 
     <com.tokopedia.play_common.view.game.InteractiveFinishView
-        android:id="@+id/view_game_finished"
+        android:id="@+id/view_interactive_finish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

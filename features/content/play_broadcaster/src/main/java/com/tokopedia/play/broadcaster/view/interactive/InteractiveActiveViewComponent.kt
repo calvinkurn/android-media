@@ -16,7 +16,7 @@ import java.util.*
 class InteractiveActiveViewComponent(
     container: ViewGroup,
     listener: Listener,
-) : ViewComponent(container, R.id.view_game_ongoing) {
+) : ViewComponent(container, R.id.view_interactive_active) {
 
     private val parent = rootView as ViewGroup
 
