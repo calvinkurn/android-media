@@ -1,4 +1,4 @@
-package com.tokopedia.digital_product_detail.pulsa
+package com.tokopedia.digital_product_detail.dataplan
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
+class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -43,8 +43,9 @@ class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
         interactWithFavoriteChip()
         interactWithAutoComplete()
         interactWithRecommendationWidget()
-        interactWithMccmWidget()
         interactWithGridDenomWidget()
+        interactWithMccmWidget()
+        interactWithFilterChip()
         interactWithBuyWidget()
 
         MatcherAssert.assertThat(
@@ -97,24 +98,37 @@ class DigitalPDPPulsaCassavaTest: BaseDigitalPDPPulsaTest() {
     }
 
     private fun interactWithBuyWidget() {
-        Thread.sleep(2000)
+        Thread.sleep(3000)
         buyWidget_clickChevron()
     }
 
     private fun interactWithMccmWidget() {
         Thread.sleep(2000)
         mccm_clickCard_withIndex(0)
+        mccm_clickCardChevron_withIndex(0)
+
+        Thread.sleep(1000)
+        productDetailBottomSheet_clickClose()
     }
 
     private fun interactWithGridDenomWidget() {
         Thread.sleep(2000)
         denom_clickCard_withIndex(0)
+        denom_clickCardChevron_withIndex(0)
+
+        Thread.sleep(1000)
+        productDetailBottomSheet_clickClose()
+    }
+
+    private fun interactWithFilterChip() {
+        Thread.sleep(1000)
+        filterChip_clickChip_withText("< 1GB")
     }
 
     override fun getApplink(): String = APPLINK
 
     companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2"
-        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_pulsa.json"
+        const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
+        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_dataplan.json"
     }
 }
