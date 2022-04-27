@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.bannerinfiniteusecase.BannerInfiniteUseCase
 import io.mockk.*
 import junit.framework.TestCase
@@ -33,6 +35,16 @@ class ShopBannerInfiniteModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
+
+        mockkStatic(::getComponent)
+        every { componentsItem.data } returns null
+        val list = ArrayList<DataItem>()
+        list.add(mockk(relaxed = true))
+        coEvery { componentsItem.data } returns list
+        coEvery { componentsItem.id } returns ""
+        coEvery { componentsItem.parentComponentId } returns ""
+        coEvery { componentsItem.pageEndPoint } returns ""
+        coEvery { getComponent(any(), any()) } returns componentsItem
     }
 
     @After
