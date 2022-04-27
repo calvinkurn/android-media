@@ -56,6 +56,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     companion object {
         private const val SOURCE = "checkout_page"
+
+        private const val TOTO_LATITUDE = "-6.2216771"
+        private const val TOTO_LONGITUDE = "106.8184023"
     }
 
     private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
@@ -136,10 +139,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun loadData() {
         launchCatchError(block = {
             checkoutTokoFoodUseCase(SOURCE).collect {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
-                    data = it
-                )
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
@@ -149,6 +148,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _visitables.value =
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value)
                         .toMutableList()
+                if (_isAddressHasPinpoint.value) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
+                        data = it
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                }
             }
         }, onError = {
             if (checkoutTokoFoodResponse.value == null) {
@@ -483,16 +490,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     fun validateSetPinpoint() {
-        val addressData = getVisitablesValue().getAddressUiModel()
-        addressData?.let {
-            _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,
-                    data = LocationPass().apply {
-                        cityName = it.second.cityName
-                        districtName = it.second.districtName
-                    }
-            )
-        }
+        _uiEvent.value = PurchaseUiEvent(
+            state = PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,
+            data = LocationPass().apply {
+                latitude = TOTO_LATITUDE
+                longitude = TOTO_LONGITUDE
+            }
+        )
     }
 
     fun updateAddressPinpoint(latitude: String, longitude: String) {

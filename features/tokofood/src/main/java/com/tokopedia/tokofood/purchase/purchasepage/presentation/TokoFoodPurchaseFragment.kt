@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -205,6 +206,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun showLoadingLayout() {
         viewBinding?.layoutGlobalErrorPurchase?.gone()
+        viewBinding?.noPinpointPurchase?.gone()
         viewBinding?.recyclerViewPurchase?.show()
         adapter.clearAllElements()
         showLoading()
@@ -302,6 +304,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             showToasterError(response.data.popupErrorMessage, "Oke") {}
                         }
                     }
+                }
+                PurchaseUiEvent.EVENT_NO_PINPOINT -> {
+                    hideLoading()
+                    renderNoPinpoint()
                 }
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
@@ -456,6 +462,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun renderRecyclerView() {
         viewBinding?.let {
             it.layoutGlobalErrorPurchase.gone()
+            it.noPinpointPurchase.gone()
             it.recyclerViewPurchase.show()
         }
     }
@@ -463,6 +470,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun renderGlobalError(throwable: Throwable) {
         viewBinding?.let {
             it.layoutGlobalErrorPurchase.show()
+            it.noPinpointPurchase.gone()
             it.recyclerViewPurchase.gone()
             // TODO: Move to viewmodel for testability
             val errorType = getGlobalErrorType(throwable)
@@ -470,6 +478,24 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             it.layoutGlobalErrorPurchase.setActionClickListener {
                 loadInitialData()
             }
+        }
+    }
+
+    private fun renderNoPinpoint() {
+        viewBinding?.run {
+            layoutGlobalErrorPurchase.gone()
+            recyclerViewPurchase.gone()
+        }
+        viewBinding?.noPinpointPurchase?.run {
+            setType(GlobalError.PAGE_NOT_FOUND)
+            // TODO: Set image url
+            errorTitle.text = "Kamu belum set pinpoint lokasi"
+            errorDescription.text = "Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!"
+            errorAction.text = "Set pin point"
+            setActionClickListener {
+                viewModel.validateSetPinpoint()
+            }
+            show()
         }
     }
 
@@ -694,9 +720,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
-    override fun onTextSetPinpointClicked() {
-        viewModel.validateSetPinpoint()
-    }
+    override fun onTextSetPinpointClicked() {}
 
     override fun onTextAddItemClicked() {
         // Todo : navigate to merchant page

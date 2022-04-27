@@ -128,10 +128,7 @@ object TokoFoodPurchaseUiModelMapper {
             isMainAddress = address.isMainAddress()
             receiverName = address.receiverName
             receiverPhone = address.phone
-            // TODO: Get data from LCA
-            cityName = "Jakarta Selatan"
-            districtName = "Setiabudi"
-            addressDetail = "Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Karet Semanggi, Setiabudi, Jakarta Selatan"
+            addressDetail = address.address
         }
     }
 
