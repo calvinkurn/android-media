@@ -70,7 +70,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             chatbotAdapterListener: ChatbotAdapterListener
     ): AbstractViewHolder<*> {
         val layoutRes = when (type) {
-            CustomChatbotMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
+            CustomChatbotMessageViewHolder.TYPE_LEFT -> LeftChatMessageUnifyViewHolder.LAYOUT
             CustomChatbotMessageViewHolder.TYPE_RIGHT -> RightChatMessageUnifyViewHolder.LAYOUT
             else -> type
         }
@@ -80,7 +80,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     private fun createViewHolder(parent: View, type: Int, chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*> {
         return when (type) {
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener)
+            LeftChatMessageUnifyViewHolder.LAYOUT -> LeftChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener)
             CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)

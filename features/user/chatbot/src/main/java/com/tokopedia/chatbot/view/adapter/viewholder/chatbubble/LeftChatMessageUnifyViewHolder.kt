@@ -65,28 +65,7 @@ class LeftChatMessageUnifyViewHolder(
             customChatLayout?.replyBubbleContainer?.hide()
         }
 
-//        if (message.parentReply!=null){
-        //    replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
-        //       replyBubbleArea?.background = bg
-        //   customChatLayout?.fxChat?.background = bgForChatReplyBubble
-//        customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-//        customChatLayout?.replyBubbleContainer?.updateBackground(false)
-//        customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
-//        customChatLayout?.replyBubbleContainer?.show()
 
-
-//        if (message.parentReply!=null){
-//            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
-//            replyBubbleArea?.show()
-//        }else{
-//            replyBubbleArea?.hide()
-//        }
-
-
-//        replyBubbleArea?.updateReplyButtonState(true)
-//        replyBubbleArea?.updateBackground(true)
-//        replyBubbleArea?.updateCloseButtonState(false)
-//        replyBubbleArea?.show()
 
     }
 

@@ -45,17 +45,17 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
           parentReply {
              attachmentID
              attachmentType
-                      senderID
-                      name
-                      replyID
-                      replyTimeUnixNano
-                      fraudStatus
-                      source
-                      mainText
-                      subText
-                      imageURL
-                      isExpired
-                      localID
+                senderID
+                name
+                replyID
+                replyTimeUnixNano
+                fraudStatus
+                source
+                mainText
+                subText
+                imageURL
+                isExpired
+                localID
           }
         }
       }
