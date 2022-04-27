@@ -66,7 +66,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
         Robot.clickLanjutButton()
 
         // Then
-        Assert.assertLanjutButton()
+        Assert.verifyOpenPreviewActivity()
     }
 
     @Test
@@ -88,7 +88,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
         Robot.clickPreviewThumbnail()
 
         // Then
-        Assert.assertPreviewThumbnail()
+        Assert.verifyOpenPreviewActivity()
     }
 
 

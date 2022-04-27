@@ -74,7 +74,7 @@ class CameraPageUiTest : CameraPageTest() {
         Robot.clickLanjutButton()
 
         // Then
-        Assert.assertLanjutButton()
+        Assert.verifyOpenPreviewActivity()
     }
 
     @Test
@@ -106,7 +106,7 @@ class CameraPageUiTest : CameraPageTest() {
         Robot.clickPreviewThumbnail()
 
         // Then
-        Assert.assertPreviewThumbnail()
+        Assert.verifyOpenPreviewActivity()
     }
 
     private fun startCameraPage() {

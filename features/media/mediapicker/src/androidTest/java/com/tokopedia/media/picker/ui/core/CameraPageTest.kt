@@ -9,12 +9,15 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.otaliastudios.cameraview.CameraView
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
+import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.unifycomponents.TabsUnify
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -150,18 +153,9 @@ open class CameraPageTest : PickerTest() {
             ).check(matches(not(isDisplayed())))
         }
 
-        fun assertPreviewThumbnail() {
+        fun verifyOpenPreviewActivity() {
             Thread.sleep(3000)
-            onView(
-                withId(R.id.vp_preview)
-            ).check(matches(isDisplayed()))
-        }
-
-        fun assertLanjutButton() {
-            Thread.sleep(3000)
-            onView(
-                withId(R.id.vp_preview)
-            ).check(matches(isDisplayed()))
+            intended(hasComponent(PickerPreviewActivity::class.java.name))
         }
 
         fun assertActivityDestroy(pickerTest: PickerTest) {
