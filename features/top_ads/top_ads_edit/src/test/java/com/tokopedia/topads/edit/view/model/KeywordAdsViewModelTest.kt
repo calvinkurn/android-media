@@ -1,6 +1,7 @@
 package com.tokopedia.topads.edit.view.model
 
 import android.content.Context
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.KeywordSearch
 import com.tokopedia.topads.common.data.response.KeywordSuggestionResponse
@@ -67,6 +68,34 @@ class KeywordAdsViewModelTest {
             suggestionKeywordUseCase.executeQuerySafeMode(any(), any())
         }
     }
+
+    @Test
+    fun `test searchKeyword if query is not null`() {
+
+        every { userSession.shopId } returns "2"
+
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
+
+        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds") {}
+
+        verify { searchKeywordUseCase.execute(any(), any()) }
+    }
+
+
+    @Test
+    fun `test searchKeyword if query is null`() {
+
+        every { userSession.shopId } returns "2"
+
+        mockkStatic(GraphqlHelper::class)
+        every { GraphqlHelper.loadRawString(any(), any()) } returns null
+
+        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds") {}
+
+        verify(exactly = 0) { searchKeywordUseCase.execute(any(), any()) }
+    }
+
 
     @Test
     fun onCleared() {
