@@ -54,7 +54,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             element.product.metrics?.sortedBy { metrics -> metrics?.order }?.forEach {metric ->
                 tempList.add(AffiliateProductCardMetricsModel(metric))
             }
-            if(tempList.size > 3)rvLayoutManager.spanCount = tempList.size
+            if(tempList.size > SPAN_COUNT)rvLayoutManager.spanCount = tempList.size
             adapterMetrics.addMoreData(tempList)
         }
     }
