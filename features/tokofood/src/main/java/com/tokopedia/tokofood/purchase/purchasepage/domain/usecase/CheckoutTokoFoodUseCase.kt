@@ -8,6 +8,7 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.tokofood.common.domain.additionalattributes.CartAdditionalAttributesTokoFood
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodAvailabilitySection
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodConsentBottomSheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
@@ -157,6 +158,13 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   scope
                   type
                 }
+              }
+              checkout_consent_bottomsheet {
+                is_show_bottomsheet
+                image_url
+                title
+                description   
+                terms_and_condition
               }
               shopping_summary {
                 total {
@@ -373,6 +381,13 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                         title = "Diskon Ongkos Kirim",
                         amount = 12000.00
                     )
+                ),
+                checkoutConsentBottomSheet = CheckoutTokoFoodConsentBottomSheet(
+                    isShowBottomsheet = true,
+                    imageUrl = "https://i.pinimg.com/736x/74/fc/48/74fc4817f31d9d36537366c740d08015.jpg",
+                    title = "Pesananmu dilayani restoran GoFood",
+                    description = "Gojek perlu beberapa datamu biar pesananmu sampai tujuan. ",
+                    termsAndCondition = "Saya menyetujui Syarat & Ketentuan yang sedang berlaku"
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
                     total = CheckoutTokoFoodShoppingTotal(

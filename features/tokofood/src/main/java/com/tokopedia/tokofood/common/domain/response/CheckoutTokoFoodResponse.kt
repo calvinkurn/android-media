@@ -59,6 +59,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("promo")
     @Expose
     val promo: CheckoutTokoFoodPromo = CheckoutTokoFoodPromo(),
+    @SerializedName("checkout_consent_bottomsheet")
+    @Expose
+    val checkoutConsentBottomSheet: CheckoutTokoFoodConsentBottomSheet = CheckoutTokoFoodConsentBottomSheet(),
     @SerializedName("shopping_summary")
     @Expose
     val shoppingSummary: CheckoutTokoFoodShoppingSummary = CheckoutTokoFoodShoppingSummary()
@@ -253,6 +256,24 @@ data class CheckoutTokoFoodPromoBreakdown(
     @SerializedName("type")
     @Expose
     val type: Int = 0
+)
+
+data class CheckoutTokoFoodConsentBottomSheet(
+    @SerializedName("is_show_bottomsheet")
+    @Expose
+    val isShowBottomsheet: Boolean = false,
+    @SerializedName("image_url")
+    @Expose
+    val imageUrl: String = "",
+    @SerializedName("title")
+    @Expose
+    val title: String = "",
+    @SerializedName("description")
+    @Expose
+    val description: String = "",
+    @SerializedName("terms_and_condition")
+    @Expose
+    val termsAndCondition: String = ""
 )
 
 data class CheckoutTokoFoodShoppingSummary(

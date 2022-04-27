@@ -16,7 +16,6 @@ import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
-import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.GetConsentStateUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
@@ -52,7 +51,6 @@ import kotlin.RuntimeException
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
-    private val getConsentStateUseCase: GetConsentStateUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
@@ -74,6 +72,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         get() = _visitables
 
     private val checkoutTokoFoodResponse = MutableStateFlow<CheckoutTokoFoodResponse?>(null)
+    private val isConsentAgreed = MutableStateFlow(false)
 
     // Temporary field to store collapsed unavailable products
     private var tmpCollapsedUnavailableItems = mutableListOf<Visitable<*>>()
@@ -144,6 +143,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
+                isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 // TODO: Check for success status
                 val isEnabled = it.isSuccess()
                 _visitables.value =
@@ -188,6 +188,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Add loading state for shop toolbar
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
+                isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 // TODO: Check for success status
                 val isEnabled = it.status == 1
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
@@ -525,14 +526,18 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun checkUserConsent() {
         launchCatchError(block = {
-            getConsentStateUseCase(Unit).collect { response ->
-                if (response.data.isAgreed) {
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
-                } else {
-                    _uiEvent.value = PurchaseUiEvent(
-                        state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
-                        data = response.data.bottomSheet
-                    )
+            if (isConsentAgreed.value) {
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
+            } else {
+                checkoutTokoFoodResponse.value?.data?.checkoutConsentBottomSheet?.let { userConsent ->
+                    if (userConsent.isShowBottomsheet) {
+                        _uiEvent.value = PurchaseUiEvent(
+                            state = PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT,
+                            data = userConsent
+                        )
+                    } else {
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT)
+                    }
                 }
             }
         }, onError = {
@@ -541,6 +546,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 throwable = it
             )
         })
+    }
+
+    fun setConsentAgreed() {
+        isConsentAgreed.value = true
     }
 
     fun checkoutGeneral() {
@@ -562,13 +571,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         })
     }
 
-    fun setPaymentButtonLoading(iLoading: Boolean = false) {
+    fun setPaymentButtonLoading(isLoading: Boolean = false) {
         val dataList = getVisitablesValue().toMutableList().apply {
             getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair
                 if (totalAmountIndex >= 0) {
                     removeAt(totalAmountIndex)
-                    add(totalAmountIndex, uiModel.copy(isButtonLoading = iLoading))
+                    add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading))
                 }
             }
         }
