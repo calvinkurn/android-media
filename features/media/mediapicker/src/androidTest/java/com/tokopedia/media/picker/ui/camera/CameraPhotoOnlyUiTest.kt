@@ -93,7 +93,7 @@ class CameraPhotoOnlyUiTest : CameraPageTest() {
 
 
     private fun startCameraPage() {
-        val pickerParam: PickerParam.() -> Unit = {
+        val pickerParam = PickerParam().apply {
             this.pageSource(PageSource.Feed)
             this.pageType(PageType.CAMERA)
             this.modeType(ModeType.IMAGE_ONLY)

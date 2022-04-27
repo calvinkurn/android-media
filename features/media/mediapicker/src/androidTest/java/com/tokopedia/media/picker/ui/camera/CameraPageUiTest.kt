@@ -110,11 +110,11 @@ class CameraPageUiTest : CameraPageTest() {
     }
 
     private fun startCameraPage() {
-        val pickerParam: PickerParam.() -> Unit = {
-            this.pageSource(PageSource.Feed)
-            this.pageType(PageType.COMMON)
-            this.modeType(ModeType.COMMON)
-            this.minVideoDuration(VIDEO_MIN_DURATION)
+        val pickerParam: PickerParam = PickerParam().also {
+            it.pageSource(PageSource.Feed)
+            it.pageType(PageType.COMMON)
+            it.modeType(ModeType.COMMON)
+            it.minVideoDuration(VIDEO_MIN_DURATION)
         }
 
         startPickerActivity(pickerParam)

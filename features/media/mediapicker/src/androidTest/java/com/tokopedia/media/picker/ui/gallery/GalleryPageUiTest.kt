@@ -102,12 +102,7 @@ class GalleryPageUiTest : GalleryPageTest() {
                 it.pageType(PageType.GALLERY)
             }
 
-        val pickerParams: PickerParam.() -> Unit = {
-            this.pageSource(PageSource.CreatePost)
-            this.pageType(PageType.GALLERY)
-        }
-
-        startPickerActivity(pickerParams)
+        startPickerActivity(pickerParam)
     }
 
 }
