@@ -1,10 +1,12 @@
 package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -52,8 +54,13 @@ class PMProTargetView : ConstraintLayout {
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
+            val defaultIconColor = PowerMerchantSpannableUtil.getColorHexString(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            )
 
-            val completedOrderColor = if (completedOrder >= Constant.PM_PRO_MIN_ORDER) {
+            val isEligibleOrder = completedOrder >= Constant.PM_PRO_MIN_ORDER
+            val completedOrderColor = if (isEligibleOrder) {
                 eligibleColor
             } else {
                 notEligibleColor
@@ -61,8 +68,16 @@ class PMProTargetView : ConstraintLayout {
             lblPmTargetCompletedOrder.text = root.context.getString(
                 R.string.pm_completed_order, completedOrderColor, completedOrder.toString()
             ).parseAsHtml()
+            icPmTargetCompletedOrder.setImage(
+                newLightEnable = if (isEligibleOrder) {
+                    Color.parseColor(completedOrderColor)
+                } else {
+                    Color.parseColor(defaultIconColor)
+                }
+            )
 
-            val netIncomeColor = if (completedOrder >= Constant.PM_PRO_MIN_INCOME) {
+            val isEligibleIncome = completedOrder >= Constant.PM_PRO_MIN_INCOME
+            val netIncomeColor = if (isEligibleIncome) {
                 eligibleColor
             } else {
                 notEligibleColor
@@ -72,16 +87,25 @@ class PMProTargetView : ConstraintLayout {
                 netIncomeColor,
                 CurrencyFormatHelper.convertToRupiah(netIncome.toString())
             ).parseAsHtml()
+            icPmTargetNetIncome.setImage(
+                newLightEnable = if (isEligibleIncome) {
+                    Color.parseColor(netIncomeColor)
+                } else {
+                    Color.parseColor(defaultIconColor)
+                }
+            )
 
             showShopLevel(shopLevel)
 
             tvPmTargetAchievement.setOnClickListener {
-                showShopLevel(shopLevel)
-                setupExpandableView(groupPmTargetAchievement.isVisible)
+                val isVisible = groupPmTargetAchievement.isVisible
+                setupExpandableView(isVisible)
+                showShopLevel(shopLevel, !isVisible)
             }
             icPmTargetChevron.setOnClickListener {
-                showShopLevel(shopLevel)
-                setupExpandableView(groupPmTargetAchievement.isVisible)
+                val isVisible = groupPmTargetAchievement.isVisible
+                setupExpandableView(isVisible)
+                showShopLevel(shopLevel, !isVisible)
             }
         }
     }
@@ -89,6 +113,11 @@ class PMProTargetView : ConstraintLayout {
     private fun setupExpandableView(isExpanded: Boolean) {
         binding.run {
             groupPmTargetAchievement.isVisible = !isExpanded
+            if (isExpanded) {
+                icPmTargetChevron.setImage(IconUnify.CHEVRON_DOWN)
+            } else {
+                icPmTargetChevron.setImage(IconUnify.CHEVRON_UP)
+            }
         }
     }
 
@@ -96,9 +125,9 @@ class PMProTargetView : ConstraintLayout {
      * show the shop level info only for PM PRO Expert & Ultimate
      * which is, the shop level should be 3 or 4
      * */
-    private fun showShopLevel(shopLevel: Int) {
+    private fun showShopLevel(shopLevel: Int, isExpanded: Boolean = true) {
         binding.run {
-            if (shopLevel <= PMConstant.ShopLevel.TWO) {
+            if (shopLevel <= PMConstant.ShopLevel.TWO || !isExpanded) {
                 dividerVerPmTarget2.gone()
                 icPmTargetShopLevel.gone()
                 lblPmTargetShopLevel.gone()

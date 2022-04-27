@@ -33,7 +33,8 @@
         android:id="@+id/groupPmTargetAchievement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="icPmTargetCompletedOrder, lblPmTargetCompletedOrder, lblPmTargetCompletedOrderDesc, dividerVerPmTarget2, dividerVerPmTarget1, lblPmTargetShopLevelDesc, lblPmTargetShopLevel, icPmTargetShopLevel, lblPmTargetNetIncomeDesc, lblPmTargetNetIncome, icPmTargetNetIncome" />
+        android:visibility="visible"
+        app:constraint_referenced_ids="icPmTargetCompletedOrder, lblPmTargetCompletedOrder, lblPmTargetCompletedOrderDesc, dividerVerPmTarget1, lblPmTargetNetIncomeDesc, lblPmTargetNetIncome, icPmTargetNetIncome" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmTargetCompletedOrder"
@@ -86,7 +87,6 @@
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toEndOf="@+id/icPmTargetNetIncome"
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetCompletedOrderDesc"
-        app:layout_goneMarginTop="24dp"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="@string/pm_net_income" />
@@ -107,7 +107,7 @@
         android:layout_marginStart="16dp"
         android:padding="2dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="CHECK_BIG"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel"
