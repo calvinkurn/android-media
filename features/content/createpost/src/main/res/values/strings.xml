@@ -97,4 +97,6 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_product_tag_source_my_shop_label">Toko saya</string>
 
     <string name="cc_product_tag_search_hint">Cari di Tokopedia</string>
+    <string name="cc_no_product_tag_title">Kamu belum pernah nge-tag produk, lho</string>
+    <string name="cc_no_product_tag_desc">Coba cari dulu produknya, atau kamu juga bisa pilih produk dari pencarian yang lain.</string>
 </resources>

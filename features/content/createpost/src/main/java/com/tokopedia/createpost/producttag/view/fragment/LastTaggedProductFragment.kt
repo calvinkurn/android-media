@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
@@ -18,6 +19,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -77,6 +79,14 @@ class LastTaggedProductFragment @Inject constructor(
     private fun setupView() {
         binding.rvLastTaggedProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
         binding.rvLastTaggedProduct.adapter = adapter
+
+        binding.globalError.apply {
+            errorIllustration.loadImage(getString(R.string.img_no_last_tag_product))
+            errorTitle.text = getString(R.string.cc_no_product_tag_title)
+            errorDescription.text = getString(R.string.cc_no_product_tag_desc)
+            errorAction.gone()
+            errorSecondaryAction.gone()
+        }
     }
 
     private fun setupObserver() {
@@ -95,20 +105,28 @@ class LastTaggedProductFragment @Inject constructor(
             } + if(hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
 
             adapter.setItemsAndAnimateChanges(finalProducts)
+            binding.rvLastTaggedProduct.show()
+            binding.globalError.hide()
         }
 
         if(prev == curr || prev?.products == curr.products) return
 
         when(curr.state) {
-            is PagedState.Loading -> updateAdapterData(curr.products, true)
+            is PagedState.Loading -> {
+                updateAdapterData(curr.products, true)
+            }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     /** TODO: show empty state */
+                    binding.rvLastTaggedProduct.hide()
+                    binding.globalError.show()
                 }
                 else updateAdapterData(curr.products, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                /** TODO: show error state */
+                /** TODO: show toaster error */
+                binding.rvLastTaggedProduct.show()
+                binding.globalError.hide()
             }
         }
     }
