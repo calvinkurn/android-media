@@ -8,7 +8,9 @@ import com.tokopedia.createpost.createpost.databinding.ItemLastTaggedProductList
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
 import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.toProductCard
 import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardModel
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
@@ -20,13 +22,11 @@ internal class LastTaggedProductViewHolder private constructor() {
         private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-//            binding.tvPriceBeforeDiscount.paintFlags =
-//                binding.tvPriceBeforeDiscount.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-
         fun bind(item: LastTaggedProductAdapter.Model.Product) {
-            /** TODO: handle this */
+            binding.productView.apply {
+                setProductModel(item.product.toProductCard())
+                setOnClickListener { onSelected(item.product) }
+            }
         }
 
         companion object {

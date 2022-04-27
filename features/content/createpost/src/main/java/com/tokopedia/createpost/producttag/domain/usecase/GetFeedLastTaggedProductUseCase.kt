@@ -42,6 +42,8 @@ class GetFeedLastTaggedProductUseCase @Inject constructor(
                 products {
                   id
                   shopID
+                  shopName
+                  shopBadgeURL
                   name
                   coverURL
                   webLink
@@ -57,6 +59,7 @@ class GetFeedLastTaggedProductUseCase @Inject constructor(
                   priceDiscount
                   priceDiscountFmt
                   totalSold
+                  totalSoldFmt
                   isBebasOngkir
                   bebasOngkirStatus
                   bebasOngkirURL

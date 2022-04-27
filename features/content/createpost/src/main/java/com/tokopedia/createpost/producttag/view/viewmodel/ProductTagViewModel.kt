@@ -115,8 +115,6 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            delay(3000)
-
             val pagedDataList = repo.getLastTaggedProducts(
                 authorId = authorId,
                 authorType = authorType,

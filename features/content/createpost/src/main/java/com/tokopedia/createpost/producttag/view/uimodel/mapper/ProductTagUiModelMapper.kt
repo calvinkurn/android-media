@@ -17,6 +17,8 @@ class ProductTagUiModelMapper @Inject constructor() {
                 ProductUiModel(
                     id = it.id,
                     shopID = it.shopID,
+                    shopName = it.shopName,
+                    shopBadge = it.shopBadgeURL,
                     name = it.name,
                     coverURL = it.coverURL,
                     webLink = it.webLink,
@@ -32,6 +34,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     priceDiscount = it.priceDiscount,
                     priceDiscountFmt = it.priceDiscountFmt,
                     totalSold = it.totalSold,
+                    totalSoldFmt = it.totalSoldFmt,
                     isBebasOngkir = it.isBebasOngkir,
                     bebasOngkirStatus = it.bebasOngkirStatus,
                     bebasOngkirURL = it.bebasOngkirURL,

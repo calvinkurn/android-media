@@ -25,6 +25,12 @@ data class GetFeedLastTaggedProductResponse(
         @SerializedName("shopID")
         val shopID: String = "",
 
+        @SerializedName("shopName")
+        val shopName: String = "",
+
+        @SerializedName("shopBadgeURL")
+        val shopBadgeURL: String = "",
+
         @SerializedName("name")
         val name: String = "",
 
@@ -69,6 +75,9 @@ data class GetFeedLastTaggedProductResponse(
 
         @SerializedName("totalSold")
         val totalSold: Int = 0,
+
+        @SerializedName("totalSoldFmt")
+        val totalSoldFmt: String = "",
 
         @SerializedName("isBebasOngkir")
         val isBebasOngkir: Boolean = false,
