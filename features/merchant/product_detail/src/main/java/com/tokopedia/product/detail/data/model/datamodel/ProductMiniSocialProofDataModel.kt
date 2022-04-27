@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.productThousandFormatted
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -17,7 +18,7 @@ data class ProductMiniSocialProofDataModel(
         var talkCount: Int = 0,
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
-        var buyerPhotoStaticText: String = "Foto Pembeli",
+        var buyerPhotoStaticText: String = ProductDetailConstant.BUYER_IMAGE_TEXT,
         var itemSoldFmt: String = "",
         var shouldRenderSocialProof: Boolean = false,
         var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
