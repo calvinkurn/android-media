@@ -48,6 +48,10 @@ class DiscountBulkApplyViewModel @Inject constructor(
     val discountType: LiveData<DiscountType>
         get() = _discountType
 
+    private val _benefit = MutableLiveData<Result<GetSlashPriceBenefitResponse>>()
+    val benefit: LiveData<Result<GetSlashPriceBenefitResponse>>
+        get() = _benefit
+
     private var benefitPackageName = EMPTY_STRING
 
     sealed class ValidationState {
@@ -62,17 +66,13 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 1
-    private var mode : DiscountBulkApplyBottomSheet.Mode = DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
-
-    private val _benefit = MutableLiveData<Result<GetSlashPriceBenefitResponse>>()
-    val benefit: LiveData<Result<GetSlashPriceBenefitResponse>>
-        get() = _benefit
 
 
     fun getSlashPriceBenefit() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceBenefitUseCase.execute()
+                getSlashPriceBenefitUseCase.setParams()
+                getSlashPriceBenefitUseCase.executeOnBackground()
             }
             _benefit.value = Success(result)
         }, onError = {

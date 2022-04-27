@@ -61,7 +61,8 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
     fun getSlashPriceBenefit() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceBenefitUseCase.execute()
+                getSlashPriceBenefitUseCase.setParams()
+                getSlashPriceBenefitUseCase.executeOnBackground()
             }
             _benefit.value = Success(result)
         }, onError = {
