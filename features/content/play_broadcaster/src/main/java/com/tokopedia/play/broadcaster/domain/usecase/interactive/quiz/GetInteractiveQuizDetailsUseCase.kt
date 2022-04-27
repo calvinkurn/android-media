@@ -22,15 +22,6 @@ class GetInteractiveQuizDetailsUseCase @Inject constructor(
         setTypeClass(GetInteractiveQuizDetailResponse::class.java)
     }
 
-    suspend fun execute(
-        interactiveId: String
-    ): GetInteractiveQuizDetailResponse {
-        setRequestParams(
-            createParams(interactiveId)
-        )
-        return executeOnBackground()
-    }
-
     companion object {
         private const val PARAM_INTERACTIVE_ID = "interactiveId"
         const val QUERY_NAME = "GetInteractiveQuizDetailsUseCaseQuery"
