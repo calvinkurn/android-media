@@ -1128,10 +1128,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun openQuizDetailSheet() {
-        val fragmentFactory = childFragmentManager.fragmentFactory
-        val playQuizDetailBottomSheet = fragmentFactory.instantiate(
-            requireContext().classLoader,
-            PlayQuizDetailBottomSheet::class.java.name) as PlayQuizDetailBottomSheet
+        val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader)
         playQuizDetailBottomSheet.show(childFragmentManager)
     }
 
