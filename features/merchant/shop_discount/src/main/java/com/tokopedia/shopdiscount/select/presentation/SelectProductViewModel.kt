@@ -101,26 +101,6 @@ class SelectProductViewModel @Inject constructor(
         return shouldDisableProductSelection
     }
 
-    fun disableProducts(products: List<ReservableProduct>): List<ReservableProduct> {
-        return products.map { product ->
-            if (!product.isCheckboxTicked) {
-                product.copy(disableClick = true)
-            } else {
-                product
-            }
-        }
-    }
-
-    fun enableProduct(products: List<ReservableProduct>): List<ReservableProduct> {
-        return products.map { product ->
-            if (!product.isCheckboxTicked) {
-                product.copy(disableClick = false)
-            } else {
-                product
-            }
-        }
-    }
-
     private fun getSelectedProductIds(): List<String> {
         return selectedProductIds
     }

@@ -56,13 +56,6 @@ class SelectProductAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh(items: List<ReservableProduct>) {
-        this.products.clear()
-        this.products.addAll(items)
-        notifyDataSetChanged()
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         this.products = mutableListOf()
         notifyDataSetChanged()

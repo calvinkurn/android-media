@@ -224,58 +224,6 @@ class SelectProductViewModelTest {
     }
 
     @Test
-    fun `When disabling product, non ticked product should be updated to disable state`() {
-        //Given
-        val firstProduct = buildDummyProduct("first-product-id-111212")
-        val secondProduct = buildDummyProduct("second-product-id-123123")
-        val thirdProduct = buildDummyProduct("third-product-id-1231245")
-
-        val products = listOf(
-            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
-            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
-            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
-        )
-
-        val expected = listOf(
-            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
-            secondProduct.copy(isCheckboxTicked = false, disableClick = true),
-            thirdProduct.copy(isCheckboxTicked = false, disableClick = true)
-        )
-
-        //When
-        val actual = viewModel.disableProducts(products)
-
-        //Then
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `When enabling product, non ticked product should be updated to enabled state`() {
-        //Given
-        val firstProduct = buildDummyProduct("first-product-id-111212")
-        val secondProduct = buildDummyProduct("second-product-id-123123")
-        val thirdProduct = buildDummyProduct("third-product-id-1231245")
-
-        val products = listOf(
-            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
-            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
-            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
-        )
-
-        val expected = listOf(
-            firstProduct.copy(isCheckboxTicked = true, disableClick = false),
-            secondProduct.copy(isCheckboxTicked = false, disableClick = false),
-            thirdProduct.copy(isCheckboxTicked = false, disableClick = false)
-        )
-
-        //When
-        val actual = viewModel.enableProduct(products)
-
-        //Then
-        assertEquals(expected, actual)
-    }
-
-    @Test
     fun `When removing a product, selected product ids should be decreased`() {
         //Given
         val product = buildDummyProduct("first-product-id-111212")
