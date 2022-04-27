@@ -1192,7 +1192,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 isProductReview = true,
                 isFromGallery = false,
                 mediaPosition = position + 1,
-                showSeeMore = true,
+                showSeeMore = detailedMediaResult.hasNext,
                 preloadedDetailedReviewMediaResult = detailedMediaResult
             ).let { startActivity(it) }
         }
