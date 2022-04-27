@@ -27,6 +27,8 @@ class PickerVideoPlayer constructor(
         .Builder(context)
         .build()
 
+    private lateinit var mediaSource: MediaSource
+
     init {
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -49,7 +51,9 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        val mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
+        if(!::mediaSource.isInitialized) {
+            mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
+        }
 
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, true, false)
