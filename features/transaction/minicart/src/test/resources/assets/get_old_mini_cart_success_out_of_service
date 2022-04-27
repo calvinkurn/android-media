@@ -1,6 +1,6 @@
 {
   "status": "OK",
-  "mini_cart_v3": {
+  "mini_cart": {
     "error_message": [],
     "status": "OK",
     "data": {
