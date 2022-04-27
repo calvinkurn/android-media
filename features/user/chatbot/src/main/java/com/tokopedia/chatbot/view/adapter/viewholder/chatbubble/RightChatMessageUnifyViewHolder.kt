@@ -32,7 +32,7 @@ class RightChatMessageUnifyViewHolder(
             Gravity.CENTER
     )
 
-    val bgForChatReplyBubble = ViewUtil.generateBackgroundWithShadow(
+    val backgroundChatWithReplyBubble = ViewUtil.generateBackgroundWithShadow(
         customChatLayout,
         com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         R.dimen.dp_chatbot_20,
@@ -48,13 +48,13 @@ class RightChatMessageUnifyViewHolder(
     override fun bind(message: MessageUiModel) {
         super.bind(message)
         ChatbotMessageViewHolderBinder2.bindChatReadStatus(message, customChatLayout)
-        bindBackground(message)
+        bindBackground()
 
-        customChatLayout?.background = bgForChatReplyBubble
         if (message.parentReply != null) {
+            customChatLayout?.background = backgroundChatWithReplyBubble
             customChatLayout?.replyBubbleContainer?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-            customChatLayout?.replyBubbleContainer?.updateBackground(false)
+            customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
             customChatLayout?.replyBubbleContainer?.show()
         } else {
@@ -62,9 +62,8 @@ class RightChatMessageUnifyViewHolder(
         }
     }
 
-    private fun bindBackground(message: MessageUiModel) {
-    //    customChatLayout?.background = bg
-    //    replyBubbleArea?.updateBackground(false)
+    private fun bindBackground() {
+        customChatLayout?.background = bg
     }
 
     override fun getChatStatusId(): Int {

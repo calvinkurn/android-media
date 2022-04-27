@@ -53,8 +53,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    //todo review this
-    private val bgSender = ViewUtil.generateBackgroundWithShadow(
+    private val bgRight = ViewUtil.generateBackgroundWithShadow(
         view =this,
         backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN100,
         topLeftRadius =  com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
@@ -68,8 +67,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
-    //todo review this
-    private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
+    
+    private val bgLeft = ViewUtil.generateBackgroundWithShadow(
         view = this,
         backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N50,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
@@ -102,8 +101,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         replyIcon = findViewById(R.id.reply_icon)
     }
 
-
-    //TODO bind background
     fun bindReplyData(uiModel : BaseChatUiModel){
         val parentReply = uiModel.parentReply
         if (parentReply!=null && !uiModel.isDeleted()){
@@ -164,11 +161,13 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         return R.dimen.unify_space_2
     }
 
-    fun updateBackground(isLeft : Boolean){
-        if(isLeft)
-            background = bgOpposite
+    fun updateBackground(orientation : Int){
+        if(orientation == LEFT_ORIENTATION)
+            background = bgLeft
+        else if (orientation == RIGHT_ORIENTATION)
+            background = bgRight
         else
-            background = bgSender
+            background = bgRight
     }
 
     fun composeMsg(title : String?, msg : String?){
@@ -200,6 +199,8 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     companion object {
         val LAYOUT = R.layout.text_reply_bubble
+        val LEFT_ORIENTATION = 0
+        val RIGHT_ORIENTATION = 1
     }
 
 }

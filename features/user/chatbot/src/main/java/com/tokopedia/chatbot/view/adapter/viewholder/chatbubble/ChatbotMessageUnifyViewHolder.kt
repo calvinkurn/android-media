@@ -27,8 +27,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         val replyBubbleListener : ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.message_layout)
- //   protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
+    protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
 
     open fun getDateContainerId(): Int = R.id.dateContainer

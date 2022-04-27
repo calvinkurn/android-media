@@ -47,25 +47,20 @@ class LeftChatMessageUnifyViewHolder(
         super.bind(message)
         hideSenderInfo()
         val senderInfoData = convertToSenderInfo(message.source)
-        bindBackground(message)
+        bindBackground()
         if (chatbotAdapterListener.isPreviousItemSender(adapterPosition)) {
             senderInfoData?.let { bindSenderInfo(it) }
         }
 
-
-        customChatLayout?.background = bg
-
         if (message.parentReply != null) {
             customChatLayout?.replyBubbleContainer?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
-            customChatLayout?.replyBubbleContainer?.updateBackground(true)
+            customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
             customChatLayout?.replyBubbleContainer?.show()
         } else {
             customChatLayout?.replyBubbleContainer?.hide()
         }
-
-
 
     }
 
@@ -99,9 +94,8 @@ class LeftChatMessageUnifyViewHolder(
         } else return null
     }
 
-    private fun bindBackground(message: MessageUiModel) {
+    private fun bindBackground() {
         customChatLayout?.background = bg
-        //     replyBubbleArea?.updateBackground(true)
     }
 
     private fun bindMessageInfo(message: MessageUiModel) {

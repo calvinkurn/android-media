@@ -66,11 +66,13 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginLeft="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/dp_chatbot_6"
         android:gravity="left"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/senderName"
+        app:layout_constraintTop_toBottomOf="@+id/senderAvatar"
         tools:ignore="RtlHardcoded">
 
         <com.tokopedia.chatbot.view.customview.MessageBubbleLayout
