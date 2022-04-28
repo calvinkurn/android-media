@@ -163,9 +163,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
             }
         } else {
-            if (requestCode == GPS_REQUEST) {
-                bottomSheetLocUndefined?.dismiss()
-            }
+//            if (requestCode == GPS_REQUEST) {
+//                bottomSheetLocUndefined?.dismiss()
+//            }
             showInitialLoadMessage()
         }
     }
@@ -187,16 +187,22 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+                }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
                 } else {
                     showBottomSheetLocUndefined(false)
                 }
-                if (!isEdit) {
-                    AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
-                }
             }
-            PERMISSION_DENIED, PERMISSION_DONT_ASK_AGAIN -> {
+            PERMISSION_DENIED -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+                }
+            },
+            PERMISSION_DONT_ASK_AGAIN -> {
+                showBottomSheetLocUndefined(true)
                 if (!isEdit) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
@@ -207,12 +213,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onResume() {
         super.onResume()
         if (isAccessAppPermissionFromSettings) {
-            bottomSheetLocUndefined?.dismiss()
             isAccessAppPermissionFromSettings = false
             if (allPermissionsGranted()) {
+                bottomSheetLocUndefined?.dismiss()
                 permissionState = PERMISSION_GRANTED
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
+                } else {
+                    showBottomSheetLocUndefined(false)
                 }
             }
 //            getLastLocationClient()
@@ -310,24 +318,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
             } else {
                 when(permissionState) {
-                    PERMISSION_DENIED -> {
-                        if (AddNewAddressUtils.isGpsEnabled(context)) {
-                            requestPermissionLocation()
-                        } else {
-                            // go to gps settings first
-                            showBottomSheetLocUndefined(false)
-                        }
+                    PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
+                        requestPermissionLocation()
                     }
                     PERMISSION_DONT_ASK_AGAIN -> {
-                        if (AddNewAddressUtils.isGpsEnabled(context)) {
-                            showBottomSheetLocUndefined(true)
-                        } else {
-                            // go to gps settings first
-                            showBottomSheetLocUndefined(false)
-                        }
-                    }
-                    PERMISSION_NOT_DEFINED -> {
-                        requestPermissionLocation()
+                        showBottomSheetLocUndefined(true)
                     }
                 }
             }
