@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -116,6 +117,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -709,6 +711,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             getViewState()?.onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
             enableLoadMore()
+            checkReplyBubbleOnboardingStatus()
+            replyBubbleContainer?.setReplyListener(this)
         }
     }
 
@@ -1017,18 +1021,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
 
-//        if(replyBubbleContainer?.referredMsg!=null){
-//            var replyBubbleUiModel = replyBubbleContainer?.referredMsg?.let {
-//                generateChatBubbleReplyViewModel(
-//                    it
-//                )
-//            }
-//            replyBubbleContainer.hide()
-//            replyBubbleUiModel?.let { getViewState()?.onSendingMessage(it) }
-//        }
-
-//        getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
-//            .name, sendMessage, startTime,replyBubbleContainer?.referredMsg)
         presenter.sendMessage(
             messageId,
             sendMessage,
@@ -1037,6 +1029,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             replyBubbleContainer?.referredMsg,
             onSendingMessage(sendMessage, startTime, replyBubbleContainer?.referredMsg)
         )
+
         replyBubbleOnBoarding.dismiss()
         visibilityReplyBubble(false)
         clearChatText()
@@ -1371,6 +1364,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    override fun goToBubble(parentReply: ParentReply) {
+//        val bubblePosition = adapter.getItemId (
+//            parentReply.localId, parentReply.replyTime
+//        )
+//        if (bubblePosition != RecyclerView.NO_POSITION) {
+//            smoothScroller?.targetPosition = bubblePosition
+//            rvLayoutManager?.startSmoothScroll(smoothScroller)
+//        } else {
+//            resetItemList()
+//            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
+//            loadInitialData()
+//        }
+
+        val bubblePosition = adapter.data
+        Log.d("Testing123", "goToBubble: $bubblePosition")
+    }
+
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
         return {
             when (it) {
@@ -1387,19 +1397,18 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun replyBubbleStateHandler(state: Boolean) {
         replyBubbleEnabled = state
-//        if(replyBubbleEnabled){
-//            checkReplyBubbleOnboardingStatus()
-//        }
+        checkReplyBubbleOnboardingStatus()
     }
-    var showed = false
+
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+        if (!replyBubbleEnabled)
+            return
         recyclerView?.let {
-            if (!false && !showed){
-                showed = true
+            if (!hasBeenShown){
                 replyBubbleOnBoarding.showReplyBubbleOnBoarding(it,
                     adapter as ChatbotAdapter,
-                    it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()), context)
+                    reply_box, context)
               //  it.layoutManager?.getChildAt((it.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition())
             }
         }

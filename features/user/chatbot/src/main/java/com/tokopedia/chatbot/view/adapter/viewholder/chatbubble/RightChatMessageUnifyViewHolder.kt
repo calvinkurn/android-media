@@ -50,7 +50,7 @@ class RightChatMessageUnifyViewHolder(
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.background = backgroundChatWithReplyBubble
-            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText)
+            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)

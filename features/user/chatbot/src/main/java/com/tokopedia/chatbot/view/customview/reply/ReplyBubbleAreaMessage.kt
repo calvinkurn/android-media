@@ -23,7 +23,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     private var title: TextView? = null
     private var description: TextView? = null
     private var closeBtn: ImageView? = null
-    private var container: ConstraintLayout? = null
     private var replyIcon: IconUnify? = null
     var referredMsg: ParentReply? = null
     var listener: Listener? = null
@@ -32,6 +31,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     interface Listener {
         fun getUserName(): String
         fun showReplyOption(messageUiModel: MessageUiModel)
+        fun goToBubble(parentReply: ParentReply)
     }
 
     fun setReplyListener(listener: Listener) {
@@ -97,7 +97,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         title = findViewById(R.id.reply_from)
         description = findViewById(R.id.reply_message)
         closeBtn = findViewById(R.id.close_btn)
-        container = findViewById(R.id.container)
         replyIcon = findViewById(R.id.reply_icon)
     }
 
@@ -113,8 +112,12 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referTo(parentReply)
         setTitle(from)
         setReplyMsg(message)
-        //TODO fix bindClick
-    //    bindClick(parentReply, replyId)
+    }
+
+    private fun bindClick(parentReply: ParentReply) {
+        setOnClickListener {
+            listener?.goToBubble(parentReply)
+        }
     }
 
     private fun referTo(parentReply: ParentReply) {
@@ -164,9 +167,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             background = bgRight
     }
 
-    fun composeMsg(title : String?, msg : String?){
+    fun composeMsg(title : String?, msg : String?, parentReply: ParentReply?){
         setTitle(title)
         setReplyMsg(msg)
+        if (parentReply!=null)
+            bindClick(parentReply)
     }
 
     fun composeReplyData(

@@ -53,7 +53,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
             coachMark = CoachMark2(it)
             coachMarkItem.add(
                 CoachMark2Item(
-                    anchor!!, title, description
+                    anchor!!, title, description, CoachMark2.POSITION_TOP
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)

@@ -59,9 +59,9 @@ class MessageBubbleLayout : ViewGroup {
 //        replyBubbleContainer?.bindReplyData(uiModel)
 //    }
 //
-//    fun setReplyListener(listener: ReplyBubbleAreaMessage.Listener) {
-//        replyBubbleContainer?.setReplyListener(listener)
-//    }
+    fun setReplyListener(listener: ReplyBubbleAreaMessage.Listener) {
+        replyBubbleContainer?.setReplyListener(listener)
+    }
 
     fun setMsgGravity(gravity: Int) {
         val gravityAttr = when (gravity) {
@@ -141,7 +141,7 @@ class MessageBubbleLayout : ViewGroup {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec)
                 maxChildWidth = max(child.measuredWidth, maxChildWidth)
                 maxChildWidth = min(maxWidth, maxChildWidth)
-                Log.d("FATAL", "onMeasure:  " + maxChildWidth)
+            //    Log.d("FATAL", "onMeasure:  " + maxChildWidth)
                 myHeight += child.measuredHeight
             }
         }
@@ -163,7 +163,7 @@ class MessageBubbleLayout : ViewGroup {
                 MeasureSpec.EXACTLY
             )
             //This remeasures the width of a child as childWidth has been changed
-            child.measure(widthSpec, heightMeasureSpec)
+           child.measure(widthSpec, heightMeasureSpec)
         }
         /**
          * reduce height by border radius value if [replyBubbleContainer]

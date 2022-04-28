@@ -53,7 +53,7 @@ class LeftChatMessageUnifyViewHolder(
 
         if (message.parentReply != null) {
             val senderName = mapSenderName(message.parentReply!!)
-            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText)
+            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText, message.parentReply)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)

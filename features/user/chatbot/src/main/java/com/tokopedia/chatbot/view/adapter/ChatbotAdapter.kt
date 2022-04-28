@@ -1,9 +1,11 @@
 package com.tokopedia.chatbot.view.adapter
 
 import android.view.ViewGroup
+import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
@@ -15,6 +17,8 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 
 class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
+
+    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
 
     override fun enableShowTime(): Boolean = false
 
@@ -35,6 +39,27 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
             notifyItemChanged(position)
         }
     }
+//
+//    fun addNewMessage(item: SendableUiModel) {
+//        if (item is Visitable<*> && item.localId.isNotEmpty()) {
+//            replyMap[item.localId] = item
+//        }
+//    }
+//
+//    fun getBubblePosition(localId: String, replyTime: String): Int {
+//        return if (replyMap.contains(localId)) {
+//            getLocalIdMsgPosition(localId)
+//        } else {
+//            visitables.indexOfFirst {
+//                it is BaseChatUiModel && it.replyTime == replyTime
+//            }
+//        }
+//    }
+//
+//    private fun getLocalIdMsgPosition(localId: String) = visitables.indexOfFirst {
+//        it is BaseChatUiModel && it.localId == localId
+//    }
+
 
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)

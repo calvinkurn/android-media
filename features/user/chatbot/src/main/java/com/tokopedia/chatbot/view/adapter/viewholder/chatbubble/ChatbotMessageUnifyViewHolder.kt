@@ -38,7 +38,7 @@ abstract class ChatbotMessageUnifyViewHolder(
         ChatbotMessageViewHolderBinder2.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder2.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
-
+        bindReplyBubbleListener()
         //TODO check for msg link
         customChatLayout?.fxChat?.message?.setOnClickListener {
             replyBubbleListener.showReplyOption(message)
@@ -64,6 +64,10 @@ abstract class ChatbotMessageUnifyViewHolder(
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun bindReplyBubbleListener() {
+        customChatLayout?.setReplyListener(replyBubbleListener)
     }
 
     override fun setHeaderDate(element: BaseChatUiModel?) {
