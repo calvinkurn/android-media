@@ -147,7 +147,7 @@
     <string name="pm_get_free_shipping_benefit">Punya layanan Bebas Ongkir</string>
     <string name="pm_get_excellent_feature">Fitur-fitur unggulan lainnya</string>
 
-    <string name="pm_deactivation_bottom_sheet_message">Mulai 6 Juni 2022, Regular Merchant dengan jumlah transaksi di atas <b>100</b>transaksi akan dikenakan biaya layanan <b>0,5% - 2,5%</b> berdasarkan kategori produk.</string>
+    <string name="pm_deactivation_bottom_sheet_message">Mulai 6 Juni 2022, Regular Merchant dengan jumlah transaksi di atas <b>100</b> transaksi akan dikenakan biaya layanan <b>0,5% - 2,5%</b> berdasarkan kategori produk.</string>
     <string name="pm_pm_deactivation_be_rm_tnc">Dengan kembali menjadi RM, saya setuju dengan S&amp;K yang berlaku</string>
     <string name="pm_deactivation_pm_pro_bottom_sheet_title">Yakin mau berhenti dari \nPower Merchant PRO?</string>
     <string name="pm_stop_pm">Berhenti dari PM</string>
@@ -221,5 +221,6 @@
 
     <string name="pm_benefit_package_upgrade">Raih</string>
     <string name="pm_benefit_package_downgrade">Pertahankan</string>
+    <string name="pm_fee_service_category">Detail Grup Kategori</string>
 
 </resources>

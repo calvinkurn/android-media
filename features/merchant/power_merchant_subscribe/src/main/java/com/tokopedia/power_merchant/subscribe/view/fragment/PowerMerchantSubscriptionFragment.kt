@@ -138,15 +138,8 @@ open class PowerMerchantSubscriptionFragment :
     override fun loadData(page: Int) {}
 
     override fun setOnDeactivatePMClickListener() {
-        val isPmPro = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        if (isPmPro) {
-            showPmProDeactivationBottomSheet()
-        } else {
-            showRegularPmDeactivationBottomSheet()
-
-            powerMerchantTracking.sendEventClickStopPmBecomeRm()
-        }
-
+        showRegularPmDeactivationBottomSheet()
+        powerMerchantTracking.sendEventClickStopPmBecomeRm()
         powerMerchantTracking.sendEventClickStopPowerMerchant()
     }
 
