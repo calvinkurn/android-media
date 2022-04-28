@@ -137,6 +137,7 @@ import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlist_common.R as Rwishlist
 import org.json.JSONArray
@@ -1735,7 +1736,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (wishlistResult.isUsingWishlistV2) {
-            var typeToaster = TYPE_ERROR
+            val typeToaster = TYPE_ERROR
             var errorMsg = if (wishlistResult.isAddWishlist) {
                 getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
             } else {
@@ -1744,10 +1745,14 @@ class ProductListFragment: BaseDaggerFragment(),
             if (wishlistResult.messageV2.isNotEmpty()) {
                 errorMsg = wishlistResult.messageV2
             }
-            if (wishlistResult.toasterColorV2 != TOASTER_RED) {
-                typeToaster = TYPE_NORMAL
+            var ctaText = ""
+            if (wishlistResult.ctaTextV2.isNotEmpty()) {
+                ctaText = wishlistResult.ctaTextV2
             }
-            Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, typeToaster).show()
+
+            Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage()
+            }.show()
 
         } else {
             if (wishlistResult.isAddWishlist)

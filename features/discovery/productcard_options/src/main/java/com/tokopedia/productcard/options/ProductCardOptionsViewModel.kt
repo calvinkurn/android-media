@@ -155,7 +155,9 @@ internal class ProductCardOptionsViewModel(
         productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true,
             isSuccess = resultWishlistV2.success, isAddWishlist = true,
             isUsingWishlistV2 = isUsingWishlistV2, messageV2 = resultWishlistV2.message,
-            toasterColorV2 = resultWishlistV2.toasterColor)
+            toasterColorV2 = resultWishlistV2.toasterColor,
+            ctaTextV2 = resultWishlistV2.button.text,
+            ctaActionV2 = resultWishlistV2.button.action)
         wishlistEventLiveData.postValue(Event(true))
     }
 
