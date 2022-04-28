@@ -547,7 +547,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 setPrimaryCTAText(primaryCtaText)
                 setSecondaryCTAText(secondaryCtaText)
                 setSecondaryCTAClickListener {
-                    hide()
+                    dismiss()
                 }
                 setPrimaryCTAClickListener {
                     deleteProductFromList(model.productId, position.toString())

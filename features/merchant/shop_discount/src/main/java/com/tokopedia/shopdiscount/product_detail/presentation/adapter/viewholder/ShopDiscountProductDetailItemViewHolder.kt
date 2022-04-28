@@ -35,6 +35,8 @@ open class ShopDiscountProductDetailItemViewHolder(
             model: ShopDiscountProductDetailUiModel.ProductDetailData,
             position: Int
         )
+
+        fun onClickDeleteProduct(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
     }
 
     override fun bind(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
@@ -52,6 +54,9 @@ open class ShopDiscountProductDetailItemViewHolder(
             setExpiryRange(textStartDateEndDate, uiModel)
             imgEditProduct.setOnClickListener {
                 listener.onClickEditProduct(uiModel, adapterPosition)
+            }
+            imgDeleteProduct.setOnClickListener {
+                listener.onClickDeleteProduct(uiModel)
             }
         }
     }

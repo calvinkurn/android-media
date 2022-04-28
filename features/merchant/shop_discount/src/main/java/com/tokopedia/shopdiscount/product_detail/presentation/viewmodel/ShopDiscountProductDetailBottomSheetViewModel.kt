@@ -8,6 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
+import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
+import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.product_detail.ShopDiscountProductDetailMapper
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
@@ -24,6 +26,7 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     private val dispatcherProvider: CoroutineDispatchers,
     private val getSlashPriceProductDetailUseCase: GetSlashPriceProductDetailUseCase,
     private val reserveProductUseCase: MutationDoSlashPriceProductReservationUseCase,
+    private val deleteDiscountUseCase: DeleteDiscountUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -35,6 +38,11 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     private val _reserveProduct = MutableLiveData<Result<ShopDiscountDetailReserveProductUiModel>>()
     val reserveProduct: LiveData<Result<ShopDiscountDetailReserveProductUiModel>>
         get() = _reserveProduct
+
+    private val _deleteProductDiscount = MutableLiveData<Result<Boolean>>()
+    val deleteProductDiscount: LiveData<Result<Boolean>>
+        get() = _deleteProductDiscount
+
 
     fun getProductDetailListData(productId: String, status: Int) {
         launchCatchError(dispatcherProvider.io, block = {
@@ -56,16 +64,19 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val requestId = userSession.shopId + Date().time
-            val response = reserveProductToUpdate(ShopDiscountProductDetailMapper.mapToDoSlashPriceReservationRequest(
-                requestId,
-                productParentId,
-                productParentPosition
-            ))
-            val uiModel = ShopDiscountProductDetailMapper.mapToShopDiscountDetailReserveProductUiModel(
-                response,
-                requestId,
-                selectedProductVariantId
+            val response = reserveProductToUpdate(
+                ShopDiscountProductDetailMapper.mapToDoSlashPriceReservationRequest(
+                    requestId,
+                    productParentId,
+                    productParentPosition
+                )
             )
+            val uiModel =
+                ShopDiscountProductDetailMapper.mapToShopDiscountDetailReserveProductUiModel(
+                    response,
+                    requestId,
+                    selectedProductVariantId
+                )
             _reserveProduct.postValue(Success(uiModel))
         }, onError = {
             _reserveProduct.postValue(Fail(it))
@@ -74,7 +85,7 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
 
     private suspend fun reserveProductToUpdate(
         request: DoSlashPriceReservationRequest
-    ): DoSlashPriceProductReservationResponse{
+    ): DoSlashPriceProductReservationResponse {
         reserveProductUseCase.setParams(request)
         return reserveProductUseCase.executeOnBackground()
     }
@@ -90,6 +101,23 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
             )
         )
         return getSlashPriceProductDetailUseCase.executeOnBackground()
+    }
+
+    fun deleteSelectedProductDiscount(productId: String, status: Int) {
+        launchCatchError(dispatcherProvider.io, block = {
+            val result = doSlashPriceStop(productId, status)
+            _deleteProductDiscount.postValue(Success(result.doSlashPriceStop.responseHeader.success))
+        }, onError = {
+            _deleteProductDiscount.postValue(Fail(it))
+        })
+    }
+
+    private suspend fun doSlashPriceStop(productId: String, status: Int): DeleteDiscountResponse {
+        deleteDiscountUseCase.setParams(
+            discountStatusId = status,
+            productIds = listOf(productId)
+        )
+        return deleteDiscountUseCase.executeOnBackground()
     }
 
 }

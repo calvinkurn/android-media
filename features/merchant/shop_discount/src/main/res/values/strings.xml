@@ -79,6 +79,7 @@
     <string name="product_detail_start_date_end_date_format">%1s - %2s WIB</string>
     <string name="product_detail_multiple_product_title">Ada diskon di %1s varian</string>
     <string name="product_detail_single_product_title">Diskon Produk</string>
+    <string name="shop_discount_product_detail_delete_product_dialog_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
 
     <!--  Seller Info Bottomsheet  -->
     <string name="seller_info_bottom_sheet_title">Info dan kuota Diskon Toko</string>
