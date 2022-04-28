@@ -47,6 +47,7 @@ class NavigationTab(
     private var enableContentChangeListener = true
     private var impressNavigation = false
     private var isVisible = false
+    private var enableBlockingTouch = true
 
     init {
         addView(view)
@@ -56,6 +57,7 @@ class NavigationTab(
     fun start(
         recyclerView: RecyclerView,
         items: List<Item>,
+        enableBlockingTouch: Boolean,
         listener: NavigationListener
     ) {
         recyclerView.removeOnScrollListener(onScrollListener)
@@ -65,6 +67,7 @@ class NavigationTab(
         recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(onContentScrollListener)
         this.recyclerView = recyclerView
+        this.enableBlockingTouch = enableBlockingTouch
 
         updateItems(items)
     }
@@ -127,8 +130,7 @@ class NavigationTab(
     }
 
     private fun enableTouchScroll(isEnable: Boolean) {
-        val enableBlocking = listener?.enableBlockingTouchNavbar() ?: true
-        if (enableBlocking) {
+        if (enableBlockingTouch) {
             recyclerView?.suppressLayout(!isEnable)
         } else recyclerView?.suppressLayout(false)
     }

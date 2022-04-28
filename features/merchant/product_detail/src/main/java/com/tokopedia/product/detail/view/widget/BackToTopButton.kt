@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
 
-class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet) {
+class BackToTopButton(
+    context: Context,
+    attributeSet: AttributeSet
+) : FrameLayout(context, attributeSet) {
 
     companion object {
         private const val BUTTON_LABEL = "back-to-top"
@@ -27,10 +30,9 @@ class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayou
     private val onScrollListener = OnScrollListener()
 
     private var impressNavigation = false
-    private var isVisibile = false
+    private var isVisible = false
     private var enableClick = true
-
-    private var isScroll = false
+    private var enableBlockingTouch = true
 
     init {
         addView(view)
@@ -38,16 +40,21 @@ class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayou
             if (!enableClick) return@setOnClickListener
             listener?.onClickBackToTop(BUTTON_POSITION, BUTTON_LABEL)
             smoothScrollToTop()
-            enableClick = false
+            if (enableBlockingTouch) enableClick = false
         }
     }
 
-    fun start(recyclerView: RecyclerView, listener: NavigationListener) {
+    fun start(
+        recyclerView: RecyclerView,
+        enableBlockingTouch: Boolean,
+        listener: NavigationListener
+    ) {
         recyclerView.removeOnScrollListener(onScrollListener)
 
         this.listener = listener
         recyclerView.addOnScrollListener(onScrollListener)
         this.recyclerView = recyclerView
+        this.enableBlockingTouch = enableBlockingTouch
     }
 
     fun stop(recyclerView: RecyclerView) {
@@ -61,12 +68,12 @@ class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayou
 
     private fun toggle(show: Boolean) {
 
-        if (isVisibile == show) return
+        if (isVisible == show) return
 
         val scale = if (show) 1f else 0f
 
         view.animate().scaleX(scale).scaleY(scale).duration = 265
-        isVisibile = show
+        isVisible = show
 
         if (!impressNavigation && show) {
             listener?.onImpressionBackToTop(BUTTON_LABEL)
@@ -75,14 +82,12 @@ class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayou
     }
 
     private fun enableTouchScroll(isEnable: Boolean) {
-        val enableBlocking = listener?.enableBlockingTouchNavbar() ?: true
-        if (enableBlocking) {
+        if (enableBlockingTouch) {
             recyclerView?.suppressLayout(!isEnable)
         } else recyclerView?.suppressLayout(false)
     }
 
     private fun smoothScrollToTop() {
-        if (isScroll) return
         recyclerView?.apply {
             smoothScroller.targetPosition = 0
             enableTouchScroll(false)
@@ -113,6 +118,8 @@ class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayou
     }
 
     private inner class SmoothScroller(context: Context) : LinearSmoothScroller(context) {
+
+        private var isScroll = false
 
         override fun onSeekTargetStep(dx: Int, dy: Int, state: RecyclerView.State, action: Action) {
             super.onSeekTargetStep(dx, dy, state, action)

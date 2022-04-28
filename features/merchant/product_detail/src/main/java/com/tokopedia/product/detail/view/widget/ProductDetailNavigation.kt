@@ -7,6 +7,8 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 
 class ProductDetailNavigation(
     context: Context,
@@ -24,6 +26,9 @@ class ProductDetailNavigation(
     private val navigationTab = binding.pdpNavigationTab
     private val backToTop = binding.pdpBackToTop
 
+    private val remoteConfig = FirebaseRemoteConfigImpl(context)
+    private val enableBlockingTouch = getEnableBlockingTouch(remoteConfig)
+
     private var listener: DynamicProductDetailListener? = null
 
     init {
@@ -36,8 +41,8 @@ class ProductDetailNavigation(
         listener: DynamicProductDetailListener
     ) {
         this.listener = listener
-        navigationTab.start(recyclerView, items, this)
-        backToTop.start(recyclerView, this)
+        navigationTab.start(recyclerView, items, enableBlockingTouch, this)
+        backToTop.start(recyclerView, enableBlockingTouch, this)
     }
 
     fun stop(recyclerView: RecyclerView) {
@@ -47,6 +52,13 @@ class ProductDetailNavigation(
 
     fun updateItemPosition() {
         navigationTab.updateItemPosition()
+    }
+
+    private fun getEnableBlockingTouch(remoteConfig: RemoteConfig): Boolean {
+        return remoteConfig.getBoolean(
+            REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH,
+            true
+        )
     }
 
     override fun onImpressionNavigationTab(labels: List<String>) {
@@ -65,13 +77,5 @@ class ProductDetailNavigation(
     override fun onClickBackToTop(position: Int, label: String) {
         listener?.onClickProductDetailnavigation(position, label)
         navigationTab.onClickBackToTop()
-    }
-
-    override fun enableBlockingTouchNavbar(): Boolean {
-        val remoteConfig = listener?.getRemoteConfigInstance()
-        return remoteConfig?.getBoolean(
-            REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH,
-            true
-        ) ?: true
     }
 }
