@@ -4,8 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commissionbreakdown.CommissionBreakdownActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.TickerDownloadFeeTransactionModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -34,7 +35,7 @@ class TickerDownloadFeeTransactionViewHolder(itemView: View) :
     }
 
     private fun openCommissionBreakdown(context: Context?) {
-        context?.startActivity(Intent(context, CommissionBreakdownActivity::class.java))
+        RouteManager.route(context, ApplinkConstInternalGlobal.COMMISSION_BREAKDOWN)
     }
 
     companion object {

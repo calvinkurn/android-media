@@ -1,18 +1,19 @@
-package com.tokopedia.saldodetails.commissionbreakdown
+package com.tokopedia.commissionbreakdown.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.commissionbreakdown.util.CommissionBreakdownDateUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
+import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.date.DateUtil
-import kotlinx.android.synthetic.main.saldo_bottomsheet_choose_date.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +30,8 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private var dateFromTextField : TextFieldUnify2? = null
     private var dateToTextField :TextFieldUnify2? = null
+    private var unifyButtonSelect : UnifyButton? = null
+    private var calendarUnify : UnifyCalendar? = null
 
     lateinit var childView: View
 
@@ -66,6 +69,8 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         setChild(childView)
         dateFromTextField = childView.findViewById(R.id.commission_range_date_from)
         dateToTextField = childView.findViewById(R.id.commission_range_date_to)
+        unifyButtonSelect = childView.findViewById(R.id.unifyButtonSelect)
+        calendarUnify = childView.findViewById(R.id.calendar_unify)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -73,10 +78,10 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         childView.layoutParams.height = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         initCalender()
-        unifyButtonSelect.setOnClickListener {
+        unifyButtonSelect?.setOnClickListener {
             if (newSelectedDateFrom != null && newSelectedDateTO != null &&
-                !(SaldoDateUtil.isDatesAreSame(newSelectedDateTO, defaultDateTo)
-                        && SaldoDateUtil.isDatesAreSame(newSelectedDateFrom, defaultDateFrom))) {
+                !(CommissionBreakdownDateUtil.isDatesAreSame(newSelectedDateTO, defaultDateTo)
+                        && CommissionBreakdownDateUtil.isDatesAreSame(newSelectedDateFrom, defaultDateFrom))) {
                 if (parentFragment is OnDateRangeSelectListener) {
                     (parentFragment as OnDateRangeSelectListener)
                         .onDateRangeSelected(newSelectedDateFrom!!, newSelectedDateTO!!)
@@ -85,23 +90,26 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
             }
             dismissAllowingStateLoss()
         }
+
+        dateFromTextField?.isEnabled = false
+        dateToTextField?.isEnabled = false
     }
 
     private fun initCalender() {
         newSelectedDateFrom = defaultDateFrom
         newSelectedDateTO = defaultDateTo
-        calendar_unify.calendarPickerView?.init(minDate, maxDate, arrayListOf())
+        calendarUnify?.calendarPickerView?.init(minDate, maxDate, arrayListOf())
             ?.inMode(CalendarPickerView.SelectionMode.RANGE)
             ?.maxRange(maxRange)
             ?.withSelectedDates(arrayListOf(defaultDateFrom!!, defaultDateTo!!))
-        calendar_unify.calendarPickerView?.selectDateClickListener()
-        calendar_unify.calendarPickerView?.outOfRange()
+        calendarUnify?.calendarPickerView?.selectDateClickListener()
+        calendarUnify?.calendarPickerView?.outOfRange()
     }
 
     private fun CalendarPickerView.selectDateClickListener() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                val selectedDates = calendar_unify.calendarPickerView?.selectedDates
+                val selectedDates = calendarUnify?.calendarPickerView?.selectedDates
                 when {
                     selectedDates.isNullOrEmpty() -> {
                         newSelectedDateFrom = null
@@ -131,13 +139,11 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         dateFromTextField?.apply {
             newSelectedDateFrom?.let {
                 this.setPlaceholder(dateFormat.format(it))
-                isEnabled = false
             }
         }
         dateToTextField?.apply {
             newSelectedDateTO?.let {
                 this.setPlaceholder(dateFormat.format(it))
-                isEnabled = false
             }
         }
     }
@@ -154,11 +160,13 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         DialogUnify(context = this.requireContext(),
             actionType = DialogUnify.SINGLE_ACTION,
             imageType = DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.saldo_calendar_range_error_title))
-            setDescription(getString(R.string.sp_title_max_day, maxRange))
-            setPrimaryCTAText(getString(R.string.saldo_btn_oke))
-            setPrimaryCTAClickListener {
-                cancel()
+            activity?.let {
+                setTitle(it.getString(R.string.saldo_calendar_range_error_title))
+                setDescription(it.getString(R.string.sp_title_max_day, maxRange))
+                setPrimaryCTAText(it.getString(R.string.saldo_btn_oke))
+                setPrimaryCTAClickListener {
+                    cancel()
+                }
             }
             show()
         }

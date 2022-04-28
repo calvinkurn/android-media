@@ -1,18 +1,14 @@
-package com.tokopedia.saldodetails.commissionbreakdown
+package com.tokopedia.commissionbreakdown.view
 
-import android.app.DownloadManager
-import android.content.Context.DOWNLOAD_SERVICE
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.saldodetails.R
-import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
-import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
+import com.tokopedia.sellerhome.R
+import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
+import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
@@ -23,7 +19,6 @@ import javax.inject.Inject
 
 
 class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListener {
-    private val animationDuration: Long = 300
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
     private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
@@ -45,8 +40,8 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
 
     override fun initInjector() {
         activity?.let {
-            val saldoDetailsComponent = getComponent(SaldoDetailsComponent::class.java)
-            saldoDetailsComponent.inject(this)
+            val component = getComponent(CommissionBreakdownComponent::class.java)
+            component.inject(this)
         }
     }
 
@@ -114,16 +109,16 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
         this.selectedDateFrom = dateFrom
         this.selectedDateTo = endDate
-        datePlaceholderText?.text = getDatePlaceholderText().toString()
+        datePlaceholderText?.text = getDatePlaceholderText()
         downloadButton?.isEnabled = true
         downloadButton?.visibility = View.VISIBLE
     }
 
-    private fun getDatePlaceholderText(): () -> String = {
+    private fun getDatePlaceholderText(): String {
         val dateFormat = SimpleDateFormat(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.DEFAULT_LOCALE)
         val startDateStr = dateFormat.format(selectedDateFrom)
         val endDateStr = dateFormat.format(selectedDateTo)
-        "$startDateStr - $endDateStr"
+       return "$startDateStr - $endDateStr"
     }
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {

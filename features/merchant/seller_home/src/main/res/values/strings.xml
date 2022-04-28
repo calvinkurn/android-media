@@ -194,4 +194,19 @@
     <!-- Seller Edu Webview -->
     <string name="sah_seller_edu_error_message">Error wrong supported url format: %s</string>
 
+
+    <string name="download_trx_fee_report_ticker_activity_title">Biaya layanan transaksi</string>
+    <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
+    <string name="trx_fee_title">Biaya layanan transaksi</string>
+    <string name="trx_fee_desc">Transaksi periode laporan yang dapat diunduh (Maksimum 90 hari)</string>
+    <string name="trx_fee_date">Pilih tanggal</string>
+    <string name="trx_fee_download">Download laporan</string>
+    <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. %d hari.</string>
+    <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
+    <string name="saldo_btn_oke">Oke</string>
+    <string name="saldo_save_date">Simpan</string>
+
+
+
+
 </resources>
