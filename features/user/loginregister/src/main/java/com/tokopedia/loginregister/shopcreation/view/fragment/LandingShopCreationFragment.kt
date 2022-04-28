@@ -192,7 +192,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun setActionAfterSuccessAdminRedirection(appLink: String) {
         if (appLink == ApplinkConstInternalGlobal.PHONE_SHOP_CREATION) {
-            //need discuss with pak brad
             showLoading()
             if (userSession.isLoggedIn) {
                 shopCreationViewModel.getUserProfile()
