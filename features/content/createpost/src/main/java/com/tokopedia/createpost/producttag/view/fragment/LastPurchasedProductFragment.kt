@@ -78,9 +78,9 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
 
         binding.globalError.apply {
             /** TODO: gonna change this later */
-            errorIllustration.loadImage(getString(R.string.img_no_last_tag_product))
-            errorTitle.text = getString(R.string.cc_no_product_tag_title)
-            errorDescription.text = getString(R.string.cc_no_product_tag_desc)
+            errorIllustration.loadImage(getString(R.string.img_no_last_purchase_product))
+            errorTitle.text = getString(R.string.cc_no_last_purchased_product_title)
+            errorDescription.text = getString(R.string.cc_no_last_purchased_product_desc)
             errorAction.gone()
             errorSecondaryAction.gone()
         }

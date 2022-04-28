@@ -99,5 +99,7 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_product_tag_search_hint">Cari di Tokopedia</string>
     <string name="cc_no_product_tag_title">Kamu belum pernah nge-tag produk, lho</string>
     <string name="cc_no_product_tag_desc">Coba cari dulu produknya, atau kamu juga bisa pilih produk dari pencarian yang lain.</string>
+    <string name="cc_no_last_purchased_product_title">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="cc_no_last_purchased_product_desc">Ayo mulai belanja, supaya kamu bisa ceritain pengalamanmu di Feed.</string>
     <string name="cc_failed_load_product">Gagal memuat produk. Silahkan ulangi.</string>
 </resources>
