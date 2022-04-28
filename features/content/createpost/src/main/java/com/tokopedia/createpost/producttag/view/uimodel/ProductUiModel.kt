@@ -10,7 +10,7 @@ data class ProductUiModel(
     val id: String = "",
     val shopID: String = "",
     val shopName: String = "",
-    val shopBadge: String = "",
+    val shopBadge: List<ShopBadge> = emptyList(),
     val name: String = "",
     val coverURL: String = "",
     val webLink: String = "",
@@ -30,13 +30,19 @@ data class ProductUiModel(
     val isBebasOngkir: Boolean = false,
     val bebasOngkirStatus: String = "",
     val bebasOngkirURL: String = "",
+    val stock: Long = 0,
 ) {
+
+    data class ShopBadge(
+        val isActive: Boolean = false,
+        val badgeUrl: String = "",
+    )
 
     fun toProductCard() = ProductCardModel(
         productImageUrl = coverURL,
         productName = name,
         shopLocation = shopName, /** Requirement need to display shopName on shopLocation label */
-        shopBadgeList = if(shopBadge.isNotEmpty()) listOf(ProductCardModel.ShopBadge(true, shopBadge)) else listOf(),
+        shopBadgeList = shopBadge.map { ProductCardModel.ShopBadge(it.isActive, it.badgeUrl) },
         discountPercentage = if(isDiscount) discountFmt else "",
         slashedPrice = if(isDiscount) priceOriginalFmt else "",
         formattedPrice = priceFmt,
