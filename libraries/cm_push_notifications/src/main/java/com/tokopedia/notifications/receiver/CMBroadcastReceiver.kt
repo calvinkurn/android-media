@@ -242,6 +242,12 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
+    private fun handleMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
+        startActivity(context, baseNotificationModel.appLink, intent)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        NotificationManagerCompat.from(context).cancel(notificationId)
+    }
+
     private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel?) {
         handleMainClick(context, intent, notificationId)
         baseNotificationModel?.let {
@@ -360,8 +366,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     ) {
         // Notification attribution
         dataManager.attribution(baseNotificationModel)
-
-        handleMainClick(context, intent, notificationId)
+        baseNotificationModel?.let {
+            handleMainClick(context, intent, notificationId, it)
+        }
         handleCouponCode(intent, context)
     }
 
