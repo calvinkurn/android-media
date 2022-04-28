@@ -1,11 +1,13 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
 import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.viewmodel.TickerModel
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 /**
  * created by @bayazidnasir on 26/4/2022
