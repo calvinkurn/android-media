@@ -303,7 +303,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 is Success -> {
                     val responseHeaderData = it.data.responseHeader
                     if (!responseHeaderData.success) {
-                        showToasterError(responseHeaderData.errorMessages.joinToString())
+                        showToasterError(responseHeaderData.reason)
                     } else {
                         showToasterSuccess(getString(R.string.shop_discount_manage_discount_submit_product_message))
                         finishActivity()
