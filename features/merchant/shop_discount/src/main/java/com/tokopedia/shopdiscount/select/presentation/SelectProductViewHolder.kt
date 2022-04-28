@@ -10,11 +10,14 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.SdItemSelectProductBinding
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.utils.constant.ZERO
+import com.tokopedia.shopdiscount.utils.extension.disable
+import com.tokopedia.shopdiscount.utils.extension.enable
 
 class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     companion object {
+        private const val ALPHA_CHIP_DISABLED = 0.3f
         private const val ALPHA_DISABLED = 0.5f
         private const val ALPHA_ENABLED = 1.0f
     }
@@ -23,7 +26,7 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
         position: Int,
         product: ReservableProduct,
         onProductClicked: (ReservableProduct, Int) -> Unit,
-        onProductSelectionChange : (ReservableProduct, Boolean) -> Unit,
+        onProductSelectionChange: (ReservableProduct, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.picture)
@@ -52,12 +55,20 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
         }
     }
 
-    private fun handleCheckboxAppearance(product: ReservableProduct, onProductSelectionChange: (ReservableProduct, Boolean) -> Unit) {
+    private fun handleCheckboxAppearance(
+        product: ReservableProduct,
+        onProductSelectionChange: (ReservableProduct, Boolean) -> Unit
+    ) {
         binding.checkBox.setOnCheckedChangeListener(null)
         binding.checkBox.isVisible = true
         binding.checkBox.isChecked = product.isCheckboxTicked
         binding.checkBox.isClickable = !product.disableClick && !product.disabled
-        binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
+        binding.checkBox.setOnCheckedChangeListener { _, isSelected ->
+            onProductSelectionChange(
+                product,
+                isSelected
+            )
+        }
     }
 
     private fun handleVariantAppearance(product: ReservableProduct) {
@@ -83,8 +94,23 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
             }
     }
 
-    private fun handleCardSelectable(disableClick : Boolean, disabled : Boolean) {
-        val alpha = if (disableClick || disabled) ALPHA_DISABLED else ALPHA_ENABLED
-        binding.card.alpha = alpha
+    private fun handleCardSelectable(disableClick: Boolean, disabled: Boolean) {
+        if (disableClick || disabled) {
+            binding.imgProduct.alpha = ALPHA_DISABLED
+            binding.tpgProductName.disable()
+            binding.tpgStockAndLocation.disable()
+            binding.tpgPrice.disable()
+            binding.labelVariantCount.opacityLevel = ALPHA_CHIP_DISABLED
+            binding.tpgSkuNumber.disable()
+            binding.checkBox.disable()
+        } else {
+            binding.imgProduct.alpha = ALPHA_ENABLED
+            binding.tpgProductName.enable()
+            binding.tpgStockAndLocation.enable()
+            binding.labelVariantCount.opacityLevel = ALPHA_ENABLED
+            binding.tpgPrice.enable()
+            binding.tpgSkuNumber.enable()
+            binding.checkBox.enable()
+        }
     }
 }

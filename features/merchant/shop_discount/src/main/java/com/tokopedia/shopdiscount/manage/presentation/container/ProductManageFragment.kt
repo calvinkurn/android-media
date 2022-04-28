@@ -23,7 +23,6 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
-import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
@@ -35,12 +34,17 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val DELAY_IN_MILLIS : Long = 300
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -66,8 +70,8 @@ class ProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
-    @Inject
-    lateinit var viewAnimator: ViewAnimator
+    private var listener : TabChangeListener? = null
+
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
@@ -106,6 +110,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
+                    listener?.onTabChanged()
                 }
             })
         }
@@ -150,7 +155,6 @@ class ProductManageFragment : BaseDaggerFragment() {
 
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
-                    viewModel.storeTabsData(discountStatusWithCounter)
                 }
                 is Fail -> {
                     binding?.ticker?.gone()
@@ -182,9 +186,21 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
-                if (previouslySelectedPosition == position) {
-                    tab.select()
-                }
+                focusToPreviousTab(tab, previouslySelectedPosition, position)
+            }
+        }
+    }
+
+    private fun focusToPreviousTab(
+        tab: TabLayout.Tab,
+        previouslySelectedPosition: Int,
+        onRenderTabPosition: Int
+    ) {
+        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DELAY_IN_MILLIS)
+            if (previouslySelectedPosition == onRenderTabPosition) {
+                tab.select()
             }
         }
     }
@@ -193,8 +209,12 @@ class ProductManageFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment =
-                ProductListFragment.newInstance(tab.name, tab.discountStatusId, onDiscountRemoved)
+            val fragment = ProductListFragment.newInstance(
+                tab.name,
+                tab.discountStatusId,
+                tab.count,
+                onDiscountRemoved
+            )
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
             fragment.setOnSwipeRefresh { onSwipeRefreshed() }
@@ -248,7 +268,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
-            viewAnimator.hideWithAnimation(ticker)
+            binding?.ticker?.gone()
         }
     }
 
@@ -257,12 +277,20 @@ class ProductManageFragment : BaseDaggerFragment() {
             val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
             val shouldShowTicker = !isPreviouslyDismissed
             if (shouldShowTicker){
-                viewAnimator.showWithAnimation(ticker)
+                binding?.ticker?.visible()
             }
         }
     }
 
     private val onSwipeRefreshed: () -> Unit = {
         viewModel.getSlashPriceProductsMeta()
+    }
+
+    fun setTabChangeListener(listener: TabChangeListener) {
+        this.listener = listener
+    }
+
+    interface TabChangeListener {
+        fun onTabChanged()
     }
 }

@@ -76,7 +76,8 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
     }
 
     private suspend fun getSlashPriceBenefitData(): GetSlashPriceBenefitResponse {
-        return getSlashPriceBenefitUseCase.execute()
+        getSlashPriceBenefitUseCase.setParams()
+        return getSlashPriceBenefitUseCase.executeOnBackground()
     }
 
     fun setProductData(productData: ShopDiscountSetupProductUiModel.SetupProductData) {

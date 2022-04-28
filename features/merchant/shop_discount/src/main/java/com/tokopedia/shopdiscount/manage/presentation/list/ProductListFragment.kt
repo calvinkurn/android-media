@@ -23,6 +23,7 @@ import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
@@ -30,13 +31,10 @@ import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
-import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
-import com.tokopedia.shopdiscount.utils.extension.showError
-import com.tokopedia.shopdiscount.utils.extension.showToaster
-import com.tokopedia.shopdiscount.utils.extension.smoothSnapToPosition
+import com.tokopedia.shopdiscount.utils.extension.*
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,15 +48,15 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
+class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
+        private const val BUNDLE_KEY_PRODUCT_COUNT = "product_count"
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
         private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
@@ -67,12 +65,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         fun newInstance(
             discountStatusName : String,
             discountStatusId: Int,
+            productCount : Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
         ): ProductListFragment {
             val fragment = ProductListFragment()
             fragment.arguments = Bundle().apply {
                 putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
+                putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
             }
             fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
@@ -88,6 +88,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
     }
 
+    private val productCount by lazy {
+        arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
+    }
+
     private var binding by autoClearedNullable<FragmentProductListBinding>()
 
     @Inject
@@ -95,9 +99,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     @Inject
     lateinit var userSession : UserSessionInterface
-
-    @Inject
-    lateinit var viewAnimator: ViewAnimator
 
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -149,8 +150,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         setupMultiSelection()
         setupScrollListener()
         setupButton()
+        setupTabChangeListener()
     }
-
 
     private fun setupSearchBar() {
         binding?.run {
@@ -197,14 +198,27 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         }
     }
 
+    private fun setupTabChangeListener() {
+        val listener = object : ProductManageFragment.TabChangeListener{
+            override fun onTabChanged() {
+                handleEmptyState(productCount)
+            }
+        }
+        (parentFragment as? ProductManageFragment)?.setTabChangeListener(listener)
+    }
+
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    handleProducts(it.data)
+                    displayProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
-                    binding?.tpgTotalProduct?.text =
-                        String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+
+                    if (!viewModel.isOnMultiSelectMode()) {
+                        binding?.tpgTotalProduct?.text =
+                            String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    }
+
                     binding?.swipeRefresh?.isRefreshing = false
                 }
                 is Fail -> {
@@ -259,16 +273,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         viewModel.reserveProduct(requestId, productIds)
     }
 
-    private fun handleProducts(data: ProductData) {
-        handleEmptyState(data.totalProduct)
-
+    private fun displayProducts(data: ProductData) {
         if (data.totalProduct == ZERO) {
-            binding?.recyclerView?.gone()
-            binding?.tpgTotalProduct?.gone()
-            binding?.tpgMultiSelect?.gone()
-            binding?.emptyState?.visible()
+            handleEmptyState(data.totalProduct)
         } else {
-            if (isFirstLoad) binding?.tpgMultiSelect?.visible()
+            if (isFirstLoad) {
+                binding?.searchBar?.visible()
+                binding?.tpgMultiSelect?.visible()
+            }
             renderList(data.products, data.products.size == getPerPage())
         }
 
@@ -317,22 +329,22 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
 
     private fun handleScrollDownEvent() {
-        viewAnimator.hideWithAnimation(binding?.searchBar)
+        binding?.searchBar.slideDown()
 
         if (viewModel.isOnMultiSelectMode()) {
-            viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+            binding?.imgScrollUp.slideDown()
         } else {
-            viewAnimator.showWithAnimation(binding?.imgScrollUp)
-            viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
+            binding?.cardViewCreateDiscount.slideDown()
+            binding?.imgScrollUp.slideUp()
         }
     }
 
     private fun handleScrollUpEvent() {
-        viewAnimator.showWithAnimation(binding?.searchBar)
-        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+        binding?.searchBar.slideUp()
+        binding?.imgScrollUp.slideDown()
 
         if (!viewModel.isOnMultiSelectMode()) {
-            viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
+            binding?.cardViewCreateDiscount.slideUp()
         }
     }
 
@@ -407,6 +419,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             tpgCancelMultiSelect.setOnClickListener {
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(false)
+                viewModel.setDisableProductSelection(false)
                 disableMultiSelect()
                 binding?.tpgTotalProduct?.text =
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
@@ -415,7 +428,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun enableMultiSelect() {
-        viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
+        binding?.cardViewCreateDiscount.slideDown()
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.visible()
 
@@ -432,7 +445,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardViewMultiSelect?.gone()
-        viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
+        binding?.cardViewCreateDiscount.slideUp()
     }
 
     private fun disableProductSelection(products : List<Product>) {
@@ -601,17 +614,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun redirectToUpdateDiscountPage() {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
-            binding?.btnBulkManage?.isLoading = false
-            dismissLoaderDialog()
-            ShopDiscountManageDiscountActivity.start(
-                requireActivity(),
-                viewModel.getRequestId(),
-                discountStatusId,
-                ShopDiscountManageDiscountMode.UPDATE
-            )
-        }
+        binding?.btnBulkManage?.isLoading = false
+        dismissLoaderDialog()
+        ShopDiscountManageDiscountActivity.start(
+            requireActivity(),
+            viewModel.getRequestId(),
+            discountStatusId,
+            ShopDiscountManageDiscountMode.UPDATE
+        )
     }
 
     override fun onSwipeRefreshPulled() {
@@ -643,6 +653,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.gone()
         binding?.searchBar?.gone()
+        binding?.recyclerView?.gone()
 
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
@@ -651,7 +662,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun hideEmptyState() {
-        viewAnimator.showWithAnimation(binding?.searchBar)
         binding?.emptyState?.gone()
     }
 
@@ -678,5 +688,4 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             block()
         }
     }
-
 }

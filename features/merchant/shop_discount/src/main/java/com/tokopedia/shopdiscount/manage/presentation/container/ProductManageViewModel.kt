@@ -27,7 +27,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _productsMeta
 
     private var selectedTabPosition = 0
-    private var tabs = mutableListOf<PageTab>()
 
     fun getSlashPriceProductsMeta() {
         launchCatchError(block = {
@@ -49,10 +48,6 @@ class ProductManageViewModel @Inject constructor(
             val match = discountStatusMeta.find { meta -> tab.status == meta.id }
             tab.copy(count = match?.productCount.orZero())
         }
-    }
-
-    fun storeTabsData(tabs: List<PageTab>) {
-        this.tabs.addAll(tabs)
     }
 
     fun setSelectedTabPosition(selectedTabPosition: Int) {
