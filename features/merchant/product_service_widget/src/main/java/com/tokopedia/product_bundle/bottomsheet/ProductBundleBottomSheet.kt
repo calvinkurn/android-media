@@ -60,8 +60,8 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
 
     private fun getTitle(pageSource: String): String {
         return when (pageSource) {
-            ProductBundleConstants.PAGE_SOURCE_MINI_CART -> { getString(R.string.product_bundle_bottomsheet_title) }
-            else -> { getString(R.string.product_bundle_page_title) }
+            ProductBundleConstants.PAGE_SOURCE_MINI_CART -> getString(R.string.product_bundle_bottomsheet_title)
+            else -> getString(R.string.product_bundle_page_title)
         }
     }
 
