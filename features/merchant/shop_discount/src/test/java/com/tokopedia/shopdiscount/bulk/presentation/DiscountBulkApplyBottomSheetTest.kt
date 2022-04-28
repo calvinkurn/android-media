@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -211,13 +212,19 @@ class DiscountBulkApplyBottomSheetTest {
     }
 
     @Test
-    fun `When get default start date, should return current date and advanced it by ten minutes`() {
-        val now = GregorianCalendar(2022, 0, 1, 0,0,0)
-        val startDate = GregorianCalendar(2022, 0, 1, 0,10,0)
-        val endDate = GregorianCalendar(2023, 0, 1, 0,10,0)
+    fun `When select discount period one year, should advance start date by 10 minute and advance end date by one year`() {
+        //Given
+        val currentYear = 2022
+        val nextYear = 2023
 
+        val now = GregorianCalendar(currentYear, 0, 1, 0,0,0)
+        val startDate = GregorianCalendar(currentYear, 0, 1, 0,10,0)
+        val endDate = GregorianCalendar(nextYear, 0, 1, 0,10,0)
+
+        //When
         viewModel.onOneYearPeriodSelected(now)
 
+        //Then
         assertEquals(startDate.time, viewModel.getSelectedStartDate())
         assertEquals(endDate.time, viewModel.getSelectedEndDate())
 
@@ -225,4 +232,139 @@ class DiscountBulkApplyBottomSheetTest {
         coVerify { endDateObserver.onChanged(endDate.time) }
     }
 
+    @Test
+    fun `When select discount period six month, should advance start date by 10 minute and advance end date by six month`() {
+        //Given
+        val january = 0
+        val july = 6
+
+        val now = GregorianCalendar(2022, january, 1, 0,0,0)
+        val startDate = GregorianCalendar(2022, january, 1, 0,10,0)
+        val endDate = GregorianCalendar(2022, july, 1, 0,10,0)
+
+        //When
+        viewModel.onSixMonthPeriodSelected(now)
+
+        //Then
+        assertEquals(startDate.time, viewModel.getSelectedStartDate())
+        assertEquals(endDate.time, viewModel.getSelectedEndDate())
+
+        coVerify { startDateObserver.onChanged(startDate.time) }
+        coVerify { endDateObserver.onChanged(endDate.time) }
+    }
+
+    @Test
+    fun `When select discount period one month, should advance start date by 10 minute and advance end date by one month`() {
+        //Given
+        val january = 0
+        val february = 1
+
+        val now = GregorianCalendar(2022, january, 1, 0,0,0)
+        val startDate = GregorianCalendar(2022, january, 1, 0,10,0)
+        val endDate = GregorianCalendar(2022, february, 1, 0,10,0)
+
+        //When
+        viewModel.onOneMonthPeriodSelected(now)
+
+        //Then
+        assertEquals(startDate.time, viewModel.getSelectedStartDate())
+        assertEquals(endDate.time, viewModel.getSelectedEndDate())
+
+        coVerify { startDateObserver.onChanged(startDate.time) }
+        coVerify { endDateObserver.onChanged(endDate.time) }
+    }
+
+    @Test
+    fun `When select custom discount period, should advance start date by 10 minute and advance end date by six month`() {
+        //Given
+        val january = 0
+        val july = 6
+
+        val now = GregorianCalendar(2022, january, 1, 0,0,0)
+        val startDate = GregorianCalendar(2022, january, 1, 0,10,0)
+        val endDate = GregorianCalendar(2022, july, 1, 0,10,0)
+
+        //When
+        viewModel.onCustomSelectionPeriodSelected(now)
+
+        //Then
+        assertEquals(startDate.time, viewModel.getSelectedStartDate())
+        assertEquals(endDate.time, viewModel.getSelectedEndDate())
+
+        coVerify { startDateObserver.onChanged(startDate.time) }
+        coVerify { endDateObserver.onChanged(endDate.time) }
+    }
+
+    @Test
+    fun `When get current discount setting, should return correct value`() {
+        //Given
+        val january = 0
+        val december = 11
+        val discountType = DiscountType.RUPIAH
+        val discountAmount = 10_000
+        val maxPurchaseQuantity = 10
+
+        val startDate = GregorianCalendar(2022, january, 1, 0, 10, 0).time
+        val endDate = GregorianCalendar(2022, december, 1, 0, 10, 0).time
+
+        val expected = DiscountSettings(
+            startDate,
+            endDate,
+            discountType,
+            discountAmount,
+            maxPurchaseQuantity
+        )
+
+
+        viewModel.setSelectedStartDate(startDate)
+        viewModel.setSelectedEndDate(endDate)
+        viewModel.onDiscountTypeChanged(discountType)
+        viewModel.onDiscountAmountChanged(discountAmount)
+        viewModel.onMaxPurchaseQuantityChanged(maxPurchaseQuantity)
+
+        //When
+        val actual = viewModel.getCurrentSelection()
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get selected start date, should return correct start date value`() {
+        //Given
+        val startDate = GregorianCalendar(2022, 0, 1, 0, 10, 0).time
+        viewModel.setSelectedStartDate(startDate)
+
+        //When
+        val actual = viewModel.getSelectedStartDate()
+
+        //Then
+        assertEquals(startDate, actual)
+    }
+
+    @Test
+    fun `When get selected end date, should return correct end date value`() {
+        //Given
+        val endDate = GregorianCalendar(2022, 0, 1, 0, 10, 0).time
+        viewModel.setSelectedEndDate(endDate)
+
+        //When
+        val actual = viewModel.getSelectedEndDate()
+
+        //Then
+        assertEquals(endDate, actual)
+    }
+
+    @Test
+    fun `When get benefit name, should return correct benefit name`() {
+        //Given
+        val benefitName = "Official Store Benefit Package"
+        viewModel.setBenefitPackageName(benefitName)
+
+        //When
+        val actual = viewModel.getBenefitPackageName()
+
+        //Then
+        assertEquals(benefitName, actual)
+    }
 }

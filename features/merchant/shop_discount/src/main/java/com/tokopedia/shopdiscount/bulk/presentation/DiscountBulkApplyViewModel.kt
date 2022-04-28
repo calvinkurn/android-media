@@ -33,6 +33,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         private const val ONE_MONTH = 1
         private const val START_TIME_OFFSET_IN_MINUTES = 10
     }
+
     private val _startDate = MutableLiveData<Date>()
     val startDate: LiveData<Date>
         get() = _startDate
@@ -62,8 +63,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
         object Valid : ValidationState()
     }
 
-    private var selectedStartDate : Date? = null
-    private var selectedEndDate : Date? = null
+    private var selectedStartDate: Date? = null
+    private var selectedEndDate: Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 1
@@ -102,15 +103,13 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     fun onOneYearPeriodSelected(calendar: Calendar) {
         calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
-        val startDate = calendar.time
-        this.selectedStartDate = startDate
+        this.selectedStartDate = calendar.time
 
         calendar.add(Calendar.YEAR, ONE_YEAR)
-        val endDate = calendar.time
-        this.selectedEndDate = endDate
+        this.selectedEndDate = calendar.time
 
-        _startDate.value = startDate
-        _endDate.value = endDate
+        _startDate.value = selectedStartDate
+        _endDate.value = selectedEndDate
     }
 
     fun onSixMonthPeriodSelected(calendar: Calendar) {
@@ -170,12 +169,12 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
 
-    fun getSelectedStartDate() : Date {
-        return selectedStartDate ?: Date()
+    fun getSelectedStartDate(): Date? {
+        return selectedStartDate
     }
 
-    fun getSelectedEndDate() : Date {
-        return selectedEndDate ?: Date()
+    fun getSelectedEndDate(): Date? {
+        return selectedEndDate
     }
 
     fun setSelectedStartDate(startDate: Date) {
@@ -188,7 +187,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         _endDate.value = endDate
     }
 
-    fun setBenefitPackageName(benefitPackageName : String) {
+    fun setBenefitPackageName(benefitPackageName: String) {
         this.benefitPackageName = benefitPackageName
     }
 
