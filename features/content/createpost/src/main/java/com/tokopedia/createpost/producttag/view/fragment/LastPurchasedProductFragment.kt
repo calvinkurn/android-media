@@ -19,10 +19,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastPurchasedProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 
@@ -123,8 +120,12 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
                     binding.globalError.show()
                 }
                 else updateAdapterData(curr.products, false)
+
+                binding.tickerInfo.showWithCondition(curr.isCoachmarkShown)
+                binding.tickerInfo.setTextDescription(curr.coachmark)
             }
             is PagedState.Error -> {
+                binding.tickerInfo.hide()
                 updateAdapterData(curr.products, false)
 
                 Toaster.build(
