@@ -385,12 +385,13 @@ class MainNavViewModel @Inject constructor(
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
+            val reviewList = listOf<NavReviewOrder>(NavReviewOrder("1", "test gan", "https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_28_2x.png"))
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
-                    NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
+                    NavOrderListModel(orderListToShow, paymentList, reviewList), othersTransactionCount)
 
                 //find shimmering and change with result value
                 findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
