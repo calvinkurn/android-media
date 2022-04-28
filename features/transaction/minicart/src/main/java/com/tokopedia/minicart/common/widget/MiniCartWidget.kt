@@ -160,9 +160,6 @@ class MiniCartWidget @JvmOverloads constructor(
                         onFailedGoToCheckout(it, fragment)
                     }
                 }
-                GlobalEvent.STATE_SUCCESS_UPDATE_PRODUCT_BUNDLE_CART_ITEM -> {
-                    onSuccessUpdateProductBundle()
-                }
             }
         })
     }
@@ -189,10 +186,6 @@ class MiniCartWidget @JvmOverloads constructor(
                 )
             }
         }
-    }
-
-    private fun onSuccessUpdateProductBundle() {
-        viewModel?.getCartList()
     }
 
     private fun onFailedGoToCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
