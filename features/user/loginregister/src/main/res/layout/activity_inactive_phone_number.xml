@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".invalid_phone_number.view.activity.InvalidPhoneNumberActivity">
+    tools:context=".inactive_phone_number.view.activity.InactivePhoneNumberActivity">
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar"

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.invalid_phone_number.view.model
+package com.tokopedia.loginregister.inactive_phone_number.view.model
 
 data class PhoneFormState (
     val numberError: Int? = null,

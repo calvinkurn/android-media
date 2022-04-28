@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.invalid_phone_number.view.fragment
+package com.tokopedia.loginregister.inactive_phone_number.view.fragment
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -11,9 +11,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.invalid_phone_number.di.InvalidPhoneNumberComponent
-import com.tokopedia.loginregister.invalid_phone_number.view.model.StatusPhoneNumberResult
-import com.tokopedia.loginregister.invalid_phone_number.view.viewmodel.InvalidPhoneNumberViewModel
+import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
+import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.UnifyButton
@@ -21,12 +20,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class InvalidPhoneNumberFragment : BaseDaggerFragment() {
+class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    val viewModel by lazy { viewModelProvider.get(InvalidPhoneNumberViewModel::class.java) }
+    val viewModel by lazy { viewModelProvider.get(InactivePhoneNumberViewModel::class.java) }
 
     private lateinit var btnNext: UnifyButton
     private lateinit var tfu2Phone: TextFieldUnify2
@@ -35,7 +34,7 @@ class InvalidPhoneNumberFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_invalid_phone_number, container, false)
+        val view = inflater.inflate(R.layout.fragment_inactive_phone_number, container, false)
 
         btnNext = view.findViewById(R.id.ub_next)
         tfu2Phone = view.findViewById(R.id.tfu2_old_phone_number)
@@ -57,7 +56,7 @@ class InvalidPhoneNumberFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(InvalidPhoneNumberComponent::class.java).inject(this)
+        getComponent(InactivePhoneNumberComponent::class.java).inject(this)
     }
 
     private fun formStateObserver(){
@@ -132,7 +131,7 @@ class InvalidPhoneNumberFragment : BaseDaggerFragment() {
     }
 
     private fun getErrorMsgWithLogging(throwable: Throwable, flow: String, withErrorCode: Boolean = true): String {
-        val mClassName = if(flow.isEmpty()) InvalidPhoneNumberFragment::class.java.name else "${InvalidPhoneNumberFragment::class.java.name} - $flow"
+        val mClassName = if(flow.isEmpty()) InactivePhoneNumberFragment::class.java.name else "${InactivePhoneNumberFragment::class.java.name} - $flow"
         val message = ErrorHandler.getErrorMessage(context, throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
@@ -144,7 +143,7 @@ class InvalidPhoneNumberFragment : BaseDaggerFragment() {
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle) =
-            InvalidPhoneNumberFragment().apply {
+            InactivePhoneNumberFragment().apply {
                 arguments = bundle
             }
     }

@@ -9,7 +9,7 @@
 
     <application>
         <activity
-            android:name=".invalid_phone_number.view.activity.InvalidPhoneNumberActivity"
+            android:name=".inactive_phone_number.view.activity.InactivePhoneNumberActivity"
             android:label="@string/ipn_toolbar_title"
             android:exported="false"
             android:parentActivityName=".login.view.activity.LoginActivity"

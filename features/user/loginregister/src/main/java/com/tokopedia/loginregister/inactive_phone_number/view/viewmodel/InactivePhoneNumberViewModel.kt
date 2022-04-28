@@ -1,20 +1,20 @@
-package com.tokopedia.loginregister.invalid_phone_number.view.viewmodel
+package com.tokopedia.loginregister.inactive_phone_number.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R.string.*
-import com.tokopedia.loginregister.invalid_phone_number.domain.InvalidPhoneNumberUseCaseContract
-import com.tokopedia.loginregister.invalid_phone_number.view.model.PhoneFormState
-import com.tokopedia.loginregister.invalid_phone_number.view.model.StatusPhoneNumberResult
+import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCaseContract
+import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
+import com.tokopedia.loginregister.inactive_phone_number.view.model.StatusPhoneNumberResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class InvalidPhoneNumberViewModel @Inject constructor(
-    private val invalidPhoneNumberUseCase: InvalidPhoneNumberUseCaseContract,
+class InactivePhoneNumberViewModel @Inject constructor(
+    private val inactivePhoneNumberUseCase: InactivePhoneNumberUseCaseContract,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -42,7 +42,7 @@ class InvalidPhoneNumberViewModel @Inject constructor(
 
     private fun postNumber(number: String) {
         launchCatchError(coroutineContext, {
-            val response = invalidPhoneNumberUseCase.getData(number)
+            val response = inactivePhoneNumberUseCase.getData(number)
 
             if (response.data.isExist)
                 _statusPhoneNumber.value = Success(StatusPhoneNumberResult.SuccessHaveMultipleAccount())

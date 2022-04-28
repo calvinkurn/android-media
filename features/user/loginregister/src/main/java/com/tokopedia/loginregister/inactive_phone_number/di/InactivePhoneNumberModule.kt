@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.invalid_phone_number.di
+package com.tokopedia.loginregister.inactive_phone_number.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -7,10 +7,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.invalid_phone_number.data.model.RegisterCheckModel
-import com.tokopedia.loginregister.invalid_phone_number.domain.InvalidPhoneNumberUseCase
-import com.tokopedia.loginregister.invalid_phone_number.domain.InvalidPhoneNumberUseCaseContract
-import com.tokopedia.loginregister.invalid_phone_number.view.viewmodel.InvalidPhoneNumberViewModel
+import com.tokopedia.loginregister.inactive_phone_number.data.model.RegisterCheckModel
+import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCase
+import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCaseContract
+import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -33,18 +33,18 @@ class InvalidPhoneNumberModule {
 abstract class InteractorModule {
     @Binds
     abstract fun provideInvalidPhoneNumberUseCase(
-        invalidPhoneNumberUseCase: InvalidPhoneNumberUseCase
-    ): InvalidPhoneNumberUseCaseContract
+        inactivePhoneNumberUseCase: InactivePhoneNumberUseCase
+    ): InactivePhoneNumberUseCaseContract
 }
 
 @Module
 abstract class InvalidPhoneNumberViewModelModule {
     @Binds
-    @InvalidPhoneNumberScope
+    @InactivePhoneNumberScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(InvalidPhoneNumberViewModel::class)
-    internal abstract fun provideViewModel(viewModel: InvalidPhoneNumberViewModel): ViewModel
+    @ViewModelKey(InactivePhoneNumberViewModel::class)
+    internal abstract fun provideViewModel(viewModel: InactivePhoneNumberViewModel): ViewModel
 }

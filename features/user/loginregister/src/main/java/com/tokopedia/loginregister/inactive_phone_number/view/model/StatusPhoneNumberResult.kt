@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.invalid_phone_number.view.model
+package com.tokopedia.loginregister.inactive_phone_number.view.model
 
 sealed class StatusPhoneNumberResult(val throwable: Throwable? = null) {
     class SuccessHaveMultipleAccount : StatusPhoneNumberResult()

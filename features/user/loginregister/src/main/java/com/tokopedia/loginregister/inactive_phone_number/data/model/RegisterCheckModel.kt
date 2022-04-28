@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.invalid_phone_number.data.model
+package com.tokopedia.loginregister.inactive_phone_number.data.model
 
 import com.google.gson.annotations.SerializedName
 
