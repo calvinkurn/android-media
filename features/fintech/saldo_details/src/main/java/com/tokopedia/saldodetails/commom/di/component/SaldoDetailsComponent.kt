@@ -9,8 +9,8 @@ import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdra
 import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
-import com.tokopedia.saldodetails.saldoDetail.CommissionBreakdownActivity
-import com.tokopedia.saldodetails.saldoDetail.CommissionBreakdownFragment
+import com.tokopedia.saldodetails.commissionbreakdown.CommissionBreakdownActivity
+import com.tokopedia.saldodetails.commissionbreakdown.CommissionBreakdownFragment
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.BaseSaldoTransactionListFragment

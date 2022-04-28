@@ -19,7 +19,7 @@
             android:layout_weight="2"
             app:unify_text_field_label="Mulai"
             app:unify_text_field_label_static="true"
-            app:unify_text_field_placeholder="Pilih tanggal" />
+            app:unify_text_field_placeholder="Pilih tanggal"/>
 
         <View
             android:layout_width="0dp"

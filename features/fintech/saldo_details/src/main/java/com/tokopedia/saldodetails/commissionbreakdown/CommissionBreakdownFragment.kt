@@ -1,9 +1,10 @@
-package com.tokopedia.saldodetails.saldoDetail
+package com.tokopedia.saldodetails.commissionbreakdown
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.saldodetails.R
@@ -11,6 +12,7 @@ import com.tokopedia.saldodetails.commom.collapseView
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.expandView
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
+import com.tokopedia.unifycomponents.Toaster
 
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
@@ -91,6 +93,7 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
 
     private fun downloadFile() {
         downloadButton?.isLoading = true
+        showSuccessToaster()
 //        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("url"))
 //        val fileName = "commission_report_$startDateStr_$endDateStr.XLS"
 //        request.addRequestHeader("Origin", "tokopedia.com")
@@ -137,5 +140,9 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
         setDateRangeChanged(dateFrom, dateTo)
+    }
+
+    fun showSuccessToaster() {
+        Toaster.build(requireView(), "Laporan biaya transaksi berhasil di download", Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 }

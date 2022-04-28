@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.saldoDetail
+package com.tokopedia.saldodetails.commissionbreakdown
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -131,11 +131,13 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         dateFromTextField?.apply {
             newSelectedDateFrom?.let {
                 this.setPlaceholder(dateFormat.format(it))
+                isEnabled = false
             }
         }
         dateToTextField?.apply {
             newSelectedDateTO?.let {
                 this.setPlaceholder(dateFormat.format(it))
+                isEnabled = false
             }
         }
     }

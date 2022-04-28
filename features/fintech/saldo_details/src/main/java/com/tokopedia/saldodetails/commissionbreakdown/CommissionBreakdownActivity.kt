@@ -1,4 +1,4 @@
-package com.tokopedia.saldodetails.saldoDetail
+package com.tokopedia.saldodetails.commissionbreakdown
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
