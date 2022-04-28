@@ -91,8 +91,7 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
 
     private fun onBackButtonListener() {
         binding?.buttonBack?.setOnClickListener {
-//            requireActivity().finish()
-            finishWithToastError()
+            requireActivity().finish()
 
         }
     }
