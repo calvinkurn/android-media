@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchProductUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
 import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class ProductTagRepositoryImpl @Inject constructor(
     private val getFeedLastTaggedProductUseCase: GetFeedLastTaggedProductUseCase,
     private val getFeedLastPurchaseProductUseCase: GetFeedLastPurchaseProductUseCase,
+    private val feedAceSearchProductUseCase: FeedAceSearchProductUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -54,6 +56,28 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapLastPurchasedProduct(response)
+        }
+    }
+
+    override suspend fun getMyShopProducts(
+        rows: Int,
+        start: Int,
+        query: String,
+        shopId: String,
+        sort: Int
+    ): PagedDataUiModel<ProductUiModel> {
+        return withContext(dispatchers.io) {
+            val response = feedAceSearchProductUseCase.apply {
+                setRequestParams(FeedAceSearchProductUseCase.createParams(
+                    rows = rows,
+                    start = start,
+                    shopId = shopId,
+                    query = query,
+                    sort = sort,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapMyShopProduct(response, "${start + 1}")
         }
     }
 }
