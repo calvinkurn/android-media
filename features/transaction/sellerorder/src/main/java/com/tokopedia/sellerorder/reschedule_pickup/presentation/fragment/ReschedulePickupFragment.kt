@@ -25,6 +25,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -165,7 +167,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             val rescheduleGuide = context?.let { ctx -> HtmlLinkHelper(ctx, data.ticker).spannedString }
             rescheduleGuide?.let { guide -> it.tipsReschedulePickup.description = guide }
 
-            showSubtitle(requireContext(), it.subtitleReschedulePickup)
+            showSubtitle(requireContext(), it.subtitleReschedulePickup, data.appLink)
 
             it.etDay.editText.run {
                 isEnabled = true
@@ -242,10 +244,10 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         )
     }
 
-    private fun showSubtitle(context: Context, textView: TextView?) {
+    private fun showSubtitle(context: Context, textView: TextView?, appLink: String) {
         val onSubtitleClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-
+                RouteManager.route(context, ApplinkConst.WEBVIEW.plus("?url=${appLink}"))
             }
 
             override fun updateDrawState(ds: TextPaint) {

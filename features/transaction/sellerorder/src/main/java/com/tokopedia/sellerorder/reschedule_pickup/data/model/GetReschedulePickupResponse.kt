@@ -22,6 +22,10 @@ data class GetReschedulePickupResponse(
             val orderDetailTicker: String = "",
 
             @Expose
+            @SerializedName("app_link")
+            val appLink: String = "",
+
+            @Expose
             @SerializedName("data")
             val data: List<DataItem> = emptyList()
 

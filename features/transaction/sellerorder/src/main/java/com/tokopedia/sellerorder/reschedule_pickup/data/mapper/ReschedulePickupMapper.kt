@@ -27,7 +27,8 @@ object ReschedulePickupMapper {
             courierName = "${orderData.firstOrNull()?.shipperProductName ?: ""} - $shipperName",
             invoice = orderData.firstOrNull()?.invoice ?: "",
             errorMessage = orderData.firstOrNull()?.errorMessage ?: "",
-            ticker = data.orderDetailTicker
+            ticker = data.orderDetailTicker,
+            appLink = data.appLink
         )
     }
 

@@ -29,6 +29,7 @@ class GetReschedulePickupUseCase @Inject constructor(private val useCase: Graphq
         const val MP_LOGISTIC_GET_RESCHEDULE_PICKUP = """
             query GetReschedulePickup(${'$'}input:MpLogisticGetReschedulePickupInputs!){
                 mpLogisticGetReschedulePickup(input:${'$'}input) {
+                    app_link
                     order_detail_ticker
                     data{
                         shipper_id
