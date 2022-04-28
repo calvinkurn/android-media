@@ -191,11 +191,12 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     Handler().postDelayed({ getLocation() }, 1000)
                 }
             }
-        } else {
-            if (requestCode == GPS_REQUEST) {
-                bottomSheetLocUndefined?.dismiss()
-            }
         }
+//        else {
+//            if (requestCode == GPS_REQUEST) {
+//                bottomSheetLocUndefined?.dismiss()
+//            }
+//        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -214,10 +215,16 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
                 }
             }
-            PERMISSION_DENIED, PERMISSION_DONT_ASK_AGAIN -> {
+            PERMISSION_DENIED -> {
                 if (!isEdit) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
+            }
+            PERMISSION_DONT_ASK_AGAIN -> {
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
+                }
+                showBottomSheetLocUndefined(true)
             }
         }
     }
@@ -270,12 +277,14 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onResume()
         binding?.mapViews?.onResume()
         if (isAccessAppPermissionFromSettings) {
-            bottomSheetLocUndefined?.dismiss()
             isAccessAppPermissionFromSettings = false
             if (allPermissionsGranted()) {
+                bottomSheetLocUndefined?.dismiss()
                 permissionState = PERMISSION_GRANTED
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
                     getLocation()
+                } else {
+                    showBottomSheetLocUndefined(false)
                 }
             }
         }
@@ -576,24 +585,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     }
                 } else {
                     when(permissionState) {
-                        PERMISSION_DENIED -> {
-                            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                                requestPermissionLocation()
-                            } else {
-                                // go to gps settings first
-                                showBottomSheetLocUndefined(false)
-                            }
+                        PERMISSION_DENIED, PERMISSION_NOT_DEFINED -> {
+                            requestPermissionLocation()
                         }
                         PERMISSION_DONT_ASK_AGAIN -> {
-                            if (AddNewAddressUtils.isGpsEnabled(context)) {
-                                showBottomSheetLocUndefined(true)
-                            } else {
-                                // go to gps settings first
-                                showBottomSheetLocUndefined(false)
-                            }
-                        }
-                        PERMISSION_NOT_DEFINED -> {
-                            requestPermissionLocation()
+                            showBottomSheetLocUndefined(true)
                         }
                     }
                 }
