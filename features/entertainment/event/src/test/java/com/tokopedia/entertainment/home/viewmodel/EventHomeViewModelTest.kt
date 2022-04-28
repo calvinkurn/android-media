@@ -18,6 +18,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -34,7 +35,7 @@ class EventHomeViewModelTest{
     val rule = InstantTaskExecutorRule()
     private val coroutineDispatcher = CoroutineTestDispatchers
 
-    lateinit var eventHomeViewModel: EventHomeViewModel
+    private lateinit var eventHomeViewModel: EventHomeViewModel
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -79,9 +80,42 @@ class EventHomeViewModelTest{
         eventHomeViewModel.getHomeData(false)
 
         //then
+        assertTrue(eventHomeViewModel.eventHomeListData.value is Success)
+        assertFalse(eventHomeViewModel.eventHomeListData.value is Fail)
+
         val mappedResultData = eventHomeViewModel.eventHomeListData.value as Success
 
-        assert(!mappedResultData.data.isNullOrEmpty())
+        assertFalse(mappedResultData.data.isNullOrEmpty())
+        assertEquals(mappedResultData.data.size, mappedData.data.size)
+
+        coVerify { graphqlRepository.response(any(), any()) }
+    }
+
+    @Test
+    fun getHomeData_WhenIsLoadFromCloud_SuccessGetHomeData_Success(){
+        //given
+        val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
+        val dataResponse = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
+        val mappedData = Success(mappingItem(data))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = EventHomeDataResponse.Data::class.java
+        result[objectType] = dataResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        eventHomeViewModel.getHomeData(true)
+
+        //then
+        assertTrue(eventHomeViewModel.eventHomeListData.value is Success)
+        assertFalse(eventHomeViewModel.eventHomeListData.value is Fail)
+
+        val mappedResultData = eventHomeViewModel.eventHomeListData.value as Success
+
+        assertFalse(mappedResultData.data.isNullOrEmpty())
         assertEquals(mappedResultData.data.size, mappedData.data.size)
 
         coVerify { graphqlRepository.response(any(), any()) }
@@ -102,10 +136,35 @@ class EventHomeViewModelTest{
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
         //when
+        eventHomeViewModel.getHomeData(false)
+
+        //then
+        assertTrue(eventHomeViewModel.eventHomeListData.value is Fail)
+        assertFalse(eventHomeViewModel.eventHomeListData.value is Success)
+
+        coVerify { graphqlRepository.response(any(), any()) }
+    }
+
+    @Test
+    fun getHomeData_Failed_WhenIsLoadFromCloud_GetHomeData_Failed(){
+        //given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error Fetch All Location"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[EventHomeDataResponse.Data::class.java] = listOf(errorGql)
+
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } coAnswers {
+            GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+        }
+        //when
         eventHomeViewModel.getHomeData(true)
 
         //then
-        assert(eventHomeViewModel.eventHomeListData.value is Fail)
+        assertTrue(eventHomeViewModel.eventHomeListData.value is Fail)
+        assertFalse(eventHomeViewModel.eventHomeListData.value is Success)
 
         coVerify { graphqlRepository.response(any(), any()) }
     }
