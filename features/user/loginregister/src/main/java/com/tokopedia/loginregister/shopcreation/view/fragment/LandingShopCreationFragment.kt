@@ -175,19 +175,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initButtonListener() {
-//        if (userSession.isLoggedIn) {
-//            buttonOpenShop.setOnClickListener {
-//                showLoading()
-//                shopCreationAnalytics.eventClickOpenShopLanding()
-//                shopCreationViewModel.getUserProfile()
-//            }
-//        } else {
-//            buttonOpenShop.setOnClickListener {
-//                showLoading()
-//                shopCreationAnalytics.eventClickOpenShopLanding()
-//                goToPhoneShopCreation()
-//            }
-//        }
         buttonOpenShop.setOnClickListener {
             shopCreationAnalytics.eventClickOpenShopLanding()
             goToShopAdminRedirection()
