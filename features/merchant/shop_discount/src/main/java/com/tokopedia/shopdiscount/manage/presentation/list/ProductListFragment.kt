@@ -392,7 +392,22 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
             discountStatusId,
             position
         )
+        bottomSheet.setListener(object: ShopDiscountProductDetailBottomSheet.Listener{
+            override fun deleteParentProduct(productId: String) {
+                deleteSingleProduct(productId)
+            }
+
+        })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun deleteSingleProduct(productId: String) {
+        val totalCountProduct = viewModel.getTotalProduct() - ONE_PRODUCT
+        val getDeletedProduct = adapter?.getProductBasedOnId(productId)
+        getDeletedProduct?.let{
+            productAdapter.delete(it)
+            onDiscountRemoved(discountStatusId, totalCountProduct)
+        }
     }
 
     private fun redirectToProductDetailPage(product: Product) {

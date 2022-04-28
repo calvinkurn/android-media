@@ -9,8 +9,11 @@ import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProduc
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 
 class ShopDiscountProductDetailAdapter(
-    private val typeFactory: ShopDiscountProductDetailTypeFactoryImpl
+    typeFactory: ShopDiscountProductDetailTypeFactoryImpl
 ) : BaseListAdapter<Visitable<*>, ShopDiscountProductDetailTypeFactoryImpl>(typeFactory) {
+
+    private val productListData: MutableList<ShopDiscountProductDetailUiModel.ProductDetailData> =
+        mutableListOf()
 
     override fun showLoading() {
         val newList = getNewVisitableItems()
@@ -31,8 +34,14 @@ class ShopDiscountProductDetailAdapter(
     }
 
     fun addListProductDetailData(data: List<ShopDiscountProductDetailUiModel.ProductDetailData>) {
+        productListData.clear()
+        productListData.addAll(data)
+        updateProductList()
+    }
+
+    fun updateProductList() {
         val newList = getNewVisitableItems()
-        newList.addAll(data)
+        newList.addAll(productListData)
         submitList(newList)
     }
 
@@ -41,6 +50,19 @@ class ShopDiscountProductDetailAdapter(
         newList.clear()
         newList.add(ShopDiscountProductDetailListGlobalErrorUiModel(throwable))
         submitList(newList)
+    }
+
+    fun deleteProductFromList(productId: String) {
+        productListData.firstOrNull {
+            it.productId == productId
+        }?.let {
+            productListData.remove(it)
+            updateProductList()
+        }
+    }
+
+    fun getTotalProduct(): Int {
+        return productListData.size
     }
 
     private fun submitList(newList: List<Visitable<*>>) {

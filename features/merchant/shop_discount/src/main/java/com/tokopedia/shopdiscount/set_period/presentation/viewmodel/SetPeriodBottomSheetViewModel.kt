@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
-import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,6 +39,7 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
 
     private var selectedStartDate: Date = Date()
     private var selectedEndDate: Date = Date()
+    private var maxDate: Date = Date()
 
     private val _benefit = MutableLiveData<Result<GetSlashPriceBenefitResponse>>()
     val benefit: LiveData<Result<GetSlashPriceBenefitResponse>>
@@ -129,6 +129,14 @@ class SetPeriodBottomSheetViewModel @Inject constructor(
 
     fun getBenefitPackageName(): String {
         return benefitPackageName
+    }
+
+    fun setMaxDate(date: Date){
+        maxDate = date
+    }
+
+    fun getMaxDate(): Date {
+        return maxDate
     }
 
 }

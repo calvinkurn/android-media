@@ -21,6 +21,7 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.toDate
@@ -38,18 +39,18 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     companion object {
         private const val START_DATE_ARG = "START_DATE_ARG"
         private const val END_DATE_ARG = "END_DATE_ARG"
-        private const val MODE_ARG = "MODE_ARG"
+        private const val SLASH_PRICE_STATUS_ID_ARG = "SLASH_PRICE_STATUS_ID_ARG"
 
         fun newInstance(
             startDateUnix: Long,
             endDateUnix: Long,
-            mode: String
+            slashPriceStatusId: String
         ): SetPeriodBottomSheet {
             return SetPeriodBottomSheet().apply {
                 val args = Bundle()
                 args.putLong(START_DATE_ARG, startDateUnix)
                 args.putLong(END_DATE_ARG, endDateUnix)
-                args.putString(MODE_ARG, mode)
+                args.putString(SLASH_PRICE_STATUS_ID_ARG, slashPriceStatusId)
                 arguments = args
             }
         }
@@ -65,7 +66,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     private var onApplyClickListener: (SetPeriodResultUiModel) -> Unit = {}
     private var startDateUnix: Long = 0
     private var endDateUnix: Long = 0
-    private var mode: String = ""
+    private var slashPriceStatusId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,7 +112,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         arguments?.let {
             startDateUnix = it.getLong(START_DATE_ARG).orZero()
             endDateUnix = it.getLong(END_DATE_ARG).orZero()
-            mode = it.getString(MODE_ARG).orEmpty()
+            slashPriceStatusId = it.getString(SLASH_PRICE_STATUS_ID_ARG).orEmpty()
         }
     }
 
@@ -134,45 +135,36 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun configDatePeriod(data: GetSlashPriceBenefitResponse) {
-        when (mode) {
-            ShopDiscountManageDiscountMode.CREATE -> {
-                val benefits = data.getSlashPriceBenefit.slashPriceBenefits
-                val isUsingVps = data.getSlashPriceBenefit.isUseVps
-                if (benefits.isNotEmpty()) {
-                    val startDate: Date
-                    val endDate: Date
-                    if (isUsingVps) {
-                        hideAllChips()
-                        val benefit = benefits.firstOrNull {
-                            it.packageId.toIntOrZero() != -1
-                        }
-                        if (startDateUnix > 0 && endDateUnix > 0) {
-                            startDate = Date(startDateUnix)
-                            endDate = Date(endDateUnix)
-                        } else {
-                            startDate = viewModel.defaultStartDate
-                            endDate = benefit?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
-                        }
-                    } else {
-                        if (startDateUnix > 0 && endDateUnix > 0) {
-                            startDate = Date(startDateUnix)
-                            endDate = Date(endDateUnix)
-                        } else {
-                            startDate = viewModel.defaultStartDate
-                            endDate = viewModel.defaultMembershipEndDate
-                            binding?.chipOneYearPeriod?.chipType = ChipsUnify.TYPE_SELECTED
-                        }
-                    }
-                    viewModel.setSelectedStartDate(startDate)
-                    viewModel.setSelectedEndDate(endDate)
+        val benefits = data.getSlashPriceBenefit.slashPriceBenefits
+        val isUsingVps = data.getSlashPriceBenefit.isUseVps
+        if (benefits.isNotEmpty()) {
+            val startDate: Date
+            val endDate: Date
+            val maxDate: Date = if (isUsingVps) {
+                hideAllChips()
+                val benefit = benefits.firstOrNull {
+                    it.packageId.toIntOrZero() != -1
+                }
+                benefit?.expiredAt?.toDate(DateConstant.DATE_TIME) ?: Date()
+            } else {
+                viewModel.defaultMembershipEndDate
+            }
+            if (startDateUnix > 0 && endDateUnix > 0) {
+                startDate = Date(startDateUnix)
+                endDate = Date(endDateUnix)
+            } else {
+                startDate = viewModel.defaultStartDate
+                endDate = maxDate
+            }
+            when (slashPriceStatusId.toIntOrZero()) {
+                SlashPriceStatusId.ONGOING, SlashPriceStatusId.PAUSED -> {
+                    hideAllChips()
+                    binding?.tfuStartDate?.isEnabled = false
                 }
             }
-            ShopDiscountManageDiscountMode.UPDATE -> {
-                hideAllChips()
-                binding?.tfuStartDate?.isEnabled = false
-                viewModel.setSelectedStartDate(Date(startDateUnix))
-                viewModel.setSelectedEndDate(Date(endDateUnix))
-            }
+            viewModel.setSelectedStartDate(startDate)
+            viewModel.setSelectedEndDate(endDate)
+            viewModel.setMaxDate(maxDate)
         }
     }
 
@@ -300,9 +292,9 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_start_date),
-            Date(),
+            viewModel.getSelectedStartDate(),
             viewModel.defaultStartDate,
-            viewModel.getSelectedEndDate(),
+            viewModel.getMaxDate(),
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -321,7 +313,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             getString(R.string.sd_end_date),
             viewModel.getSelectedEndDate(),
             viewModel.defaultStartDate,
-            viewModel.getSelectedEndDate(),
+            viewModel.getMaxDate(),
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {

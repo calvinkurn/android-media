@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment
+package com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

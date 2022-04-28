@@ -120,4 +120,10 @@ class ProductAdapter(
     fun getItems(): List<Product> {
         return products
     }
+
+    fun getProductBasedOnId(productId: String): Product? {
+        return products.firstOrNull {
+            it.id == productId
+        }
+    }
 }
