@@ -32,6 +32,8 @@ class TokoFoodPromoViewModel @Inject constructor(
     val visitables: LiveData<MutableList<Visitable<*>>>
         get() = _visitables
 
+    private val _changeRestrictionMessage = MutableLiveData<String>()
+
     private fun getVisitablesValue(): MutableList<Visitable<*>> {
         return visitables.value ?: mutableListOf()
     }
@@ -47,10 +49,7 @@ class TokoFoodPromoViewModel @Inject constructor(
                         TokoFoodPromoUiModelMapper.mapResponseDataToVisitables(it.data)
                     it.data.changeRestrictionMessage.takeIf { message -> message.isNotEmpty() }
                         ?.let { message ->
-                            _uiEvent.value = UiEvent(
-                                state = UiEvent.EVENT_SHOW_TOASTER,
-                                data = message
-                            )
+                            _changeRestrictionMessage.value = message
                         }
                 } else {
                     _uiEvent.value = UiEvent(
@@ -65,6 +64,13 @@ class TokoFoodPromoViewModel @Inject constructor(
                 throwable = it
             )
         })
+    }
+
+    fun showChangeRestrictionMessage() {
+        _uiEvent.value = UiEvent(
+            state = UiEvent.EVENT_SHOW_TOASTER,
+            data = _changeRestrictionMessage.value
+        )
     }
 
 }

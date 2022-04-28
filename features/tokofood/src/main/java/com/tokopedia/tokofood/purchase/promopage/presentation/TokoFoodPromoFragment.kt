@@ -329,9 +329,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onClickUnavailablePromoItem() {
-        view?.let {
-            Toaster.build(it, "Kupon yang terpasang otomatis tidak bisa diubah.").show()
-        }
+        viewModel.showChangeRestrictionMessage()
     }
 
 }
