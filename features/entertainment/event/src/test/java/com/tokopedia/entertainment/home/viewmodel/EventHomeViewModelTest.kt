@@ -40,6 +40,10 @@ class EventHomeViewModelTest{
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
+    companion object{
+        const val HOME_MOCK_RESPONSE = "home_response_mock.json"
+    }
+
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
@@ -64,8 +68,8 @@ class EventHomeViewModelTest{
     @Test
     fun getHomeData_SuccessGetHomeData_Success(){
         //given
-        val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
-        val dataResponse = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
+        val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson(HOME_MOCK_RESPONSE), EventHomeDataResponse.Data::class.java)
+        val dataResponse = Gson().fromJson<EventHomeDataResponse.Data>(getJson(HOME_MOCK_RESPONSE), EventHomeDataResponse.Data::class.java)
         val mappedData = Success(mappingItem(data))
 
         val result = HashMap<Type, Any>()
@@ -94,8 +98,8 @@ class EventHomeViewModelTest{
     @Test
     fun getHomeData_WhenIsLoadFromCloud_SuccessGetHomeData_Success(){
         //given
-        val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
-        val dataResponse = Gson().fromJson<EventHomeDataResponse.Data>(getJson("home_response_mock.json"), EventHomeDataResponse.Data::class.java)
+        val data = Gson().fromJson<EventHomeDataResponse.Data>(getJson(HOME_MOCK_RESPONSE), EventHomeDataResponse.Data::class.java)
+        val dataResponse = Gson().fromJson<EventHomeDataResponse.Data>(getJson(HOME_MOCK_RESPONSE), EventHomeDataResponse.Data::class.java)
         val mappedData = Success(mappingItem(data))
 
         val result = HashMap<Type, Any>()
