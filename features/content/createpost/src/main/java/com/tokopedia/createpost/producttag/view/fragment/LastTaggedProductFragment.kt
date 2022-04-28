@@ -166,7 +166,7 @@ class LastTaggedProductFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "FeedAccountTypeBottomSheet"
+        const val TAG = "LastTaggedProductFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,

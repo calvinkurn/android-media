@@ -16,6 +16,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.createpost.producttag.view.fragment.LastPurchasedProductFragment
 import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -86,6 +87,9 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
             is LastTaggedProductFragment -> {
+                childFragment.setViewModelProvider(createViewModelProvider())
+            }
+            is LastPurchasedProductFragment -> {
                 childFragment.setViewModelProvider(createViewModelProvider())
             }
         }
@@ -163,6 +167,19 @@ class ProductTagParentFragment @Inject constructor(
                 val fragment = LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
                 childFragmentManager.beginTransaction()
                     .replace(binding.flCcProductTagContainer.id, fragment, LastTaggedProductFragment.TAG)
+                    .commit()
+            }
+            ProductTagSource.LastPurchase -> {
+                val fragment = LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+                childFragmentManager.beginTransaction()
+                    .replace(binding.flCcProductTagContainer.id, fragment, LastPurchasedProductFragment.TAG)
+                    .commit()
+            }
+            ProductTagSource.MyShop -> {
+                /** TODO: just for testing purpose */
+                val fragment = LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+                childFragmentManager.beginTransaction()
+                    .replace(binding.flCcProductTagContainer.id, fragment, LastPurchasedProductFragment.TAG)
                     .commit()
             }
             ProductTagSource.GlobalSearch -> {
