@@ -53,6 +53,7 @@
     <string name="transaction_item_total_product">%s\nBarang</string>
     <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
+    <string name="transaction_empty">Status belanjaanmu nanti bisa dicek di sini, lho!</string>
 
     <string name="favorite_shop_others_count">%d Toko\nLainnya</string>
 
@@ -83,6 +84,8 @@
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
+    <string name="content_desc_image_review">image review</string>
+    <string name="content_desc_image_empty_transaction">image empty transaction</string>
     <string name="content_desc_affiliate">Affiliate</string>
     <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>

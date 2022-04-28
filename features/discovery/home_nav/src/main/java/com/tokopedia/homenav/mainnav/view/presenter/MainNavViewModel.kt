@@ -374,7 +374,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getOngoingTransaction() {
+    private suspend fun getOngoingTransaction() {
         //find error state if availabxle and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateOngoingTransactionModel
@@ -385,9 +385,9 @@ class MainNavViewModel @Inject constructor(
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
-            val reviewList = listOf<NavReviewOrder>(NavReviewOrder("1", "test gan", "https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_28_2x.png"))
+            val reviewList = listOf<NavReviewOrder>()
 
-            if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
+            if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
@@ -398,8 +398,9 @@ class MainNavViewModel @Inject constructor(
                     updateWidget(transactionListItemViewModel, it)
                 }
             } else {
+                val emptyTransaction = TransactionListItemDataModel(NavOrderListModel())
                 findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
-                    deleteWidget(InitialShimmerTransactionDataModel())
+                    updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }

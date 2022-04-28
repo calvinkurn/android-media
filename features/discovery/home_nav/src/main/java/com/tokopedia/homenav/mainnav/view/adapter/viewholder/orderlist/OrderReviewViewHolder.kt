@@ -66,7 +66,6 @@ class OrderReviewViewHolder(itemView: View, val mainNavListener: MainNavListener
                         shimmer?.gone()
                     }
                 })
-
         }
 
         binding?.orderReviewContainer?.setOnClickListener {

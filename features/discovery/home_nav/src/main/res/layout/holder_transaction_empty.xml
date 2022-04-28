@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="254dp"
+    android:id="@+id/order_product_card"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/order_review_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/order_review_image"
+            android:id="@+id/order_empty_image"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@string/content_desc_image_review"
+            android:layout_marginStart="16dp"
+            android:contentDescription="@string/content_desc_image_empty_transaction"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/order_review_image_shimmer"
+            android:id="@+id/order_empty_image_shimmer"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginVertical="8dp"
@@ -38,25 +37,18 @@
             app:loader_type="rect" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/order_review_product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="14dp"
-            android:textColor="@color/Unify_NN950"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/order_review_image"
+            android:layout_marginVertical="20dp"
+            android:layout_marginStart="92dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/transaction_empty"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"
-            tools:text="Menunggu Pembayaran" />
+            app:typographyType="display_3" />
 
-        <include
-            layout="@layout/layout_review_stars"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            app:layout_constraintStart_toStartOf="@id/order_review_product_name"
-            app:layout_constraintTop_toBottomOf="@id/order_review_product_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.tokopedia.unifycomponents.CardUnify2>
