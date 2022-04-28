@@ -77,7 +77,6 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
         binding.rvLastPurchasedProduct.adapter = adapter
 
         binding.globalError.apply {
-            /** TODO: gonna change this later */
             errorIllustration.loadImage(getString(R.string.img_no_last_purchase_product))
             errorTitle.text = getString(R.string.cc_no_last_purchased_product_title)
             errorDescription.text = getString(R.string.cc_no_last_purchased_product_desc)
