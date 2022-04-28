@@ -21,7 +21,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".commom.design.SaldoWebViewActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"

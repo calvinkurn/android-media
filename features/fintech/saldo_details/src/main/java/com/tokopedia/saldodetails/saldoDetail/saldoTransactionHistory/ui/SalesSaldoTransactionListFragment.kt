@@ -27,15 +27,11 @@ class SalesSaldoTransactionListFragment : BaseSaldoTransactionListFragment() {
         }
     }
     override fun onDataLoaded(historyList: List<Visitable<*>>, hasMore: Boolean) {
-        var list: List<Visitable<*>>
-//        if(GlobalConfig.isSellerApp()) {
-            list = listOf(TickerDownloadFeeTransactionModel1()) + historyList
-            for (i in 1..10) {
-                list += historyList
-            }
-//        } else {
-//            list = historyList
-//        }
+        val list: List<Visitable<*>> = if(GlobalConfig.isSellerApp()) {
+            listOf(TickerDownloadFeeTransactionModel1()) + historyList
+        } else {
+            historyList
+        }
         super.onDataLoaded(list, hasMore)
     }
 

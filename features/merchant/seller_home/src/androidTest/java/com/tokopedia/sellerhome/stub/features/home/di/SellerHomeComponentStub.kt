@@ -1,9 +1,9 @@
 package com.tokopedia.sellerhome.stub.features.home.di
 
-import com.tokopedia.saldodetails.commissionbreakdown.di.component.CommissionBreakdownComponent
+import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
-import com.tokopedia.commissionbreakdown.di.scope.CommissionBreakdownScope
+import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.stub.di.component.BaseAppComponentStub
 import dagger.Component
 
@@ -11,7 +11,7 @@ import dagger.Component
  * Created by @ilhamsuaib on 06/12/21.
  */
 
-@CommissionBreakdownScope
+@SellerHomeScope
 @Component(
     modules = [
         SellerHomeModuleStub::class,
@@ -20,4 +20,4 @@ import dagger.Component
     ],
     dependencies = [BaseAppComponentStub::class]
 )
-interface SellerHomeComponentStub : CommissionBreakdownComponent
+interface SellerHomeComponentStub : HomeDashboardComponent
