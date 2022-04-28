@@ -1,18 +1,23 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
+/**
+ * MockKey is a GQL request details wrapper, currently used in MockInterceptor
+ */
 data class MockKey(
     val query: String,
     val variables: Map<String, String>
 ) {
-    // expectation #1: "query queryname"
-    // expectation #2: "\"operator\": \"18\""
+    /**
+     * Content example:
+     * query: "queryname" or "mutationname"
+     * variables: "\"operator\": \"18\""
+     * */
     fun inList(): List<String> {
-        val keys = mutableListOf<String>()
-        keys.add("query $query")
-        variables.forEach {
-            keys.add("\"${it.key}\": \"${it.value}\"")
+        return mutableListOf<String>().apply {
+            add(query)
+            variables.forEach {
+                add("\"${it.key}\": \"${it.value}\"")
+            }
         }
-
-        return keys
     }
 }

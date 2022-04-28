@@ -18,9 +18,9 @@ abstract class MockModelConfig {
         responseList[key] = MockModel(listOf(key), value, findType)
     }
 
-    fun addMockResponse(key: MockKey, value: String, findType: Int) {
+    fun addMockResponse(key: MockKey, value: String) {
         // key.toString() => MockKey(query=rechargeCatalogDynamicInput, variables={operator=18})
-        responseList[key.toString()] = MockModel(key.inList(), value, findType)
+        responseList[key.toString()] = MockModel(key.inList(), value, FIND_BY_QUERY_AND_VARIABLES)
     }
 
     fun getResponseList() = responseList
