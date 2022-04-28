@@ -18,7 +18,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     id = it.id,
                     shopID = it.shopID,
                     shopName = it.shopName,
-                    shopBadge = it.shopBadgeURL,
+                    shopBadge = listOf(ProductUiModel.ShopBadge(it.shopBadgeURL.isNotEmpty(), it.shopBadgeURL)),
                     name = it.name,
                     coverURL = it.coverURL,
                     webLink = it.webLink,
