@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel.mapper
 
+import com.tokopedia.createpost.producttag.model.GetFeedLastPurchaseProductResponse
 import com.tokopedia.createpost.producttag.model.GetFeedLastTaggedProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
@@ -12,6 +13,40 @@ import javax.inject.Inject
 class ProductTagUiModelMapper @Inject constructor() {
 
     fun mapLastTaggedProduct(response: GetFeedLastTaggedProductResponse): PagedDataUiModel<ProductUiModel> {
+        return PagedDataUiModel(
+            dataList = response.data.products.map {
+                ProductUiModel(
+                    id = it.id,
+                    shopID = it.shopID,
+                    shopName = it.shopName,
+                    shopBadge = it.shopBadgeURL,
+                    name = it.name,
+                    coverURL = it.coverURL,
+                    webLink = it.webLink,
+                    appLink = it.appLink,
+                    star = it.star,
+                    price = it.price,
+                    priceFmt = it.priceFmt,
+                    isDiscount = it.isDiscount,
+                    discount = it.discount,
+                    discountFmt = it.discountFmt,
+                    priceOriginal = it.priceOriginal,
+                    priceOriginalFmt = it.priceOriginalFmt,
+                    priceDiscount = it.priceDiscount,
+                    priceDiscountFmt = it.priceDiscountFmt,
+                    totalSold = it.totalSold,
+                    totalSoldFmt = it.totalSoldFmt,
+                    isBebasOngkir = it.isBebasOngkir,
+                    bebasOngkirStatus = it.bebasOngkirStatus,
+                    bebasOngkirURL = it.bebasOngkirURL,
+                )
+            },
+            hasNextPage = response.data.nextCursor.isNotEmpty(),
+            nextCursor = response.data.nextCursor,
+        )
+    }
+
+    fun mapLastPurchasedProduct(response: GetFeedLastPurchaseProductResponse): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = response.data.products.map {
                 ProductUiModel(

@@ -15,4 +15,9 @@ interface ProductTagRepository {
         cursor: String,
         limit: Int,
     ) : PagedDataUiModel<ProductUiModel>
+
+    suspend fun getLastPurchasedProducts(
+        cursor: String,
+        limit: Int,
+    ) : PagedDataUiModel<ProductUiModel>
 }

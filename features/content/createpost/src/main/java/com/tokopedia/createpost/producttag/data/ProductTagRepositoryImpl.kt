@@ -2,8 +2,8 @@ package com.tokopedia.createpost.producttag.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
-import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
@@ -15,6 +15,7 @@ import javax.inject.Inject
  */
 class ProductTagRepositoryImpl @Inject constructor(
     private val getFeedLastTaggedProductUseCase: GetFeedLastTaggedProductUseCase,
+    private val getFeedLastPurchaseProductUseCase: GetFeedLastPurchaseProductUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -36,6 +37,22 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapLastTaggedProduct(response)
+        }
+    }
+
+    override suspend fun getLastPurchasedProducts(
+        cursor: String,
+        limit: Int
+    ): PagedDataUiModel<ProductUiModel> {
+        return withContext(dispatchers.io) {
+            val response = getFeedLastPurchaseProductUseCase.apply {
+                setRequestParams(GetFeedLastPurchaseProductUseCase.createParams(
+                    cursor = cursor,
+                    limit = limit,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapLastPurchasedProduct(response)
         }
     }
 }
