@@ -18,6 +18,7 @@ import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.LastPurchasedProductFragment
 import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
+import com.tokopedia.createpost.producttag.view.fragment.MyShopProductFragment
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
@@ -90,6 +91,9 @@ class ProductTagParentFragment @Inject constructor(
                 childFragment.setViewModelProvider(createViewModelProvider())
             }
             is LastPurchasedProductFragment -> {
+                childFragment.setViewModelProvider(createViewModelProvider())
+            }
+            is MyShopProductFragment -> {
                 childFragment.setViewModelProvider(createViewModelProvider())
             }
         }
@@ -176,7 +180,10 @@ class ProductTagParentFragment @Inject constructor(
                     .commit()
             }
             ProductTagSource.MyShop -> {
-
+                val fragment = MyShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
+                childFragmentManager.beginTransaction()
+                    .replace(binding.flCcProductTagContainer.id, fragment, MyShopProductFragment.TAG)
+                    .commit()
             }
             ProductTagSource.GlobalSearch -> {
 
