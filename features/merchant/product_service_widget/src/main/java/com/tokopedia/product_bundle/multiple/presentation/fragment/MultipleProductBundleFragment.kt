@@ -106,6 +106,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
+    private var selectedBundleId: Long? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -118,7 +120,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
         // get data from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
-        var selectedBundleId: Long? = null
         var selectedVariantIds: List<String> = emptyList()
         var emptyVariantProductIds: List<String> = emptyList()
         if (arguments != null) {
@@ -164,7 +165,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // update the process day
                     renderProcessDayView(processDayView, preOrderStatus, processDay.toInt(), processTypeNum)
                     // update totalView atc button text
-                    updateProductBundleOverViewButtonText(preOrderStatus)
+                    updateProductBundleOverViewButtonText(preOrderStatus, true)
                 }
                 //show error if bundle is empty
                 showGlobalError(productBundleMasters.isEmpty())
@@ -353,12 +354,43 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.setSubtitleText(getString(R.string.text_saving), totalSavingText)
     }
 
-    private fun updateProductBundleOverViewButtonText(preOrderStatus: String) {
+    private fun updateProductBundleOverViewButtonText(preOrderStatus: String, isFirstSetup: Boolean = false) {
         productBundleOverView?.amountCtaView?.text = if (viewModel.isPreOrderActive(preOrderStatus)) {
-            getString(R.string.action_preorder)
+            getCtaText(
+                stringRes = R.string.action_preorder,
+                isEnabled = true
+            )
         } else {
-            getString(R.string.action_buy_bundle)
+            getAddUpdateModeCtaText(isFirstSetup)
         }
+    }
+
+    private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
+        return if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+            // return string when in update mode
+            if (selectedBundleId != viewModel.getSelectedProductBundleMaster().bundleId && !isFirstSetup) {
+                getCtaText(
+                    stringRes = R.string.action_choose_package,
+                    isEnabled = true
+                )
+            } else {
+                getCtaText(
+                    stringRes = R.string.action_package_chosen,
+                    isEnabled = false
+                )
+            }
+        } else {
+            // return string when in add mode
+            getCtaText(
+                stringRes = R.string.action_choose_package,
+                isEnabled = true
+            )
+        }
+    }
+
+    private fun getCtaText(stringRes: Int, isEnabled: Boolean): String {
+        productBundleOverView?.amountCtaView?.isEnabled = isEnabled
+        return context?.getString(stringRes).orEmpty()
     }
 
     private fun showGlobalError(isVisible: Boolean) {

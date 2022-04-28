@@ -290,7 +290,7 @@ class SingleProductBundleFragment(
 
     private fun setupTotalPO(view: View) {
         tvBundlePreorder = view.findViewById(R.id.tv_bundle_preorder)
-        updateTotalPO(null) // set null to hide
+        updateTotalPO(null, true) // set null to hide
     }
 
     private fun setupRecyclerViewItems(view: View) {
@@ -350,14 +350,14 @@ class SingleProductBundleFragment(
     }
 
     // only visible when totalPOWording not null or empty
-    private fun updateTotalPO(totalPOWording: String?) {
+    private fun updateTotalPO(totalPOWording: String?, isFirstSetup: Boolean = false) {
         tvBundlePreorder?.isVisible = !totalPOWording.isNullOrEmpty()
         tvBundlePreorder?.text = getString(R.string.preorder_prefix, totalPOWording)
-        updateTotalAmountAtcButtonText(totalPOWording)
+        updateTotalAmountAtcButtonText(totalPOWording, isFirstSetup)
     }
 
     private fun updateTotalPO(singleProductBundleItem: SingleProductBundleItem) {
-        updateTotalPO(singleProductBundleItem.preorderDurationWording)
+        updateTotalPO(singleProductBundleItem.preorderDurationWording, true)
     }
 
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
@@ -374,12 +374,43 @@ class SingleProductBundleFragment(
         }
     }
 
-    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
+    private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?, isFirstSetup: Boolean) {
         totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
-            getString(R.string.action_buy_bundle)
+            getAddUpdateModeCtaText(isFirstSetup)
         } else {
-            getString(R.string.action_preorder)
+            getCtaText(
+                stringRes = R.string.action_preorder,
+                isEnabled = true
+            )
         }
+    }
+
+    private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
+        return if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
+            // return string when in update mode
+            if (selectedBundleId != adapter.getSelectedBundleId() && !isFirstSetup) {
+                getCtaText(
+                    stringRes = R.string.action_choose_package,
+                    isEnabled = true
+                )
+            } else {
+                getCtaText(
+                    stringRes = R.string.action_package_chosen,
+                    isEnabled = false
+                )
+            }
+        } else {
+            // return string when in add mode
+            getCtaText(
+                stringRes = R.string.action_choose_package,
+                isEnabled = true
+            )
+        }
+    }
+
+    private fun getCtaText(stringRes: Int, isEnabled: Boolean): String {
+        totalAmount?.amountCtaView?.isEnabled = isEnabled
+        return context?.getString(stringRes).orEmpty()
     }
 
     private fun showLoadingDialog() {
