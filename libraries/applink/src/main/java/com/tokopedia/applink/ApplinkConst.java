@@ -343,6 +343,7 @@ public interface ApplinkConst {
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
+    String INACTIVE_PHONE_NUMBER = "tokopedia://inactive-phone-number";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
     String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
 

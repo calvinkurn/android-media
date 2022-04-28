@@ -56,7 +56,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return "TODO"
+        return "Inantive Phone Number Page"
     }
 
     override fun initInjector() {
@@ -114,7 +114,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, currentNumber)
-            startActivityForResult(intent, INACTIVE_PHONE_CODE)
+            startActivity(intent)
         }
     }
 
@@ -152,9 +152,6 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     }
 
     companion object {
-
-        private const val INACTIVE_PHONE_CODE = 1000
-
         @JvmStatic
         fun newInstance(bundle: Bundle) =
             InactivePhoneNumberFragment().apply {

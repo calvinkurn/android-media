@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.login.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -113,10 +114,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -128,6 +126,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import kotlinx.android.synthetic.main.layout_need_help_bottomsheet.view.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
 import java.util.*
 import javax.inject.Inject
@@ -191,6 +190,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var bannerLogin: ImageUnify? = null
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
+
+    private var needHelpBottomSheetUnify: BottomSheetUnify? = null
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -671,7 +672,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
             forgotPassword?.setOnClickListener {
                 analytics.trackClickForgotPassword()
-                goToForgotPassword()
+//                goToForgotPassword()
+                showNeedHelpBottomSheet()
             }
         }
 
@@ -791,6 +793,65 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
+    }
+
+    private fun goToInactivePhoneNumber(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INACTIVE_PHONE_NUMBER)
+        startActivity(intent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        needHelpBottomSheetUnify = null
+    }
+
+    private fun showNeedHelpBottomSheet(){
+        needHelpBottomSheetUnify = createNeedHelpBottomSheet(context)
+
+        needHelpBottomSheetUnify?.show(childFragmentManager, NEED_HELP_BOTTOM_SHEET)
+    }
+
+    @SuppressLint("ResourcePackage")
+    private fun createNeedHelpBottomSheet(context: Context?): BottomSheetUnify {
+        val bottomSheetUnify = BottomSheetUnify()
+        val viewChild = View.inflate(context, R.layout.layout_need_help_bottomsheet, null)
+        bottomSheetUnify.setChild(viewChild)
+        bottomSheetUnify.setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
+
+        initTokopediaCareTextNeedHelpBottomSheet(viewChild.to_need_another_help)
+
+        viewChild.ub_forgot_password.setOnClickListener {
+            goToForgotPassword()
+        }
+
+        viewChild.ub_inactive_phone_number.setOnClickListener {
+            goToInactivePhoneNumber()
+        }
+
+        return bottomSheetUnify
+    }
+
+    private fun initTokopediaCareTextNeedHelpBottomSheet(typography: Typography) {
+        val message = getString(R.string.ipn_need_another_help)
+        val spannable = SpannableString(message)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    goToTokopediaCareWebview()
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.call_tokopedia_care)),
+            message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
+            0
+        )
+        typography.movementMethod = LinkMovementMethod.getInstance()
+        typography.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     override fun goToTokopediaCareWebview() {
@@ -1829,6 +1890,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
+
+        private const val NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
