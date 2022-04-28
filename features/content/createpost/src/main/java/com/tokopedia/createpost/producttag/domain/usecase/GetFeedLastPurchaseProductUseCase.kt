@@ -34,39 +34,39 @@ class GetFeedLastPurchaseProductUseCase @Inject constructor(
             query FeedXGetLastPurchaseProducts(${"$$PARAM_CURSOR"}: String!, ${"$$PARAM_LIMIT"}: Int!) {
                 feedXGetLastPurchaseProducts(
                     req: {
-                        $PARAM_CURSOR: ${"$$PARAM_LIMIT"}, 
+                        $PARAM_CURSOR: ${"$$PARAM_CURSOR"}, 
                         $PARAM_LIMIT: ${"$$PARAM_LIMIT"}
                     }
                 ) {
-                products {
-                  id
-                  shopID
-                  shopName
-                  shopBadgeURL
-                  name
-                  coverURL
-                  webLink
-                  appLink
-                  star
-                  price
-                  priceFmt
-                  isDiscount
-                  discount
-                  discountFmt
-                  priceOriginal
-                  priceOriginalFmt
-                  priceDiscount
-                  priceDiscountFmt
-                  totalSold
-                  totalSoldFmt
-                  isBebasOngkir
-                  bebasOngkirStatus
-                  bebasOngkirURL
-                  mods
-                }
-                nextCursor
-                coachmark
-                isCoachmarkShown
+                    products {
+                      id
+                      shopID
+                      shopName
+                      shopBadgeURL
+                      name
+                      coverURL
+                      webLink
+                      appLink
+                      star
+                      price
+                      priceFmt
+                      isDiscount
+                      discount
+                      discountFmt
+                      priceOriginal
+                      priceOriginalFmt
+                      priceDiscount
+                      priceDiscountFmt
+                      totalSold
+                      totalSoldFmt
+                      isBebasOngkir
+                      bebasOngkirStatus
+                      bebasOngkirURL
+                      mods
+                    }
+                    nextCursor
+                    coachmark
+                    isCoachmarkShown
               }
             }
         """

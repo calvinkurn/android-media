@@ -122,7 +122,7 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
                     binding.rvLastPurchasedProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
+                else updateAdapterData(curr.products, false)
             }
             is PagedState.Error -> {
                 updateAdapterData(curr.products, false)
