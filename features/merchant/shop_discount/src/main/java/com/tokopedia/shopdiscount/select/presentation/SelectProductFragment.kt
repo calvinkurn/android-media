@@ -307,7 +307,8 @@ class SelectProductFragment : BaseDaggerFragment() {
         } else {
             val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
 
-            if (remainingSelection > ZERO) {
+            val isPartiallyDiscountProduct = selectedProduct.countVariant > ZERO
+            if (remainingSelection > ZERO || isPartiallyDiscountProduct) {
                 tickProduct(selectedProduct)
                 viewModel.addProductToSelection(selectedProduct)
             } else {
