@@ -62,7 +62,7 @@ class WidgetAdapterFactoryImpl(
                 parent,
                 widgetListener
             )
-            GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent)
+            GradeBenefitWidget.RES_LAYOUT -> GradeBenefitWidget(parent, widgetListener)
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(
                 parent,

@@ -81,6 +81,10 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         }
     }
 
+    override fun showShopLevelInfoBottomSheet() {
+
+    }
+
     fun setOnFooterCtaClickedListener(
         term: RegistrationTermUiModel?,
         isEligiblePm: Boolean,

@@ -19,7 +19,8 @@ import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiMod
  */
 
 class GradeBenefitPagerAdapter(
-    val data: WidgetGradeBenefitUiModel
+    private val data: WidgetGradeBenefitUiModel,
+    private val shopLevelInfoClicked: () -> Unit
 ) : RecyclerView.Adapter<GradeBenefitPagerAdapter.GradeBenefitPagerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradeBenefitPagerViewHolder {
@@ -126,19 +127,26 @@ class GradeBenefitPagerAdapter(
         }
 
         private fun showTargetAchievement() {
-            binding.tickerPmAchievementInfo.gone()
-            binding.viewPmTargetAchievement.visible()
-            binding.viewPmTargetAchievement.showInfo(
-                completedOrder = data.currentCompletedOrder,
-                netIncome = data.currentIncome,
-                shopLevel = data.currentShopLevel
-            )
+            binding.run {
+                tickerPmAchievementInfo.gone()
+                viewPmTargetAchievement.visible()
+                viewPmTargetAchievement.showInfo(
+                    completedOrder = data.currentCompletedOrder,
+                    netIncome = data.currentIncome,
+                    shopLevel = data.currentShopLevel,
+                    shopLevelInfoClicked = {
+                        this@GradeBenefitPagerAdapter.shopLevelInfoClicked()
+                    }
+                )
+            }
         }
 
         private fun showTicker(message: String) {
-            binding.viewPmTargetAchievement.gone()
-            binding.tickerPmAchievementInfo.visible()
-            binding.tickerPmAchievementInfo.setTextDescription(message)
+            binding.run {
+                viewPmTargetAchievement.gone()
+                tickerPmAchievementInfo.visible()
+                tickerPmAchievementInfo.setTextDescription(message)
+            }
         }
 
         private fun setupBenefitListView(page: PMGradeWithBenefitsUiModel) {

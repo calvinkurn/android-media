@@ -43,7 +43,8 @@ class PMProTargetView : ConstraintLayout {
     fun showInfo(
         completedOrder: Long,
         netIncome: Long,
-        shopLevel: Int
+        shopLevel: Int,
+        shopLevelInfoClicked: () -> Unit
     ) {
         binding.run {
             val eligibleColor = PowerMerchantSpannableUtil.getColorHexString(
@@ -107,6 +108,10 @@ class PMProTargetView : ConstraintLayout {
                 setupExpandableView(isVisible)
                 showShopLevel(shopLevel, !isVisible)
             }
+
+            icPmTargetShopLevelInfo.setOnClickListener {
+                shopLevelInfoClicked()
+            }
         }
     }
 
@@ -132,11 +137,13 @@ class PMProTargetView : ConstraintLayout {
                 icPmTargetShopLevel.gone()
                 lblPmTargetShopLevel.gone()
                 lblPmTargetShopLevelDesc.gone()
+                icPmTargetShopLevelInfo.gone()
             } else {
                 dividerVerPmTarget2.visible()
                 icPmTargetShopLevel.visible()
                 lblPmTargetShopLevel.visible()
                 lblPmTargetShopLevelDesc.visible()
+                icPmTargetShopLevelInfo.visible()
 
                 lblPmTargetShopLevel.text = root.context.getString(
                     R.string.pm_shop_level, shopLevel.toString()

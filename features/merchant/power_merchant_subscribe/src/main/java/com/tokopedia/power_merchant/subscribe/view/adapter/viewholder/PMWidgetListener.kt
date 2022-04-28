@@ -8,4 +8,4 @@ interface PMWidgetListener : PMDeactivateWidget.PMDeactivateWidgetListener,
     TickerWidget.Listener, CancelDeactivationSubmissionWidget.Listener,
     ExpandableWidget.Listener, UpgradePmProWidget.Listener, ShopGradeWidget.Listener,
     ItemPMProNewSellerBenefitWidget.Listener, RegistrationHeaderWidget.Listener,
-    PotentialWidget.Listener
+    PotentialWidget.Listener, GradeBenefitWidget.Listener

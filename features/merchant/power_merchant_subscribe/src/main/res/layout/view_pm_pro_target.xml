@@ -125,7 +125,7 @@
         app:layout_goneMarginTop="24dp"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        tools:text="@string/pm_shop_level"
+        tools:text="Level Toko : 3"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -138,6 +138,16 @@
         app:layout_constraintTop_toBottomOf="@+id/lblPmTargetShopLevel"
         app:typographyType="small"
         tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icPmTargetShopLevelInfo"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:padding="2dp"
+        android:layout_marginStart="4dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintStart_toEndOf="@+id/lblPmTargetShopLevel"
+        app:layout_constraintTop_toTopOf="@+id/lblPmTargetShopLevel" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerVerPmTarget1"

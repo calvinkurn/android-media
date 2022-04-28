@@ -24,7 +24,10 @@ import timber.log.Timber
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
+class GradeBenefitWidget(
+    itemView: View,
+    private val listener: Listener
+) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
@@ -113,7 +116,9 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             val mLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean = false
             }
-            val pagerAdapter = GradeBenefitPagerAdapter(element)
+            val pagerAdapter = GradeBenefitPagerAdapter(
+                element, listener::showShopLevelInfoBottomSheet
+            )
             layoutManager = mLayoutManager
             adapter = pagerAdapter
 
@@ -139,5 +144,9 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         if (selectedPage != RecyclerView.NO_POSITION) {
             tabPmGradeBenefit.tabLayout.getTabAt(selectedPage)?.select()
         }
+    }
+
+    interface Listener {
+        fun showShopLevelInfoBottomSheet() {}
     }
 }
