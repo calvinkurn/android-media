@@ -371,10 +371,10 @@ class EditFormDefaultViewModelTest {
         viewModel.onCleared()
         verify { validGroupUseCase.cancelJobs() }
         verify { bidInfoUseCase.cancelJobs() }
+        verify { bidInfoDefaultUseCase.cancelJobs() }
         verify { getAdsUseCase.cancelJobs() }
         verify { getAdKeywordUseCase.cancelJobs() }
         verify { groupInfoUseCase.cancelJobs() }
-        verify { topAdsCreateUseCase.unsubscribe() }
         verify { editSingleAdUseCase.cancelJobs() }
         verify { singleAdInfoUseCase.cancelJobs() }
     }

@@ -100,6 +100,7 @@ class KeywordAdsViewModelTest {
     @Test
     fun onCleared() {
         viewModel.onCleared()
+        verify { searchKeywordUseCase.cancelJobs() }
         verify { suggestionKeywordUseCase.cancelJobs() }
     }
 }

@@ -63,6 +63,7 @@ class KeywordAdsViewModel @Inject constructor(
 
     public override fun onCleared() {
         super.onCleared()
+        searchKeywordUseCase.cancelJobs()
         suggestionKeywordUseCase.cancelJobs()
     }
 

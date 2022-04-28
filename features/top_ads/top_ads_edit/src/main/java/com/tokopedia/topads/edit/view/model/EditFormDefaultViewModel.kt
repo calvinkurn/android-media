@@ -161,9 +161,9 @@ class EditFormDefaultViewModel @Inject constructor(
         validGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         getAdsUseCase.cancelJobs()
+        bidInfoDefaultUseCase.cancelJobs()
         getAdKeywordUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
-        topAdsCreateUseCase.unsubscribe()
         editSingleAdUseCase.cancelJobs()
         getAdInfoUseCase.cancelJobs()
     }
