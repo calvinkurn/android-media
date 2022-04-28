@@ -16,4 +16,8 @@ sealed interface PlayBroadcastEvent {
     data class ShowErrorCreateQuiz(
         val error: Throwable
     ) : PlayBroadcastEvent
+
+    object ShowQuizDetailBottomSheet : PlayBroadcastEvent
+    data class ShowQuizDetailError(val error: Throwable) : PlayBroadcastEvent
+
 }

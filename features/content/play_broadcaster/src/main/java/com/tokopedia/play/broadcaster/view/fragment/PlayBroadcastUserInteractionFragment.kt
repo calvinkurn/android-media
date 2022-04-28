@@ -96,9 +96,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment(),
-    FragmentWithDetachableView,
-    InteractiveGameResultViewComponent.Listener,
-    InteractiveActiveViewComponent.Listener {
+    FragmentWithDetachableView {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -128,7 +126,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
+        override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+            parentViewModel.submitAction(PlayBroadcastAction.OngoingWidgetClicked)
+        }
+    }) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
@@ -802,6 +804,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
+                    is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                 }
             }
         }
@@ -1136,15 +1139,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
-    }
-
-    override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
-
-    }
-
-    override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-        if (parentViewModel.uiState.value.interactive is InteractiveUiModel.Quiz)
-            openQuizDetailSheet()
     }
 
 }

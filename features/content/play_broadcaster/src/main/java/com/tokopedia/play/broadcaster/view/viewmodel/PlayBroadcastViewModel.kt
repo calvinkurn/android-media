@@ -393,6 +393,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.CreateGiveaway -> handleCreateGiveaway(
                 event.title, event.durationInMs
             )
+            is PlayBroadcastAction.OngoingWidgetClicked -> handleOngoingWidgetClicked()
         }
     }
 
@@ -1329,6 +1330,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _interactiveSetup.update {
                 it.copy(isSubmitting = false)
             }
+        }
+    }
+
+    private fun handleOngoingWidgetClicked() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            if (uiState.value.interactive is InteractiveUiModel.Quiz) {
+                _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheet)
+            }
+        }) { err ->
+            _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailError(err))
         }
     }
 
