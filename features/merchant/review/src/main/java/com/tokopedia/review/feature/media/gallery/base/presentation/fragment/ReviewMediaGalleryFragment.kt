@@ -12,11 +12,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.review.databinding.FragmentReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.gallery.base.analytic.ReviewMediaGalleryTracker
 import com.tokopedia.review.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.base.presentation.adapter.ReviewMediaGalleryAdapter
-import com.tokopedia.review.databinding.FragmentReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.AdapterUiState
 import com.tokopedia.review.feature.media.gallery.base.presentation.uistate.ViewPagerUiState
@@ -145,11 +145,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onImageImpressed(imageUri: String) {
-        galleryAdapter.getItemByUri(imageUri)?.let { (index, media) ->
+        galleryAdapter.getImageByUri(imageUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressImage(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 sharedReviewMediaGalleryViewModel.getProductId(),
-                media.id,
+                media.getAttachmentID(),
+                media.getFileName(),
                 index,
                 userSession.userId
             )
@@ -157,19 +158,13 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onVideoImpressed(videoUri: String, videoDurationSecond: Long) {
-        galleryAdapter.getItemByUri(videoUri)?.let { (index, media) ->
-            reviewMediaGalleryTracker.trackImpressVideo(
-                sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
-                sharedReviewMediaGalleryViewModel.getProductId(),
-                media.id,
-                index,
-                userSession.userId
-            )
+        galleryAdapter.getVideoByUri(videoUri)?.let { (index, media) ->
             reviewMediaGalleryTracker.trackImpressVideoV2(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 media.feedbackId,
                 sharedReviewMediaGalleryViewModel.getProductId(),
-                media.id,
+                media.getAttachmentID(),
+                media.getVideoID(),
                 index,
                 userSession.userId,
                 videoDurationSecond
@@ -178,11 +173,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onVideoPlaying(videoUri: String, videoDurationSecond: Long) {
-        galleryAdapter.getItemByUri(videoUri)?.let { (_, media) ->
+        galleryAdapter.getVideoByUri(videoUri)?.let { (_, media) ->
             reviewMediaGalleryTracker.trackPlayVideo(
                 media.feedbackId,
                 sharedReviewMediaGalleryViewModel.getProductId(),
-                media.id,
+                media.getAttachmentID(),
+                media.getVideoID(),
                 videoDurationSecond
             )
         }
@@ -193,11 +189,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         videoDurationSecond: Long,
         watchingDurationSecond: Long
     ) {
-        galleryAdapter.getItemByUri(videoUri)?.let { (_, media) ->
+        galleryAdapter.getVideoByUri(videoUri)?.let { (_, media) ->
             reviewMediaGalleryTracker.trackStopVideo(
                 media.feedbackId,
                 sharedReviewMediaGalleryViewModel.getProductId(),
-                media.id,
+                media.getAttachmentID(),
+                media.getVideoID(),
                 videoDurationSecond,
                 watchingDurationSecond
             )

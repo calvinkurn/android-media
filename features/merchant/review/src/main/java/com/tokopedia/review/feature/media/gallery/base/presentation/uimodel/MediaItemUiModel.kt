@@ -11,4 +11,5 @@ interface MediaItemUiModel : Parcelable {
     val feedbackId: String
     fun areItemTheSame(other: MediaItemUiModel?): Boolean
     fun areContentsTheSame(other: MediaItemUiModel?): Boolean
+    fun getAttachmentID(): String
 }

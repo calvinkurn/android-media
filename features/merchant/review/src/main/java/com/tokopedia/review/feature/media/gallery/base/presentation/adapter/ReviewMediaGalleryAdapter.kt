@@ -71,9 +71,15 @@ class ReviewMediaGalleryAdapter(
         mediaItems.addAll(mediaItemUiModels)
     }
 
-    fun getItemByUri(uri: String): Pair<Int, MediaItemUiModel>? {
-        return mediaItems.find { it.uri == uri }?.let {
-            mediaItems.indexOf(it) to it
+    fun getImageByUri(uri: String): Pair<Int, ImageMediaItemUiModel>? {
+        return mediaItems.find { it is ImageMediaItemUiModel && it.uri == uri }?.let {
+            mediaItems.indexOf(it) to it as ImageMediaItemUiModel
+        }
+    }
+
+    fun getVideoByUri(uri: String): Pair<Int, VideoMediaItemUiModel>? {
+        return mediaItems.find { it is VideoMediaItemUiModel && it.uri == uri }?.let {
+            mediaItems.indexOf(it) to it as VideoMediaItemUiModel
         }
     }
 }

@@ -73,10 +73,12 @@ class ReviewMediaGalleryTracker @Inject constructor(
             .sendGeneralEvent()
     }
 
+    // row 22
     fun trackImpressImage(
         imageCount: Long,
         productId: String,
         attachmentId: String,
+        fileName: String,
         position: Int,
         userId: String
     ) {
@@ -89,35 +91,25 @@ class ReviewMediaGalleryTracker @Inject constructor(
             .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendProductId(productId)
-            .appendPromotionsEnhancedEcommerce("", position, attachmentId, "image")
+            .appendPromotionsEnhancedEcommerce(
+                "",
+                position,
+                attachmentId,
+                String.format(
+                    ReviewMediaGalleryTrackerConstant.EVENT_ITEM_NAME_VIEW_IMAGE,
+                    fileName
+                )
+            )
             .queueEnhancedEcommerce(trackingQueue)
     }
 
-    fun trackImpressVideo(
-        imageCount: Long,
-        productId: String,
-        attachmentId: String,
-        position: Int,
-        userId: String
-    ) {
-        mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewMediaGalleryTrackerConstant.EVENT_NAME_PROMO_VIEW,
-            AnalyticConstant.EVENT_CATEGORY,
-            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
-            String.format(ReviewMediaGalleryTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
-        ).appendUserId(userId)
-            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
-            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
-            .appendProductId(productId)
-            .appendPromotionsEnhancedEcommerce("", position, attachmentId, "video")
-            .queueEnhancedEcommerce(trackingQueue)
-    }
-
+    // row 33
     fun trackImpressVideoV2(
         imageCount: Long,
         feedbackId: String,
         productId: String,
         attachmentId: String,
+        videoID: String,
         position: Int,
         userId: String,
         videoDurationSecond: Long
@@ -134,16 +126,23 @@ class ReviewMediaGalleryTracker @Inject constructor(
             .appendPromotionsEnhancedEcommerce(
                 String.format(
                     ReviewMediaGalleryTrackerConstant.EVENT_CREATIVE_NAME_VIEW_VIDEO,
-                    feedbackId, videoDurationSecond
-                ), position, attachmentId, "video"
-            )
-            .queueEnhancedEcommerce(trackingQueue)
+                    feedbackId,
+                    videoDurationSecond
+                ),
+                position,
+                attachmentId,
+                String.format(
+                    ReviewMediaGalleryTrackerConstant.EVENT_ITEM_NAME_VIEW_VIDEO, videoID
+                )
+            ).queueEnhancedEcommerce(trackingQueue)
     }
 
+    // row 34
     fun trackPlayVideo(
         feedbackID: String,
         productID: String,
         attachmentID: String,
+        videoID: String,
         videoDurationSecond: Long
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
@@ -152,7 +151,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
             ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_PLAY_VIDEO,
             String.format(
                 ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_PLAY_VIDEO,
-                feedbackID, attachmentID, videoDurationSecond
+                feedbackID, attachmentID, videoDurationSecond, videoID
             )
         ).appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
@@ -160,10 +159,12 @@ class ReviewMediaGalleryTracker @Inject constructor(
             .sendGeneralEvent()
     }
 
+    // row 35
     fun trackStopVideo(
         feedbackID: String,
         productID: String,
         attachmentID: String,
+        videoID: String,
         videoDurationSecond: Long,
         watchingDurationSecond: Long
     ) {
@@ -173,7 +174,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
             ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_STOP_VIDEO,
             String.format(
                 ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_STOP_VIDEO,
-                feedbackID, attachmentID, videoDurationSecond, watchingDurationSecond
+                feedbackID, attachmentID, videoDurationSecond, watchingDurationSecond, videoID
             )
         ).appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)

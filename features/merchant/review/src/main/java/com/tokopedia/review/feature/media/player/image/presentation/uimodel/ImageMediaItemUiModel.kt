@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.media.player.image.presentation.uimodel
 
+import android.net.Uri
 import com.tokopedia.review.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import kotlinx.parcelize.Parcelize
 
@@ -14,4 +15,12 @@ data class ImageMediaItemUiModel(
 ) : MediaItemUiModel {
     override fun areItemTheSame(other: MediaItemUiModel?): Boolean = id == other?.id
     override fun areContentsTheSame(other: MediaItemUiModel?): Boolean = this == other
+
+    override fun getAttachmentID(): String {
+        return if (id.startsWith("http")) "" else id
+    }
+
+    fun getFileName(): String {
+        return Uri.parse(uri).lastPathSegment.orEmpty()
+    }
 }

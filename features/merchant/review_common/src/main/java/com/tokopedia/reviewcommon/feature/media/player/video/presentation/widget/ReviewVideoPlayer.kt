@@ -22,7 +22,7 @@ import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewcommon.feature.media.player.video.data.cache.MediaPlayerCache
 import java.lang.ref.WeakReference
-import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
 
 class ReviewVideoPlayer(
     private val context: Context,
@@ -197,7 +197,7 @@ class ReviewVideoPlayer(
     }
 
     fun getVideoDurationSecond(): Long {
-        return TimeUnit.MILLISECONDS.toSeconds(exoPlayer?.duration.orZero())
+        return ceil((exoPlayer?.duration.orZero() / 1000f)).toLong()
     }
 }
 

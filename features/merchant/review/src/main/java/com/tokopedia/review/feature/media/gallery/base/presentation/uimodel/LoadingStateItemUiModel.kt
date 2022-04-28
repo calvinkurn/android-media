@@ -14,4 +14,5 @@ data class LoadingStateItemUiModel(
 ) : MediaItemUiModel {
     override fun areItemTheSame(other: MediaItemUiModel?): Boolean = other is LoadingStateItemUiModel && mediaNumber == other.mediaNumber
     override fun areContentsTheSame(other: MediaItemUiModel?): Boolean = other is LoadingStateItemUiModel && mediaNumber == other.mediaNumber
+    override fun getAttachmentID(): String = ""
 }
