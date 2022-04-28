@@ -17,13 +17,13 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 
 @Module
-class InvalidPhoneNumberModule {
+class InactivePhoneNumberModule {
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    fun provideInvalidPhoneNumberUseCase(
+    fun provideInactivePhoneNumberUseCase(
         graphqlRepository: GraphqlRepository
     ): GraphqlUseCase<RegisterCheckModel> = GraphqlUseCase(graphqlRepository)
 
@@ -32,13 +32,13 @@ class InvalidPhoneNumberModule {
 @Module
 abstract class InteractorModule {
     @Binds
-    abstract fun provideInvalidPhoneNumberUseCase(
+    abstract fun provideInactivePhoneNumberUseCase(
         inactivePhoneNumberUseCase: InactivePhoneNumberUseCase
     ): InactivePhoneNumberUseCaseContract
 }
 
 @Module
-abstract class InvalidPhoneNumberViewModelModule {
+abstract class InactivePhoneNumberViewModelModule {
     @Binds
     @InactivePhoneNumberScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

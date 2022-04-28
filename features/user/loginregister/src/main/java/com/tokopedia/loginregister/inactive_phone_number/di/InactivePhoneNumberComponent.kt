@@ -8,8 +8,8 @@ import dagger.Component
 @InactivePhoneNumberScope
 @Component(
     modules = [
-        InvalidPhoneNumberModule::class,
-        InvalidPhoneNumberViewModelModule::class,
+        InactivePhoneNumberModule::class,
+        InactivePhoneNumberViewModelModule::class,
         InteractorModule::class
     ],
     dependencies = [LoginRegisterComponent::class]
