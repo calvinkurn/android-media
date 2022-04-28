@@ -147,6 +147,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         viewBinding.rvMiniCartChatList.adapter = adapter
         viewBinding.rvMiniCartChatList.layoutManager = layoutManager
         viewBinding.rvMiniCartChatList.addItemDecoration(miniCartChatProductDecoration)
+        viewBinding.rvMiniCartChatList.itemAnimator = null
     }
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {

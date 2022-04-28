@@ -16,6 +16,7 @@
 
     <!-- product bundle screen name -->
     <string name="product_bundle_page_title">Pilih Paket Bundling</string>
+    <string name="product_bundle_bottomsheet_title">Keranjang Tokopedia NOW!</string>
 
     <!-- product bundle detail -->
     <string name="text_sold_product_bundle">Terjual %d paket</string>
@@ -39,6 +40,8 @@
     <string name="action_oke">Oke</string>
     <string name="action_reload">Muat ulang</string>
     <string name="action_back_to_recent_page">Ke Halaman Sebelumnya</string>
+    <string name="action_choose_package">Pilih Paket</string>
+    <string name="action_package_chosen">Paket Terpilih</string>
 
     <!-- single bundle item mapping -->
     <string name="preorder_prefix">PO %1s</string>

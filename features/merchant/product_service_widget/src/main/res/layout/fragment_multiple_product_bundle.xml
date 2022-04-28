@@ -69,7 +69,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:unify_total_amount_cta_text="Beli Paket"
             app:unify_total_amount_enable_shadow="true"
             app:unify_total_amount_enable_title_chevron="false"
             app:unify_total_amount_subtitle_text="Hemat Rp0"
