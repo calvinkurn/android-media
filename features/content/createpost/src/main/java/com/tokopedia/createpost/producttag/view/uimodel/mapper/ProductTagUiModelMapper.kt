@@ -88,7 +88,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     id = it.id,
                     shopID = it.shop.id,
                     shopName = it.shop.name,
-                    shopBadge = "", /** TODO: gonna conver this to list */
+                    shopBadge = it.badges.map { badge -> ProductUiModel.ShopBadge(badge.show, badge.imageUrl) },
                     name = it.name,
                     coverURL = it.imageUrl,
                     webLink = "",
@@ -108,6 +108,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     isBebasOngkir = it.freeOngkir.isActive,
                     bebasOngkirStatus = "",
                     bebasOngkirURL = it.freeOngkir.imgUrl,
+                    stock = it.stock,
                 )
             },
             hasNextPage = response.wrapper.data.products.isNotEmpty(),
