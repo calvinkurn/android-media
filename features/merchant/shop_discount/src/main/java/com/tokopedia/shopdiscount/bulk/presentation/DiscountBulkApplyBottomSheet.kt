@@ -71,7 +71,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetDiscountBulkApplyBinding>()
 
-
     enum class Mode {
         SHOW_ALL_FIELDS,
         HIDE_PERIOD_FIELDS,
@@ -342,7 +341,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.run {
             chipOneYearPeriod.selectedChangeListener = { isActive ->
                 if (isActive) {
-                    viewModel.onOneYearPeriodSelected()
+                    viewModel.onOneYearPeriodSelected(Calendar.getInstance())
                 }
             }
 
@@ -360,7 +359,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.run {
             chipSixMonthPeriod.selectedChangeListener = { isActive ->
                 if (isActive) {
-                    viewModel.onSixMonthPeriodSelected()
+                    viewModel.onSixMonthPeriodSelected(Calendar.getInstance())
                 }
             }
 
@@ -378,7 +377,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.run {
             chipOneMonthPeriod.selectedChangeListener = { isActive ->
                 if (isActive) {
-                    viewModel.onOneMonthPeriodSelected()
+                    viewModel.onOneMonthPeriodSelected(Calendar.getInstance())
                 }
             }
 
@@ -408,7 +407,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_SELECTED
 
-                viewModel.onCustomSelectionPeriodSelected()
+                viewModel.onCustomSelectionPeriodSelected(Calendar.getInstance())
             }
         }
 

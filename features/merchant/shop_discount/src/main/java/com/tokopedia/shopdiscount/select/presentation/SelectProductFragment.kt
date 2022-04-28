@@ -16,7 +16,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -29,8 +31,6 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
-import com.tokopedia.shopdiscount.utils.extension.slideDown
-import com.tokopedia.shopdiscount.utils.extension.slideUp
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -114,7 +114,6 @@ class SelectProductFragment : BaseDaggerFragment() {
         observeReserveProducts()
         observeShopBenefits()
         viewModel.getSellerBenefits()
-
     }
 
     private fun setupView() {
@@ -255,6 +254,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         if (remainingQuota == ZERO) {
             showNoMoreRemainingQuota()
         }
+
         loadFirstPage()
     }
 
@@ -284,49 +284,46 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private val onProductSelectionChange: (ReservableProduct, Boolean) -> Unit =
         { selectedProduct, isSelected ->
+
             if (isSelected) {
-                viewModel.addProductToSelection(selectedProduct)
+                val currentSelectedProductCount = viewModel.getSelectedProducts().size
+                handleAddProductToSelection(currentSelectedProductCount, selectedProduct)
             } else {
-                viewModel.removeProductFromSelection(selectedProduct)
+                handleRemoveProductFromSelection(selectedProduct)
             }
 
             val selectedProductCount = viewModel.getSelectedProducts().size
             handleTickerAppearance(selectedProductCount)
-
-            val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
-            productAdapter.update(selectedProduct, updatedProduct)
-
-
-            val remainingSelection = getRemainingProductSelection()
-            if (remainingSelection < ZERO) {
-                showNoMoreRemainingQuota()
-            }
-
-            val shouldDisableSelection = (selectedProductCount >= MAX_PRODUCT_SELECTION) || remainingSelection <= ZERO
-            viewModel.setDisableProductSelection(shouldDisableSelection)
-
-            val items = productAdapter.getItems()
-            if (shouldDisableSelection) {
-                disableProductSelection(items)
-            } else {
-                enableProductSelection(items)
-            }
-
-
-
-            binding?.btnManage?.text =
-                String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
-            binding?.btnManage?.isEnabled = selectedProductCount > ZERO
         }
 
-    private fun disableProductSelection(products: List<ReservableProduct>) {
-        val toBeDisabledProducts = viewModel.disableProducts(products)
-        productAdapter.refresh(toBeDisabledProducts)
+    private fun handleAddProductToSelection(
+        currentSelectedProductCount: Int,
+        selectedProduct: ReservableProduct
+    ) {
+        val nextCounter = currentSelectedProductCount + 1
+        if (nextCounter > MAX_PRODUCT_SELECTION) {
+            untickProduct(selectedProduct)
+            showDisableReason(getString(R.string.sd_select_product_max_count_reached))
+        } else {
+            val remainingSelection = viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+
+            if (remainingSelection > ZERO) {
+                tickProduct(selectedProduct)
+                viewModel.addProductToSelection(selectedProduct)
+            } else {
+                untickProduct(selectedProduct)
+                showNoMoreRemainingQuota()
+            }
+        }
+
+        refreshButtonTitle()
     }
 
-    private fun enableProductSelection(products: List<ReservableProduct>) {
-        val toBeEnabledProducts = viewModel.enableProduct(products)
-        productAdapter.refresh(toBeEnabledProducts)
+    private fun handleRemoveProductFromSelection(selectedProduct: ReservableProduct) {
+        viewModel.removeProductFromSelection(selectedProduct)
+        untickProduct(selectedProduct)
+
+        refreshButtonTitle()
     }
 
     private fun handleProductClick(
@@ -335,13 +332,10 @@ class SelectProductFragment : BaseDaggerFragment() {
     ) {
         val selectedProductCount = viewModel.getSelectedProducts().size
         val reachedMaxAllowedSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
-        val remainingAllowedSelection = getRemainingProductSelection()
         when {
-            remainingAllowedSelection <= ZERO -> showNoMoreRemainingQuota()
             reachedMaxAllowedSelection -> showDisableReason(getString(R.string.sd_select_product_max_count_reached))
             isDisabled -> showDisableReason(disableReason)
-            else -> {
-            }
+            else -> {}
         }
     }
 
@@ -410,11 +404,6 @@ class SelectProductFragment : BaseDaggerFragment() {
     }
 
     private fun clearSearchBar() {
-        val selectedProductCount = viewModel.getSelectedProducts().size
-        val remainingSelection = getRemainingProductSelection()
-        val shouldDisableSelection = (selectedProductCount >= MAX_PRODUCT_SELECTION) || remainingSelection <= ZERO
-        viewModel.setDisableProductSelection(shouldDisableSelection)
-
         clearPreviousData()
         showLoading()
         viewModel.getReservableProducts(
@@ -454,9 +443,9 @@ class SelectProductFragment : BaseDaggerFragment() {
 
     private fun handleTickerAppearance(selectedProductCount: Int) {
         if (selectedProductCount >= MAX_PRODUCT_SELECTION) {
-            binding?.ticker.slideUp()
+            binding?.ticker?.visible()
         } else {
-            binding?.ticker?.slideDown()
+            binding?.ticker?.gone()
         }
     }
 
@@ -519,7 +508,20 @@ class SelectProductFragment : BaseDaggerFragment() {
         endlessRecyclerViewScrollListener?.resetState()
     }
 
-    private fun getRemainingProductSelection() : Int {
-        return viewModel.getRemainingQuota() - viewModel.getSelectedProducts().size
+    private fun tickProduct(selectedProduct: ReservableProduct) {
+        val updatedProduct = selectedProduct.copy(isCheckboxTicked = true)
+        productAdapter.update(selectedProduct, updatedProduct)
+    }
+
+    private fun untickProduct(selectedProduct: ReservableProduct) {
+        val updatedProduct = selectedProduct.copy(isCheckboxTicked = false)
+        productAdapter.update(selectedProduct, updatedProduct)
+    }
+
+    private fun refreshButtonTitle() {
+        val selectedProductCount = viewModel.getSelectedProducts().size
+        binding?.btnManage?.text =
+            String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
+        binding?.btnManage?.isEnabled = selectedProductCount > ZERO
     }
 }

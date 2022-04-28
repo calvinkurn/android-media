@@ -10,6 +10,7 @@ import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
+import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -98,53 +99,51 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
         _areInputValid.value = ValidationState.Valid
     }
-    
-    fun onOneYearPeriodSelected() {
-        val startDate = getDefaultStartDate()
-        val endDate = Calendar.getInstance()
-        endDate.add(Calendar.YEAR, ONE_YEAR)
 
+    fun onOneYearPeriodSelected(calendar: Calendar) {
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        val startDate = calendar.time
         this.selectedStartDate = startDate
-        this.selectedEndDate = endDate.time
+
+        calendar.add(Calendar.YEAR, ONE_YEAR)
+        val endDate = calendar.time
+        this.selectedEndDate = endDate
 
         _startDate.value = startDate
-        _endDate.value = endDate.time
+        _endDate.value = endDate
     }
 
-    fun onSixMonthPeriodSelected() {
-        val startDate = getDefaultStartDate()
-        val endDate = Calendar.getInstance()
-        endDate.add(Calendar.MONTH, SIX_MONTH)
+    fun onSixMonthPeriodSelected(calendar: Calendar) {
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        this.selectedStartDate = calendar.time
 
-        this.selectedStartDate = startDate
-        this.selectedEndDate = endDate.time
+        calendar.add(Calendar.MONTH, SIX_MONTH)
+        this.selectedEndDate = calendar.time
 
-        _startDate.value = startDate
-        _endDate.value = endDate.time
+        _startDate.value = selectedStartDate
+        _endDate.value = selectedEndDate
     }
 
-    fun onOneMonthPeriodSelected() {
-        val startDate = getDefaultStartDate()
-        val endDate = Calendar.getInstance()
-        endDate.add(Calendar.MONTH, ONE_MONTH)
+    fun onOneMonthPeriodSelected(calendar: Calendar) {
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        this.selectedStartDate = calendar.time
 
-        this.selectedStartDate = startDate
-        this.selectedEndDate = endDate.time
+        calendar.add(Calendar.MONTH, ONE_MONTH)
+        this.selectedEndDate = calendar.time
 
-        _startDate.value = startDate
-        _endDate.value = endDate.time
+        _startDate.value = selectedStartDate
+        _endDate.value = selectedEndDate
     }
 
-    fun onCustomSelectionPeriodSelected() {
-        val startDate = getDefaultStartDate()
-        val endDate = Calendar.getInstance()
-        endDate.add(Calendar.MONTH, SIX_MONTH)
+    fun onCustomSelectionPeriodSelected(calendar: Calendar) {
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        this.selectedStartDate = calendar.time
 
-        this.selectedStartDate = startDate
-        this.selectedEndDate = endDate.time
+        calendar.add(Calendar.MONTH, SIX_MONTH)
+        this.selectedEndDate = calendar.time
 
-        _startDate.value = startDate
-        _endDate.value = endDate.time
+        _startDate.value = selectedStartDate
+        _endDate.value = selectedEndDate
     }
 
     fun onDiscountTypeChanged(discountType: DiscountType) {
@@ -170,11 +169,6 @@ class DiscountBulkApplyViewModel @Inject constructor(
         )
     }
 
-    private fun getDefaultStartDate(): Date {
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
-        return calendar.time
-    }
 
     fun getSelectedStartDate() : Date {
         return selectedStartDate ?: Date()
