@@ -127,7 +127,10 @@ class NavigationTab(
     }
 
     private fun enableTouchScroll(isEnable: Boolean) {
-        recyclerView?.suppressLayout(!isEnable)
+        val enableBlocking = listener?.enableBlockingTouchNavbar() ?: true
+        if (enableBlocking) {
+            recyclerView?.suppressLayout(!isEnable)
+        } else recyclerView?.suppressLayout(false)
     }
 
     data class Item(

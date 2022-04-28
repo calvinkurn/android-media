@@ -30,6 +30,8 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     private var isVisibile = false
     private var enableClick = true
 
+    private var isScroll = false
+
     init {
         addView(view)
         view.setOnClickListener {
@@ -72,11 +74,15 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
         }
     }
 
-    private fun enableTouchScroll(isEnabled: Boolean) {
-        recyclerView?.suppressLayout(!isEnabled)
+    private fun enableTouchScroll(isEnable: Boolean) {
+        val enableBlocking = listener?.enableBlockingTouchNavbar() ?: true
+        if (enableBlocking) {
+            recyclerView?.suppressLayout(!isEnable)
+        } else recyclerView?.suppressLayout(false)
     }
 
     private fun smoothScrollToTop() {
+        if (isScroll) return
         recyclerView?.apply {
             smoothScroller.targetPosition = 0
             enableTouchScroll(false)
@@ -107,8 +113,6 @@ class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(cont
     }
 
     private inner class SmoothScroller(context: Context) : LinearSmoothScroller(context) {
-
-        private var isScroll = false
 
         override fun onSeekTargetStep(dx: Int, dy: Int, state: RecyclerView.State, action: Action) {
             super.onSeekTargetStep(dx, dy, state, action)

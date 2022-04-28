@@ -5,4 +5,6 @@ interface NavigationListener {
     fun onImpressionBackToTop(label: String)
     fun onClickNavigationTab(position: Int, label: String)
     fun onClickBackToTop(position: Int, label: String)
+
+    fun enableBlockingTouchNavbar(): Boolean
 }

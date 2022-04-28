@@ -12,6 +12,12 @@ class ProductDetailNavigation(
     context: Context,
     attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), NavigationListener {
+
+    companion object {
+        private const val REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH =
+            "android_enable_blocking_touch_pdp_navbar"
+    }
+
     private val binding = WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context))
     private val view = binding.root
 
@@ -59,5 +65,13 @@ class ProductDetailNavigation(
     override fun onClickBackToTop(position: Int, label: String) {
         listener?.onClickProductDetailnavigation(position, label)
         navigationTab.onClickBackToTop()
+    }
+
+    override fun enableBlockingTouchNavbar(): Boolean {
+        val remoteConfig = listener?.getRemoteConfigInstance()
+        return remoteConfig?.getBoolean(
+            REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH,
+            true
+        ) ?: true
     }
 }

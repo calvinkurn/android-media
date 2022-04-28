@@ -209,6 +209,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -3979,4 +3980,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
     }
 
+    override fun getRemoteConfigInstance(): RemoteConfig? {
+        return remoteConfig
+    }
 }
