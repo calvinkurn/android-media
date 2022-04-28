@@ -9,6 +9,8 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundle
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
@@ -115,6 +117,47 @@ class UserInteractionTest {
 
         //then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.notes ?: 0 == newNotes)
+    }
+
+    @Test
+    fun `WHEN user change product bundle notes THEN notes should be updated accordingly on bottomsheet ui model`() {
+        //given
+        val productId = "2148476278"
+        val isBundling = true
+        val bundleId = "36012"
+        val newNotes = "new notes"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.updateProductNotes(productId, isBundling, bundleId, newNotes)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartProductUiModelByProductId(productId)?.productNotes ?: 0 == newNotes)
+    }
+
+    @Test
+    fun `WHEN user change product bundle notes THEN notes should be updated accordingly on widget ui model`() {
+        //given
+        val productId = "2148476278"
+        val isBundling = true
+        val bundleId = "36012"
+        val newNotes = "new notes"
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.updateProductNotes(productId, isBundling, bundleId, newNotes)
+
+        //then
+        val miniCartItemBundle = viewModel.miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundle(bundleId)
+        val productBundle = miniCartItemBundle?.products?.get(MiniCartItemKey(productId))
+
+        assert(productBundle?.notes ?: 0 == newNotes)
     }
 
     @Test

@@ -921,40 +921,41 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun validateOverWeight(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
-        val maxWeight = miniCartListBottomSheetUiModel.value?.maximumShippingWeight ?: 0
+        miniCartListBottomSheetUiModel.value?.let { miniCartListUiModel ->
+            val maxWeight = miniCartListUiModel.maximumShippingWeight
 
-        if (totalWeight > maxWeight) {
-            var tickerWarning: MiniCartTickerWarningUiModel? = null
-            var tickerWarningIndex = -1
-            loop@ for ((index, visitable) in visitables.withIndex()) {
-                if (visitable is MiniCartTickerWarningUiModel) {
-                    tickerWarning = visitable
-                    tickerWarningIndex = index
-                    break@loop
-                }
-            }
-
-            val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
-                    ?: ""
-            val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
-            if (tickerWarning == null) {
-                tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
-                tickerWarning.let {
-                    val firstItem = visitables.firstOrNull()
-                    if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
-                        visitables.add(1, it)
-                    } else {
-                        visitables.add(0, it)
+            if (totalWeight > maxWeight) {
+                var tickerWarning: MiniCartTickerWarningUiModel? = null
+                var tickerWarningIndex = -1
+                loop@ for ((index, visitable) in visitables.withIndex()) {
+                    if (visitable is MiniCartTickerWarningUiModel) {
+                        tickerWarning = visitable
+                        tickerWarningIndex = index
+                        break@loop
                     }
                 }
+
+                val warningWording = miniCartListUiModel.maximumShippingWeightErrorMessage
+                val overWeight = (totalWeight - maxWeight) / DEFAULT_WEIGHT
+                if (tickerWarning == null) {
+                    tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
+                    tickerWarning.let {
+                        val firstItem = visitables.firstOrNull()
+                        if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
+                            visitables.add(1, it)
+                        } else {
+                            visitables.add(0, it)
+                        }
+                    }
+                } else {
+                    val updatedTickerWarning = tickerWarning.deepCopy()
+                    val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
+                    updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
+                    visitables[tickerWarningIndex] = updatedTickerWarning
+                }
             } else {
-                val updatedTickerWarning = tickerWarning.deepCopy()
-                val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
-                updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
-                visitables[tickerWarningIndex] = updatedTickerWarning
+                removeTickerWarning(visitables)
             }
-        } else {
-            removeTickerWarning(visitables)
         }
     }
 

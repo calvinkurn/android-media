@@ -58,6 +58,7 @@ class CalculationTest {
 
         //then
         assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == true)
+        assert(viewModel.miniCartChatListBottomSheetUiModel.value?.isFirstLoad == true)
     }
 
     @Test
@@ -105,6 +106,54 @@ class CalculationTest {
 
         //when
         viewModel.updateProductQty(productUiModel, 5)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product bundle THEN total product count should be calculated correctly`() {
+        //given
+        val expectedTotalProductCount = 11
+        val productId = "2148476278"
+        val bundleId = "36012"
+        val productUiModel = MiniCartProductUiModel(
+            productId = productId,
+            bundleId = bundleId,
+            isBundlingItem = true
+        )
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleSimplifiedSuccessAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        //when
+        viewModel.updateProductQty(productUiModel, 2)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.miniCartWidgetUiModel?.totalProductCount == expectedTotalProductCount)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product bundle variant THEN total product count should be calculated correctly`() {
+        //given
+        val expectedTotalProductCount = 31
+        val productId = "2148476278"
+        val bundleId = "36012"
+        val productUiModel = MiniCartProductUiModel(
+            productId = productId,
+            bundleId = bundleId,
+            isBundlingItem = true
+        )
+        val miniCartSimplifiedData = DataProvider.provideGetMiniCartBundleVariantSimplifiedSuccessAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartBundleVariantListUiModelAllAvailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        //when
+        viewModel.updateProductQty(productUiModel, 2)
         viewModel.calculateProduct()
 
         //then
