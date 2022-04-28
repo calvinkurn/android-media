@@ -26,9 +26,8 @@
         tools:descriptionText="Description"
         tools:visibility="gone" />
 
-    <include
+    <com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
         android:id="@+id/label_bulk_apply"
-        layout="@layout/layout_shop_discount_label_bulk_manage"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"

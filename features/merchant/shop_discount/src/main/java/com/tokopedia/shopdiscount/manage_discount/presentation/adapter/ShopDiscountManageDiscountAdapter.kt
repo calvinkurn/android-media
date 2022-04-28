@@ -7,10 +7,15 @@ import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountManageDiscountGlobalErrorUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductShimmeringUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 
 class ShopDiscountManageDiscountAdapter(
     typeFactory: ShopDiscountManageDiscountTypeFactoryImpl
 ) : BaseListAdapter<Visitable<*>, ShopDiscountManageDiscountTypeFactoryImpl>(typeFactory) {
+
+    private val productListData: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
+        mutableListOf()
 
     override fun showLoading() {
         val newList = getNewVisitableItems()
@@ -31,8 +36,14 @@ class ShopDiscountManageDiscountAdapter(
     }
 
     fun addListSetupProductData(data: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
+        productListData.clear()
+        productListData.addAll(data)
+        updateProductList()
+    }
+
+    fun updateProductList() {
         val newList = getNewVisitableItems()
-        newList.addAll(data)
+        newList.addAll(productListData)
         submitList(newList)
     }
 
@@ -72,16 +83,16 @@ class ShopDiscountManageDiscountAdapter(
             .firstOrNull {
                 it.productId == productId
             }?.let {
-                newList.remove(it)
-                submitList(newList)
+                productListData.remove(it)
+                updateProductList()
             }
     }
 
     fun getTotalAbusiveProduct(): Int {
         return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
             .count {
-                it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR ||
-                        it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+                it.productStatus.errorType == ALL_ABUSIVE_ERROR ||
+                        it.productStatus.errorType == PARTIAL_ABUSIVE_ERROR
             }
     }
 

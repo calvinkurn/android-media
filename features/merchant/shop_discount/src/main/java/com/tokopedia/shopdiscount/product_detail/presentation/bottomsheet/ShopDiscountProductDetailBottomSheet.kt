@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
@@ -23,22 +24,20 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
-import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
+import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailAdapter
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailTypeFactoryImpl
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailItemViewHolder
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailListGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
+import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
@@ -63,6 +62,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private var status: Int = 0
     private var productParentName: String = ""
     private var productParentPosition: Int = 0
+    private var listener: Listener? = null
     private val adapter by lazy {
         ShopDiscountProductDetailAdapter(
             typeFactory = ShopDiscountProductDetailTypeFactoryImpl(
@@ -96,6 +96,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         }
     }
 
+    interface Listener {
+        fun deleteParentProduct(productId: String)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -104,6 +108,40 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private fun observeLiveData() {
         observeProductDetailListLiveData()
         observeReserveProduct()
+        observeDeleteProductDiscount()
+    }
+
+    private fun observeDeleteProductDiscount() {
+        viewModel.deleteProductDiscount.observe(viewLifecycleOwner, {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    if (!it.data.responseHeader.success) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, null)
+                        showToasterError(errorMessage)
+                    } else {
+                        deleteProductFromList(it.data.productId)
+                    }
+                }
+                is Fail -> {
+                    updateProductList()
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showToasterError(errorMessage)
+                }
+            }
+        })
+    }
+
+    private fun updateProductList() {
+        adapter.updateProductList()
+    }
+
+    private fun deleteProductFromList(variantProductId: String) {
+        adapter.deleteProductFromList(variantProductId)
+        if (adapter.getTotalProduct().isZero()) {
+            dismiss()
+            listener?.deleteParentProduct(productParentId)
+        }
     }
 
     private fun observeReserveProduct() {
@@ -132,7 +170,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     it,
                     ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_DISCOUNT
                 )
-                intent.putExtra(ShopDiscountManageDiscountActivity.REQUEST_ID_PARAM, uiModel.requestId)
+                intent.putExtra(
+                    ShopDiscountManageDiscountActivity.REQUEST_ID_PARAM,
+                    uiModel.requestId
+                )
                 intent.putExtra(ShopDiscountManageDiscountActivity.STATUS_PARAM, status)
                 intent.putExtra(
                     ShopDiscountManageDiscountActivity.MODE_PARAM,
@@ -153,6 +194,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
+                        updateProductList()
                         val errorMessage = it.data.responseHeader.errorMessages.joinToString()
                         showErrorState(Throwable(errorMessage))
                     } else {
@@ -162,6 +204,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     }
                 }
                 is Fail -> {
+                    updateProductList()
                     showErrorState(it.throwable)
                 }
             }
@@ -169,9 +212,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun showToasterError(message: String) {
-        activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
-        }
+        view?.rootView?.showError(message)
     }
 
     private fun showHeaderSection(totalProductData: Int) {
@@ -221,6 +262,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         setupProductParentNameSection()
         setupRecyclerView()
         rvProductList?.post {
+            showLoading()
             getProductListData()
         }
     }
@@ -240,7 +282,6 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun getProductListData() {
-        showLoading()
         viewModel.getProductDetailListData(productParentId, status)
     }
 
@@ -273,7 +314,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             Int.ZERO,
             MARGIN_TOP_BOTTOM_VALUE_DIVIDER.toPx()
         )
-        val dividerItemDecoration = ShopDiscountProductDetailDividerItemDecoration(
+        val dividerItemDecoration = ShopDiscountDividerItemDecoration(
             drawableInset
         )
         if (itemDecorationCount > 0)
@@ -321,6 +362,44 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         updateProductDiscount(productParentId, productParentPosition, selectedProductVariantId)
     }
 
+    override fun onClickDeleteProduct(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        showDialogDeleteProduct(uiModel)
+    }
+
+    private fun showDialogDeleteProduct(
+        uiModel: ShopDiscountProductDetailUiModel.ProductDetailData
+    ) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val title =
+                    getString(R.string.shop_discount_manage_discount_delete_product_dialog_title)
+                val description =
+                    getString(R.string.shop_discount_product_detail_delete_product_dialog_description)
+                val primaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_delete_button_cta)
+                val secondaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_cancel_button_cta)
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
+                setSecondaryCTAText(secondaryCtaText)
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    showLoading()
+                    deleteSelectedProductDiscount(uiModel.productId)
+                }
+                show()
+            }
+        }
+    }
+
+    private fun deleteSelectedProductDiscount(productId: String) {
+        viewModel.deleteSelectedProductDiscount(productId, status)
+    }
+
     private fun updateProductDiscount(
         productParentId: String,
         productParentPosition: Int,
@@ -330,7 +409,12 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     override fun onGlobalErrorActionClickRetry() {
+        showLoading()
         getProductListData()
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 
 }

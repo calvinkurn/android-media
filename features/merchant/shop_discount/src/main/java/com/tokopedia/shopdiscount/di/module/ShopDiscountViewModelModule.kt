@@ -10,7 +10,8 @@ import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSeller
 import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageViewModel
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListViewModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.viewmodel.ShopDiscountManageProductDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductVariantDiscountViewModel
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
 import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
 import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
@@ -76,5 +77,10 @@ abstract class ShopDiscountViewModelModule {
     @IntoMap
     @ViewModelKey(SetPeriodBottomSheetViewModel::class)
     internal abstract fun provideSetPeriodBottomSheetViewModel(viewModel: SetPeriodBottomSheetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopDiscountManageProductVariantDiscountViewModel::class)
+    internal abstract fun provideShopDiscountManageProductVariantDiscountViewModel(viewModel: ShopDiscountManageProductVariantDiscountViewModel): ViewModel
 
 }

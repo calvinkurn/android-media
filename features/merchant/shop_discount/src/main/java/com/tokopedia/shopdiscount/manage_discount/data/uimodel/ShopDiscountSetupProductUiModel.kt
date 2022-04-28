@@ -4,10 +4,10 @@ import android.os.Parcelable
 import androidx.annotation.IntDef
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.ALL_ABUSIVE_ERROR
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.NO_ERROR
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
-import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.VALUE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactory
 import kotlinx.parcelize.Parcelize
 import java.util.*
@@ -28,6 +28,7 @@ data class ShopDiscountSetupProductUiModel(
         val price: ProductPrice = ProductPrice(),
         val listProductVariant: List<SetupProductData> = listOf(),
         var productStatus: ProductStatus = ProductStatus(),
+        var variantStatus: VariantStatus = VariantStatus(),
         var mappedResultData: MappedResultData = MappedResultData(),
     ) : Parcelable, Visitable<ShopDiscountManageDiscountTypeFactory> {
 
@@ -56,18 +57,15 @@ data class ShopDiscountSetupProductUiModel(
             val isVariant: Boolean = false,
             val isMultiLoc: Boolean = false,
             val errorType: Int = 0,
-        ) : Parcelable {
-            @Retention(AnnotationRetention.SOURCE)
-            @IntDef(NO_ERROR, VALUE_ERROR, PARTIAL_ABUSIVE_ERROR, ALL_ABUSIVE_ERROR)
-            annotation class ErrorType {
-                companion object {
-                    const val NO_ERROR = 0
-                    const val VALUE_ERROR = 1
-                    const val PARTIAL_ABUSIVE_ERROR = 2
-                    const val ALL_ABUSIVE_ERROR = 3
-                }
-            }
-        }
+            val slashPriceStatus: Int = 0
+        ) : Parcelable
+
+        @Parcelize
+        data class VariantStatus(
+            var errorType: Int = 0,
+            val isMultiLoc: Boolean = false,
+            var isVariantEnabled: Boolean? = null
+        ) : Parcelable
 
         @Parcelize
         data class ProductWarehouse(
@@ -108,6 +106,17 @@ data class ShopDiscountSetupProductUiModel(
             val max: Int = 0,
             val maxFormatted: String = ""
         ) : Parcelable
+
+        @Retention(AnnotationRetention.SOURCE)
+        @IntDef(NO_ERROR, VALUE_ERROR, PARTIAL_ABUSIVE_ERROR, ALL_ABUSIVE_ERROR)
+        annotation class ErrorType {
+            companion object {
+                const val NO_ERROR = 0
+                const val VALUE_ERROR = 1
+                const val PARTIAL_ABUSIVE_ERROR = 2
+                const val ALL_ABUSIVE_ERROR = 3
+            }
+        }
 
         override fun type(typeFactory: ShopDiscountManageDiscountTypeFactory): Int {
             return typeFactory.type(this)

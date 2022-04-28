@@ -22,6 +22,7 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductAdapter
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
@@ -482,7 +483,23 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             discountStatusId,
             position
         )
+        bottomSheet.setListener(object: ShopDiscountProductDetailBottomSheet.Listener{
+            override fun deleteParentProduct(productId: String) {
+                deleteSingleProduct(productId)
+            }
+
+        })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun deleteSingleProduct(productId: String) {
+        val totalCountProduct = viewModel.getTotalProduct() - ONE_PRODUCT
+        val getDeletedProduct = adapter?.getProductBasedOnId(productId)
+        getDeletedProduct?.let{
+            productAdapter.delete(it)
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_total_product), totalCountProduct)
+        }
     }
 
     private fun clearSearchBar() {

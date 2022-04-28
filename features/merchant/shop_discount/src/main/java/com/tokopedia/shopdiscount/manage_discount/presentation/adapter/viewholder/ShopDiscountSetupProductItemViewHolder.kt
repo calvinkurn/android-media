@@ -9,9 +9,13 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.RangeFormatterUtil
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountSetupProductItemLayoutBinding
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.NO_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -68,12 +72,12 @@ class ShopDiscountSetupProductItemViewHolder(
         uiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ) {
         val errorType = uiModel.productStatus.errorType
-        textErrorValidation.shouldShowWithAction(errorType != ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR) {
+        textErrorValidation.shouldShowWithAction(errorType != NO_ERROR) {
             textErrorValidation.text = when (errorType) {
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR -> {
+                ALL_ABUSIVE_ERROR -> {
                     getString(R.string.shop_discount_manage_discount_abusive_all)
                 }
-                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR -> {
+                PARTIAL_ABUSIVE_ERROR -> {
                     getString(R.string.shop_discount_manage_discount_abusive_partial)
                 }
                 else -> {
@@ -85,8 +89,7 @@ class ShopDiscountSetupProductItemViewHolder(
     }
 
     private fun shouldShowImageWarning(errorType: Int): Boolean {
-        return errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR ||
-                errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+        return errorType == ALL_ABUSIVE_ERROR || errorType == PARTIAL_ABUSIVE_ERROR
     }
 
     private fun setDeleteProductButton(
@@ -113,8 +116,7 @@ class ShopDiscountSetupProductItemViewHolder(
         val totalStock = uiModel.stock
         val totalLocation = uiModel.mappedResultData.totalLocation
         textTotalStock.shouldShowWithAction(
-            !totalStock.toIntOrZero()
-                .isZero() && uiModel.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
+            !totalStock.toIntOrZero().isZero() && uiModel.productStatus.errorType == NO_ERROR
         ) {
             val totalStockFormattedString =
                 when {
@@ -165,13 +167,13 @@ class ShopDiscountSetupProductItemViewHolder(
                 text = getString(R.string.shop_discount_manage_discount_edit_toolbar_title)
             } else {
                 isEnabled = when (uiModel.productStatus.errorType) {
-                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR -> {
+                    ALL_ABUSIVE_ERROR -> {
                         false
                     }
-                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR -> {
+                    PARTIAL_ABUSIVE_ERROR -> {
                         false
                     }
-                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.VALUE_ERROR -> {
+                    VALUE_ERROR -> {
                         true
                     }
                     else -> {
@@ -205,7 +207,7 @@ class ShopDiscountSetupProductItemViewHolder(
             binding.labelTotalDiscountedVariant.apply {
                 text = String.format(
                     getString(R.string.shop_discount_manage_discount_total_discounted_variant_format),
-                    totalVariant.toString()
+                    totalDiscountedVariant.toString()
                 )
             }
         }

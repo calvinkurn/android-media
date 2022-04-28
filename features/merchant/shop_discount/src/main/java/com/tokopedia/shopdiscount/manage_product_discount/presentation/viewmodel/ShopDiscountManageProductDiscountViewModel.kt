@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage_product_discount.presentation.view.viewmodel
+package com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -173,7 +173,7 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
     }
 
     fun getMaxDiscountPrice(): Int {
-        val originalPrice = productData.mappedResultData.minOriginalPrice.orZero()
+        val originalPrice = productData.mappedResultData.maxOriginalPrice.orZero()
         return (originalPrice.toDouble() * 0.99).toInt()
     }
 

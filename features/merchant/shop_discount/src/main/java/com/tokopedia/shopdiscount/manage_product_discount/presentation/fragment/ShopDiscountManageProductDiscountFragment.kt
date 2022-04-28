@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment
+package com.tokopedia.shopdiscount.manage_product_discount.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -20,16 +20,16 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.RangeFormatterUtil
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.FragmentManageProductDiscountBinding
 import com.tokopedia.shopdiscount.databinding.LayoutManageProductDiscountHeaderBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity.ShopDiscountManageProductDiscountActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity.ShopDiscountManageProductDiscountMultiLocActivity
-import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.viewmodel.ShopDiscountManageProductDiscountViewModel
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountMultiLocActivity
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.viewmodel.ShopDiscountManageProductDiscountViewModel
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
@@ -81,13 +81,13 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private var tickerMultiLoc: Ticker? = null
     private var loadingSpinner: View? = null
     private var containerProductDataLayout: View? = null
-    private var discountPeriodSection: View? = null
     private var layoutGlobalError: GlobalError? = null
     private var imageProduct: ImageUnify? = null
     private var textProductName: Typography? = null
     private var textProductOriginalPrice: Typography? = null
     private var textStockAndLocation: Typography? = null
     private var imageIconProduct: ImageUnify? = null
+    private var discountPeriodSection: View? = null
     private var textDiscountPeriodRange: Typography? = null
     private var textFieldDiscountPrice: TextFieldUnify2? = null
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
@@ -169,7 +169,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         val bottomSheet = SetPeriodBottomSheet.newInstance(
             productData.slashPriceInfo.startDate.time,
             productData.slashPriceInfo.endDate.time,
-            mode
+            productData.slashPriceInfo.slashPriceStatusId
         )
         bottomSheet.setOnApplyClickListener {
             setDiscountPeriodBasedOnBottomSheetResult(it)
@@ -349,8 +349,8 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         slashPriceBenefitData: ShopDiscountSellerInfoUiModel,
         productData: ShopDiscountSetupProductUiModel.SetupProductData
     ) {
-        val totalWarehouse = productData.listProductWarehouse.size
-        configTickerMultiLoc(totalWarehouse)
+        val isMultiLoc = productData.productStatus.isMultiLoc
+        configTickerMultiLoc(isMultiLoc)
         imageProduct?.loadImage(productData.productImageUrl)
         textProductName?.text = productData.productName
         textProductOriginalPrice?.text = getOriginalPriceFormatted(productData.mappedResultData)
@@ -361,11 +361,12 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         checkShouldValidateInputAfterPopulateData()
     }
 
-    private fun configTickerMultiLoc(totalWareHouse: Int) {
-        tickerMultiLoc?.shouldShowWithAction(totalWareHouse > 1) {
+    private fun configTickerMultiLoc(isMultiLoc: Boolean) {
+        tickerMultiLoc?.shouldShowWithAction(isMultiLoc) {
             val description = getString(
                 R.string.shop_discount_manage_product_discount_multi_loc_ticker_desc
             )
+            tickerMultiLoc?.closeButtonVisibility = View.VISIBLE
             tickerMultiLoc?.setHtmlDescription(description)
             tickerMultiLoc?.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -448,20 +449,14 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         return when {
             shouldUseNonVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
                 String.format(
-                    getString(R.string.sd_total_stock_multiple_location),
+                    getString(R.string.sd_total_stock_multiple_location_plain),
                     totalStock,
                     totalLocation
                 )
             }
-            shouldUseVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
-                String.format(
-                    getString(R.string.sd_total_stock_various_multiple_location),
-                    totalStock
-                )
-            }
             else -> {
                 String.format(
-                    getString(R.string.sd_total_stock),
+                    getString(R.string.sd_total_stock_plain),
                     totalStock
                 )
             }
@@ -472,12 +467,6 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         productStatus: ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus
     ): Boolean {
         return !productStatus.isVariant && productStatus.isMultiLoc
-    }
-
-    private fun shouldUseVariantMultiLocTotalStockFormat(
-        productStatus: ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus
-    ): Boolean {
-        return productStatus.isVariant && productStatus.isMultiLoc
     }
 
     private fun showErrorState(errorMessage: String) {
@@ -526,16 +515,18 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private fun initView() {
         viewBinding?.let {
             headerUnify = it.headerUnify
-            tickerMultiLoc = it.tickerMultiLoc
+            tickerMultiLoc = it.layoutTickerMultiLoc.tickerMultiLoc
             loadingSpinner = it.loadingSpinner
             containerProductDataLayout = it.containerProductDataLayout
-            discountPeriodSection = it.discountPeriodSection
             layoutGlobalError = it.layoutGlobalError
             initViewManageDiscountHeader(it.manageProductDiscountHeader)
-            textDiscountPeriodRange = it.textDiscountPeriodRange
-            textFieldDiscountPrice = it.textFieldPrice
-            textFieldDiscountPercentage = it.textFieldDiscount
-            quantityEditorMaxOrder = it.quantityEditorMaxOrder
+            it.layoutFieldContainer.let { layoutFieldContainer ->
+                discountPeriodSection = layoutFieldContainer.discountPeriodSection
+                textDiscountPeriodRange = layoutFieldContainer.textDiscountPeriodRange
+                textFieldDiscountPrice = layoutFieldContainer.textFieldPrice
+                textFieldDiscountPercentage = layoutFieldContainer.textFieldDiscount
+                quantityEditorMaxOrder = layoutFieldContainer.quantityEditorMaxOrder
+            }
             buttonApply = it.buttonApply
         }
     }
@@ -563,7 +554,6 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
             }
             setNavigationOnClickListener {
                 onBackPressed()
-//                showDialogOnBackPressed()
             }
         }
     }

@@ -4,9 +4,11 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
 import com.tokopedia.shopdiscount.product_detail.data.request.GetSlashPriceProductDetailRequest
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailDeleteUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 
 object ShopDiscountProductDetailMapper {
@@ -131,6 +133,16 @@ object ShopDiscountProductDetailMapper {
             responseHeader = response.doSlashPriceProductReservation.responseHeader,
             selectedProductVariantId = selectedProductVariantId,
             requestId = requestId
+        )
+    }
+
+    fun mapToShopDiscountProductDetailDeleteUiModel(
+        response: DeleteDiscountResponse,
+        productId: String
+    ): ShopDiscountProductDetailDeleteUiModel {
+        return ShopDiscountProductDetailDeleteUiModel(
+            responseHeader = response.doSlashPriceStop.responseHeader,
+            productId = productId
         )
     }
 

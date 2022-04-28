@@ -32,22 +32,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/layout_ticker_multi_loc"
-                    layout="@layout/shop_discount_ticker_multi_loc_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="14dp"
-                    android:layout_marginBottom="8dp" />
-
-                <include
-                    android:id="@+id/manage_product_discount_header"
-                    layout="@layout/layout_manage_product_discount_header"
+                    android:id="@+id/shop_discount_variant_header_layout"
+                    layout="@layout/layout_shop_discount_manage_product_variant_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -59,16 +49,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="8dp" />
 
-                <include
-                    android:id="@+id/layout_field_container"
-                    layout="@layout/layout_manage_product_discount_field"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_manage_product_variant_discount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="16dp" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
 
         <FrameLayout
             android:id="@+id/container_button_submit"
