@@ -157,7 +157,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                 txtError.visibility = View.GONE
                 if (!intent?.getStringExtra(PRODUCT_IDS_SELECTED).isNullOrEmpty()) {
                     viewModel.searchKeyword(search.searchBarTextField.text.toString(), intent?.getStringExtra(PRODUCT_IDS_SELECTED)
-                            ?: "", ::onSuccessSearch)
+                            ?: "", ::onSuccessSearch,resources)
                 } else {
                     setEmpty(true)
                     if (manualKeywords.isNotEmpty())

@@ -31,7 +31,7 @@ class KeywordAdsViewModelTest {
     fun setUp() {
         count = mockk(relaxed = true)
         search = mockk(relaxed = true)
-        viewModel = KeywordAdsViewModel(testDispatcher,context,userSession,searchKeywordUseCase, suggestionKeywordUseCase)
+        viewModel = KeywordAdsViewModel(testDispatcher,userSession,searchKeywordUseCase, suggestionKeywordUseCase)
     }
 
     @After
@@ -77,7 +77,7 @@ class KeywordAdsViewModelTest {
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns ""
 
-        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds") {}
+        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds", onSucceed = {}, resources = mockk(relaxed = true))
 
         verify { searchKeywordUseCase.execute(any(), any()) }
     }
@@ -91,7 +91,7 @@ class KeywordAdsViewModelTest {
         mockkStatic(GraphqlHelper::class)
         every { GraphqlHelper.loadRawString(any(), any()) } returns null
 
-        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds") {}
+        viewModel.searchKeyword(keyword = "keyword", product_ids = "productIds",onSucceed = {}, resources = mockk(relaxed = true))
 
         verify(exactly = 0) { searchKeywordUseCase.execute(any(), any()) }
     }
