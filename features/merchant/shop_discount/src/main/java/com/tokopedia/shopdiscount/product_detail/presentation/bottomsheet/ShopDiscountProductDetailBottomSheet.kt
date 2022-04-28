@@ -30,8 +30,8 @@ import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscou
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailItemViewHolder
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailListGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
+import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -62,6 +62,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private var status: Int = 0
     private var productParentName: String = ""
     private var productParentPosition: Int = 0
+    private var listener: Listener? = null
     private val adapter by lazy {
         ShopDiscountProductDetailAdapter(
             typeFactory = ShopDiscountProductDetailTypeFactoryImpl(
@@ -95,6 +96,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         }
     }
 
+    interface Listener {
+        fun deleteParentProduct(productId: String)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
@@ -108,25 +113,35 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     private fun observeDeleteProductDiscount() {
         viewModel.deleteProductDiscount.observe(viewLifecycleOwner, {
+            hideLoading()
             when (it) {
                 is Success -> {
-                    if (!it.data) {
+                    if (!it.data.responseHeader.success) {
                         val errorMessage = ErrorHandler.getErrorMessage(context, null)
                         showToasterError(errorMessage)
                     } else {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            showLoading()
-                            delay(1000)
-                            getProductListData()
-                        }
+                        deleteProductFromList(it.data.productId)
                     }
                 }
                 is Fail -> {
+                    updateProductList()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToasterError(errorMessage)
                 }
             }
         })
+    }
+
+    private fun updateProductList() {
+        adapter.updateProductList()
+    }
+
+    private fun deleteProductFromList(variantProductId: String) {
+        adapter.deleteProductFromList(variantProductId)
+        if (adapter.getTotalProduct().isZero()) {
+            dismiss()
+            listener?.deleteParentProduct(productParentId)
+        }
     }
 
     private fun observeReserveProduct() {
@@ -179,6 +194,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
+                        updateProductList()
                         val errorMessage = it.data.responseHeader.errorMessages.joinToString()
                         showErrorState(Throwable(errorMessage))
                     } else {
@@ -188,6 +204,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                     }
                 }
                 is Fail -> {
+                    updateProductList()
                     showErrorState(it.throwable)
                 }
             }
@@ -195,9 +212,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun showToasterError(message: String) {
-        activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
-        }
+        view?.rootView?.showError(message)
     }
 
     private fun showHeaderSection(totalProductData: Int) {
@@ -373,6 +388,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 }
                 setPrimaryCTAClickListener {
                     dismiss()
+                    showLoading()
                     deleteSelectedProductDiscount(uiModel.productId)
                 }
                 show()
@@ -395,6 +411,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     override fun onGlobalErrorActionClickRetry() {
         showLoading()
         getProductListData()
+    }
+
+    fun setListener(listener: Listener) {
+        this.listener = listener
     }
 
 }

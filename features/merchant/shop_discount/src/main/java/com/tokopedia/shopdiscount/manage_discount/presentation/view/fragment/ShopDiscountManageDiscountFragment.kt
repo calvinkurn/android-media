@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -38,9 +39,10 @@ import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscoun
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductDiscountActivity
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.activity.ShopDiscountManageProductVariantDiscountActivity
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -249,10 +251,12 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun observeResultDeleteSlashPriceProductLiveData() {
         viewModel.resultDeleteSlashPriceProductLiveData.observe(viewLifecycleOwner, {
+            hideLoading()
             when (it) {
                 is Success -> {
                     val responseHeaderData = it.data.responseHeader
                     if (!responseHeaderData.success) {
+                        updateProductList()
                         showToasterError(responseHeaderData.errorMessages.joinToString())
                     } else {
                         showToasterSuccess(getString(R.string.shop_discount_manage_discount_delete_product_message))
@@ -261,11 +265,16 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
+                    updateProductList()
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToasterError(errorMessage)
                 }
             }
         })
+    }
+
+    private fun updateProductList() {
+        adapter.updateProductList()
     }
 
     private fun checkProductSize() {
@@ -277,17 +286,11 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccess(message: String) {
-        activity?.run {
-            view?.let {
-                Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-            }
-        }
+        view.showToaster(message)
     }
 
     private fun showToasterError(message: String) {
-        activity?.run {
-            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
-        }
+        view.showError(message)
     }
 
     private fun removeProduct(productId: String) {
@@ -476,10 +479,16 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun showLoading() {
         adapter.showLoading()
+        hideButtonSubmit()
+    }
+
+    private fun hideButtonSubmit() {
+        containerButtonSubmit?.hide()
     }
 
     private fun hideLoading() {
         adapter.hideLoading()
+        showButtonSubmit()
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
@@ -550,6 +559,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     dismiss()
                 }
                 setPrimaryCTAClickListener {
+                    dismiss()
+                    showLoading()
                     deleteProductFromList(model.productId, position.toString())
                 }
                 show()

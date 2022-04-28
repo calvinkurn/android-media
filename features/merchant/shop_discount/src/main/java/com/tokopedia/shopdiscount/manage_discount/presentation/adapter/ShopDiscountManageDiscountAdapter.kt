@@ -14,6 +14,9 @@ class ShopDiscountManageDiscountAdapter(
     typeFactory: ShopDiscountManageDiscountTypeFactoryImpl
 ) : BaseListAdapter<Visitable<*>, ShopDiscountManageDiscountTypeFactoryImpl>(typeFactory) {
 
+    private val productListData: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
+        mutableListOf()
+
     override fun showLoading() {
         val newList = getNewVisitableItems()
         newList.clear()
@@ -33,8 +36,14 @@ class ShopDiscountManageDiscountAdapter(
     }
 
     fun addListSetupProductData(data: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
+        productListData.clear()
+        productListData.addAll(data)
+        updateProductList()
+    }
+
+    fun updateProductList() {
         val newList = getNewVisitableItems()
-        newList.addAll(data)
+        newList.addAll(productListData)
         submitList(newList)
     }
 
@@ -74,8 +83,8 @@ class ShopDiscountManageDiscountAdapter(
             .firstOrNull {
                 it.productId == productId
             }?.let {
-                newList.remove(it)
-                submitList(newList)
+                productListData.remove(it)
+                updateProductList()
             }
     }
 

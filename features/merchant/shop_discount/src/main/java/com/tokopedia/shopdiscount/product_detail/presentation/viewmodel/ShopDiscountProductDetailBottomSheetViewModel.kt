@@ -13,6 +13,7 @@ import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.product_detail.ShopDiscountProductDetailMapper
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailDeleteUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,8 +40,8 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     val reserveProduct: LiveData<Result<ShopDiscountDetailReserveProductUiModel>>
         get() = _reserveProduct
 
-    private val _deleteProductDiscount = MutableLiveData<Result<Boolean>>()
-    val deleteProductDiscount: LiveData<Result<Boolean>>
+    private val _deleteProductDiscount = MutableLiveData<Result<ShopDiscountProductDetailDeleteUiModel>>()
+    val deleteProductDiscount: LiveData<Result<ShopDiscountProductDetailDeleteUiModel>>
         get() = _deleteProductDiscount
 
 
@@ -106,7 +107,11 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     fun deleteSelectedProductDiscount(productId: String, status: Int) {
         launchCatchError(dispatcherProvider.io, block = {
             val result = doSlashPriceStop(productId, status)
-            _deleteProductDiscount.postValue(Success(result.doSlashPriceStop.responseHeader.success))
+            val uiModel = ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailDeleteUiModel(
+                result,
+                productId
+            )
+            _deleteProductDiscount.postValue(Success(uiModel))
         }, onError = {
             _deleteProductDiscount.postValue(Fail(it))
         })
