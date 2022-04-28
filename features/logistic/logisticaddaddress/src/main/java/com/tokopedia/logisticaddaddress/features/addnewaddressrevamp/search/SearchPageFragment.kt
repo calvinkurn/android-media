@@ -226,10 +226,13 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun initView() {
         autoCompleteAdapter = AutoCompleteListAdapter(this)
-        binding?.rvAddressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding?.rvAddressList?.adapter = autoCompleteAdapter
-        if (isEdit) {
-            binding?.tvMessageSearch?.visibility = View.GONE
+        binding?.let {
+            it.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            it.rvAddressList.adapter = autoCompleteAdapter
+            if (isEdit) {
+                it.tvMessageSearch.visibility = View.GONE
+                it.tvSearchCurrentLocation.text = getString(R.string.tv_discom_current_location_text)
+            }
         }
     }
 
