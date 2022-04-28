@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductrevReviewImageAttachment(
+        @SerializedName("attachmentID")
+        @Expose
+        val attachmentID: String = "",
         @SerializedName("fullSize")
         @Expose
         val fullSize: String = "",

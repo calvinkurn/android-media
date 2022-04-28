@@ -152,12 +152,21 @@ class ReadReviewViewModel @Inject constructor(
         return mutableListOf<ReviewMediaThumbnailVisitable>().apply {
             val imageThumbnails = productReview.imageAttachments.map {
                 ReviewMediaImageThumbnailUiModel(
-                    uiState = ReviewMediaImageThumbnailUiState.Showing(thumbnailUrl = it.imageThumbnailUrl)
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = it.attachmentID,
+                        reviewID = productReview.feedbackID,
+                        thumbnailUrl = it.imageThumbnailUrl,
+                        fullSizeUrl = it.uri
+                    )
                 )
             }
             val videoThumbnails = productReview.videoAttachments.map {
                 ReviewMediaVideoThumbnailUiModel(
-                    uiState = ReviewMediaVideoThumbnailUiState.Showing(url = it.url)
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        attachmentID = it.attachmentID,
+                        reviewID = productReview.feedbackID,
+                        url = it.url
+                    )
                 )
             }
             addAll(videoThumbnails)

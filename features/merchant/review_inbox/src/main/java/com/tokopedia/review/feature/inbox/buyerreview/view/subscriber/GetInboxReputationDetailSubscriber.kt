@@ -26,9 +26,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
@@ -84,6 +81,7 @@ open class GetInboxReputationDetailSubscriber constructor(
     private fun convertToInboxReputationDetailItemViewModel(
         reviewDomain: ReviewDomain, itemDomain: ReviewItemDomain
     ): Visitable<*> {
+        val reviewMediaThumbnail = convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.reviewId)
         return InboxReputationDetailItemUiModel(
             reviewDomain.reputationId,
             itemDomain.productData.productId,
@@ -94,8 +92,8 @@ open class GetInboxReputationDetailSubscriber constructor(
             reviewDomain.userData.fullName,
             if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
                 .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
-            convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments),
-            convertToPreloadedDetailedReviewMedia(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.reviewId),
+            reviewMediaThumbnail,
+            convertToPreloadedDetailedReviewMedia(reviewMediaThumbnail),
             itemDomain.reviewData.reviewMessage,
             itemDomain.reviewData.reviewRating,
             itemDomain.isReviewHasReviewed,
@@ -133,11 +131,14 @@ open class GetInboxReputationDetailSubscriber constructor(
 
     private fun convertToReviewMediaThumbnail(
         imageAttachments: List<ImageAttachmentDomain>,
-        videoAttachments: List<VideoAttachmentDomain>
+        videoAttachments: List<VideoAttachmentDomain>,
+        reviewId: String
     ): ReviewMediaThumbnailUiModel {
         val thumbnails = videoAttachments.map { videoAttachment ->
             ReviewMediaVideoThumbnailUiModel(
                 ReviewMediaVideoThumbnailUiState.Showing(
+                    attachmentID = videoAttachment.attachmentId,
+                    reviewID = reviewId,
                     url = videoAttachment.videoUrl
                 )
             )
@@ -145,6 +146,8 @@ open class GetInboxReputationDetailSubscriber constructor(
             imageAttachments.map { imageAttachments ->
                 ReviewMediaImageThumbnailUiModel(
                     ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = imageAttachments.attachmentId,
+                        reviewID = reviewId,
                         thumbnailUrl = imageAttachments.uriThumbnail,
                         fullSizeUrl = imageAttachments.uriLarge
                     )
@@ -155,47 +158,15 @@ open class GetInboxReputationDetailSubscriber constructor(
     }
 
     private fun convertToPreloadedDetailedReviewMedia(
-        imageAttachments: List<ImageAttachmentDomain>,
-        videoAttachments: List<VideoAttachmentDomain>,
-        reviewId: String
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
     ): ProductrevGetReviewMedia {
-        val mappedReviewVideo = videoAttachments.mapIndexed { index, videoAttachmentDomain ->
-            ReviewMedia(
-                videoId = videoAttachmentDomain.attachmentId,
-                feedbackId = reviewId,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewImage = imageAttachments.mapIndexed { index, imageAttachmentDomain ->
-            ReviewMedia(
-                imageId = imageAttachmentDomain.attachmentId,
-                feedbackId = reviewId,
-                mediaNumber = index.plus(1).plus(mappedReviewVideo.size)
-            )
-        }
-        val mappedReviewGalleryVideos = videoAttachments.map { videoAttachmentDomain ->
-            ReviewGalleryVideo(
-                attachmentId = videoAttachmentDomain.attachmentId,
-                url = videoAttachmentDomain.videoUrl,
-                feedbackId = reviewId
-            )
-        }
-        val mappedReviewGalleryImages = imageAttachments.map { imageAttachmentDomain ->
-            ReviewGalleryImage(
-                attachmentId = imageAttachmentDomain.attachmentId,
-                thumbnailURL = imageAttachmentDomain.uriThumbnail,
-                fullsizeURL = imageAttachmentDomain.uriLarge,
-                description = imageAttachmentDomain.description,
-                feedbackId = reviewId
-            )
-        }
         return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewVideo.plus(mappedReviewImage),
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
             detail = Detail(
-                reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = mappedReviewGalleryVideos,
-                mediaCountFmt = (mappedReviewVideo.size + mappedReviewImage.size).toString(),
-                mediaCount = (mappedReviewVideo.size + mappedReviewImage.size).toLong(),
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCountFmt = reviewMediaThumbnailUiModel.generateMediaCount().toString(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
             )
         )
     }

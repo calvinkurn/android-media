@@ -71,6 +71,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Re
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -706,9 +707,8 @@ class SellerReviewDetailFragment :
         }
     }
 
-    override fun onImageItemClicked(
-        imageUrls: List<String>,
-        videoUrls: List<String>,
+    fun onImageItemClicked(
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         feedbackId: String,
         productID: String,
         position: Int
@@ -716,7 +716,7 @@ class SellerReviewDetailFragment :
         context?.run {
             tracking.eventClickImagePreviewSlider(
                 feedbackId,
-                videoUrls.plus(imageUrls).getOrNull(position).orEmpty(),
+                reviewMediaThumbnailUiModel.mediaThumbnails.getOrNull(position)?.getAttachmentID().orEmpty(),
                 position.toString()
             )
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
@@ -727,9 +727,7 @@ class SellerReviewDetailFragment :
                 isFromGallery = false,
                 mediaPosition = position + 1,
                 showSeeMore = false,
-                preloadedDetailedReviewMediaResult = mapReviewMediaData(
-                    videoUrls, imageUrls, feedbackId
-                )
+                preloadedDetailedReviewMediaResult = mapReviewMediaData(reviewMediaThumbnailUiModel)
             ).run { startActivity(this) }
         }
     }
@@ -837,46 +835,15 @@ class SellerReviewDetailFragment :
     }
 
     private fun mapReviewMediaData(
-        videoUrls: List<String>,
-        imageUrls: List<String>,
-        feedbackId: String
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
     ): ProductrevGetReviewMedia {
-        val mappedReviewMediaVideos = videoUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                videoId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                imageId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
-            )
-        }
-        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
-        val mappedReviewGalleryVideos = videoUrls.map { url ->
-            ReviewGalleryVideo(
-                attachmentId = url,
-                url = url,
-                feedbackId = feedbackId
-            )
-        }
-        val mappedReviewGalleryImages = imageUrls.map { url ->
-            ReviewGalleryImage(
-                attachmentId = url,
-                fullsizeURL = url,
-                feedbackId = feedbackId
-            )
-        }
         return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewMedia,
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
             detail = Detail(
                 reviewDetail = listOf(),
-                reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = mappedReviewGalleryVideos,
-                mediaCount = mappedReviewMedia.size.toLong()
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
             )
         )
     }
@@ -885,8 +852,7 @@ class SellerReviewDetailFragment :
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             reviewSellerDetailAdapter.findFeedbackContainingThumbnail(item)?.let {
                 onImageItemClicked(
-                    it.imageAttachments.mapNotNull { it.fullSizeURL },
-                    it.videoAttachments.mapNotNull { it.videoUrl },
+                    it.reviewMediaThumbnail,
                     it.feedbackID,
                     it.productID,
                     position

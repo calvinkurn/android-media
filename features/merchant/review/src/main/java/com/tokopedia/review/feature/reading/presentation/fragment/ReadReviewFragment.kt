@@ -71,6 +71,7 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
@@ -571,6 +572,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onAttachedImagesClicked(
         productReview: ProductReview,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         positionClicked: Int,
         shopId: String,
         reviewItemPosition: Int
@@ -593,7 +595,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 isFromGallery = false,
                 mediaPosition = positionClicked.plus(1),
                 showSeeMore = false,
-                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(productReview, shopId)
+                preloadedDetailedReviewMediaResult = ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(productReview, reviewMediaThumbnailUiModel, shopId)
             ).let {
                 startActivityForResult(it, GALLERY_ACTIVITY_CODE)
             }
@@ -1129,6 +1131,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             (adapter as? ReadReviewAdapter)?.findReviewContainingThumbnail(item)?.let { (reviewItemPosition, element) ->
                 onAttachedImagesClicked(
                     productReview = element.reviewData,
+                    reviewMediaThumbnailUiModel = element.mediaThumbnails,
                     positionClicked = position,
                     shopId = element.shopId,
                     reviewItemPosition = reviewItemPosition

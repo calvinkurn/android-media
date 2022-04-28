@@ -13,6 +13,8 @@ import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
+import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -27,10 +29,15 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
 
     private val _reviewDetails = MediatorLiveData<ReviewViewState<ProductrevGetReviewDetail>>()
 
+    private val _reviewMediaThumbnails = MediatorLiveData<ReviewMediaThumbnailUiModel>()
+
     private val _submitReputationResult = MutableLiveData<ReviewViewState<Int>>()
 
     val reviewDetails: LiveData<ReviewViewState<ProductrevGetReviewDetail>>
         get() = _reviewDetails
+
+    val reviewMediaThumbnails: LiveData<ReviewMediaThumbnailUiModel>
+        get() = _reviewMediaThumbnails
 
     val feedbackId: String
         get() = _feedbackId.value ?: ""
@@ -41,6 +48,9 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
     init {
         _reviewDetails.addSource(_feedbackId) {
             getReviewDetails(it, true)
+        }
+        _reviewMediaThumbnails.addSource(_reviewDetails) {
+            _reviewMediaThumbnails.value = ReviewDetailDataMapper.mapReviewDetailToReviewMediaThumbnails(it)
         }
     }
 

@@ -1,57 +1,78 @@
 package com.tokopedia.review.feature.inbox.history.presentation.mapper
 
+import com.tokopedia.review.common.data.ReviewViewState
+import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistory
+import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
+import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 
 object ReviewHistoryDataMapper {
+    private fun MutableList<ReviewMediaThumbnailVisitable>.includeImage(
+        reviewHistory: ProductrevFeedbackHistory
+    ) = apply {
+        reviewHistory.review.imageAttachments.map {
+            ReviewMediaImageThumbnailUiModel(
+                uiState = ReviewMediaImageThumbnailUiState.Showing(
+                    attachmentID = it.attachmentID,
+                    reviewID = reviewHistory.review.feedbackId,
+                    thumbnailUrl = it.thumbnail,
+                    fullSizeUrl = it.fullSize
+                )
+            )
+        }
+    }
+
+    private fun MutableList<ReviewMediaThumbnailVisitable>.includeVideo(
+        reviewHistory: ProductrevFeedbackHistory
+    ) = apply {
+        addAll(reviewHistory.review.videoAttachments.map { video ->
+            ReviewMediaVideoThumbnailUiModel(
+                uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                    attachmentID = video.attachmentID.orEmpty(),
+                    reviewID = reviewHistory.review.feedbackId,
+                    url = video.url.orEmpty()
+                )
+            )
+        })
+    }
+
     fun mapReviewHistoryDataToReviewMediaPreviewData(
-        feedbackID: String,
-        images: List<String>,
-        videos: List<String>
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
     ): ProductrevGetReviewMedia {
-        val mappedReviewMediaVideoData = videos.mapIndexed { index, video ->
-            ReviewMedia(
-                videoId = video,
-                feedbackId = feedbackID,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewMediaImageData = images.mapIndexed { index, image ->
-            ReviewMedia(
-                imageId = image,
-                feedbackId = feedbackID,
-                mediaNumber = index.plus(1).plus(mappedReviewMediaVideoData.size)
-            )
-        }
-        val mappedReviewMediaData = mappedReviewMediaVideoData.plus(mappedReviewMediaImageData)
-        val mappedReviewVideoData = videos.map {
-            ReviewGalleryVideo(
-                attachmentId = it,
-                url = it,
-                feedbackId = feedbackID
-            )
-        }
-        val mappedReviewImageData = images.map {
-            ReviewGalleryImage(
-                attachmentId = it,
-                thumbnailURL = it,
-                fullsizeURL = it,
-                description = "",
-                feedbackId = feedbackID
-            )
-        }
         return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewMediaData,
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
             detail = Detail(
                 reviewDetail = emptyList(),
-                reviewGalleryImages = mappedReviewImageData,
-                reviewGalleryVideos = mappedReviewVideoData,
-                mediaCountFmt = mappedReviewMediaData.size.toString(),
-                mediaCount = mappedReviewMediaData.size.toLong()
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCountFmt = reviewMediaThumbnailUiModel.generateMediaCount().toString(),
+                mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
             )
         )
+    }
+
+    fun mapReviewListToReviewHistoryList(
+        reviewHistoryState: ReviewViewState<ProductrevFeedbackHistoryResponse>?
+    ): List<ReviewHistoryUiModel> {
+        return if (reviewHistoryState is Success) {
+            reviewHistoryState.data.list.map { history ->
+                ReviewHistoryUiModel(
+                    history,
+                    ReviewMediaThumbnailUiModel(
+                        mutableListOf<ReviewMediaThumbnailVisitable>()
+                            .includeImage(history)
+                            .includeVideo(history)
+                    )
+                )
+            }
+        } else emptyList()
     }
 }

@@ -35,7 +35,6 @@ import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
-import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.FragmentReviewDetailBinding
@@ -46,12 +45,8 @@ import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDet
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -59,8 +54,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
-    HasComponent<ReviewDetailComponent>, ReviewAttachedImagesClickListener,
-    OnBackPressedListener, ReviewScoreClickListener, ReviewPerformanceMonitoringContract {
+    HasComponent<ReviewDetailComponent>, OnBackPressedListener, ReviewScoreClickListener,
+    ReviewPerformanceMonitoringContract {
 
     companion object {
         const val KEY_FEEDBACK_ID = "feedbackID"
@@ -164,6 +159,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         initHeader()
         initErrorPage()
         observeReviewDetails()
+        observeReviewMediaThumbnail()
         observeInsertReputationResult()
     }
 
@@ -182,12 +178,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         removeObservers(viewModel.submitReputationResult)
     }
 
-    override fun onAttachedMediaClicked(
+    fun onAttachedMediaClicked(
         productID: String,
-        feedbackID: String,
         position: Int,
-        images: List<String>,
-        videos: List<String>
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?
     ) {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickImageGallery(
@@ -196,7 +190,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 viewModel.getUserId()
             )
         }
-        goToImagePreview(productID, feedbackID, position, images, videos)
+        goToImagePreview(productID, position, reviewMediaThumbnailUiModel)
     }
 
     override fun onBackPressed() {
@@ -275,6 +269,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeReviewMediaThumbnail() {
+        viewModel.reviewMediaThumbnails.observe(viewLifecycleOwner, {
+            setupReviewMediaThumbnail(it)
+        })
+    }
+
     private fun observeInsertReputationResult() {
         viewModel.submitReputationResult.observe(viewLifecycleOwner, {
             when (it) {
@@ -340,32 +340,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
             }
             addHeaderIcons(editable)
-            if (imageAttachments.isNotEmpty() || videoAttachments.isNotEmpty()) {
-                binding?.reviewDetailAttachedMedia?.apply {
-                    val mappedImageAttachment = imageAttachments.map {
-                        ReviewMediaImageThumbnailUiModel(
-                            uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                thumbnailUrl = it.thumbnail,
-                                fullSizeUrl = it.fullSize
-                            )
-                        )
-                    }
-                    val mappedVideoAttachment = videoAttachments.mapNotNull {
-                        it.url?.let { url ->
-                            ReviewMediaVideoThumbnailUiModel(
-                                uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                                    url = url
-                                )
-                            )
-                        }
-                    }
-                    setListener(reviewMediaThumbnailListener)
-                    setData(ReviewMediaThumbnailUiModel(mappedVideoAttachment.plus(mappedImageAttachment)))
-                    show()
-                }
-            } else {
-                binding?.reviewDetailAttachedMedia?.hide()
-            }
             binding?.reviewDetailDate?.setTextAndCheckShow(
                 getString(
                     R.string.review_date,
@@ -397,6 +371,18 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             }
             binding?.reviewDetailBadRatingReason?.showBadRatingReason(badRatingReasonFmt)
             binding?.reviewDetailBadRatingDisclaimerWidget?.setDisclaimer(ratingDisclaimer)
+        }
+    }
+
+    private fun setupReviewMediaThumbnail(reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel) {
+        if (reviewMediaThumbnailUiModel.mediaThumbnails.isNotEmpty()) {
+            binding?.reviewDetailAttachedMedia?.apply {
+                setListener(reviewMediaThumbnailListener)
+                setData(reviewMediaThumbnailUiModel)
+                show()
+            }
+        } else {
+            binding?.reviewDetailAttachedMedia?.hide()
         }
     }
 
@@ -563,10 +549,9 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun goToImagePreview(
         productID: String,
-        feedbackID: String,
         position: Int,
-        images: List<String>,
-        videos: List<String>) {
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?
+    ) {
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = context,
@@ -577,7 +562,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 mediaPosition = position + 1,
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
-                    feedbackID, images, videos
+                    reviewMediaThumbnailUiModel
                 )
             ).let { startActivity(it) }
         }
@@ -645,10 +630,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 if (reviewDetailsResult is Success) {
                     onAttachedMediaClicked(
                         reviewDetailsResult.data.product.productId,
-                        reviewDetailsResult.data.review.feedbackId,
                         position,
-                        reviewDetailsResult.data.review.imageAttachments.map { it.fullSize },
-                        reviewDetailsResult.data.review.videoAttachments.mapNotNull { it.url },
+                        viewModel.reviewMediaThumbnails.value
                     )
                 }
             }

@@ -60,14 +60,10 @@ import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyF
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -284,15 +280,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
-    override fun onMediaItemClicked(
-        videoUrls: List<String>,
-        imageUrls: List<String>,
-        feedbackId: String,
+    fun onMediaItemClicked(
+        preloadedReviewMediaData: ProductrevGetReviewMedia,
+        feedbackID: String,
         productId: String,
         position: Int
     ) {
         InboxReviewTracking.eventClickSpecificImageReview(
-            feedbackId,
+            feedbackID,
             getQuickFilter(),
             inboxReviewViewModel.userSession.shopId.orEmpty(),
             productId
@@ -306,9 +301,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 isFromGallery = false,
                 mediaPosition = position + 1,
                 showSeeMore = false,
-                preloadedDetailedReviewMediaResult = mapReviewMediaData(
-                    videoUrls, imageUrls, feedbackId
-                )
+                preloadedDetailedReviewMediaResult = preloadedReviewMediaData
             ).run { startActivity(this) }
         }
     }
@@ -741,70 +734,30 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         coachmark = context?.let { CoachMark2(it) }
     }
 
-    private fun mapReviewMediaData(
-        videoUrls: List<String>,
-        imageUrls: List<String>,
-        feedbackId: String
-    ): ProductrevGetReviewMedia {
-        val mappedReviewMediaVideos = videoUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                videoId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                imageId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
-            )
-        }
-        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
-        val mappedReviewGalleryVideos = videoUrls.map { url ->
-            ReviewGalleryVideo(
-                attachmentId = url,
-                url = url,
-                feedbackId = feedbackId
-            )
-        }
-        val mappedReviewGalleryImages = imageUrls.map { url ->
-            ReviewGalleryImage(
-                attachmentId = url,
-                fullsizeURL = url,
-                feedbackId = feedbackId
-            )
-        }
-        return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewMedia,
-            detail = Detail(
-                reviewDetail = listOf(),
-                reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = mappedReviewGalleryVideos,
-                mediaCount = mappedReviewMedia.size.toLong()
-            )
-        )
-    }
-
     private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             inboxReviewAdapter.findFeedbackInboxContainingThumbnail(item)?.let {
                 onMediaItemClicked(
-                    it.reviewMediaThumbnail
-                        .mediaThumbnails
-                        .filterIsInstance<ReviewMediaVideoThumbnailUiModel>().map {
-                            it.uiState.url
-                        },
-                    it.reviewMediaThumbnail
-                        .mediaThumbnails
-                        .filterIsInstance<ReviewMediaImageThumbnailUiModel>().map {
-                            it.uiState.fullSizeUrl
-                        },
+                    mapReviewMediaData(it.reviewMediaThumbnail),
                     it.feedbackId,
                     it.productID,
                     position
                 )
             }
+        }
+
+        private fun mapReviewMediaData(
+            reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel
+        ): ProductrevGetReviewMedia {
+            return ProductrevGetReviewMedia(
+                reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
+                detail = Detail(
+                    reviewDetail = listOf(),
+                    reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                    reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                    mediaCount = reviewMediaThumbnailUiModel.generateMediaCount()
+                )
+            )
         }
     }
 }

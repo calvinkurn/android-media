@@ -19,11 +19,9 @@ import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyListener
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifyprinciples.Typography
 
@@ -107,53 +105,21 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     private fun mapFeedbackUiModelToReviewMediaData(
-        videoUrls: List<String>,
-        imageUrls: List<String>,
-        feedbackId: String
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
     ): ProductrevGetReviewMedia {
-        val mappedReviewMediaVideos = videoUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                videoId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
-            ReviewMedia(
-                imageId = url,
-                feedbackId = feedbackId,
-                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
-            )
-        }
-        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
-        val mappedReviewGalleryVideos = videoUrls.map { url ->
-            ReviewGalleryVideo(
-                attachmentId = url,
-                url = url,
-                feedbackId = feedbackId
-            )
-        }
-        val mappedReviewGalleryImages = imageUrls.map { url ->
-            ReviewGalleryImage(
-                attachmentId = url,
-                fullsizeURL = url,
-                feedbackId = feedbackId
-            )
-        }
         return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewMedia,
+            reviewMedia = reviewMediaThumbnailUiModel.generateReviewMedia(),
             detail = Detail(
                 reviewDetail = listOf(),
-                reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = mappedReviewGalleryVideos,
-                mediaCount = mappedReviewMedia.size.toLong()
+                reviewGalleryImages = reviewMediaThumbnailUiModel.generateReviewGalleryImage(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel.generateReviewGalleryVideo(),
+                mediaCount =reviewMediaThumbnailUiModel.generateMediaCount()
             )
         )
     }
 
     override fun onImageItemClicked(
-        imageUrls: List<String>,
-        videoUrls: List<String>,
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         title: String,
         feedbackId: String,
         productID: String,
@@ -169,7 +135,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
                 mediaPosition = position + 1,
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = mapFeedbackUiModelToReviewMediaData(
-                    videoUrls, imageUrls, feedbackId
+                    reviewMediaThumbnailUiModel
                 )
             ).run { startActivity(this) }
         }
@@ -205,8 +171,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
             val productReplyUiModel = productReplyUiModel
             if (element != null && productReplyUiModel != null) {
                 onImageItemClicked(
-                    element.imageAttachments.mapNotNull { it.fullSizeURL },
-                    element.videoAttachments.mapNotNull { it.videoUrl },
+                    element.reviewMediaThumbnail,
                     productReplyUiModel.productName.orEmpty(),
                     element.feedbackID,
                     productReplyUiModel.productID,

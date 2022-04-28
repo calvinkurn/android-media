@@ -91,35 +91,30 @@ object SellerReviewProductDetailMapper {
     ): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
         productFeedbackDataPerProduct?.list?.map {
-            val mapImageAttachment = mutableListOf<FeedbackUiModel.ImageAttachment>()
-            it.imageAttachments.map { attachment ->
-                mapImageAttachment.add(
-                    FeedbackUiModel.ImageAttachment(
-                        thumbnailURL = attachment.thumbnailURL,
-                        fullSizeURL = attachment.fullSizeURL
-                    )
-                )
-            }
             val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-                mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
-                    videoAttachment.videoUrl?.let { url ->
-                        ReviewMediaVideoThumbnailUiModel(
-                            uiState = ReviewMediaVideoThumbnailUiState.Showing(url = url)
+                mediaThumbnails = it.videoAttachments.map { videoAttachment ->
+                    ReviewMediaVideoThumbnailUiModel(
+                        uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                            attachmentID = videoAttachment.attachmentID.orEmpty(),
+                            reviewID = it.feedbackID,
+                            url = videoAttachment.videoUrl.orEmpty()
                         )
-                    }
+                    )
                 }.plus(
-                    it.imageAttachments.mapNotNull { imageAttachment ->
-                        imageAttachment.thumbnailURL?.let { url ->
-                            ReviewMediaImageThumbnailUiModel(
-                                uiState = ReviewMediaImageThumbnailUiState.Showing(thumbnailUrl = url)
+                    it.imageAttachments.map { imageAttachment ->
+                        ReviewMediaImageThumbnailUiModel(
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                attachmentID = imageAttachment.attachmentID.orEmpty(),
+                                reviewID = it.feedbackID,
+                                thumbnailUrl = imageAttachment.thumbnailURL.orEmpty(),
+                                fullSizeUrl = imageAttachment.fullSizeURL.orEmpty()
                             )
-                        }
+                        )
                     }
                 )
             )
             feedbackListUiModel.add(
                 FeedbackUiModel(
-                    imageAttachments = mapImageAttachment,
                     reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     autoReply = it.autoReply,
                     feedbackID = it.feedbackID,

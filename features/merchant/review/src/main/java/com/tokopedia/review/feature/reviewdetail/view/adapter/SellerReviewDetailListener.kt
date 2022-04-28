@@ -15,7 +15,6 @@ interface SellerReviewDetailListener {
 
 interface ProductFeedbackDetailListener {
     fun onOptionFeedbackClicked(view: View, title: String, data: FeedbackUiModel, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
-    fun onImageItemClicked(imageUrls: List<String>, videoUrls: List<String>, feedbackId: String, productID: String, position: Int)
     fun onFeedbackMoreReplyClicked(feedbackId: String)
 }
 

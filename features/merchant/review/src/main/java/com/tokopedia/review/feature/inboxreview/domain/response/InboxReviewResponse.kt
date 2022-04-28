@@ -83,6 +83,9 @@ data class InboxReviewResponse(
         ) {
             data class ImageAttachment(
                     @Expose
+                    @SerializedName("attachmentID")
+                    val attachmentID: String? = "",
+                    @Expose
                     @SerializedName("fullsizeURL")
                     val fullSizeURL: String? = "",
                     @Expose
@@ -90,6 +93,9 @@ data class InboxReviewResponse(
                     val thumbnailURL: String? = ""
             )
             data class VideoAttachment(
+                    @Expose
+                    @SerializedName("attachmentID")
+                    val attachmentID: String? = "",
                     @Expose
                     @SerializedName("videoUrl")
                     val videoUrl: String? = ""

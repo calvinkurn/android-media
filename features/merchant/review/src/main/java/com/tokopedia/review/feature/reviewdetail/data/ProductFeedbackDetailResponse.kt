@@ -79,6 +79,9 @@ data class ProductFeedbackDetailResponse(
                 val badRatingReasonFmt: String = ""
         ) {
             data class ImageAttachment(
+                    @SerializedName("attachmentID")
+                    @Expose
+                    val attachmentID: String? = "",
                     @SerializedName("thumbnailURL")
                     @Expose
                     val thumbnailURL: String? = "",
@@ -88,6 +91,9 @@ data class ProductFeedbackDetailResponse(
             )
 
             data class VideoAttachment(
+                    @SerializedName("attachmentID")
+                    @Expose
+                    val attachmentID: String? = "",
                     @SerializedName("videoUrl")
                     @Expose
                     val videoUrl: String? = ""

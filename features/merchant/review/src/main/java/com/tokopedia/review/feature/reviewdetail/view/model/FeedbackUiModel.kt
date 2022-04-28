@@ -8,8 +8,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FeedbackUiModel(
-    var imageAttachments: List<ImageAttachment> = mutableListOf(),
-    var videoAttachments: List<VideoAttachment> = mutableListOf(),
     var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
     var autoReply: Boolean = false,
     var feedbackID: String = "",

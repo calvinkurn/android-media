@@ -13,8 +13,6 @@ data class FeedbackInboxUiModel(
     var productName: String = "",
     var productImageUrl: String = "",
     var productVariant: String = "",
-    var imageAttachments: List<ImageAttachment> = mutableListOf(),
-    var videoAttachments: List<VideoAttachment> = mutableListOf(),
     var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
     var variantID: String = "",
     var variantName: String = "",
@@ -31,16 +29,6 @@ data class FeedbackInboxUiModel(
     var ratingDisclaimer: String = "",
     var badRatingReason: String = ""
 ) : BaseInboxReview {
-
-    data class ImageAttachment(
-        var thumbnailURL: String = "",
-        var fullSizeURL: String = ""
-    )
-
-    data class VideoAttachment(
-        var videoUrl: String = ""
-    )
-
     override fun type(typeFactory: InboxReviewAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

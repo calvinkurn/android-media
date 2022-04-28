@@ -1,56 +1,75 @@
 package com.tokopedia.review.feature.historydetails.presentation.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.review.common.data.ProductrevGetReviewDetail
+import com.tokopedia.review.common.data.ReviewViewState
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 
 object ReviewDetailDataMapper {
+
+    private fun MutableList<ReviewMediaThumbnailVisitable>.includeImage(
+        reviewDetailState: ReviewViewState<ProductrevGetReviewDetail>
+    ) = apply {
+        if (reviewDetailState is Success) {
+            addAll(reviewDetailState.data.review.imageAttachments.map {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        attachmentID = it.attachmentID,
+                        reviewID = reviewDetailState.data.review.feedbackId,
+                        thumbnailUrl = it.thumbnail,
+                        fullSizeUrl = it.fullSize
+                    )
+                )
+            })
+        }
+    }
+
+    private fun MutableList<ReviewMediaThumbnailVisitable>.includeVideo(
+        reviewDetailState: ReviewViewState<ProductrevGetReviewDetail>
+    ) = apply {
+        if (reviewDetailState is Success) {
+            addAll(reviewDetailState.data.review.videoAttachments.map { video ->
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        attachmentID = video.attachmentID.orEmpty(),
+                        reviewID = reviewDetailState.data.review.feedbackId,
+                        url = video.url.orEmpty()
+                    )
+                )
+            })
+        }
+    }
+
     fun mapReviewDetailDataToReviewMediaPreviewData(
-        feedbackID: String,
-        images: List<String>,
-        videos: List<String>
+        reviewMediaThumbnailUiModel: ReviewMediaThumbnailUiModel?
     ): ProductrevGetReviewMedia {
-        val mappedReviewMediaVideoData = videos.mapIndexed { index, video ->
-            ReviewMedia(
-                videoId = video,
-                feedbackId = feedbackID,
-                mediaNumber = index.plus(1)
-            )
-        }
-        val mappedReviewMediaImageData = images.mapIndexed { index, image ->
-            ReviewMedia(
-                imageId = image,
-                feedbackId = feedbackID,
-                mediaNumber = index.plus(1).plus(mappedReviewMediaVideoData.size)
-            )
-        }
-        val mappedReviewMediaData = mappedReviewMediaVideoData.plus(mappedReviewMediaImageData)
-        val mappedReviewImageData = images.map {
-            ReviewGalleryImage(
-                attachmentId = it,
-                thumbnailURL = it,
-                fullsizeURL = it,
-                feedbackId = feedbackID,
-            )
-        }
-        val mappedReviewVideoData = videos.map {
-            ReviewGalleryVideo(
-                attachmentId = it,
-                url = it,
-                feedbackId = feedbackID,
-            )
-        }
         return ProductrevGetReviewMedia(
-            reviewMedia = mappedReviewMediaData,
+            reviewMedia = reviewMediaThumbnailUiModel?.generateReviewMedia().orEmpty(),
             detail = Detail(
                 reviewDetail = emptyList(),
-                reviewGalleryImages = mappedReviewImageData,
-                reviewGalleryVideos = mappedReviewVideoData,
-                mediaCountFmt = mappedReviewMediaData.size.toString(),
-                mediaCount = mappedReviewMediaData.size.toLong()
+                reviewGalleryImages = reviewMediaThumbnailUiModel?.generateReviewGalleryImage().orEmpty(),
+                reviewGalleryVideos = reviewMediaThumbnailUiModel?.generateReviewGalleryVideo().orEmpty(),
+                mediaCountFmt = reviewMediaThumbnailUiModel?.generateMediaCount().orZero().toString(),
+                mediaCount = reviewMediaThumbnailUiModel?.generateMediaCount().orZero()
             )
         )
+    }
+
+    fun mapReviewDetailToReviewMediaThumbnails(
+        reviewDetailState: ReviewViewState<ProductrevGetReviewDetail>
+    ): ReviewMediaThumbnailUiModel {
+        val thumbnails = if (reviewDetailState is Success) {
+            mutableListOf<ReviewMediaThumbnailVisitable>().includeImage(reviewDetailState)
+                .includeVideo(reviewDetailState)
+        } else emptyList()
+        return ReviewMediaThumbnailUiModel(thumbnails)
     }
 }

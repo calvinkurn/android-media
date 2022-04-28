@@ -54,39 +54,25 @@ object InboxReviewMapper {
         inboxReviewResponse.list.map {
             feedbackListUiModel.add(
                 FeedbackInboxUiModel(
-                    imageAttachments = it.imageAttachments.mapNotNull { attachment ->
-                        if (attachment.thumbnailURL.isNullOrBlank() || attachment.fullSizeURL.isNullOrBlank()) {
-                            null
-                        } else {
-                            FeedbackInboxUiModel.ImageAttachment(
-                                thumbnailURL = attachment.thumbnailURL,
-                                fullSizeURL = attachment.fullSizeURL
-                            )
-                        }
-                    },
-                    videoAttachments = it.videoAttachments.mapNotNull { attachment ->
-                        if (attachment.videoUrl.isNullOrBlank()) {
-                            null
-                        } else {
-                            FeedbackInboxUiModel.VideoAttachment(
-                                videoUrl = attachment.videoUrl
-                            )
-                        }
-                    },
                     reviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-                        mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
-                            videoAttachment.videoUrl?.let { url ->
-                                ReviewMediaVideoThumbnailUiModel(
-                                    uiState = ReviewMediaVideoThumbnailUiState.Showing(url = url)
+                        mediaThumbnails = it.videoAttachments.map { videoAttachment ->
+                            ReviewMediaVideoThumbnailUiModel(
+                                uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                                    attachmentID = videoAttachment.attachmentID.orEmpty(),
+                                    reviewID = it.feedbackID,
+                                    url = videoAttachment.videoUrl.orEmpty()
                                 )
-                            }
+                            )
                         }.plus(
-                            it.imageAttachments.mapNotNull { attachment ->
-                                attachment.thumbnailURL?.let { url ->
-                                    ReviewMediaImageThumbnailUiModel(
-                                        uiState = ReviewMediaImageThumbnailUiState.Showing(thumbnailUrl = url)
+                            it.imageAttachments.map { imageAttachment ->
+                                ReviewMediaImageThumbnailUiModel(
+                                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                        attachmentID = imageAttachment.attachmentID.orEmpty(),
+                                        reviewID = it.feedbackID,
+                                        thumbnailUrl = imageAttachment.thumbnailURL.orEmpty(),
+                                        fullSizeUrl = imageAttachment.thumbnailURL.orEmpty()
                                     )
-                                }
+                                )
                             }
                         )
                     ),
@@ -177,32 +163,8 @@ object InboxReviewMapper {
     }
 
     fun mapFeedbackInboxToFeedbackUiModel(data: FeedbackInboxUiModel): FeedbackUiModel {
-        val mappedImageAttachments = data.imageAttachments.map { attachment ->
-            FeedbackUiModel.ImageAttachment(attachment.thumbnailURL, attachment.fullSizeURL)
-        }
-        val mappedVideoAttachments = data.videoAttachments.map { attachment ->
-            FeedbackUiModel.VideoAttachment(attachment.videoUrl)
-        }
-        val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-            mediaThumbnails = data.videoAttachments.map { attachment ->
-                ReviewMediaVideoThumbnailUiModel(
-                    ReviewMediaVideoThumbnailUiState.Showing(url = attachment.videoUrl)
-                )
-            }.plus(
-                data.imageAttachments.map { attachment ->
-                    ReviewMediaImageThumbnailUiModel(
-                        uiState = ReviewMediaImageThumbnailUiState.Showing(
-                            thumbnailUrl = attachment.thumbnailURL,
-                            fullSizeUrl = attachment.fullSizeURL
-                        )
-                    )
-                }
-            )
-        )
         return FeedbackUiModel(
-            imageAttachments = mappedImageAttachments,
-            videoAttachments = mappedVideoAttachments,
-            reviewMediaThumbnail = mappedReviewMediaThumbnail,
+            reviewMediaThumbnail = data.reviewMediaThumbnail,
             autoReply = data.isAutoReply,
             feedbackID = data.feedbackId,
             productID = data.productID,
