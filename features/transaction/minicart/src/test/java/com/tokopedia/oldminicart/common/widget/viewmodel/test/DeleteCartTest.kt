@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel.test
+package com.tokopedia.oldminicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -9,16 +9,15 @@ import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.oldminicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.oldminicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.widget.GlobalEvent
-import com.tokopedia.minicart.common.widget.MiniCartViewModel
-import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
-import com.tokopedia.minicart.common.widget.viewmodel.utils.ProductUtils.getBundleProductList
+import com.tokopedia.oldminicart.common.widget.MiniCartViewModel
+import com.tokopedia.oldminicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -91,7 +90,7 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        assert(viewModel.lastDeletedProductItems != null)
+        assert(viewModel.lastDeletedProductItem != null)
     }
 
     @Test
@@ -112,9 +111,7 @@ class DeleteCartTest {
         viewModel.deleteSingleCartItem(miniCartProductUiModel)
 
         //then
-        viewModel.lastDeletedProductItems?.forEach {
-            assert(it.productId == productId)
-        }
+        assert(viewModel.lastDeletedProductItem?.productId == productId)
     }
 
     @Test
@@ -348,48 +345,5 @@ class DeleteCartTest {
 
         //then
         assert(slotUnavailableCartIdList.captured.size == 2)
-    }
-
-    @Test
-    fun `WHEN delete multiple cart items success THEN temporary variable to store last deleted item should not be empty`() {
-        //given
-        val bundleId = "36012"
-        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
-        viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
-
-        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
-        coEvery { deleteCartUseCase.setParams(any()) } just Runs
-        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
-        }
-
-        //when
-        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
-
-        //then
-        assert(viewModel.lastDeletedProductItems != null)
-    }
-
-    @Test
-    fun `WHEN delete multiple cart items error THEN global event should have throwable with correct error message`() {
-        //given
-        val bundleId = "36012"
-        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAllAvailable()
-        viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartProductUiModel = miniCartListUiModel.getBundleProductList(bundleId)
-
-        val errorMessage = "Error Message"
-        val throwable = ResponseErrorException(errorMessage)
-        coEvery { deleteCartUseCase.setParams(any()) } just Runs
-        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
-
-        //when
-        viewModel.deleteMultipleCartItems(miniCartProductUiModel)
-
-        //then
-        assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 }

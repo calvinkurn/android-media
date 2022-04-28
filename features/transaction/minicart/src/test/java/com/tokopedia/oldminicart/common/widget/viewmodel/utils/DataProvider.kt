@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel.utils
+package com.tokopedia.oldminicart.common.widget.viewmodel.utils
 
 import com.google.gson.Gson
 import com.tokopedia.cartcommon.data.response.deletecart.DeleteCartGqlResponse
@@ -7,12 +7,13 @@ import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataR
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
-import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
+import com.tokopedia.minicart.common.widget.viewmodel.utils.UnitTestFileUtils
+import com.tokopedia.oldminicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.oldminicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.oldminicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.oldminicart.common.data.response.minicartlist.MiniCartGqlResponse
+import com.tokopedia.oldminicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.oldminicart.common.domain.mapper.MiniCartSimplifiedMapper
 
 object DataProvider {
 
@@ -22,67 +23,42 @@ object DataProvider {
     private val miniCartListUiModelMapper = MiniCartListUiModelMapper()
 
     fun provideGetMiniCartListSuccessAllAvailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_all_available"), MiniCartGqlResponse::class.java)
-        return json.miniCart
-    }
-
-    fun provideGetMiniCartBundleListSuccessAllAvailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_success_all_available"), MiniCartGqlResponse::class.java)
-        return json.miniCart
-    }
-
-    fun provideGetMiniCartBundleVariantSuccessAllAvailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_variant_success_all_available"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_all_available"), MiniCartGqlResponse::class.java)
         return json.miniCart
     }
 
     fun provideGetMiniCartListSuccessAvailableAndUnavailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
-        return json.miniCart
-    }
-
-    fun provideGetMiniCartBundleListSuccessAvailableAndUnavailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
         return json.miniCart
     }
 
     fun provideGetMiniCartListSuccessAllUnavailable(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_all_unavailable"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_all_unavailable"), MiniCartGqlResponse::class.java)
         return json.miniCart
     }
 
     fun provideGetMiniCartListSuccessOutOfService(): MiniCartData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_out_of_service"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_out_of_service"), MiniCartGqlResponse::class.java)
         return json.miniCart
     }
 
     fun provideGetMiniCartSimplifiedSuccessAllAvailable(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_all_available"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
-    }
-
-    fun provideGetMiniCartBundleSimplifiedSuccessAllAvailable(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_success_all_available"), MiniCartGqlResponse::class.java)
-        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
-    }
-
-    fun provideGetMiniCartBundleVariantSimplifiedSuccessAllAvailable(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_bundle_variant_success_all_available"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_simplified_success_all_available"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessAllUnavailable(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_all_unavailable"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_simplified_success_all_unavailable"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessAvailableAndUnavailable(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_simplified_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
     fun provideGetMiniCartSimplifiedSuccessEmptyData(): MiniCartSimplifiedData {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_empty"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_simplified_success_empty"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
@@ -91,23 +67,8 @@ object DataProvider {
         return miniCartListUiModelMapper.mapUiModel(miniCartData)
     }
 
-    fun provideMiniCartBundleListUiModelAllAvailable(): MiniCartListUiModel {
-        val miniCartData = provideGetMiniCartBundleListSuccessAllAvailable()
-        return miniCartListUiModelMapper.mapUiModel(miniCartData)
-    }
-
-    fun provideMiniCartBundleVariantListUiModelAllAvailable(): MiniCartListUiModel {
-        val miniCartData = provideGetMiniCartBundleVariantSuccessAllAvailable()
-        return miniCartListUiModelMapper.mapUiModel(miniCartData)
-    }
-
     fun provideMiniCartListUiModelAvailableAndUnavailable(): MiniCartListUiModel {
         val miniCartData = provideGetMiniCartListSuccessAvailableAndUnavailable()
-        return miniCartListUiModelMapper.mapUiModel(miniCartData)
-    }
-
-    fun provideMiniCartBundleListUiModelAvailableAndUnavailable(): MiniCartListUiModel {
-        val miniCartData = provideGetMiniCartBundleListSuccessAvailableAndUnavailable()
         return miniCartListUiModelMapper.mapUiModel(miniCartData)
     }
 
@@ -132,17 +93,17 @@ object DataProvider {
     }
 
     fun provideGetMiniCartListSuccessWithSingleAvailableItem(): MiniCartListUiModel {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_single_available_item"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_single_available_item"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
     }
 
     fun provideGetMiniCartListSuccessWithWholesaleVariant(): MiniCartListUiModel {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_wholesale_variant"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_wholesale_variant"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
     }
 
     fun provideGetMiniCartListSuccessWithSlashPrice(): MiniCartListUiModel {
-        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_slash_price"), MiniCartGqlResponse::class.java)
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_old_mini_cart_success_slash_price"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
     }
 

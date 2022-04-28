@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel.test
+package com.tokopedia.oldminicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,19 +7,15 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
-import com.tokopedia.minicart.common.widget.MiniCartViewModel
-import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.oldminicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.oldminicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.oldminicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.oldminicart.common.widget.MiniCartViewModel
+import com.tokopedia.oldminicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -354,37 +350,4 @@ class GetMiniCartListSimplifiedTest {
         assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
     }
 
-
-    @Test
-    fun `WHEN fetch last widget state twice success THEN should set latest live data value`() {
-        //given
-        val shopId = listOf("123")
-
-        val mockResponse = DataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
-        coEvery { getMiniCartListSimplifiedUseCase.setParams(any()) } just Runs
-        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
-            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(mockResponse)
-        }
-
-        //when
-        viewModel.getLatestWidgetState(shopId)
-
-        //then
-        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
-
-        //given
-        val errorMessage = "Error Message"
-        val exception = ResponseErrorException(errorMessage)
-
-        coEvery { getMiniCartListSimplifiedUseCase.setParams(any()) } just Runs
-        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(exception)
-        }
-
-        //when
-        viewModel.getLatestWidgetState(shopId)
-
-        //then
-        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == true)
-    }
 }

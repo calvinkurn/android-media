@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel.test
+package com.tokopedia.oldminicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -8,12 +8,12 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
-import com.tokopedia.minicart.chatlist.MiniCartChatListUiModelMapper
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
-import com.tokopedia.minicart.common.widget.MiniCartViewModel
-import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.oldminicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.oldminicart.chatlist.MiniCartChatListUiModelMapper
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.oldminicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.oldminicart.common.widget.MiniCartViewModel
+import com.tokopedia.oldminicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import org.junit.Before
@@ -84,24 +84,4 @@ class UpdateCartTest {
         assert(viewModel.globalEvent.value?.state == 0)
     }
 
-    @Test
-    fun `WHEN update bundle cart for save state success THEN global event state should not be updated`() {
-        //given
-        viewModel.initializeGlobalState()
-
-        val miniCartListUiModel = DataProvider.provideMiniCartBundleListUiModelAvailableAndUnavailable()
-        viewModel.setMiniCartListUiModel(miniCartListUiModel)
-
-        val mockResponse = DataProvider.provideUpdateCartSuccess()
-        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
-        coEvery { updateCartUseCase.execute(any(), any()) } answers {
-            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
-        }
-
-        //when
-        viewModel.updateCart()
-
-        //then
-        assert(viewModel.globalEvent.value?.state == 0)
-    }
 }

@@ -9,16 +9,6 @@
          "errors":[
 
          ],
-         "empty_cart":{
-            "title":"Wah, keranjang belanjamu kosong",
-            "image":"https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/103cf4bc.jpg",
-            "description":"Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!",
-            "buttons":[
-               {
-                  "id":1
-               }
-            ]
-         },
          "out_of_service":{
             "id":0,
             "code":"",
@@ -30,14 +20,20 @@
             ]
          },
          "max_char_note":144,
-         "header_title":"Belanjaanmu di TokoNOW!",
+         "header_title":"",
+         "beli_button_config":{
+            "button_type":1,
+            "button_wording":"Beli"
+         },
          "shopping_summary":{
-            "total_wording":"Total Harga (3 Barang)",
-            "total_value":4000,
+            "total_wording":"Total Harga (0 Barang)",
+            "total_value":0,
             "discount_total_wording":"Total Diskon Barang",
             "discount_value":0,
+            "seller_cashback_wording":"Cashback Penjual",
+            "seller_cashback_value":0,
             "payment_total_wording":"Total Bayar",
-            "payment_total_value":4000
+            "payment_total_value":0
          },
          "available_section":{
             "action":[
@@ -59,17 +55,17 @@
             ],
             "available_group":[
                {
-                  "cart_string":"11515028-0-11491038",
+                  "cart_string":"480552-0-2216",
                   "errors":[
 
                   ],
                   "shop":{
-                     "maximum_weight_wording":"Belanjaan TokoNOW! kamu terlalu berat {{weight}} kg untuk 1x pengiriman. Coba atur ulang pesanan.",
-                     "maximum_shipping_weight":1000,
-                     "shop_id":11515028,
-                     "shop_name":"11515028tknw",
+                     "maximum_weight_wording":"Belanjaan Tokopedia NOW! kamu terlalu berat {{weight}} kg untuk 1x pengiriman. Atur ulang pesananmu.",
+                     "maximum_shipping_weight":20000,
+                     "shop_id":480552,
+                     "shop_name":"TokoMart",
                      "shop_type_info":{
-                        "badge":"https://images.tokopedia.net/img/now/badge/now-badge.png",
+                        "badge":"https://images.tokopedia.net/img/tokomart/badge/tokomart-badge.png",
                         "shop_grade":0,
                         "shop_tier":2,
                         "title":"Official Store",
@@ -77,8 +73,8 @@
                      }
                   },
                   "shipment_information":{
-                     "shop_location":"Jakarta Selatan",
-                     "estimation":"",
+                     "shop_location":"Kota Bandung",
+                     "estimation":"Tiba dalam 2 jam",
                      "free_shipping":{
                         "eligible":false,
                         "badge_url":""
@@ -90,67 +86,38 @@
                   },
                   "cart_details":[
                      {
-                        "cart_id":"2838232325",
                         "selected_unavailable_action_link":"",
                         "errors":[
 
                         ],
+                        "bundle_detail":{
+                           "bundle_id":36012,
+                           "bundle_name":"paket 4 single",
+                           "bundle_type":"SINGLE",
+                           "bundle_status":"ACTIVE",
+                           "bundle_description":"",
+                           "bundle_price":18000,
+                           "bundle_price_fmt":"Rp18.000",
+                           "bundle_original_price":20000,
+                           "bundle_original_price_fmt":"Rp20.000",
+                           "bundle_min_order":1,
+                           "bundle_max_order":30000,
+                           "bundle_quota":10,
+                           "edit_app_link":"tokopedia://product-bundle/2148476278?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d36012\u0026selectedProductIds\u003d2148476278\u0026cartIds\u003d2166379273",
+                           "bundle_qty":1,
+                           "bundle_group_id":"bid:36012-pid:2148476278-pid1:2148476278",
+                           "slash_price_label":"10%",
+                           "bundle_grayscale_icon_url":""
+                        },
                         "products":[
                            {
-                              "product_id":1920796612,
+                              "cart_id":2166379273,
+                              "product_id":2148476278,
                               "product_weight":100,
-                              "product_quantity":1,
-                              "product_name":"PDP D4G1NG G1L1NG V4R 4LL ST0CK 1 - 4",
+                              "product_quantity":5,
+                              "product_name":"single_sushi_roller",
                               "product_image":{
-                                 "image_src_100_square":"https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/6/14/56448a31-a55b-4563-8d67-0695990cacf1.jpg"
-                              },
-                              "variant_description_detail":{
-                                 "variant_name":[
-                                    "4"
-                                 ],
-                                 "variant_description":"4"
-                              },
-                              "product_warning_message":"Sisa 1",
-                              "slash_price_label":"",
-                              "product_original_price":0,
-                              "initial_price":1000,
-                              "product_price":1000,
-                              "product_information":[
-
-                              ],
-                              "product_notes":"",
-                              "product_min_order":1,
-                              "product_max_order":30000,
-                              "product_invenage_value":1,
-                              "product_switch_invenage":1,
-                              "parent_id":0,
-                              "wholesale_price":[
-
-                              ],
-                              "campaign_id":0,
-                              "product_tracker_data":{
-                                 "attribution":""
-                              },
-                              "warehouse_id":11491038,
-                              "category_id":5071,
-                              "category":""
-                           }
-                        ]
-                     },
-                     {
-                        "cart_id":"2838121062",
-                        "selected_unavailable_action_link":"",
-                        "errors":[
-
-                        ],
-                        "products":[
-                           {
-                              "product_id":1868874664,
-                              "product_weight":100,
-                              "product_quantity":1,
-                              "product_name":"c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 16",
-                              "product_image":{
-                                 "image_src_100_square":"https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/a96159e5-c6c5-4c2c-a1cc-5afbaf98be84.jpg"
+                                 "image_src_100_square":"https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2022/4/7/c39cae02-e1be-41d1-9b76-ba4820cad013.jpg"
                               },
                               "variant_description_detail":{
                                  "variant_name":[
@@ -158,18 +125,18 @@
                                  ],
                                  "variant_description":""
                               },
-                              "product_warning_message":"Sisa 5",
+                              "product_warning_message":"",
                               "slash_price_label":"",
-                              "product_original_price":0,
-                              "initial_price":1000,
-                              "product_price":1000,
+                              "product_original_price":4000,
+                              "initial_price":0,
+                              "product_price":3600,
                               "product_information":[
 
                               ],
                               "product_notes":"",
-                              "product_min_order":1,
+                              "product_min_order":5,
                               "product_max_order":30000,
-                              "product_invenage_value":5,
+                              "product_invenage_value":400,
                               "product_switch_invenage":1,
                               "parent_id":0,
                               "wholesale_price":[
@@ -179,26 +146,79 @@
                               "product_tracker_data":{
                                  "attribution":""
                               },
-                              "warehouse_id":11491038,
-                              "category_id":4653,
-                              "category":""
+                              "warehouse_id":2216,
+                              "category_id":1208,
+                              "category":"Dapur / Food \u0026 Drink Maker / Sushi Roller",
+                              "product_cashback":""
                            }
                         ]
+                     }
+                  ]
+               },
+               {
+                  "cart_string":"480552-0-343420",
+                  "errors":[
+
+                  ],
+                  "shop":{
+                     "maximum_weight_wording":"Belanjaan Tokopedia NOW! kamu terlalu berat {{weight}} kg untuk 1x pengiriman. Atur ulang pesananmu.",
+                     "maximum_shipping_weight":20000,
+                     "shop_id":480552,
+                     "shop_name":"TokoMart",
+                     "shop_type_info":{
+                        "badge":"https://images.tokopedia.net/img/tokomart/badge/tokomart-badge.png",
+                        "shop_grade":0,
+                        "shop_tier":2,
+                        "title":"Official Store",
+                        "title_fmt":"official_store"
+                     }
+                  },
+                  "shipment_information":{
+                     "shop_location":"Jakarta Barat",
+                     "estimation":"Tiba dalam 2 jam",
+                     "free_shipping":{
+                        "eligible":false,
+                        "badge_url":""
                      },
+                     "free_shipping_extra":{
+                        "eligible":false,
+                        "badge_url":""
+                     }
+                  },
+                  "cart_details":[
                      {
-                        "cart_id":"2838119152",
                         "selected_unavailable_action_link":"",
                         "errors":[
 
                         ],
+                        "bundle_detail":{
+                           "bundle_id":0,
+                           "bundle_name":"",
+                           "bundle_type":"",
+                           "bundle_status":"",
+                           "bundle_description":"",
+                           "bundle_price":0,
+                           "bundle_price_fmt":"",
+                           "bundle_original_price":0,
+                           "bundle_original_price_fmt":"",
+                           "bundle_min_order":0,
+                           "bundle_max_order":0,
+                           "bundle_quota":0,
+                           "edit_app_link":"",
+                           "bundle_qty":0,
+                           "bundle_group_id":"",
+                           "slash_price_label":"",
+                           "bundle_grayscale_icon_url":""
+                        },
                         "products":[
                            {
-                              "product_id":1868874657,
+                              "cart_id":2166379277,
+                              "product_id":2148479138,
                               "product_weight":100,
                               "product_quantity":1,
-                              "product_name":"c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 14",
+                              "product_name":"multiple_tahu",
                               "product_image":{
-                                 "image_src_100_square":"https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/613daeaf-9527-43c0-a25a-04dcabec0ee1.jpg"
+                                 "image_src_100_square":"https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2022/4/8/fe93887f-fd95-47ed-b18b-3ab4d5b96277.jpg"
                               },
                               "variant_description_detail":{
                                  "variant_name":[
@@ -206,18 +226,18 @@
                                  ],
                                  "variant_description":""
                               },
-                              "product_warning_message":"Sisa 5",
+                              "product_warning_message":"",
                               "slash_price_label":"",
                               "product_original_price":0,
-                              "initial_price":2000,
-                              "product_price":2000,
+                              "initial_price":3000,
+                              "product_price":3000,
                               "product_information":[
 
                               ],
                               "product_notes":"",
                               "product_min_order":1,
                               "product_max_order":30000,
-                              "product_invenage_value":5,
+                              "product_invenage_value":100,
                               "product_switch_invenage":1,
                               "parent_id":0,
                               "wholesale_price":[
@@ -227,9 +247,10 @@
                               "product_tracker_data":{
                                  "attribution":""
                               },
-                              "warehouse_id":11491038,
-                              "category_id":4652,
-                              "category":""
+                              "warehouse_id":343420,
+                              "category_id":3225,
+                              "category":"",
+                              "product_cashback":""
                            }
                         ]
                      }
@@ -252,31 +273,6 @@
          ],
          "unavailable_section":[
             {
-               "title":"Stok kosong",
-               "unavailable_description":"",
-               "selected_unavailable_action_id":5,
-               "action":[
-                  {
-                     "id":1,
-                     "code":"WISHLIST",
-                     "message":"Pindahkan ke Wishlist"
-                  },
-                  {
-                     "id":2,
-                     "code":"DELETE",
-                     "message":""
-                  },
-                  {
-                     "id":5,
-                     "code":"SIMILARPRODUCT",
-                     "message":"Lihat Barang Serupa"
-                  },
-                  {
-                     "id":10,
-                     "code":"WISHLISTED",
-                     "message":"Sudah ada di wishlist"
-                  }
-               ],
                "unavailable_group":[
                   {
                      "shipment_information":{
@@ -292,8 +288,8 @@
                         }
                      },
                      "shop":{
-                        "maximum_weight_wording":"Overweight {{weight}}",
-                        "maximum_shipping_weight":1000,
+                        "maximum_weight_wording":"",
+                        "maximum_shipping_weight":0,
                         "shop_id":11515028,
                         "shop_name":"11515028tknw",
                         "shop_type_info":{
@@ -310,14 +306,33 @@
                      ],
                      "cart_details":[
                         {
-                           "cart_id":"2842980504",
                            "selected_unavailable_action_link":"tokopedia://rekomendasi/1868874619/?ref=cart",
                            "errors":[
                               "Habis",
                               "Habis"
                            ],
+                           "bundle_detail":{
+                              "bundle_id":36012,
+                              "bundle_name":"paket 4 single",
+                              "bundle_type":"SINGLE",
+                              "bundle_status":"ACTIVE",
+                              "bundle_description":"",
+                              "bundle_price":18000,
+                              "bundle_price_fmt":"Rp18.000",
+                              "bundle_original_price":20000,
+                              "bundle_original_price_fmt":"Rp20.000",
+                              "bundle_min_order":1,
+                              "bundle_max_order":30000,
+                              "bundle_quota":10,
+                              "edit_app_link":"tokopedia://product-bundle/2148476278?source\u003dminicart\u0026viewType\u003dbottomsheet\u0026bundleId\u003d36012\u0026selectedProductIds\u003d2148476278\u0026cartIds\u003d2166379273",
+                              "bundle_qty":1,
+                              "bundle_group_id":"bid:36012-pid:2148476278-pid1:2148476278",
+                              "slash_price_label":"10%",
+                              "bundle_grayscale_icon_url":""
+                           },
                            "products":[
                               {
+                                 "cart_id":"2842980504",
                                  "product_id":1868874619,
                                  "product_weight":100,
                                  "product_quantity":1,
@@ -361,7 +376,6 @@
                            ]
                         },
                         {
-                           "cart_id":"2842980504",
                            "selected_unavailable_action_link":"tokopedia://rekomendasi/1868874619/?ref=cart",
                            "errors":[
                               "Habis",
@@ -369,6 +383,7 @@
                            ],
                            "products":[
                               {
+                                 "cart_id":"2842980504",
                                  "product_id":1868874611,
                                  "product_weight":100,
                                  "product_quantity":1,
@@ -416,9 +431,9 @@
                ]
             }
          ],
-         "total_product_count":3,
-         "total_product_price":4000,
-         "total_product_error":3
+         "total_product_count":2,
+         "total_product_price":21000,
+         "total_product_error":0
       }
    }
 }
