@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_service_widget.R
@@ -39,6 +40,7 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
             val bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
             val selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
             val parentProductId = ProductBundleApplinkMapper.getProductIdFromUri(it, it.pathSegments.orEmpty())
+            setTitle(getTitle(source))
 
             EntrypointFragment.newInstance(
                 bundleId = bundleId,
@@ -52,9 +54,15 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
 
     private fun initView(view: View) {
         setChild(view)
-        setTitle(getString(R.string.product_bundle_bottomsheet_title))
         isFullpage = true
         clearContentPadding = true
+    }
+
+    private fun getTitle(pageSource: String): String {
+        return when (pageSource) {
+            ProductBundleConstants.PAGE_SOURCE_MINI_CART -> { getString(R.string.product_bundle_bottomsheet_title) }
+            else -> { getString(R.string.product_bundle_page_title) }
+        }
     }
 
     fun show(fm: FragmentManager) {
