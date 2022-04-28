@@ -3,7 +3,6 @@ package com.tokopedia.minicart.cartlist.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 
 class MiniCartListAdapter(adapterTypeFactory: MiniCartListAdapterTypeFactory) :
         BaseListAdapter<Visitable<*>, MiniCartListAdapterTypeFactory>(adapterTypeFactory) {
@@ -17,7 +16,4 @@ class MiniCartListAdapter(adapterTypeFactory: MiniCartListAdapterTypeFactory) :
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun getMiniCartProduct(bundleId: String): MiniCartProductUiModel? {
-        return list.find { it is MiniCartProductUiModel && it.bundleId == bundleId } as? MiniCartProductUiModel
-    }
 }
