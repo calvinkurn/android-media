@@ -419,8 +419,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             childFragmentManager,
             getString(R.string.sd_start_date),
             Date(),
-            viewModel.getSelectedStartDate(),
-            viewModel.getSelectedEndDate(),
+            viewModel.getSelectedStartDate() ?: return,
+            viewModel.getSelectedEndDate() ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -437,9 +437,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
-            viewModel.getSelectedEndDate(),
-            viewModel.getSelectedStartDate(),
-            viewModel.getSelectedEndDate(),
+            viewModel.getSelectedEndDate() ?: return,
+            viewModel.getSelectedStartDate() ?: return,
+            viewModel.getSelectedEndDate() ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
