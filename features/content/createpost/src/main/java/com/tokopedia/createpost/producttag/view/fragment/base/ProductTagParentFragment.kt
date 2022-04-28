@@ -161,7 +161,7 @@ class ProductTagParentFragment @Inject constructor(
             binding.icCcProductTagShopBadge.hide()
         }
 
-        /** TODO: Update Fragment Content */
+        /** Update Fragment Content */
         when(currState.selectedProductTagSource) {
             ProductTagSource.LastTagProduct -> {
                 val fragment = LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
@@ -176,11 +176,7 @@ class ProductTagParentFragment @Inject constructor(
                     .commit()
             }
             ProductTagSource.MyShop -> {
-                /** TODO: just for testing purpose */
-                val fragment = LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
-                childFragmentManager.beginTransaction()
-                    .replace(binding.flCcProductTagContainer.id, fragment, LastPurchasedProductFragment.TAG)
-                    .commit()
+
             }
             ProductTagSource.GlobalSearch -> {
 
