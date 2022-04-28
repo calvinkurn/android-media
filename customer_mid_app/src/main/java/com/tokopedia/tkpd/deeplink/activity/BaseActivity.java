@@ -25,7 +25,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.common.ui.MaintenancePage;
-import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -160,8 +159,8 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.action_report, new View.OnClickListener() {
+                getString(com.tokopedia.abstraction.R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                .setAction(com.tokopedia.abstraction.R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         sendEmailComplain();
@@ -180,9 +179,9 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     public void onTimezoneError() {
 
-        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+        final Snackbar snackBar = SnackbarManager.make(this, getString(com.tokopedia.abstraction.R.string.check_timezone),
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.action_check, new View.OnClickListener() {
+                .setAction(com.tokopedia.abstraction.R.string.action_check, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
@@ -210,10 +209,10 @@ public class BaseActivity extends AppCompatActivity implements
 
     public void sendEmailComplain() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse(getString(R.string.mail_to_feedback)));
-        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.server_error_problem));
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.application_version_text) + GlobalConfig.VERSION_CODE);
-        startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
+        intent.setData(Uri.parse(getString(com.tokopedia.abstraction.R.string.mail_to_feedback)));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(com.tokopedia.abstraction.R.string.server_error_problem));
+        intent.putExtra(Intent.EXTRA_TEXT, getString(com.tokopedia.abstraction.R.string.application_version_text) + GlobalConfig.VERSION_CODE);
+        startActivity(Intent.createChooser(intent, getString(com.tokopedia.abstraction.R.string.send_email)));
     }
 
     @Override
