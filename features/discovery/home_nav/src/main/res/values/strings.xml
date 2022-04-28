@@ -11,6 +11,7 @@
     <string name="content_desc_btn_wishlist">button wishlist</string>
     <string name="content_desc_btn_inbox">button inbox</string>
     <string name="content_desc_btn_notification">button notification</string>
+    <string name="content_desc_review">review star</string>
 
     <string name="title_category">Kategori</string>
     <string name="title_main_nav">Menu Utama</string>
