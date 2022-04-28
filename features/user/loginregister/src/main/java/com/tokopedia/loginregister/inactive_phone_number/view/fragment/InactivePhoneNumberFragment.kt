@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
@@ -49,6 +52,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         onClickListener()
         formStateObserver()
         statusPhoneNumberObserver()
+        isLoadingObserver()
     }
 
     override fun getScreenName(): String {
@@ -68,7 +72,6 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
             )
 
             tfu2Phone.isInputError = !it.isDataValid
-            isLoading(it.isDataValid)
         }
     }
 
@@ -98,14 +101,20 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
             when(it){
                 is Success -> {
-
+                    onGoToInactivePhoneNumber(it.data)
                 }
                 is Fail -> {
                     onError(it.throwable)
                 }
             }
+        }
+    }
 
-            isLoading(false)
+    private fun onGoToInactivePhoneNumber(currentNumber: String) {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, currentNumber)
+            startActivityForResult(intent, INACTIVE_PHONE_CODE)
         }
     }
 
@@ -115,8 +124,10 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         tfu2Phone.isInputError = true
     }
 
-    private fun isLoading(isLoading: Boolean){
-        btnNext.isLoading = isLoading
+    private fun isLoadingObserver(){
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            btnNext.isLoading = it
+        }
     }
 
     private fun hideKeyboard(){
@@ -141,6 +152,9 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     }
 
     companion object {
+
+        private const val INACTIVE_PHONE_CODE = 1000
+
         @JvmStatic
         fun newInstance(bundle: Bundle) =
             InactivePhoneNumberFragment().apply {

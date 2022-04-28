@@ -8,8 +8,8 @@ data class RegisterCheckModel (
 )
 
 data class RegisterCheckData(
-    @SerializedName("isExist")
-    var isExist: Boolean = false,
+    @SerializedName("status")
+    var status: Int = 0,
 
     @SerializedName("errors")
     val errors: List<String> = emptyList()
