@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.domain.repository
 
+import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
@@ -19,5 +20,5 @@ interface ProductTagRepository {
     suspend fun getLastPurchasedProducts(
         cursor: String,
         limit: Int,
-    ) : PagedDataUiModel<ProductUiModel>
+    ) : LastPurchasedProductUiModel
 }

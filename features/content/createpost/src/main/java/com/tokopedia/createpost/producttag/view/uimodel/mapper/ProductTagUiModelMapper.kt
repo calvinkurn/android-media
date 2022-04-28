@@ -2,9 +2,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.mapper
 
 import com.tokopedia.createpost.producttag.model.GetFeedLastPurchaseProductResponse
 import com.tokopedia.createpost.producttag.model.GetFeedLastTaggedProductResponse
-import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import javax.inject.Inject
 
 /**
@@ -46,9 +44,9 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapLastPurchasedProduct(response: GetFeedLastPurchaseProductResponse): PagedDataUiModel<ProductUiModel> {
-        return PagedDataUiModel(
-            dataList = response.data.products.map {
+    fun mapLastPurchasedProduct(response: GetFeedLastPurchaseProductResponse): LastPurchasedProductUiModel {
+        return LastPurchasedProductUiModel(
+            products = response.data.products.map {
                 ProductUiModel(
                     id = it.id,
                     shopID = it.shopID,
@@ -75,8 +73,10 @@ class ProductTagUiModelMapper @Inject constructor() {
                     bebasOngkirURL = it.bebasOngkirURL,
                 )
             },
-            hasNextPage = response.data.nextCursor.isNotEmpty(),
             nextCursor = response.data.nextCursor,
+            state = PagedState.Success(hasNextPage = response.data.products.isNotEmpty()),
+            coachmark = response.data.coachmark,
+            isCoachmarkShown = response.data.isCoachmarkShown,
         )
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
+import com.tokopedia.createpost.producttag.view.uimodel.state.LastPurchasedProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
@@ -48,6 +49,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
+    private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -59,11 +61,6 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
-    /** Ui Event */
-    private val _uiEvent = MutableSharedFlow<ProductTagUiEvent>()
-    val uiEvent: Flow<ProductTagUiEvent>
-        get() = _uiEvent
-
     private val _lastTaggedProductUiState = _lastTaggedProduct.map {
         LastTaggedProductUiState(
             products = it.products,
@@ -72,15 +69,32 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    private val _lastPurchasedProductUiState = _lastPurchasedProduct.map {
+        LastPurchasedProductUiState(
+            products = it.products,
+            nextCursor = it.nextCursor,
+            state = it.state,
+            coachmark = it.coachmark,
+            isCoachmarkShown = it.isCoachmarkShown,
+        )
+    }
+
     val uiState = combine(
         _productTagSourceUiState,
         _lastTaggedProductUiState,
-    ) { productTagSource, lastTaggedProduct ->
+        _lastPurchasedProductUiState,
+    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
+            lastPurchasedProduct = lastPurchasedProduct,
         )
     }
+
+    /** Ui Event */
+    private val _uiEvent = MutableSharedFlow<ProductTagUiEvent>()
+    val uiEvent: Flow<ProductTagUiEvent>
+        get() = _uiEvent
 
     init {
         processProductTagSource(productTagSourceRaw)
@@ -102,6 +116,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** Load Tagged Product */
             ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
+
+            /** Load Purchased Product */
+            ProductTagAction.LoadLastPurchasedProduct -> handleLoadLastPurchasedProduct()
         }
     }
 
@@ -151,7 +168,33 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleLoadLastPurchasedProduct() {
+        viewModelScope.launchCatchError(block = {
+            val currLastProduct = _lastPurchasedProduct.value
+
+            if(currLastProduct.state.isLoading) return@launchCatchError
+
+            _lastPurchasedProduct.setValue {
+                copy(state = PagedState.Loading)
+            }
+
+            val response = repo.getLastPurchasedProducts(
+                cursor = currLastProduct.nextCursor,
+                limit = LIMIT_LAST_PURCHASE_PRODUCT_PER_PAGE,
+            )
+
+            _lastPurchasedProduct.value = response
+        }) {
+            _lastPurchasedProduct.setValue {
+                copy(
+                    state = PagedState.Error(it)
+                )
+            }
+        }
+    }
+
     companion object {
         private const val LIMIT_PER_PAGE = 20
+        private const val LIMIT_LAST_PURCHASE_PRODUCT_PER_PAGE = 5
     }
 }

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
+import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
@@ -43,7 +44,7 @@ class ProductTagRepositoryImpl @Inject constructor(
     override suspend fun getLastPurchasedProducts(
         cursor: String,
         limit: Int
-    ): PagedDataUiModel<ProductUiModel> {
+    ): LastPurchasedProductUiModel {
         return withContext(dispatchers.io) {
             val response = getFeedLastPurchaseProductUseCase.apply {
                 setRequestParams(GetFeedLastPurchaseProductUseCase.createParams(

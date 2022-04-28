@@ -8,8 +8,11 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  */
 sealed interface ProductTagAction {
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
+    data class ProductSelected(val product: ProductUiModel): ProductTagAction
 
     /** Last Tagged Product */
     object LoadLastTaggedProduct: ProductTagAction
-    data class ProductSelected(val product: ProductUiModel): ProductTagAction
+
+    /** Last Purchased Product */
+    object LoadLastPurchasedProduct: ProductTagAction
 }
