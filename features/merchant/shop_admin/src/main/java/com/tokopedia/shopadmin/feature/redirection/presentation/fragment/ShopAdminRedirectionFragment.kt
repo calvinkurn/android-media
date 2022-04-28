@@ -95,7 +95,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
 
     private fun redirectShopAdminInSA(adminTypeUiModel: AdminTypeUiModel) {
         val appLink =
-            if (adminTypeUiModel.shopID !in DEFAULT_SHOP_ID_NOT_OPEN) {
+            if (adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN) {
                 if (adminTypeUiModel.isShopAdmin) {
                     if (adminTypeUiModel.status == AdminStatus.ACTIVE) {
                         ApplinkConstInternalSellerapp.SELLER_HOME
