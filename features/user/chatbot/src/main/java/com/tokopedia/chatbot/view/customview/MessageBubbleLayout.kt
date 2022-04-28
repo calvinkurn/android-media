@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,7 @@ class MessageBubbleLayout : ViewGroup {
     var fxChat: CustomChatbotChatLayout? = null
     var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
-    private val radiusMargin = 20f.toPx().toInt()
+    private val radiusMargin = 16f.toPx().toInt()
 
     private var bodyMsgContainer: LinearLayout? = null
 
@@ -126,6 +127,11 @@ class MessageBubbleLayout : ViewGroup {
         /**
          * Find child max width and calculate layout height
          */
+        /**
+         * calculates the width of each child view , ie CustomChatLayout and ReplyBubbleLayout
+         * Finds the maximum width of the width, stores it in maxChildWidth
+         * adds all the heights of child to myHeight
+         * */
         val maxWidth = MeasureSpec.getSize(widthMeasureSpec)
         var maxChildWidth = 0
         var myHeight = 0
@@ -135,6 +141,7 @@ class MessageBubbleLayout : ViewGroup {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec)
                 maxChildWidth = max(child.measuredWidth, maxChildWidth)
                 maxChildWidth = min(maxWidth, maxChildWidth)
+                Log.d("FATAL", "onMeasure:  " + maxChildWidth)
                 myHeight += child.measuredHeight
             }
         }
@@ -155,6 +162,7 @@ class MessageBubbleLayout : ViewGroup {
                 childWidth,
                 MeasureSpec.EXACTLY
             )
+            //This remeasures the width of a child as childWidth has been changed
             child.measure(widthSpec, heightMeasureSpec)
         }
         /**

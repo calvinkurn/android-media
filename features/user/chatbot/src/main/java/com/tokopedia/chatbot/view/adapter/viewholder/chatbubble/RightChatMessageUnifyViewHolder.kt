@@ -6,12 +6,10 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDp
 
 class RightChatMessageUnifyViewHolder(
         itemView: View?,
@@ -49,10 +47,10 @@ class RightChatMessageUnifyViewHolder(
         super.bind(message)
         ChatbotMessageViewHolderBinder2.bindChatReadStatus(message, customChatLayout)
         bindBackground()
-
         if (message.parentReply != null) {
+            val senderName = mapSenderName(message.parentReply!!)
             customChatLayout?.background = backgroundChatWithReplyBubble
-            customChatLayout?.replyBubbleContainer?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.RIGHT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)

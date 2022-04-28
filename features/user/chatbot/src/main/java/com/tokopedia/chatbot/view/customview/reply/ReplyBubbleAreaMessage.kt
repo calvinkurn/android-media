@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.iconunify.IconUnify
@@ -29,8 +30,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         private set
 
     interface Listener {
-        fun getUserName(senderId: String): String
-        fun goToBubble(parentReply: ParentReply)
+        fun getUserName(): String
         fun showReplyOption(messageUiModel: MessageUiModel)
     }
 
@@ -101,16 +101,6 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         replyIcon = findViewById(R.id.reply_icon)
     }
 
-    fun bindReplyData(uiModel : BaseChatUiModel){
-        val parentReply = uiModel.parentReply
-        if (parentReply!=null && !uiModel.isDeleted()){
-            bindParentReplyData(parentReply,uiModel.replyId,"","")
-            updateCloseButtonState(false)
-            show()
-        }else{
-            hide()
-        }
-    }
 
     fun updateReplyButtonState(toShow: Boolean) {
         if (toShow)
@@ -131,9 +121,13 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referredMsg = parentReply
     }
 
+    //Requirement from BE, Changing this value will break the code
     private fun setTitle(sender: String?) {
         sender ?: return
-        title?.text = sender
+        if (sender == ChatbotConstant.TANYA)
+            title?.text = ChatbotConstant.TOKOPEDIA_CARE
+        else
+            title?.text = sender
     }
 
     private fun setReplyMsg(msg: String?) {

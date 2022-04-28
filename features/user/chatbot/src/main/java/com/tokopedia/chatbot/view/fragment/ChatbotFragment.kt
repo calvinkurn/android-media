@@ -198,6 +198,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isFloatingInvoiceCancelled : Boolean = false
     private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
     private var replyBubbleEnabled : Boolean = false
+    private var senderNameForReply = ""
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -1336,20 +1337,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
     }
 
-    override fun getUserName(senderId: String): String {
-        return " "
+    override fun getUserName(): String {
+        return senderNameForReply
     }
 
-    override fun goToBubble(parentReply: ParentReply) {
-
-    }
 
     override fun showReplyOption(messageUiModel: MessageUiModel) {
-        Log.d("FATAL", "showReplyOption: On the ChatbotFragment here")
-
         if (replyBubbleEnabled) {
 
-            Log.d("FATAL", "showReplyOption: On the ChatbotFragment here inside if statement")
             val bottomSheetPage = BottomSheetUnify()
             val viewBottomSheetPage =
                 View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
@@ -1369,7 +1364,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 setChild(viewBottomSheetPage)
                 showKnob = false
             }
-            //TODO fix this
+
             fragmentManager?.let {
                 bottomSheetPage.show(it, "retry reply bubble bottom sheet")
             }
@@ -1381,8 +1376,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             when (it) {
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
+                    senderNameForReply = messageUiModel.from
                     replyBubbleContainer?.composeReplyData(messageUiModel,"",true)
-                    Log.d("FATAL", "onReplyBottomSheetItemClicked: HIDE")
                     bottomSheetPage.dismiss()
                 }
             }

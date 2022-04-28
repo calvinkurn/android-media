@@ -1,20 +1,18 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
-import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.chatbot.view.customview.MessageBubbleLayout
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
@@ -27,8 +25,9 @@ abstract class ChatbotMessageUnifyViewHolder(
         val replyBubbleListener : ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
-    protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout)
+    protected open val customChatLayout: MessageBubbleLayout? = itemView?.findViewById(R.id.message_layout_with_reply)
     private val dateContainer: CardView? = itemView?.findViewById(getDateContainerId())
+    private val name = "{.Name}"
 
     open fun getDateContainerId(): Int = R.id.dateContainer
 
@@ -44,6 +43,17 @@ abstract class ChatbotMessageUnifyViewHolder(
         customChatLayout?.fxChat?.message?.setOnClickListener {
             replyBubbleListener.showReplyOption(message)
         }
+    }
+
+    //Requirement from BE
+    protected open fun mapSenderName(parentReply: ParentReply): String {
+        var senderName = replyBubbleListener?.getUserName()
+        if (parentReply.name == ChatbotConstant.TANYA) {
+            return ChatbotConstant.TOKOPEDIA_CARE
+        } else if (parentReply.name == name) {
+            return senderName
+        }
+        return parentReply?.name
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {
@@ -74,6 +84,8 @@ abstract class ChatbotMessageUnifyViewHolder(
     }
 
     override fun getDateId(): Int = R.id.date
+
+
 
     companion object {
         val TYPE_LEFT = 0

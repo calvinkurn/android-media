@@ -5,17 +5,16 @@ import android.view.View
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder2
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -53,7 +52,8 @@ class LeftChatMessageUnifyViewHolder(
         }
 
         if (message.parentReply != null) {
-            customChatLayout?.replyBubbleContainer?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+            val senderName = mapSenderName(message.parentReply!!)
+            customChatLayout?.replyBubbleContainer?.composeMsg(senderName, message.parentReply?.mainText)
             customChatLayout?.replyBubbleContainer?.updateReplyButtonState(true)
             customChatLayout?.replyBubbleContainer?.updateBackground(ReplyBubbleAreaMessage.LEFT_ORIENTATION)
             customChatLayout?.replyBubbleContainer?.updateCloseButtonState(false)
@@ -71,6 +71,12 @@ class LeftChatMessageUnifyViewHolder(
 //    private fun bindReplyReference(msg: MessageUiModel) {
 //        replyBubbleArea?.bindReplyData(msg)
 //    }
+
+    override fun mapSenderName(parentReply: ParentReply): String {
+        if (parentReply.name == ChatbotConstant.TANYA)
+            return ChatbotConstant.TOKOPEDIA_CARE
+        return parentReply.name
+    }
 
     private fun hideSenderInfo() {
         senderAvatar?.hide()
