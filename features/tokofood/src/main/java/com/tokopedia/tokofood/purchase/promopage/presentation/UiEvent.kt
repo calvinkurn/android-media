@@ -10,5 +10,6 @@ data class UiEvent(
         const val EVENT_FAILED_LOAD_PROMO_PAGE = 222
         const val EVENT_RENDER_GLOBAL_ERROR_KYC = 333
         const val EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE = 444
+        const val EVENT_SHOW_TOASTER = 555
     }
 }

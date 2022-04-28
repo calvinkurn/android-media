@@ -17,11 +17,7 @@ data class CheckoutTokoFoodResponse(
     val data: CheckoutTokoFoodData = CheckoutTokoFoodData()
 ) {
 
-    companion object {
-        private const val SUCCESS_STATUS = 1
-    }
-
-    fun isSuccess(): Boolean = status == SUCCESS_STATUS
+    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
 
     /**
      * Get whether the components in the checkout page can be interactable

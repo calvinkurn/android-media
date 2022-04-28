@@ -122,10 +122,12 @@ class PromoListTokoFoodUseCase @Inject constructor(
 
     private fun getDummyResponse(): PromoListTokoFoodResponse {
         return PromoListTokoFoodResponse(
+            status = 1,
             data = PromoListTokoFoodData(
                 title = "Pakai Promo",
                 changeRestrictionMessage = "Kupon dengan keuntungan terbaik otomatis terpasang dan tidak bisa diubah.",
                 availableSection = PromoListTokoFoodSection(
+                    isEnabled = true,
                     subSection = PromoListTokoFoodSubSection(
                         title = "Kupon otomatis",
                         iconUrl = "https://www.pinclipart.com/picdir/middle/107-1071110_coupon-clip-art.png",
@@ -142,6 +144,7 @@ class PromoListTokoFoodUseCase @Inject constructor(
                     )
                 ),
                 unavailableSection = PromoListTokoFoodSection(
+                    isEnabled = true,
                     title = "Promo yang belum bisa dipakai",
                     subSection = PromoListTokoFoodSubSection(
                         title = "Kupon otomatis",

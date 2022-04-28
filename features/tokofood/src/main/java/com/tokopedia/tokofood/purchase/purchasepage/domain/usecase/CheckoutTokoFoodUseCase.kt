@@ -228,7 +228,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
     override suspend fun execute(params: String): Flow<CheckoutTokoFoodResponse> = flow {
         if (isDebug) {
             kotlinx.coroutines.delay(1000)
-            emit(CheckoutDummyProvider.getAddressNotAvailableResponse())
+            emit(getDummyResponse())
         } else {
             val additionalAttributes = CartAdditionalAttributesTokoFood(
                 chosenAddressRequestHelper.getChosenAddress(),
@@ -370,7 +370,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     priceFmt = "Rp0"
                 ),
                 promo = CheckoutTokoFoodPromo(
-                    hidePromo = true,
+                    hidePromo = false,
                     title = "Kamu bisa hemat Rp.12.000",
                     subtitle = "1 promo dipakai"
                 ),
@@ -382,7 +382,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                     termsAndCondition = "Saya menyetujui Syarat & Ketentuan yang sedang berlaku"
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    hideSummary = true,
+                    hideSummary = false,
                     total = CheckoutTokoFoodShoppingTotal(
                         cost = 133000.00,
                         costFmt = "Rp 133.000"

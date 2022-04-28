@@ -32,12 +32,19 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
     private fun renderPromoData(viewBinding: ItemTokofoodPromoCardBinding,
                                 element: TokoFoodPromoItemUiModel) {
         with(viewBinding) {
-            if (element.isUnavailable) {
+            if (element.isAvailable) {
+                textPromoHighlightIdentifierTokofood.text = element.highlightWording
+                textPromoHighlightIdentifierTokofood.show()
+                promoHighlightIdentifierTokofood.show()
+                containerErrorInfoTokofood.gone()
+                imageSelectPromoTokofood.show()
+                itemView.setOnClickListener {  }
+            } else {
                 promoHighlightIdentifierTokofood.gone()
                 textPromoHighlightIdentifierTokofood.gone()
-                if (element.unavailableInformation.isNotBlank()) {
+                if (element.additionalInformation.isNotBlank()) {
                     containerErrorInfoTokofood.show()
-                    textErrorInfoTokofood.text = element.unavailableInformation
+                    textErrorInfoTokofood.text = element.additionalInformation
                 } else {
                     containerErrorInfoTokofood.gone()
                 }
@@ -45,13 +52,6 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
                 itemView.setOnClickListener {
                     listener.onClickUnavailablePromoItem()
                 }
-            } else {
-                textPromoHighlightIdentifierTokofood.text = element.highlightWording
-                textPromoHighlightIdentifierTokofood.show()
-                promoHighlightIdentifierTokofood.show()
-                containerErrorInfoTokofood.gone()
-                imageSelectPromoTokofood.show()
-                itemView.setOnClickListener {  }
             }
 
             promoBenefitDetail.text = element.title
@@ -61,10 +61,10 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
 
     private fun renderPromoState(viewBinding: ItemTokofoodPromoCardBinding,
                                  element: TokoFoodPromoItemUiModel) {
-        if (element.isUnavailable) {
-            renderPromoDisabled(viewBinding)
-        } else {
+        if (element.isAvailable) {
             renderPromoEnabled(viewBinding)
+        } else {
+            renderPromoDisabled(viewBinding)
         }
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.purchase.promopage.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 class PromoListTokoFoodResponse(
     @SerializedName("message")
@@ -13,7 +14,9 @@ class PromoListTokoFoodResponse(
     @SerializedName("data")
     @Expose
     val data: PromoListTokoFoodData = PromoListTokoFoodData()
-)
+) {
+    fun isSuccess(): Boolean = status == TokoFoodCartUtil.SUCCESS_STATUS
+}
 
 class PromoListTokoFoodData(
     @SerializedName("title")

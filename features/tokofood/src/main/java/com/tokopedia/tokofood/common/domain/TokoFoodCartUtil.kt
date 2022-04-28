@@ -8,6 +8,7 @@ object TokoFoodCartUtil {
 
     const val TOKOFOOD_BUSINESS_ID: Long = 1
 
+    const val SUCCESS_STATUS = 1
     const val IS_MAIN_ADDRESS_STATUS = 2
 
     fun String.convertToCartMetadata(): CartMetadataTokoFood =
