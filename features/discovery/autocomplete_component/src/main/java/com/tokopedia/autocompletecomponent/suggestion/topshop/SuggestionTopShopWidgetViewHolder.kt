@@ -1,6 +1,5 @@
 package com.tokopedia.autocompletecomponent.suggestion.topshop
 
-import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -100,7 +99,7 @@ class SuggestionTopShopWidgetViewHolder(
             outRect.bottom = getBottomOffset()
         }
 
-        @SuppressLint("MagicNumber")
+        @Suppress("MagicNumber")
         private fun getLeftOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == 0) {
                 left - (cardViewHorizontalOffset / 2)
@@ -113,7 +112,7 @@ class SuggestionTopShopWidgetViewHolder(
             return top - cardViewVerticalOffset
         }
 
-        @SuppressLint("MagicNumber")
+        @Suppress("MagicNumber")
         private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
             return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
                 right - (cardViewHorizontalOffset / 2)
