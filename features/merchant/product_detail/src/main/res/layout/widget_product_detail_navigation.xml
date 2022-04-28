@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@id/pdp_navigation_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.product.detail.view.widget.BackToTop
+    <com.tokopedia.product.detail.view.widget.BackToTopButton
         android:id="@+id/pdp_back_to_top"
         android:layout_width="40dp"
         android:layout_height="40dp"

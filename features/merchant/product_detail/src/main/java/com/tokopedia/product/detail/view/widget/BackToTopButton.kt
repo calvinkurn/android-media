@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
 
-class BackToTop(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet) {
+class BackToTopButton(context: Context, attributeSet: AttributeSet) : FrameLayout(context, attributeSet) {
 
     companion object {
         private const val BUTTON_LABEL = "back-to-top"
