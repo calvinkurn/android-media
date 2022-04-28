@@ -42,8 +42,10 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun View.renderAlphaProductItem(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         if (element.isAvailable && element.isEnabled) {
             alpha = 1.0f
+            isEnabled = true
         } else {
             alpha = 0.5f
+            isEnabled = false
         }
     }
 

@@ -144,7 +144,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 checkoutTokoFoodResponse.value = it
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 // TODO: Check for success status
-                val isEnabled = it.isSuccess()
+                val isEnabled = it.isEnabled()
                 _visitables.value =
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value)
                         .toMutableList()
@@ -167,7 +167,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                         lastResponse,
-                        lastResponse.isSuccess(),
+                        lastResponse.isEnabled(),
                         !_isAddressHasPinpoint.value
                     ).toMutableList()
                 }
@@ -207,19 +207,25 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
                         if (shippingIndex >= 0) {
                             removeAt(shippingIndex)
-                            add(shippingIndex, partialData.shippingUiModel)
+                            partialData.shippingUiModel?.let { shippingUiModel ->
+                                add(shippingIndex, shippingUiModel)
+                            }
                         }
                     }
                     getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
                         if (promoIndex >= 0) {
                             removeAt(promoIndex)
-                            add(promoIndex, partialData.promoUiModel)
+                            partialData.promoUiModel?.let { promoUiModel ->
+                                add(promoIndex, promoUiModel)
+                            }
                         }
                     }
                     getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
                         if (summaryIndex >= 0) {
                             removeAt(summaryIndex)
-                            add(summaryIndex, partialData.summaryUiModel)
+                            partialData.summaryUiModel?.let { summaryUiModel ->
+                                add(summaryIndex, summaryUiModel)
+                            }
                         }
                     }
                     getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
@@ -237,7 +243,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             _visitables.value = checkoutTokoFoodResponse.value?.let { lastResponse ->
                 TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                     lastResponse,
-                    lastResponse.isSuccess(),
+                    lastResponse.isEnabled(),
                     !_isAddressHasPinpoint.value
                 ).toMutableList()
             }

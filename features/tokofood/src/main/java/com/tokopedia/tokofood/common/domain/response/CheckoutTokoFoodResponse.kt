@@ -23,6 +23,11 @@ data class CheckoutTokoFoodResponse(
 
     fun isSuccess(): Boolean = status == SUCCESS_STATUS
 
+    /**
+     * Get whether the components in the checkout page can be interactable
+     */
+    fun isEnabled(): Boolean = isSuccess() && data.tickerErrorMessage.isEmpty()
+
 }
 
 data class CheckoutTokoFoodData(
@@ -38,6 +43,9 @@ data class CheckoutTokoFoodData(
     @SerializedName("tickers")
     @Expose
     val tickers: CheckoutTokoFoodTicker = CheckoutTokoFoodTicker(),
+    @SerializedName("ticker_error_message")
+    @Expose
+    val tickerErrorMessage: String = "",
     @SerializedName("errors_unblocking")
     @Expose
     val errorsUnblocking: String = "",
@@ -226,36 +234,15 @@ data class CheckoutTokoFoodShipping(
 )
 
 data class CheckoutTokoFoodPromo(
+    @SerializedName("hide_promo")
+    @Expose
+    val hidePromo: Boolean = false,
     @SerializedName("title")
     @Expose
     val title: String = "",
     @SerializedName("subtitle")
     @Expose
-    val subtitle: String = "",
-    @SerializedName("promo_breakdown")
-    @Expose
-    val promoBreakdown: CheckoutTokoFoodPromoBreakdown = CheckoutTokoFoodPromoBreakdown()
-)
-
-data class CheckoutTokoFoodPromoBreakdown(
-    @SerializedName("promo_id")
-    @Expose
-    val promoId: String = "",
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
-    @SerializedName("amount")
-    @Expose
-    val amount: Double = 0.0,
-    @SerializedName("amount_fmt")
-    @Expose
-    val amountFmt: String = "",
-    @SerializedName("scope")
-    @Expose
-    val scope: Int = 0,
-    @SerializedName("type")
-    @Expose
-    val type: Int = 0
+    val subtitle: String = ""
 )
 
 data class CheckoutTokoFoodConsentBottomSheet(
@@ -277,6 +264,9 @@ data class CheckoutTokoFoodConsentBottomSheet(
 )
 
 data class CheckoutTokoFoodShoppingSummary(
+    @SerializedName("hide_summary")
+    @Expose
+    val hideSummary: Boolean = false,
     @SerializedName("total")
     @Expose
     val total: CheckoutTokoFoodShoppingTotal = CheckoutTokoFoodShoppingTotal(),
