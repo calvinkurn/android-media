@@ -51,6 +51,18 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                             action
                         }
                     }
+                    storage_cleaner_bottomsheet {
+                        title
+                        description
+                        options {
+                            name
+                            description
+                            action
+                        }
+                        button {
+                            text
+                        }
+                    }
                     sort_filters {
                       id
                       name

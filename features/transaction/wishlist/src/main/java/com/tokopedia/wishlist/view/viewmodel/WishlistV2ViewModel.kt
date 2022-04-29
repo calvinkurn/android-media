@@ -133,8 +133,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             listData = mapToEmptyState(wishlistV2Response, listData, isFilterActive)
 
         } else {
-            if (wishlistV2Response.ticker.message.isNotEmpty()) {
-                listData.add(WishlistV2TypeLayoutData(wishlistV2Response.ticker, TYPE_TICKER))
+            if (wishlistV2Response.ticker.message.isNotEmpty() && wishlistV2Response.page == 1) {
+                val bundleTickerData = WishlistV2TickerCleanerData(tickerCleanerData = wishlistV2Response.ticker,
+                bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet)
+                listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
             }
 
             // only for wishlist which has 1 page response

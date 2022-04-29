@@ -71,7 +71,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
-        fun onTickerCTAShowBottomSheet()
+        fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet)
         fun onTickerCTASortFromLatest()
         fun onTickerCloseIconClicked()
     }

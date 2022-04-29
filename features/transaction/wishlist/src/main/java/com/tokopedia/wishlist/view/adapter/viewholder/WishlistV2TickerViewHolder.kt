@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.wishlist.data.model.WishlistV2TickerCleanerData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
-import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.WishlistV2TickerItemBinding
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -26,9 +26,11 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
         } else {
             binding.run {
                 wishlistv2TickerMaxQty.apply {
-                    if (item.dataObject is WishlistV2Response.Data.WishlistV2.TickerState) {
+                    if (item.dataObject is WishlistV2TickerCleanerData) {
+                        val tickerData = item.dataObject.tickerCleanerData
+                        val bottomSheetCleanerData = item.dataObject.bottomSheetCleanerData
                         binding.root.visible()
-                        when (item.dataObject.type) {
+                        when (tickerData.type) {
                             WishlistV2Consts.TICKER_TYPE_ANNOUNCEMENT -> {
                                 tickerType = Ticker.TYPE_ANNOUNCEMENT
                                 closeButtonVisibility = View.VISIBLE
@@ -43,12 +45,12 @@ class WishlistV2TickerViewHolder(private val binding: WishlistV2TickerItemBindin
                             }
                         }
 
-                        setHtmlDescription(item.dataObject.message + " <a href=\"cta_text\">" + item.dataObject.button.text + "</a>")
+                        setHtmlDescription(tickerData.message + " <a href=\"cta_text\">" + tickerData.button.text + "</a>")
                         setDescriptionClickEvent(object: TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                when (item.dataObject.button.action) {
+                                when (tickerData.button.action) {
                                     WishlistV2Consts.TICKER_CTA_OPEN_DELETE_BOTTOMSHEET -> {
-                                        actionListener?.onTickerCTAShowBottomSheet()
+                                        actionListener?.onTickerCTAShowBottomSheet(bottomSheetCleanerData)
                                     }
                                     WishlistV2Consts.TICKER_CTA_SORT_FROM_OLDEST -> {
                                         actionListener?.onTickerCTASortFromLatest()

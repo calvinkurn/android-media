@@ -34,7 +34,7 @@ data class WishlistV2Response(
 				val totalData: Int = -1,
 
 				@SerializedName("count_removable_items")
-				val countRemovableItems: Int = -1,
+				val countRemovableItems: Int = 0,
 
 				@SerializedName("next_page_url")
 				val nextPageUrl: String = "",
@@ -49,7 +49,10 @@ data class WishlistV2Response(
 				val emptyState: EmptyState = EmptyState(),
 
 				@SerializedName("ticker")
-				val ticker: TickerState = TickerState()
+				val ticker: TickerState = TickerState(),
+
+				@SerializedName("storage_cleaner_bottomsheet")
+				val storageCleanerBottomSheet: StorageCleanerBottomSheet = StorageCleanerBottomSheet()
 		) {
 			data class Item(
 
@@ -273,6 +276,35 @@ data class WishlistV2Response(
 
 					@SerializedName("action")
 					val action: String = "",
+
+					@SerializedName("text")
+					val text: String = ""
+				)
+			}
+
+			data class StorageCleanerBottomSheet(
+
+				@SerializedName("title")
+				val title: String = "",
+
+				@SerializedName("description")
+				val description: String = "",
+
+				@SerializedName("options")
+				val options: List<OptionCleanerBottomsheet> = emptyList(),
+
+				@SerializedName("button")
+				val btnCleanBottomSheet: ButtonCleanBottomSheet = ButtonCleanBottomSheet()
+			) {
+				data class OptionCleanerBottomsheet(
+
+					@SerializedName("name")
+					val name: String = "",
+
+					@SerializedName("description")
+					val description: String = "")
+
+				data class ButtonCleanBottomSheet(
 
 					@SerializedName("text")
 					val text: String = ""

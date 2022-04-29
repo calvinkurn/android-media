@@ -81,8 +81,10 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAdapter
+import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
@@ -957,6 +959,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
 
+    private fun showBottomSheetCleaner(cleanerBottomSheet: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet) {
+        val bottomSheetCleaner = WishlistV2CleanerBottomSheet.newInstance(cleanerBottomSheet.title, cleanerBottomSheet.description, cleanerBottomSheet.btnCleanBottomSheet.text)
+        if (bottomSheetCleaner.isAdded || childFragmentManager.isStateSaved) return
+
+        val cleanerAdapter = WishlistV2CleanerBottomSheetAdapter()
+        cleanerAdapter.cleanerBottomSheet = cleanerBottomSheet
+
+        bottomSheetCleaner.setAdapter(cleanerAdapter)
+        bottomSheetCleaner.show(childFragmentManager)
+    }
+
     private fun showShareBottomSheet(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
         val shareListener = object : ShareBottomsheetListener {
 
@@ -1146,8 +1159,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onTickerCTAShowBottomSheet() {
-        println("++ onTickerCTAShowBottomSheet")
+    override fun onTickerCTAShowBottomSheet(bottomSheetCleanerData: WishlistV2Response.Data.WishlistV2.StorageCleanerBottomSheet) {
+        showBottomSheetCleaner(bottomSheetCleanerData)
     }
 
     override fun onTickerCTASortFromLatest() {
@@ -1161,6 +1174,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onTickerCloseIconClicked() {
+        println("++ ok masuk sini")
         wishlistV2Adapter.hideTicker()
     }
 
