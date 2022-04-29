@@ -94,6 +94,7 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
 import com.tokopedia.chatbot.util.ChatReplyOnBoardingBubbleItemDecorator
+import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
@@ -201,6 +202,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
     private var replyBubbleEnabled : Boolean = false
     private var senderNameForReply = ""
+    private var smoothScroll : SmoothScroller? = null
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -318,6 +320,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         recyclerView = getRecyclerView(view)
         isFloatingInvoiceCancelled = false
         setChatBackground()
+        initSmoothScroller()
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
         getRecyclerView(view)?.addItemDecoration(ChatReplyOnBoardingBubbleItemDecorator(setOnBoardingPosition()))
         return view
@@ -326,6 +329,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun setOnBoardingPosition(): (View) -> Unit = {
         if(tempView==null)
             tempView = it
+    }
+
+    private fun initSmoothScroller(){
+        smoothScroll = SmoothScroller(context)
     }
 
     private fun checkForArticleEntry(uri: Uri): Boolean {
@@ -1369,14 +1376,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             parentReply.replyTime
         )
         if (bubblePosition != RecyclerView.NO_POSITION) {
-       //     smoothScroller?.targetPosition = bubblePosition
-      //      rvLayoutManager?.startSmoothScroll(smoothScroller)
-            Log.d("FATAL", "goToBubble: $bubblePosition")
-            (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
+            smoothScroll?.targetPosition = bubblePosition
+            (recyclerView?.layoutManager as LinearLayoutManager).startSmoothScroll(smoothScroll)
 
         } else {
             Log.d("FATAL", "goToBubble: $bubblePosition")
-            (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
+         //   (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
           //  resetItemList()
           //  setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
          //   loadInitialData()
