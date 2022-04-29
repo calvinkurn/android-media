@@ -241,15 +241,15 @@ class UpdateCouponPeriodViewModelTest {
         //Given
         val currentStartDate = Date()
         viewModel.setCurrentlySelectedStartDate(currentStartDate)
+        val expected = viewModel.getSelectedStartDate()
 
         //When
         viewModel.openStartDateTimePicker()
 
-        val actual = viewModel.getSelectedStartDate()
 
         //Then
         coVerify {
-            startDateObserver.onChanged(actual)
+            startDateObserver.onChanged(expected)
         }
     }
 
@@ -258,18 +258,18 @@ class UpdateCouponPeriodViewModelTest {
         //Given
         val currentStartDate = Date()
         viewModel.setCurrentlySelectedStartDate(currentStartDate)
+
         val currentEndDate = Date()
         viewModel.setCurrentlySelectedEndDate(currentEndDate)
 
+        val expected = Pair(viewModel.getSelectedStartDate(), viewModel.getSelectedEndDate())
 
         //When
         viewModel.openEndDateTimePicker()
 
-        val actual = Pair(viewModel.getSelectedStartDate(), viewModel.getSelectedEndDate())
-
         //Then
         coVerify {
-            endDateObserver.onChanged(actual)
+            endDateObserver.onChanged(expected)
         }
     }
 
@@ -280,9 +280,7 @@ class UpdateCouponPeriodViewModelTest {
                 CouponInformation.Target.PUBLIC,
                 "coupon-name",
                 "coupon-code",
-                CouponInformation.Period(
-                    Date(), Date()
-                )
+                CouponInformation.Period(Date(), Date())
             ),
             CouponSettings(CouponType.CASHBACK, DiscountType.PERCENTAGE, MinimumPurchaseType.NOMINAL, 0, 50, 25000, 10, 50000, 500000),
             emptyList(),
