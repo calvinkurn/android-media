@@ -28,12 +28,14 @@ class ProductItemViewHolder(
 
     private var context: Context? = null
     private var variantListAdapter = VariantListAdapter(this, this)
+    private var uiModel : ProductUiModel? = null
 
     init {
         context = binding.root.context
     }
 
     fun bindData(productUiModel: ProductUiModel, dataSetPosition: Int) {
+        uiModel = productUiModel
         // reset all listeners because selection state will be bind from data
         resetListeners()
 
@@ -45,7 +47,7 @@ class ProductItemViewHolder(
 
         // product list item views
         binding.root.setTag(R.id.product, productUiModel)
-        binding.cbuProductItem.setIndeterminate(productUiModel.hasVariant)
+        setParentProductIndeterminate(productUiModel)
         binding.cbuProductItem.isChecked = productUiModel.isSelected
         binding.iuProductImage.loadImage(productUiModel.imageUrl)
         binding.tpgProductName.text = productUiModel.productName
@@ -115,6 +117,12 @@ class ProductItemViewHolder(
         setupListeners()
     }
 
+    private fun setParentProductIndeterminate(productUiModel: ProductUiModel?) {
+        productUiModel?.let{
+            binding.cbuProductItem.setIndeterminate(!productUiModel.isAllVariantSelected())
+        }
+    }
+
     private fun resetListeners() {
         binding.cbuProductItem.setOnCheckedChangeListener { _, _ -> }
         binding.iuRemoveProduct.setOnClickListener { }
@@ -126,6 +134,7 @@ class ProductItemViewHolder(
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
             productItemClickListener.onProductCheckBoxClicked(isChecked, dataSetPosition)
             variantListAdapter.updateVariantSelections(isChecked)
+            setParentProductIndeterminate(uiModel)
         }
         binding.iuRemoveProduct.setOnClickListener {
             val dataSetPosition = binding.root.getTag(R.id.dataset_position) as Int
@@ -174,6 +183,7 @@ class ProductItemViewHolder(
                 productItemClickListener.onProductCheckBoxClicked(false, dataSetPosition)
             }
         }
+        setParentProductIndeterminate(uiModel)
         // return ui listeners
         setupListeners()
     }

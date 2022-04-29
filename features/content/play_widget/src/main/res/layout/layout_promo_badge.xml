@@ -65,10 +65,6 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:tint="@color/Unify_Static_White"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="PROMO"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

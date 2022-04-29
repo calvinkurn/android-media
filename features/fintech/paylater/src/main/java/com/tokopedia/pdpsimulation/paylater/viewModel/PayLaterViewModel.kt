@@ -40,8 +40,10 @@ class PayLaterViewModel @Inject constructor(
     // if tenure found -> then intended simulation
     // if tenure not found -> then max simulation
     var defaultSelectedSimulation: Int = 0
+    var finalProductPrice:Double = 0.0
 
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
+        finalProductPrice = price
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,

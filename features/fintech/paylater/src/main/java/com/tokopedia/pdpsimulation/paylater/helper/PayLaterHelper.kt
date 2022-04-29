@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
+import com.tokopedia.pdpsimulation.paylater.domain.model.SeeMoreOptionsUiModel
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
@@ -20,7 +21,6 @@ object PayLaterHelper {
     private const val TYPE_WEB_VIEW = 2
     private const val TYPE_HOW_TO_USE = 3
     private const val TYPE_HOW_TO_USE_II = 4
-
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
@@ -115,4 +115,36 @@ object PayLaterHelper {
         }
         return nameList.joinToString(",")
     }
-}
+
+    fun extractDetailFromList(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):Triple<String?,String?,String?>?{
+        return try {
+            val allLinkingStatus: ArrayList<String> = ArrayList()
+            val allUserStatus: ArrayList<String> = ArrayList()
+            val allPartnerName: ArrayList<String> = ArrayList()
+            for (i in 0 until payLaterList.size) {
+                if (payLaterList[i] is Detail) {
+                    allLinkingStatus.add((payLaterList[i] as Detail).linkingStatus.orEmpty())
+                    allUserStatus.add((payLaterList[i] as Detail).userState.orEmpty())
+                    allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name ?: "")
+                } else if (payLaterList[i] is SeeMoreOptionsUiModel) {
+                    for (j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size) {
+                        allLinkingStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).
+                        remainingItems[j].linkingStatus.orEmpty())
+                        allUserStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).
+                        remainingItems[j].userState.orEmpty())
+                        allPartnerName.add(
+                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name
+                                ?: ""
+                        )
+                    }
+                    break;
+                }
+            }
+             Triple(computeLabel(allLinkingStatus),computeLabel(allUserStatus), computeLabel(allPartnerName))
+        }catch (e:Exception) {
+            null
+        }
+    }
+
+    private fun computeLabel( listOfString: List<String>) =
+        listOfString.filter { it.isNotEmpty() }.joinToString(",")}

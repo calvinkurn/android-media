@@ -92,7 +92,7 @@ public interface ApplinkConst {
     String DIGITAL = "tokopedia://digital";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
-    String RECHARGE_SUBHOMEPAGE_HOME_NEW = "tokopedia://recharge/home?platform_id=31";
+    String RECHARGE_SUBHOMEPAGE_HOME_NEW = "tokopedia://recharge/home?platform_id=31&personalize=true";
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_SMARTBILLS = "tokopedia://digital/bayarsekaligus";
     String DIGITAL_CART = "tokopedia://digital/cart";
@@ -246,6 +246,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
+    String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
 
     String FLIGHT = "tokopedia://pesawat";
     String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
@@ -427,6 +428,8 @@ public interface ApplinkConst {
     String SHARING_HOST = "sharing";
     String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
+    String WEB_HOST = "www.tokopedia.com";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
@@ -468,6 +471,8 @@ public interface ApplinkConst {
 
     String MONEYIN = "tokopedia://money_in/device_validation";
     String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
+    String USER_PROFILE_LANDING = "tokopedia://people";
+    String USER_PROFILE_FOLLOWERS = "tokopedia://people/followers";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -692,6 +697,17 @@ public interface ApplinkConst {
 
         String PARAM_SOURCE = "source";
         String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
+    }
+
+    interface MediaPicker {
+        String MEDIA_PICKER = "tokopedia://media-picker";
+        String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
+
+        // this param will determine which page should be landed first
+        String PARAM_LANDING_PAGE = "start";
+
+        String VALUE_CAMERA_PAGE = "0"; // camera page
+        String VALUE_GALLERY_PAGE = "1"; // gallery page
     }
 
     interface GeneralInfo {

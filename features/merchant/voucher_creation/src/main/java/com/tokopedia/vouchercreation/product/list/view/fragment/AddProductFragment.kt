@@ -530,7 +530,7 @@ class AddProductFragment : BaseSimpleListFragment<ProductListAdapter, ProductUiM
 //        viewModel.setSelectedProducts(adapter?.getSelectedProducts() ?: listOf())
     }
 
-    override fun onRemoveButtonClicked() {
+    override fun onRemoveButtonClicked(position: Int) {
         // No implementation
     }
 

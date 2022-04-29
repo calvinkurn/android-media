@@ -7,7 +7,7 @@ data class RevieweeDataDomain (
     val revieweeName: String,
     val revieweeUri: String,
     val revieweeRole: String,
-    val revieweeRoleId: Int,
+    val revieweeRoleId: String,
     val revieweePicture: String,
     val revieweeBadgeCustomer: RevieweeBadgeCustomerDomain,
     val revieweeBadgeSeller: RevieweeBadgeSellerDomain
