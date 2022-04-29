@@ -5,8 +5,11 @@ import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
+import com.tokopedia.utils.date.toDate
+import java.text.SimpleDateFormat
 
 object ProgramUpdateMapper {
+
     fun formToUpdateMapper(
         membershipGetProgramForm: MembershipGetProgramForm?,
         programType: Int,
@@ -61,7 +64,7 @@ object ProgramUpdateMapper {
                 }
             }
             ProgramType.EXTEND ->{
-                actionType = "Extend"
+                actionType = "extend"
                 programUpdateResponse.apply {
                     this.actionType = actionType
                 }
@@ -80,6 +83,16 @@ object ProgramUpdateMapper {
             }
         }
         return programUpdateResponse
+    }
+
+
+    fun setDate(time: String): String {
+        val selectedTime = time.substringBefore(" ")
+        val date = selectedTime.toDate("yyyy-MM-dd")
+        val day = SimpleDateFormat("dd").format(date)
+        val month = SimpleDateFormat("MMMM").format(date)
+        val year = selectedTime.substringBefore("-")
+        return "$day $month $year"
     }
 
 }

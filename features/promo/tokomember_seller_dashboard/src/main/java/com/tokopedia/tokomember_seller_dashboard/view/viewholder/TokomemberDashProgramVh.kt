@@ -1,7 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
@@ -11,23 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashProgramDetailActivity
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton

@@ -73,7 +73,7 @@ data class TimePeriodListItem(
 	val name: String? = null,
 	@Expose
 	@SerializedName("isSelected")
-	val isSelected: Boolean? = null
+	var isSelected: Boolean? = null
 )
 
 data class ProgramThreshold(

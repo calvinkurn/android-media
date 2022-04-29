@@ -102,7 +102,11 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text
         container_options_menu.addView(childLayout)
         childLayout.setOnClickListener {
-            programActions.option(type, shopId, programId)
+            parentFragment?.let{
+                if(it is ProgramActions){
+                    it.option(type, shopId, programId)
+                }
+            }
             dismiss()
         }
     }

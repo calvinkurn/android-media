@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
@@ -16,8 +18,15 @@ import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.CardTemplate
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.IntoolsShop
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
@@ -32,19 +41,11 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCa
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import javax.inject.Inject
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.CardTemplate
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.IntoolsShop
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
-import com.tokopedia.unifycomponents.Toaster
 
 class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener {
@@ -83,6 +84,9 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         observeViewModel()
         tokomemberDashCreateViewModel.getCardInfo(arguments?.getInt("cardID")?:0)
         renderHeader()
+        tipTokomember.setOnClickListener {
+            Toast.makeText(context, "Click tips", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun getScreenName() = ""

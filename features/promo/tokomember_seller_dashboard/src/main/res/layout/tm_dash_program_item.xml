@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.tokomember_common_widget.TokomemberProgramView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    app:cardCornerRadius="@dimen/unify_space_4"
-    tools:ignore="MissingDefaultResource"/>
+    android:layout_height="wrap_content">
+    <com.tokopedia.tokomember_common_widget.TokomemberProgramView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/unify_space_4"
+        tools:ignore="MissingDefaultResource"/>
+
+</FrameLayout>

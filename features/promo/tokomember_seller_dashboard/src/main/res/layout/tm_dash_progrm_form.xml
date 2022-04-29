@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/rootProgram"
     android:background="@color/Unify_Background"
     android:layout_height="match_parent">
 
@@ -44,49 +45,40 @@
         app:typographyWeight="reguler"
         android:text="Detail informasi" />
 
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/chipOne"
-        android:layout_width="wrap_content"
+    <com.tokopedia.tokomember_common_widget.TokomemberChipGroup
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
-        app:centerText="true"
-        app:chipSize="medium"
-        app:chipText="6 Bulan"
-        app:chipType="normal"
-        app:isDashed="false"
+        android:layout_marginStart="@dimen/unify_space_16"
         app:layout_constraintStart_toStartOf="@id/tvDetail"
         app:layout_constraintTop_toBottomOf="@id/tvDurasi"
-        app:showNewNotification="false" />
+        android:id="@+id/chipGroup"/>
 
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/chipTwo"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifycomponents.CardUnify
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:id="@+id/cardEditInfo"
+        app:card_type="shadow_active"
+        app:card_background_color="@color/Unify_BN50"
+        android:backgroundTint="@color/Unify_BN200"
         android:layout_marginTop="@dimen/unify_space_8"
-        app:centerText="true"
-        app:chipSize="medium"
-        app:chipText="6 Bulan"
-        app:chipType="normal"
-        app:isDashed="false"
-        app:layout_constraintStart_toEndOf="@+id/chipOne"
-        app:layout_constraintTop_toBottomOf="@id/tvDurasi"
-        app:showNewNotification="false" />
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@id/tvDetailLevel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/chipThree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_8"
-        app:centerText="true"
-        app:chipSize="medium"
-        app:chipText="6 Bulan"
-        app:chipType="normal"
-        app:isDashed="false"
-        app:layout_constraintStart_toEndOf="@+id/chipTwo"
-        app:layout_constraintTop_toBottomOf="@id/tvDurasi"
-        app:showNewNotification="false" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="display_3"
+            android:padding="@dimen/spacing_lvl3"
+            android:drawableLeft="@drawable/eta_info"
+            android:drawablePadding="@dimen/dp_10"
+            android:drawableTint="#2E3137"
+            android:text="@string/tm_string_edit_skema" />
+
+    </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textFieldDuration"
@@ -96,7 +88,7 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvDetail"
-        app:layout_constraintTop_toBottomOf="@id/chipOne"
+        app:layout_constraintTop_toBottomOf="@id/chipGroup"
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="text|number"
@@ -143,7 +135,7 @@
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvDetail"
-        app:layout_constraintTop_toBottomOf="@id/tvDetailLevel"
+        app:layout_constraintTop_toBottomOf="@id/cardEditInfo"
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="text|number"

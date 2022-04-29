@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
 
 class TokomemberDashCreateActivity : BaseSimpleActivity() {
 
@@ -29,7 +28,7 @@ class TokomemberDashCreateActivity : BaseSimpleActivity() {
 
     fun addFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
-            .add(R.id.containerParent, fragment, tag)
+            .replace(R.id.containerParent, fragment, tag)
             .addToBackStack(tag).commit()
     }
 
