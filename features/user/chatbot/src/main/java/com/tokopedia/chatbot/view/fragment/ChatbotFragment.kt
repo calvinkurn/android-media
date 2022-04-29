@@ -1365,20 +1365,23 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun goToBubble(parentReply: ParentReply) {
-//        val bubblePosition = adapter.getItemId (
-//            parentReply.localId, parentReply.replyTime
-//        )
-//        if (bubblePosition != RecyclerView.NO_POSITION) {
-//            smoothScroller?.targetPosition = bubblePosition
-//            rvLayoutManager?.startSmoothScroll(smoothScroller)
-//        } else {
-//            resetItemList()
-//            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
-//            loadInitialData()
-//        }
+        val bubblePosition = (adapter as ChatbotAdapter).getBubblePosition (
+            parentReply.replyTime
+        )
+        if (bubblePosition != RecyclerView.NO_POSITION) {
+       //     smoothScroller?.targetPosition = bubblePosition
+      //      rvLayoutManager?.startSmoothScroll(smoothScroller)
+            Log.d("FATAL", "goToBubble: $bubblePosition")
+            (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
 
-        val bubblePosition = adapter.data
-        Log.d("Testing123", "goToBubble: $bubblePosition")
+        } else {
+            Log.d("FATAL", "goToBubble: $bubblePosition")
+            (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
+          //  resetItemList()
+          //  setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
+         //   loadInitialData()
+        }
+
     }
 
     private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {

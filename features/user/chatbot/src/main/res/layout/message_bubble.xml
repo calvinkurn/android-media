@@ -6,15 +6,6 @@
     android:layout_height="wrap_content"
     tools:parentTag="com.tokopedia.chatbot.view.customview.MessageBubbleLayout">
 
-    <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
-        android:id="@+id/reply_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="27dp"
-        app:layout_constraintEnd_toEndOf="@+id/chat_message"
-        app:layout_constraintStart_toStartOf="@+id/chat_message"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
         android:id="@+id/chat_message"
         android:layout_width="wrap_content"
@@ -27,5 +18,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
+
+    <com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+        android:id="@+id/reply_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="27dp"
+        app:layout_constraintEnd_toEndOf="@+id/chat_message"
+        app:layout_constraintStart_toStartOf="@+id/chat_message"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 
 </merge>

@@ -18,8 +18,6 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory), ChatbotAdapterListener {
 
-    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
-
     override fun enableShowTime(): Boolean = false
 
     override fun getItemViewType(position: Int): Int {
@@ -39,26 +37,13 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
             notifyItemChanged(position)
         }
     }
-//
-//    fun addNewMessage(item: SendableUiModel) {
-//        if (item is Visitable<*> && item.localId.isNotEmpty()) {
-//            replyMap[item.localId] = item
-//        }
-//    }
-//
-//    fun getBubblePosition(localId: String, replyTime: String): Int {
-//        return if (replyMap.contains(localId)) {
-//            getLocalIdMsgPosition(localId)
-//        } else {
-//            visitables.indexOfFirst {
-//                it is BaseChatUiModel && it.replyTime == replyTime
-//            }
-//        }
-//    }
-//
-//    private fun getLocalIdMsgPosition(localId: String) = visitables.indexOfFirst {
-//        it is BaseChatUiModel && it.localId == localId
-//    }
+
+    fun getBubblePosition(replyTime: String): Int {
+        return visitables.indexOfFirst {
+            it is BaseChatUiModel && it.replyTime == replyTime
+        }
+    }
+
 
 
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
