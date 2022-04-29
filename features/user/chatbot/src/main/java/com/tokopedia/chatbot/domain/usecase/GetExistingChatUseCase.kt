@@ -34,12 +34,14 @@ class GetExistingChatUseCase @Inject constructor(
 
         private val PARAM_MESSAGE_ID: String = "msgId"
         private val PARAM_PAGE: String = "page"
+        private val PARAM_IS_TEXT_ONLY = "isTextOnly"
 
 
         fun generateParamFirstTime(messageId: String): Map<String, Any> {
             val requestParams = HashMap<String, Any>()
             requestParams[PARAM_MESSAGE_ID] = verifyMessageId(messageId)
             requestParams[PARAM_PAGE] = 1
+            requestParams[PARAM_IS_TEXT_ONLY] = true
             return requestParams
         }
 

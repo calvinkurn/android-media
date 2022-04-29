@@ -44,8 +44,6 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         }
     }
 
-
-
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)
         return if (item is SendableUiModel && item.isSender || item is ChatSepratorViewModel) {
