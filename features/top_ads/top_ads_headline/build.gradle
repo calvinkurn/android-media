@@ -59,4 +59,6 @@ project.ext {
     artifactName = "top_ads_headline-release"
 }
 
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'
