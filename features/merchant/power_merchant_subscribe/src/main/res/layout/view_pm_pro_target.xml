@@ -143,7 +143,6 @@
         android:id="@+id/icPmTargetShopLevelInfo"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:padding="2dp"
         android:layout_marginStart="4dp"
         app:icon_name="INFORMATION"
         app:layout_constraintStart_toEndOf="@+id/lblPmTargetShopLevel"

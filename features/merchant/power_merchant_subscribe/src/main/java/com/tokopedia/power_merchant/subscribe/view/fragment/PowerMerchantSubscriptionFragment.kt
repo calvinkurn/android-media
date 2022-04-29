@@ -67,7 +67,7 @@ open class PowerMerchantSubscriptionFragment :
     @Inject
     lateinit var powerMerchantTracking: PowerMerchantTracking
 
-    private val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
+    protected val mViewModel: PowerMerchantSubscriptionViewModel by lazy {
         ViewModelProvider(
             this,
             viewModelFactory

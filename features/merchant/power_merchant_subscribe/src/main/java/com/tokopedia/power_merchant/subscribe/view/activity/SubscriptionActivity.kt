@@ -314,16 +314,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         val isRMNewSeller = data.shopInfo.isNewSeller &&
                 isRegularMerchant
 
-        val registrationTerms = if (isPmProSelected) {
-            PMRegistrationTermHelper.getPmProRegistrationTerms(this, shopInfo, isPmProSelected)
-        } else {
-            PMRegistrationTermHelper.getPmRegistrationTerms(
-                this,
-                shopInfo,
-                isPmProSelected,
-                isRegularMerchant
-            )
-        }
+        val registrationTerms = PMRegistrationTermHelper.getPmRegistrationTerms(
+            this,
+            shopInfo,
+            isRegularMerchant
+        )
 
         val isEligiblePm =
             (if (isPmProSelected) shopInfo.isEligiblePmPro else shopInfo.isEligiblePm)

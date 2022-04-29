@@ -11,6 +11,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.gm.common.presentation.model.ShopLevelUiModel
+import com.tokopedia.gm.common.presentation.view.bottomsheet.BottomSheetShopTooltipLevel
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -20,13 +22,10 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationBenefitHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
-import com.tokopedia.power_merchant.subscribe.view.model.ItemPMProNewSellerRequirement
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetBannerPMRegistration
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.WidgetPMProNewSellerHeaderUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.WidgetPmProNewSellerBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -47,11 +46,19 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         }
     }
 
+    private var shopLevelInfo: ShopLevelUiModel? = null
     private var currentPmRegistrationTireType = PMConstant.PMTierType.POWER_MERCHANT
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        getShopLevelInfo()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        observeShopLevelInfo()
         setOnSwipeToRefresh()
     }
 
@@ -74,15 +81,26 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     override fun onMoreDetailPMEligibilityClicked() {
         val widgetIndex = adapter.data.indexOfFirst { it is WidgetGradeBenefitUiModel }
         if (widgetIndex != RecyclerView.NO_POSITION) {
+            recyclerView?.smoothScrollToPosition(widgetIndex)
             recyclerView?.post {
                 adapter.notifyItemChanged(widgetIndex)
             }
-            recyclerView?.smoothScrollToPosition(widgetIndex)
         }
     }
 
     override fun showShopLevelInfoBottomSheet() {
+        shopLevelInfo?.let { shopLevel ->
+            if (childFragmentManager.isStateSaved) return
 
+            val bottomSheetShopTooltipLevel = BottomSheetShopTooltipLevel.createInstance(
+                shopLevel = shopLevel.shopLevel.toLong(),
+                shopIncome = shopLevel.netItemValue.toString(),
+                productSold = shopLevel.itemSold.toString(),
+                period = shopLevel.period,
+                nextUpdate = shopLevel.nextUpdate
+            )
+            bottomSheetShopTooltipLevel.show(childFragmentManager)
+        }
     }
 
     fun setOnFooterCtaClickedListener(
@@ -91,31 +109,45 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         tncAgreed: Boolean,
         nextShopTireType: Int
     ) {
-        val shopInfo = pmBasicInfo?.shopInfo ?: return
-        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        when {
-            isModeratedShop -> showModeratedShopBottomSheet()
-            shopInfo.isNewSeller && isPmPro -> showNewSellerPmProBottomSheet()
-            isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
-            term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
-            term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
-            term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
-            term is RegistrationTermUiModel.NetItemValue -> showNivTermBottomSheet(shopInfo.netItemValuePmProThreshold)
-            term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
+        pmBasicInfo?.shopInfo?.let { shopInfo ->
+            when {
+                isModeratedShop -> showModeratedShopBottomSheet()
+                isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
+                term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
+                term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
+                term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
+                term is RegistrationTermUiModel.NetItemValue -> showNivTermBottomSheet(shopInfo.netItemValuePmProThreshold)
+                term is RegistrationTermUiModel.Kyc -> submitKYC(tncAgreed)
+            }
         }
+    }
+
+    private fun observeShopLevelInfo() {
+        observe(mViewModel.shopLevelInfo) {
+            when (it) {
+                is Success -> {
+                    this.shopLevelInfo = it.data
+                }
+                is Fail -> logToCrashlytic(
+                    PowerMerchantErrorLogger.PM_SHOP_LEVEL_INFO_ERROR,
+                    it.throwable
+                )
+            }
+        }
+    }
+
+    private fun getShopLevelInfo() {
+        mViewModel.getShopLevelInfo()
     }
 
     private fun renderPmRegistrationWidgets() {
         pmBasicInfo?.shopInfo?.let { shopInfo ->
             val isRegularMerchant = pmBasicInfo?.pmStatus?.isRegularMerchant() == true
-            val registrationHeaderWidget =
-                getRegistrationHeaderWidgetData(shopInfo, isRegularMerchant)
+            val registrationHeaderWidget = getRegistrationHeaderWidgetData(
+                shopInfo, isRegularMerchant
+            )
 
             renderPmRegistrationWidget(registrationHeaderWidget)
-
-            recyclerView?.post {
-                recyclerView?.smoothScrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT)
-            }
         }
     }
 
@@ -126,6 +158,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     private fun setOnSwipeToRefresh() {
         binding?.swipeRefreshPm?.setOnRefreshListener {
             fetchPowerMerchantBasicInfo()
+            getShopLevelInfo()
         }
     }
 
@@ -155,21 +188,8 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         )
     }
 
-    private fun showNewSellerPmProBottomSheet() {
-        val pmShopScoreProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold.orZero()
-        val title = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_title)
-        val description = getString(
-            R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_description,
-            pmShopScoreProThreshold
-        )
-        val ctaText = getString(R.string.pm_content_slider_last_slide_button)
-        val illustrationUrl = PMConstant.Images.PM_NEW_REQUIREMENT
-
-        showNotificationBottomSheet(title, description, ctaText, illustrationUrl)
-    }
-
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
+        val isPmPro = shopInfo.shopLevel >= PMConstant.ShopLevel.TWO
         val shopScoreThreshold = if (isPmPro) {
             shopInfo.shopScorePmProThreshold
         } else {
@@ -299,12 +319,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             return
         }
 
-        val isPmPro = currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
-        val appLink = if (isPmPro) {
-            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
-        } else {
-            PMConstant.AppLink.KYC_POWER_MERCHANT
-        }
+        val appLink = PMConstant.AppLink.KYC_POWER_MERCHANT
         RouteManager.route(context, appLink)
     }
 
@@ -312,13 +327,10 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         shopInfo: PMShopInfoUiModel,
         isRegularMerchant: Boolean
     ): WidgetRegistrationHeaderUiModel {
-        val currentPMProRegistrationSelected =
-            currentPmRegistrationTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         return WidgetRegistrationHeaderUiModel(
             shopInfo = shopInfo,
             registrationTerms = PMRegistrationTermHelper.getPmRegistrationTerms(
-                requireContext(), shopInfo,
-                currentPMProRegistrationSelected, isRegularMerchant
+                requireContext(), shopInfo, isRegularMerchant
             ),
             selectedPmType = currentPmRegistrationTireType
         )
