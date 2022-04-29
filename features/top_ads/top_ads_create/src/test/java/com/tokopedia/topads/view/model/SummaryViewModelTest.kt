@@ -46,7 +46,10 @@ class SummaryViewModelTest {
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase))
+        viewModel = spyk(SummaryViewModel(rule.dispatchers,
+            validGroupUseCase,
+            topAdsGetShopDepositUseCase,
+            topAdsCreateUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)
@@ -64,10 +67,10 @@ class SummaryViewModelTest {
     fun `getTopAdsDeposit success test`() {
         val obj = Deposit()
         every { topAdsGetShopDepositUseCase.execute(captureLambda(), any()) } answers {
-            firstArg<(Deposit)->Unit>().invoke(obj)
+            firstArg<(Deposit) -> Unit>().invoke(obj)
         }
-        var actual : DepositAmount ?= null
-        viewModel.getTopAdsDeposit({actual = it}, {})
+        var actual: DepositAmount? = null
+        viewModel.getTopAdsDeposit({ actual = it }, {})
         Assert.assertEquals(obj.topadsDashboardDeposits.data, actual)
     }
 
@@ -77,8 +80,8 @@ class SummaryViewModelTest {
         every { topAdsGetShopDepositUseCase.execute(any(), captureLambda()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(obj)
         }
-        var actual : Throwable ?= null
-        viewModel.getTopAdsDeposit({}, {actual = it})
+        var actual: Throwable? = null
+        viewModel.getTopAdsDeposit({}, { actual = it })
         Assert.assertEquals(obj, actual)
     }
 
@@ -102,7 +105,7 @@ class SummaryViewModelTest {
     @Test
     fun `validateGroup success`() {
         val expected = ResponseGroupValidateName()
-        var actual : ResponseGroupValidateName.TopAdsGroupValidateName ?= null
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateName? = null
 
         every {
             validGroupUseCase.execute(captureLambda(), any())
@@ -117,7 +120,7 @@ class SummaryViewModelTest {
 
     @Test
     fun `validateGroup error`() {
-        var actual : ResponseGroupValidateName.TopAdsGroupValidateName ?= null
+        var actual: ResponseGroupValidateName.TopAdsGroupValidateName? = null
 
         every {
             validGroupUseCase.execute(any(), captureLambda())
@@ -142,33 +145,51 @@ class SummaryViewModelTest {
 
     @Test
     fun `topadscreated success check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } returns mockk(relaxed = true)
+        every {
+            topAdsCreateUseCase.setParam(any(),
+                any(),
+                any(),
+                any())
+        } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse()
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
         Assert.assertTrue(successCalled)
     }
 
     @Test
     fun `topadscreated error check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } returns mockk(relaxed = true)
+        every {
+            topAdsCreateUseCase.setParam(any(),
+                any(),
+                any(),
+                any())
+        } returns mockk(relaxed = true)
         coEvery { topAdsCreateUseCase.execute(any<RequestParams>()) } returns FinalAdResponse(
-            FinalAdResponse.TopadsManageGroupAds(FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = listOf(
-                FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
+            FinalAdResponse.TopadsManageGroupAds(FinalAdResponse.TopadsManageGroupAds.KeywordResponse(
+                errors = listOf(
+                    FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
                 FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem()))))
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
         Assert.assertTrue(!successCalled)
     }
 
     @Test
     fun `topadscreated exception check`() {
-        every { topAdsCreateUseCase.setParam(any(),any(),any(),any()) } throws Throwable()
+        every { topAdsCreateUseCase.setParam(any(), any(), any(), any()) } throws Throwable()
 
         var successCalled = false
-        viewModel.topAdsCreated(mockk(), mockk(), mockk(), {successCalled = true}, {})
+        viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})
         Assert.assertTrue(!successCalled)
+    }
+
+    @Test
+    fun onClear() {
+        viewModel.onCleared()
+        verify { validGroupUseCase.cancelJobs() }
+        verify { topAdsGetShopDepositUseCase.cancelJobs() }
     }
 }

@@ -157,31 +157,27 @@ class GroupDetailViewModel @Inject constructor(
         topAdsCreated(dataGrp, dataKey, onSuccess, {})
     }
 
-    fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
-        val productBundle = Bundle()
-        val param = topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataKey, dataGrp)
-        topAdsCreateUseCase.execute(param, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as DataResponse<FinalAdResponse>
-                val dataGroup = response.data?.topadsManageGroupAds?.groupResponse
-                if (dataGroup?.errors.isNullOrEmpty())
-                    onSuccess()
-                else {
-                    var error = ""
-                    if (!dataGroup?.errors.isNullOrEmpty())
-                        error = dataGroup?.errors?.firstOrNull()?.detail ?: ""
-                    onError(error)
-                }
+    fun topAdsCreated(
+        dataGrp: HashMap<String, Any?>, dataKey: HashMap<String, Any?>,
+        onSuccess: (() -> Unit), onError: ((error: String?) -> Unit),
+    ) {
+        launchCatchError(block = {
+            val productBundle = Bundle()
+            val param =
+                topAdsCreateUseCase.setParam(ParamObject.EDIT_PAGE, productBundle, dataKey, dataGrp)
+            val response = topAdsCreateUseCase.execute(param)
+            val dataGroup = response.topadsManageGroupAds.groupResponse
+            if (dataGroup.errors.isNullOrEmpty())
+                onSuccess()
+            else {
+                var error = ""
+                if (!dataGroup.errors.isNullOrEmpty())
+                    error = dataGroup.errors?.firstOrNull()?.detail ?: ""
+                onError(error)
             }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable?) {
-                onError(e?.message)
-                e?.printStackTrace()
-            }
+        }, onError = {
+            onError(it.message)
+            it.printStackTrace()
         })
     }
 

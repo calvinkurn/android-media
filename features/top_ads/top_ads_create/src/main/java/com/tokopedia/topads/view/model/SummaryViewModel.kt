@@ -72,4 +72,10 @@ class SummaryViewModel @Inject constructor(
             it.printStackTrace()
         })
     }
+
+    public override fun onCleared() {
+        super.onCleared()
+        validGroupUseCase.cancelJobs()
+        topAdsGetShopDepositUseCase.cancelJobs()
+    }
 }
