@@ -62,4 +62,8 @@ class WishlistV2CleanerBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vi
         selectedOption = position
         notifyDataSetChanged()
     }
+
+    fun getSelectedIndex(): Int {
+        return selectedOption
+    }
 }

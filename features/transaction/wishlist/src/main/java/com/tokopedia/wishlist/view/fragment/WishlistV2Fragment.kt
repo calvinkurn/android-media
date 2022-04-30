@@ -93,7 +93,7 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 @Keep
-class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener {
+class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener, WishlistV2CleanerBottomSheet.BottomsheetCleanerListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -425,7 +425,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
             wishlistNavtoolbar.setIcon(icons)
-            wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener { onStickyManageClicked() }
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener {
+                onStickyManageClicked() }
             wishlistV2Fb.circleMainMenu.setOnClickListener {
                 rvWishlist.smoothScrollToPosition(0)
             }
@@ -1255,15 +1256,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun onStickyManageClicked() {
         if (!isBulkDeleteShow) {
-            isBulkDeleteShow = true
+            turnOnBulkDeleteMode()
             binding?.run {
                 wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(Rv2.string.wishlist_cancel_manage_label)
             }
-            onManageClicked(showCheckbox = true)
             WishlistV2Analytics.clickAturOnWishlist()
         } else {
             turnOffBulkDeleteMode()
         }
+    }
+
+    private fun turnOnBulkDeleteMode() {
+        isBulkDeleteShow = true
+        onManageClicked(showCheckbox = true)
     }
 
     private fun turnOffBulkDeleteMode() {
@@ -1297,7 +1302,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 wishlistV2StickyCountManageLabel.wishlistTypeLayoutIcon.visible()
             }
         }
-        WishlistV2Analytics.clickAturOnWishlist()
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
@@ -1377,6 +1381,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMsg, throwable))
         } else {
             throwable.printStackTrace()
+        }
+    }
+
+    override fun onButtonCleanerClicked(index: Int) {
+        onTickerCTASortFromLatest()
+        turnOnBulkDeleteMode()
+        if (index == 0) {
+            // manual
+        } else if (index == 1) {
+            // auto
         }
     }
 }

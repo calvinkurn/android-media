@@ -13,6 +13,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistStorageCleanerBinding>()
     private var adapterOptionBottomSheet: WishlistV2CleanerBottomSheetAdapter? = null
+    private var listener: BottomsheetCleanerListener? = null
 
     companion object {
         private const val TAG: String = "WishlistV2CleanerBottomSheet"
@@ -39,7 +40,16 @@ class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = adapterOptionBottomSheet
             }
-            btnSeeItems.visible()
+            btnSeeItems.apply {
+                visible()
+                text = arguments?.getString(BUTTON_TEXT) ?: ""
+                setOnClickListener {
+                    dismiss()
+
+                    val indexSelected = adapterOptionBottomSheet?.getSelectedIndex()
+                    indexSelected?.let { index -> listener?.onButtonCleanerClicked(indexSelected) }
+                }
+            }
             btnSeeItems.text = arguments?.getString(BUTTON_TEXT) ?: ""
             storageCleanerDesc.text = arguments?.getString(DESC_BOTTOMSHEET) ?: ""
         }
@@ -56,5 +66,13 @@ class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
+    }
+
+    fun setListener(listener: BottomsheetCleanerListener) {
+        this.listener = listener
+    }
+
+    interface BottomsheetCleanerListener {
+        fun onButtonCleanerClicked(index: Int)
     }
 }
