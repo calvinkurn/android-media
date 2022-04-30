@@ -47,7 +47,7 @@ class WishlistV2CleanerBottomSheet: BottomSheetUnify() {
                     dismiss()
 
                     val indexSelected = adapterOptionBottomSheet?.getSelectedIndex()
-                    indexSelected?.let { index -> listener?.onButtonCleanerClicked(indexSelected) }
+                    indexSelected?.let { index -> listener?.onButtonCleanerClicked(index) }
                 }
             }
             btnSeeItems.text = arguments?.getString(BUTTON_TEXT) ?: ""
