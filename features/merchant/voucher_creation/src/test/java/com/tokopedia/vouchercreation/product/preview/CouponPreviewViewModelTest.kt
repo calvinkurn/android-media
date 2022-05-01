@@ -468,14 +468,7 @@ class CouponPreviewViewModelTest {
     @Test
     fun `When coupon information target is not selected, should return false`() = runBlocking {
         //Given
-        val couponInformation = CouponInformation(
-            CouponInformation.Target.NOT_SELECTED,
-            "Voucher 25rb",
-            "VCR25RB",
-            CouponInformation.Period(
-                Date(), Date()
-            )
-        )
+        val couponInformation = buildCouponInformation().copy(target = CouponInformation.Target.NOT_SELECTED)
 
         val expected = false
 
@@ -490,14 +483,7 @@ class CouponPreviewViewModelTest {
     fun `When coupon information target is private and coupon code is empty, should return false`() =
         runBlocking {
             //Given
-            val couponInformation = CouponInformation(
-                CouponInformation.Target.PRIVATE,
-                "Voucher 25rb",
-                "",
-                CouponInformation.Period(
-                    Date(), Date()
-                )
-            )
+            val couponInformation = buildCouponInformation().copy(target = CouponInformation.Target.PRIVATE, code = "")
 
             val expected = false
 
@@ -512,14 +498,7 @@ class CouponPreviewViewModelTest {
     fun `When coupon information target is private and coupon code is not empty, should return true`() =
         runBlocking {
             //Given
-            val couponInformation = CouponInformation(
-                CouponInformation.Target.PRIVATE,
-                "Voucher 25rb",
-                "VCR25RB",
-                CouponInformation.Period(
-                    Date(), Date()
-                )
-            )
+            val couponInformation = buildCouponInformation().copy(target = CouponInformation.Target.PRIVATE)
 
             val expected = true
 
@@ -534,14 +513,7 @@ class CouponPreviewViewModelTest {
     fun `When coupon information target is public and coupon code is empty, should return true`() =
         runBlocking {
             //Given
-            val couponInformation = CouponInformation(
-                CouponInformation.Target.PUBLIC,
-                "VOUCHER25RB",
-                "",
-                CouponInformation.Period(
-                    Date(), Date()
-                )
-            )
+            val couponInformation = buildCouponInformation().copy(code = "")
 
             val expected = true
 
@@ -555,14 +527,7 @@ class CouponPreviewViewModelTest {
     @Test
     fun `When coupon information name is empty, should return false`() = runBlocking {
         //Given
-        val couponInformation = CouponInformation(
-            CouponInformation.Target.PUBLIC,
-            "",
-            "VCR25RB",
-            CouponInformation.Period(
-                Date(), Date()
-            )
-        )
+        val couponInformation = buildCouponInformation().copy(name = "")
 
         val expected = false
 
@@ -576,14 +541,7 @@ class CouponPreviewViewModelTest {
     @Test
     fun `When coupon information fields are valid, should return true`() = runBlocking {
         //Given
-        val couponInformation = CouponInformation(
-            CouponInformation.Target.PUBLIC,
-            "Voucher25RB",
-            "VCR25RB",
-            CouponInformation.Period(
-                Date(), Date()
-            )
-        )
+        val couponInformation = buildCouponInformation()
 
         val expected = true
 
