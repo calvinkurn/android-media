@@ -7,25 +7,21 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
-import com.tokopedia.vouchercreation.product.create.domain.entity.CouponWithMetadata
+import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 class CouponPreviewViewModelTest {
 
@@ -166,7 +162,42 @@ class CouponPreviewViewModelTest {
         val couponProducts = listOf(couponProduct)
         val parentProductIds = listOf<Long>(2111)
 
-        val couponId : Long = 29347923
+        val couponId: Long = 29347923
+
+        coEvery {
+            updateCouponUseCase.execute(
+                couponId,
+                couponInformation,
+                couponSetting,
+                couponProducts,
+                parentProductIds
+            )
+        } returns isUpdateSuccess
+
+        //When
+        viewModel.updateCoupon(
+            couponId,
+            couponInformation,
+            couponSetting,
+            couponProducts,
+            parentProductIds
+        )
+
+        //Then
+        coVerify { updateCouponResultObserver.onChanged(Success(isUpdateSuccess)) }
+    }
+
+    @Test
+    fun `When update coupon false, should emit error to observer`() = runBlocking {
+        //Given
+        val isUpdateSuccess = false
+        val couponInformation = mockk<CouponInformation>()
+        val couponSetting = mockk<CouponSettings>()
+        val couponProduct = mockk<CouponProduct>()
+        val couponProducts = listOf(couponProduct)
+        val parentProductIds = listOf<Long>(2111)
+
+        val couponId: Long = 29347923
 
         coEvery {
             updateCouponUseCase.execute(
@@ -201,7 +232,7 @@ class CouponPreviewViewModelTest {
         val couponProducts = listOf(couponProduct)
         val parentProductIds = listOf<Long>(2111)
 
-        val couponId : Long = 29347923
+        val couponId: Long = 29347923
 
         coEvery {
             updateCouponUseCase.execute(
@@ -227,55 +258,115 @@ class CouponPreviewViewModelTest {
     }
 
     @Test
-    fun `When get coupon detail success on create mode, should emit success to observer`() = runBlocking {
-        //Given
-        val expected = mockk<CouponWithMetadata>()
-        val couponId : Long = 29347923
-        val pageMode = CouponPreviewFragment.Mode.CREATE
-        val shouldCreateNewCoupon = true
+    fun `When get coupon detail success on create mode, should emit success to observer`() =
+        runBlocking {
+            //Given
+            val expected = mockk<CouponWithMetadata>()
+            val couponId: Long = 29347923
+            val pageMode = CouponPreviewFragment.Mode.CREATE
+            val shouldCreateNewCoupon = true
 
-        coEvery {
-            getCouponDetailUseCase.execute(
-                couponId,
-                shouldCreateNewCoupon
-            )
-        } returns expected
+            coEvery {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            } returns expected
 
-        //When
-        viewModel.getCouponDetail(couponId, pageMode)
+            //When
+            viewModel.getCouponDetail(couponId, pageMode)
 
-        //Then
-        coVerify { couponDetailObserver.onChanged(Success(expected)) }
-    }
+            //Then
+            coVerify { couponDetailObserver.onChanged(Success(expected)) }
+        }
 
     @Test
-    fun `When get coupon detail success on update mode, should emit success to observer`() = runBlocking {
-        //Given
-        val expected = mockk<CouponWithMetadata>()
-        val couponId : Long = 29347923
-        val pageMode = CouponPreviewFragment.Mode.UPDATE
-        val shouldCreateNewCoupon = false
+    fun `When get coupon detail and is on create mode, isToCreateNewCoupon property should be true`() =
+        runBlocking {
+            //Given
+            val expected = mockk<CouponWithMetadata>()
+            val couponId: Long = 29347923
+            val pageMode = CouponPreviewFragment.Mode.CREATE
+            val shouldCreateNewCoupon = true
 
-        coEvery {
-            getCouponDetailUseCase.execute(
-                couponId,
-                shouldCreateNewCoupon
-            )
-        } returns expected
+            coEvery {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            } returns expected
 
-        //When
-        viewModel.getCouponDetail(couponId, pageMode)
+            //When
+            viewModel.getCouponDetail(couponId, pageMode)
 
-        //Then
-        coVerify { couponDetailObserver.onChanged(Success(expected)) }
-    }
+            //Then
+            coVerify {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            }
+            coVerify { couponDetailObserver.onChanged(Success(expected)) }
+        }
+
+    @Test
+    fun `When get coupon detail and is on duplicate mode, isToCreateNewCoupon property should be true`() =
+        runBlocking {
+            //Given
+            val expected = mockk<CouponWithMetadata>()
+            val couponId: Long = 29347923
+            val pageMode = CouponPreviewFragment.Mode.DUPLICATE
+            val shouldCreateNewCoupon = true
+
+            coEvery {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            } returns expected
+
+            //When
+            viewModel.getCouponDetail(couponId, pageMode)
+
+            //Then
+            coVerify {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            }
+            coVerify { couponDetailObserver.onChanged(Success(expected)) }
+        }
+
+    @Test
+    fun `When get coupon detail success on update mode, should emit success to observer`() =
+        runBlocking {
+            //Given
+            val expected = mockk<CouponWithMetadata>()
+            val couponId: Long = 29347923
+            val pageMode = CouponPreviewFragment.Mode.UPDATE
+            val shouldCreateNewCoupon = false
+
+            coEvery {
+                getCouponDetailUseCase.execute(
+                    couponId,
+                    shouldCreateNewCoupon
+                )
+            } returns expected
+
+            //When
+            viewModel.getCouponDetail(couponId, pageMode)
+
+            //Then
+            coVerify { couponDetailObserver.onChanged(Success(expected)) }
+        }
 
 
     @Test
     fun `When get coupon detail error, should emit error to observer`() = runBlocking {
         //Given
         val error = MessageErrorException()
-        val couponId : Long = 29347923
+        val couponId: Long = 29347923
         val pageMode = CouponPreviewFragment.Mode.CREATE
         val shouldCreateNewCoupon = true
 
@@ -319,5 +410,339 @@ class CouponPreviewViewModelTest {
 
         //Then
         coVerify { couponCreationEligibilityObserver.onChanged(Fail(error)) }
+    }
+
+
+    @Test
+    fun `When mode is update mode, should return true`() = runBlocking {
+        //Given
+        val expected = true
+        val mode = CouponPreviewFragment.Mode.UPDATE
+
+        //When
+        val actual = viewModel.isUpdateMode(mode)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When mode is not update mode, should return false`() = runBlocking {
+        //Given
+        val expected = false
+        val mode = CouponPreviewFragment.Mode.DUPLICATE
+
+        //When
+        val actual = viewModel.isUpdateMode(mode)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When mode is duplicate mode, should return true`() = runBlocking {
+        //Given
+        val expected = true
+        val mode = CouponPreviewFragment.Mode.DUPLICATE
+
+        //When
+        val actual = viewModel.isDuplicateMode(mode)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When mode is not duplicate mode, should return false`() = runBlocking {
+        //Given
+        val expected = false
+        val mode = CouponPreviewFragment.Mode.CREATE
+
+        //When
+        val actual = viewModel.isDuplicateMode(mode)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When coupon information target is not selected, should return false`() = runBlocking {
+        //Given
+        val couponInformation = CouponInformation(
+            CouponInformation.Target.NOT_SELECTED,
+            "Voucher 25rb",
+            "VCR25RB",
+            CouponInformation.Period(
+                Date(), Date()
+            )
+        )
+
+        val expected = false
+
+        //When
+        val actual = viewModel.isCouponInformationValid(couponInformation)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When coupon information target is private and coupon code is empty, should return false`() =
+        runBlocking {
+            //Given
+            val couponInformation = CouponInformation(
+                CouponInformation.Target.PRIVATE,
+                "Voucher 25rb",
+                "",
+                CouponInformation.Period(
+                    Date(), Date()
+                )
+            )
+
+            val expected = false
+
+            //When
+            val actual = viewModel.isCouponInformationValid(couponInformation)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When coupon information target is private and coupon code is not empty, should return true`() =
+        runBlocking {
+            //Given
+            val couponInformation = CouponInformation(
+                CouponInformation.Target.PRIVATE,
+                "Voucher 25rb",
+                "VCR25RB",
+                CouponInformation.Period(
+                    Date(), Date()
+                )
+            )
+
+            val expected = true
+
+            //When
+            val actual = viewModel.isCouponInformationValid(couponInformation)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When coupon information target is public and coupon code is empty, should return true`() =
+        runBlocking {
+            //Given
+            val couponInformation = CouponInformation(
+                CouponInformation.Target.PUBLIC,
+                "VOUCHER25RB",
+                "",
+                CouponInformation.Period(
+                    Date(), Date()
+                )
+            )
+
+            val expected = true
+
+            //When
+            val actual = viewModel.isCouponInformationValid(couponInformation)
+
+            //Then
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When coupon information name is empty, should return false`() = runBlocking {
+        //Given
+        val couponInformation = CouponInformation(
+            CouponInformation.Target.PUBLIC,
+            "",
+            "VCR25RB",
+            CouponInformation.Period(
+                Date(), Date()
+            )
+        )
+
+        val expected = false
+
+        //When
+        val actual = viewModel.isCouponInformationValid(couponInformation)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When coupon information fields are valid, should return true`() = runBlocking {
+        //Given
+        val couponInformation = CouponInformation(
+            CouponInformation.Target.PUBLIC,
+            "Voucher25RB",
+            "VCR25RB",
+            CouponInformation.Period(
+                Date(), Date()
+            )
+        )
+
+        val expected = true
+
+        //When
+        val actual = viewModel.isCouponInformationValid(couponInformation)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get warehouse id, should return warehouse id correctly`() {
+        val expected = "WR001"
+
+        viewModel.selectedWarehouseId = expected
+
+        val actual = viewModel.selectedWarehouseId
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When coupon setting is null, observer should receive false`() {
+        val expected = false
+
+        val mode = CouponPreviewFragment.Mode.CREATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = null
+        val couponProducts = listOf<CouponProduct>()
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+
+    @Test
+    fun `When coupon information is null, observer should receive false`() {
+        val expected = false
+
+        val mode = CouponPreviewFragment.Mode.CREATE
+        val couponInformation = null
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf<CouponProduct>()
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+
+    @Test
+    fun `When coupon products is empty, observer should receive false`() {
+        val expected = false
+
+        val mode = CouponPreviewFragment.Mode.CREATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf<CouponProduct>()
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+
+    @Test
+    fun `When update mode and products is not empty, observer should receive true`() {
+        val expected = true
+
+        val mode = CouponPreviewFragment.Mode.UPDATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf(CouponProduct("", "", 0))
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+    @Test
+    fun `When update mode and products is empty, observer should receive false`() {
+        val expected = false
+
+        val mode = CouponPreviewFragment.Mode.UPDATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf<CouponProduct>()
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+    @Test
+    fun `When duplicate mode and products is not empty, observer should receive true`() {
+        val expected = true
+
+        val mode = CouponPreviewFragment.Mode.DUPLICATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf(CouponProduct("", "", 0))
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+
+    @Test
+    fun `When duplicate mode and products is empty, observer should receive false`() {
+        val expected = false
+
+        val mode = CouponPreviewFragment.Mode.DUPLICATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf<CouponProduct>()
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+    @Test
+    fun `When all input is valid, observer should receive true`() {
+        val expected = true
+
+        val mode = CouponPreviewFragment.Mode.CREATE
+        val couponInformation = buildCouponInformation()
+        val couponSettings = buildCouponSettings()
+        val couponProducts = listOf(CouponProduct("", "", 0))
+
+        viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
+
+        verify { areInputValidObserver.onChanged(expected) }
+    }
+
+    private fun buildCouponInformation(): CouponInformation {
+        return CouponInformation(
+            CouponInformation.Target.PUBLIC,
+            "Voucher25RB",
+            "VCR25RB",
+            CouponInformation.Period(
+                Date(), Date()
+            )
+        )
+    }
+
+    private fun buildCouponSettings(): CouponSettings {
+        return CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.PERCENTAGE,
+            MinimumPurchaseType.NOMINAL,
+            0,
+            50,
+            25000,
+            10,
+            50000,
+            500000
+        )
     }
 }
