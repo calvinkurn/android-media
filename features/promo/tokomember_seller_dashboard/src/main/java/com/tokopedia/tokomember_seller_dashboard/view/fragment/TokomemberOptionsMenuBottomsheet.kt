@@ -97,7 +97,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
     }
 
     private fun addOptionItem(text: String, icon: Int, type: String) {
-        val childLayout = LayoutInflater.from(requireContext()).inflate(R.layout.tm_dash_options_menu_item, container_options_menu ,false)
+        val childLayout = LayoutInflater.from(context).inflate(R.layout.tm_dash_options_menu_item, container_options_menu ,false)
         childLayout.findViewById<ImageUnify>(R.id.icon_options_menu).setImageDrawable(getIconUnifyDrawable(childLayout.context, icon))
         childLayout.findViewById<Typography>(R.id.tv_options_menu).text = text
         container_options_menu.addView(childLayout)
@@ -127,10 +127,16 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
 
         fun show(
-            bundle: Bundle,
+            actions: String,
+            shopId: Int,
+            programId: Int,
             childFragmentManager: FragmentManager,
             programActions: ProgramActions
         ) {
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_OPTION_MENU, actions)
+            bundle.putInt(BUNDLE_PROGRAM_ID, programId)
+            bundle.putInt(BUNDLE_SHOP_ID, shopId)
             val tokomemberIntroBottomsheet = TokomemberOptionsMenuBottomsheet().apply {
                 arguments = bundle
             }

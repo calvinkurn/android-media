@@ -2,7 +2,6 @@ package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
-import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -16,9 +15,6 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
@@ -82,11 +78,10 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         optionMenu.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString(BUNDLE_OPTION_MENU, Gson().toJson(item.actions))
-            item.id?.toInt()?.let { it1 -> bundle.putInt(BUNDLE_PROGRAM_ID, it1) }
-            bundle.putInt(BUNDLE_SHOP_ID, shopId)
-            TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager, programActions)
+            item.id?.toInt()?.let { it1 ->
+                TokomemberOptionsMenuBottomsheet.show(Gson().toJson(item.actions), shopId,
+                    it1, fragmentManager, programActions)
+            }
         }
 
         btn_edit.setOnClickListener {

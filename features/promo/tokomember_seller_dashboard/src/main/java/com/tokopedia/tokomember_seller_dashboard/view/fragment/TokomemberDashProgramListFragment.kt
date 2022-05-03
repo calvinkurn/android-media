@@ -54,7 +54,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         if (context is HomeFragmentCallback) {
             homeFragmentCallback =  context as HomeFragmentCallback
         } else {
-            throw RuntimeException(requireContext().toString() )
+            throw RuntimeException(context.toString() )
         }
     }
 
@@ -124,12 +124,12 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
             }
             type.equals(CANCEL) -> {
-                var dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-                dialog.setTitle("Yakin batalkan program?")
-                dialog.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
-                dialog.setPrimaryCTAText("Lanjutkan")
-                dialog.setSecondaryCTAText("Batalkan Program")
-                dialog.setPrimaryCTAClickListener {
+                var dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+                dialog?.setTitle("Yakin batalkan program?")
+                dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
+                dialog?.setPrimaryCTAText("Lanjutkan")
+                dialog?.setSecondaryCTAText("Batalkan Program")
+                dialog?.setPrimaryCTAClickListener {
               /*      val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
                     intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
                     intent.putExtra(BUNDLE_SHOP_ID, shopId)
@@ -139,10 +139,10 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()*/
                 }
-                dialog.setSecondaryCTAClickListener {
+                dialog?.setSecondaryCTAClickListener {
                     dialog.dismiss()
                 }
-                dialog.show()
+                dialog?.show()
             }
             type.equals(EDIT) -> {
                 bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
