@@ -30,6 +30,9 @@ class Lego4AutoBannerAdapter(
         private val positionInWidget: Int,
         private val isCacheData: Boolean
 ) : RecyclerView.Adapter<Lego4AutoBannerAdapter.Holder>() {
+    companion object {
+        private const val LEGO_4_BANNER_SIZE = 4
+    }
 
     private lateinit var dataModel: Lego4AutoDataModel
     private var itemList: MutableList<Lego4AutoItem> = mutableListOf()
@@ -51,7 +54,7 @@ class Lego4AutoBannerAdapter(
         this.dataModel = dataModel
         itemList.clear()
         dataModel.channelModel.channelGrids.forEachIndexed { index, data ->
-            if (index < 4) {
+            if (index < LEGO_4_BANNER_SIZE) {
                 itemList.add(Lego4AutoItem(grid = data))
             }
         }
