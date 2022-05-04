@@ -43,17 +43,7 @@
           "destination_activity": "com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity", 
           "deeplink": "tokopedia-android-internal://global/youtube-video", 
           "deeplink_variable": "ApplinkConstInternalGlobal.YOUTUBE_VIDEO"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.kyc.view.activity.StartUpgradeToOvoActivity",
-          "deeplink": "tokopedia-android-internal://ovo/upgrade",
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.kyc.view.activity.UpgradeProcessCompleteActivity",
-          "deeplink": "tokopedia-android-internal://ovo/upgradestatus",
-          "deeplink_variable": "ApplinkConstInternalOvo.OVO_UPGRADE_STATUS"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.contactus.home.view.ContactUsHomeActivity", 
           "deeplink": "tokopedia://contactus", 
