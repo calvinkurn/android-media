@@ -65,12 +65,22 @@
         android:visibility="visible"
         layout="@layout/wishlist_v2_count_manage_row_item" />
 
+    <include
+        android:id="@+id/wishlist_v2_sticky_count_deletion_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wishlist_v2_sticky_count_manage_label"
+        android:visibility="visible"
+        android:layout_margin="16dp"
+        layout="@layout/wishlist_v2_count_deletion_item" />
+
     <View
         android:id="@+id/top_layout_shadow"
         android:layout_width="match_parent"
         android:layout_height="4dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/wishlist_v2_sticky_count_manage_label"
+        app:layout_constraintTop_toBottomOf="@id/wishlist_v2_sticky_count_deletion_section"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/shadow_bottom"
         android:layout_marginBottom="8dp"/>

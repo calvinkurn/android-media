@@ -1,6 +1,5 @@
 package com.tokopedia.wishlistcommon.domain
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +9,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.query.GQL_WISHLIST_ADD_V2
+import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_ADD_V2
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.PRODUCT_ID
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.USER_ID
 import javax.inject.Inject

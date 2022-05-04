@@ -22,6 +22,9 @@ import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.data.model.*
+import com.tokopedia.wishlist.data.model.response.CountDeletionWishlistV2Response
+import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
+// import com.tokopedia.wishlist.domain.CountDeletionWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
@@ -40,6 +43,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase,
                                               private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+                                              private val countDeletionWishlistV2UseCase: CountDeletionWishlistV2UseCase,
                                               private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                               private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
                                               private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
@@ -64,6 +68,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _atcResult = MutableLiveData<Result<AddToCartDataModel>>()
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
+
+    private val _countDeletionWishlistV2 = MutableLiveData<Result<CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2>>()
+    val countDeletionWishlistV2: LiveData<Result<CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2>>
+        get() = _countDeletionWishlistV2
 
     fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?) {
         launch {
@@ -104,6 +112,23 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String) {
         launch {
             _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId)
+        }
+    }
+
+    fun getCountDeletionWishlistV2() {
+        launch {
+            try {
+                countDeletionWishlistV2UseCase.execute(
+                    onSuccess = {
+                        _countDeletionWishlistV2.value = it
+                    },
+                    onError = {
+                        _countDeletionWishlistV2.value = Fail(it)
+                    }
+                )
+            } catch (e: Exception) {
+                _countDeletionWishlistV2.value = Fail(e)
+            }
         }
     }
 

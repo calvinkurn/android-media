@@ -1,4 +1,4 @@
-package com.tokopedia.wishlistcommon.query
+package com.tokopedia.wishlistcommon.util
 
     const val GQL_WISHLIST_V2 = """
         query WishlistV2(${'$'}params:WishlistV2Params) {
@@ -136,5 +136,15 @@ package com.tokopedia.wishlistcommon.query
                     action
                     url
                 }
+              }
+            }"""
+
+    const val GQL_COUNT_DELETION_WISHLIST_V2 = """
+         mutation WishlistCountDeletion() {
+              wishlist_count_deletion() {
+                total_items
+                successfully_removed_items
+                message
+                ticker_color 
               }
             }"""

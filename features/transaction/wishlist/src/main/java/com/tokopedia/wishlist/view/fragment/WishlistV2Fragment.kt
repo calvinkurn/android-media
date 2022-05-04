@@ -90,10 +90,13 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.concurrent.schedule
 
 @Keep
-class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener, WishlistV2CleanerBottomSheet.BottomsheetCleanerListener {
+class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -116,6 +119,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var indexOnAtc = 0
     private val listTitleCheckboxIdSelected = arrayListOf<String>()
     private var loaderDialog: LoaderDialog? = null
+    private var timer: Timer? = null
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -227,6 +231,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         observingWishlistData()
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
+        observingCountDeletion()
         observingAtc()
     }
 
@@ -674,6 +679,33 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    private fun observingCountDeletion() {
+        wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    timer = Timer()
+                    if (it.data.successfullyRemovedItems == it.data.totalItems) timer?.cancel()
+                    else {
+                        timer?.schedule(1, 5000) {
+                            if (it.data.successfullyRemovedItems < it.data.totalItems) {
+                                binding?.run {
+                                    wishlistV2StickyCountDeletionSection.wishlistV2CountDeletionProgressbar.setValue(it.data.successfullyRemovedItems)
+                                }
+                                wishlistViewModel.getCountDeletionWishlistV2()
+                            } else if (it.data.successfullyRemovedItems == it.data.totalItems) {
+                                timer?.cancel()
+                                // need to confirm related toaster after succeed remove all
+                            }
+                        }
+                    }
+                }
+                is Fail -> {
+                    // confirm how to handle if count deletion return fail
+                }
+            }
+        }
+    }
+
     private fun observingAtc() {
         wishlistViewModel.atcResult.observe(viewLifecycleOwner) {
             when (it) {
@@ -969,6 +1001,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         cleanerAdapter.cleanerBottomSheet = cleanerBottomSheet
 
         bottomSheetCleaner.setAdapter(cleanerAdapter)
+        bottomSheetCleaner.setListener(object : WishlistV2CleanerBottomSheet.BottomsheetCleanerListener{
+            override fun onButtonCleanerClicked(index: Int) {
+                println("++ index = $index")
+                onTickerCTASortFromLatest()
+                turnOnBulkDeleteMode()
+                if (index == 0 || index == -1) {
+                    // manual
+                } else if (index == 1) {
+                    // auto
+                }
+            }
+
+        })
         bottomSheetCleaner.show(childFragmentManager)
     }
 
@@ -1312,8 +1357,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
-            wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
-            WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
+            doBulkDelete()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
         dialog?.setSecondaryCTAClickListener {
@@ -1321,6 +1365,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
         }
         dialog?.show()
+    }
+
+    private fun doBulkDelete() {
+        wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
+        wishlistViewModel.getCountDeletionWishlistV2()
+        WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1382,16 +1432,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             FirebaseCrashlytics.getInstance().recordException(Exception(errorMsg, throwable))
         } else {
             throwable.printStackTrace()
-        }
-    }
-
-    override fun onButtonCleanerClicked(index: Int) {
-        onTickerCTASortFromLatest()
-        turnOnBulkDeleteMode()
-        if (index == 0) {
-            // manual
-        } else if (index == 1) {
-            // auto
         }
     }
 }

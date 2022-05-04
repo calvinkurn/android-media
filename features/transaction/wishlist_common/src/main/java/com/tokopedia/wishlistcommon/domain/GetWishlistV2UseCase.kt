@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
-import com.tokopedia.wishlistcommon.query.GQL_WISHLIST_V2
+import com.tokopedia.wishlistcommon.util.GQL_WISHLIST_V2
 import javax.inject.Inject
 
 @GqlQuery("GetWishlistV2", GQL_WISHLIST_V2)

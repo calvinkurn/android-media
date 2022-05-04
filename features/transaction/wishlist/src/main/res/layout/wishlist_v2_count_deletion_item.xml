@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:layout_width="match_parent"
+        android:layout_height="82dp"
+        app:cardBackgroundColor="@color/Unify_Background"
+        app:cardCornerRadius="4dp"
+        app:contentPaddingBottom="12dp"
+        app:contentPaddingLeft="16dp"
+        app:contentPaddingRight="16dp"
+        app:contentPaddingTop="12dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/wishlist_v2_count_deletion_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Wishlist kamu lagi dibersihkan. Sambil menunggu, kamu tetap bisa beraktivitas di Tokopedia. ⏳ "
+                android:layout_alignParentTop="true"/>
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/wishlist_v2_count_deletion_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:unify_progress_bar_color_type="color_green"
+                app:unify_progress_bar_value="50"
+                android:layout_below="@id/wishlist_v2_count_deletion_message"
+                android:layout_marginTop="11dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+
+        </RelativeLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+</RelativeLayout>
