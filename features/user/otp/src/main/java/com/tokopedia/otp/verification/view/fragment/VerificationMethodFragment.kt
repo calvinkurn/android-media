@@ -341,7 +341,9 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         return { throwable ->
             throwable.printStackTrace()
             hideLoading()
-            val message = ErrorHandler.getErrorMessage(context, throwable)
+            val message = ErrorHandler.getErrorMessage(context, throwable, ErrorHandler.Builder().apply {
+                className = VerificationMethodFragment::class.java.name
+            }.build())
             NetworkErrorHelper.showEmptyState(context, viewBound.containerView, message) {
                 getVerificationMethod()
             }

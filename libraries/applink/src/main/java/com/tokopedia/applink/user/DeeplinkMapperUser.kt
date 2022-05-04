@@ -3,8 +3,13 @@ package com.tokopedia.applink.user
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
@@ -15,9 +20,24 @@ object DeeplinkMapperUser {
 	    deeplink == ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalUserPlatform.ADD_PIN_ONBOARDING
 	    deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
 	    deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
+	    deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
+		deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(context)
 	    else -> deeplink
 	}
     }
 
+    private fun getSettingProfileApplink(context: Context): String {
+        return if(isUseNewProfile(context)) {
+            ApplinkConstInternalUserPlatform.NEW_PROFILE_INFO
+	} else ApplinkConstInternalUserPlatform.SETTING_PROFILE
+    }
+
+    private fun isUseNewProfile(context: Context): Boolean {
+	val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+	val remoteConfigValue = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
+	return (remoteConfigValue && getAbTestPlatform().getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP).isNotEmpty())
+    }
+
+	private fun getAbTestPlatform(): AbTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
 
 }

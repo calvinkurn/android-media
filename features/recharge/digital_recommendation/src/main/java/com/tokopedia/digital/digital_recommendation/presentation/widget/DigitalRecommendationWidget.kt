@@ -43,11 +43,12 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var digitalRecommendationViewModel: DigitalRecommendationViewModel
-    private lateinit var digitalRecommendationAnalytics: DigitalRecommendationAnalytics
 
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
     private var trackers: List<DigitalRecommendationItemUnifyModel>? = null
+
+    private val digitalRecommendationAnalytics: DigitalRecommendationAnalytics by lazy(LazyThreadSafetyMode.NONE){ DigitalRecommendationAnalytics()}
 
     private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
         override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
@@ -123,18 +124,58 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     private fun onItemBinding(element: DigitalRecommendationItemUnifyModel, position: Int) {
         additionalTrackingData?.let {
-            digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId(), page
-            )
+            when(page){
+                DigitalRecommendationPage.PG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationThankYouPageItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationThankYouPageItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.PHYSICAL_GOODS -> {
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DIGITAL_GOODS -> {
+                    digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                else -> { /*no op*/ }
+            }
         }
     }
 
     private fun onItemClicked(element: DigitalRecommendationItemUnifyModel, position: Int) {
         RouteManager.route(context, element.unify.actionButton.applink)
         additionalTrackingData?.let {
-            digitalRecommendationAnalytics.clickDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId(), page
-            )
+            when(page){
+                DigitalRecommendationPage.PG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.clickDigitalRecommendationThankYouPageItem(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DG_THANK_YOU_PAGE ->{
+                    digitalRecommendationAnalytics.clickDigitalRecommendationThankYouPageItem(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.PHYSICAL_GOODS -> {
+                    digitalRecommendationAnalytics.clickDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                DigitalRecommendationPage.DIGITAL_GOODS -> {
+                    digitalRecommendationAnalytics.clickDigitalRecommendationItems(
+                        element, it, position, digitalRecommendationViewModel.getUserId(), page
+                    )
+                }
+                else -> { /*no op*/ }
+            }
         }
     }
 
@@ -168,8 +209,6 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         if (!::digitalRecommendationViewModel.isInitialized) {
             throw UninitializedPropertyAccessException("View Model is not Initialized")
         }
-
-        digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
 
         showLoading()
         observeLivedata()

@@ -219,6 +219,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     override fun onResume() {
         super.onResume()
+        loadInitialData()
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         }
@@ -874,5 +875,9 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                 binding?.searchBarLayout?.tickerReviewReminder?.hide()
             }
         }
+    }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
     }
 }

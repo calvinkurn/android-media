@@ -36,76 +36,90 @@ class ProfileCompletionGenderFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ChangeGenderViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_profile_completion_gender, container, false)
-        initView(parentView)
-        setViewListener()
-        initialObserver()
-        return parentView
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val parentView =
+	    inflater.inflate(R.layout.fragment_profile_completion_gender, container, false)
+	initView(parentView)
+	setViewListener()
+	initialObserver()
+	return parentView
     }
 
     private fun initView(view: View) {
-        rbMan = view.findViewById(R.id.rb_man)
-        rbWoman = view.findViewById(R.id.rb_woman)
-        rgGender = view.findViewById(R.id.rg_gender)
-        txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
-        txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
-        progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
-        profileCompletionFragment?.canProceed(false)
+	rbMan = view.findViewById(R.id.rb_man)
+	rbWoman = view.findViewById(R.id.rb_woman)
+	rgGender = view.findViewById(R.id.rg_gender)
+	txtProceed = profileCompletionFragment?.view?.findViewById(R.id.txt_proceed)
+	txtSkip = profileCompletionFragment?.view?.findViewById(R.id.txt_skip)
+	progressBar = profileCompletionFragment?.view?.findViewById(R.id.progress_bar)
+	profileCompletionFragment?.canProceed(false)
     }
 
     private fun setViewListener() {
-        rgGender?.setOnCheckedChangeListener { radioGroup, i ->
-            profileCompletionFragment?.canProceed(true)
-        }
-        txtProceed?.setOnClickListener {
-            val selected = rgGender?.findViewById<View>(rgGender?.checkedRadioButtonId?: 0)
-            var idx = rgGender?.indexOfChild(selected)
-            if (selected === rbMan) {
-                idx = ProfileCompletionNewConstants.MALE
-            } else if (selected === rbWoman) {
-                idx = ProfileCompletionNewConstants.FEMALE
-            }
-            idx?.let {
-                profileCompletionFragment?.disableView()
-                if(it == -1) {
-                    profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_gender))
-                } else {
-                    context?.let { ctx -> viewModel.mutateChangeGender(ctx, it) }
-                }
-            }
-        }
-        txtSkip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
+	rgGender?.setOnCheckedChangeListener { radioGroup, i ->
+	    profileCompletionFragment?.canProceed(true)
+	}
+	txtProceed?.setOnClickListener {
+	    val selected = rgGender?.findViewById<View>(rgGender?.checkedRadioButtonId ?: 0)
+	    var idx = rgGender?.indexOfChild(selected)
+	    if (selected === rbMan) {
+		idx = ProfileCompletionNewConstants.MALE
+	    } else if (selected === rbWoman) {
+		idx = ProfileCompletionNewConstants.FEMALE
+	    }
+	    idx?.let {
+		profileCompletionFragment?.disableView()
+		if (it == -1) {
+		    profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_gender))
+		} else {
+		    context?.let { ctx -> viewModel.mutateChangeGender(ctx, it) }
+		}
+	    }
+	}
+	txtSkip?.setOnClickListener { profileCompletionFragment?.skipView(TAG) }
     }
 
     private fun initialObserver() {
-        viewModel.mutateChangeGenderResponse.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    if(it.data.data.isSuccess) {
-                        profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_GENDER)
-                    } else {
-                        profileCompletionFragment?.onFailedEditProfile(it.data.data.errorMessage)
-                    }
-                }
-                is Fail -> { profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, it.throwable)) }
-            }
-        })
+	viewModel.mutateChangeGenderResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> {
+		    if (it.data.data.isSuccess) {
+			profileCompletionFragment?.onSuccessEditProfile(
+			    ProfileCompletionNewConstants.EDIT_GENDER
+			)
+		    } else {
+			profileCompletionFragment?.onFailedEditProfile(it.data.data.errorMessage)
+		    }
+		}
+		is Fail -> {
+		    profileCompletionFragment?.onFailedEditProfile(
+			ErrorHandler.getErrorMessage(
+			    context,
+			    it.throwable
+			)
+		    )
+		}
+	    }
+	})
     }
 
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     companion object {
-        const val TAG = "gender"
+	const val TAG = "gender"
 
-        fun createInstance(view: ProfileCompletionFragment?): ProfileCompletionGenderFragment {
-            val fragment = ProfileCompletionGenderFragment()
-            fragment.profileCompletionFragment = view
-            return fragment
-        }
+	fun createInstance(view: ProfileCompletionFragment?): ProfileCompletionGenderFragment {
+	    val fragment = ProfileCompletionGenderFragment()
+	    fragment.profileCompletionFragment = view
+	    return fragment
+	}
     }
 }
