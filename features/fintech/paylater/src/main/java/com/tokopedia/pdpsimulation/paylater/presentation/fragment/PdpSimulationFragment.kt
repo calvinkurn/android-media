@@ -112,20 +112,28 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     private fun handleAction(detail: Detail) {
         this.detail = detail
-        PayLaterHelper.handleClickNavigation(context, detail, PayLaterHelper.setCustomProductUrl(detail,payLaterArgsDescriptor),
-            openHowToUse = {
-                bottomSheetNavigator.showBottomSheet(
-                    PayLaterActionStepsBottomSheet::class.java,
-                    it
-                )
-            },
-            openGoPay = {
-                bottomSheetNavigator.showBottomSheet(
-                    PayLaterTokopediaGopayBottomsheet::class.java,
-                    it
-                )
-            }
-        )
+        if(detail.cta.cta_type == 5)
+        {
+            payLaterViewModel.addProductToCart(payLaterArgsDescriptor.productId)
+        }
+        else {
+            PayLaterHelper.handleClickNavigation(context,
+                detail,
+                PayLaterHelper.setCustomProductUrl(detail, payLaterArgsDescriptor),
+                openHowToUse = {
+                    bottomSheetNavigator.showBottomSheet(
+                        PayLaterActionStepsBottomSheet::class.java,
+                        it
+                    )
+                },
+                openGoPay = {
+                    bottomSheetNavigator.showBottomSheet(
+                        PayLaterTokopediaGopayBottomsheet::class.java,
+                        it
+                    )
+                }
+            )
+        }
     }
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
