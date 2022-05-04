@@ -22,8 +22,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +34,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -1258,6 +1264,100 @@ class DiscoveryFragment :
             }
 
         })
+
+        handleProductCardOptionsActivityResult(requestCode,
+            resultCode,
+            data,
+            object : ProductCardOptionsWishlistCallback {
+                override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleWishlistAction(productCardOptionsModel)
+                }
+            },
+            visitShopCallback = object : ProductCardOptionsResult {
+                override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    handleClickVisitShopCallback(productCardOptionsModel)
+                }
+            },
+            shareProductCallback = object : ProductCardOptionsResult {
+                override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                    analytics.track3DotsOptionsClickedShareProduct()
+                }
+            }
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        (activity as? DiscoveryActivity)?.let { activity ->
+            if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+                if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+                    trackAddToWishlist(productCardOptionsModel)
+                    if (productCardOptionsModel.wishlistResult.isSuccess) {
+                        if (activity.isFromCategory())
+                            NetworkErrorHelper.showSnackbar(
+                                activity,
+                                getString(R.string.discovery_msg_success_add_wishlist)
+                            )
+                        else
+                            showToasterForWishlistAddSuccess()
+                        this.discoveryViewModel.updateWishlist(productCardOptionsModel)
+                    } else {
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_error_add_wishlist)
+                        )
+                    }
+                } else {
+                    if (productCardOptionsModel.wishlistResult.isSuccess) {
+                        this.discoveryViewModel.updateWishlist(productCardOptionsModel)
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_success_remove_wishlist)
+                        )
+                    } else {
+                        NetworkErrorHelper.showSnackbar(
+                            activity,
+                            getString(R.string.discovery_msg_error_remove_wishlist)
+                        )
+                    }
+                }
+            } else {
+                openLoginScreen()
+            }
+        }
+    }
+
+    private fun trackAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        analytics.track3DotsOptionsClickedWishlist(productCardOptionsModel)
+    }
+
+    fun handleClickVisitShopCallback(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.shopId.isNotEmpty()) {
+            context?.let {
+                analytics.track3DotsOptionsClickedLihatToko()
+                RouteManager.route(
+                    it,
+                    (ApplinkConst.SHOP.replace(
+                        "{shop_id}",
+                        productCardOptionsModel.shopId
+                    ))
+                )
+            }
+        }
+    }
+
+    private fun showToasterForWishlistAddSuccess() {
+        showToasterWithAction(
+            getString(R.string.discovery_msg_success_add_wishlist),
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            actionText = getString(R.string.discovery_msg_success_add_wishlist_CTA)
+        ) { goToWishlistPage() }
+    }
+
+    private fun goToWishlistPage() {
+        this.context?.let {
+            RouteManager.route(it, ApplinkConst.NEW_WISHLIST)
+        }
     }
 
     private fun showVerificationBottomSheet() {

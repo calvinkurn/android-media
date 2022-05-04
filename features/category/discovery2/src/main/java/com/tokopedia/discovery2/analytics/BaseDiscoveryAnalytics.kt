@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -148,4 +149,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
     open fun sendMixLeftBannerImpression(componentsItems: ComponentsItem){}
     open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}
+    open fun track3DotsOptionsClickedWishlist(productCardOptionsModel: ProductCardOptionsModel) {}
+    open fun track3DotsOptionsClickedLihatToko() {}
+    open fun track3DotsOptionsClickedShareProduct() {}
 }

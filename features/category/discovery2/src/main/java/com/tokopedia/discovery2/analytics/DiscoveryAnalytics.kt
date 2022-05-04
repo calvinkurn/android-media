@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
@@ -657,7 +658,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
                     "${if (it.campaignSoldCount.toIntOrZero() > 0) it.campaignSoldCount else 0} $SOLD - ${if (it.customStock.toIntOrZero() > 0) it.customStock else 0} $LEFT - - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName} - ${getLabelCampaign(it)} - $NOTIFY_ME ${getNotificationStatus(componentsItems)}"
             productMap[KEY_QUANTITY] = it.quantity
-            productMap[KEY_ATC_SHOP_ID] = ""
+            productMap[KEY_ATC_SHOP_ID] = it.shopId ?: ""
             productMap[KEY_SHOP_NAME] = it.shopName?:""
             productMap[KEY_SHOP_TYPE] = ""
         }
@@ -2025,6 +2026,35 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[USER_ID] = userSession.userId
         map[KEY_E_COMMERCE] = eCommerce
+        getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    override fun track3DotsOptionsClickedLihatToko() {
+        track3DotsOptionsClicked(CLICKED_THREE_DOTS_INSIDE_PRODUCT, LABEL_LIHAT_TOKO)
+    }
+
+    override fun track3DotsOptionsClickedShareProduct() {
+        track3DotsOptionsClicked(CLICKED_THREE_DOTS_INSIDE_PRODUCT, LABEL_SHARE_PRODUCT)
+    }
+
+    override fun track3DotsOptionsClickedWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        val productID = productCardOptionsModel.productId
+        val compType = ComponentNames.ProductCardSingle.componentName
+        track3DotsOptionsClicked(CLICK_ADD_TO_WISHLIST, "$compType - $productID")
+    }
+
+    private fun track3DotsOptionsClicked(action: String, label: String) {
+        val map = createGeneralEvent(
+            eventName = CLICK_HOMEPAGE_EVENT,
+            eventAction = action,
+            eventLabel = label
+        )
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[USER_ID] = userSession.userId
+        map[PAGE_SOURCE] = sourceIdentifier
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 }
