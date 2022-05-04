@@ -43,10 +43,13 @@ class ProductAdsListViewModelTest {
             val onSuccess = lambda<(ResponseEtalase.Data) -> Unit>()
             onSuccess.invoke(data)
         }
-        viewModel.etalaseList {}
+
+        var actual : List<ResponseEtalase.Data.ShopShowcasesByShopID.Result> ?= null
+        viewModel.etalaseList {actual = it}
         verify {
             getEtalaseUseCase.execute(any(), any())
         }
+        Assert.assertEquals(data.shopShowcasesByShopID.result, actual)
     }
 
     @Test
