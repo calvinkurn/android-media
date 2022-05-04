@@ -8,10 +8,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.activateCheckout.viewmodel.ShowToasterException
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterTenureClick
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
@@ -35,6 +39,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterAct
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_pdp_simulation.*
@@ -47,6 +52,9 @@ class PdpSimulationFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private lateinit var parentView: View
+    private var detail :Detail ? = null
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -103,6 +111,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     )
 
     private fun handleAction(detail: Detail) {
+        this.detail = detail
         PayLaterHelper.handleClickNavigation(context, detail, PayLaterHelper.setCustomProductUrl(detail,payLaterArgsDescriptor),
             openHowToUse = {
                 bottomSheetNavigator.showBottomSheet(
@@ -118,9 +127,6 @@ class PdpSimulationFragment : BaseDaggerFragment() {
             }
         )
     }
-
-
-
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
@@ -132,7 +138,8 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
+         parentView = inflater.inflate(R.layout.fragment_pdp_simulation, container, false)
+        return parentView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -173,6 +180,49 @@ class PdpSimulationFragment : BaseDaggerFragment() {
                 is Fail -> simulationFailed(it.throwable)
             }
         }
+
+        payLaterViewModel.addToCartLiveData.observe(viewLifecycleOwner)
+        {
+            when (it)
+            {
+                is Success -> setSuccessProductCart()
+                is Fail -> setFailProductCart(it.throwable)
+            }
+        }
+    }
+
+    private fun setFailProductCart(throwable: Throwable) {
+        when (throwable) {
+            is ShowToasterException -> showToaster(throwable.message)
+        }
+    }
+
+    private fun showToaster(message: String?) {
+        message?.let {
+            Toaster.build(
+                parentView,
+                it,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
+    private fun setSuccessProductCart() {
+        detail?.let {
+           val routeLink =  UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT,
+                it.gatewayDetail?.gatewayCode?:"",
+                it.tenure.toString(),
+                "fintech")
+
+
+            RouteManager.route(
+                context,
+                routeLink
+            )
+        }
+
     }
 
     private fun setSimulationView(data: ArrayList<SimulationUiModel>) {
