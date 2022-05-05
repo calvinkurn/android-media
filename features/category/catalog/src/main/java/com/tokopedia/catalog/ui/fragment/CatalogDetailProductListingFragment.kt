@@ -643,7 +643,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         var typeToaster = TYPE_NORMAL
         if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
 
-        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
         view?.let {
             Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
         }

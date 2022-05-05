@@ -62,6 +62,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.find_nav_fragment.*
@@ -570,11 +571,13 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    private fun onErrorAddWishListV2(errorMessage: String?, productId: String) {
+    private fun onErrorAddWishListV2(errorMessage: String?, productId: String, ctaText: String, ctaAction: String) {
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
-                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, TYPE_ERROR, ctaText) {
+                    if (ctaAction == WishlistV2CommonConsts.OPEN_WISHLIST) goToWishList()
+                }.show() }
         }
     }
 
@@ -599,12 +602,11 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             msg = result.message
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
 
         view?.let {
             if (ctaText.isEmpty()) {
@@ -629,7 +631,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
-                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                Toaster.build(v, errorMsg, Toaster.LENGTH_SHORT, TYPE_ERROR).show() }
         }
     }
 
@@ -687,7 +689,8 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                     when (result) {
                         is Success -> {
                             if (result.data.toasterColor == TOASTER_RED) {
-                                onErrorAddWishList(result.data.message, productId)
+                                onErrorAddWishListV2(result.data.message, productId,
+                                    result.data.button.text, result.data.button.action)
                             } else {
                                 onSuccessAddWishlistV2(result.data, productId)
                             }
@@ -698,7 +701,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                         }
                     } },
                     onError = {
-                        onErrorAddWishListV2(ErrorHandler.getErrorMessage(context, it), productId)
+                        onErrorAddWishListV2(ErrorHandler.getErrorMessage(context, it), productId, "", "")
                     })
             } else {
                 addWishListActionUseCase.createObservable(productId, userId, this)
