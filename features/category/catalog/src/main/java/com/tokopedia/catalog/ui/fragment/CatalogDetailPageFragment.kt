@@ -90,6 +90,7 @@ import javax.inject.Inject
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.tokopedia.catalog.model.util.CatalogConstant.CATALOG_PRODUCT_BS_NEW_DESIGN
+import com.tokopedia.catalog.viewmodel.CatalogDetailProductListingViewModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -109,6 +110,9 @@ class CatalogDetailPageFragment : Fragment(),
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
+
+    @Inject
+    lateinit var sharedViewModel: CatalogDetailProductListingViewModel
 
     private val widgetTrackingSet =  HashSet<String>()
 
@@ -183,6 +187,11 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
+        activity?.let { observer ->
+            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
+            sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
+        }
+
         initRollence()
         initViews(view)
         if (arguments != null) {
@@ -388,6 +397,12 @@ class CatalogDetailPageFragment : Fragment(),
 
         catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
             totalProducts?.let {
+                mProductsCountText?.text = getString(com.tokopedia.catalog.R.string.catalog_product_count_view_text,it)
+            }
+        })
+
+        sharedViewModel?.mProductCount?.observe(viewLifecycleOwner, { filterProductCount->
+            filterProductCount?.let {
                 mProductsCountText?.text = getString(com.tokopedia.catalog.R.string.catalog_product_count_view_text,it)
             }
         })
