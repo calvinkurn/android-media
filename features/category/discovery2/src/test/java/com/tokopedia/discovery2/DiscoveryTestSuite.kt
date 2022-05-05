@@ -45,6 +45,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopbannerinfinite.ShopBannerInfiniteModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sliderbanner.SliderBannerViewModelTest
@@ -123,6 +125,8 @@ import org.junit.runners.Suite
         ClaimCouponViewModelTest::class,
         ClaimCouponItemViewModelTest::class,
         ChipsFilterViewModelTest::class,
+        ShopBannerInfiniteModelTest::class,
+        ShopBannerInfiniteItemModelTest::class,
 )
 
 
