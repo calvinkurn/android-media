@@ -609,11 +609,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         if (result.button.text.isNotEmpty()) ctaText = result.button.text
 
         view?.let {
-            if (ctaText.isEmpty()) {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
-            }
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
         }
     }
 
