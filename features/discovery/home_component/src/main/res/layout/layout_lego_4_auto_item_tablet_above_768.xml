@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_lego_auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:baselineAligned="false">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/container_lego_4_auto"
@@ -13,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
+        android:baselineAligned="false"
         android:weightSum="2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
