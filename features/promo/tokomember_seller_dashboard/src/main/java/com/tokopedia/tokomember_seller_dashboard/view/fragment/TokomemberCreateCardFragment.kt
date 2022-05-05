@@ -2,6 +2,7 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
@@ -24,8 +27,8 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.IntoolsShop
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
 import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
@@ -39,16 +42,19 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCa
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
+import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import javax.inject.Inject
 
 class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
-    TokomemberCardBgAdapterListener {
+    TokomemberCardBgAdapterListener  , BottomSheetClickListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -57,6 +63,10 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     var shopViewPremium: TokomemberShopView? = null
     var shopViewVip: TokomemberShopView? = null
     private var shopID = 0
+    private var retryCount = 0
+    private var tokomemberShopCardModel = TokomemberShopCardModel()
+    private var mTmCardModifyInput = TmCardModifyInput()
+    private var loaderDialog: LoaderDialog?=null
     private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(
         LazyThreadSafetyMode.NONE
     ) {
@@ -103,6 +113,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
                     renderCardUi(it.data)
                 }
                 is Fail -> {
+                    handleErrorUiOnErrorData()
                 }
             }
         })
@@ -115,6 +126,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
                         renderBgTemplateList(it.data)
                     }
                     is Fail -> {
+                        handleErrorUiOnErrorData()
                     }
                 }
             })
@@ -127,54 +139,91 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
                         renderColorTemplateList(it.data)
                     }
                     is Fail -> {
+                        handleErrorUiOnErrorData()
                     }
                 }
             })
 
         tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.observe(viewLifecycleOwner,{
-            when(it) {
-                is Success -> {
+            when(it.status) {
+                TokoLiveDataResult.STATUS.LOADING -> {
+                    openLoadingDialog()
+                }
+                 TokoLiveDataResult.STATUS.SUCCESS -> {
+                     closeLoadingDialog()
                      openProgramCreationPage()
                 }
-                is Fail -> {
-                    view?.let { v -> Toaster.build(v,it.throwable.localizedMessage?:"",Toaster.LENGTH_LONG , Toaster.TYPE_ERROR).show()
-                    }
+                 TokoLiveDataResult.STATUS.ERROR -> {
+                     closeLoadingDialog()
+                     handleErrorUiOnUpdate()
                 }
             }
         })
+    }
+
+    private fun handleErrorUiOnErrorData(){
+
+    }
+
+    private fun handleErrorUiOnUpdate(){
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            "Ada gangguan di rumah Toped",
+            "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.",
+            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
+            "Coba Lagi"
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        TokomemberBottomsheet().setUpBottomSheetListener(this)
+        TokomemberBottomsheet.show(bundle, childFragmentManager)
+    }
+
+    private fun openLoadingDialog(){
+
+        loaderDialog = context?.let { LoaderDialog(it) }
+        loaderDialog?.loaderText?.apply {
+            setType(Typography.DISPLAY_2)
+        }
+        loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
+        retryCount +=1
+        loaderDialog?.show()
+    }
+
+    private fun closeLoadingDialog(){
+        loaderDialog?.dialog?.dismiss()
     }
 
     private fun openProgramCreationPage() {
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
         bundle.putInt(BUNDLE_SHOP_ID, shopID)
+     //   bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
         (activity as TokomemberDashCreateActivity).addFragment(
             TokomemberProgramFragment.newInstance(
                 bundle
-            ), TAG_PROGRAM_CREATE
+            ), TAG_CARD_CREATE
         )
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
         shopID = data.card?.shopID?:0
         renderCardCarousel(data)
-        btnContinueCard?.setOnClickListener {
-            tokomemberDashCreateViewModel.modifyShopCard(
-                TmCardModifyInput(
-                    apiVersion = "3.0.0",
-                    isMerchantCard = true,
-                    intoolsShop = IntoolsShop(id = data.card?.shopID),
-                    cardTemplate = CardTemplate(
-                        fontColor = "#FFFFFF",
-                        backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
-                    ),
-                    card = Card(
-                        shopID = data.card?.shopID,
-                        name = shopViewPremium?.getCardShopName(),
-                        numberOfLevel = 2
-                    )
-                )
+        mTmCardModifyInput =  TmCardModifyInput(
+            apiVersion = "3.0.0",
+            isMerchantCard = true,
+            intoolsShop = IntoolsShop(id = data.card?.shopID),
+            cardTemplate = CardTemplate(
+                fontColor = "#FFFFFF",
+                backgroundImgUrl = shopViewPremium?.getCardBackgroundImageUrl()
+            ),
+            card = Card(
+                shopID = data.card?.shopID,
+                name = shopViewPremium?.getCardShopName(),
+                numberOfLevel = 2
             )
+        )
+        btnContinueCard?.setOnClickListener {
+            tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
         }
     }
 
@@ -222,28 +271,18 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         context?.let {
             shopViewPremium = TokomemberShopView(it)
             shopViewVip = TokomemberShopView(it)
+            tokomemberShopCardModel = TokomemberShopCardModel(
+                shopName = data.card?.name ?: "",
+                numberOfLevel = data.card?.numberOfLevel ?: 0,
+                backgroundColor = data.cardTemplate?.backgroundColor ?: "",
+                backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
+                shopType = 0
+            )
             shopViewPremium?.apply {
-                setShopCardData(
-                    TokomemberShopCardModel(
-                        shopName = data.card?.name ?: "",
-                        numberOfLevel = data.card?.numberOfLevel ?: 0,
-                        backgroundColor = data.cardTemplate?.backgroundColor ?: "",
-                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
-                        shopType = 0
-                    )
-                )
+                setShopCardData(tokomemberShopCardModel)
             }
-
             shopViewVip?.apply {
-                setShopCardData(
-                    TokomemberShopCardModel(
-                        shopName = data.card?.name ?: "",
-                        numberOfLevel = data.card?.numberOfLevel ?: 0,
-                        backgroundColor = data.cardTemplate?.backgroundColor ?: "",
-                        backgroundImgUrl = data.cardTemplate?.backgroundImgUrl ?: "",
-                        shopType = 1
-                    )
-                )
+                setShopCardData(tokomemberShopCardModel)
             }
 
             carouselCard.apply {
@@ -253,8 +292,8 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
                 freeMode = false
                 centerMode = true
                 autoplay = false
-                addItem(shopViewPremium!!)
-                addItem(shopViewVip!!)
+                addItem(shopViewPremium?:TokomemberShopView(context))
+                addItem(shopViewVip?:TokomemberShopView(context))
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
 
@@ -281,20 +320,16 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         if (isColorPalleteClicked && position != 1) {
             adapterBg.notifyItemChanged(position)
             if (tokoCardItem is TokomemberCardBg) {
-                shopViewPremium?.setShopCardData(
-                    TokomemberShopCardModel(
-                        shopName = "kk",
-                        backgroundImgUrl = tokoCardItem.imageUrl ?: "",
-                        shopType = 0
-                    )
+
+                tokomemberShopCardModel = TokomemberShopCardModel(
+                    shopName = tokomemberShopCardModel.shopName,
+                    numberOfLevel = tokomemberShopCardModel.numberOfLevel,
+                    backgroundColor = tokomemberShopCardModel.backgroundColor,
+                    backgroundImgUrl = tokoCardItem.imageUrl ?: "",
+                    shopType = 0
                 )
-                shopViewVip?.setShopCardData(
-                    TokomemberShopCardModel(
-                        shopName = "kk",
-                        backgroundImgUrl = tokoCardItem.imageUrl ?: "",
-                        shopType = 1
-                    )
-                )
+                shopViewPremium?.setShopCardData(tokomemberShopCardModel)
+                shopViewVip?.setShopCardData(tokomemberShopCardModel)
             }
         }
     }
@@ -322,10 +357,14 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         }
     }
 
+    override fun onButtonClick() {
+        tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
+    }
+
     companion object {
         const val PROGRAM_TYPE = "PROGRAM_TYPE"
         const val SHOP_ID = "SHOP_ID"
-        const val TAG_PROGRAM_CREATE = "Program_Create"
+        const val TAG_CARD_CREATE = "CARD_CREATE"
         fun newInstance(bundle: Bundle): TokomemberCreateCardFragment {
             return TokomemberCreateCardFragment().apply {
                 arguments = bundle

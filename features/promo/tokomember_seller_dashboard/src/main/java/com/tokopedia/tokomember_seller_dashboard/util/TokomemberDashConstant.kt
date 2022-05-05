@@ -7,6 +7,7 @@ const val BUNDLE_OPTION_MENU = "bundleOptionMenu"
 const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
 const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
+const val BUNDLE_CARD_DATA = "bundleCardData"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
@@ -30,7 +31,5 @@ const val STOP = "stop"
 const val SHARE = "share"
 const val DUPLICATE = "duplicate"
 
-const val MIN_THRESHOLD_LEVEL_1 = 0
-const val MAX_THRESHOLD_LEVEL_1 = 1000000
-const val MIN_THRESHOLD_LEVEL_2 = 500000
-const val MAX_THRESHOLD_LEVEL_2 = 50000000
+const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
+        "Tunggu ya, program lagi disiapkan!"

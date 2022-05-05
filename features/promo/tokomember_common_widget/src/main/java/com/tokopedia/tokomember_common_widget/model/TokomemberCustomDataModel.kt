@@ -1,5 +1,9 @@
 package com.tokopedia.tokomember_common_widget.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class TokomemberShopCardModel(
     var shopName: String = "",
     var shopMemberName: String = "",
@@ -10,7 +14,7 @@ data class TokomemberShopCardModel(
     var fontColor : String ="",
     var backgroundColor: String ="",
     var backgroundImgUrl:String=""
-)
+):Parcelable
 
 data class TokomemberProgramCardModel(
     var programStatus: Int = 0,

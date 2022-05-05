@@ -2,6 +2,8 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +13,14 @@ import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.ProgramType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
@@ -209,6 +213,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     }
 
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+        addPremiumTransactionTextListener(membershipGetProgramForm?.programThreshold)
+        addVipTransactionTextListener(membershipGetProgramForm?.programThreshold)
         if(programType == ProgramType.EXTEND){
             textFieldTranskVip.isEnabled = false
             textFieldTranskPremium.isEnabled = false
@@ -247,6 +253,71 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
         btnCreateProgram?.setOnClickListener {
             initCreateProgram(membershipGetProgramForm)
         }
+    }
+
+    private fun addPremiumTransactionTextListener(programThreshold: ProgramThreshold?) {
+        textFieldTranskPremium.editText.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (s.toString()
+                        .toIntOrZero() >= programThreshold?.maxThresholdLevel1 ?: 0
+                ) {
+                    tickerInfo.show()
+                    textFieldTranskPremium.isInputError = true
+                    textFieldTranskPremium.setMessage("Maks ${programThreshold?.maxThresholdLevel1}")
+                } else if (s.toString()
+                        .toIntOrZero() <= programThreshold?.maxThresholdLevel1 ?: 0
+                ) {
+                    tickerInfo.hide()
+                    textFieldTranskPremium.isInputError = false
+                    textFieldTranskPremium.setMessage("")
+                }
+                else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && s.toString()
+                        .toIntOrZero() >= textFieldTranskVip.editText.text.toString().toIntOrZero()
+                ) {
+                    tickerInfo.show()
+                    textFieldTranskPremium.isInputError = true
+                    textFieldTranskPremium.setMessage("Tidak boleh melebihi level VIP (Level 2)")
+                }
+                else if (textFieldTranskVip.editText.text.toString().isNotEmpty() && s.toString()
+                        .toIntOrZero() <= textFieldTranskVip.editText.text.toString().toIntOrZero()
+                ) {
+                    tickerInfo.hide()
+                    textFieldTranskPremium.isInputError = false
+                    textFieldTranskPremium.setMessage("")
+                }
+            }
+        })
+    }
+
+    private fun addVipTransactionTextListener(programThreshold: ProgramThreshold?) {
+        textFieldTranskVip.editText.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                when {
+                    s.toString()
+                        .toIntOrZero() >= programThreshold?.maxThresholdLevel2 ?: 0 -> {
+                        textFieldTranskVip.isInputError = true
+                        textFieldTranskVip.setMessage("Maks ${programThreshold?.maxThresholdLevel2}")
+                    }
+                    s.toString()
+                        .toIntOrZero() <= programThreshold?.minThresholdLevel2 ?: 0 -> {
+                        textFieldTranskVip.isInputError = true
+                        textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel1}")
+                    }
+                    else -> {
+                        textFieldTranskVip.isInputError = false
+                        textFieldTranskVip.setMessage("")
+                    }
+                }
+            }
+        })
     }
 
     private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?){

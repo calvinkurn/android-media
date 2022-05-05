@@ -81,8 +81,14 @@ data class ProgramThreshold(
 	@SerializedName("minThresholdLevel1")
 	val minThresholdLevel1: Int? = null,
 	@Expose
+	@SerializedName("maxThresholdLevel1")
+	val maxThresholdLevel1: Int? = null,
+	@Expose
 	@SerializedName("minThresholdLevel2")
-	val minThresholdLevel2: Int? = null
+	val minThresholdLevel2: Int? = null,
+	@Expose
+	@SerializedName("maxThresholdLevel2")
+	val maxThresholdLevel2: Int? = null
 )
 
 data class DropdownLevelItem(

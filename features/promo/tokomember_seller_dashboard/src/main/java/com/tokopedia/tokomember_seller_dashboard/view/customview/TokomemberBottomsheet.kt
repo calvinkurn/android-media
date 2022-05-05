@@ -15,14 +15,14 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 
-class TokomemberBottomsheet: BottomSheetUnify() {
+class TokomemberBottomsheet(): BottomSheetUnify() {
 
     private val childLayoutRes = R.layout.tm_dash_intro_bottomsheet
     private lateinit var imgBottomsheet: ImageUnify
     private lateinit var tvHeading: Typography
     private lateinit var tvDesc: Typography
     private lateinit var btnProceed: UnifyButton
-
+    private var mBottomSheetClickListener:BottomSheetClickListener?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class TokomemberBottomsheet: BottomSheetUnify() {
         tvDesc.text = tmIntroBottomsheetModel.desc
         imgBottomsheet.loadImage(tmIntroBottomsheetModel.image)
         btnProceed.setOnClickListener {
-
+            mBottomSheetClickListener?.onButtonClick()
         }
     }
 
@@ -62,6 +62,10 @@ class TokomemberBottomsheet: BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = (getScreenHeight()).toDp()
+    }
+
+    fun setUpBottomSheetListener(bottomSheetClickListener:BottomSheetClickListener){
+        mBottomSheetClickListener = bottomSheetClickListener
     }
 
     companion object {
@@ -80,4 +84,8 @@ class TokomemberBottomsheet: BottomSheetUnify() {
         }
     }
 
+}
+
+interface BottomSheetClickListener{
+    fun onButtonClick()
 }

@@ -22,6 +22,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.PreviewData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
@@ -56,8 +57,8 @@ class TokomemberDashCreateViewModel @Inject constructor(
     val tokomemberCardResultLiveData: LiveData<Result<CardDataTemplate>> =
         _tokomemberCardResultLiveData
 
-    private val _tokomemberCardModifyLiveData = MutableLiveData<Result<MembershipCreateEditCard>>()
-    val tokomemberCardModifyLiveData: LiveData<Result<MembershipCreateEditCard>> =
+    private val _tokomemberCardModifyLiveData = MutableLiveData<TokoLiveDataResult<MembershipCreateEditCard>>()
+    val tokomemberCardModifyLiveData: LiveData<TokoLiveDataResult<MembershipCreateEditCard>> =
         _tokomemberCardModifyLiveData
 
     //remove
@@ -140,10 +141,11 @@ class TokomemberDashCreateViewModel @Inject constructor(
 
     fun modifyShopCard(tmCardModifyInput: TmCardModifyInput){
         tokomemberDashEditCardUsecase.cancelJobs()
+        _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.loading())
         tokomemberDashEditCardUsecase.modifyShopCard( {
-            _tokomemberCardModifyLiveData.postValue(Success(it))
+            _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.success(it))
         }, {
-            _tokomemberCardModifyLiveData.postValue(Fail(it))
+            _tokomemberCardModifyLiveData.postValue(TokoLiveDataResult.error(it))
         },tmCardModifyInput)
     }
 
