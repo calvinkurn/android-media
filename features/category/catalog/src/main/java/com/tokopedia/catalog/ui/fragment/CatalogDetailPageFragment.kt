@@ -188,8 +188,10 @@ class CatalogDetailPageFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
         activity?.let { observer ->
-            val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
-            sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
+            if (isNewProductDesign){
+                val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
+                sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
+            }
         }
 
         initRollence()
@@ -401,11 +403,16 @@ class CatalogDetailPageFragment : Fragment(),
             }
         })
 
-        sharedViewModel?.mProductCount?.observe(viewLifecycleOwner, { filterProductCount->
-            filterProductCount?.let {
-                mProductsCountText?.text = getString(com.tokopedia.catalog.R.string.catalog_product_count_view_text,it)
-            }
-        })
+        if (isNewProductDesign) {
+            sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
+                filterProductCount?.let {
+                    mProductsCountText?.text = getString(
+                        com.tokopedia.catalog.R.string.catalog_product_count_view_text,
+                        it
+                    )
+                }
+            })
+        }
     }
 
     private fun setCatalogUrlForTracking() {
