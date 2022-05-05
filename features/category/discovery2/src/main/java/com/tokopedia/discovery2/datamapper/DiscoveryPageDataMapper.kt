@@ -27,6 +27,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 const val SHIMMER_ITEMS_LIST_SIZE = 10
+const val COMPONENTS_PER_PAGE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
@@ -227,7 +228,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             component.properties  = Properties()
         }
         component.properties?.template = Constant.ProductTemplate.LIST
-        component.componentsPerPage = 10
+        component.componentsPerPage = COMPONENTS_PER_PAGE
         return parseProductVerticalList(component,false)
     }
 
