@@ -5,6 +5,10 @@ import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.LEFT_
 import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.RIGHT_ANIMATION
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CANCEL
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CREATE
 import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.DETAIL
@@ -38,6 +42,17 @@ annotation class ProgramType {
         const val EXTEND = 2
         const val EDIT = 3
         const val CANCEL = 4
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(CARD, PROGRAM, COUPON, PREVIEW)
+annotation class ProgramScreenType {
+    companion object {
+        const val CARD = 0
+        const val PROGRAM = 1
+        const val COUPON = 2
+        const val PREVIEW = 3
     }
 }
 

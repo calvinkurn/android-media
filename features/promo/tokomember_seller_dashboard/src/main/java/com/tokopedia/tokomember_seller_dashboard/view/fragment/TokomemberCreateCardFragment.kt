@@ -1,12 +1,14 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -19,7 +21,9 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.Card
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.CardTemplate
@@ -29,7 +33,6 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.*
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
@@ -46,7 +49,6 @@ import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClic
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -56,6 +58,7 @@ import javax.inject.Inject
 class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
     TokomemberCardBgAdapterListener  , BottomSheetClickListener {
 
+    private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private var isColorPalleteClicked = false
@@ -79,6 +82,17 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
 
     private val adapterColor: TokomemberCardColorAdapter by lazy(LazyThreadSafetyMode.NONE) {
         TokomemberCardColorAdapter(arrayListOf(), TokomemberCardColorFactory(this))
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is TmOpenFragmentCallback) {
+            tmOpenFragmentCallback =  context as TmOpenFragmentCallback
+        } else {
+            throw RuntimeException(context.toString() )
+        }
+
     }
 
     override fun onCreateView(
@@ -145,6 +159,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
             })
 
         tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.observe(viewLifecycleOwner,{
+            viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.DESTROYED)
             when(it.status) {
                 TokoLiveDataResult.STATUS.LOADING -> {
                     openLoadingDialog()
@@ -197,12 +212,13 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         val bundle = Bundle()
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
         bundle.putInt(BUNDLE_SHOP_ID, shopID)
-     //   bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
-        (activity as TokomemberDashCreateActivity).addFragment(
-            TokomemberProgramFragment.newInstance(
-                bundle
-            ), TAG_CARD_CREATE
-        )
+        bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
+//        (activity as TokomemberDashCreateActivity).addFragment(
+//            TokomemberProgramFragment.newInstance(
+//                bundle
+//            ), TAG_CARD_CREATE
+//        )
+        tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
     }
 
     private fun renderCardUi(data: CardDataTemplate) {
@@ -355,6 +371,11 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         rvColor?.post {
             adapterColor.unselectModel(position)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.removeObservers(this)
     }
 
     override fun onButtonClick() {

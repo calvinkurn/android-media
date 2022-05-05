@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
@@ -156,6 +157,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                     TokomemberKuponCreateFragment.newInstance(),
                     "Kupon"
                 )
+//                tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
+
             }
             ProgramType.EXTEND ->{
                 (activity as TokomemberDashCreateActivity).addFragment(
@@ -170,6 +173,10 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     }
 
     private fun renderHeader() {
+
+        headerProgram.setNavigationOnClickListener {
+            Toast.makeText(context, "Back", Toast.LENGTH_SHORT).show()
+        }
 
         when(programType){
             ProgramType.CREATE ->{

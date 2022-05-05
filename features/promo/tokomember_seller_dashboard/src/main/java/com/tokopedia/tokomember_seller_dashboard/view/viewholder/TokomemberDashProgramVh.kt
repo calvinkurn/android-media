@@ -95,7 +95,6 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
 
         when(item.status){
             DRAFT ->{
-                btn_edit.hide()
             }
             WAITING ->{
                 // Allow editing
@@ -104,19 +103,14 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
             }
             ACTIVE ->{
-
-//                btn_edit.hide()
             }
             ACTIVE_OLDER ->{
-                btn_edit.hide()
             }
             ENDED ->{
-                btn_edit.hide()
             }
             CANCELED ->{
                 programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
                 view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
-                btn_edit.hide()
             }
         }
     }

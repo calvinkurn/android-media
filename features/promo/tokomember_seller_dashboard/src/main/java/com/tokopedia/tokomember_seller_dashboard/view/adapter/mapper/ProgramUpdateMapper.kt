@@ -85,7 +85,6 @@ object ProgramUpdateMapper {
         return programUpdateResponse
     }
 
-
     fun setDate(time: String): String {
         val selectedTime = time.substringBefore(" ")
         val date = selectedTime.toDate("yyyy-MM-dd")
@@ -93,6 +92,12 @@ object ProgramUpdateMapper {
         val month = SimpleDateFormat("MMMM").format(date)
         val year = selectedTime.substringBefore("-")
         return "$day $month $year"
+    }
+
+    fun convertDateTime(t: String): String {
+        var time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
+        time = time.substring(0, time.length-2)
+        return time
     }
 
 }

@@ -8,6 +8,7 @@ const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
 const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
 const val BUNDLE_CARD_DATA = "bundleCardData"
+const val BUNDLE_PROGRAM = "bundle_program"
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"
@@ -33,3 +34,4 @@ const val DUPLICATE = "duplicate"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"
+

@@ -79,8 +79,8 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
 
     companion object {
 
-        fun newInstance(): TokomemberProgramFragment {
-            return TokomemberProgramFragment()
+        fun newInstance(bundle: Bundle) = TokomemberProgramFragment().apply {
+            arguments = bundle
         }
     }
 }

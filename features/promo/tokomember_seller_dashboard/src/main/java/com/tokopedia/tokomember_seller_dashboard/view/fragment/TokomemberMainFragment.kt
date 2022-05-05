@@ -73,6 +73,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
                 TokomemberDashHomeActivity.openActivity(shopId, context)
+//                TokomemberDashIntroActivity.openActivity(shopId, context = context)
                 activity?.finish()
                 // redirect to dashboard
             }
