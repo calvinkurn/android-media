@@ -26,7 +26,7 @@ class BannerInfiniteGQLRepository @Inject constructor() : BaseRepository(), Bann
             ComponentNames.BannerInfinite.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, null, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
 
         }
         return Pair(list,nextPage)

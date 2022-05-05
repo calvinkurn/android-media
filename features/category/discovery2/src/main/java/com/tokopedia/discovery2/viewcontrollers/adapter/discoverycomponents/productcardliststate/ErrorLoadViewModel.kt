@@ -47,6 +47,11 @@ class ErrorLoadViewModel(val application: Application,
                                 components.parentComponentId,
                                 components.pageEndPoint
                             )
+                        ComponentNames.BannerInfinite.componentName ->
+                            bannerInfiniteUseCase.loadFirstPageComponents(
+                                    components.id,
+                                    components.pageEndPoint
+                            )
                         else ->
                             productCardUseCase.loadFirstPageComponents(
                                 components.parentComponentId,

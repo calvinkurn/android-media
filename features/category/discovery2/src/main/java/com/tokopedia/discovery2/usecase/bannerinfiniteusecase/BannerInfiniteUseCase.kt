@@ -10,8 +10,6 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
     companion object {
         private const val BANNER_PER_PAGE = 20
         private const val PAGE_START = 1
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_NEXT_PAGE = "rpc_next_page"
     }
 
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, bannersLimit: Int = BANNER_PER_PAGE): Boolean {
@@ -73,9 +71,9 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.RPC_PAGE__SIZE] = bannerPerPage.toString()
-        queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
+        queryParameterMap[Utils.RPC_PAGE_NUMBER] = pageNumber.toString()
 
-        queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
+        queryParameterMap[Utils.RPC_NEXT_PAGE] = nextPageKey ?: ""
 
         return queryParameterMap
     }

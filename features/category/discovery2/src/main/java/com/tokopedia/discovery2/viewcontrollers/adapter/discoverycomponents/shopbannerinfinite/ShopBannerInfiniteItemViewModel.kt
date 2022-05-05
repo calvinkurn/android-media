@@ -22,9 +22,6 @@ class ShopBannerInfiniteItemViewModel(application: Application, val components: 
     }
 
     private fun getDataItem(): DataItem? {
-        components.data?.let {
-            if (it.isNotEmpty()) return it[0]
-        }
-        return null
+        return components.data?.firstOrNull()
     }
 }
