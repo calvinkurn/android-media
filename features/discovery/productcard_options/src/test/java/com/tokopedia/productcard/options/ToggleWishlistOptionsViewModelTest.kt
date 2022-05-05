@@ -6,8 +6,13 @@ import com.tokopedia.productcard.options.testutils.complete
 import com.tokopedia.productcard.options.testutils.error
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase.WISHSLIST_URL
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.CapturingSlot
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Test
@@ -77,6 +82,21 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`()
     }
 
+    @Test
+    fun `Add WishlistV2 Non-TopAds Product Success`() {
+        val userId = "123456"
+        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
+
+        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
+        `Given user is logged in`(userId)
+        `Given add wishlistV2 GQL will be successful`(userId)
+
+        `When Click save to wishlist`()
+
+        `Then should post wishlist event`()
+        `Then assert product card options model has wishlist result with isUserLoggedIn = true, isAddWishlist = true, and isSuccess = true`()
+    }
+
     private fun `Given user is logged in`(userId: String) {
         every { userSession.isLoggedIn }.returns(true)
         every { userSession.userId }.returns(userId)
@@ -89,6 +109,17 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
             addWishListUseCase.createObservable(productId, userId, any())
         }.answers {
             thirdArg<WishListActionListener>().onSuccessAddWishlist(firstArg())
+        }
+    }
+
+    private fun `Given add wishlistV2 GQL will be successful`(userId: String) {
+        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+
+        coEvery {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            addToWishlistV2UseCase.executeOnBackground()
+        }.coAnswers {
+            Success(AddToWishlistV2Response.Data.WishlistAddV2(success = true))
         }
     }
 
@@ -126,6 +157,21 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
         `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = true, and isSuccess = false`()
     }
 
+    @Test
+    fun `Add WishlistV2 Non-TopAds Product Failed and handled in onErrorAddWishlist`() {
+        val userId = "123456"
+        val productCardOptionsModelNotWishlisted = ProductCardOptionsModel(hasWishlist = true, isWishlisted = false, productId = "12345")
+
+        `Given Product Card Options View Model`(productCardOptionsModelNotWishlisted)
+        `Given user is logged in`(userId)
+        `Given add wishlistV2 GQL will fail`(userId)
+
+        `When Click save to wishlist`()
+
+        `Then should post wishlist event`()
+        `Then assert product card options model has wishlist result with isUserLoggin = true, isAddWishlist = true, and isSuccess = false`()
+    }
+
     private fun `Given add wishlist API will fail`(userId: String) {
         val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
 
@@ -133,6 +179,17 @@ internal class ToggleWishlistOptionsViewModelTest: ProductCardOptionsViewModelTe
             addWishListUseCase.createObservable(productId, userId, any())
         }.answers {
             thirdArg<WishListActionListener>().onErrorAddWishList("error from backend", firstArg())
+        }
+    }
+
+    private fun `Given add wishlistV2 GQL will fail`(userId: String) {
+        val productId = productCardOptionsViewModel.productCardOptionsModel?.productId ?: "0"
+
+        coEvery {
+            addToWishlistV2UseCase.setParams(productId, userId)
+            addToWishlistV2UseCase.executeOnBackground()
+        }.coAnswers {
+            Success(AddToWishlistV2Response.Data.WishlistAddV2(success = false))
         }
     }
 
