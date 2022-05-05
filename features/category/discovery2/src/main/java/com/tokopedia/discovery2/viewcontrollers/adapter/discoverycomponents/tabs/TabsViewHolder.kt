@@ -70,13 +70,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        if(selectedPosition>=0 && (fragment.activity as DiscoveryActivity).isFromCategory()) {
-                            tabsHolder.gone()
-                            tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
-                            Handler().postDelayed({
-                                tabsHolder.show()
-                            },400)
-                            selectedPosition = -1
+                        fragment.activity?.let { activity ->
+                            if (selectedPosition >= 0 && (activity as DiscoveryActivity).isFromCategory()) {
+                                tabsHolder.gone()
+                                tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                                Handler().postDelayed({
+                                    tabsHolder.show()
+                                }, 400)
+                                selectedPosition = -1
+                            }
                         }
                     }
                 })
