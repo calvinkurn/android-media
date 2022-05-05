@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardViewHolder
+import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.*
 import com.tokopedia.unifycomponents.toPx
 
 import javax.inject.Inject
@@ -63,6 +60,9 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
             CMHomeWidgetViewAllCardViewHolder.LAYOUT,
             CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
+            }
+            CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
+                ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
             }
         }
         val layoutParams: ViewGroup.LayoutParams = view.layoutParams

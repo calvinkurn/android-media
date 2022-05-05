@@ -48,10 +48,41 @@ data class CMHomeWidgetData(
     @SerializedName("products")
     @Expose
     val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
+    @SerializedName("payment")
+    @Expose
+    val cMHomeWidgetPaymentData: CMHomeWidgetPaymentData?,
     @SerializedName("card")
     @Expose
     val cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData?
 )
+
+data class CMHomeWidgetPaymentData(
+    @SerializedName("image_url")
+    @Expose
+    val imgUrl: String,
+    @SerializedName("gateway_name")
+    @Expose
+    val gatewayName: String?,
+    @SerializedName("account_number")
+    @Expose
+    val accountNumber: String?,
+    @SerializedName("total_payment")
+    @Expose
+    val totalPayment: String?,
+    @SerializedName("expired_time")
+    @Expose
+    val expiredTime: String?,
+    @SerializedName("app_link")
+    @Expose
+    val appLink: String?,
+    @SerializedName("action_buttons")
+    @Expose
+    val actionButton: List<CMHomeWidgetActionButton>?
+): CMHomeWidgetVisitable {
+    override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
 
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetProductCardData(
@@ -114,7 +145,13 @@ data class CMHomeWidgetActionButton(
     val actionButtonText: String?,
     @SerializedName("app_link")
     @Expose
-    val appLink: String?
+    val appLink: String?,
+    @SerializedName("icon")
+    @Expose
+    val icon: String?,
+    @SerializedName("type")
+    @Expose
+    val type: String?
 )
 
 data class CMHomeWidgetViewAllCardData(

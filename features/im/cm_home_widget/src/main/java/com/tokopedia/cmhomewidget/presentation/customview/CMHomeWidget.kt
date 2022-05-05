@@ -16,6 +16,7 @@ import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.domain.data.*
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
@@ -30,7 +31,7 @@ class CMHomeWidget @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr), CMHomeWidgetProductCardListener,
-    CMHomeWidgetViewAllCardListener {
+    CMHomeWidgetViewAllCardListener, CMHomeWidgetPaymentCardListener {
 
     @Inject
     lateinit var binding: LayoutCmHomeWidgetBinding
@@ -178,6 +179,23 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun setProductCardHeight(height: Int) {
+        productCardHeight = height
+    }
+
+    override fun onPaymentCardClick(dataItem: CMHomeWidgetPaymentData) {
+        sendCMHomeWidgetClickEvent()
+        startRequiredActivity(dataItem.appLink)
+    }
+
+    override fun onPaymentBtnClick(dataItem: CMHomeWidgetPaymentData) {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetCloseClickListener?.onRemoveCmWidgetLocally()
+        }
+        sendCMHomeWidgetClickEvent()
+        startRequiredActivity(dataItem.actionButton?.get(0)?.appLink)
+    }
+
+    override fun setPaymentCardHeight(measuredHeight: Int) {
         productCardHeight = height
     }
 

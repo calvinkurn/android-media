@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_cm_home_widget_payment_card"
+    android:layout_width="@dimen/cm_home_widget_dp_260"
+    android:layout_height="wrap_content"
+    app:card_type="shadow">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/unify_space_12"
+        android:paddingTop="@dimen/unify_space_12"
+        android:paddingEnd="@dimen/unify_space_12"
+        android:paddingBottom="@dimen/unify_space_12">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_cm_home_widget_payment"
+            android:layout_width="@dimen/cm_home_widget_dp_40"
+            android:layout_height="@dimen/cm_home_widget_dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="8" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_payment_gateway_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="BCA Virtual Account" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_payment_account_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_gateway_name"
+            app:typographyType="body_3"
+            tools:text="123401234567891212" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_payment_amt_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment"
+            app:typographyType="body_3"
+            tools:text="Total Pembayaran" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_payment_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_amt_label"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Rp1.799.000'" />
+
+        <View
+            android:id="@+id/v_cm_home_widget_divider"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_cm_home_widget_payment_amt_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
+            android:background="#BFC9D9"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_cm_home_widget_payment_timer_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
+            app:typographyType="body_3"
+            tools:text="Sisa Waktu" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_floating_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="@dimen/dp_12"
+            android:paddingStart="@dimen/dp_24"
+            android:paddingEnd="@dimen/dp_4"
+            android:background="@drawable/cm_home_widget_bg_countdown_timer"
+            app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
+            android:textColor="#E02954"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="01:12:12">
+
+        </com.tokopedia.unifyprinciples.Typography>
+
+        <ImageView
+            android:id="@+id/iv_floating_egg"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginStart="18dp"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_clock_icon"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
+            app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
+            />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_cm_home_widget_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cm_home_widget_dp_6"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_amt"
+            app:unifyButtonSize="small"
+            app:unifyButtonVariant="ghost"
+            tools:text="Lihat Cara Bayar" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>
