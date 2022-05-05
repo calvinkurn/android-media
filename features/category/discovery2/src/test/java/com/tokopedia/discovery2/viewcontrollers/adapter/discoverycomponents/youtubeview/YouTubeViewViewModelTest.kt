@@ -63,10 +63,17 @@ class YouTubeViewViewModelTest {
 
     /**************************** test for shouldAutoPlay() *******************************************/
     @Test
-    fun `test for shouldAutoPlay when autoPlayController is not null`() {
+    fun `test for shouldAutoPlay when autoPlayController is true`() {
         every { componentsItem.autoPlayController?.shouldAutoPlay(componentsItem.id) } returns true
 
         assert(viewModel.shouldAutoPlay())
+    }
+
+    @Test
+    fun `test for shouldAutoPlay when autoPlayController is false`() {
+        every { componentsItem.autoPlayController?.shouldAutoPlay(componentsItem.id) } returns false
+
+        assert(!viewModel.shouldAutoPlay())
     }
 
     @Test
@@ -80,10 +87,17 @@ class YouTubeViewViewModelTest {
 
     /**************************** test for shouldPause() *******************************************/
     @Test
-    fun `test for shouldPause when autoPlayController is not null`() {
+    fun `test for shouldPause when autoPlayController is true`() {
         every { componentsItem.autoPlayController?.shouldPause(componentsItem.id) } returns true
 
         assert(viewModel.shouldPause())
+    }
+
+    @Test
+    fun `test for shouldPause when autoPlayController is false`() {
+        every { componentsItem.autoPlayController?.shouldPause(componentsItem.id) } returns false
+
+        assert(!viewModel.shouldPause())
     }
 
     @Test
@@ -116,10 +130,17 @@ class YouTubeViewViewModelTest {
 
     /**************************** test for isAutoPlayEnabled() *******************************************/
     @Test
-    fun `test for isAutoPlayEnabled when autoPlayController is not null`() {
+    fun `test for isAutoPlayEnabled when autoPlayController is true`() {
         every { componentsItem.autoPlayController?.isAutoPlayEnabled } returns true
 
         assert(viewModel.isAutoPlayEnabled())
+    }
+
+    @Test
+    fun `test for isAutoPlayEnabled when autoPlayController is false`() {
+        every { componentsItem.autoPlayController?.isAutoPlayEnabled } returns false
+
+        assert(!viewModel.isAutoPlayEnabled())
     }
 
     @Test
@@ -153,10 +174,17 @@ class YouTubeViewViewModelTest {
 
     /**************************** test for pauseOtherVideos() *******************************************/
     @Test
-    fun `test for pauseOtherVideos when autoPlayController is not null`() {
+    fun `test for pauseOtherVideos when autoPlayController is true`() {
         every { componentsItem.autoPlayController?.pauseAutoPlayedVideo(componentsItem.id) } returns true
 
         assert(viewModel.pauseOtherVideos())
+    }
+
+    @Test
+    fun `test for pauseOtherVideos when autoPlayController is false`() {
+        every { componentsItem.autoPlayController?.pauseAutoPlayedVideo(componentsItem.id) } returns false
+
+        assert(!viewModel.pauseOtherVideos())
     }
 
     @Test
