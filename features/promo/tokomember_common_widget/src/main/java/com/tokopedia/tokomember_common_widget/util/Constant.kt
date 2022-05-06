@@ -5,15 +5,15 @@ import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.LEFT_
 import com.tokopedia.tokomember_common_widget.util.AnimationType.Companion.RIGHT_ANIMATION
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.PREMIUM
 import com.tokopedia.tokomember_common_widget.util.MemberType.Companion.VIP
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CANCEL
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.CREATE
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.DETAIL
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EDIT
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType.Companion.EXTEND
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PROGRAM
-import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CANCEL
-import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.CREATE
-import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.DETAIL
-import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.EDIT
-import com.tokopedia.tokomember_common_widget.util.ProgramType.Companion.EXTEND
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(PREMIUM, VIP)
@@ -35,7 +35,7 @@ annotation class AnimationType {
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(CREATE, DETAIL, EXTEND, EDIT, CANCEL)
-annotation class ProgramType {
+annotation class ProgramActionType {
     companion object {
         const val CREATE = 0
         const val DETAIL = 1

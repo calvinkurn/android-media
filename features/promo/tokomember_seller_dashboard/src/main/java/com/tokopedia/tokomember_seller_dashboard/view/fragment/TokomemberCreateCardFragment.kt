@@ -90,7 +90,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         if (context is TmOpenFragmentCallback) {
             tmOpenFragmentCallback =  context as TmOpenFragmentCallback
         } else {
-            throw RuntimeException(context.toString() )
+            throw Exception(context.toString() )
         }
 
     }

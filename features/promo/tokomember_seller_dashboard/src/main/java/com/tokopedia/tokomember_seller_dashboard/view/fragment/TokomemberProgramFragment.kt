@@ -1,6 +1,8 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,8 +19,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
-import com.tokopedia.tokomember_common_widget.util.ProgramType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
+import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
@@ -30,7 +34,6 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -42,9 +45,10 @@ import javax.inject.Inject
 
 class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
 
+    private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     private var selectedTime = ""
     private var fromEdit = false
-    private var programType = ProgramType.CREATE
+    private var programActionType = ProgramActionType.CREATE
     private var periodInMonth = 0
     private var selectedChipPosition = 0
 
@@ -64,7 +68,13 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
             fromEdit = it
         }
         arguments?.getInt(BUNDLE_PROGRAM_TYPE, 0)?.let {
-            programType = it
+            programActionType = it
+        }
+
+        if (context is TmOpenFragmentCallback) {
+            tmOpenFragmentCallback =  context as TmOpenFragmentCallback
+        } else {
+            throw Exception(context.toString() )
         }
     }
 
@@ -80,7 +90,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
-        callGQL(programType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
+        callGQL(programActionType,arguments?.getInt(BUNDLE_SHOP_ID)?:0, arguments?.getInt(BUNDLE_PROGRAM_ID)?:0  )
     }
 
     override fun getScreenName() = ""
@@ -130,20 +140,20 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
 
     private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
         when(programType){
-            ProgramType.CREATE ->{
+            ProgramActionType.CREATE ->{
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CREATE)
             }
-            ProgramType.DETAIL ->{
+            ProgramActionType.DETAIL ->{
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_DETAIL)
             }
-            ProgramType.EXTEND ->{
+            ProgramActionType.EXTEND ->{
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
             }
-            ProgramType.EDIT ->{
+            ProgramActionType.EDIT ->{
                 //TODO actionType edit pending from backend
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
             }
-            ProgramType.CANCEL ->{
+            ProgramActionType.CANCEL ->{
                 //TODO
             }
         }
@@ -151,23 +161,17 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
 
     private fun onProgramUpdateSuccess() {
         /* TODO handle by Jayant according to update type */
-        when(programType){
-            ProgramType.CREATE -> {
-                (activity as TokomemberDashCreateActivity).addFragment(
-                    TokomemberKuponCreateFragment.newInstance(),
-                    "Kupon"
-                )
-//                tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
-
+        when(programActionType){
+            ProgramActionType.CREATE -> {
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
             }
-            ProgramType.EXTEND ->{
-                (activity as TokomemberDashCreateActivity).addFragment(
-                    TokomemberKuponCreateFragment.newInstance(),
-                    "Kupon"
-                )
+            ProgramActionType.EXTEND ->{
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
             }
-            ProgramType.EDIT ->{
-
+            ProgramActionType.EDIT ->{
+                val intent = Intent()
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
             }
         }
     }
@@ -178,8 +182,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
             Toast.makeText(context, "Back", Toast.LENGTH_SHORT).show()
         }
 
-        when(programType){
-            ProgramType.CREATE ->{
+        when(programActionType){
+            ProgramActionType.CREATE ->{
                 btnCreateProgram.text = "Buat Program"
                 headerProgram?.apply {
                     title = "Daftar TokoMember"
@@ -192,7 +196,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                     setValue(50, false)
                 }
             }
-            ProgramType.EXTEND ->{
+            ProgramActionType.EXTEND ->{
                 headerProgram?.apply {
                     title = "Perpanjang TokoMember"
                     isShowBackButton = true
@@ -206,7 +210,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                 textFieldTranskVip.isEnabled = false
                 textFieldTranskPremium.isEnabled = false
             }
-            ProgramType.EDIT ->{
+            ProgramActionType.EDIT ->{
                 //TODO actionType edit pending from backend
 
                 headerProgram?.apply {
@@ -222,7 +226,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
         addPremiumTransactionTextListener(membershipGetProgramForm?.programThreshold)
         addVipTransactionTextListener(membershipGetProgramForm?.programThreshold)
-        if(programType == ProgramType.EXTEND){
+        if(programActionType == ProgramActionType.EXTEND){
             textFieldTranskVip.isEnabled = false
             textFieldTranskPremium.isEnabled = false
             cardEditInfo.show()
@@ -328,7 +332,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     }
 
     private fun initCreateProgram(membershipGetProgramForm: MembershipGetProgramForm?){
-        if(programType != ProgramType.EXTEND) {
+        if(programActionType != ProgramActionType.EXTEND) {
             val pre = textFieldTranskPremium.editText.text.toString()
             val vip = textFieldTranskVip.editText.text.toString()
             if (membershipGetProgramForm != null) {
@@ -338,7 +342,11 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                     vip.toIntSafely()
             }
         }
-        membershipGetProgramForm?.programForm?.timeWindow?.startTime = selectedTime
+        membershipGetProgramForm?.programForm?.timeWindow?.startTime = selectedCalendar?.time?.let {
+            ProgramUpdateMapper.convertDateTime(
+                it
+            )
+        }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it
         }

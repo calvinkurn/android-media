@@ -1,12 +1,13 @@
 package com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.tokomember_common_widget.util.ProgramType
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TimeWindow
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.utils.date.toDate
 import java.text.SimpleDateFormat
+import java.util.*
 
 object ProgramUpdateMapper {
 
@@ -42,7 +43,7 @@ object ProgramUpdateMapper {
             timeWindow = timeWindow
         )
         when(programType){
-            ProgramType.CREATE ->{
+            ProgramActionType.CREATE ->{
                 timeWindow.id = 0
                 actionType = "create"
                 tierLevels.apply {
@@ -63,19 +64,19 @@ object ProgramUpdateMapper {
                     this.actionType = actionType
                 }
             }
-            ProgramType.EXTEND ->{
+            ProgramActionType.EXTEND ->{
                 actionType = "extend"
                 programUpdateResponse.apply {
                     this.actionType = actionType
                 }
             }
-            ProgramType.EDIT ->{
+            ProgramActionType.EDIT ->{
                 actionType = "edit"
                 programUpdateResponse.apply {
                     this.actionType = actionType
                 }
             }
-            ProgramType.CANCEL ->{
+            ProgramActionType.CANCEL ->{
                 actionType = "cancel"
                 programUpdateResponse.apply {
                     this.actionType = actionType
@@ -94,7 +95,7 @@ object ProgramUpdateMapper {
         return "$day $month $year"
     }
 
-    fun convertDateTime(t: String): String {
+    fun convertDateTime(t: Date): String {
         var time = SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").format(t)
         time = time.substring(0, time.length-2)
         return time

@@ -9,6 +9,8 @@ const val BUNDLE_PROGRAM_ID = "bundleProgramId"
 const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
 const val BUNDLE_CARD_DATA = "bundleCardData"
 const val BUNDLE_PROGRAM = "bundle_program"
+const val BUNDLE_REFRESH = "bundle_refresh"
+const val REQUEST_CODE_REFRESH = 1
 
 const val ACTION_CREATE = "create"
 const val ACTION_DETAIL = "detail"

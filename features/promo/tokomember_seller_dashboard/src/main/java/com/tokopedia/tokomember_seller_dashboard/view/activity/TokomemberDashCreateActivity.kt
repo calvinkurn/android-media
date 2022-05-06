@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.COUPON
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.PREVIEW
@@ -14,6 +16,8 @@ import com.tokopedia.tokomember_common_widget.util.ProgramScreenType.Companion.P
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCouponFragment
@@ -54,7 +58,6 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 intent.extras?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
             }
         }
-
     }
 
     override fun onBackPressed() {
@@ -93,11 +96,23 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
     }
 
     companion object{
-        fun openActivity(shopId: Int, context: Context?){
+        fun openActivity(
+            shopId: Int,
+            context: Context?,
+            screenType: Int,
+            programActionType: Int = ProgramActionType.CREATE,
+            requestCode: Int?,
+            programId: Int
+        ){
             context?.let {
                 val intent = Intent(it, TokomemberDashCreateActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
-                it.startActivity(intent)
+                intent.putExtra(BUNDLE_PROGRAM, screenType)
+                intent.putExtra(BUNDLE_PROGRAM_TYPE, programActionType)
+                intent.putExtra(BUNDLE_PROGRAM_ID, programId)
+                requestCode?.let {
+                    ActivityCompat.startActivityForResult(context as TokomemberDashCreateActivity, intent, requestCode, intent.extras)
+                } ?:  it.startActivity(intent)
             }
         }
     }
@@ -106,16 +121,16 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
 
         when(screenType){
             CARD ->{
-                bundle?.let { TokomemberCreateCardFragment.newInstance(it) }?.let { addFragment(it, TokomemberCreateCardFragment.TAG_CARD_CREATE) }
+                bundle.let { TokomemberCreateCardFragment.newInstance(it) }.let { addFragment(it, TokomemberCreateCardFragment.TAG_CARD_CREATE) }
             }
             PROGRAM ->{
-                bundle?.let { TokomemberProgramFragment.newInstance(it) }?.let { addFragment(it, "") }
+                bundle.let { TokomemberProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             COUPON ->{
-                bundle?.let { TokomemberDashCouponFragment.newInstance() }?.let { addFragment(it, "") }
+                bundle.let { TokomemberDashCouponFragment.newInstance() }.let { addFragment(it, "") }
             }
             PREVIEW ->{
-                bundle?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
+                bundle.let { TokomemberDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }
             }
         }
 
