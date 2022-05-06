@@ -2292,38 +2292,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activityId: String,
         shopId: String,
         type: String,
-        isFollowed: Boolean,
-        result: AddToWishlistV2Response.Data.WishlistAddV2
-    ) {
-        var msg = ""
-        if (result.message.isEmpty()) {
-            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        } else {
-            msg = result.message
-        }
-
-        var typeToaster = Toaster.TYPE_NORMAL
-        if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster =
-            Toaster.TYPE_ERROR
-
-        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        Toaster.build(
-            requireView(),
-            msg,
-            Toaster.LENGTH_SHORT,
-            typeToaster,
-            ctaText
-        ) {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }.show()
-    }
-
-    private fun onWishListSuccess(
-        activityId: String,
-        shopId: String,
-        type: String,
         isFollowed: Boolean
     ) {
         Toaster.build(
@@ -2353,21 +2321,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
             msg = result.message
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = Toaster.TYPE_NORMAL
-        if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) {
-            typeToaster = Toaster.TYPE_ERROR
-            ctaText = ""
-        }
+        if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
-        if (ctaText.isEmpty()) {
-            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster).show()
-        } else {
-            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }.show()
-        }
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+        Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+            feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+            RouteManager.route(context, ApplinkConst.WISHLIST)
+        }.show()
     }
 
     private fun onShareProduct(

@@ -617,21 +617,16 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             msg = result.message
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
 
-        if (ctaText.isEmpty()) {
-            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster).show()
-        } else {
-            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }.show()
-        }
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+        Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+            feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+            RouteManager.route(context, ApplinkConst.WISHLIST)
+        }.show()
     }
 
      private fun onGoToLogin() {

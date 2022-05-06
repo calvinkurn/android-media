@@ -240,6 +240,10 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         }
     }
 
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+    }
+
     override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
         view?.let {
             errorMessage?.let { it1 -> Toaster.build(it, it1, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }

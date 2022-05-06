@@ -25,6 +25,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import rx.Subscriber
@@ -142,102 +143,108 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
         }
     }
 
-    private fun removeWishlist(productId: String, position: Int, onFail: (String) -> Unit, context: Context) {
-        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-            deleteWishlistV2UseCase.setParams(productId, userSession.userId)
-            deleteWishlistV2UseCase.execute(
-                onSuccess = {
-                    val prodTags = postTagLive.value
-                    (postDetailLive.value as? Success)?.data?.let {
-                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
-                    }
-
-                    if (prodTags == null || position >= prodTags.items.size){
-                        onFail.invoke(ERROR_CUSTOM_MESSAGE)
-                    }
-
-                    prodTags?.items?.get(position)?.isWishlisted = false
-                    postTagLive.value = prodTags },
-
-                onError = {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                    onFail.invoke(errorMessage) })
+    fun toggleWishlistV2(isWishlistAction: Boolean, productId: String, position: Int, listener: WishlistV2ActionListener, context: Context){
+        if (isWishlistAction){
+            addWishlistV2(productId, position, listener, context)
         } else {
-            removeWishListUseCase.createObservable(productId, userSession.userId,
-                object : WishListActionListener {
-                    override fun onSuccessRemoveWishlist(productId: String?) {
-                        val prodTags = postTagLive.value ?:
-                        (postDetailLive.value as? Success)?.data?.let {
-                            (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
-                        }
-
-                        if (prodTags == null || position >= prodTags.items.size){
-                            onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
-                            return
-                        }
-
-                        prodTags.items[position].isWishlisted = false
-                        postTagLive.value = prodTags
-                    }
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                        onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
-                    }
-
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-
-                    override fun onSuccessAddWishlist(productId: String?) {}
-                })
+            removeWishlistV2(productId, position, listener, context)
         }
     }
 
-    private fun addWishlist(productId: String, position: Int, onFail: (String) -> Unit, context: Context) {
-        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-            addToWishlistV2UseCase.setParams(productId, userSession.userId)
-            addToWishlistV2UseCase.execute(
-                onSuccess = {
+    private fun removeWishlist(productId: String, position: Int, onFail: (String) -> Unit, context: Context) {
+        removeWishListUseCase.createObservable(productId, userSession.userId,
+            object : WishListActionListener {
+                override fun onSuccessRemoveWishlist(productId: String?) {
                     val prodTags = postTagLive.value ?:
                     (postDetailLive.value as? Success)?.data?.let {
                         (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
                     }
 
                     if (prodTags == null || position >= prodTags.items.size){
-                        onFail.invoke(ERROR_CUSTOM_MESSAGE)
+                        onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
+                        return
                     }
 
-                    prodTags?.items?.get(position)?.isWishlisted = true
-                    postTagLive.value = prodTags},
+                    prodTags.items[position].isWishlisted = false
+                    postTagLive.value = prodTags
+                }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                }
 
-                onError = {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                    onFail.invoke(errorMessage) })
-        } else {
-            addWishListUseCase.createObservable(productId, userSession.userId,
-                object : WishListActionListener{
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                        onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+
+                override fun onSuccessAddWishlist(productId: String?) {}
+            })
+    }
+
+    private fun removeWishlistV2(productId: String, position: Int, listener: WishlistV2ActionListener, context: Context) {
+        deleteWishlistV2UseCase.setParams(productId, userSession.userId)
+        deleteWishlistV2UseCase.execute(
+            onSuccess = {
+                val prodTags = postTagLive.value
+                (postDetailLive.value as? Success)?.data?.let {
+                    (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                }
+
+                if (prodTags == null || position >= prodTags.items.size){
+                    listener.onErrorRemoveWishlist(Throwable(), productId)
+                }
+
+                prodTags?.items?.get(position)?.isWishlisted = false
+                postTagLive.value = prodTags },
+
+            onError = {
+                listener.onErrorRemoveWishlist(it, productId)})
+    }
+
+    private fun addWishlist(productId: String, position: Int, onFail: (String) -> Unit, context: Context) {
+        addWishListUseCase.createObservable(productId, userSession.userId,
+            object : WishListActionListener{
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    val prodTags = postTagLive.value ?:
+                    (postDetailLive.value as? Success)?.data?.let {
+                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
                     }
 
-                    override fun onSuccessAddWishlist(productId: String?) {
-                        val prodTags = postTagLive.value ?:
-                        (postDetailLive.value as? Success)?.data?.let {
-                            (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
-                        }
-
-                        if (prodTags == null || position >= prodTags.items.size){
-                            onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
-                            return
-                        }
-
-                        prodTags.items[position].isWishlisted = true
-                        postTagLive.value = prodTags
+                    if (prodTags == null || position >= prodTags.items.size){
+                        onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
+                        return
                     }
 
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                    prodTags.items[position].isWishlisted = true
+                    postTagLive.value = prodTags
+                }
 
-                    override fun onSuccessRemoveWishlist(productId: String?) {}
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
-                })
-        }
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+
+            })
+    }
+
+    private fun addWishlistV2(productId: String, position: Int, listener: WishlistV2ActionListener, context: Context) {
+        addToWishlistV2UseCase.setParams(productId, userSession.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = {
+                val prodTags = postTagLive.value ?:
+                (postDetailLive.value as? Success)?.data?.let {
+                    (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+                }
+
+                if (prodTags == null || position >= prodTags.items.size){
+                    listener.onErrorAddWishList(Throwable(), productId)
+                }
+
+                prodTags?.items?.get(position)?.isWishlisted = true
+                postTagLive.value = prodTags},
+
+            onError = {
+                listener.onErrorAddWishList(it, productId) })
     }
 
     fun addToCart(tagItem: PostTagItem, success: (PostTagItem)->Unit,

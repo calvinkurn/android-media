@@ -45,6 +45,11 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
 import javax.inject.Inject
 
@@ -307,7 +312,59 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
         if (mediaPreviewViewModel.isSessionActive){
-            context?.let { mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
+            context?.let {
+                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                    mediaPreviewViewModel.toggleWishlistV2(isWishListAction, productId, pos, object: WishlistV2ActionListener {
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+
+                        override fun onSuccessAddWishlist(
+                            result: AddToWishlistV2Response.Data.WishlistAddV2,
+                            productId: String
+                        ) {
+                            var msg = ""
+                            if (result.message.isEmpty()) {
+                                if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                            } else {
+                                msg = result.message
+                            }
+
+                            var typeToaster = Toaster.TYPE_NORMAL
+                            if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster =
+                                Toaster.TYPE_ERROR
+
+                            var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                            if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+                            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                                RouteManager.route(context, ApplinkConst.WISHLIST)
+                            }.show()
+                        }
+
+                        override fun onErrorRemoveWishlist(
+                            throwable: Throwable,
+                            productId: String
+                        ) {
+                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+
+                        override fun onSuccessRemoveWishlist(productId: String) {
+                            Toaster.build(requireView(),
+                                getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
+                                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+                            ) {}.show()
+                        }
+
+                    }, it)
+                } else {
+                    mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
+                }
+
         } else {
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
@@ -315,6 +372,18 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     private fun onErrorToggleWishlist(message: String) {
         showToastError(message)
+    }
+
+    private fun onErrorToggleWishlistV2(message: String, ctaText: String, ctaAction: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
+                if (ctaAction == OPEN_WISHLIST) goToWishList()
+            }.show()
+        }
+    }
+
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
