@@ -9,19 +9,27 @@
       "eventLabel": ".* - .*",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
+      "item_list": ".*",
       "items": [
         {
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
           "index": ".*",
-          "ite_id": ".*",
-          "item_brand": ".*",
-          "item_category": ".* / .* / .*",
           "item_name": ".*",
-          "item_variant": ".*",
-          "price": ".*"
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".* - .* - .* - .* - .*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
         }
       ],
       "userId": ".*",
-      "sessionIris" : ".*"
+      "sessionIris": ".*"
     }
   ]
 }
