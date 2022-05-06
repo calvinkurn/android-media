@@ -30,6 +30,35 @@
       ],
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "product detail page",
+      "eventAction": "impression - product recommendation - non login",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "",
+      "items": [
+        {
+          	"quantity": ".*",
+			"item_id": ".*",
+			"shopName": ".*",
+			"index": ".*",
+			"item_name": ".*",
+			"item_brand": ".*",
+			"item_category": ".*/.*/.*",
+			"dimension83": ".*",
+			"category_id": ".*",
+			"price": ".*",
+			"dimension40": ".* - .* - .* - .* - .*",
+			"shopId": ".*",
+			"shopType": ".*",
+			"item_variant": ".*"
+        }
+      ],
+      "userId": "",
+      "sessionIris": ".*"
     }
   ]
 }
