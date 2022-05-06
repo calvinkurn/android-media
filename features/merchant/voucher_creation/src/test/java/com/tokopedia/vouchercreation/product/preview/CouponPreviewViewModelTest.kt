@@ -7,11 +7,14 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
+import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -677,6 +680,147 @@ class CouponPreviewViewModelTest {
         viewModel.validateCoupon(mode, couponInformation, couponSettings, couponProducts)
 
         verify { areInputValidObserver.onChanged(expected) }
+    }
+
+    @Test
+    fun `When user modify selected products, should return product id from modified products `() {
+        val modifiedSelectedProductIds = mutableListOf(
+            ProductUiModel(id = "232"),
+            ProductUiModel(id = "234"),
+            ProductUiModel(id = "235"),
+        )
+
+        val nonModifiedSelectedProductIds = mutableListOf(
+            ProductId(parentProductId = 232),
+            ProductId(parentProductId = 234),
+            ProductId(parentProductId = 235)
+        )
+
+        val productIds = listOf<Long>(232, 234, 235)
+
+        val actual = viewModel.getParentProductIds(modifiedSelectedProductIds, nonModifiedSelectedProductIds)
+
+        assertEquals(productIds, actual)
+    }
+
+    @Test
+    fun `When user not modify selected products, should return product id from existing selected products `() {
+        val modifiedSelectedProductIds = mutableListOf<ProductUiModel>()
+
+        val nonModifiedSelectedProductIds = mutableListOf(
+            ProductId(parentProductId = 400),
+            ProductId(parentProductId = 401),
+            ProductId(parentProductId = 402)
+        )
+
+        val productIds = listOf<Long>(400, 401, 402)
+
+        val actual = viewModel.getParentProductIds(modifiedSelectedProductIds, nonModifiedSelectedProductIds)
+
+        assertEquals(productIds, actual)
+    }
+
+    @Test
+    fun `When map selected product, should map data correctly`() {
+
+        val selectedProductIds = mutableListOf(
+            ProductId(parentProductId = 400,childProductId = listOf(4001)),
+            ProductId(parentProductId = 401, childProductId = listOf(4011)),
+            ProductId(parentProductId = 402, childProductId = listOf(4012))
+        )
+
+        val expected = listOf(
+            ProductUiModel(id = "400", variants = listOf(VariantUiModel(isSelected = true, variantId = "4001"))),
+            ProductUiModel(id = "401", variants = listOf(VariantUiModel(isSelected = true, variantId = "4011"))),
+            ProductUiModel(id = "402", variants = listOf(VariantUiModel(isSelected = true, variantId = "4012")))
+        )
+
+
+        val actual = viewModel.mapSelectedProductIdsToProductUiModels(
+            selectedProductIds
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map selected product to coupon product and parent product selected, should map data correctly`() {
+
+        val selectedProduct = listOf(
+            ProductUiModel(id = "400",  sold = 100, isSelected = true),
+            ProductUiModel(id = "401", sold = 200,  isSelected = true),
+            ProductUiModel(id = "402", sold = 300,  isSelected = true)
+        )
+
+        val expected = listOf(
+            CouponProduct("400", "", 100),
+            CouponProduct("401", "", 200),
+            CouponProduct("402", "", 300),
+        )
+
+
+        val actual = viewModel.mapSelectedProductsToCouponProductData(selectedProduct)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map selected product and both of parent product and variant selected, should map data correctly`() {
+
+        val selectedProduct = listOf(
+            ProductUiModel(id = "400", sold = 100, isSelected = true, variants = listOf(VariantUiModel(isSelected = true, variantId = "4001"))),
+            ProductUiModel(id = "401",  sold = 200, isSelected = true, variants = listOf(VariantUiModel(isSelected = true, variantId = "4011"))),
+            ProductUiModel(id = "402",  sold = 300, isSelected = true, variants = listOf(VariantUiModel(isSelected = true, variantId = "4012")))
+        )
+
+        val expected = listOf(
+            CouponProduct("4001", "", 100),
+            CouponProduct("4011", "", 200),
+            CouponProduct("4012", "", 300),
+        )
+
+
+        val actual = viewModel.mapSelectedProductsToCouponProductData(selectedProduct)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map selected product and parent product selected but variant is not selected, should map data correctly`() {
+
+        val selectedProduct = listOf(
+            ProductUiModel(id = "400", sold = 100, isSelected = true, variants = listOf(VariantUiModel(isSelected = false, variantId = "4001"))),
+            ProductUiModel(id = "401",  sold = 200, isSelected = true, variants = listOf(VariantUiModel(isSelected = false, variantId = "4011"))),
+            ProductUiModel(id = "402",  sold = 300, isSelected = true, variants = listOf(VariantUiModel(isSelected = false, variantId = "4012")))
+        )
+
+        val expected = listOf(
+            CouponProduct("400", "", 100),
+            CouponProduct("401", "", 200),
+            CouponProduct("402", "", 300),
+        )
+
+
+        val actual = viewModel.mapSelectedProductsToCouponProductData(selectedProduct)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When map selected product to coupon product and parent product is not selected, should return empty list`() {
+
+        val selectedProduct = listOf(
+            ProductUiModel(id = "400", isSelected = false),
+            ProductUiModel(id = "401", isSelected = false),
+            ProductUiModel(id = "402", isSelected = false)
+        )
+
+        val expected = listOf<CouponProduct>()
+
+
+        val actual = viewModel.mapSelectedProductsToCouponProductData(selectedProduct)
+
+        assertEquals(expected, actual)
     }
 
     private fun buildCouponInformation(): CouponInformation {
