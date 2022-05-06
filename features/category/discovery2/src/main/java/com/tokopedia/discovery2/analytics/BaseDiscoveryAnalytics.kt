@@ -152,4 +152,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun track3DotsOptionsClickedWishlist(productCardOptionsModel: ProductCardOptionsModel) {}
     open fun track3DotsOptionsClickedLihatToko() {}
     open fun track3DotsOptionsClickedShareProduct() {}
+    open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
+    open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
 }

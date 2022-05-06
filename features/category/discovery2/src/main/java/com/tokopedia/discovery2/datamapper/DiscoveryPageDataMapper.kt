@@ -28,6 +28,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 const val SHIMMER_ITEMS_LIST_SIZE = 10
+const val COMPONENTS_PER_PAGE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
@@ -127,6 +128,7 @@ class DiscoveryPageDataMapper(
                 addRecomQueryProdID(component)
                 listComponents.addAll(parseProductVerticalList(component))
             }
+            ComponentNames.BannerInfinite.componentName -> listComponents.addAll(parseProductVerticalList(component,false))
             ComponentNames.ProductCardSprintSaleCarousel.componentName,
             ComponentNames.ProductCardCarousel.componentName -> {
                 addRecomQueryProdID(component)
@@ -179,7 +181,7 @@ class DiscoveryPageDataMapper(
             }
 
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
+            ComponentNames.TripleBanner.componentName, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
             ComponentNames.BannerTimer.componentName -> {
                 if (addBannerTimerComp(component)) {
@@ -253,7 +255,7 @@ class DiscoveryPageDataMapper(
             component.properties  = Properties()
         }
         component.properties?.template = Constant.ProductTemplate.LIST
-        component.componentsPerPage = 10
+        component.componentsPerPage = COMPONENTS_PER_PAGE
         return parseProductVerticalList(component,false)
     }
 
