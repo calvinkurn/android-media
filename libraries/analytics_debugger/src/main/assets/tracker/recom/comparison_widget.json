@@ -1,0 +1,27 @@
+{
+  "readme": "Comparison widget view, click shop, click product, and view all",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "product detail page",
+      "eventAction": "impression - product recommendation",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "items": [
+        {
+          "index": ".*",
+          "ite_id": ".*",
+          "item_brand": ".*",
+          "item_category": ".* / .* / .*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris" : ".*"
+    }
+  ]
+}
