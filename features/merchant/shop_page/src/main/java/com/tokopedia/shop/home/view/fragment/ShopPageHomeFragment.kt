@@ -137,6 +137,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -2590,6 +2592,33 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    private fun onSuccessAddWishlistV2(
+        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+        shopHomeProductViewModel: ShopHomeProductUiModel?,
+        wishlistResult: ProductCardOptionsModel.WishlistResult
+    ) {
+        shopHomeProductViewModel?.let {
+
+            val msg = wishlistResult.messageV2.ifEmpty {
+                if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+            }
+
+            var typeToaster = Toaster.TYPE_NORMAL
+            if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster =
+                Toaster.TYPE_ERROR
+
+            var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+            val ctaAction = wishlistResult.ctaActionV2
+
+            showToast(message = msg, typeToaster = typeToaster, ctaText = ctaText, ctaAction = ctaAction)
+            shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
+            trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
+        }
+    }
+
     private fun goToWishlist() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
@@ -2600,6 +2629,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onErrorAddWishlist(errorMessage: String?) {
         NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
+    }
+
+    private fun onErrorAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        val msg = wishlistResult.messageV2.ifEmpty {
+            if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+        }
+
+        val ctaText = wishlistResult.ctaTextV2
+        val ctaAction = wishlistResult.ctaActionV2
+
+        showToast(msg, Toaster.TYPE_ERROR, ctaText, ctaAction)
     }
 
     override fun onCarouselProductItemClickAddToCart(
@@ -2707,6 +2748,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    private fun showToast(message: String, typeToaster: Int, ctaText: String, ctaAction: String) {
+        activity?.run {
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                if (ctaAction == OPEN_WISHLIST) goToWishlist()
+            }.show() }
+        }
+    }
+
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
             threeDotsClickShopProductViewModel?.let {
@@ -2720,10 +2769,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel?.clearGetShopProductUseCase()
+        val isUsingV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            handleWishlistActionAddToWishlist(productCardOptionsModel)
+            if (isUsingV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
+            else handleWishlistActionAddToWishlist(productCardOptionsModel)
         } else {
-            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+            if (isUsingV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
+            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
         }
     }
 
@@ -2740,6 +2792,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlistV2(
+                threeDotsClickShopCarouselProductUiModel,
+                threeDotsClickShopProductViewModel,
+                productCardOptionsModel.wishlistResult
+            )
+        } else {
+            onErrorAddWishlistV2(productCardOptionsModel.wishlistResult)
+        }
+    }
+
     private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             onSuccessRemoveWishList(
@@ -2750,6 +2814,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             onErrorRemoveWishList(
                 getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
             )
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (wishlistResult.isSuccess) {
+            onSuccessRemoveWishList(
+                threeDotsClickShopCarouselProductUiModel,
+                threeDotsClickShopProductViewModel
+            )
+        } else {
+            var errorMessage = getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+            if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+            onErrorRemoveWishList(errorMessage)
         }
     }
 

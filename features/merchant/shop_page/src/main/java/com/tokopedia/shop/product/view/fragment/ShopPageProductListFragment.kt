@@ -100,6 +100,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import javax.inject.Inject
 
 class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
@@ -246,6 +247,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         onErrorAddToWishList(MessageErrorException(errorMessage))
     }
 
+    private fun onErrorAddWishListV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        val msg = wishlistResult.messageV2.ifEmpty {
+            if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+        }
+
+        val ctaText = wishlistResult.ctaTextV2
+        val ctaAction = wishlistResult.ctaActionV2
+
+        showToast(msg, Toaster.TYPE_ERROR, ctaText, ctaAction)
+    }
+
     private fun onSuccessAddWishlist(productId: String) {
         showToastSuccess(
                 message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
@@ -254,6 +267,33 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     goToWishlist()
                 }
         )
+        shopProductAdapter.updateWishListStatus(productId, true)
+    }
+
+    private fun onSuccessAddWishlistV2(productId: String, wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        showToastSuccess(
+            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            ctaAction = {
+                goToWishlist()
+            }
+        )
+
+        val msg = wishlistResult.messageV2.ifEmpty {
+            if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        }
+
+        var typeToaster = Toaster.TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster =
+            Toaster.TYPE_ERROR
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+        val ctaAction = wishlistResult.ctaActionV2
+
+        showToast(message = msg, typeToaster = typeToaster, ctaText = ctaText, ctaAction = ctaAction)
         shopProductAdapter.updateWishListStatus(productId, true)
     }
 
@@ -293,6 +333,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                         ctaText
                 ).show()
             }
+        }
+    }
+
+    private fun showToast(message: String, typeToaster: Int, ctaText: String, ctaAction: String) {
+        activity?.run {
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                if (ctaAction == WishlistV2CommonConsts.OPEN_WISHLIST) goToWishlist()
+            }.show() }
         }
     }
 
@@ -733,8 +781,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
+        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            handleWishlistActionAddToWishlist(productCardOptionsModel)
+            if (isUsingWishlistV2) handleWishlistActionAddToWishlist(productCardOptionsModel)
+            else handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
             handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
         }
@@ -745,6 +795,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             onSuccessAddWishlist(productCardOptionsModel.productId)
         } else {
             onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlistV2(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlistV2(productCardOptionsModel.productId, productCardOptionsModel.wishlistResult)
+        } else {
+            onErrorAddWishListV2(productCardOptionsModel.wishlistResult)
         }
     }
 
