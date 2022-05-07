@@ -69,10 +69,13 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
                     initBasicInfo(it.data)
                     renderPmRegistrationWidgets()
                 }
-                is Fail -> logToCrashlytic(
-                    PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR,
-                    it.throwable
-                )
+                is Fail -> {
+                    showErrorState(it.throwable)
+                    logToCrashlytic(
+                        PowerMerchantErrorLogger.PM_BASIC_INFO_ERROR,
+                        it.throwable
+                    )
+                }
             }
             dismissRefreshIndicator()
         }

@@ -22,15 +22,14 @@ object PMRegistrationTermHelper {
     fun getPmRegistrationTerms(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean,
         isRegularMerchant: Boolean
     ): List<RegistrationTermUiModel> {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)
         } else {
-            getShopScoreTerm(context, shopInfo, isPmProSelected)
+            getShopScoreTerm(context, shopInfo, false)
         }
-        return listOf(firstTerm, getKycTerm(context, shopInfo, isPmProSelected, isRegularMerchant))
+        return listOf(firstTerm, getKycTerm(context, shopInfo, isRegularMerchant))
     }
 
     fun getPmProRegistrationTerms(
@@ -42,7 +41,7 @@ object PMRegistrationTermHelper {
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
             getNetItemValueTerm(context, shopInfo),
-            getKycTerm(context, shopInfo, isPmProSelected)
+            getKycTerm(context, shopInfo)
         )
     }
 
@@ -373,18 +372,12 @@ object PMRegistrationTermHelper {
     private fun getKycTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean,
         isRegularMerchant: Boolean = false
     ): RegistrationTermUiModel {
-        val isEligibleShopScore = (!isPmProSelected && !shopInfo.isEligibleShopScore()) ||
-                (isPmProSelected && !shopInfo.isEligibleShopScorePmPro())
-        val kycAppLink = if (isPmProSelected) {
-            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
-        } else {
-            PMConstant.AppLink.KYC_POWER_MERCHANT
-        }
+        val isEligibleShopScore = !shopInfo.isEligibleShopScore()
+        val kycAppLink = PMConstant.AppLink.KYC_POWER_MERCHANT
 
-        var shopKycResIcon: Int
+        val shopKycResIcon: Int
         val title: String
         val description: String
         var ctaText: String? = null
@@ -467,11 +460,6 @@ object PMRegistrationTermHelper {
                         context.getString(R.string.pm_description_kyc_verification_failed_directly_pm)
                 }
                 shopKycResIcon = R.drawable.ic_pm_failed
-            }
-        }
-        if (shopInfo.isNewSeller && isPmProSelected) {
-            if (!shopInfo.is30DaysFirstMonday) {
-                shopKycResIcon = R.drawable.ic_not_completed_new_seller
             }
         }
         return RegistrationTermUiModel.Kyc(
