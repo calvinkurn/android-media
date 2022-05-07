@@ -984,7 +984,8 @@ class OfficialHomeFragment :
         view?.let {
             Toaster.build(it,
                     ErrorHandler.getErrorMessage(context, t),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Snackbar.LENGTH_LONG, TYPE_ERROR
+            ).show()
         }
     }
 
@@ -1054,18 +1055,29 @@ class OfficialHomeFragment :
     }
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isSuccess)
-            handleWishlistActionSuccess(productCardOptionsModel)
+            if (isUsingWishlistV2) handleWishlistV2ActionSuccess(productCardOptionsModel)
+            else handleWishlistActionSuccess(productCardOptionsModel)
         else
-            showErrorWishlist()
+            if (isUsingWishlistV2) showErrorWishlistV2(productCardOptionsModel.wishlistResult)
+            else showErrorWishlist()
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            if (productCardOptionsModel.wishlistResult.isUsingWishlistV2) showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
-            else showSuccessAddWishlist()
+            showSuccessAddWishlist()
         else
             showSuccessRemoveWishlist()
+
+        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+    }
+
+    private fun handleWishlistV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
+        else
+            showSuccessRemoveWishlistV2()
 
         updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
     }
@@ -1116,10 +1128,31 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun showSuccessRemoveWishlistV2() {
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
+
+            Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     private fun showErrorWishlist() {
         activity?.let {
             val view = it.findViewById<View>(android.R.id.content) ?: return
-            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, TYPE_ERROR).show()
+        }
+    }
+
+    private fun showErrorWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        val errorMsg = wishlistResult.messageV2.ifEmpty {
+            if (wishlistResult.isAddWishlist) getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+            else getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
+        }
+
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, TYPE_ERROR).show()
         }
     }
 
