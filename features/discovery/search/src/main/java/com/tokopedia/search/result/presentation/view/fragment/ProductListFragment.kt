@@ -1697,29 +1697,32 @@ class ProductListFragment: BaseDaggerFragment(),
             if (wishlistResult.isAddWishlist) {
                 var msg = ""
                 if (wishlistResult.messageV2.isEmpty()) {
-                    if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-                    else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+                    if (wishlistResult.isSuccess) msg = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+                    else msg = getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
                 } else {
                     msg = wishlistResult.messageV2
                 }
 
-                var ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
                 var typeToaster = TYPE_NORMAL
-                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
-                    typeToaster = TYPE_ERROR
-                    ctaText = ""
-                }
+                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
 
-                if (ctaText.isEmpty()) {
-                    Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-                } else {
-                    Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
-                        actionText = getString(Rwishlist.string.cta_success_add_to_wishlist)
-                    ) { goToWishlistPage() }.show()
-                }
-            } else
-                Toaster.build(view, getString(Rwishlist.string.on_success_remove_from_wishlist_msg),
-                    Toaster.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(Rwishlist.string.cta_success_remove_from_wishlist)).show()
+                var ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
+                if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+                Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
+                    actionText = ctaText
+                ) { goToWishlistPage() }.show()
+            } else {
+                var msg = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
+                if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+                var ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
+                if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+                Toaster.build(view, msg, Toaster.LENGTH_SHORT, TYPE_NORMAL, actionText = ctaText) {
+                    if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage()
+                }.show()
+            }
         } else {
             if (wishlistResult.isAddWishlist)
                 Toaster.build(view, getString(R.string.msg_add_wishlist), Snackbar.LENGTH_SHORT, TYPE_NORMAL, actionText = getString(R.string.cta_add_wishlist)) { goToWishlistPage() }.show()
@@ -1729,7 +1732,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun goToWishlistPage() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+        startActivity(intent)
     }
 
     override fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult) {

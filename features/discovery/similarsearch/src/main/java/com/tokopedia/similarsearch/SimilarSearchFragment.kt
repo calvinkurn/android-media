@@ -349,25 +349,20 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun handleAddWishlistV2Event(result: AddToWishlistV2Response.Data.WishlistAddV2) {
         var msg = ""
         if (result.message.isEmpty()) {
-            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+            if (result.success) msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            else msg = getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
         } else {
             msg = result.message
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
 
         view?.let {
-            if (ctaText.isEmpty()) {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
-            }
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
         }
     }
 

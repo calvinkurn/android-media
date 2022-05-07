@@ -66,6 +66,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import java.util.*
 import javax.inject.Inject
 
@@ -433,11 +434,19 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
                 } else {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationRemoveWishlistLogin(productCardOptionsModel.productId, tabName))
-                    showMessageSuccessRemoveWishlist()
+                    if (wishlistResult.isUsingWishlistV2) {
+                        showMessageSuccessRemoveWishlistV2(wishlistResult)
+                    } else {
+                        showMessageSuccessRemoveWishlist()
+                    }
                 }
                 updateWishlist(productCardOptionsModel.productId, wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
             } else {
-                showMessageFailedWishlistAction()
+                if (wishlistResult.isUsingWishlistV2) {
+                    showMessageFailedWishlistV2Action(wishlistResult)
+                } else {
+                    showMessageFailedWishlistAction()
+                }
             }
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationAddWishlistNonLogin(productCardOptionsModel.productId, tabName))
@@ -454,19 +463,14 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             msg = wishlistResult.messageV2
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = Toaster.TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) {
-            typeToaster = Toaster.TYPE_ERROR
-            ctaText = ""
-        }
+        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster = Toaster.TYPE_ERROR
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
 
         view?.let {
-            if (ctaText.isEmpty()) {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
-            }
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
         }
     }
 
@@ -497,10 +501,41 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         }
     }
 
+    private fun showMessageSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
+
+        var msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+        if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) {
+                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
+            }.show()
+        }
+    }
+
     private fun showMessageFailedWishlistAction() {
         if (activity == null) return
         val view = activity?.findViewById<View>(android.R.id.content)
         view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
+    }
+
+    private fun showMessageFailedWishlistV2Action(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        if (activity == null) return
+        val view = activity?.findViewById<View>(android.R.id.content)
+
+        var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
+        if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
+
+        val ctaText = wishlistResult.ctaTextV2
+
+        view?.let { Toaster.build(it, msgError, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
+            if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
+        }.show() }
     }
 
     fun smoothScrollRecyclerViewByVelocity(distance: Int) {

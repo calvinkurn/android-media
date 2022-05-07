@@ -162,6 +162,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
 import rx.Observable
@@ -2431,17 +2432,50 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     if (wishlistResult.isUsingWishlistV2) showToasterSuccessWishlistV2(wishlistResult)
                     else showToasterSuccessWishlist()
                 } else {
-                    showToasterWithAction(
-                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-                        typeToaster = TYPE_NORMAL,
-                        actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-                        clickListener = View.OnClickListener {})
+                    if (wishlistResult.isUsingWishlistV2) {
+                        var msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+                        if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+                        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+                        var listener = View.OnClickListener {  }
+                        if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) listener = View.OnClickListener { RouteManager.route(context, ApplinkConst.WISHLIST) }
+
+                        showToasterWithAction(
+                            message = msg,
+                            typeToaster = TYPE_NORMAL,
+                            actionText = ctaText,
+                            clickListener = listener)
+                    } else {
+                        showToasterWithAction(
+                            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                            typeToaster = TYPE_NORMAL,
+                            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                            clickListener = View.OnClickListener {})
+                    }
                 }
             } else {
-                showToaster(
+                if (wishlistResult.isUsingWishlistV2) {
+                    var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                    if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+                    val ctaText = wishlistResult.ctaTextV2
+                    var listener = View.OnClickListener {  }
+                    if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) listener = View.OnClickListener { RouteManager.route(context, ApplinkConst.WISHLIST) }
+
+                    showToasterWithAction(
+                        message = msg,
+                        typeToaster = TYPE_ERROR,
+                        actionText = ctaText,
+                        clickListener = listener
+                    )
+                } else {
+                    showToaster(
                         message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg),
                         typeToaster = TYPE_ERROR
-                )
+                    )
+                }
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -2467,24 +2501,19 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             msg = wishlistResult.messageV2
         }
 
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         var typeToaster = TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
 
-        if (ctaText.isEmpty()) {
-            showToaster(msg, typeToaster)
-        } else {
-            showToasterWithAction(
-                message = msg,
-                typeToaster = typeToaster,
-                actionText = ctaText,
-                clickListener = {
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                })
-        }
+        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+        showToasterWithAction(
+            message = msg,
+            typeToaster = typeToaster,
+            actionText = ctaText,
+            clickListener = {
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            })
     }
 
     private val isUserLoggedIn: Boolean

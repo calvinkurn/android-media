@@ -60,6 +60,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
@@ -293,7 +294,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                 }
                 updateWishlist(wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
             } else {
-                showMessageFailedWishlistAction()
+                if (wishlistResult.isUsingWishlistV2) showMessageFailedWishlistV2Action(wishlistResult)
+                else showMessageFailedWishlistAction()
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -317,19 +319,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
             msg = wishlistResult.messageV2
         }
 
+        var typeToaster = TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
+
         var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        var typeToaster = Toaster.TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) {
-            typeToaster = Toaster.TYPE_ERROR
-            ctaText = ""
-        }
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
 
         view?.let {
-            if (ctaText.isEmpty()) {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
-            }
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
         }
     }
 
@@ -350,6 +347,20 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     private fun showMessageFailedWishlistAction() {
         showToastError()
+    }
+
+    private fun showMessageFailedWishlistV2Action(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        var msg = getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+
+        var ctaText = ""
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
+
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, TYPE_ERROR, ctaText) {
+                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
+            }.show()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
