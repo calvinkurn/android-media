@@ -1093,29 +1093,21 @@ class OfficialHomeFragment :
     }
 
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        var msg = ""
-        if (wishlistResult.messageV2.isEmpty()) {
+        val msg = wishlistResult.messageV2.ifEmpty {
             if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
             else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-        } else {
-            msg = wishlistResult.messageV2
         }
+
+        var typeToaster = TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
 
         var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        var typeToaster = TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
 
         view?.let { v ->
-            if (ctaText.isEmpty()) {
-                Toaster.build(v, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(v, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                }.show()
-            }
+            Toaster.build(v, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }.show()
         }
     }
 

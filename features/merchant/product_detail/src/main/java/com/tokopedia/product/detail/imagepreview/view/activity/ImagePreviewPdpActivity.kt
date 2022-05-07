@@ -205,8 +205,8 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                 object : WishlistV2ActionListener {
                     override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                         val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
-                        val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
-                        Toaster.build(rootView, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        val errorMsg = getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                        Toaster.build(rootView, errorMsg, Toaster.LENGTH_SHORT, TYPE_ERROR).show()
                     }
 
                     override fun onSuccessAddWishlist(
@@ -222,19 +222,14 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
                             msg = result.message
                         }
 
-                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
                         var typeToaster = TYPE_NORMAL
-                        if (result.toasterColor == TOASTER_RED || !result.success) {
-                            typeToaster = TYPE_ERROR
-                            ctaText = ""
-                        }
+                        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
 
-                        if (ctaText.isEmpty()) {
-                            Toaster.build(rootView, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-                        } else {
-                            Toaster.build(rootView, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                        if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+                        Toaster.build(rootView, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
                                 RouteManager.route(context, ApplinkConst.NEW_WISHLIST) }.show()
-                        }
                     }
 
                     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -315,7 +310,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     override fun showErrorMessage(message: String) {
         val rootView = findViewById<ConstraintLayout>(R.id.imagePreviewPdpContainer)
-        Toaster.make(rootView, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
+        Toaster.make(rootView, message, Toaster.toasterLength, TYPE_ERROR)
     }
 
     companion object {
