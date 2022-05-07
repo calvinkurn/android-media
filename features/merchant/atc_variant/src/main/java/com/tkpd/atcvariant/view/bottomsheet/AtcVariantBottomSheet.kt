@@ -761,48 +761,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ProductTrackingCommon.onRemindMeClicked(productId, pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 context?.let {
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                        viewModel.addWishlistV2(productId, userSessionInterface.userId, object : WishlistV2ActionListener{
-                            override fun onErrorAddWishList(
-                                throwable: Throwable,
-                                productId: String
-                            ) {
-                                view.showToasterError(getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
-                            }
-
-                            override fun onSuccessAddWishlist(
-                                result: AddToWishlistV2Response.Data.WishlistAddV2,
-                                productId: String
-                            ) {
-                                var msg = ""
-                                if (result.message.isEmpty()) {
-                                    if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                                    else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-                                } else {
-                                    msg = result.message
-                                }
-
-                                var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-                                var typeToaster = TYPE_NORMAL
-                                if (result.toasterColor == TOASTER_RED || !result.success) {
-                                    typeToaster = TYPE_ERROR
-                                    ctaText = ""
-                                }
-
-                                view?.let { v ->
-                                    if (ctaText.isEmpty()) {
-                                        view.showToaster(message = msg, typeToaster = typeToaster)
-                                    } else {
-                                        view.showToaster(message = msg, typeToaster = typeToaster,
-                                            ctaText = ctaText, ctaListener = { goToWishlist() })
-                                    }
-                                }
-                            }
-
-                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                            override fun onSuccessRemoveWishlist(productId: String) {}
-                        })
-                    }
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) doAddWishlistV2(productId)
                     else viewModel.addWishlist(productId, userSessionInterface.userId)
                 }
                 return@let
@@ -836,6 +795,41 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     sharedData?.isTokoNow ?: false
             )
         }
+    }
+
+    private fun doAddWishlistV2(productId: String) {
+        viewModel.addWishlistV2(productId, userSessionInterface.userId, object : WishlistV2ActionListener{
+            override fun onErrorAddWishList(
+                throwable: Throwable,
+                productId: String
+            ) {
+                view.showToasterError(getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
+            }
+
+            override fun onSuccessAddWishlist(
+                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                productId: String
+            ) {
+                var msg = ""
+                if (result.message.isEmpty()) {
+                    if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                    else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                } else {
+                    msg = result.message
+                }
+
+                var typeToaster = TYPE_NORMAL
+                if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
+
+                var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+                view.showToaster(message = msg, typeToaster = typeToaster, ctaText = ctaText, ctaListener = { goToWishlist() })
+            }
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+            override fun onSuccessRemoveWishlist(productId: String) {}
+        })
     }
 
     private fun openShipmentBottomSheetWhenError(): Boolean {
