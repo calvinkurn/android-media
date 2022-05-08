@@ -110,6 +110,7 @@ import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
@@ -165,7 +166,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopHomePlayWidgetListener,
         ShopHomeCardDonationListener,
         MultipleProductBundleListener,
-        SingleProductBundleListener {
+        SingleProductBundleListener,
+        ShopHomeProductListSellerEmptyListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -292,7 +294,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCardDonationListener = this,
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
-            thematicWidgetListener = thematicWidgetProductClickListenerImpl()
+            thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
+            shopHomeProductListSellerEmptyListener = this
         )
     }
 
@@ -660,8 +663,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     val productListData = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductOnShop = it.data.totalProductData
-                    if (productListData.isNotEmpty())
-                        addProductListHeader()
+                    addProductListHeader()
                     updateProductListData(hasNextPage, productListData, totalProductOnShop)
                     productListName = productListData.joinToString(",") { product -> product.name.orEmpty() }
                 }
@@ -1113,9 +1115,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         productList: List<ShopHomeProductUiModel>,
         totalProductData: Int
     ) {
-        addChangeProductGridSection(totalProductData)
-        shopHomeAdapter.setProductListData(productList)
-        updateScrollListenerState(hasNextPage)
+        if (totalProductData.isZero()) {
+            shopHomeAdapter.setProductListEmptyState(isOwner)
+        } else {
+            addChangeProductGridSection(totalProductData)
+            shopHomeAdapter.setProductListData(productList)
+            updateScrollListenerState(hasNextPage)
+        }
     }
 
     private fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
@@ -2592,6 +2598,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun chooseProduct() {
+        context?.let {
+            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
+        }
+    }
+
     private fun onSuccessAddWishlistV2(
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel?,
@@ -3274,7 +3286,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
         initialProductListData = null
         shopHomeAdapter.refreshSticky()
-        if (!isLoadInitialData && shopHomeAdapter.productListViewModel.isNotEmpty())
+        if (!isLoadInitialData && !shopHomeAdapter.isProductGridListPlaceholderExists())
             refreshProductList()
     }
 

@@ -1336,13 +1336,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
         activity?.let {
+            val items = dynamicProductInfoData.data.getGalleryItems()
+            if (items.isEmpty()) return
             val intent = ProductDetailGalleryActivity.createIntent(
                 context = it,
                 productDetailGallery = ProductDetailGallery(
                     productId = dynamicProductInfoData.basic.productID,
                     userId = viewModel.userId,
                     page = ProductDetailGallery.Page.ProductDetail,
-                    items = dynamicProductInfoData.data.getGalleryItems(),
+                    items = items,
                     selectedId = position.toString()
                 )
             )

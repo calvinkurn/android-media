@@ -8,12 +8,12 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.picker.common.R
-import com.tokopedia.picker.common.databinding.ViewItemSelectionPlaceholderBinding
+import com.tokopedia.picker.common.databinding.ViewItemSelectionPlaceholderDebugBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class DebugPlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    private val binding: ViewItemSelectionPlaceholderBinding? by viewBinding()
+    private val binding: ViewItemSelectionPlaceholderDebugBinding? by viewBinding()
 
     fun bind(bgColor: Int, @DrawableRes placeholder: Int) {
         binding?.imageView?.setBackgroundColor(bgColor)
@@ -27,7 +27,7 @@ class DebugPlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     companion object {
-        @LayoutRes val LAYOUT = R.layout.view_item_selection_placeholder
+        @LayoutRes val LAYOUT = R.layout.view_item_selection_placeholder_debug
 
         fun create(viewGroup: ViewGroup): DebugPlaceholderViewHolder {
             val view = LayoutInflater
