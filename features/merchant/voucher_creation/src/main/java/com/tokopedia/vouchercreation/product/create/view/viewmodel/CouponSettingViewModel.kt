@@ -2,8 +2,7 @@ package com.tokopedia.vouchercreation.product.create.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import androidx.lifecycle.ViewModel
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -13,9 +12,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchas
 import javax.inject.Inject
 
 class CouponSettingViewModel @Inject constructor(
-    private val resourceProvider: ResourceProvider,
-    private val dispatchers: CoroutineDispatchers
-) : BaseViewModel(dispatchers.main) {
+    private val resourceProvider: ResourceProvider
+) : ViewModel() {
 
     private val _areInputValid = MutableLiveData<Boolean>()
     val areInputValid: LiveData<Boolean>
