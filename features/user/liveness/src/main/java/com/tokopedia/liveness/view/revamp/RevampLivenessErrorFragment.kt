@@ -2,6 +2,7 @@ package com.tokopedia.liveness.view.revamp
 
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.Detector.DetectionFailedType.*
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,8 +52,14 @@ class RevampLivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewBinding?.livenessToolbarIcon?.setOnClickListener {
-            activity?.onBackPressed()
+        viewBinding?.apply {
+            livenessToolbarIcon.setOnClickListener {
+                activity?.onBackPressed()
+            }
+
+            button.setOnClickListener {
+                buttonListener()
+            }
         }
 
         when(detectionFailedType) {
@@ -69,11 +76,25 @@ class RevampLivenessErrorFragment: BaseDaggerFragment(), OnBackListener {
         }
     }
 
+    private fun buttonListener(){
+        when(detectionFailedType){
+            TIMEOUT -> {
+                analytics.eventClickTimeout(projectId)
+            }
+            else -> {
+                analytics.eventClickConnectionTimeout(projectId)
+            }
+        }
+
+        activity?.setResult(Activity.RESULT_OK)
+        activity?.finish()
+    }
+
     override fun trackOnBackPressed() {
         when(detectionFailedType) {
-            TIMEOUT -> { analytics.eventClickBackTimeout(projectId) }
+            TIMEOUT -> { analytics.eventClickBackConnectionTimeout(projectId) }
             else -> {
-                analytics.eventClickBackConnectionTimeout(projectId)
+                analytics.eventClickBackTimeout(projectId)
             }
         }
     }

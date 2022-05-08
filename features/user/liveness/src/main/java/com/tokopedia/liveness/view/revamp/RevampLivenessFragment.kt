@@ -286,11 +286,18 @@ class RevampLivenessFragment: BaseDaggerFragment(),
                 if (cameraResultFile.exists()) {
                     setResult(true, cameraResultFile)
                 } else {
+                    LivenessDetectionLogTracker.sendLogImageProcess(
+                        LivenessDetectionLogTracker.ImageFailedProcessType.FailedImageFileNotFound,
+                        Throwable("FailedImageFileNotFound")
+                    )
                     setResult(false)
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            LivenessDetectionLogTracker.sendLogImageProcess(
+                LivenessDetectionLogTracker.ImageFailedProcessType.TryCatchSaveToFile,
+                e
+            )
         }
     }
 
@@ -308,6 +315,12 @@ class RevampLivenessFragment: BaseDaggerFragment(),
     private fun setResult(isSuccess: Boolean, file: File? = null) {
         activity?.apply {
             if (isSuccess && file != null && file.exists()) {
+
+                LivenessDetectionLogTracker.sendLog(
+                    LivenessDetectionLogTracker.LogType.SUCCESS,
+                    this::class.simpleName.orEmpty()
+                )
+
                 setResult(Activity.RESULT_OK, Intent().apply {
                     putExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH, file.absolutePath)
                 })
@@ -361,7 +374,12 @@ class RevampLivenessFragment: BaseDaggerFragment(),
             out.flush()
             out.close()
         } catch (e: Throwable) {
-            LivenessDetectionLogTracker.sendLogImageProcess(cachePath, file, e)
+            LivenessDetectionLogTracker.sendLogImageProcess(
+                LivenessDetectionLogTracker.ImageFailedProcessType.TryCatchWriteImageToTkpdPath,
+                e,
+                cachePath,
+                file
+            )
         }
 
         return file

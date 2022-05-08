@@ -41,16 +41,23 @@ object LivenessDetectionLogTracker {
         Timber.d(throwable, message)
     }
 
+    enum class ImageFailedProcessType {
+        FailedImageFileNotFound,
+        TryCatchSaveToFile,
+        TryCatchWriteImageToTkpdPath
+    }
+
     fun sendLogImageProcess(
-        cachePath: String,
-        file: File,
-        throwable: Throwable
+        type: ImageFailedProcessType,
+        throwable: Throwable,
+        cachePath: String? = null,
+        file: File? = null
     ) {
         ServerLogger.log(
             Priority.P2, "LIVENESS_IMAGE_ERROR", mapOf(
-                "type" to "TryCatchWriteImageToTkpdPath",
-                "cachePath" to cachePath,
-                "fileExists" to "${file.exists()}",
+                "type" to type.name,
+                "cachePath" to cachePath.orEmpty(),
+                "fileExists" to "${file?.exists() == true}",
                 "stack_trace" to "${throwable.message}"
             )
         )
