@@ -3,11 +3,13 @@ package com.tokopedia.vouchercreation.product.create.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.vouchercreation.common.utils.ResourceProvider
+import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
+import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
 import com.tokopedia.vouchercreation.product.create.domain.entity.MinimumPurchaseType
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.runBlocking
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -30,7 +32,7 @@ class CouponSettingViewModelTest {
 
 
     @Test
-    fun `When cashback amount less than minimum, should return false`() = runBlocking {
+    fun `When cashback amount less than minimum, should return false`() {
         //Given
         val cashbackDiscountAmount = 4000
 
@@ -42,7 +44,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When cashback amount bigger than minimum, should return true`() = runBlocking {
+    fun `When cashback amount bigger than minimum, should return true`() {
         //Given
         val cashbackDiscountAmount = 100_000_000
 
@@ -54,7 +56,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When minimum purchase type is none,  should return false`() = runBlocking {
+    fun `When minimum purchase type is none,  should return false`() {
         //Given
         val minimumPurchase = 0
         val cashbackDiscountAmount = 0
@@ -72,7 +74,7 @@ class CouponSettingViewModelTest {
 
 
     @Test
-    fun `When minimum purchase type is nominal and minimum purchase bigger than discount amount, should return true`() = runBlocking {
+    fun `When minimum purchase type is nominal and minimum purchase bigger than discount amount, should return true`() {
         //Given
         val minimumPurchase = 500_000
         val cashbackDiscountAmount = 250_000
@@ -89,7 +91,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When minimum purchase type is nominal and minimum purchase less than discount amount, should return false`() = runBlocking {
+    fun `When minimum purchase type is nominal and minimum purchase less than discount amount, should return false`() {
         //Given
         val minimumPurchase = 250_000
         val cashbackDiscountAmount = 500_000
@@ -107,7 +109,7 @@ class CouponSettingViewModelTest {
 
 
     @Test
-    fun `When minimum purchase type is quantity and minimum purchase is zero, should return false`() = runBlocking {
+    fun `When minimum purchase type is quantity and minimum purchase is zero, should return false`() {
         //Given
         val minimumPurchase = 0
         val cashbackDiscountAmount = 0
@@ -124,7 +126,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When minimum purchase type is quantity and minimum purchase is greater than zero, should return true`() = runBlocking {
+    fun `When minimum purchase type is quantity and minimum purchase is greater than zero, should return true`() {
         //Given
         val minimumPurchase = 500_000
         val cashbackDiscountAmount = 0
@@ -141,7 +143,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When minimum purchase type is nothing, should return true`() = runBlocking {
+    fun `When minimum purchase type is nothing, should return true`() {
         //Given
         val minimumPurchase = 0
         val cashbackDiscountAmount = 0
@@ -158,7 +160,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When free shipping discount amount less than minimum, should return false`() = runBlocking {
+    fun `When free shipping discount amount less than minimum, should return false`() {
         //Given
         val freeShippingDiscountAmount = 4000
 
@@ -170,7 +172,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When free shipping discount amount bigger than minimum, should return true`() = runBlocking {
+    fun `When free shipping discount amount bigger than minimum, should return true`() {
         //Given
         val freeShippingDiscountAmount = 100_000
 
@@ -182,7 +184,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When cashback amount less than minimum, should return BelowAllowedMinimumPercentage`() = runBlocking {
+    fun `When cashback amount less than minimum, should return BelowAllowedMinimumPercentage`() {
         //Given
         val cashbackPercentage = 1
 
@@ -190,11 +192,14 @@ class CouponSettingViewModelTest {
         val actual = viewModel.isValidCashbackPercentage(cashbackPercentage)
 
         //Then
-        assertEquals(CouponSettingViewModel.CashbackPercentageState.BelowAllowedMinimumPercentage, actual)
+        assertEquals(
+            CouponSettingViewModel.CashbackPercentageState.BelowAllowedMinimumPercentage,
+            actual
+        )
     }
 
     @Test
-    fun `When cashback amount bigger than maximum, should return ExceedAllowedMaximumPercentage`() = runBlocking {
+    fun `When cashback amount bigger than maximum, should return ExceedAllowedMaximumPercentage`() {
         //Given
         val cashbackPercentage = 101
 
@@ -202,11 +207,14 @@ class CouponSettingViewModelTest {
         val actual = viewModel.isValidCashbackPercentage(cashbackPercentage)
 
         //Then
-        assertEquals(CouponSettingViewModel.CashbackPercentageState.ExceedAllowedMaximumPercentage, actual)
+        assertEquals(
+            CouponSettingViewModel.CashbackPercentageState.ExceedAllowedMaximumPercentage,
+            actual
+        )
     }
 
     @Test
-    fun `When cashback amount bigger than maximum, should return ValidPercentage`() = runBlocking {
+    fun `When cashback amount bigger than maximum, should return ValidPercentage`() {
         //Given
         val cashbackPercentage = 50
 
@@ -218,7 +226,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When cashback amount less than minimum, should return BelowAllowedMinimumAmount`() = runBlocking {
+    fun `When cashback amount less than minimum, should return BelowAllowedMinimumAmount`() {
         //Given
         val cashbackDiscountAmount = 4_000
 
@@ -230,7 +238,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When cashback amount bigger than maximum, should return ExceedAllowedMinimumAmount`() = runBlocking {
+    fun `When cashback amount bigger than maximum, should return ExceedAllowedMinimumAmount`() {
         //Given
         val cashbackDiscountAmount = 100_000_000
 
@@ -242,7 +250,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When cashback amount is in valid range, should return ValidAmount`() = runBlocking {
+    fun `When cashback amount is in valid range, should return ValidAmount`() {
         //Given
         val cashbackDiscountAmount = 100_000
 
@@ -254,7 +262,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When free shipping minimum purchase bigger than discount amount, should return true`() = runBlocking {
+    fun `When free shipping minimum purchase bigger than discount amount, should return true`() {
         //Given
         val freeShippingMinimumPurchase = 500_000
         val freeShippingDiscountAmount = 100_000
@@ -270,7 +278,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When free shipping minimum purchase less than discount amount, should return false`() = runBlocking {
+    fun `When free shipping minimum purchase less than discount amount, should return false`() {
         //Given
         val freeShippingMinimumPurchase = 50_000
         val freeShippingDiscountAmount = 100_000
@@ -286,7 +294,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When quota quantity less than minimum, should return BelowAllowedQuotaAmount`() = runBlocking {
+    fun `When quota quantity less than minimum, should return BelowAllowedQuotaAmount`() {
         //Given
         val quotaQuantity = 0
 
@@ -298,7 +306,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When quota quantity bigger than maximum, should return ExceedAllowedQuotaAmount`() = runBlocking {
+    fun `When quota quantity bigger than maximum, should return ExceedAllowedQuotaAmount`() {
         //Given
         val quotaQuantity = 1_000
 
@@ -310,7 +318,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When quota quantity is in valid range, should return ValidQuota`() = runBlocking {
+    fun `When quota quantity is in valid range, should return ValidQuota`() {
         //Given
         val quotaQuantity = 20
 
@@ -322,7 +330,7 @@ class CouponSettingViewModelTest {
     }
 
     @Test
-    fun `When coupon type changed, coupon type should be updated and previous input validation should be false`() = runBlocking {
+    fun `When coupon type changed, coupon type should be updated and previous input validation should be false`() {
         //Given
         val couponType = CouponType.FREE_SHIPPING
 
@@ -330,7 +338,535 @@ class CouponSettingViewModelTest {
         viewModel.couponTypeChanged(couponType)
 
         //Then
-        assertEquals(viewModel.couponType.getOrAwaitValue(), couponType)
-        assertEquals(viewModel.areInputValid.getOrAwaitValue(), false)
+        assertEquals(couponType, viewModel.couponType.getOrAwaitValue())
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback and minimum purchase is nominal, should return correct error message`() {
+        //Given
+        val couponType = CouponType.CASHBACK
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is cashback and minimum purchase is quantity, should return correct error message`() {
+        //Given
+        val couponType = CouponType.CASHBACK
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalQuantityQuantityErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is cashback and minimum purchase is none, should return correct error message`() {
+        //Given
+        val couponType = CouponType.CASHBACK
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is cashback and minimum purchase is nothing, should return correct error message`() {
+        //Given
+        val couponType = CouponType.CASHBACK
+        val minimumPurchaseType = MinimumPurchaseType.NOTHING
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is free shipping, should return correct error message`() {
+        //Given
+        val couponType = CouponType.FREE_SHIPPING
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is not selected, should return correct error message`() {
+        //Given
+        val couponType = CouponType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+
+        //When
+        viewModel.getMinimalPurchaseErrorMessage(couponType, minimumPurchaseType)
+
+        //Then
+        verify { resourceProvider.getInvalidMinimalPurchaseNominalErrorMessage() }
+    }
+
+    @Test
+    fun `When coupon type is cashback and discount type is nominal, should return correct expense estimation`() {
+        //Given
+        val expected : Long = 100_000
+        val couponType = CouponType.CASHBACK
+        val discountType = DiscountType.NOMINAL
+        val cashbackDiscountAmount = 20_000
+        val cashbackMaximumDiscountAmount = 100_000
+        val freeShippingDiscountAmount = 0
+        val cashbackQuota = 5
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.calculateMaxExpenseEstimation(
+            couponType,
+            discountType,
+            cashbackDiscountAmount,
+            cashbackMaximumDiscountAmount,
+            freeShippingDiscountAmount,
+            cashbackQuota,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(expected, viewModel.maxExpenseEstimation.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback and discount type is percentage, should return correct expense estimation`() {
+        //Given
+        val expected : Long = 600_000
+        val couponType = CouponType.CASHBACK
+        val discountType = DiscountType.PERCENTAGE
+        val cashbackDiscountAmount = 20_000
+        val cashbackMaximumDiscountAmount = 120_000
+        val freeShippingDiscountAmount = 0
+        val cashbackQuota = 5
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.calculateMaxExpenseEstimation(
+            couponType,
+            discountType,
+            cashbackDiscountAmount,
+            cashbackMaximumDiscountAmount,
+            freeShippingDiscountAmount,
+            cashbackQuota,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(expected, viewModel.maxExpenseEstimation.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback and discount type is none, should return zero`() {
+        //Given
+        val expected: Long  = 0
+        val couponType = CouponType.CASHBACK
+        val discountType = DiscountType.NONE
+        val cashbackDiscountAmount = 20_000
+        val cashbackMaximumDiscountAmount = 120_000
+        val freeShippingDiscountAmount = 0
+        val cashbackQuota = 5
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.calculateMaxExpenseEstimation(
+            couponType,
+            discountType,
+            cashbackDiscountAmount,
+            cashbackMaximumDiscountAmount,
+            freeShippingDiscountAmount,
+            cashbackQuota,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(expected, viewModel.maxExpenseEstimation.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is free shipping, should return correct expense estimation`() {
+        //Given
+        val expected : Long = 200_000
+        val couponType = CouponType.FREE_SHIPPING
+        val discountType = DiscountType.NONE
+        val cashbackDiscountAmount = 0
+        val cashbackMaximumDiscountAmount = 0
+        val freeShippingDiscountAmount = 20_000
+        val cashbackQuota = 0
+        val freeShippingQuota = 10
+
+        //When
+        viewModel.calculateMaxExpenseEstimation(
+            couponType,
+            discountType,
+            cashbackDiscountAmount,
+            cashbackMaximumDiscountAmount,
+            freeShippingDiscountAmount,
+            cashbackQuota,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(expected, viewModel.maxExpenseEstimation.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is not selected, should return zero`() {
+        //Given
+        val expected : Long = 0
+        val couponType = CouponType.NONE
+        val discountType = DiscountType.NONE
+        val cashbackDiscountAmount = 0
+        val cashbackMaximumDiscountAmount = 0
+        val freeShippingDiscountAmount = 20_000
+        val cashbackQuota = 0
+        val freeShippingQuota = 10
+
+        //When
+        viewModel.calculateMaxExpenseEstimation(
+            couponType,
+            discountType,
+            cashbackDiscountAmount,
+            cashbackMaximumDiscountAmount,
+            freeShippingDiscountAmount,
+            cashbackQuota,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(expected, viewModel.maxExpenseEstimation.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is not selected, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.NONE,
+            DiscountType.NONE,
+            MinimumPurchaseType.NONE,
+            0, 
+            0, 
+            0,
+            0,
+            0,
+            0
+        )
+        val couponType = CouponType.NONE
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        val estimatedMaxExpense : Long = 0
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is free shipping, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.FREE_SHIPPING,
+            DiscountType.NONE,
+            MinimumPurchaseType.NONE,
+            20_000, 
+            100, 
+            20_000,
+            5,
+            200_000,
+            250_000
+        )
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 20_000
+        val freeShippingMinimumPurchase = 200_000
+        val freeShippingQuota = 5
+
+        val estimatedMaxExpense : Long = 250_000
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback, discount type is nominal and minimal purchase is nothing, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.NOMINAL,
+            MinimumPurchaseType.NOTHING,
+            20_000, 
+            0, 
+            20_000,
+            5,
+            0,
+            250_000
+        )
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOTHING
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 20_000
+        val cashbackMinimumPurchase = 200_000
+        val cashbackQuota = 5
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        val estimatedMaxExpense : Long = 250_000
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback, and discount type is nominal, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.NOMINAL,
+            MinimumPurchaseType.NOMINAL,
+            20_000, 
+            0, 
+            20_000,
+            5,
+            200_000,
+            250_000
+        )
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 20_000
+        val cashbackMinimumPurchase = 200_000
+        val cashbackQuota = 5
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        val estimatedMaxExpense : Long = 250_000
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback, and discount type is percentage, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.PERCENTAGE,
+            MinimumPurchaseType.NOMINAL,
+            1_000_000, 
+            20, 
+            1_000_000,
+            5,
+            200_000,
+            250_000
+        )
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.PERCENTAGE
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 20
+        val cashbackMaximumDiscountAmount = 1_000_000
+        val cashbackDiscountAmount = 20_000
+        val cashbackMinimumPurchase = 200_000
+        val cashbackQuota = 5
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        val estimatedMaxExpense : Long = 250_000
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+    @Test
+    fun `When coupon type is cashback, and discount type is not set, should save correct value`() {
+        //Given
+        val expected = CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.NONE,
+            MinimumPurchaseType.NOMINAL,
+            20_000, 
+            0, 
+            20_000,
+            5,
+            200_000,
+            250_000
+        )
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 1_000_000
+        val cashbackDiscountAmount = 20_000
+        val cashbackMinimumPurchase = 200_000
+        val cashbackQuota = 5
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        val estimatedMaxExpense : Long = 250_000
+
+        //When
+        viewModel.saveCoupon(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota,
+            estimatedMaxExpense
+        )
+
+        //Then
+        assertEquals(expected, viewModel.saveCoupon.getOrAwaitValue())
+    }
+
+
+    private fun buildCouponSettings(): CouponSettings {
+        return CouponSettings(
+            CouponType.CASHBACK,
+            DiscountType.PERCENTAGE,
+            MinimumPurchaseType.NOMINAL,
+            0,
+            50,
+            25000,
+            10,
+            50000,
+            500000
+        )
     }
 }
