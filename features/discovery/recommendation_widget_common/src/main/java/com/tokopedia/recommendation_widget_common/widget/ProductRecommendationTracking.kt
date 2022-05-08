@@ -20,10 +20,10 @@ object ProductRecommendationTracking : BaseTrackerConst() {
     const val EVENT_LABEL_PRODUCT = "%s - %s"
     const val EVENT_LABEL_CLICK_SEE_ALL = "%s - %s - %s"
 
-    const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
+    const val EVENT_LIST_PRODUCT = "/product - %s%s - rekomendasi untuk anda - %s%s - %s - %s"
     const val EVENT_TOKONOW_LIST_PRODUCT = "/%s - tokonow - rekomendasi untuk anda - %s"
 
-    private const val COMPARISON_WIDGET = "Comparison Widget"
+    const val COMPARISON_WIDGET = "comparison widget"
 
     fun getImpressionProductTracking(
         recommendationItem: RecommendationItem,
@@ -61,7 +61,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
                         widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -85,7 +86,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         userId: String = "",
         eventAction: String? = null,
         listValue: String? = null,
-        eventCategory: String? = null
+        eventCategory: String? = null,
+        widgetType: String = ""
     ): HashMap<String, Any> {
         val trackingBuilder =
             BaseTrackerBuilder()
@@ -106,8 +108,9 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recomPageName = recommendationItem.pageName,
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
-                        widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        widgetType = widgetType.ifBlank { recommendationItem.type },
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -187,7 +190,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                         recommendationType = recommendationItem.recommendationType,
                         isTopads = recommendationItem.isTopAds,
                         widgetType = recommendationItem.type,
-                        anchorProductId = anchorProductId
+                        anchorProductId = anchorProductId,
+                        isLoggedIn = isLoggedIn
                     ),
                     products = listOf(
                         mapRecommendationItemToProductTracking(recommendationItem, position)
@@ -204,11 +208,13 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         recommendationType: String,
         isTopads: Boolean,
         widgetType: String,
-        anchorProductId: String
+        anchorProductId: String,
+        isLoggedIn: Boolean
     ): String {
         return String.format(
             EVENT_LIST_PRODUCT,
             recomPageName,
+            if (widgetType == COMPARISON_WIDGET && !isLoggedIn) VALUE_NON_LOGIN else "",
             recommendationType,
             if (isTopads) VALUE_IS_TOPADS else "",
             widgetType,

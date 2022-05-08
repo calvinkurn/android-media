@@ -49,10 +49,11 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                                 recommendationItem = comparisonModel.recommendationItem,
                                 androidPageName = recommendationTrackingModel.androidPageName,
                                 headerTitle = recommendationTrackingModel.headerTitle,
-                                chipsTitle = comparisonModel.productCardModel.productName,
                                 position = adapterPosition,
                                 isLoggedIn = userSession.isLoggedIn,
-                                anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString()
+                                anchorProductId = comparisonListModel.getAnchorProduct()?.recommendationItem?.productId.toString(),
+                                userId = userSession.userId,
+                                widgetType = ProductRecommendationTracking.COMPARISON_WIDGET
                         )
                 )
                 comparisonWidgetInterface.onProductCardClicked(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
