@@ -18,9 +18,12 @@ object ProductRecommendationTracking : BaseTrackerConst() {
     const val EVENT_ACTION_CLICK_SEE_MORE_COMPARISON = "click - see more comparison%s"
 
     const val EVENT_LABEL_PRODUCT = "%s - %s"
+    const val EVENT_LABEL_CLICK_SEE_ALL = "%s - %s - %s"
 
     const val EVENT_LIST_PRODUCT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
     const val EVENT_TOKONOW_LIST_PRODUCT = "/%s - tokonow - rekomendasi untuk anda - %s"
+
+    private const val COMPARISON_WIDGET = "Comparison Widget"
 
     fun getImpressionProductTracking(
         recommendationItem: RecommendationItem,
@@ -133,9 +136,10 @@ object ProductRecommendationTracking : BaseTrackerConst() {
                     if (isLoggedIn) "" else VALUE_NON_LOGIN
                 ),
                 eventLabel = String.format(
-                    EVENT_LABEL_PRODUCT,
+                    EVENT_LABEL_CLICK_SEE_ALL,
                     recomTitle,
-                    pageName
+                    pageName,
+                    COMPARISON_WIDGET
                 )
             )
             .appendBusinessUnit(BusinessUnit.DEFAULT)

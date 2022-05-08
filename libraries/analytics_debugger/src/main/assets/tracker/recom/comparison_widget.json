@@ -41,23 +41,43 @@
       "item_list": "",
       "items": [
         {
-          	"quantity": ".*",
-			"item_id": ".*",
-			"shopName": ".*",
-			"index": ".*",
-			"item_name": ".*",
-			"item_brand": ".*",
-			"item_category": ".*/.*/.*",
-			"dimension83": ".*",
-			"category_id": ".*",
-			"price": ".*",
-			"dimension40": ".* - .* - .* - .* - .*",
-			"shopId": ".*",
-			"shopType": ".*",
-			"item_variant": ".*"
+          "quantity": ".*",
+          "item_id": ".*",
+          "shopName": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_category": ".*/.*/.*",
+          "dimension83": ".*",
+          "category_id": ".*",
+          "price": ".*",
+          "dimension40": ".* - .* - .* - .* - .*",
+          "shopId": ".*",
+          "shopType": ".*",
+          "item_variant": ".*"
         }
       ],
       "userId": "",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickPDP",
+      "eventCategory": "product detail page",
+      "eventAction": "click - see more comparison - non login",
+      "eventLabel": ".* - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": "",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickPDP",
+      "eventCategory": "product detail page",
+      "eventAction": "click - see more comparison",
+      "eventLabel": ".* - .* - .*",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
       "sessionIris": ".*"
     }
   ]
