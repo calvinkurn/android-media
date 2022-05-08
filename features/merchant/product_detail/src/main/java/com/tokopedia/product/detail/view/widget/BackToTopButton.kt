@@ -18,6 +18,8 @@ class BackToTopButton(
     companion object {
         private const val BUTTON_LABEL = "back-to-top"
         private const val BUTTON_POSITION = 0
+
+        private const val BUTTON_ANIMATION_DURATION = 265L
     }
 
     private val binding = WidgetBackToTopBinding.inflate(LayoutInflater.from(context))
@@ -72,7 +74,7 @@ class BackToTopButton(
 
         val scale = if (show) 1f else 0f
 
-        view.animate().scaleX(scale).scaleY(scale).duration = 265
+        view.animate().scaleX(scale).scaleY(scale).duration = BUTTON_ANIMATION_DURATION
         isVisible = show
 
         if (!impressNavigation && show) {

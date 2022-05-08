@@ -25,6 +25,11 @@ class NavigationTab(
     context: Context, attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), CoroutineScope {
 
+    companion object {
+        private const val NAVIGATION_ANIMATION_DURATION = 300L
+        private const val NAVIGATION_DELAYED_SHOW_DURATION = 2000L
+    }
+
     private val binding = WidgetNavigationTabBinding.inflate(LayoutInflater.from(context))
     private val view = binding.root
     private val pdpNavTab = binding.pdpNavTab
@@ -125,7 +130,7 @@ class NavigationTab(
         }
 
         val y = if (show) showY else hideY
-        view.animate().translationY(y).duration = 300
+        view.animate().translationY(y).duration = NAVIGATION_ANIMATION_DURATION
         isVisible = show
     }
 
@@ -174,7 +179,7 @@ class NavigationTab(
         private fun delayedShow() {
             showJob?.cancel()
             showJob = launch(Dispatchers.IO) {
-                delay(2000)
+                delay(NAVIGATION_DELAYED_SHOW_DURATION)
                 withContext(Dispatchers.Main) {
                     toggle(true)
                 }
