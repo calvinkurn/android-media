@@ -309,10 +309,319 @@ class CouponSettingViewModelTest {
 
     //region Coupon Type: Cashback, Discount Type : None
 
+    @Test
+    fun `When discount type is none, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
     //endregion
 
-    //region Coupon Type: Free Shipping
+    //region Coupon Type: Free Shipping, Discount Amount is valid
+    @Test
+    fun `When discount amount is bigger than minimum amount, observer should receive true as a result`() {
+        //Given
 
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 10_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 20
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+
+    //endregion
+
+    //region Coupon Type: Free Shipping, Discount Amount is invalid
+    @Test
+    fun `When discount amount is less than minimum amount, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 3_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 20
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+
+    //endregion
+
+    //region Coupon Type: Free Shipping, Minimum purchase is valid
+    @Test
+    fun `When free shipping minimum purchase amount is bigger than discount amount, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 10_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 20
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+
+    //endregion
+
+    //region Coupon Type: Free Shipping, Minimum purchase is invalid
+    @Test
+    fun `When free shipping minimum purchase is less than discount amount, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 300_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 20
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+
+    //endregion
+
+    //region Coupon Type: Free Shipping, Quota is bigger than maximum
+    @Test
+    fun `When free shipping quota is bigger than maximum quantity, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 10_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 1000
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Free Shipping, Quota is less than minimum
+    @Test
+    fun `When free shipping quota is less than minimum quantity, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 300_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Free Shipping, Quota is in valid range
+    @Test
+    fun `When free shipping quota is in valid range quantity, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.FREE_SHIPPING
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 0
+        val cashbackDiscountAmount = 0
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 30_000
+        val freeShippingMinimumPurchase = 50_000
+        val freeShippingQuota = 20
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
     //endregion
 
     @Test
