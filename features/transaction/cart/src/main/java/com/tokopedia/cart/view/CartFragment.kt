@@ -162,6 +162,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.Dispatchers
@@ -1305,29 +1306,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         result: AddToWishlistV2Response.Data.WishlistAddV2,
         productId: String
     ) {
-        var msg = ""
-        if (result.message.isEmpty()) {
+        val msg = result.message.ifEmpty {
             if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
             else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        } else {
-            msg = result.message
         }
+
+        var typeToaster = TYPE_NORMAL
+        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
 
         var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (result.button.text.isNotEmpty()) ctaText = result.button.text
 
         view?.let {
-            if (ctaText.isEmpty()) {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-            } else {
-                Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                   goToWishlist()
-                }.show()
-            }
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+               if (result.button.action == OPEN_WISHLIST) goToWishlist()
+            }.show()
         }
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
