@@ -65,7 +65,7 @@
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_label_have_not_one_active_product_yet_new_seller"><![CDATA[Min. 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_term_shop_score"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$s</font>]]></string>
-    <string name="pm_shop_score_eligible_description">Batas min. skor %1$d</string>
+    <string name="pm_shop_score_eligible_description">Min. %1$d untuk PM dan min. %2$d untuk PM PRO</string>
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
     <string name="pm_learn_shop_performance">Pelajari Performa Toko</string>

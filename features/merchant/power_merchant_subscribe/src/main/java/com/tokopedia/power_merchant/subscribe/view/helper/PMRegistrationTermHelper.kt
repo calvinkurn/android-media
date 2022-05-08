@@ -227,12 +227,6 @@ object PMRegistrationTermHelper {
         var ctaAppLink: String? = null
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
 
-        val shopScoreThreshold = if (isPmProSelected) {
-            shopInfo.shopScorePmProThreshold
-        } else {
-            shopInfo.shopScoreThreshold
-        }
-
         if (isNewSeller) {
             if (isFirstMondayNewSeller) {
                 val textColor = if (isEligibleShopScore) {
@@ -273,7 +267,8 @@ object PMRegistrationTermHelper {
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
                     R.string.pm_shop_score_eligible_description,
-                    shopScoreThreshold
+                    shopInfo.shopScoreThreshold,
+                    shopInfo.shopScorePmProThreshold
                 )
             } else {
                 val textColor = PMCommonUtils.getHexColor(
@@ -283,7 +278,7 @@ object PMRegistrationTermHelper {
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
                     R.string.pm_shop_score_not_eligible_description,
-                    shopScoreThreshold
+                    shopInfo.shopScoreThreshold
                 )
                 ctaText = context.getString(R.string.pm_learn_shop_performance)
                 ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
