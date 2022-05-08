@@ -225,6 +225,84 @@ class CouponSettingViewModelTest {
     }
     //endregion
 
+    //region Coupon Type: Cashback, Discount Type : Nominal, Minimum Purchase: Nominal (negative case), Discount amount bigger than minimum
+    @Test
+    fun `When discount amount is bigger than minimum, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1_000_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type : Nominal, Minimum Purchase: Nominal (positive case), Discount amount less than minimum
+    @Test
+    fun `When discount amount is less than minimum, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 4_000
+        val cashbackMinimumPurchase = 1_000_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
     //region Coupon Type: Cashback, Discount Type : Nominal, Minimum Purchase: Quantity (negative case)
     @Test
     fun `When minimum purchase is quantity and min purchase is 0 pc, observer should receive false as a result`() {
@@ -420,9 +498,126 @@ class CouponSettingViewModelTest {
     }
     //endregion
 
-    //region Coupon Type: Cashback, Discount Type : Nominal, Minimum Purchase: Nominal (negative case), Discount amount bigger than minimum
+    /*//region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: None
     @Test
-    fun `When discount amount is bigger than minimum, observer should receive true as a result`() {
+    fun `When discount type percentage and minimum purchase is not selected, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NONE
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1_000_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Nothing
+    @Test
+    fun `When discount type percentage and minimum purchase is nothing, observer should always receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOTHING
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Nominal (negative case)
+    @Test
+    fun `When discount type percentage and minimum purchase is less than discount amount, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 10_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Nominal (positive case)
+    @Test
+    fun `When discount type percentage and minimum purchase is greater than discount amount, observer should receive true as a result`() {
         //Given
 
         val couponType = CouponType.CASHBACK
@@ -459,9 +654,48 @@ class CouponSettingViewModelTest {
     }
     //endregion
 
-    //region Coupon Type: Cashback, Discount Type : Nominal, Minimum Purchase: Nominal (positive case), Discount amount less than minimum
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Nominal (negative case), Discount amount bigger than minimum
     @Test
-    fun `When discount amount is less than minimum, observer should receive false as a result`() {
+    fun `When discount type percentage discount amount is bigger than minimum, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1_000_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Nominal (positive case), Discount amount less than minimum
+    @Test
+    fun `When discount type percentage and discount amount is less than minimum, observer should receive false as a result`() {
         //Given
 
         val couponType = CouponType.CASHBACK
@@ -498,9 +732,238 @@ class CouponSettingViewModelTest {
     }
     //endregion
 
-    //region Coupon Type: Cashback, Discount Type : Percentage
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Quantity (negative case)
+    @Test
+    fun `When discount type percentage and purchase is quantity and min purchase is 0 pc, observer should receive false as a result`() {
+        //Given
 
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 0
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
     //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Quantity (positive case)
+    @Test
+    fun `When discount type percentage and minimum purchase is quantity and min purchase is 1 pc, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Quantity (positive case), Quota below minimum
+    @Test
+    fun `When discount type percentage and cashback quota is below minimum, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1
+        val cashbackQuota = 0
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Quantity (positive case), Quota bigger than maximum
+    @Test
+    fun `When discount type percentage and cashback quota is bigger than maximum, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1
+        val cashbackQuota = 1001
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
+
+    //region Coupon Type: Cashback, Discount Type: Percentage, Minimum Purchase: Quantity (positive case), Quota in valid range
+    @Test
+    fun `When discount type percentage and cashback quota is in valid range, observer should receive true as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NOMINAL
+        val minimumPurchaseType = MinimumPurchaseType.QUANTITY
+        val cashbackPercentage = 0
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion*/
+
+    @Test
+    fun `When discount type percentage and minimum purchase is not selected, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.PERCENTAGE
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 20
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 1_000_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(true, viewModel.areInputValid.getOrAwaitValue())
+    }
+
 
     //region Coupon Type: Cashback, Discount Type : None
 
