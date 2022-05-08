@@ -1,6 +1,5 @@
 package com.tokopedia.kyc_centralized.view.fragment
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -76,13 +75,15 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         button?.setOnClickListener { v: View? ->
             checkPermission {
                 analytics?.eventClickNextKtpPage()
-                val intent = createIntent(
-                        context,
+                val intent = context?.let {
+                    createIntent(
+                        it,
                         UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
+                        projectId,
                         useCropping = true,
                         useCompression = true
-                )
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+                    )
+                }
                 startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
             }
         }

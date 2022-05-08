@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -17,15 +15,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -153,8 +150,7 @@ class UserIdentificationFormFaceFragment :
     }
 
     private fun goToKycSelfie() {
-        val intent = createIntent(context, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+        val intent = context?.let { createIntent(it, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId) }
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
