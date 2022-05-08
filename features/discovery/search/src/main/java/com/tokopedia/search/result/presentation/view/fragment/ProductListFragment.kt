@@ -1713,12 +1713,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
         if (wishlistResult.isUsingWishlistV2) {
             if (wishlistResult.isAddWishlist) {
-                var msg = ""
-                if (wishlistResult.messageV2.isEmpty()) {
-                    if (wishlistResult.isSuccess) msg = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-                    else msg = getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-                } else {
-                    msg = wishlistResult.messageV2
+                val msg = wishlistResult.messageV2.ifEmpty {
+                    if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
+                    else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
                 }
 
                 var typeToaster = TYPE_NORMAL

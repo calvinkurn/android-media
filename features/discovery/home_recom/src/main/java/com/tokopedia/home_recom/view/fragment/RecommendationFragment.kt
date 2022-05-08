@@ -525,12 +525,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                             result: AddToWishlistV2Response.Data.WishlistAddV2,
                             productId: String
                         ) {
-                            var msg = ""
-                            if (result.message.isEmpty()) {
+                            val msg = result.message.ifEmpty {
                                 if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                                 else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-                            } else {
-                                msg = result.message
                             }
 
                             var typeToaster = TYPE_NORMAL

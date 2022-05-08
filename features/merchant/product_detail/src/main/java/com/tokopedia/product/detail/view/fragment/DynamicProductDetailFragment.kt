@@ -2856,12 +2856,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun showToasterWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         if (wishlistResult.isAddWishlist) {
-            var messageV2 = ""
-            if (wishlistResult.messageV2.isEmpty()) {
+            val messageV2 = wishlistResult.messageV2.ifEmpty {
                 if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                 else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            } else {
-                messageV2 = wishlistResult.messageV2
             }
 
             var typeToasterV2 = TYPE_NORMAL

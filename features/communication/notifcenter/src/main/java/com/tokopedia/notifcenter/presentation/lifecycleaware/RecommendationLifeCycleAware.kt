@@ -16,6 +16,7 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.notifcenter.R
 import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
@@ -29,6 +30,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
 class RecommendationLifeCycleAware constructor(
@@ -74,10 +76,13 @@ class RecommendationLifeCycleAware constructor(
     private fun handleWishListActionForLoggedInUser(
             productCardOptionsModel: ProductCardOptionsModel
     ) {
+        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isSuccess) {
-            handleWishListActionSuccess(productCardOptionsModel)
+            if (isUsingWishlistV2) handleWishListV2ActionSuccess(productCardOptionsModel)
+            else handleWishListActionSuccess(productCardOptionsModel)
         } else {
-            handleWishlistActionFailed()
+            if (isUsingWishlistV2) handleWishlistV2ActionFailed(productCardOptionsModel.wishlistResult)
+            else handleWishlistActionFailed()
         }
     }
 
@@ -86,37 +91,56 @@ class RecommendationLifeCycleAware constructor(
         topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
         rvAdapter?.notifyItemChanged(productCardOptionsModel.productPosition, isAddWishlist)
         if (isAddWishlist) {
-            showSuccessAddWishlist(productCardOptionsModel.wishlistResult)
+            showSuccessAddWishlist()
         } else {
             showSuccessRemoveWishlist()
         }
     }
 
-    private fun showSuccessAddWishlist(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+    private fun handleWishListV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        val isAddWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
+        topAdsAnalytic.eventClickRecommendationWishlist(isAddWishlist)
+        rvAdapter?.notifyItemChanged(productCardOptionsModel.productPosition, isAddWishlist)
+        if (isAddWishlist) {
+            showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
+        } else {
+            showSuccessRemoveWishlist()
+        }
+    }
+
+    private fun showSuccessAddWishlist() {
+        val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
+        val ctaText = getString(com.tokopedia.wishlist.common.R.string.lihat_label)
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+            ctaText,
+            View.OnClickListener { v: View? ->
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }
+        ).show()
+    }
+
+    private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
 
-        var msg = ""
-        if (wishlistResult.messageV2.isEmpty()) {
+        val msg = wishlistResult.messageV2.ifEmpty {
             if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
             else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-        } else {
-            msg = wishlistResult.messageV2
         }
+
+        var typeToaster = TYPE_NORMAL
+        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
 
         var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        var typeToaster = TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) {
-            typeToaster = TYPE_ERROR
-            ctaText = ""
-        }
+        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
 
-        if (ctaText.isEmpty()) {
-            Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster).show()
-        } else {
-            Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }.show()
-        }
+        Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
+            if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
+        }.show()
+    }
+
+    private fun goToWishlist() {
+        RouteManager.route(context, ApplinkConst.WISHLIST)
     }
 
     private fun getString(@StringRes stringRes: Int): String {
@@ -125,10 +149,9 @@ class RecommendationLifeCycleAware constructor(
 
     private fun showSuccessRemoveWishlist() {
         val view: View? = fragment?.activity?.findViewById(android.R.id.content)
-        val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
-        val ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
+        val message = getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist)
         if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {}.show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG).show()
     }
 
     private fun handleWishlistActionFailed() {
@@ -136,6 +159,21 @@ class RecommendationLifeCycleAware constructor(
         rootView?.let {
             Toaster.build(it, ErrorHandler.getErrorMessage(rootView.context, null),
                     Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    private fun handleWishlistV2ActionFailed(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        val rootView = fragment?.view?.rootView
+        rootView?.let {
+            var errorMessage = ErrorHandler.getErrorMessage(it.context, null)
+            if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
+
+            val ctaText = wishlistResult.ctaTextV2
+
+            Toaster.build(it, errorMessage,
+                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText) {
+                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
+            }.show()
         }
     }
 

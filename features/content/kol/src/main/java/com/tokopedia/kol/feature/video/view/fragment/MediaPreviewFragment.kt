@@ -324,17 +324,13 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                             result: AddToWishlistV2Response.Data.WishlistAddV2,
                             productId: String
                         ) {
-                            var msg = ""
-                            if (result.message.isEmpty()) {
+                            val msg = result.message.ifEmpty {
                                 if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                                 else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-                            } else {
-                                msg = result.message
                             }
 
                             var typeToaster = Toaster.TYPE_NORMAL
-                            if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster =
-                                Toaster.TYPE_ERROR
+                            if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
                             var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
                             if (result.button.text.isNotEmpty()) ctaText = result.button.text

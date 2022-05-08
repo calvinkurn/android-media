@@ -2493,12 +2493,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        var msg = ""
-        if (wishlistResult.messageV2.isEmpty()) {
+        val msg = wishlistResult.messageV2.ifEmpty {
             if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
             else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        } else {
-            msg = wishlistResult.messageV2
         }
 
         var typeToaster = TYPE_NORMAL
