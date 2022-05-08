@@ -148,4 +148,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
     open fun sendMixLeftBannerImpression(componentsItems: ComponentsItem){}
     open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}
+    open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
+    open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
 }

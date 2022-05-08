@@ -23,6 +23,8 @@ import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
+import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
@@ -32,7 +34,6 @@ import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
@@ -217,18 +218,23 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private fun onSubmitUserReport(reasonId: Int, description: String) {
         analytic.clickUserReportSubmissionDialogSubmit()
         val channelData = playViewModel.latestCompleteChannelData
-
         playViewModel.submitUserReport(
             channelId = channelData.id.toLongOrZero(),
             shopId = channelData.partnerInfo.id,
-            mediaUrl = getMediaUrl(channelData.id),
+            mediaUrl = getMediaUrl(channelData.videoMetaInfo),
             timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
             reportDesc = description,
             reasonId = reasonId
         )
     }
 
-    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
+    private fun getMediaUrl(mediaInfo: PlayVideoMetaInfoUiModel) : String {
+        return when (mediaInfo.videoPlayer) {
+            is PlayVideoPlayerUiModel.YouTube -> "https://youtu.be/${mediaInfo.videoPlayer.youtubeId}"
+            is PlayVideoPlayerUiModel.General -> mediaInfo.videoPlayer.params.videoUrl
+            else -> ""
+        }
+    }
 
     private fun getTimestampVideo(startTime: String): Long{
         return if(playViewModel.channelType.isLive){
