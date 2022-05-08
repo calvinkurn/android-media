@@ -25,6 +25,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardItemModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardModelTest
@@ -57,6 +60,9 @@ import org.junit.runners.Suite
         LihatSemuaViewModelTest::class,
         YouTubeViewViewModelTest::class,
         ShimmerViewModelTest::class,
+        ProductCardCarouselViewModelTest::class,
+        ProductCardSingleViewModelTest::class,
+        MixLeftEmptyViewModelTest::class,
         TextComponentViewModelTest::class,
         ComingSoonViewModelTest::class,
         CalendarWidgetItemViewModelTest::class,
