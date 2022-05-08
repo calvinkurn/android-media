@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.registerpushnotif.services
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
@@ -36,6 +37,10 @@ class RegisterPushNotificationWorker(
 
     private var keyPair: KeyPair? = null
 
+    private val sharedPreferences by lazy {
+        context.getSharedPreferences(REGISTER_PUSH_NOTIFICATION_PREFERENCE, Context.MODE_PRIVATE)
+    }
+
     init {
         DaggerRegisterPushNotificationComponent.builder()
             .registerPushNotificationModule(RegisterPushNotificationModule(context))
@@ -44,7 +49,12 @@ class RegisterPushNotificationWorker(
     }
 
     override suspend fun doWork(): Result {
+        if (isRegistered()) {
+            return Result.success()
+        }
+
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
+            saveRegisterStatus(false)
             return Result.failure()
         }
 
@@ -52,13 +62,11 @@ class RegisterPushNotificationWorker(
             if (userSession.isLoggedIn) {
                 val response = registerPushNotification()
                 if (response?.isSuccess == true) {
+                    saveRegisterStatus(true)
                     Result.success()
                 } else {
-                    recordLog(LOG_TYPE_DO_WORK,
-                        "retry count = $runAttemptCount",
-                        Throwable(response?.errorMessage))
-
-                    Result.failure()
+                    recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", Throwable(response?.errorMessage))
+                    Result.retry()
                 }
             } else {
                 Result.failure()
@@ -81,6 +89,7 @@ class RegisterPushNotificationWorker(
                             datetime = it.datetime
                         )).data
                     } catch (e: Exception) {
+                        saveRegisterStatus(false)
                         recordLog(LOG_TYPE_REGISTER_PUSH_NOTIF, "", e)
                     }
                 }
@@ -148,6 +157,17 @@ class RegisterPushNotificationWorker(
         return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
     }
 
+    @SuppressLint("CommitPrefEdits")
+    private fun saveRegisterStatus(isSuccess: Boolean) {
+        sharedPreferences?.edit()?.apply {
+            putBoolean(IS_REGISTERED, isSuccess)
+        }?.apply()
+    }
+
+    private fun isRegistered(): Boolean {
+        return sharedPreferences?.getBoolean(IS_REGISTERED, false) == true
+    }
+
     companion object {
         private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val PUSH_NOTIF_ALIAS = "PushNotif"
@@ -157,6 +177,9 @@ class RegisterPushNotificationWorker(
 
         private const val WORKER_NAME = "REGISTER_PUSH_NOTIFICATION_WORKER"
         private const val MAX_RUN_ATTEMPT = 3
+
+        private const val REGISTER_PUSH_NOTIFICATION_PREFERENCE = "registerPushNotification"
+        private const val IS_REGISTERED = "isRegistered"
 
         private val ERROR_HEADER = "${RegisterPushNotificationWorker::class.java.name} error on "
         private const val TAG_REGISTER_PUSH_NOTIF = "CRASH_REGISTER_PUSHNOTIF"
