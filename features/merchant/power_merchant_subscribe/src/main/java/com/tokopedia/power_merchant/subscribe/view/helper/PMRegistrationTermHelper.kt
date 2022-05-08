@@ -503,10 +503,6 @@ object PMRegistrationTermHelper {
                 icon = IconUnify.COURIER_FAST
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_2),
-                icon = IconUnify.SEARCH
-            ),
-            PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),
                 icon = IconUnify.COURIER
             ),
