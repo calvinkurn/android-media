@@ -93,7 +93,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var hasRequestedLocation: Boolean = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
-    private var turnOnGpsDialog: DialogUnify? = null
 
     interface DiscomRevampListener {
         fun onGetDistrict(districtAddress: Address)
@@ -135,7 +134,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AddressConstants.GPS_REQUEST) {
-                turnOnGpsDialog?.dismiss()
                 Handler().postDelayed ({getLocation()}, 1000)
             }
         }
@@ -552,19 +550,21 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
 
     private fun showDialogAskGps() {
-        turnOnGpsDialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-        turnOnGpsDialog?.apply {
-            setTitle(getString(R.string.txt_location_not_detected))
-            setDescription(getString(R.string.discom_on_deny_location_subtitle))
-            setPrimaryCTAText(getString(R.string.btn_ok))
-            setPrimaryCTAClickListener {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.txt_location_not_detected))
+            dialog.setDescription(getString(R.string.discom_on_deny_location_subtitle))
+            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
+            dialog.setCancelable(true)
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
                 context?.let { turnGPSOn(it) }
             }
-            setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
-            setSecondaryCTAClickListener {
-                turnOnGpsDialog?.hide()
+            dialog.setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
             }
-            show()
+            dialog.show()
         }
     }
 
