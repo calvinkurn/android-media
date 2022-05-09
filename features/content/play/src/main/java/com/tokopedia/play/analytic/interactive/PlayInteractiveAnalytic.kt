@@ -13,16 +13,32 @@ interface PlayInteractiveAnalytic {
         channelType: PlayChannelType,
         interactiveId: String,
         isForQuiz: Boolean,
-        shopId: String
+        shopId: String,
+    )
+
+    fun impressFollowShopInteractive(
+        channelId: String,
+        interactiveId: String,
+        shopId: String,
     )
 
     fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String)
+
+    fun impressWinnerBadge(channelId: String, shopId: String, interactiveId: String)
 
     fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
 
     fun clickRefreshLeaderBoard(channelId: String, interactiveId: String, shopId: String)
 
+    fun impressRefreshLeaderBoard(channelId: String, interactiveId: String, shopId: String)
+
     fun clickQuizOption(channelId: String, choiceAlphabet: String, interactiveId: String, shopId: String)
 
+    fun impressQuizOptions(channelId: String, interactiveId: String, shopId: String)
+
     fun clickActiveInteractive(channelId: String, interactiveId: String, shopId: String)
+
+    fun impressActiveInteractive(channelId: String, interactiveId: String, shopId: String)
+
+    fun impressLeaderBoard(channelId: String, interactiveId: String, shopId: String)
 }

@@ -37,6 +37,19 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun impressFollowShopInteractive(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - follow quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
     override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String) {
         val (eventAction, eventLabel) = when(isForQuiz){
             true -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
@@ -48,6 +61,19 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
                 eventAction = eventAction,
                 eventLabel = eventLabel
+        )
+    }
+
+    override fun impressWinnerBadge(
+        channelId: String,
+        shopId: String,
+        interactiveId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - hasil game button",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
         )
     }
 
@@ -77,6 +103,19 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun impressRefreshLeaderBoard(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - refresh button leaderboard bottomsheet",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
     override fun clickQuizOption(
         channelId: String,
         choiceAlphabet: String,
@@ -91,6 +130,19 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun impressQuizOptions(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - multiple choice quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
     override fun clickActiveInteractive(
         channelId: String,
         interactiveId: String,
@@ -100,6 +152,28 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
             event = KEY_TRACK_CLICK_CONTENT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "click - quiz widget",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    override fun impressActiveInteractive(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - quiz widget",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    override fun impressLeaderBoard(channelId: String, interactiveId: String, shopId: String) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_VIEW_CONTENT_IRIS,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "view - quiz leaderboard bottomsheet",
             eventLabel = "$shopId - $channelId - $userId - $interactiveId"
         )
     }
