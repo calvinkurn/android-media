@@ -62,7 +62,8 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.submitAction(ProductTagAction.LoadLastPurchasedProduct)
+        if(viewModel.lastPurchasedProductStateUnknown)
+            viewModel.submitAction(ProductTagAction.LoadLastPurchasedProduct)
         setupView()
         setupObserver()
     }

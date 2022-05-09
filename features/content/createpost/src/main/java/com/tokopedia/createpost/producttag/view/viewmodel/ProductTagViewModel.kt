@@ -43,6 +43,15 @@ class ProductTagViewModel @AssistedInject constructor(
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
+    val lastTaggedProductStateUnknown: Boolean
+        get() = _lastTaggedProduct.value.state == PagedState.Unknown
+
+    val lastPurchasedProductStateUnknown: Boolean
+        get() = _lastPurchasedProduct.value.state == PagedState.Unknown
+
+    val myShopStateUnknown: Boolean
+        get() = _myShopProduct.value.state == PagedState.Unknown
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)

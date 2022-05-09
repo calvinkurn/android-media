@@ -71,7 +71,8 @@ class LastTaggedProductFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct)
+        if(viewModel.lastTaggedProductStateUnknown)
+            viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct)
         setupView()
         setupObserver()
     }

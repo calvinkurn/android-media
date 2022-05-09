@@ -102,4 +102,6 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_no_last_purchased_product_title">Kamu belum pernah beli produk di Tokopedia</string>
     <string name="cc_no_last_purchased_product_desc">Ayo mulai belanja, supaya kamu bisa ceritain pengalamanmu di Feed.</string>
     <string name="cc_failed_load_product">Gagal memuat produk. Silahkan ulangi.</string>
+    <string name="cc_no_my_shop_product_title">Kamu belum punya produk</string>
+    <string name="cc_no_my_shop_product_desc">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
 </resources>
