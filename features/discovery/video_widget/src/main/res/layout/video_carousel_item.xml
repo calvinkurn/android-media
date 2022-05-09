@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.video_widget.carousel.VideoCarouselCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="128dp"
+    android:layout_height="227dp" />

@@ -21,6 +21,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
@@ -32,7 +33,10 @@ import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
 import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -129,7 +133,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         if (GlobalConfig.isSellerApp()) {
             activity?.let {
                 if (userSession.isLoggedIn) {
-                    RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+                    RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
                     it.finish()
                 } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
                     RouteManager.route(it, ApplinkConst.LOGIN)

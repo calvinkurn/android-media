@@ -61,13 +61,15 @@ class PlayBroInteractiveInitViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.getViewModel().createInteractiveSession(mockTitle, mockDurationInMs)
+        robot.use {
+            it.getViewModel().createInteractiveSession(mockTitle, mockDurationInMs)
 
-        val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
+            val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
 
-        Assertions
-            .assertThat(result)
-            .isInstanceOf(NetworkResult.Success::class.java)
+            Assertions
+                .assertThat(result)
+                .isInstanceOf(NetworkResult.Success::class.java)
+        }
     }
 
     @Test
@@ -82,13 +84,14 @@ class PlayBroInteractiveInitViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.getViewModel().createInteractiveSession("Giveaway", 1000L)
+        robot.use {
+            it.getViewModel().createInteractiveSession("Giveaway", 1000L)
+            val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
 
-        val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
-
-        Assertions
-            .assertThat(result)
-            .isInstanceOf(NetworkResult.Fail::class.java)
+            Assertions
+                .assertThat(result)
+                .isInstanceOf(NetworkResult.Fail::class.java)
+        }
     }
 
     @Test
@@ -104,12 +107,14 @@ class PlayBroInteractiveInitViewModelTest {
             sharedPref = mockSharedPref,
         )
 
-        robot.getViewModel().createInteractiveSession("Giveaway", 1000L)
+        robot.use {
+            it.getViewModel().createInteractiveSession("Giveaway", 1000L)
 
-        val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
+            val result = robot.getViewModel().observableCreateInteractiveSession.getOrAwaitValue()
 
-        Assertions
-            .assertThat(result)
-            .isInstanceOf(NetworkResult.Fail::class.java)
+            Assertions
+                .assertThat(result)
+                .isInstanceOf(NetworkResult.Fail::class.java)
+        }
     }
 }

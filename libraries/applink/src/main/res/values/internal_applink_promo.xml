@@ -35,7 +35,7 @@
     <string name="path_promo_detail_event" translatable="false">/detail/event</string>
 
     <!-- for tokopoint module -->
-    <string name="host_tokopoints">tokopoints</string>
+    <string name="host_tokopoints">rewards</string>
     <string name="path_tokopoint_home">/home</string>
     <string name="path_tokopoints_coupon">/kupon-saya</string>
     <string name="path_tokopoints_merchant_couponlist">/kupon-toko</string>

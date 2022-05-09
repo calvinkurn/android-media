@@ -33,7 +33,8 @@ open class PgRecommendationViewHolder(
                     productIds = element.productIdList,
                     adapterPosition = adapterPosition,
                     basicListener = this@PgRecommendationViewHolder,
-                    tokonowPageNameListener = null
+                    tokonowPageNameListener = null,
+                    tempHeaderName = getString(R.string.bom_recommendation_lbl)
                 )
             }
         }

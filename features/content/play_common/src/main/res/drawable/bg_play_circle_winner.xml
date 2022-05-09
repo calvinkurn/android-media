@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="ring"
-    android:thickness="1.5dp"
-    android:innerRadius="14dp"
-    android:useLevel="false">
-   <gradient
-       android:angle="90"
-       android:endColor="@color/play_dms_winner_ring_g2"
-       android:startColor="@color/play_dms_winner_ring_g1"
-       />
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="ring" android:thickness="1.5dp" android:innerRadius="14dp" android:useLevel="false">
+    <gradient android:angle="90" android:endColor="@color/play_dms_winner_ring_g2" android:startColor="@color/play_dms_winner_ring_g1"/>
 </shape>

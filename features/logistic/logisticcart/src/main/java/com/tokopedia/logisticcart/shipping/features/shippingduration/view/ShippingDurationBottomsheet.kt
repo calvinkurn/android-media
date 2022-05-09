@@ -206,19 +206,21 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
     }
 
-    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
-        if (promoViewModel?.etaData != null && promoViewModel.etaData.textEta.isEmpty() && promoViewModel.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
+    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
+        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel)
+       if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
             sendAnalyticCourierPromo(serviceDataList)
         }
-        if (promoViewModel != null) {
-            mPromoTracker?.eventViewPromoLogisticTicker(promoViewModel.promoCode)
-            if (promoViewModel.disabled) {
-                mPromoTracker?.eventViewPromoLogisticTickerDisable(promoViewModel.promoCode)
+        promoViewModelList.forEach {
+            mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
+            if (it.disabled) {
+                mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
             }
         }
+
     }
 
     private fun checkHasCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>): Boolean {

@@ -346,7 +346,11 @@ class NotificationViewModel @Inject constructor(
         if (role == null) return
         launchCatchError(dispatcher.io,
             {
-                clearNotifUseCase.clearNotifCounter(role).collect {
+                var type = role
+                if (userSessionInterface.shopId == DEFAULT_SHOP_ID) {
+                    type = CLEAR_ALL_NOTIF_TYPE
+                }
+                clearNotifUseCase.clearNotifCounter(type).collect {
                     _clearNotif.postValue(it)
                 }
             }, { }
@@ -443,6 +447,9 @@ class NotificationViewModel @Inject constructor(
 
         const val RECOM_WIDGET = "recom_widget"
         const val RECOM_SOURCE_INBOX_PAGE = "inbox"
+
+        const val DEFAULT_SHOP_ID = "0"
+        const val CLEAR_ALL_NOTIF_TYPE = 0
 
         private fun isFirstPage(page: Int): Boolean {
             return page == 1

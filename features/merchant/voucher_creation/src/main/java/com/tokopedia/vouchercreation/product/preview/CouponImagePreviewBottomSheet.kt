@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -22,7 +21,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.common.extension.getIndexAtOrEmpty
 import com.tokopedia.vouchercreation.databinding.BottomsheetCouponImagePreviewBinding
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
@@ -33,13 +31,9 @@ import javax.inject.Inject
 class CouponImagePreviewBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val FIRST_IMAGE_URL = 0
-        private const val SECOND_IMAGE_URL = 1
-        private const val THIRD_IMAGE_URL = 2
         private const val BUNDLE_KEY_COUPON_INFORMATION = "information"
         private const val BUNDLE_KEY_COUPON_SETTINGS = "settings"
-        private const val BUNDLE_KEY_PRODUCT_COUNT = "product-count"
-        private const val BUNDLE_KEY_PRODUCT_IMAGE_URL = "imageUrl"
+        private const val BUNDLE_KEY_PARENT_PRODUCT_IDS = "parent_product_ids"
         private const val BUNDLE_KEY_IS_CREATE_MODE = "create-mode"
         private const val SCREEN_HEIGHT_FULL = 1f
         private const val SCREEN_HEIGHT_ONE_HALF = 1.5f
@@ -50,14 +44,12 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
             isCreateMode: Boolean,
             couponInformation: CouponInformation,
             couponSettings: CouponSettings,
-            productCount: Int,
-            productImageUrls: ArrayList<String>
+            parentProductIds: List<Long>
         ): CouponImagePreviewBottomSheet {
             val args = Bundle()
             args.putParcelable(BUNDLE_KEY_COUPON_INFORMATION, couponInformation)
             args.putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
-            args.putInt(BUNDLE_KEY_PRODUCT_COUNT, productCount)
-            args.putStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL, productImageUrls)
+            args.putLongArray(BUNDLE_KEY_PARENT_PRODUCT_IDS, parentProductIds.toLongArray())
             args.putBoolean(BUNDLE_KEY_IS_CREATE_MODE, isCreateMode)
             val fragment = CouponImagePreviewBottomSheet()
             fragment.arguments = args
@@ -180,22 +172,13 @@ class CouponImagePreviewBottomSheet : BottomSheetUnify() {
                 ?: return
         val couponSettings =
             arguments?.getParcelable(BUNDLE_KEY_COUPON_SETTINGS) as? CouponSettings ?: return
-        val productCount = arguments?.getInt(BUNDLE_KEY_PRODUCT_COUNT).orZero()
-        val productImageUrls = arguments?.getStringArrayList(BUNDLE_KEY_PRODUCT_IMAGE_URL) ?: arrayListOf()
-
-
-        val firstProductImageUrl = productImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
-        val secondProductImageUrl = productImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
-        val thirdImageUrl = productImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
+        val parentProductIds = arguments?.getLongArray(BUNDLE_KEY_PARENT_PRODUCT_IDS)?.toList().orEmpty()
 
         viewModel.previewImage(
             isCreateMode,
             couponInformation,
             couponSettings,
-            productCount,
-            firstProductImageUrl,
-            secondProductImageUrl,
-            thirdImageUrl,
+            parentProductIds,
             imageRatio
         )
     }

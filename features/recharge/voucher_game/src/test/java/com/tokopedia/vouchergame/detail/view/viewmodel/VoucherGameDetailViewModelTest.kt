@@ -62,8 +62,8 @@ class VoucherGameDetailViewModelTest {
     @Test
     fun getVoucherGameProducts_Success() {
         val dataCollection = listOf(
-                CatalogProductData.DataCollection("collection_1", "", "", listOf(CatalogProduct(id = "1"), CatalogProduct(id = "2"))),
-                CatalogProductData.DataCollection("collection_2", "", "", listOf(CatalogProduct(id = "3")))
+            CatalogProductData.DataCollection("collection_1", "", "", listOf(CatalogProduct(id = "1"), CatalogProduct(id = "2"))),
+            CatalogProductData.DataCollection("collection_2", "", "", listOf(CatalogProduct(id = "3")))
         )
         val catalogData = CatalogData.Response(CatalogData(
                 enquiryFields = listOf(CatalogProductInput("1",

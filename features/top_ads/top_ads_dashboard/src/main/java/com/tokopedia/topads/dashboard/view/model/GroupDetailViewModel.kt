@@ -10,13 +10,12 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.AUTO_BID_STATE
+import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.response.FinalAdResponse
-import com.tokopedia.topads.common.data.response.GroupInfoResponse
-import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
-import com.tokopedia.topads.common.data.response.TopadsBidInfo
+import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
@@ -138,6 +137,35 @@ class GroupDetailViewModel @Inject constructor(
             { throwable ->
                 throwable.printStackTrace()
             })
+    }
+
+    fun changeBidState(
+        isAutomatic: Boolean, groupId: Int,
+        suggestBidPerClick: Float = 0f, bidPencarian: Float = 0f, bidRecomendasi: Float = 0f,
+        onSuccess: () -> Unit
+    ) {
+        val dataGrp = hashMapOf<String, Any?>(
+            ParamObject.ACTION_TYPE to ParamObject.ACTION_EDIT,
+            ParamObject.GROUPID to groupId
+        )
+        val dataKey = hashMapOf<String, Any?>()
+        if (isAutomatic) {
+            dataKey[STRATEGIES] = arrayListOf(AUTO_BID_STATE)
+        } else {
+            dataKey[STRATEGIES] = arrayListOf<String>()
+            dataKey[ParamObject.SUGGESTION_BID_SETTINGS] = listOf(
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_SEARCH,
+                    suggestBidPerClick),
+                GroupEditInput.Group.TopadsSuggestionBidSetting(ParamObject.PRODUCT_BROWSE,
+                    suggestBidPerClick)
+            )
+            dataKey[ParamObject.BID_TYPE] = listOf(
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_SEARCH, bidPencarian),
+                TopAdsBidSettingsModel(ParamObject.PRODUCT_BROWSE, bidRecomendasi),
+            )
+        }
+
+        topAdsCreated(dataGrp, dataKey, onSuccess, {})
     }
 
     fun topAdsCreated(dataGrp: HashMap<String, Any?>,dataKey: HashMap<String,Any?>, onSuccess: (() -> Unit), onError: ((error: String?) -> Unit)) {
