@@ -24,7 +24,7 @@ import android.view.animation.Animation
 class VideoControlView(context: Context, attributeSet: AttributeSet) :
     PlayerControlView(context, attributeSet) {
 
-    private val scrubber: DefaultTimeBar = findViewById(R.id.exo_progress)
+    private val scrubber: DefaultTimeBar = findViewById(com.google.android.exoplayer2.R.id.exo_progress)
 
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
