@@ -22,9 +22,13 @@ const val ANNOUNCEMENT__TYPE_SERVICE_STATUS = "serviceStatus"
 const val ANNOUNCEMENT__TYPE_USER_BLACKLIST = "userBlacklisted"
 const val ANNOUNCEMENT__TYPE_SUCCESS = 1
 const val TRANSACTION_ID = "TransactionID"
-
-val bodyTypoMap = mapOf(16 to Typography.BODY_1, 14 to Typography.BODY_2, 12 to Typography.BODY_3)
-val headerTypoMap = mapOf(12 to Typography.HEADING_6, 14 to Typography.HEADING_5, 16 to Typography.HEADING_4,18 to Typography.HEADING_3,20 to Typography.HEADING_2)
+const val SMALL = 12
+const val MEDIUM = 14
+const val EXTRA_MEDIUM = 16
+const val LARGE = 18
+const val EXTRA_LARGER = 20
+val bodyTypoMap = mapOf(EXTRA_MEDIUM to Typography.BODY_1, MEDIUM to Typography.BODY_2, SMALL to Typography.BODY_3)
+val headerTypoMap = mapOf(SMALL to Typography.HEADING_6, MEDIUM to Typography.HEADING_5, EXTRA_MEDIUM to Typography.HEADING_4,LARGE to Typography.HEADING_3,EXTRA_LARGER to Typography.HEADING_2)
 
 const val ON_BOARDING_TUTORIAL_IMAGE_1 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"
 const val ON_BOARDING_TUTORIAL_IMAGE_2 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_second_image.png"
@@ -111,6 +115,8 @@ const val PRODUCT_INACTIVE = 4
 const val SHOP_INACTIVE = 5
 
 const val TRAFFIC_TYPE = "TRAFFIC"
+
+const val PRODUCT_TYPE = "PRODUCT"
 
 const val TYPE_DIVIDER = "divider"
 

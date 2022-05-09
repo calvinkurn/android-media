@@ -63,4 +63,8 @@ interface CatalogDetailListener {
 
     fun getWindowHeight() : Int { return 0 }
 
+    fun sendWidgetImpressionEvent(widgetImpressionActionName : String, widgetImpressionItemName: String, adapterPosition: Int) {}
+
+    fun sendWidgetTrackEvent(actionName: String) { }
+
 }
