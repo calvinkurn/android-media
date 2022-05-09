@@ -32,7 +32,8 @@ class RechargeEmoneyVoidUseCase @Inject constructor(
             usecase.addRequest(graphqlRequest)
             val response = usecase.executeOnBackground()
                 .getData<RechargeEmoneyVoidResponse.Response>(RechargeEmoneyVoidResponse.Response::class.java)
-            if (response.rechargeEmoneyVoid.status == STATUS_FAILED_CODE ||
+            if (response.rechargeEmoneyVoid.status == 0 ||
+                response.rechargeEmoneyVoid.status == STATUS_FAILED_CODE ||
                 response.rechargeEmoneyVoid.status == STATUS_ERROR_CODE
             ) {
                 Fail(Throwable(response.rechargeEmoneyVoid.message))
@@ -48,7 +49,7 @@ class RechargeEmoneyVoidUseCase @Inject constructor(
         private const val STATUS_FAILED_CODE = 300
         private const val STATUS_ERROR_CODE = 500
 
-        private const val ORDER_ID = "orderId"
+        private const val ORDER_ID = "orderID"
     }
 
 }
