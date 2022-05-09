@@ -82,7 +82,7 @@ class MyShopProductFragment : TkpdBaseV4Fragment() {
         binding.rvMyShopProduct.adapter = adapter
 
         binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_no_last_tag_product))
+            errorIllustration.loadImage(getString(R.string.img_no_my_shop_product))
             errorTitle.text = getString(R.string.cc_no_my_shop_product_title)
             errorDescription.text = getString(R.string.cc_no_my_shop_product_desc)
             errorAction.gone()
