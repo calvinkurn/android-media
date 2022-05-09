@@ -23,6 +23,8 @@ import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewMode
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_IKLAN_TOKO
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday
@@ -191,6 +193,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                 getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
             putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
             putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
+            putExtra(TOPADS_MOVE_TO_DASHBOARD, PARAM_IKLAN_TOKO)
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -213,7 +216,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         }
     }
 
-    private fun getTimeSelected(): Long? {
+    private fun getTimeSelected(): Long {
         var endDate = selectedEndDate?.time?.time ?: 0
         var startDate = selectedStartDate?.time?.time ?: 0
         context?.let {
@@ -377,7 +380,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     private fun setUpScheduleView() {
         startDate?.textFieldInput?.isFocusable = false
         endDate?.textFieldInput?.isFocusable = false
-        val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
         startDate?.textFieldIcon1?.setPadding(padding, padding, padding, padding)
         endDate?.textFieldIcon1?.setPadding(padding, padding, padding, padding)
         context?.run {
@@ -443,7 +446,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
     private fun setAdAppearanceMessage() {
         adAppearanceMessage?.text =
             String.format(getString(R.string.topads_headline_schedule_add_appearance_message),
-                getTimeSelected()?.toInt())
+                getTimeSelected().toInt())
     }
 
     private fun onStartDateChanged(calendar: Calendar) {
@@ -517,7 +520,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                     val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
                     val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tooltipBtn?.addItem(tooltipView)
         tooltipBtn?.setOnClickListener {

@@ -71,10 +71,16 @@ object ApplinkConstInternalUserPlatform {
     // tokopedia-android-internal://user/link-acc-reminder
     const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
 
-
     const val NEW_PROFILE_INFO = "${NEW_INTERNAL_USER}/profile-info"
     const val EDIT_PROFILE_INFO = "${NEW_INTERNAL_USER}/edit-profile-info"
 
     // SettingProfileActivity
     const val SETTING_PROFILE = "${NEW_INTERNAL_USER}/setting-profile"
+
+    /**
+     * ExplicitProfileActivity
+     * @Applink : tokopedia-android-internal://user/explicit-profile
+     **/
+    const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
+
 }

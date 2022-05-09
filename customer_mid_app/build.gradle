@@ -371,6 +371,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

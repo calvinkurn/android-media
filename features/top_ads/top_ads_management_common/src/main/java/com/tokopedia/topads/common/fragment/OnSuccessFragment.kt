@@ -13,6 +13,8 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.activity.EXTRA_BUTTON
 import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
 import com.tokopedia.topads.common.activity.EXTRA_TITLE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_TOPADS_HOMEPAGE
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
 import com.tokopedia.topads.common.isFromPdpSellerMigration
@@ -35,15 +37,19 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(resources.getLayout(R.layout.topads_create_activity_success),
-            container, false)
+            container,
+            false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<ImageUnify>(R.id.ic_ilustration)?.setImageDrawable(view?.context?.getResDrawable(R.drawable.ill_success))
+        view.findViewById<ImageUnify>(R.id.ic_ilustration)
+            ?.setImageDrawable(view.context?.getResDrawable(R.drawable.ill_success))
         view.findViewById<UnifyButton>(R.id.goToDashboard)?.setOnClickListener {
             val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
@@ -53,6 +59,8 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
                     putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA,
                         getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
                 }
+                putExtra(TOPADS_MOVE_TO_DASHBOARD,
+                    arguments?.getInt(TOPADS_MOVE_TO_DASHBOARD, PARAM_TOPADS_HOMEPAGE))
             }
             startActivity(intent)
             activity?.finish()

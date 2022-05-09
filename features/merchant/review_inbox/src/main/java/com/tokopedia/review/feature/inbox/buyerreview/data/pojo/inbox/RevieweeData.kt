@@ -18,7 +18,7 @@ data class RevieweeData(
 
     @SerializedName("reviewee_role_id")
     @Expose
-    val revieweeRoleId: Int = 0,
+    val revieweeRoleId: String = "",
 
     @SerializedName("reviewee_picture")
     @Expose

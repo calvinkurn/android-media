@@ -32,7 +32,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         setContentInsetsRelative(0,contentInsetEnd)
         setContentInsetsAbsolute(0,contentInsetRight)
 
-        background = ColorDrawable(MethodChecker.getColor(context,R.color.Unify_Static_White))
+        background = ColorDrawable(MethodChecker.getColor(context,R.color.Unify_Background))
         toolbarIcon  = findViewById(R.id.img_com_toolbar_icon)
         toolbarTitle = findViewById(R.id.img_com_toolbar_title)
         toolbarSubtitle = findViewById(R.id.img_com_toolbar_subtitle)

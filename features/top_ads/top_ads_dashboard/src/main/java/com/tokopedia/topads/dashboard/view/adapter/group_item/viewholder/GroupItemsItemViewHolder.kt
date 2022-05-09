@@ -73,11 +73,14 @@ class GroupItemsItemViewHolder(
     }
 
     override fun bind(
-        item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean,
-        statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>,
+        item: GroupItemsItemModel,
+        selectedMode: Boolean,
+        fromSearch: Boolean,
+        statsData: MutableMap<String, DataItem>,
+        countList: MutableList<CountDataItem>,
     ) {
         item.let {
-
+            val stats = statsData[item.data.groupId] ?: item.data
             if (item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
                 imgKey.visibility = View.GONE
                 keyCount.visibility = View.GONE
@@ -120,22 +123,20 @@ class GroupItemsItemViewHolder(
                 totalItem.text = countList[adapterPosition].totalAds.toString()
                 keyCount.text = countList[adapterPosition].totalKeywords.toString()
             }
-            setProgressBar(it.data)
-            statsData.forEachIndexed { index, stats ->
-                if (stats.groupId == it.data.groupId) {
-                    tampilCount.text = statsData[index].statTotalImpression
-                    klikCount.text = statsData[index].statTotalClick
-                    persentaseKlikCount.text = statsData[index].statTotalCtr
-                    pengeluaranCount.text = statsData[index].statTotalSpent
-                    pendapatanCount.text = statsData[index].groupTotalIncome
-                    produkTerjualCount.text = statsData[index].statTotalConversion
-                }
-            }
+
+            tampilCount.text = stats.statTotalImpression
+            klikCount.text = stats.statTotalClick
+            persentaseKlikCount.text = stats.statTotalCtr
+            pengeluaranCount.text = stats.statTotalSpent
+            pendapatanCount.text = stats.groupTotalIncome
+            produkTerjualCount.text = stats.statTotalConversion
+            setProgressBar(stats)
+
             itemCard?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
                         onClickItem.invoke(item.data.groupId,
-                            item.data.groupPriceDailySpentFmt,
+                            stats.groupPriceDailySpentFmt,
                             item.data.groupName)
                     else
                         onClickItem.invoke(item.data.groupId, NOT_VALID, item.data.groupName)
@@ -192,7 +193,7 @@ class GroupItemsItemViewHolder(
     }
 
     private fun setProgressBar(data: DataItem) {
-        if (data.groupPriceDailyBar.isNotEmpty()) {
+        if (data.groupPriceDailySpentFmt.isNotEmpty()) {
             progressLayout.visibility = View.VISIBLE
             progressBar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
             try {
