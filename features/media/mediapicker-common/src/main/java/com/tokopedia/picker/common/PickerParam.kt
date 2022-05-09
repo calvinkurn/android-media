@@ -9,15 +9,15 @@ import java.io.File
 
 @Parcelize
 data class PickerParam(
-    private var pageType: Int = PageType.COMMON,
+    private var pageType: Int = PageType.GALLERY,
     private var modeType: Int = ModeType.COMMON,
-    private var isMultipleSelection: Boolean = true,
+    private var isMultipleSelection: Boolean = false,
     private var cameraRatio: CameraRatio = CameraRatio.Full,
     private var maxMediaItem: Int = 4,
     private var maxVideoItem: Int = 2,
     private var maxVideoFileSize: Long = 250_000_000, // 250 mb
     private var minVideoDuration: Int = 3000, // equals 3 sec
-    private var maxVideoDuration: Long = 30_000, // equals 30 sec
+    private var maxVideoDuration: Long = 300_000, // equals 30 sec
     private var maxImageFileSize: Long = 10_000_000, // 10 mb
     private var minImageResolution: Int = 300, // px
     private var maxImageResolution: Int = 20000, // px

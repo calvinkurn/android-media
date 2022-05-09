@@ -16,11 +16,11 @@ class DebugPlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val binding: ViewItemSelectionPlaceholderBinding? by viewBinding()
 
     fun bind(bgColor: Int, @DrawableRes placeholder: Int) {
-        binding?.imageView?.setBackgroundColor(bgColor)
+        binding?.imgBgPlaceholder?.setBackgroundColor(bgColor)
 
-        binding?.imageViewPlaceholder?.setImageDrawable(
+        binding?.imgPlaceholder?.setImageDrawable(
             MethodChecker.getDrawable(
-                binding?.imageViewPlaceholder?.context,
+                binding?.imgPlaceholder?.context,
                 placeholder
             )
         )
