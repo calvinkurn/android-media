@@ -1,6 +1,5 @@
 package com.tokopedia.createpost.common.data.pojo.getcontentform
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FeedContentForm(
