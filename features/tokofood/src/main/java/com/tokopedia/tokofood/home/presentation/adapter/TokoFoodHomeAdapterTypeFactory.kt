@@ -35,12 +35,14 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeMerchantListViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeNoPinPoinViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeOutOfCoverageViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
@@ -50,12 +52,15 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 
 class TokoFoodHomeAdapterTypeFactory (
+    private val tokoFoodHomeView: TokoFoodHomeView? = null,
     private val dynamicLegoBannerCallback: TokoFoodHomeLegoComponentCallback? = null,
     private val bannerComponentCallback: TokoFoodHomeBannerComponentCallback? = null,
     private val categoryWidgetCallback: TokoFoodHomeCategoryWidgetV2ComponentCallback? = null,
-    private val uspListener: TokoFoodHomeUSPViewHolder.TokoFoodUSPListener? = null
+    private val uspListener: TokoFoodHomeUSPViewHolder.TokoFoodUSPListener? = null,
+    private val chooseAddressWidgetListener: TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener? = null,
 ):  BaseAdapterTypeFactory(),
     TokoFoodHomeTypeFactory,
     HomeComponentTypeFactory {
@@ -67,6 +72,7 @@ class TokoFoodHomeAdapterTypeFactory (
     override fun type(uiModel: TokoFoodHomeLoadingStateUiModel): Int = TokoFoodHomeLoadingViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeMerchantListUiModel): Int = TokoFoodHomeMerchantListViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeIconsUiModel): Int = TokoFoodHomeIconsViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeChooseAddressWidgetUiModel): Int = TokoFoodHomeChooseAddressViewHolder.LAYOUT
     // endregion
 
 
@@ -98,6 +104,7 @@ class TokoFoodHomeAdapterTypeFactory (
             TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
             TokoFoodHomeMerchantListViewHolder.LAYOUT -> TokoFoodHomeMerchantListViewHolder(view)
             TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view)
+            TokoFoodHomeChooseAddressViewHolder.LAYOUT -> TokoFoodHomeChooseAddressViewHolder(view, tokoFoodHomeView, chooseAddressWidgetListener)
             // endregion
 
             // region Global Home Component

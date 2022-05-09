@@ -23,9 +23,11 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
@@ -51,7 +53,11 @@ object TokoFoodHomeMapper {
     fun MutableList<TokoFoodHomeItemUiModel>.mapHomeLayoutList(
         responses: List<HomeLayoutResponse>
     ){
-         responses .filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }.forEach { homeLayoutResponse ->
+
+        val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
+        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
+
+         responses.filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }.forEach { homeLayoutResponse ->
              mapToHomeUiModel(homeLayoutResponse)?.let { item ->
                  add(item)
              }

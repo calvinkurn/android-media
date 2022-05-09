@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.home.presentation.adapter
 
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
@@ -14,4 +15,5 @@ interface TokoFoodHomeTypeFactory {
     fun type(uiModel: TokoFoodHomeOutOfCoverageUiModel): Int
     fun type(uiModel: TokoFoodHomeNoPinPoinUiModel): Int
     fun type(uiModel: TokoFoodHomeIconsUiModel): Int
+    fun type(uiModel: TokoFoodHomeChooseAddressWidgetUiModel): Int
 }

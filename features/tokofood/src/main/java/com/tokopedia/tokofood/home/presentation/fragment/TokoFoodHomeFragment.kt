@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,12 +42,14 @@ import com.tokopedia.tokofood.home.presentation.adapter.CustomLinearLayoutManage
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -58,7 +61,9 @@ import com.tokopedia.unifyprinciples.R as unifyR
 @ExperimentalCoroutinesApi
 class TokoFoodHomeFragment : BaseDaggerFragment(),
         IBaseMultiFragment,
-        TokoFoodHomeUSPViewHolder.TokoFoodUSPListener
+        TokoFoodHomeView,
+        TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
+        TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener
 {
 
     @Inject
@@ -72,12 +77,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private val adapter by lazy {
         TokoFoodHomeAdapter(
             typeFactory = TokoFoodHomeAdapterTypeFactory(
+                this,
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 bannerComponentCallback = createBannerCallback(),
                 categoryWidgetCallback = createCategoryWidgetCallback(),
                 uspListener = this,
+                chooseAddressWidgetListener = this,
             ),
-            differ = TokoFoodHomeListDiffer()
+            differ = TokoFoodHomeListDiffer(),
         )
     }
 
@@ -309,6 +316,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
     }
 
+    // region TokoFoodHomeView
+
+    override fun getFragmentPage(): Fragment = this
+
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() = onRefreshLayout()
+
+    // endregion
+
     // region TokoFood Home Component Callback
 
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
@@ -331,6 +348,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         showUSPBottomSheet(uspResponse)
     }
 
+    override fun onClickChooseAddressWidgetTracker() {
+
+    }
+
+    override fun onChooseAddressWidgetRemoved() {
+
+    }
+
     // endregion
+
 
 }
