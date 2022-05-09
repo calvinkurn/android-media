@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -352,7 +353,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             endsIn = dataUiModel.countDownEnd,
             otherParticipant = 0,
             otherParticipantText = "",
-            winners = emptyList()
+            winners = emptyList(),
+            leaderBoardType = LeadeboardType.Quiz
         )
     }
 
