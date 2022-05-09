@@ -35,6 +35,8 @@ class InteractiveQuizErrorView: ConstraintLayout {
         binding.btnInteractiveRetry.setOnClickListener {
             mListener?.onRetryButtonClicked(this)
         }
+
+        binding.headerView.isEditable = false
     }
 
     fun getHeader(): GameHeaderView {

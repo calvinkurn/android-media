@@ -235,7 +235,6 @@ class InteractiveDialogFragment @Inject constructor(
                     view
                 }.apply {
                     getHeader().setupQuiz(quiz.title)
-                    getHeader().isEditable = false
                 }
             }
         }
