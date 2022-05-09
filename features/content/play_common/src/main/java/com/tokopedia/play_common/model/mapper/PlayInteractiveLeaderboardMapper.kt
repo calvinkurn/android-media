@@ -17,7 +17,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
      */
     fun mapNewLeaderboard(response: GetLeaderboardSlotResponse, isChatAllowed: () -> Boolean) =
         PlayLeaderboardInfoUiModel(
-            leaderboardWinners = mapNewLeaderboardInteractive(response.data, isChatAllowed),
+            leaderboardWinners = mapNewLeaderboardInteractive(response.data.data, isChatAllowed),
         )
 
     private fun mapNewLeaderboardInteractive(
