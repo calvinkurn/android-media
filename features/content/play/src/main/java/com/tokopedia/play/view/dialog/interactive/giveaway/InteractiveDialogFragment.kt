@@ -222,6 +222,7 @@ class InteractiveDialogFragment @Inject constructor(
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
                         }
                     })
+                    getHeader().isEditable = false
                 }
             }
             status is InteractiveUiModel.Quiz.Status.Failed -> {
