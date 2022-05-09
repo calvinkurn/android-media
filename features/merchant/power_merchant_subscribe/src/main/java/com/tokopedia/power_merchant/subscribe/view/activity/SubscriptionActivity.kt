@@ -81,7 +81,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         ViewModelProvider(this, viewModelFactory).get(PowerMerchantSharedViewModel::class.java)
     }
 
-    private var pmActiveStatePage: PowerMerchantSubscriptionFragment? = null
+    private val pmActiveStatePage: PowerMerchantSubscriptionFragment by lazy {
+        PowerMerchantSubscriptionFragment.createInstance()
+    }
     private val pmRegistrationPage: PMRegistrationFragment by lazy {
         PMRegistrationFragment.createInstance()
     }
@@ -279,14 +281,9 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun setupActiveState() {
         binding?.pmRegistrationFooterView?.gone()
         setViewForPmSuccessState()
-        if (pmActiveStatePage == null) {
-            pmActiveStatePage = PowerMerchantSubscriptionFragment.createInstance()
-        }
-        pmActiveStatePage?.let {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.framePmFragment, it)
-                .commit()
-        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.framePmFragment, pmActiveStatePage)
+            .commit()
     }
 
     private fun setupRegistrationPage() {
