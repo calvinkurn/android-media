@@ -2,6 +2,8 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -18,15 +20,15 @@ import kotlinx.coroutines.flow.combine
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class ProductTagViewModel @AssistedInject constructor(
-    @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-    @Assisted("shopBadge") val shopBadge: String,
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) val shopBadge: String,
 ): ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-            @Assisted("shopBadge") shopBadge: String,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
         ): ProductTagViewModel
     }
 

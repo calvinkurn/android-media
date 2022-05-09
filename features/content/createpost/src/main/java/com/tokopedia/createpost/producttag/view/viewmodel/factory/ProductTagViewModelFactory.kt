@@ -4,6 +4,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -14,8 +16,8 @@ import dagger.assisted.AssistedInject
  */
 class ProductTagViewModelFactory @AssistedInject constructor(
     @Assisted activity: FragmentActivity,
-    @Assisted("productTagSourceRaw") private val productTagSourceRaw: String,
-    @Assisted("shopBadge") private val shopBadge: String,
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) private val productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) private val shopBadge: String,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
 ) : AbstractSavedStateViewModelFactory(activity, null) {
 
@@ -23,8 +25,8 @@ class ProductTagViewModelFactory @AssistedInject constructor(
     interface Creator {
         fun create(
             activity: FragmentActivity,
-            @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-            @Assisted("shopBadge") shopBadge: String,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
         ): ProductTagViewModelFactory
     }
 
