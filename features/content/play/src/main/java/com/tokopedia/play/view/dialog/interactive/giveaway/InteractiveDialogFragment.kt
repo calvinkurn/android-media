@@ -32,6 +32,7 @@ import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -39,7 +40,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
+class InteractiveDialogFragment @Inject constructor(
+    private val userSession: UserSessionInterface,
+) : DialogFragment() {
 
     private var mDataSource: DataSource? = null
 
@@ -149,7 +152,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         partner: PlayPartnerInfo,
     ) {
         val giveawayStatus = giveaway.status
-        if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)) {
+        if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
+                !userSession.isLoggedIn) {
             setChildView { ctx ->
                 InteractiveFollowView(ctx).apply {
                     setListener(followViewListener)
@@ -181,7 +185,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
     ) {
         val status = quiz.status
         when {
-            partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) -> {
+            partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
+            !userSession.isLoggedIn -> {
                 setChildView { ctx ->
                     val view = InteractiveFollowView(ctx)
                     view.setListener(followViewListener)
