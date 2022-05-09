@@ -381,7 +381,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             ProductBundlingPojo::class.java
         )
         return MultipleProductBundlingUiModel.Builder()
-            .withIsSender(item.isOpposite)
+            .withIsSender(!item.isOpposite)
             .withProductBundlingResponse(pojo.listProductBundling)
             .build()
     }
