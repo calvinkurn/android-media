@@ -11,9 +11,11 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
 import com.tokopedia.productcard.test.grid.ProductCardGridViewStubActivityTest
 import com.tokopedia.productcard.test.grid.productCardGridTestData
+import com.tokopedia.productcard.test.grid.productCardGridViewStubTestData
 import com.tokopedia.productcard.test.list.ProductCardListActivityTest
 import com.tokopedia.productcard.test.list.ProductCardListViewStubActivityTest
 import com.tokopedia.productcard.test.list.productCardListTestData
+import com.tokopedia.productcard.test.list.productCardListViewStubTestData
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.Matcher
@@ -50,7 +52,7 @@ internal class ProductCardTest {
         startTestActivity(ProductCardGridViewStubActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-        productCardModelMatcherData = productCardGridTestData
+        productCardModelMatcherData = productCardGridViewStubTestData
 
         startTest()
     }
@@ -60,7 +62,7 @@ internal class ProductCardTest {
         startTestActivity(ProductCardListViewStubActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-        productCardModelMatcherData = productCardListTestData
+        productCardModelMatcherData = productCardListViewStubTestData
 
         startTest()
     }

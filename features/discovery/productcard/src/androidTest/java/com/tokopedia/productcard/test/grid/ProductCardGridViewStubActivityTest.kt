@@ -46,11 +46,11 @@ internal class ProductCardGridViewStubActivityTest: AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return productCardGridTestData.size
+            return productCardGridViewStubTestData.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(productCardGridTestData[position].productCardModel)
+            holder.bind(productCardGridViewStubTestData[position].productCardModel)
         }
 
         override fun onViewRecycled(holder: ViewHolder) {
