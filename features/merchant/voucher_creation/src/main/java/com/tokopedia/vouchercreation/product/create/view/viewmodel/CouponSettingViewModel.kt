@@ -82,7 +82,6 @@ class CouponSettingViewModel @Inject constructor(
         }
 
         if (selectedCouponType == CouponType.CASHBACK) {
-            val discountTypeSelected = isDiscountTypeSelected(selectedDiscountType)
             val minimumPurchaseSelected = isMinimumPurchaseSelected(selectedMinimumPurchaseType)
             val validQuota = isValidQuota(cashbackQuota) is QuotaState.ValidQuota
 
@@ -94,7 +93,7 @@ class CouponSettingViewModel @Inject constructor(
                         selectedMinimumPurchaseType
                     )
                     val validDiscountAmount = isValidCashbackDiscountAmount(cashbackDiscountAmount)
-                    discountTypeSelected && validDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
+                    validDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.PERCENTAGE -> {
                     val validMinimumPurchase = isValidCashbackMinimumPurchase(
@@ -104,7 +103,7 @@ class CouponSettingViewModel @Inject constructor(
                     )
                     val validCashbackPercentage = isValidCashbackPercentage(cashbackPercentage) is CashbackPercentageState.ValidPercentage
                     val validMaxDiscountAmount = isValidMaximumCashbackAmount(cashbackMaximumAmount) is CashbackAmountState.ValidAmount
-                    discountTypeSelected && validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
+                    validCashbackPercentage && validMaxDiscountAmount && minimumPurchaseSelected && validMinimumPurchase && validQuota
                 }
                 DiscountType.NONE -> false
 
@@ -124,11 +123,6 @@ class CouponSettingViewModel @Inject constructor(
             _areInputValid.value = validFreeShipping
         }
 
-    }
-
-
-    private fun isDiscountTypeSelected(selectedDiscountType: DiscountType): Boolean {
-        return selectedDiscountType != DiscountType.NONE
     }
 
     private fun isMinimumPurchaseSelected(selectedMinimumPurchaseType: MinimumPurchaseType): Boolean {
