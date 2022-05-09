@@ -305,7 +305,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun showUSPBottomSheet(uspResponse: USPResponse) {
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
-        tokoFoodUSPBottomSheet.setUSP(uspResponse)
+        tokoFoodUSPBottomSheet.setUSP(uspResponse, getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title))
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
     }
 

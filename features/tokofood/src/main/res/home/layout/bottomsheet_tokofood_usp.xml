@@ -25,6 +25,8 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN700"
+        android:textColorLink="@color/Unify_G500"
+        android:linksClickable="true"
         />
 
     <ImageView

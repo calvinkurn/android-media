@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.home.presentation.bottomsheet
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.databinding.BottomsheetTokofoodUspBinding
 import com.tokopedia.tokofood.home.domain.data.USPResponse
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeTextMapper
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodUSPAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -16,6 +18,7 @@ class TokoFoodUSPBottomSheet: BottomSheetUnify() {
 
     private var viewBinding: BottomsheetTokofoodUspBinding? = null
     private var uspData: USPResponse? = null
+    private var uspTitle: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +34,9 @@ class TokoFoodUSPBottomSheet: BottomSheetUnify() {
         renderUSP()
     }
 
-    fun setUSP(uspData: USPResponse) {
+    fun setUSP(uspData: USPResponse, uspTitle: String) {
         this.uspData = uspData
+        this.uspTitle = uspTitle
     }
 
     private fun initView(): BottomsheetTokofoodUspBinding{
@@ -43,7 +47,7 @@ class TokoFoodUSPBottomSheet: BottomSheetUnify() {
     }
 
     private fun initBottomSheet(viewBinding: BottomsheetTokofoodUspBinding) {
-        setTitle("Keuntungan Gofood - Tokopedia")
+        uspTitle?.let { setTitle(it) }
         showCloseIcon = true
         isDragable = false
         setChild(viewBinding.root)
@@ -51,7 +55,8 @@ class TokoFoodUSPBottomSheet: BottomSheetUnify() {
 
     private fun renderUSP(){
         viewBinding?.apply {
-            tgUsp.text = MethodChecker.fromHtml(uspData?.footer)
+            tgUsp.text = TokoFoodHomeTextMapper.removeUnderlineFromLink(uspData?.footer ?: "")
+            tgUsp.movementMethod = LinkMovementMethod.getInstance()
             imgUsp.loadImage(uspData?.imageUrl)
 
             uspData?.list?.let {

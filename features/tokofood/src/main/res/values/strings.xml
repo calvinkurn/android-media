@@ -4,6 +4,7 @@
 
     <!-- Home -->
     <string name="home_usp_powered_by">Dilayani</string>
+    <string name="home_usp_bottom_sheet_title">Keuntungan Gofood - Tokopedia</string>
 
     <!-- Purchase -->
     <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
