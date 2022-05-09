@@ -838,9 +838,47 @@ class CouponSettingViewModelTest {
     }
     //endregion
 
+    //region Coupon Type: Cashback, Discount Type : None, Valid Quota
+    @Test
+    fun `When discount type is none and quota is valid, observer should receive false as a result`() {
+        //Given
+
+        val couponType = CouponType.CASHBACK
+
+        val discountType = DiscountType.NONE
+        val minimumPurchaseType = MinimumPurchaseType.NOMINAL
+        val cashbackPercentage = 20
+        val cashbackMaximumDiscountAmount = 500_000
+        val cashbackDiscountAmount = 100_000
+        val cashbackMinimumPurchase = 500_000
+        val cashbackQuota = 20
+
+        val freeShippingDiscountAmount = 0
+        val freeShippingMinimumPurchase = 0
+        val freeShippingQuota = 0
+
+        //When
+        viewModel.validateInput(
+            couponType,
+            discountType,
+            minimumPurchaseType,
+            cashbackPercentage,
+            cashbackMaximumDiscountAmount,
+            cashbackDiscountAmount,
+            cashbackMinimumPurchase,
+            cashbackQuota,
+            freeShippingDiscountAmount,
+            freeShippingMinimumPurchase,
+            freeShippingQuota
+        )
+
+        //Then
+        assertEquals(false, viewModel.areInputValid.getOrAwaitValue())
+    }
+    //endregion
     //region Coupon Type: Cashback, Discount Type : None, Invalid Quota
     @Test
-    fun `When discount type is percentage and discount type is none, observer should receive false as a result`() {
+    fun `When discount type is none and and quota is invalid, observer should receive false as a result`() {
         //Given
 
         val couponType = CouponType.CASHBACK
