@@ -13,7 +13,7 @@ data class GetLeaderboardSlotResponse (
 ){
     data class Data(
         @SerializedName("slots")
-        val data: List<SlotData> = emptyList()
+        val slots: List<SlotData> = emptyList()
     )
 
     data class SlotData(

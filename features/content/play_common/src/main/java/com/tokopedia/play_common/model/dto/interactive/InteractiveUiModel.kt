@@ -64,7 +64,7 @@ sealed interface InteractiveUiModel {
 
     object Unknown : InteractiveUiModel {
         override val id: String
-            get() = ""
+            get() = "0"
 
         override val title: String
             get() = ""

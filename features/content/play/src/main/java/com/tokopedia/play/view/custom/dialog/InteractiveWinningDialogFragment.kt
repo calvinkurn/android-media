@@ -62,8 +62,8 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
         setupView()
     }
 
-    fun show(manager: FragmentManager) {
-        show(manager, TAG)
+    fun showNow(manager: FragmentManager) {
+        if (!isAdded) showNow(manager, TAG)
     }
 
     fun setData(imageUrl: String, title: String, subtitle: String, interactive: InteractiveUiModel) {

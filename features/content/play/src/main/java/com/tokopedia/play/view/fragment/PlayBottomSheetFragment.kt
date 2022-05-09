@@ -53,7 +53,6 @@ import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -466,14 +465,15 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
-                when(state.winnerBadge.leaderboards) {
-                    is PlayLeaderboardWrapperUiModel.Success ->
-                        leaderboardSheetView.setData(state.winnerBadge.leaderboards.data.leaderboardWinners)
-                    PlayLeaderboardWrapperUiModel.Error ->
+                when(state.winnerBadge.leaderboards.state) {
+                    ResultState.Success ->
+                        leaderboardSheetView.setData(
+                            state.winnerBadge.leaderboards.data.leaderboardWinners
+                        )
+                    is ResultState.Fail ->
                         leaderboardSheetView.setError()
-                    PlayLeaderboardWrapperUiModel.Loading ->
+                    ResultState.Loading ->
                         leaderboardSheetView.setLoading()
-                    PlayLeaderboardWrapperUiModel.Unknown -> {}
                 }
 
                 if (state.status.channelStatus.statusType.isFreeze ||

@@ -11,14 +11,11 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -34,7 +31,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.fail
 
 /**
  * Created By : Jonathan Darwin on September 14, 2021
@@ -387,7 +383,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns true
 
@@ -424,7 +420,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns true
 
@@ -466,7 +462,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns true
 
@@ -508,7 +504,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns true
 
@@ -544,7 +540,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns false
 
@@ -581,7 +577,7 @@ class PlayViewModelWebSocketTest {
             type = InteractiveType.QuickTap
         )
 
-        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.postGiveawayTap(any(), any()) } returns true
         coEvery { repo.getActiveInteractiveId() } returns "1"
         coEvery { repo.hasJoined(any()) } returns false
 

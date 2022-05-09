@@ -34,7 +34,7 @@ data class GiveawayResponse(
     val channelID: Long = 0,
 
     @SerializedName("interactive_id")
-    val interactiveID: Long = 0,
+    val interactiveID: String = "0",
 
     @SerializedName("interactive_type")
     val interactiveType: Int = -1,

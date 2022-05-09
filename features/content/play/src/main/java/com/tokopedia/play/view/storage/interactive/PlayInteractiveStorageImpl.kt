@@ -9,7 +9,8 @@ import javax.inject.Inject
  */
 class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage {
 
-    private val joinedSet = mutableSetOf<Long>()
+    private val joinedSet = mutableSetOf<String>()
+    private val hasProcessedWinnerSet = mutableSetOf<String>()
 
     private val interactiveStatusMap = mutableMapOf<String, InteractiveStatus>()
 
@@ -22,12 +23,20 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
         interactiveDetailMap[model.id] = model
     }
 
-    override fun setJoined(id: Long) {
+    override fun setJoined(id: String) {
         joinedSet.add(id)
     }
 
-    override fun hasJoined(id: Long): Boolean {
+    override fun hasJoined(id: String): Boolean {
         return joinedSet.contains(id)
+    }
+
+    override fun setHasProcessedWinner(interactiveId: String) {
+        hasProcessedWinnerSet.add(interactiveId)
+    }
+
+    override fun hasProcessedWinner(interactiveId: String): Boolean {
+        return hasProcessedWinnerSet.contains(interactiveId)
     }
 
     override fun setDetail(interactiveId: String, model: PlayCurrentInteractiveModel) {
@@ -44,13 +53,6 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
         }
     }
 
-    override fun setFinished(interactiveId: String) {
-//        if (interactiveStatusMap.containsKey(interactiveId)) {
-//            val currentStatus = interactiveStatusMap[interactiveId]!!
-//            interactiveStatusMap[interactiveId] = currentStatus.copy(isActive = false)
-//        }
-    }
-
     override fun getDetail(interactiveId: String): PlayCurrentInteractiveModel? {
 //        return interactiveDetailMap[interactiveId]
         return null
@@ -58,17 +60,6 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
 
     override fun getActiveInteractiveId(): String? {
         return interactiveStatusMap.entries.firstOrNull { it.value.isActive }?.key
-    }
-
-    override fun setJoined(id: String) {
-        if (interactiveStatusMap.containsKey(id)) {
-            val currentStatus = interactiveStatusMap[id]!!
-            interactiveStatusMap[id] = currentStatus.copy(isJoined = true)
-        }
-    }
-
-    override fun hasJoined(id: String): Boolean {
-        return interactiveStatusMap[id]?.isJoined ?: false
     }
 
     data class InteractiveStatus(val isActive: Boolean, val isJoined: Boolean)
