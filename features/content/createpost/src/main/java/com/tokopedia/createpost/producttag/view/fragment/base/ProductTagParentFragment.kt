@@ -29,7 +29,6 @@ import javax.inject.Inject
 * Created By : Jonathan Darwin on April 25, 2022
 */
 class ProductTagParentFragment @Inject constructor(
-    private val fragmentFactory: FragmentFactory,
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
