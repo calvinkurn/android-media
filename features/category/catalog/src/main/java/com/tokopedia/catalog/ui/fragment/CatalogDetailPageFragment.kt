@@ -186,6 +186,7 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRollence()
         component.inject(this)
         activity?.let { observer ->
             if (isNewProductDesign){
@@ -193,8 +194,6 @@ class CatalogDetailPageFragment : Fragment(),
                 sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             }
         }
-
-        initRollence()
         initViews(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
@@ -403,6 +402,10 @@ class CatalogDetailPageFragment : Fragment(),
             }
         })
 
+        observerSharedProductCount()
+    }
+
+    private fun observerSharedProductCount() {
         if (isNewProductDesign) {
             sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
                 filterProductCount?.let {
