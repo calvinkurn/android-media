@@ -357,8 +357,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
                 pmRegistrationPage.setOnFooterCtaClickedListener(
                     firstPriorityTerm,
                     isEligiblePm,
-                    tncAgreed,
-                    PMConstant.ShopTierType.POWER_MERCHANT
+                    tncAgreed
                 )
             }
             setOnTncClickListener {

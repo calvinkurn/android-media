@@ -166,10 +166,6 @@ open class PowerMerchantSubscriptionFragment :
         fragment.show(childFragmentManager)
     }
 
-    override fun onUpgradePmProClickListener(adapterPosition: Int) {
-        submitPmRegistration(PMConstant.ShopTierType.POWER_MERCHANT_PRO)
-    }
-
     override fun onUpgradePmProTnCClickListener() {
         val bottomSheet = PMTermAndConditionBottomSheet.newInstance()
         if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
@@ -304,7 +300,7 @@ open class PowerMerchantSubscriptionFragment :
         (activity as? SubscriptionActivityInterface)?.stopRenderPerformanceMonitoring()
     }
 
-    protected fun submitPmRegistration(nextShopTireType: Int) {
+    protected fun submitPmRegistration() {
         if (isModeratedShop) {
             showModeratedShopBottomSheet()
             return
@@ -315,7 +311,7 @@ open class PowerMerchantSubscriptionFragment :
 
         showActivationProgress()
         observePmActivationStatus()
-        mViewModel.submitPMActivation(currentShopTireType, nextShopTireType)
+        mViewModel.submitPMActivation(currentShopTireType)
 
         powerMerchantTracking.sendEventClickUpgradePowerMerchantPro()
     }

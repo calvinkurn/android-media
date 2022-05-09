@@ -79,11 +79,10 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun submitPMActivation(currentShopTier: Int, nextShopTierType: Int) {
+    fun submitPMActivation(currentShopTier: Int) {
         launchCatchError(block = {
             activatePmUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(
                 currentShopTier,
-                nextShopTierType,
                 PMConstant.PM_SETTING_INFO_SOURCE
             )
             val result = withContext(dispatchers.io) {
@@ -97,10 +96,8 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
 
     fun cancelPmDeactivationSubmission(currentShopTier: Int) {
         launchCatchError(block = {
-            val nextShopTierType = currentShopTier
             activatePmUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(
                 currentShopTier,
-                nextShopTierType,
                 PMConstant.PM_SETTING_INFO_SOURCE
             )
             val result = withContext(dispatchers.io) {

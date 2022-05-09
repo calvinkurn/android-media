@@ -169,7 +169,6 @@ class UpgradePmProWidget(
     }
 
     interface Listener {
-        fun onUpgradePmProClickListener(adapterPosition: Int)
         fun onUpgradePmProTnCClickListener()
         fun onDeactivatePMClickListener()
     }

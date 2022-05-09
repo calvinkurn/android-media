@@ -109,13 +109,12 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     fun setOnFooterCtaClickedListener(
         term: RegistrationTermUiModel?,
         isEligiblePm: Boolean,
-        tncAgreed: Boolean,
-        nextShopTireType: Int
+        tncAgreed: Boolean
     ) {
         pmBasicInfo?.shopInfo?.let { shopInfo ->
             when {
                 isModeratedShop -> showModeratedShopBottomSheet()
-                isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed, nextShopTireType)
+                isEligiblePm -> submitPmRegistrationOnEligible(tncAgreed)
                 term is RegistrationTermUiModel.ShopScore -> showShopScoreTermBottomSheet(shopInfo)
                 term is RegistrationTermUiModel.ActiveProduct -> showActiveProductTermBottomSheet()
                 term is RegistrationTermUiModel.Order -> showOrderTermBottomSheet(shopInfo.itemSoldPmProThreshold)
@@ -244,7 +243,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         powerMerchantTracking.sendEventClickInterestedToRegister()
     }
 
-    private fun submitPmRegistrationOnEligible(isTncChecked: Boolean, nextShopTireType: Int) {
+    private fun submitPmRegistrationOnEligible(isTncChecked: Boolean) {
         if (!isTncChecked) {
             val message = getString(R.string.pm_tnc_agreement_error_message)
             val actionText = getString(R.string.power_merchant_ok_label)
@@ -252,7 +251,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
             return
         }
 
-        submitPmRegistration(nextShopTireType)
+        submitPmRegistration()
     }
 
     private fun showOrderTermBottomSheet(itemSoldThreshold: Long) {
