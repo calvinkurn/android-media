@@ -47,4 +47,6 @@ sealed interface PlayBroadcastAction {
     object SubmitQuizForm: PlayBroadcastAction
     object QuizEnded : PlayBroadcastAction
     object OngoingWidgetClicked : PlayBroadcastAction
+    object ClickCloseQuizDetailBottomSheet : PlayBroadcastAction
+    object ClickRefreshQuizDetailBottomSheet: PlayBroadcastAction
 }

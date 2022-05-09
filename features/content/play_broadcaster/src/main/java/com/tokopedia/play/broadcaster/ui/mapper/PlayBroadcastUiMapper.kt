@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -457,7 +458,8 @@ class PlayBroadcastUiMapper(
             endsIn = dataUiModel.countDownEnd,
             otherParticipant = 0,
             otherParticipantText = "",
-            winners = emptyList()
+            winners = emptyList(),
+            leaderBoardType = LeadeboardType.Quiz
         )
     }
 

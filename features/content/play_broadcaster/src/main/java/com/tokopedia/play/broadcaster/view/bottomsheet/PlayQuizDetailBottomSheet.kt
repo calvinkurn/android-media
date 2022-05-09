@@ -6,17 +6,15 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroQuizDetailBinding
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
-import com.tokopedia.play_common.util.extension.withCache
-import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
@@ -25,7 +23,7 @@ import javax.inject.Inject
 class PlayQuizDetailBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val playBroadcastMapper: PlayBroadcastMapper,
-    ) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
+) : BottomSheetUnify(), PlayInteractiveLeaderboardViewComponent.Listener {
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -77,7 +75,14 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     private fun setUIModel(dataUiModel: QuizDetailDataUiModel) {
-        leaderboardSheetView.setData(listOf(playBroadcastMapper.mapQuizDetailToLeaderBoard(dataUiModel)))
+        leaderboardSheetView.setData(
+            listOf(
+                playBroadcastMapper.mapQuizDetailToLeaderBoard(
+                    dataUiModel
+                )
+            )
+        )
+        leaderboardSheetView.showWithHeight((getScreenHeight()*0.6).toInt())
     }
 
     fun show(fragmentManager: FragmentManager) {
@@ -99,10 +104,10 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        TODO("Not yet implemented")
+        parentViewModel.submitAction(PlayBroadcastAction.ClickCloseQuizDetailBottomSheet)
     }
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        TODO("Not yet implemented")
+        parentViewModel.submitAction(PlayBroadcastAction.ClickRefreshQuizDetailBottomSheet)
     }
 }
