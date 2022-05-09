@@ -85,7 +85,6 @@ private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
 private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
-private const val TIME_FIVE_SEC = 5000L
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
@@ -128,6 +127,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
+
+    companion object {
+        private const val TIME_FIVE_SEC = 5000L
+
+        private const val MIN_TOTAL_PRODUCTS = 5
+
+        private const val MAGIC_NUMBER_ZERO_POINT_FIVE = 0.5f
+        private const val MAGIC_NUMBER_ZERO_POINT_FORTY_FOUR = 0.44f
+        private const val MAGIC_NUMBER_ZERO_POINT_EIGHT = 0.8
+        private const val MAGIC_NUMBER_ONE_POINT_NINETY_ONE = 0.8
+        private const val MAGIC_NUMBER_TEN = 10
+        private const val MAGIC_NUMBER_ONE = 1
+    }
 
     private var shopImage: ImageUnify
     private var shopBadge: ImageUnify
@@ -1572,7 +1584,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                         feedAddViewJob?.cancel()
                         feedAddViewJob = scope.launch {
-                                    delay(5000L)
+                                    delay(TIME_FIVE_SEC)
                                     if (!isPaused) {
                                         val view = feedXCard.views
                                         val count = view.count +1
@@ -1663,6 +1675,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun toggleVolume(isMute: Boolean) {
         videoPlayer?.toggleVideoVolume(isMute)
     }
+
     private fun setNewASGCLayout(feedXCard: FeedXCard){
         val postId = feedXCard.id.toIntOrZero()
         val products = feedXCard.products
@@ -1675,7 +1688,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             if (products.size > 1) {
                 pageControl.show()
-                pageControl.setIndicator(if (totalProducts <= 5) totalProducts else 5)
+                pageControl.setIndicator(if (totalProducts <= MIN_TOTAL_PRODUCTS) totalProducts else MIN_TOTAL_PRODUCTS)
                 pageControl.indicatorCurrentPosition = feedXCard.lastCarouselIndex
                 pageControl.setCurrentIndicator(feedXCard.lastCarouselIndex)
                 carouselView.activeIndex = feedXCard.lastCarouselIndex
@@ -1694,7 +1707,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             type = "image",
                             appLink = feedXCard.appLink,
                             mediaUrl = coverURL,
-                            tagging = arrayListOf(FeedXMediaTagging(index, 0.5f, 0.44f, mediaIndex = index)),
+                            tagging = arrayListOf(FeedXMediaTagging(index, MAGIC_NUMBER_ZERO_POINT_FIVE, MAGIC_NUMBER_ZERO_POINT_FORTY_FOUR, mediaIndex = index)),
                             isImageImpressedFirst = true,
                             productName = name,
                             price = priceFmt,
@@ -1727,7 +1740,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             mediaList.forEachIndexed { index, feedXMedia ->
                 val tagProducts = mutableListOf<FeedXProduct>()
                 tagProducts.add(products[index])
-                if (index >= 5)
+                if (index >= MIN_TOTAL_PRODUCTS)
                     return@forEachIndexed
 
                     var imageWidth = 0
@@ -1925,8 +1938,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
                         }
                         setOnTouchListener { v, event ->
-                            gd.onTouchEvent(event)
-                            true
+                            if (event.action == MotionEvent.ACTION_UP) {
+                                v.performClick()
+                                false
+                            } else {
+                                gd.onTouchEvent(event)
+                                true
+                            }
                         }
                     }
                     if (imageItem != null) {
@@ -2385,11 +2403,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             return LANDSCAPE
         return PORTRAIT
     }
+
     private fun getRatioIfPortrait(mediaRatio: FeedXMediaRatio):String{
-        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
-        return if (ratio <= 0.8)
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * MAGIC_NUMBER_TEN) / MAGIC_NUMBER_TEN
+        return if (ratio <= MAGIC_NUMBER_ZERO_POINT_EIGHT)
             VOD_VIDEO_RATIO
-        else if (ratio > 0.8 && ratio < 1)
+        else if (ratio > MAGIC_NUMBER_ZERO_POINT_EIGHT && ratio < MAGIC_NUMBER_ONE)
             ratio.toString() //original ratio
         else
             SQUARE_RATIO
@@ -2397,10 +2416,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
     private fun getRatioIfLandscape(mediaRatio: FeedXMediaRatio):String{
 
-        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * 10) / 10
-        return if (ratio >= 1.91)
+        val ratio = round((mediaRatio.width.toFloat() / mediaRatio.height) * MAGIC_NUMBER_TEN) / MAGIC_NUMBER_TEN
+        return if (ratio >= MAGIC_NUMBER_ONE_POINT_NINETY_ONE)
             LONG_VIDEO_RATIO
-        else if (ratio > 1 && ratio < 1.91)
+        else if (ratio > MAGIC_NUMBER_ONE && ratio < MAGIC_NUMBER_ONE_POINT_NINETY_ONE)
             ratio.toString() //original ratio
         else
             SQUARE_RATIO
