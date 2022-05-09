@@ -73,6 +73,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
+    //Product Card Single
+    ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
+    ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
+
     //Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
     NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
@@ -117,5 +121,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     MyCoupon(R.layout.component_my_coupon_layout,ComponentNames.MyCoupon.componentName),
     MyCouponItem(R.layout.item_disco_my_coupon,ComponentNames.MyCouponItem.componentName),
+    BannerInfinite(R.layout.disco_merchant_voucher_list,ComponentNames.BannerInfinite.componentName),
+    BannerInfiniteItem(R.layout.disco_infinite_shop_banner_item,ComponentNames.BannerInfiniteItem.componentName)
 
 }

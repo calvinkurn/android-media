@@ -486,9 +486,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         )
     }
 
-    override fun onInfoClick(title: String?, desc: String?, metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?,type: String?) {
+    override fun onInfoClick(title: String?, desc: String?, metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?,type: String?,tickerInfo: String?) {
             sendInfoClickEvent(type)
-            AffiliateRecylerBottomSheet.newInstance(TYPE_HOME,title,desc,metrics,affiliateHomeViewModel.getSelectedDate()).show(childFragmentManager, "")
+            AffiliateRecylerBottomSheet.newInstance(TYPE_HOME,title,desc,metrics,affiliateHomeViewModel.getSelectedDate(),tickerInfo = tickerInfo).show(childFragmentManager, "")
     }
 
     private fun sendInfoClickEvent(type: String?) {
