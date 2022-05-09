@@ -184,7 +184,7 @@ class TokoNowHomeFragment: Fragment(),
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
         const val SUCCESS_CODE = "200"
-        const val KEY_IS_MINICART_OPEN = "isMiniCartOpen"
+        const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -240,7 +240,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
-    private var isMiniCartOpen = false
+    private var isOpenMiniCartList = false
     private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -1269,29 +1269,29 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.show()
             hideStickyLogin()
 
-            showBottomSheetMiniCartAfterGettingUri()
+            showBottomSheetMiniCartList()
         } else {
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
-            isMiniCartOpen = false
+            isOpenMiniCartList = false
         }
     }
 
     private fun setUriData() {
         activity?.intent?.data?.let {
-            isMiniCartOpen = getIsMiniCartOpenFromUri(it)
+            isOpenMiniCartList = getIsOpenMiniCartListFromUri(it)
         }
     }
 
-    private fun showBottomSheetMiniCartAfterGettingUri() {
-        if (isMiniCartOpen) {
+    private fun showBottomSheetMiniCartList() {
+        if (isOpenMiniCartList) {
             miniCartWidget?.showMiniCartListBottomSheet(this)
-            isMiniCartOpen = false
+            isOpenMiniCartList = false
         }
     }
 
-    private fun getIsMiniCartOpenFromUri(uri: Uri): Boolean {
-        return uri.getQueryParameter(KEY_IS_MINICART_OPEN)?.toBooleanStrictOrNull().orFalse()
+    private fun getIsOpenMiniCartListFromUri(uri: Uri): Boolean {
+        return uri.getQueryParameter(KEY_IS_OPEN_MINICART_LIST)?.toBooleanStrictOrNull().orFalse()
     }
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
