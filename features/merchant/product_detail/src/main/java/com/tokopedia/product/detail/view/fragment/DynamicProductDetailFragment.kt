@@ -1329,13 +1329,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
         activity?.let {
+            val items = dynamicProductInfoData.data.getGalleryItems()
+            if (items.isEmpty()) return
             val intent = ProductDetailGalleryActivity.createIntent(
                 context = it,
                 productDetailGallery = ProductDetailGallery(
                     productId = dynamicProductInfoData.basic.productID,
                     userId = viewModel.userId,
                     page = ProductDetailGallery.Page.ProductDetail,
-                    items = dynamicProductInfoData.data.getGalleryItems(),
+                    items = items,
                     selectedId = position.toString()
                 )
             )
@@ -2253,13 +2255,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
 
+        pdpUiUpdater?.removeComponentP2Data(
+                it,
+                viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview ?: "")
+
         renderRestrictionBottomSheet(it.restrictionInfo)
         updateButtonState()
-
-        if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-        }
-
         pdpUiUpdater?.updateShipmentData(
                 ratesData,
                 viewModel.getMultiOriginByProductId().isFulfillment,
@@ -2268,35 +2269,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.getUserLocationCache()
         )
 
-        if (it.upcomingCampaigns.values.isEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.NOTIFY_ME)
-        }
-
-        if (!it.shopCommitment.isNowActive) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.ORDER_PRIORITY)
-        }
-
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
             DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(viewModel.userId,
                     viewModel.getDynamicProductInfoP1, getPPTitleName())
-        } else {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
-        }
-
-        if (!it.validateTradeIn.isEligible) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
-        }
-
-        if (!it.merchantVoucherSummary.isShown) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
         }
 
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
-        }
-
-        if (it.bundleInfoMap.isEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
@@ -3494,12 +3473,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             doActionOrLogin({
                 val shop = viewModel.getShopInfo()
                 activity?.let {
-                    val boData = viewModel.getBebasOngkirDataByProductId()
                     val intent = RouteManager.getIntent(it,
                             ApplinkConst.TOPCHAT_ASKSELLER,
                             product.basic.shopID, "",
                             "product", shop.shopCore.name, shop.shopAssets.avatar)
-                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData, boData.imageURL)
+                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TOP_CHAT)
                 }
             })

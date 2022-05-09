@@ -126,7 +126,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalIn
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
@@ -1090,6 +1090,24 @@ class TokoNowHomeFragment: Fragment(),
                 }
             }
         }
+
+        observe(viewModelTokoNow.homeSwitchServiceTracker) {
+            if (it.isImpressionTracker) {
+                analytics.sendImpressSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
+            } else {
+                analytics.sendClickSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
+            }
+        }
     }
 
     private fun updateSharingReferral(isButtonLoading: Boolean, sharingReferralUrlParam: String = "") {
@@ -1320,7 +1338,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showSwitcherCoachMark() {
         if(!homeSharedPref.getSwitcherCoachMarkShown()) {
             rvHome?.addOneTimeGlobalLayoutListener {
-                adapter.getItem(Home15mSwitcher::class.java)?.let {
+                adapter.getItem(Home20mSwitcher::class.java)?.let {
                     val index = adapter.findPosition(it)
                     val view = rvHome?.findViewHolderForAdapterPosition(index)?.itemView
                         ?.findViewById<View>(R.id.coachMarkTarget)

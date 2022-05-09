@@ -3,10 +3,10 @@ package com.tokopedia.seller.search.feature.initialsearch.view.viewholder.highli
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.seller.search.R
+import com.tokopedia.seller.search.common.util.setRippleEffect
 import com.tokopedia.seller.search.databinding.ItemChipsHighlightSearchBinding
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemHighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.HistorySearchListener
@@ -56,7 +56,7 @@ class ItemHighLightInitialChipsAdapter(private val highLightListener: HistorySea
                     setOnClickListener {
                         highLightListener.onHighlightItemClicked(data, adapterPosition)
                     }
-                    background = ContextCompat.getDrawable(context, R.drawable.chips_ripple)
+                    setRippleEffect()
                 }
             }
         }

@@ -8,6 +8,8 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
 import com.tokopedia.discovery2.repository.banner.BannerRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteGQLRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -190,6 +192,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideMyCouponRepository(@ApplicationContext context: Context): MyCouponRepository {
         return MyCouponGQLRepository(provideGetStringMethod(context))
+    }
+
+    @Provides
+    fun provideBannerInfiniteRepository(): BannerInfiniteRepository {
+        return BannerInfiniteGQLRepository()
     }
 
     @DiscoveryScope

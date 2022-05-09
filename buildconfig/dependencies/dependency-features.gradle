@@ -42,6 +42,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
+            playTest                        : ":features:content:play_test",
             playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -96,6 +97,7 @@ ext {
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
             shopWidget                      : ":features:discovery:shopwidget",
+            videoWidget                     : ":features:discovery:video_widget",
 
             homecredit                      : ":features:fintech:home_credit",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
@@ -128,6 +130,8 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediapicker		                : ":features:media:mediapicker",
+            mediapickerCommon		        : ":features:media:mediapicker-common",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",

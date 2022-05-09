@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokopedianow.home.domain.model.GetReferralSenderHomeResponse
@@ -2584,7 +2585,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             ),
-            HomeSwitcherUiModel.Home15mSwitcher
+            HomeSwitcherUiModel.Home20mSwitcher()
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(
@@ -2679,7 +2680,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 HomeLayoutItemState.LOADED,
                 ServiceType.NOW_15M
             ),
-            HomeSwitcherUiModel.Home2hSwitcher
+            HomeSwitcherUiModel.Home2hSwitcher()
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(
@@ -2830,30 +2831,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeLayoutList
             .verifySuccessEquals(expectedResult)
-    }
-
-    protected fun onGetReferralSenderHome_thenReturn(slug: String, getReferralSenderHomeResponse: GetReferralSenderHomeResponse) {
-        coEvery { getReferralSenderHomeUseCase.execute(slug) } returns getReferralSenderHomeResponse
-    }
-
-    protected fun onGetReferralSenderHome_thenReturn(slug: String, errorThrowable: Throwable) {
-        coEvery { getReferralSenderHomeUseCase.execute(slug) } throws errorThrowable
-    }
-
-    protected fun onValidateReferralSender_thenReturn(slug: String, validateReferralUserResponse: ValidateReferralUserResponse) {
-        coEvery { validateReferralUserUseCase.execute(slug) } returns validateReferralUserResponse
-    }
-
-    protected fun onValidateReferralSender_thenReturn(slug: String, errorThrowable: Throwable) {
-        coEvery { validateReferralUserUseCase.execute(slug) } throws  errorThrowable
-    }
-
-    protected fun verifyGetReferralSenderHomeUseCaseCalled(slug: String) {
-        coVerify { getReferralSenderHomeUseCase.execute(slug) }
-    }
-
-    protected fun verifyValidateReferralSenderUseCaseCalled(slug: String) {
-        coVerify { validateReferralUserUseCase.execute(slug) }
     }
 
     @Test
@@ -3179,5 +3156,73 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.homeLayoutList
             .verifySuccessEquals(Success(expectedResult))
     }
+
+    @Test
+    fun `when impress switcher widget should track the widget`() {
+        val isImpressionTracker = true
+        val localCacheModel = createLocalCacheModel()
+
+        viewModel.trackSwitchService(localCacheModel, isImpressionTracker)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
+            userId = "",
+            whIdOrigin = "111111",
+            whIdDestination = "222222",
+            isNow15 = false,
+            isImpressionTracker = isImpressionTracker
+        ))
+    }
+
+    @Test
+    fun `when click switcher widget should track the widget`() {
+        val isImpressionTracker = false
+        val localCacheModel = createLocalCacheModel(
+            warehouseId = "222222",
+            warehouses = listOf(
+                LocalWarehouseModel(
+                    warehouse_id = 111111,
+                    service_type = ServiceType.NOW_2H
+                ),
+                LocalWarehouseModel(
+                    warehouse_id = 222222,
+                    service_type = ServiceType.NOW_15M
+                )
+            ),
+            serviceType = ServiceType.NOW_15M
+        )
+
+        viewModel.trackSwitchService(localCacheModel, isImpressionTracker)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
+            userId = "",
+            whIdOrigin = "222222",
+            whIdDestination = "111111",
+            isNow15 = true,
+            isImpressionTracker = isImpressionTracker
+        ))
+    }
+
+    @Test
+    fun `when click or impress switcher widget and destination warehouse id is not found`() {
+        val isImpressionTracker = false
+        val localCacheModel = createLocalCacheModel(
+            warehouseId = "222222",
+            warehouses = listOf(
+                LocalWarehouseModel(
+                    warehouse_id = 222222,
+                    service_type = ServiceType.NOW_15M
+                )
+            ),
+            serviceType = ServiceType.NOW_15M
+        )
+
+        viewModel.trackSwitchService(localCacheModel, isImpressionTracker)
+        viewModel.homeSwitchServiceTracker.verifyValueEquals(HomeSwitchServiceTracker(
+            userId = "",
+            whIdOrigin = "222222",
+            whIdDestination = "0",
+            isNow15 = true,
+            isImpressionTracker = isImpressionTracker
+        ))
+    }
+
 }
 

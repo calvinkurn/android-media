@@ -150,6 +150,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String FEED_IS_VISIBLE = "FEED_IS_VISIBLE";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -225,6 +226,7 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+    private boolean isFeedClickedFortheFirstTime = true;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -1324,7 +1326,10 @@ public class MainParentActivity extends BaseActivity implements
         } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
         } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
-            globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            if (isFeedClickedFortheFirstTime) {
+                isFeedClickedFortheFirstTime = false;
+                globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            }
             pageName = PAGE_FEED;
         } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
             pageName = PAGE_DAFTAR_TRANSAKSI;
@@ -1338,12 +1343,14 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = false;
 
         if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
+            isFeedClickedFortheFirstTime = true;
             Intent intent = new Intent(BROADCAST_VISIBLITY);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
         else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(FEED_IS_VISIBLE, true);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 

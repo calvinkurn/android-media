@@ -255,7 +255,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (selectedOptionId == null) return
         updateData(ProductDetailConstant.MEDIA) {
             mediaMap?.apply {
-                this.variantOptionIdScrollAnchor = selectedOptionId
+                if(this.variantOptionIdScrollAnchor != selectedOptionId){
+                    this.variantOptionIdScrollAnchor = selectedOptionId
+                    this.shouldUpdateImage = true
+                }
             }
         }
     }
@@ -615,6 +618,41 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     }
                 }
             }
+        }
+    }
+
+    fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {
+        if (it.ratesEstimate.isEmpty()) {
+            removeComponent(ProductDetailConstant.SHIPMENT_V2)
+            removeComponent(ProductDetailConstant.SHIPMENT)
+        }
+
+        if (it.bundleInfoMap.isEmpty()) {
+            removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
+        }
+
+        if (!it.validateTradeIn.isEligible) {
+            removeComponent(ProductDetailConstant.TRADE_IN)
+        }
+
+        if (!it.merchantVoucherSummary.isShown) {
+            removeComponent(ProductDetailConstant.MVC)
+        }
+
+        if (!it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
+            removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
+        }
+
+        if (it.upcomingCampaigns.values.isEmpty()) {
+            removeComponent(ProductDetailConstant.NOTIFY_ME)
+        }
+
+        if (!it.shopCommitment.isNowActive) {
+            removeComponent(ProductDetailConstant.ORDER_PRIORITY)
+        }
+
+        if (it.helpfulReviews?.isEmpty() == true && countReview.toIntOrZero() == 0) {
+            removeComponent(ProductDetailConstant.REVIEW)
         }
     }
 
