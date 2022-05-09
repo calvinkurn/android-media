@@ -44,8 +44,9 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
                 ),
-                partnerInfo = mapPartnerInfo(it.partner),
+                partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                 pinnedInfo = mapPinnedInfo(it.pinnedMessage),
@@ -58,7 +59,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             )
         }
     }
-
     private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
             id = data.id,
             channelType = getChannelType(data.isLive, data.airTime),
@@ -74,14 +74,17 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayChannelType.VOD
     }
 
-    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
+    private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner, isFollowBtnShown: Boolean) = PlayPartnerInfo(
         id = partnerResponse.id.toLongOrZero(),
         name = htmlTextTransformer.transform(partnerResponse.name),
         type = PartnerType.getTypeByValue(partnerResponse.type),
-        status = PlayPartnerFollowStatus.Unknown,
+        status = getFollowStatus(isFollowBtnShown),
         iconUrl = partnerResponse.thumbnailUrl,
         badgeUrl = partnerResponse.badgeUrl,
+        appLink = partnerResponse.appLink
     )
+
+    private fun getFollowStatus(isFollowBtnShown: Boolean) = if (isFollowBtnShown) PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.Unknown) else PlayPartnerFollowStatus.NotFollowable
 
     private fun mapLikeInfo(
         feedLikeParamResponse: ChannelDetailsWithRecomResponse.FeedLikeParam,
@@ -272,6 +275,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) = FreezeUiModel(
         title = String.format(freezeDataResponse.title, title),
     )
+
+    private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
+        PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
+    }
 
     companion object {
         private const val MS_PER_SECOND = 1000

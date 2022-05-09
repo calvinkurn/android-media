@@ -1626,7 +1626,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             this,
             this,
             SpecialReleaseComponentCallback(context, this),
-            MerchantVoucherComponentCallback(this)
+            MerchantVoucherComponentCallback(this),
+            CueWidgetComponentCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

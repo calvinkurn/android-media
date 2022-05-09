@@ -19,4 +19,5 @@ sealed class PlayBroadcastSummaryAction {
     data class SetCover(val cover: PlayCoverUiModel): PlayBroadcastSummaryAction()
     data class ToggleTag(val tagUiModel: PlayTagUiModel): PlayBroadcastSummaryAction()
     object ClickPostVideoNow: PlayBroadcastSummaryAction()
+    object RefreshLoadTag: PlayBroadcastSummaryAction()
 }

@@ -4,6 +4,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.TokenListrikDataFactory
 import com.tokopedia.network.exception.MessageErrorException
@@ -21,6 +22,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     private val dataFactory = TokenListrikDataFactory()
     private val mapperFactory = DigitalDenomMapper()
     private val mapAtcFactory = DigitalAtcMapper()
+    private val persoMapperFactory = DigitalPersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -62,7 +64,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationSuccess(mappedResponse)
@@ -72,7 +74,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
         onGetRecommendation_thenReturn(NullPointerException())
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationFail()
@@ -88,53 +90,30 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
-        onGetFavoriteNumber_thenReturn(response)
+        val response = dataFactory.getFavoriteNumberData(true)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give success fail`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf(), listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberFail()
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
-
-    @Test
-    fun `given autoComplete loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setAutoCompleteLoading()
-        verifyGetAutoCompleteLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting autoComplete should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
-            val response = dataFactory.getFavoriteNumberData()
-            onGetAutoComplete_thenReturn(response)
-
-            viewModel.getAutoComplete(listOf(), listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-        }
-
-    @Test
-    fun `when getting autoComplete should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
-            onGetAutoComplete_thenReturn(NullPointerException())
-
-            viewModel.getAutoComplete(listOf(), listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteFail()
-        }
 
     @Test
     fun `when updateCheckoutPassData with denom data called should update digitalCheckoutPassData`() {
@@ -498,7 +477,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         viewModel.cancelRecommendationJob()
         verifyRecommendationJobIsCancelled()
         verifyGetRecommendationsRepoWasNotCalled()

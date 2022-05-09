@@ -337,10 +337,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
-        return dataCheckoutRequestList;
-    }
-
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
         this.egoldAttributeModel = egoldAttributeModel;
@@ -429,6 +425,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return isShowOnboarding;
     }
 
+    private boolean getPromoFlag(String step) {
+        if (step.equals(EnhancedECommerceActionField.STEP_2)) {
+            if (lastApplyData != null) {
+                return lastApplyData.getAdditionalInfo().getPomlAutoApplied();
+            }
+            return false;
+        } else if (validateUsePromoRevampUiModel != null) {
+            return validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPomlAutoApplied();
+        }
+        return false;
+    }
+
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               Map<String, String> tradeInCustomDimension,
@@ -449,7 +457,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 transactionId = checkoutData.getTransactionId();
             }
             analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
-                    eeDataLayer, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                    eeDataLayer, tradeInCustomDimension, transactionId, userSessionInterface.getUserId(), getPromoFlag(step), eventCategory, eventAction, eventLabel
             );
         }
     }
@@ -2152,12 +2160,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             campaignTimer.setGtmUserId(userSessionInterface.getUserId());
             return campaignTimer;
         }
-    }
-
-    @NotNull
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
     }
 
     @Override

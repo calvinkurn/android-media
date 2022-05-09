@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -44,6 +45,14 @@ class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : Abstr
                 myCouponRecyclerView.hide()
             }
         })
+        myCouponViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, {
+            if(it){
+                (fragment as DiscoveryFragment).reSync()
+            }
+        })
+        myCouponViewModel.hideSectionLD.observe(fragment.viewLifecycleOwner, { sectionId ->
+            (fragment as DiscoveryFragment).handleHideSection(sectionId)
+        })
     }
 
     private fun addDefaultItemDecorator() {
@@ -54,7 +63,11 @@ class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : Abstr
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let { myCouponViewModel.getComponentList().removeObservers(it) }
+        lifecycleOwner?.let {
+            myCouponViewModel.getComponentList().removeObservers(it)
+            myCouponViewModel.getSyncPageLiveData().removeObservers(it)
+            myCouponViewModel.hideSectionLD.removeObservers(it)
+        }
     }
 
 }

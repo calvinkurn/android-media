@@ -195,6 +195,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true)
     }
 
+    private fun isEnableExplicitProfileMenu(): Boolean {
+        return getAbTestPlatform()
+            .getString(EXPLICIT_PROFILE_MENU_ROLLOUT)
+            .contains(EXPLICIT_PROFILE_MENU_ROLLOUT)
+    }
+
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -318,7 +324,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
-        goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
+        goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
@@ -511,6 +517,18 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     biometricTracker.trackOnBiometricResultFail(reason ?: "")
                     view?.run {
                         Toaster.build(this, getString(R.string.label_failed_register_biometric_offering), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
+            REQUEST_CODE_EXPLICIT_PROFILE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    view?.let {
+                        Toaster.build(
+                            view = it,
+                            text = getString(R.string.explicit_profile_message_success_save),
+                            actionText = getString(R.string.explicit_profile_message_success_save_ok),
+                            duration = Toaster.LENGTH_INDEFINITE
+                        ).show()
                     }
                 }
             }
@@ -959,6 +977,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
                 userSettingsMenu.items.remove(it)
+            } else if (it.id == AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE && !isEnableExplicitProfileMenu()) {
+                userSettingsMenu.items.remove(it)
             }
         }
         addItem(userSettingsMenu, addSeparator = true)
@@ -1197,6 +1217,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 homeAccountAnalytic.trackClickSettingLinkAcc()
                 goToApplink(item.applink)
             }
+            AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
+                val intent = RouteManager.getIntent(context, item.applink)
+                startActivityForResult(intent, REQUEST_CODE_EXPLICIT_PROFILE)
+            }
             else -> {
                 goToApplink(item.applink)
             }
@@ -1205,7 +1229,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun doLogout() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
+            startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGOUT))
         }
     }
 
@@ -1436,9 +1460,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
         adapter?.let {
-            if (it.getItems()[position] is RecommendationItem) {
-                (it.getItems()[position] as RecommendationItem).isWishlist = wishlistStatusFromPdp
-                it.notifyItemChanged(position)
+            if(it.getItems().isNotEmpty() && (position < it.getItems().size)) {
+                if (it.getItems()[position] is RecommendationItem) {
+                    (it.getItems()[position] as RecommendationItem).isWishlist =
+                        wishlistStatusFromPdp
+                    it.notifyItemChanged(position)
+                }
             }
         }
     }
@@ -1537,7 +1564,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun gotoSettingProfile() {
         val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 
@@ -1569,6 +1596,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
         private const val REQUEST_CODE_REGISTER_BIOMETRIC = 303
+        private const val REQUEST_CODE_EXPLICIT_PROFILE = 304
 
         private const val START_TRANSITION_PIXEL = 200
         private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
@@ -1586,6 +1614,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         private const val REMOTE_CONFIG_KEY_HOME_ACCOUNT_BIOMETRIC_OFFERING = "android_user_home_account_biometric_offering"
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
+        private const val EXPLICIT_PROFILE_MENU_ROLLOUT = "explicit_android"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
