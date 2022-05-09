@@ -38,7 +38,9 @@ class RechargeEmoneyVoidUseCase @Inject constructor(
             ) {
                 Fail(Throwable(response.rechargeEmoneyVoid.message))
             } else {
-                Success(response.rechargeEmoneyVoid)
+                val result = response.rechargeEmoneyVoid
+                result.isNeedRefresh = true
+                Success(result)
             }
         } catch (t: Throwable) {
             Fail(t)

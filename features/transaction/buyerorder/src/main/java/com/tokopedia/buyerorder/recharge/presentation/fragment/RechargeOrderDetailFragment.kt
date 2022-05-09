@@ -342,7 +342,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         rechargeViewModel.emoneyVoidResponse.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    activity?.recreate()
+                    if (result.data.isNeedRefresh) {
+                        result.data.isNeedRefresh = false
+                        activity?.recreate()
+                    }
                 }
                 is Fail -> {
                     context?.let { ctx ->
