@@ -34,12 +34,11 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcVoucherEditPeriodBinding
 import com.tokopedia.vouchercreation.shop.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
-import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.*
-import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.view.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -97,6 +96,8 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
 
+    private var binding: BottomsheetMvcVoucherEditPeriodBinding? = null
+
     private var onSuccessListener: () -> Unit = {}
     private var onFailListener: (String) -> Unit = {}
 
@@ -120,7 +121,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
-            setupView(view)
+            setupView()
             view.setupBottomSheetChildNoMargin()
         }
     }
@@ -134,77 +135,77 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet(container: ViewGroup?) {
         context?.run {
-            val child = LayoutInflater.from(this)
-                    .inflate(R.layout.bottomsheet_mvc_voucher_edit_period, container, false)
-
+            binding = BottomsheetMvcVoucherEditPeriodBinding.inflate(LayoutInflater.from(context), container, false)
             setTitle(getString(R.string.mvc_edit_shown_period))
-            setChild(child)
+            setChild(binding?.root)
         }
     }
 
-    private fun setupView(view: View) = with(view) {
-        voucher?.let { voucher ->
-            setImageVoucher(voucher.isPublic, voucher.type)
+    private fun setupView() {
+        binding?.apply {
+            voucher?.let { voucher ->
+                setImageVoucher(voucher.isPublic, voucher.type)
 
-            tvMvcVoucherName.text = voucher.name
-            tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), voucher.typeFormatted, voucher.discountAmtFormatted)
+                tvMvcVoucherName.text = voucher.name
+                tvMvcVoucherDescription.text = String.format(context?.getString(R.string.mvc_discount_formatted).toBlankOrString(), voucher.typeFormatted, voucher.discountAmtFormatted)
 
-            resetDate()
-
-            edtMvcStartDate?.run {
-                startCalendar?.run {
-                    setDateText(this)
-                }
-                textFieldInput.run {
-                    setOnClickListener {
-                        getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
-                    }
-                    isFocusable = false
-                    isClickable = true
-                    keyListener = null
-                }
-            }
-            edtMvcEndDate?.run {
-                endCalendar?.run {
-                    setDateText(this)
-                }
-                textFieldInput.run {
-                    setOnClickListener {
-                        getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
-                    }
-                    isFocusable = false
-                    isClickable = true
-                    keyListener = null
-                }
-            }
-            startCalendar?.let { calendar ->
-                val initialTime = calendar.time?.toFormattedString(DATE_OF_WEEK_FORMAT, locale).toBlankOrString()
-                startDateString = initialTime
-                viewModel.setStartDateCalendar(calendar)
-            }
-            endCalendar?.let { calendar ->
-                val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
-                endDateString = initialTime
-                viewModel.setEndDateCalendar(calendar)
-            }
-
-            btnMvcSavePeriod?.run {
-                setOnClickListener {
-                    isLoading = true
-                    viewModel.startValidating()
-                }
-            }
-
-            setAction(context?.getString(R.string.mvc_retry).toBlankOrString()) {
                 resetDate()
-                edtMvcStartDate?.run {
+
+                edtMvcStartDate.run {
                     startCalendar?.run {
                         setDateText(this)
                     }
+                    textFieldInput.run {
+                        setOnClickListener {
+                            getStartDateTimePicker()?.show(childFragmentManager, START_DATE_TIME_PICKER_TAG)
+                        }
+                        isFocusable = false
+                        isClickable = true
+                        keyListener = null
+                    }
                 }
-                edtMvcEndDate?.run {
+                edtMvcEndDate.run {
                     endCalendar?.run {
                         setDateText(this)
+                    }
+                    textFieldInput.run {
+                        setOnClickListener {
+                            getEndDateTimePicker()?.show(childFragmentManager, END_DATE_TIME_PICKER_TAG)
+                        }
+                        isFocusable = false
+                        isClickable = true
+                        keyListener = null
+                    }
+                }
+                startCalendar?.let { calendar ->
+                    val initialTime = calendar.time?.toFormattedString(DATE_OF_WEEK_FORMAT, locale).toBlankOrString()
+                    startDateString = initialTime
+                    viewModel.setStartDateCalendar(calendar)
+                }
+                endCalendar?.let { calendar ->
+                    val initialTime = calendar.time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
+                    endDateString = initialTime
+                    viewModel.setEndDateCalendar(calendar)
+                }
+
+                btnMvcSavePeriod.run {
+                    setOnClickListener {
+                        isLoading = true
+                        viewModel.startValidating()
+                    }
+                }
+
+                setAction(context?.getString(R.string.mvc_retry).toBlankOrString()) {
+                    resetDate()
+                    edtMvcStartDate.run {
+                        startCalendar?.run {
+                            setDateText(this)
+                        }
+                    }
+                    edtMvcEndDate.run {
+                        endCalendar?.run {
+                            setDateText(this)
+                        }
                     }
                 }
             }
@@ -224,13 +225,13 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         viewLifecycleOwner.run {
             observe(viewModel.startDateCalendarLiveData) { startDate ->
                 (startDate as? GregorianCalendar)?.run {
-                    edtMvcStartDate?.setDateText(this)
+                    binding?.edtMvcStartDate?.setDateText(this)
                     endDateString = time.toFormattedString(DATE_OF_WEEK_FORMAT, locale)
                 }
             }
             observe(viewModel.endDateCalendarLiveData) { endDate ->
                 (endDate as? GregorianCalendar)?.run {
-                    edtMvcEndDate?.setDateText(this)
+                    binding?.edtMvcEndDate?.setDateText(this)
                 }
             }
             observe(viewModel.startEndDatePairLiveData) { (startDate, endDate) ->
@@ -246,7 +247,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                         MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
                     }
                 }
-                btnMvcSavePeriod?.isLoading = false
+                binding?.btnMvcSavePeriod?.isLoading = false
                 dismiss()
             }
         }
@@ -326,7 +327,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
 
     private fun setImageVoucher(isPublic: Boolean, @VoucherTypeConst voucherType: Int) {
         try {
-            view?.imgMvcVoucher?.run {
+            binding?.imgMvcVoucher?.run {
                 val drawableRes = when {
                     isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_publik
                     !isPublic && (voucherType == VoucherTypeConst.CASHBACK || voucherType == VoucherTypeConst.DISCOUNT) -> R.drawable.ic_mvc_cashback_khusus
@@ -363,7 +364,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                                 e?.run {
                                     showDrawingError(this)
                                 }
-                                btnMvcSavePeriod?.isLoading = false
+                                binding?.btnMvcSavePeriod?.isLoading = false
                                 dismiss()
                                 return false
                             }
@@ -387,7 +388,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
     private fun showDrawingError(error: Throwable) {
         MvcErrorHandler.logToCrashlytics(error, ERROR_MESSAGE)
         onFailListener(error.message.toBlankOrString())
-        btnMvcSavePeriod?.isLoading = false
+        binding?.btnMvcSavePeriod?.isLoading = false
         dismiss()
     }
 

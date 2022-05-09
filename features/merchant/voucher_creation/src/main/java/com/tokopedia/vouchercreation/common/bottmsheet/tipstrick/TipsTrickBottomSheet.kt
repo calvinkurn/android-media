@@ -25,9 +25,8 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrick
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcTipsTrickBinding
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherDisplay
-import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.*
-import kotlinx.android.synthetic.main.bottomsheet_mvc_tips_trick.view.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -68,6 +67,8 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         arguments?.getBoolean(IS_PRIVATE) ?: false
     }
 
+    private var binding: BottomsheetMvcTipsTrickBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
@@ -93,11 +94,9 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
-            val child = LayoutInflater.from(this)
-                    .inflate(R.layout.bottomsheet_mvc_tips_trick, ConstraintLayout(this), false)
-
+            binding = BottomsheetMvcTipsTrickBinding.inflate(LayoutInflater.from(context), ConstraintLayout(this), false)
             setTitle(getBottomSheetTitle())
-            setChild(child)
+            setChild(binding?.root)
         }
     }
 
@@ -125,8 +124,8 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private fun setupCarouselImage(child: View) = with(child) {
-        rvMvcImageCarousel.run {
+    private fun setupCarouselImage() {
+        binding?.rvMvcImageCarousel?.run {
             adapter = carouselAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -134,7 +133,7 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
                     super.onScrolled(recyclerView, dx, dy)
                     val mLayoutManager = recyclerView.layoutManager as? LinearLayoutManager
                     val currentPosition = mLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
-                    this@with.pageControlMvcCarousel.setCurrentIndicator(currentPosition)
+                    binding?.pageControlMvcCarousel?.setCurrentIndicator(currentPosition)
                 }
             })
             try {
@@ -150,7 +149,7 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         } else {
             showPublicVoucherCarousel()
         }
-        pageControlMvcCarousel.setIndicator(carouselAdapter.itemCount)
+       binding?.pageControlMvcCarousel?.setIndicator(carouselAdapter.itemCount)
     }
 
     private fun showPublicVoucherCarousel() {
@@ -189,10 +188,12 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         carouselAdapter.setItems(items)
     }
 
-    private fun setupTipsAndTrick(child: View) = with(child.rvMvcTipsTrick) {
-        adapter = tipsTrickAdapter
-        layoutManager = object : LinearLayoutManager(context) {
-            override fun canScrollVertically(): Boolean = false
+    private fun setupTipsAndTrick() {
+        binding?.rvMvcTipsTrick?.apply {
+            adapter = tipsTrickAdapter
+            layoutManager = object : LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean = false
+            }
         }
 
         showTipsAndTrick()
@@ -225,7 +226,7 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupView() {
-        view?.run {
+        binding?.run {
             tvMvcCarouselInfo.text = getCarouselInfo().parseAsHtml()
             icMvcCarouselInfo.loadImageDrawable(getVoucherTypeIcon())
 
@@ -235,10 +236,10 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
             btnMvcTipsTrickShare.setOnClickListener {
                 ctaShareCallback()
             }
-            setupTipsAndTrick(this)
-            setupCarouselImage(this)
+            setupTipsAndTrick()
+            setupCarouselImage()
         }
-        btnMvcTipsTrickDownload?.addOnImpressionListener(downloadImpressHolder) {
+        binding?.btnMvcTipsTrickDownload?.addOnImpressionListener(downloadImpressHolder) {
             VoucherCreationTracking.sendVoucherDetailClickTracking(
                     status = VoucherStatusConst.ONGOING,
                     action = VoucherCreationAnalyticConstant.EventAction.Impression.DOWNLOAD_VOUCHER,

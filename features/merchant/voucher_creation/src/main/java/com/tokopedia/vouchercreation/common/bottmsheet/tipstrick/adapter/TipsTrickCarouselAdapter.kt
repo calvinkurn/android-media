@@ -12,13 +12,15 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticCon
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.sendVoucherDetailImpressionTracking
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickCarouselModel
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
-import kotlinx.android.synthetic.main.item_mvc_tips_trick_carousel.view.*
+import com.tokopedia.vouchercreation.databinding.ItemMvcTipsTrickCarouselBinding
 
 /**
  * Created By @ilhamsuaib on 08/05/20
  */
 
 class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapter<TipsTrickCarouselAdapter.ViewHolder>() {
+
+    private var binding: ItemMvcTipsTrickCarouselBinding? = null
 
     private var items: List<TipsTrickCarouselModel> = emptyList()
 
@@ -32,8 +34,8 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        return ViewHolder(inflater.inflate(R.layout.item_mvc_tips_trick_carousel, parent, false))
+        binding = ItemMvcTipsTrickCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding!!.root)
     }
 
     override fun getItemCount(): Int = items.size
@@ -45,24 +47,26 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TipsTrickCarouselModel) = with(itemView) {
-            addOnImpressionListener(item.impressHolder) {
-                sendVoucherDetailImpressionTracking(
+        fun bind(item: TipsTrickCarouselModel) {
+            binding?.apply {
+                root.addOnImpressionListener(item.impressHolder) {
+                    sendVoucherDetailImpressionTracking(
                         status = VoucherStatusConst.ONGOING,
                         action = VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY,
                         label = item.title,
                         userId = userId
-                )
-            }
+                    )
+                }
 
-            val dp12 = context.resources.getDimension(R.dimen.mvc_dimen_12dp)
-            val cardWidth = getScreenWidth().minus(dp12.toInt() * CARD_WIDTH_MULTIPLIER)
-            parentMvcCarousel.layoutParams.width = cardWidth
-            parentMvcCarousel.requestLayout()
-            imgMvcVoucherCarousel.layoutParams.width = cardWidth.minus(dp12.toInt())
-            imgMvcVoucherCarousel.requestLayout()
-            ImageHandler.loadImageRounded2(context, imgMvcVoucherCarousel, item.imageUrl, dp12)
-            tvMvcVoucherCarousel.text = item.title
+                val dp12 = root.context.resources.getDimension(R.dimen.mvc_dimen_12dp)
+                val cardWidth = getScreenWidth().minus(dp12.toInt() * CARD_WIDTH_MULTIPLIER)
+                parentMvcCarousel.layoutParams.width = cardWidth
+                parentMvcCarousel.requestLayout()
+                imgMvcVoucherCarousel.layoutParams.width = cardWidth.minus(dp12.toInt())
+                imgMvcVoucherCarousel.requestLayout()
+                ImageHandler.loadImageRounded2(root.context, imgMvcVoucherCarousel, item.imageUrl, dp12)
+                tvMvcVoucherCarousel.text = item.title
+            }
         }
     }
 }

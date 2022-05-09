@@ -11,10 +11,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking.sendCreateVoucherImpressionTracking
+import com.tokopedia.vouchercreation.databinding.MvcVoucherDisplayViewBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.vouchertarget.vouchertips.VoucherDisplayUiModel
-import kotlinx.android.synthetic.main.mvc_voucher_display_view.view.*
 
 class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
                             @VoucherTargetType private val targetType: Int,
@@ -26,37 +26,38 @@ class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
         private const val CARD_WIDTH_MULTIPLIER = 3
     }
 
+    private var binding: MvcVoucherDisplayViewBinding? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherDisplayViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.mvc_voucher_display_view, parent, false)
-        return VoucherDisplayViewHolder(view)
+        binding = MvcVoucherDisplayViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VoucherDisplayViewHolder(binding!!.root)
     }
 
     override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: VoucherDisplayViewHolder, position: Int) {
-        holder.itemView.run {
-            val cardWidth = getScreenWidth() - context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * CARD_WIDTH_MULTIPLIER
-            voucherDisplayImage?.layoutParams?.width = cardWidth
+        binding?.apply {
+            val cardWidth = getScreenWidth() - root.context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * CARD_WIDTH_MULTIPLIER
+            voucherDisplayImage.layoutParams?.width = cardWidth
             itemList[position].let { uiModel ->
-                voucherDisplayImage?.run {
+                voucherDisplayImage.run {
                     Glide.with(context)
-                            .load(uiModel.imageUrl)
-                            .into(this)
+                        .load(uiModel.imageUrl)
+                        .into(this)
                 }
-                val displayText = resources?.getString(uiModel.displayTextRes).toBlankOrString()
-                voucherDisplayText?.text = displayText
-                voucherDisplayImage?.addOnImpressionListener(uiModel.impressHolder) {
+                val displayText = root.resources?.getString(uiModel.displayTextRes).toBlankOrString()
+                voucherDisplayText.text = displayText
+                voucherDisplayImage.addOnImpressionListener(uiModel.impressHolder) {
                     sendCreateVoucherImpressionTracking(
-                            step = VoucherCreationStep.TARGET,
-                            action =
-                                    when(targetType) {
-                                        VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY_PUBLIC
-                                        VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY_PRIVATE
-                                        else -> ""
-                                    },
-                            label = displayText,
-                            userId = userId
+                        step = VoucherCreationStep.TARGET,
+                        action =
+                        when(targetType) {
+                            VoucherTargetType.PUBLIC -> VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY_PUBLIC
+                            VoucherTargetType.PRIVATE -> VoucherCreationAnalyticConstant.EventAction.Impression.VOUCHER_DETAIL_DISPLAY_PRIVATE
+                            else -> ""
+                        },
+                        label = displayText,
+                        userId = userId
                     )
                 }
             }

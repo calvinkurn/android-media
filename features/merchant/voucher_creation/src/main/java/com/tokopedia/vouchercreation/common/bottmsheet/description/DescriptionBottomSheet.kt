@@ -1,14 +1,16 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.description
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.LinearLayout
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import kotlinx.android.synthetic.main.bottomsheet_mvc_description.*
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcDescriptionBinding
 
 /**
  * Created By @ilhamsuaib on 07/05/20
@@ -22,11 +24,7 @@ class DescriptionBottomSheet : BottomSheetUnify() {
                            title: String): DescriptionBottomSheet {
             return DescriptionBottomSheet().apply {
                 context.run {
-                    val inflater = LayoutInflater.from(this)
-                    val child = inflater.inflate(R.layout.bottomsheet_mvc_description, LinearLayout(this), false)
-                    setChild(child)
                     setTitle(title)
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 }
             }
         }
@@ -34,8 +32,27 @@ class DescriptionBottomSheet : BottomSheetUnify() {
         const val TAG = "DescriptionBottomSheet"
     }
 
+    private var binding: BottomsheetMvcDescriptionBinding? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet(container)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initBottomSheet(container: ViewGroup?) {
+        context?.run {
+            binding = BottomsheetMvcDescriptionBinding.inflate(LayoutInflater.from(context), container, false)
+            setChild(binding?.root)
+            setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        }
+    }
+
     fun show(content: String, fm: FragmentManager) {
-        tvMvcDescription?.text = content.parseAsHtml()
+        binding?.tvMvcDescription?.text = content.parseAsHtml()
         show(fm, TAG)
     }
 }

@@ -14,7 +14,6 @@ class StartEndVoucher(context: Context, attrs: AttributeSet?) : ConstraintLayout
 
     private var binding: ViewMvcStartEndVoucherBinding? = null
 
-
     init {
         binding = ViewMvcStartEndVoucherBinding.inflate(LayoutInflater.from(context), this, true)
     }
