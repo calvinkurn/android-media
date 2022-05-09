@@ -45,7 +45,6 @@ class ProductTagParentFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = createProductTagViewModel()
-        childFragmentManager.fragmentFactory = fragmentFactory
     }
 
     override fun onCreateView(
