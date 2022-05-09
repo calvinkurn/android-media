@@ -1812,12 +1812,7 @@ class PlayViewModel @AssistedInject constructor(
 
         _interactive.value = InteractiveStateUiModel.Empty
 
-<<<<<<< HEAD
-        if (status.interactiveId.toString() == interactive.interactive.id &&
-            repo.hasJoined(interactive.interactive.id)) {
-=======
         if (status.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
->>>>>>> 2d4e8b51730228c84f69030559b692cb6fc95a44
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
