@@ -6,6 +6,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -648,6 +649,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 dividerBottom.hide()
             }
         }
+        adjustBottomMargin(element)
     }
 
     private fun adjustVerticalLine(element: MiniCartProductUiModel) {
@@ -754,6 +756,33 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     buttonDeleteCart.gone()
                 } else {
                     buttonDeleteCart.invisible()
+                }
+            }
+        }
+    }
+
+    private fun adjustBottomMargin(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            val lp = containerProduct.layoutParams
+
+            val margin = if(element.showBottomDivider) {
+                itemView.context.resources.getDimensionPixelSize(
+                    com.tokopedia.abstraction.R.dimen.dp_0)
+            } else {
+                itemView.context.resources.getDimensionPixelSize(
+                    com.tokopedia.abstraction.R.dimen.dp_16)
+            }
+
+            when(lp) {
+                is ConstraintLayout.LayoutParams -> {
+                    containerProduct.layoutParams = lp.apply {
+                        bottomMargin = margin
+                    }
+                }
+                is RecyclerView.LayoutParams -> {
+                    containerProduct.layoutParams = lp.apply {
+                        bottomMargin = margin
+                    }
                 }
             }
         }
