@@ -1188,7 +1188,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
-                    if (bundle.getString(FirebaseAnalytics.Param.ITEM_LIST).equals("Search Results")) {
+                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST)) || "search result".equals(bundle.getString("eventCategory"))) {
                         // https://tokopedia.atlassian.net/browse/AN-36131
                         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
                         fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
@@ -1206,7 +1206,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     break;
                 case FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS:
                     // https://tokopedia.atlassian.net/browse/AN-36125
-                    if (bundle.getString(FirebaseAnalytics.Param.ITEM_LIST).equals("Search Result")) {
+                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))) {
                         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
                         fa.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST, bundle);
                     }
