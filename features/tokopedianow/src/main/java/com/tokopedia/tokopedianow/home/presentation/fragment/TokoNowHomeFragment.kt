@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
@@ -25,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.observe
@@ -182,6 +184,7 @@ class TokoNowHomeFragment: Fragment(),
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
         const val SUCCESS_CODE = "200"
+        const val KEY_IS_MINICART_OPEN = "isMiniCartOpen"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -237,6 +240,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
+    private var isMiniCartOpen = false
     private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -265,6 +269,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        setUriData()
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         shareHomeTokonow = createShareHomeTokonow()
         firebaseRemoteConfig.let {
@@ -1263,10 +1268,30 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.initialize(shopIds, this, this, pageName = pageName)
             miniCartWidget?.show()
             hideStickyLogin()
+
+            showBottomSheetMiniCartAfterGettingUri()
         } else {
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
+            isMiniCartOpen = false
         }
+    }
+
+    private fun setUriData() {
+        activity?.intent?.data?.let {
+            isMiniCartOpen = getIsMiniCartOpenFromUri(it)
+        }
+    }
+
+    private fun showBottomSheetMiniCartAfterGettingUri() {
+        if (isMiniCartOpen) {
+            miniCartWidget?.showMiniCartListBottomSheet(this)
+            isMiniCartOpen = false
+        }
+    }
+
+    private fun getIsMiniCartOpenFromUri(uri: Uri): Boolean {
+        return uri.getQueryParameter(KEY_IS_MINICART_OPEN)?.toBooleanStrictOrNull().orFalse()
     }
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
