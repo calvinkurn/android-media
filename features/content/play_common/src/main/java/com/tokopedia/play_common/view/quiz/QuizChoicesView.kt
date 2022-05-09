@@ -82,11 +82,20 @@ class QuizChoicesView : ConstraintLayout {
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
+            is PlayQuizOptionState.Participant -> {
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
+                if (item.type.isCorrect)
+                    getIconOption(isCorrect = item.type.isCorrect)
+                else
+                    getIconOption(alphabet = item.type.alphabet)
+                getBackground(isDefault = true)
+                setupResponded(item.type.count.toString())
+            }
         }
         binding.tvQuizQuestion.text = item.text
         setupClickable(item.type)
-        binding.llQuizOptionRight.tvRespondent.hide()
-        binding.llQuizOptionRight.ivArrow.hide()
+//        binding.llQuizOptionRight.tvRespondent.hide()
+//        binding.llQuizOptionRight.ivArrow.hide()
     }
 
     private fun getIconOption(

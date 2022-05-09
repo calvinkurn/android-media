@@ -447,12 +447,15 @@ class PlayBroadcastUiMapper(
         return PlayLeaderboardUiModel(
             title = dataUiModel.question,
             reward = dataUiModel.reward,
-            choices = dataUiModel.choices.map {
+            choices = dataUiModel.choices.mapIndexed { index, choice ->
                 QuizChoicesUiModel(
-                    id = it.id,
-                    text = it.text,
-                    type = PlayQuizOptionState.Unknown,
-                    isLoading = false,
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        alphabet = generateAlphabet(index),
+                        isCorrect = choice.isCorrectAnswer,
+                        count = choice.participantCount
+                    )
                 )
             },
             endsIn = dataUiModel.countDownEnd,
@@ -462,6 +465,9 @@ class PlayBroadcastUiMapper(
             leaderBoardType = LeadeboardType.Quiz
         )
     }
+
+    private fun generateAlphabet(index: Int): Char = arrayOfAlphabet[index]
+    private val arrayOfAlphabet = ('A'..'Z').toMutableList()
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"

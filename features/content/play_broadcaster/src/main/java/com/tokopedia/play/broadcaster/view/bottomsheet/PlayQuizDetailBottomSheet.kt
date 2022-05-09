@@ -44,6 +44,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
             BottomSheetPlayBroQuizDetailBinding.inflate(LayoutInflater.from(requireContext()))
         setChild(binding.root)
         showHeader = false
+        clearContentPadding = true
         parentViewModel = ViewModelProvider(
             requireActivity(),
             parentViewModelFactoryCreator.create(requireActivity())
@@ -52,6 +53,7 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setTitle("Respon quiz")
         parentViewModel.getQuizDetailData()
         observeQuizDetail()
     }

@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:text="@string/play_common_widget_interactive_end"
+        android:text="@string/play_interactive_ends_in"
         android:textColor="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
