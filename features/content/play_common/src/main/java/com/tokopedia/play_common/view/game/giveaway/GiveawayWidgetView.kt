@@ -2,6 +2,7 @@ package com.tokopedia.play_common.view.game.giveaway
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
@@ -67,7 +68,9 @@ class GiveawayWidgetView : ConstraintLayout {
     private fun setupView() {
         setTitle("")
 
-        binding.iconTap.setOnClickListener {
+        binding.flTap.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             mListener?.onTapTapClicked(this)
         }
     }
