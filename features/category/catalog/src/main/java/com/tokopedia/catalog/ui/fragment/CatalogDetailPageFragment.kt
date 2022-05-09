@@ -248,7 +248,7 @@ class CatalogDetailPageFragment : Fragment(),
         mToBottomLayout?.apply {
             setOnClickListener {
                 isScrollDownButtonClicked = true
-                userPressedLastTopPosition = (lastDetachedItemPosition + lastAttachItemPosition)/2
+                userPressedLastTopPosition = (lastAttachItemPosition)
                 scrollToBottom()
                 slideDownMoreProductsView()
             }
