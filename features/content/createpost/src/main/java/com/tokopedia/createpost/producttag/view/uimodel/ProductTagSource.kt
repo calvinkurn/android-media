@@ -14,14 +14,9 @@ enum class ProductTagSource(val tag: String) {
     companion object {
 
         fun mapFromString(s: String): ProductTagSource {
-            return when(s) {
-                GlobalSearch.tag -> GlobalSearch
-                Wishlist.tag -> Wishlist
-                MyShop.tag -> MyShop
-                LastTagProduct.tag -> LastTagProduct
-                LastPurchase.tag -> LastPurchase
-                else -> Unknown
-            }
+            return values().firstOrNull {
+                it.tag == s
+            } ?: Unknown
         }
     }
 }
