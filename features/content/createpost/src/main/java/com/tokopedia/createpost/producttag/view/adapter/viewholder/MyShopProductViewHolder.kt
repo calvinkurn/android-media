@@ -1,13 +1,16 @@
 package com.tokopedia.createpost.producttag.view.adapter.viewholder
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.ItemMyShopProductListBinding
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.kotlin.extensions.view.loadImage
 
 /**
  * Created By : Jonathan Darwin on May 09, 2022
@@ -20,10 +23,26 @@ internal class MyShopProductViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MyShopProductAdapter.Model.Product) {
-            binding.productView.apply {
-                setProductModel(item.product.toProductCard())
-                setOnClickListener { onSelected(item.product) }
+            binding.imgProduct.loadImage(item.product.coverURL)
+            binding.tvName.text = item.product.name
+            binding.tvStock.text = itemView.context.getString(
+                R.string.cc_product_stock_template, item.product.stock
+            )
+
+            if(item.product.isDiscount) {
+                binding.tvPrice.text = item.product.priceFmt
+                binding.labelDiscountPercentage.text = itemView.context.getString(
+                    R.string.cc_product_discount_template,
+                    item.product.discountFmt
+                )
+                binding.tvPriceBeforeDiscount.text = item.product.priceOriginalFmt
+                binding.llDiscount.visibility = View.VISIBLE
+            } else {
+                binding.tvPrice.text = item.product.priceFmt
+                binding.llDiscount.visibility = View.GONE
             }
+
+            binding.root.setOnClickListener { onSelected(item.product) }
         }
 
         companion object {
