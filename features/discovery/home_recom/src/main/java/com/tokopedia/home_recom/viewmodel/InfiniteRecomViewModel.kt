@@ -154,11 +154,6 @@ class InfiniteRecomViewModel @Inject constructor(
                 if (item.isProductHasParentID()) {
                     var variantTotalItems = 0
                     variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
-//                    it.values.forEach { miniCartItem ->
-//                        if (miniCartItem.productParentId == item.parentID.toString()) {
-//                            variantTotalItems += miniCartItem.quantity
-//                        }
-//                    }
                     item.updateItemCurrentStock(variantTotalItems)
                 } else {
                     item.updateItemCurrentStock(it.getMiniCartItemProduct(item.productId.toString())?.quantity
@@ -174,9 +169,6 @@ class InfiniteRecomViewModel @Inject constructor(
         launchCatchError(dispatcher.getIODispatcher(), block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-//            val data = result.miniCartItems.associateBy({ it.productId }) {
-//                it
-//            }
             _miniCartData.postValue(result.miniCartItems.toMutableMap())
             _minicartWidgetUpdater.postValue(result)
         }) {

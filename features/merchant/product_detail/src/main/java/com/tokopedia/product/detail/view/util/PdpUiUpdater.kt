@@ -782,7 +782,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     recomItem.updateItemCurrentStock(when {
                         recomItem.isProductHasParentID() -> {
                             cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
-//                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
                         }
                         cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
                             cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
@@ -796,16 +795,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateRecomDataByKey(key, dataList)
         }
     }
-
-//    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
-//        var variantTotalItems = 0
-//        miniCart.values.forEach { miniCartItem ->
-//            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-//                variantTotalItems += miniCartItem.quantity
-//            }
-//        }
-//        return variantTotalItems
-//    }
 
     fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {
         val key = recommendationItem.pageName

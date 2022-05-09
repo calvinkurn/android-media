@@ -1557,15 +1557,6 @@ class DiscoveryFragment :
     }
 
     private fun syncWithCart(data:MiniCartSimplifiedData){
-//        val map = HashMap<String,MiniCartItem>()
-//        data.miniCartItems.associateByTo (map,{ it.productId })
-//        val variantMap = data.miniCartItems.groupBy { it.productParentId }
-//        for((parentProductId,list) in variantMap){
-//            if(parentProductId.isNotEmpty() && parentProductId!="0"){
-//                val quantity = list.sumOf { it.quantity }
-//                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
-//            }
-//        }
         setCartData(data.miniCartItems,pageEndPoint)
         miniCartData = data
         reSync()

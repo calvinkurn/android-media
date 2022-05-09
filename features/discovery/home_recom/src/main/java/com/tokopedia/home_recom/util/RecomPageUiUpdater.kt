@@ -42,7 +42,6 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(when {
                         recomItem.isProductHasParentID() -> {
-//                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
                             cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
                         }
                         cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
@@ -81,14 +80,4 @@ class RecomPageUiUpdater(var dataList: MutableList<HomeRecommendationDataModel>)
         }
         dataList = newDataList
     }
-
-//    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem>): Int {
-//        var variantTotalItems = 0
-//        miniCart.values.forEach { miniCartItem ->
-//            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-//                variantTotalItems += miniCartItem.quantity
-//            }
-//        }
-//        return variantTotalItems
-//    }
 }
