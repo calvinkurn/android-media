@@ -56,20 +56,24 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_empty"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="start"
-        tools:text="@string/play_interactive_empty"
         android:textColor="@color/Unify_N300"
         android:textSize="@dimen/fontSize_lvl2"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/tv_reward"
-        app:layout_constraintStart_toStartOf="@id/tv_reward"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_reward"
+        app:layout_goneMarginBottom="@dimen/spacing_lvl3"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
         app:typographyType="body_3"
-        tools:visibility="visible"
-        />
+        tools:text="@string/play_interactive_empty"
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_leaderboard"
@@ -83,18 +87,17 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_reward"
-        app:icon_name="GIFT"
-        app:icon_color_light_enable="@color/Unify_N0"
-        app:icon_color_night_enable="@color/Unify_N0"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_10"
-        android:visibility="gone"
-        android:padding="@dimen/spacing_lvl2"
         android:background="@drawable/bg_leaderboard_reward"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="GIFT"
         app:layout_constraintStart_toStartOf="@+id/iv_leaderboard"
         app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_title"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_reward"
@@ -108,21 +111,22 @@
         app:layout_constraintTop_toTopOf="@+id/iv_reward"
         app:typographyType="heading_5"
         tools:text="BULU MATA KUCING ANGGORA"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_choices"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_14"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_dp_14"
         android:padding="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_reward"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leaderboard_empty"
         tools:itemCount="2"
         tools:listitem="@layout/item_quiz_choice"
         tools:visibility="visible" />
