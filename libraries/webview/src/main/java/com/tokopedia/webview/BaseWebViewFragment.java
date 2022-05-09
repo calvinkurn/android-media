@@ -188,7 +188,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
         if(uri.getUserInfo()!=null) {
-            Toast.makeText(getActivity(), "this cannot be proceeded", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Unable to open link", Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
