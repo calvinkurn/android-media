@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -732,8 +733,14 @@ class DigitalPDPDataPlanFragment :
             if (denomFull.listDenomData.isNotEmpty()) {
                 it.rechargePdpPaketDataPromoWidget.show()
                 it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                    this, denomFull,
-                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                    this,
+                    denomFull,
+                    "#" + Integer.toHexString(
+                        ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    ,
+                    selectedInitialPosition
                 )
             } else {
                 it.rechargePdpPaketDataPromoWidget.hide()

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -680,8 +681,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (denomGrid.listDenomData.isNotEmpty()) {
                 it.rechargePdpPulsaPromoWidget.show()
                 it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                    this, denomGrid,
-                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                    this,
+                    denomGrid,
+                    "#" + Integer.toHexString(ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    ,
+                    selectedInitialPosition
                 )
             } else {
                 it.rechargePdpPulsaPromoWidget.hide()
