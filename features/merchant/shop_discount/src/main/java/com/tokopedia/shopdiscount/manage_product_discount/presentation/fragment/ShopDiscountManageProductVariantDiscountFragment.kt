@@ -398,16 +398,14 @@ class ShopDiscountManageProductVariantDiscountFragment
         val title: String
         if (totalSelectedVariant.isMoreThanZero()) {
             isLabelEnabled = true
+            val titleFormat = getLabelBulkApplyTitleFormat(mode)
             title = String.format(
-                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_enabled),
+                titleFormat,
                 totalSelectedVariant
             )
         } else {
             isLabelEnabled = false
-            title = String.format(
-                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled),
-                totalSelectedVariant
-            )
+            title = getLabelBulkApplyTitleDisabled(mode)
         }
         labelBulkApply?.apply {
             isEnabled = isLabelEnabled
@@ -418,13 +416,41 @@ class ShopDiscountManageProductVariantDiscountFragment
         }
     }
 
+    private fun getLabelBulkApplyTitleDisabled(mode: String): String {
+        return when(mode){
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_edit)
+            }
+            else -> ""
+        }
+    }
+
+    private fun getLabelBulkApplyTitleFormat(mode: String): String {
+        return when(mode){
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_edit)
+            }
+            else -> ""
+        }
+    }
+
     private fun openBottomSheetBulkApply() {
+        val minStartDate = adapter.getMinStartDateOfProductList()
+        val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
         val slashPriceStatus = viewModel.getProductData().productStatus.slashPriceStatus
         val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(slashPriceStatus)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
-            bulkApplyBottomSheetMode
+            bulkApplyBottomSheetMode,
+            minStartDate,
+            maxStartDate
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)

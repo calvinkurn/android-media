@@ -49,6 +49,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
@@ -262,6 +263,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         showToasterSuccess(getString(R.string.shop_discount_manage_discount_delete_product_message))
                         removeProduct(it.data.productId)
                         checkProductSize()
+                        updateLabelBulkApply()
                     }
                 }
                 is Fail -> {
@@ -279,7 +281,6 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun checkProductSize() {
         val totalProduct = getTotalProductSize()
-        setupLabelBulkApply(totalProduct)
         if (totalProduct.isZero()) {
             finishActivity()
         }
@@ -356,6 +357,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         showButtonSubmit()
                         checkButtonSubmit()
                         checkProductSize()
+                        updateLabelBulkApply()
                         configTickerAbusiveProducts()
                     }
                 }
@@ -408,11 +410,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         return adapter.getAllProductData().size
     }
 
-    private fun setupLabelBulkApply(totalProduct: Int) {
-        val labelTitle = String.format(
-            getString(R.string.shop_discount_manage_discount_bulk_manage_label_format),
-            totalProduct
-        )
+    private fun updateLabelBulkApply() {
+        val totalProduct = adapter.getAllProductData().size
+        val labelTitleFormat = getLabelBulkApplyTitleFormat(mode)
+        val labelTitle = String.format(labelTitleFormat, totalProduct)
         labelBulkApply?.apply {
             show()
             setTitle(labelTitle)
@@ -422,12 +423,28 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun getLabelBulkApplyTitleFormat(mode: String): String {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_edit)
+            }
+            else -> ""
+        }
+    }
+
     private fun openBottomSheetBulkApply() {
+        val minStartDate = adapter.getMinStartDateOfProductList()
+        val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
         val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(status)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
-            bulkApplyBottomSheetMode
+            bulkApplyBottomSheetMode,
+            minStartDate,
+            maxStartDate
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -492,7 +509,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
-        if(model.productStatus.isVariant)
+        if (model.productStatus.isVariant)
             redirectToManageProductVariantDiscountPage(model)
         else
             redirectToManageProductDiscountPage(model)
