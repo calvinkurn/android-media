@@ -1838,7 +1838,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleClickQuizOption(optionId: String){
-        val interactiveId = _interactive.value.interactive.id.toString()
+        val interactiveId = _interactive.value.interactive.id
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
@@ -1867,8 +1867,7 @@ class PlayViewModel @AssistedInject constructor(
                     when {
                         isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
                         choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
-                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
-                        else -> choice
+                        else -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
                     }
                 }
             )
