@@ -31,6 +31,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
@@ -192,7 +193,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
             affiliate_login_card.show()
             affiliate_user_name.text = affiliateLoginSharedViewModel.getUserName()
             affiliate_user_email.text = affiliateLoginSharedViewModel.getUserEmail()
-            ImageHandler.loadImageCircle2(context, affiliate_user_image, affiliateLoginSharedViewModel.getUserProfilePicture())
+            affiliate_user_image.loadImageCircle(affiliateLoginSharedViewModel.getUserProfilePicture())
         }
     }
 

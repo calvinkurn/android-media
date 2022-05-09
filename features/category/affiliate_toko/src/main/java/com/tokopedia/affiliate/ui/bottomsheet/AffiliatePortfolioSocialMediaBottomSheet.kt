@@ -10,7 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
+import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
+import com.tokopedia.affiliate.AFFILIATE_TWITTER_REGEX
+import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
+import com.tokopedia.affiliate.FACEBOOK_DEFAULT
+import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
+import com.tokopedia.affiliate.TIKTOK_DEFAULT
+import com.tokopedia.affiliate.TWITTER_DEFAULT
+import com.tokopedia.affiliate.WWW
+import com.tokopedia.affiliate.YOUTUBE_DEFAULT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
