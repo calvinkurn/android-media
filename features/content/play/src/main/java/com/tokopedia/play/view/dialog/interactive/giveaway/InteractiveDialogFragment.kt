@@ -86,6 +86,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
             WindowManager.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        dialog?.setCanceledOnTouchOutside(true)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
