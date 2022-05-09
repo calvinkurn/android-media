@@ -9,7 +9,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
         val productBundlingList: List<ProductBundlingUiModel>,
-        val productListHeaderUiModel: ProductListHeaderUiModel
+        val productListHeaderUiModel: ProductListHeaderUiModel,
+        val addonsListUiModel: AddonsListUiModel?
 ) {
     data class ProductListHeaderUiModel(
             val shopBadgeUrl: String,
@@ -48,7 +49,8 @@ data class ProductListUiModel(
             val quantity: Int,
             val totalPrice: String,
             val totalPriceText: String,
-            val isProcessing: Boolean = false
+            val isProcessing: Boolean = false,
+            val addonsListUiModel: AddonsListUiModel? = null
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

@@ -17,6 +17,7 @@ import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFra
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_PRODUCT_IDS
 import com.tokopedia.vouchercreation.product.list.view.fragment.ManageProductFragment.Companion.BUNDLE_KEY_SELECTED_WAREHOUSE_ID
 import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
+import com.tokopedia.vouchercreation.product.update.UpdateCouponActivity.Companion.BUNDLE_KEY_BLOCK_ADD_PRODUCT
 
 class ManageProductActivity : BaseSimpleActivity() {
 
@@ -46,6 +47,7 @@ class ManageProductActivity : BaseSimpleActivity() {
                 selectedProducts = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCTS),
                 selectedProductIds = intent.getParcelableArrayListExtra(BUNDLE_KEY_SELECTED_PRODUCT_IDS),
                 selectedWarehouseId = intent.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID),
+                blockAddProduct = intent.getBooleanExtra(BUNDLE_KEY_BLOCK_ADD_PRODUCT, false)
         )
         return fragment
     }
@@ -69,6 +71,9 @@ class ManageProductActivity : BaseSimpleActivity() {
                 val selectedProducts = data?.getParcelableArrayListExtra<ProductUiModel>(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS)?.toList() ?: listOf()
                 val normalizedProductUiModel = fragment?.resetProductUiModelState(selectedProducts)?: listOf()
                 fragment?.addProducts(normalizedProductUiModel)
+                fragment?.updateProductCounter()
+                val selectedWarehouseId = data?.getStringExtra(BUNDLE_KEY_SELECTED_WAREHOUSE_ID)
+                fragment?.updateWarehouseLocationId(selectedWarehouseId ?: "")
             }
         }
     }

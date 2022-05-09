@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view
 
 import android.content.Context
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -96,7 +95,7 @@ class TopAdsInsightShopKeywordRecommendationView(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtSubTitle.text = String.format(
+                txtDescription.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )
@@ -106,7 +105,7 @@ class TopAdsInsightShopKeywordRecommendationView(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtSubTitle.text = String.format(
+                txtDescription.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )
@@ -116,7 +115,7 @@ class TopAdsInsightShopKeywordRecommendationView(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtSubTitle.text = String.format(
+                txtDescription.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )

@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -151,7 +150,9 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         result.putExtras(generateBundleError(position, throwable))
         LocalBroadcastManager.getInstance(this).sendBroadcast(result)
 
-        firebaseLogError(throwable)
+        ErrorHandler.getErrorMessage(this, throwable, ErrorHandler.Builder().apply {
+            className = UploadImageChatService::class.java.name
+        }.build())
 
         val errorMessage = uploaderReadableError(throwable)
         notificationManager?.onFailedUpload(errorMessage)
@@ -175,14 +176,6 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         replyChatGQLUseCase.cancel()
-    }
-
-    private fun firebaseLogError(throwable: Throwable) {
-        try {
-            FirebaseCrashlytics.getInstance().recordException(throwable)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
     }
 
     private fun uploaderReadableError(throwable: Throwable): String {

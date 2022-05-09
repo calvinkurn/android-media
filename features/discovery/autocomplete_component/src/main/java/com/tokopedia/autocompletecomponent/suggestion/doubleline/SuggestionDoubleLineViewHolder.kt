@@ -18,8 +18,8 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.unifycomponents.setBodyText
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
 import java.util.*
@@ -47,6 +47,7 @@ class SuggestionDoubleLineViewHolder(
         bindLabel(item.data)
         bindShortcutButton(item.data)
         bindListener(item.data)
+        bindAdText(item.data)
     }
 
     private fun bindIconImage(item: SuggestionDoubleLineDataDataView) {
@@ -74,10 +75,7 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun getSubtitle(item: BaseSuggestionDataView): String {
-        val isAds = item.shopAdsDataView != null
-
-        return if (isAds) getString(com.tokopedia.topads.sdk.R.string.title_promote_by)
-        else MethodChecker.fromHtml(item.subtitle).toString()
+        return MethodChecker.fromHtml(item.subtitle).toString()
     }
 
     private fun bindTextTitle(item: SuggestionDoubleLineDataDataView) {
@@ -110,7 +108,7 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun bindAllBoldTextTitle(item: BaseSuggestionDataView){
-        itemView.doubleLineTitle?.setBodyText(FONT_LEVEL_14_SP, true)
+        itemView.doubleLineTitle?.setWeight(Typography.BOLD)
         itemView.doubleLineTitle?.text = MethodChecker.fromHtml(item.title)
     }
 
@@ -172,6 +170,12 @@ class SuggestionDoubleLineViewHolder(
                 listener.onItemImpressed(item)
             }
         })
+    }
+
+    private fun bindAdText(item: BaseSuggestionDataView) {
+        val isAds = item.shopAdsDataView != null
+
+        itemView.adText.showWithCondition(isAds)
     }
 
     private fun <T : View> T?.shouldShowOrHideWithAction(shouldShow: Boolean, action: (T) -> Unit) {

@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -35,11 +37,13 @@ import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionVie
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -84,6 +88,7 @@ class ProductDetailActivityTest {
         clearLogin()
         gtmLogDBSource.deleteAll().toBlocking().first()
 
+        fakeLogin()
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         activityRule.launchActivity(intent)
 
@@ -106,6 +111,7 @@ class ProductDetailActivityTest {
             fakeLogin()
 
         } assertTest {
+            assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
 
@@ -121,6 +127,7 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(true)
             waitForTrackerSent()
             performClose(activityRule)
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_LOGIN_PATH)
@@ -135,6 +142,7 @@ class ProductDetailActivityTest {
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(true)
             if (addToCartBottomSheetIsVisible() == true) {
                 performClose(activityRule)
                 waitForTrackerSent()
@@ -149,9 +157,12 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(500L)
             clickVariantTest()
             clickBuyNow()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
@@ -162,9 +173,12 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
+            clearLogin()
+            Thread.sleep(500L)
             clickVariantTest()
             clickAddToCart()
         } assertTest {
+            assertIsLoggedIn(false)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, ADD_TO_CART_NON_LOGIN_PATH)
@@ -190,6 +204,7 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickTabDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, DISCUSSION_PRODUCT_TAB_PATH)
@@ -203,6 +218,7 @@ class ProductDetailActivityTest {
             fakeLogin()
             clickSeeAllDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
@@ -213,9 +229,10 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+            fakeLogin()
             clickThreadDetailDiscussion()
         } assertTest {
+            assertIsLoggedIn(true)
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, THREAD_DETAIL_ON_DISCUSSION_PATH)
@@ -250,13 +267,6 @@ class ProductDetailActivityTest {
 
     }
 
-    private fun getPositionViewHolderByName(name: String): Int {
-        val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
-        return fragment.productAdapter?.currentList?.indexOfFirst {
-            it.name() == name
-        } ?: 0
-    }
-
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
     }
@@ -280,7 +290,7 @@ class ProductDetailActivityTest {
     }
 
     private fun waitForTrackerSent() {
-        Thread.sleep(4000L)
+        Thread.sleep(500L)
     }
 
     private fun fakeLogin() {
@@ -295,8 +305,13 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun assertThanos(trackerId:String) {
+    private fun assertThanos(trackerId: String) {
         assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
+    }
+
+    private fun assertIsLoggedIn(actualIsLoggedIn: Boolean) {
+        val userSession = UserSession(targetContext)
+        Assert.assertEquals(userSession.isLoggedIn, actualIsLoggedIn)
     }
 
     companion object {

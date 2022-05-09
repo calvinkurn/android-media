@@ -214,14 +214,16 @@ class QuestWidgetView @JvmOverloads constructor(
         list?.let {
             rvQuestWidget.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            val adapter = QuestWidgetAdapter(
-                data.widgetData.questWidgetList.questWidgetList,
-                data.config,
-                questTracker,
-                source,
-                questWidgetCallbacks,
-                this.position
-            )
+            val adapter = data.widgetData.questWidgetList.questWidgetList?.let { it1 ->
+                QuestWidgetAdapter(
+                    it1,
+                    data.config,
+                    questTracker,
+                    source,
+                    questWidgetCallbacks,
+                    this.position
+                )
+            }
             rvQuestWidget.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                 private var direction = ""

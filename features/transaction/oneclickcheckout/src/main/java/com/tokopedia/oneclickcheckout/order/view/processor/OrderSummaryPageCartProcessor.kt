@@ -55,7 +55,15 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                         orderProfile = orderData.preference,
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
-                        globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
+                        globalEvent = when {
+                            orderData.prompt.shouldShowPrompt() -> {
+                                OccGlobalEvent.Prompt(orderData.prompt)
+                            }
+                            orderData.popUp.isNeedToShowPopUp() -> {
+                                OccGlobalEvent.PopUp(orderData.popUp)
+                            }
+                            else -> null
+                        },
                         throwable = null,
                         addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
                         profileCode = orderData.profileCode

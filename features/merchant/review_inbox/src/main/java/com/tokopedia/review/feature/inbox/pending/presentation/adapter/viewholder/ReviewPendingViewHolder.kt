@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
 import com.tokopedia.review.common.ReviewInboxConstants
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.inbox.R
@@ -102,11 +101,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     private fun showNew(seen: Boolean) {
         binding.reviewPendingNewIcon.apply {
-            if (InboxUnifiedRemoteConfig.isInboxUnified()) {
-                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_SECONDARY)
-            } else {
-                setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
-            }
+            setNotification("", NotificationUnify.NONE_TYPE, NotificationUnify.COLOR_PRIMARY)
             showWithCondition(!seen)
         }
     }

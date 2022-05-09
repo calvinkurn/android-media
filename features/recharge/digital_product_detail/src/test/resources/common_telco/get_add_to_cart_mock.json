@@ -1,0 +1,135 @@
+{
+  "type": "cart",
+  "id": "68521721-2-c48ed2dcefc3aff296ab184399a0bafc",
+  "attributes": {
+    "user_id": 68521721,
+    "client_number": "081311205111",
+    "title": "Detail Pembelian",
+    "category_name": "Paket Data",
+    "operator_name": "Telkomsel - Simpati",
+    "icon": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png",
+    "price": "Rp30.000",
+    "price_plain": 30000,
+    "instant_checkout": false,
+    "need_otp": false,
+    "sms_state": "",
+    "voucher_autocode": "QACASHBACK",
+    "user_input_price": null,
+    "main_info": [
+      {
+        "label": "Jenis Layanan",
+        "value": "Telkomsel - Simpati Internet OMG 30RB / 7 Hari"
+      },
+      {
+        "label": "Nomor",
+        "value": "081311205111"
+      },
+      {
+        "label": "Harga",
+        "value": "Rp30.000"
+      }
+    ],
+    "additional_info": [],
+    "enable_voucher": true,
+    "is_coupon_active": 1,
+    "autoapply": {
+      "success": true,
+      "Message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "code": "QACASHBACK",
+      "is_coupon": 0,
+      "discount_amount": 0,
+      "discount_price": "Rp0",
+      "discount_amount_label": "",
+      "discounted_amount": 30000,
+      "discounted_price": "Rp30.000",
+      "discounted_amount_label": "Diskon Voucher",
+      "title_description": "Total benefit anda: Rp3.000",
+      "promo_code_id": 0,
+      "promo_id": 0,
+      "message_success": "Kamu bisa dapat cashback senilai Rp3.000 (3.000 OVO Points) setelah pesanan berhasil."
+    },
+    "default_promo_dialog_tab": "voucher",
+    "cross_selling_type": 2,
+    "cross_selling_config": {
+      "is_skipable": true,
+      "is_checked": false,
+      "wording": {
+        "header_title": "Checkout",
+        "body_title": "Aktifkan auto debit untuk tagihan ini",
+        "body_content_before": "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+        "body_content_after": "Kamu harus memasukkan OVO PIN untuk mulai auto debit tagihan ini pada 21 Maret 2022",
+        "cta_button_text": "Bayar"
+      },
+      "wording_is_subscribed": {
+        "header_title": "Checkout",
+        "body_title": "",
+        "body_content_before": "",
+        "body_content_after": "",
+        "cta_button_text": "Bayar"
+      }
+    },
+    "pop_up": null,
+    "fintech_product": [
+      {
+        "id": 146,
+        "transaction_type": "Donasi",
+        "tier_id": 146,
+        "opt_in": false,
+        "check_box_disabled": false,
+        "allow_ovo_points": false,
+        "fintech_amount": 5000,
+        "fintech_partner_amount": 0,
+        "info": {
+          "title": "Donasi Rp5.000 untuk Korban Banjir Bogor",
+          "subtitle": "",
+          "link_text": "",
+          "link_url": "",
+          "tooltip_text": "Bantu penuhi kebutuhan dasar (logistik) warga terdampak bencana banjir di wilayah Bogor bersama BenihBaik.com.",
+          "icon_url": "",
+          "desktop_icon_url": "",
+          "client_number": "",
+          "quota_id": 0,
+          "pct_tokopedia_subsidy": 0,
+          "pct_external_subsidy": 0,
+          "checked_subtitle": "",
+          "client_number_type": ""
+        },
+        "service_id": 5,
+        "metadata": "{}",
+        "operator_name": "",
+        "category_id": 0,
+        "operator_id": 0
+      }
+    ],
+    "atc_source": "",
+    "admin_fee": "Rp0",
+    "admin_fee_plain": 0,
+    "back_url": "",
+    "promo_service_id": "819380128012836",
+    "admin_fee_included": false
+  },
+  "relationships": {
+    "category": {
+      "data": {
+        "type": "category",
+        "id": "2"
+      }
+    },
+    "operator": {
+      "data": {
+        "type": "operator",
+        "id": "12"
+      }
+    },
+    "product": {
+      "data": {
+        "type": "product",
+        "id": "6642"
+      }
+    }
+  }
+}

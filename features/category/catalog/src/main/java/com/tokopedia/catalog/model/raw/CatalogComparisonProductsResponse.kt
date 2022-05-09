@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CatalogComparisonProductsResponse(
     @Expose @SerializedName("catalogComparisonList")
-    val catalogComparisonList: CatalogComparisonList?
+    var catalogComparisonList: CatalogComparisonList?
 ) {
     data class CatalogComparisonList(
         @Expose @SerializedName("catalogComparisonList")

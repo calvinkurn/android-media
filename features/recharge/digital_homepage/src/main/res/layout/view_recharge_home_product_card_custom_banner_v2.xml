@@ -60,14 +60,14 @@
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/parallax_image"
-                    android:layout_width="@dimen/product_card_custom_banner_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/recharge_custom_product_card_iv_margin"
                     android:layout_marginTop="@dimen/unify_space_16"
                     android:adjustViewBounds="true"
                     android:clickable="true"
                     android:focusable="true"
-                    android:scaleType="fitXY" />
+                    android:maxWidth="@dimen/product_card_custom_banner_width" />
 
             </FrameLayout>
 

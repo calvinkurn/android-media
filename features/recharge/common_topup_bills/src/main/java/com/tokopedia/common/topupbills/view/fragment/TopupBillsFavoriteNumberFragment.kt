@@ -27,6 +27,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoAttributesOperato
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -38,7 +39,6 @@ import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottom
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.*
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView

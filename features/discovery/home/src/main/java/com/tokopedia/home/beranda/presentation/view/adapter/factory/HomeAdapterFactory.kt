@@ -69,8 +69,11 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
                          private val questWidgetCallbacks: QuestWidgetCallbacks,
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
-                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener
-) :
+                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
+                         ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
         RechargeComponentTypeFactory {
@@ -283,12 +286,24 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
     override fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int {
         return CMHomeWidgetViewHolder.LAYOUT
     }
 
     override fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int {
         return HomePayLaterWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(cueCategoryDataModel: CueCategoryDataModel): Int {
+        return CueWidgetCategoryViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -461,14 +476,20 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
             )
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder =
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
+            SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                specialReleaseComponentListener
+            )
             CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
                 view,
                 cmHomeWidgetCallback
             )
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
-
-
+            CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

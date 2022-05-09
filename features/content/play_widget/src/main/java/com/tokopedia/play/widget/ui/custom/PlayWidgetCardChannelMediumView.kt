@@ -9,17 +9,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
-import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -28,7 +26,7 @@ import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by mzennis on 26/10/20.
@@ -57,13 +55,14 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val llLoadingContainer: LinearLayout
     private val loaderLoading: LoaderUnify
     private val ivGiveaway: ImageView
+    private val ivPromoLabel: IconUnify
 
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
 
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
-    private lateinit var mModel: PlayWidgetMediumChannelUiModel
+    private lateinit var mModel: PlayWidgetChannelUiModel
 
     init {
         val view = View.inflate(context, R.layout.view_play_widget_card_channel_medium, this)
@@ -84,6 +83,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
         ivGiveaway = view.findViewById(R.id.iv_giveaway)
+        ivPromoLabel = llPromoDetail.findViewById(R.id.promo_image)
 
         compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
         view.touchDelegate = compositeTouchDelegate
@@ -101,7 +101,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         mListener = listener
     }
 
-    fun setModel(model: PlayWidgetMediumChannelUiModel) {
+    fun setModel(model: PlayWidgetChannelUiModel) {
         this.mModel = model
 
         thumbnail.setImageUrl(model.video.coverUrl)
@@ -121,7 +121,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvAuthor.text = model.partner.name
         tvTitle.text = model.title
         tvStartTime.text = model.startTime
-        tvTotalView.text = model.totalView
+        tvTotalView.text = model.totalView.totalViewFmt
         ivGiveaway.visibility = if(model.hasGiveaway) View.VISIBLE else View.GONE
 
         setIconToggleReminder(model.reminderType)
@@ -131,22 +131,27 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
+            mListener?.onLabelPromoClicked(this, model)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, model)
         }
+
+        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
+            mListener?.onLabelPromoImpressed(this, model)
+        }, onViewNotVisible = {})
     }
 
-    private fun setActiveModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setActiveModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
 
-    private fun setUpcomingModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setUpcomingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
         liveBadge.visibility = View.GONE
         reminderBadge.visibility = View.VISIBLE
@@ -154,20 +159,19 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         llLoadingContainer.visibility = View.GONE
     }
 
-    private fun setDeletingModel(model: PlayWidgetMediumChannelUiModel) {
+    private fun setDeletingModel(model: PlayWidgetChannelUiModel) {
         ivAction.visibility = View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) View.VISIBLE else View.GONE
         reminderBadge.visibility = View.GONE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
     }
 
     private fun setIconToggleReminder(reminderType: PlayWidgetReminderType) {
-        val iconId = when (reminderType) {
-            PlayWidgetReminderType.Reminded -> IconUnify.BELL_FILLED
-            PlayWidgetReminderType.NotReminded -> IconUnify.BELL
+        when (reminderType) {
+            PlayWidgetReminderType.Reminded -> ivReminder.setImage(newIconId = IconUnify.BELL_FILLED, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_GN500))
+            PlayWidgetReminderType.NotReminded -> ivReminder.setImage(newIconId = IconUnify.BELL, newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
         }
-        ivReminder.setImage(newIconId = iconId)
     }
 
     private fun setPromoType(promoType: PlayWidgetPromoType) {
@@ -177,18 +181,25 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
                 tvOnlyLive.visibility = View.GONE
             }
             is PlayWidgetPromoType.Default -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.GONE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
             is PlayWidgetPromoType.LiveOnly -> {
+                setPromoLabelIcon(promoType.isRilisanSpesial)
                 tvOnlyLive.visibility = View.VISIBLE
 
                 tvPromoDetail.text = promoType.promoText
                 llPromoDetail.visibility = View.VISIBLE
             }
         }.exhaustive
+    }
+
+     private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
+        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -240,17 +251,27 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         fun onChannelClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel
+                item: PlayWidgetChannelUiModel
         )
 
         fun onToggleReminderChannelClicked(
-                item: PlayWidgetMediumChannelUiModel,
+                item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType
         )
 
         fun onMenuActionButtonClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel
+                item: PlayWidgetChannelUiModel
+        )
+
+        fun onLabelPromoClicked(
+            view: View,
+            item: PlayWidgetChannelUiModel
+        )
+
+        fun onLabelPromoImpressed(
+            view: View,
+            item: PlayWidgetChannelUiModel
         )
     }
 }

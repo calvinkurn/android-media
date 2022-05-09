@@ -39,10 +39,11 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -126,7 +127,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -309,7 +309,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -415,6 +416,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
+        Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroy()
     }
 
@@ -565,7 +567,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+        val gridLayoutManager = object : GridLayoutManager(context, 2) {
             override fun supportsPredictiveItemAnimations() = false
 
             override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
@@ -923,7 +925,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        IconBuilder(IconBuilderFlag(pageSource = CART_PAGE))
                                 .addIcon(
                                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,
@@ -1260,6 +1262,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onShowAllItem(appLink: String) {
         routeToApplink(appLink)
+    }
+
+    override fun onClickAddOnCart(productId: String, addOnId: String) {
+        activity?.let {
+            RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, addOnId))
+        }
+        cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun addOnImpression(productId: String) {
+        cartPageAnalytics.eventViewAddOnsWidget(productId)
     }
 
     private fun onErrorAddWishList(errorMessage: String, productId: String) {
@@ -1732,7 +1745,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
                 checkGoToShipment("")
             }
         }
@@ -1816,11 +1829,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String) {
+        if (isError) {
+            cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, productId, errorType)
+        } else {
+            cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+        }
         setProductImageAnimationData(imageView, false)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        var forceExpand = false
+        if (isError) {
+            // If unavailable item > 1 and state is collapsed, then expand first
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+        }
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -1926,6 +1951,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         scrollToLastAddedProductShop()
 
         renderAdditionalWidget()
+        resetArguments()
     }
 
     private fun scrollToLastAddedProductShop() {
@@ -2151,7 +2177,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0),
+                userSession.userId,
+                dPresenter.getPromoFlag()
         )
         cartData.unavailableSections.forEach { unavailableSection ->
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
@@ -2422,9 +2450,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
     }
 
-    override fun stopCartPerformanceTrace() {
+    override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
-            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+            EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
+            if (!isSuccessLoadCart) {
+                EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
+            }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }
@@ -2523,11 +2554,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                              checkoutProductEligibleForCashOnDelivery: Boolean,
                                              condition: Int) {
         when (condition) {
-            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
+            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
         }
         navigateToShipmentPage()
     }
@@ -3052,9 +3083,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     // get newly added cart id if open cart after ATC on PDP
     override fun getCartId(): String {
-        return if (!TextUtils.isEmpty(arguments?.getString(CartActivity.EXTRA_CART_ID))) {
-            arguments?.getString(CartActivity.EXTRA_CART_ID) ?: "0"
-        } else "0"
+        val cartId = arguments?.getString(CartActivity.EXTRA_CART_ID).orEmpty()
+        return cartId.ifEmpty { "0" }
     }
 
     private fun getAtcProductId(): Long {
@@ -3063,6 +3093,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isAtcExternalFlow(): Boolean {
         return getAtcProductId() != 0L
+    }
+
+    private fun resetArguments() {
+        arguments?.putString(CartActivity.EXTRA_CART_ID, null)
+        arguments?.putLong(CartActivity.EXTRA_PRODUCT_ID, 0)
     }
 
     override fun renderRecentView(recommendationWidget: RecommendationWidget?) {
@@ -3210,7 +3245,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (allDisabledCartItemDataList.isNotEmpty()) {
             val dialog = getMultipleDisabledItemsDialogDeleteConfirmation(allDisabledCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
-                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, false)
+                var forceExpand = false
+                if (allDisabledCartItemDataList.size > 1 && unavailableItemAccordionCollapseState) {
+                    collapseOrExpandDisabledItem()
+                    forceExpand = true
+                }
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, false, forceExpand)
                 cartPageAnalytics.eventClickDeleteAllUnavailableProduct(userSession.userId)
                 cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromHapusProdukBerkendala(
                         dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)

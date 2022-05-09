@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
 import java.util.List;
@@ -126,4 +127,12 @@ public interface ShipmentAdapterActionListener {
     void onViewErrorInCourierSection(String errorMessage);
 
     void onClickSetPinpoint(int position);
+
+    void openAddOnProductLevelBottomSheet(CartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
+
+    void openAddOnOrderLevelBottomSheet(ShipmentCartItemModel cartItemModel, AddOnWordingModel addOnWordingModel);
+
+    void addOnProductLevelImpression(String productId);
+
+    void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
 }

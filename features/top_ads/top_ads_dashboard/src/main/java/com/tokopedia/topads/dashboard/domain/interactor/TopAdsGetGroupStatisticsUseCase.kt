@@ -48,6 +48,8 @@ const val TOP_ADS_GET_GROUP_STATISTICS_QUERY: String = """query GetTopadsDashboa
       stat_total_conversion
       stat_total_sold
       stat_total_income
+      group_price_daily_spent_fmt
+      group_price_daily
     }
   }
 }

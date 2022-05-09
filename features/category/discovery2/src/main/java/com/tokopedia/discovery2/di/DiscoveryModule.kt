@@ -8,6 +8,8 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
 import com.tokopedia.discovery2.repository.banner.BannerRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteGQLRepository
+import com.tokopedia.discovery2.repository.bannerinfinite.BannerInfiniteRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -49,8 +51,7 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -193,6 +194,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return MyCouponGQLRepository(provideGetStringMethod(context))
     }
 
+    @Provides
+    fun provideBannerInfiniteRepository(): BannerInfiniteRepository {
+        return BannerInfiniteGQLRepository()
+    }
+
     @DiscoveryScope
     @Provides
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
@@ -206,14 +212,14 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          mapper: PlayWidgetUiMapper,
                           connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
             playWidgetReminderUseCase,
             playWidgetUpdateChannelUseCase,
-            mapperProviders,
+            mapper,
             connectionUtil
         )
     }

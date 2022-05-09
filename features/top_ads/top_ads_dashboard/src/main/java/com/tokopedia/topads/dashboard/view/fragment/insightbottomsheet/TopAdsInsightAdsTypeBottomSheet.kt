@@ -10,7 +10,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdObj
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightAdsTypeAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_insight_select_ads_type_bottomsheet.*
+import kotlinx.android.synthetic.main.topads_single_recyclerview_layout.*
 
 class TopAdsInsightAdsTypeBottomSheet(
     adsList: List<InsightAdObj>,
@@ -22,7 +22,7 @@ class TopAdsInsightAdsTypeBottomSheet(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val childView =
-            View.inflate(context, R.layout.topads_insight_select_ads_type_bottomsheet, null)
+            View.inflate(context, R.layout.topads_single_recyclerview_layout, null)
         setChild(childView)
         setSheetValues()
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)

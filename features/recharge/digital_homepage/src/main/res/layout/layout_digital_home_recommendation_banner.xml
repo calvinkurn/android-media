@@ -17,7 +17,7 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_recharge_recommendation_banner"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -36,6 +36,7 @@ class StatisticViewModel @Inject constructor(
     private val getTableDataUseCase: Lazy<GetTableDataUseCase>,
     private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
     private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
+    private val getAnnouncementDataUseCase: Lazy<GetAnnouncementDataUseCase>,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -65,6 +66,8 @@ class StatisticViewModel @Inject constructor(
         get() = _pieChartWidgetData
     val barChartWidgetData: LiveData<Result<List<BarChartDataUiModel>>>
         get() = _barChartWidgetData
+    val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
+        get() = _announcementWidgetData
 
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -79,6 +82,7 @@ class StatisticViewModel @Inject constructor(
     private val _tableWidgetData = MutableLiveData<Result<List<TableDataUiModel>>>()
     private val _pieChartWidgetData = MutableLiveData<Result<List<PieChartDataUiModel>>>()
     private val _barChartWidgetData = MutableLiveData<Result<List<BarChartDataUiModel>>>()
+    private val _announcementWidgetData = MutableLiveData<Result<List<AnnouncementDataUiModel>>>()
 
     private var dynamicParameter = DynamicParameterModel()
 
@@ -234,6 +238,18 @@ class StatisticViewModel @Inject constructor(
             _barChartWidgetData.postValue(result)
         }, onError = {
             _barChartWidgetData.postValue(Fail(it))
+        })
+    }
+
+    fun getAnnouncementWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
+                getAnnouncementDataUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+                return@withContext getAnnouncementDataUseCase.get().executeOnBackground()
+            })
+            _announcementWidgetData.postValue(result)
+        }, onError = {
+            _announcementWidgetData.postValue(Fail(it))
         })
     }
 }
