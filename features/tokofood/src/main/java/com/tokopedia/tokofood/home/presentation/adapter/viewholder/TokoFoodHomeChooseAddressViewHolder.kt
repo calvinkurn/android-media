@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodChooseAddressBinding
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment.Companion.SOURCE
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.utils.view.binding.viewBinding
@@ -50,7 +51,7 @@ class TokoFoodHomeChooseAddressViewHolder(
                 }
 
                 override fun getLocalizingAddressHostSourceData(): String {
-                    return "home"
+                    return SOURCE
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {}
@@ -58,11 +59,6 @@ class TokoFoodHomeChooseAddressViewHolder(
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {}
 
                 override fun onLocalizingAddressUpdatedFromBackground() {}
-
-                override fun isSupportWarehouseLoc(): Boolean {
-                    return false
-                }
-
             })
         }
     }

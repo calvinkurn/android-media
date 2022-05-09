@@ -90,6 +90,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
+
+        const val SOURCE = "tokofood"
+
         fun createInstance(): TokoFoodHomeFragment {
             return TokoFoodHomeFragment()
         }
