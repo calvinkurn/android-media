@@ -27,7 +27,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
     companion object {
         private const val PARAMS = "params"
         private const val PARAM_DEVICE = "device"
-        private const val PARAM_ROWS = "ROWS"
+        private const val PARAM_ROWS = "rows"
         private const val PARAM_START = "start"
         private const val PARAM_QUERY = "q"
         private const val PARAM_SHOP_ID = "shop_id"
