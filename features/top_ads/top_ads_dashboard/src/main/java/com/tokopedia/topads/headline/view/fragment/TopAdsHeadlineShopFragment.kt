@@ -317,7 +317,6 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         fetchFirstPage()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchFirstPage() }
         }
         close_butt.setOnClickListener {
