@@ -1241,24 +1241,6 @@ class ModelBuilder {
             bufferForPlaybackAfterRebufferMs = bufferForPlaybackAfterRebufferMs
     )
 
-    fun buildVariantSheetUiModel(
-            product: PlayProductUiModel.Product = buildProductLineUiModel(),
-            action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariant? = null,
-            stockWording: String? = "Stok tersedia",
-            listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf(),
-            sectionUiModel: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
-    ) = VariantSheetUiModel(
-            product = product,
-            action = action,
-            parentVariant = parentVariant,
-            stockWording = stockWording,
-            listOfVariantCategory = listOfVariantCategory,
-            mapOfSelectedVariants = mapOfSelectedVariants,
-            section = sectionUiModel
-    )
-
     fun buildProductLineUiModel(
             id: String = "123",
             shopId: String = "567",

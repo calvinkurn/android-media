@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -793,8 +794,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
-        if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
-        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
+        if (!isVisible) {
+            headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        } else {
+            val background = VectorDrawableCompat.create(
+                resources, R.drawable.tokopedianow_ic_header_background, context?.theme
+            )
+            headerBackground?.setImageDrawable(background)
+        }
         headerBackground?.showWithCondition(isVisible)
     }
 

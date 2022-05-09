@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -31,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
@@ -117,6 +117,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
@@ -124,7 +125,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCal
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
@@ -775,8 +776,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHeaderBackground() {
+        val background = VectorDrawableCompat.create(
+            resources,
+            R.drawable.tokopedianow_ic_header_background,
+            context?.theme
+        )
+        ivHeaderBackground?.setImageDrawable(background)
         ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
     }
 
     private fun hideHeaderBackground() {
@@ -1073,7 +1079,7 @@ class TokoNowHomeFragment: Fragment(),
             when(it) {
                 is Success -> {
                     onSuccessSharingReferralUrlParam(it.data)
-                    updateSharingReferral(false, it.data)
+                    updateSharingReferral(false, it.data.sharingUrlParam)
                 }
                 is Fail -> {
                     showToaster(
@@ -1081,6 +1087,24 @@ class TokoNowHomeFragment: Fragment(),
                         type = TYPE_ERROR
                     )
                 }
+            }
+        }
+
+        observe(viewModelTokoNow.homeSwitchServiceTracker) {
+            if (it.isImpressionTracker) {
+                analytics.sendImpressSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
+            } else {
+                analytics.sendClickSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
             }
         }
     }
@@ -1160,8 +1184,8 @@ class TokoNowHomeFragment: Fragment(),
         onRefreshLayout()
     }
 
-    private fun onSuccessSharingReferralUrlParam(sharingReferralUrlParam: String) {
-        val url = REFERRAL_PAGE_URL + sharingReferralUrlParam
+    private fun onSuccessSharingReferralUrlParam(shareMetaData: HomeShareMetaDataModel) {
+        val url = REFERRAL_PAGE_URL + shareMetaData.sharingUrlParam
 
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
@@ -1173,9 +1197,10 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         shareHomeTokonow?.apply {
-            sharingText = "${if (userSession.name.isNullOrBlank()) resources.getString(R.string.tokopedianow_home_referral_share_your_friend) else userSession.name} ${resources.getString(R.string.tokopedianow_home_referral_share_main_text)}"
-            specificPageName = resources.getString(R.string.tokopedianow_home_referral_share_title)
-            specificPageDescription = resources.getString(R.string.tokopedianow_home_referral_share_desc)
+            sharingText = shareMetaData.textDescription
+            specificPageName = shareMetaData.ogTitle
+            specificPageDescription = shareMetaData.ogDescription
+            ogImageUrl = shareMetaData.ogImage
         }
 
         showUniversalShareBottomSheet(shareHomeTokonow)
@@ -1250,7 +1275,7 @@ class TokoNowHomeFragment: Fragment(),
             val paddingBottom = if (isShowMiniCartWidget && !outOfCoverage) {
                 getMiniCartHeight()
             } else {
-                activity?.resources?.getDimensionPixelSize(
+                context?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
             }
             swipeLayout?.setPadding(0, 0, 0, paddingBottom)
@@ -1312,7 +1337,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showSwitcherCoachMark() {
         if(!homeSharedPref.getSwitcherCoachMarkShown()) {
             rvHome?.addOneTimeGlobalLayoutListener {
-                adapter.getItem(Home15mSwitcher::class.java)?.let {
+                adapter.getItem(Home20mSwitcher::class.java)?.let {
                     val index = adapter.findPosition(it)
                     val view = rvHome?.findViewHolderForAdapterPosition(index)?.itemView
                         ?.findViewById<View>(R.id.coachMarkTarget)
@@ -1499,7 +1524,7 @@ class TokoNowHomeFragment: Fragment(),
         RouteManager.route(context,
                 getAutoCompleteApplinkPattern(),
                 SOURCE,
-                resources.getString(R.string.tokopedianow_search_bar_hint),
+                context?.resources?.getString(R.string.tokopedianow_search_bar_hint).orEmpty(),
                 isFirstInstall().toString())
     }
 
@@ -1518,25 +1543,27 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
         return navToolbar?.let { toolbar ->
-            NavRecyclerViewScrollListener(
-                navToolbar = toolbar,
-                startTransitionPixel = homeMainToolbarHeight,
-                toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range),
-                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
-                    }
+            context?.let { context ->
+                NavRecyclerViewScrollListener(
+                    navToolbar = toolbar,
+                    startTransitionPixel = homeMainToolbarHeight,
+                    toolbarTransitionRangePixel = context.resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range),
+                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
+                        }
 
-                    override fun onSwitchToLightToolbar() { /* nothing to do */
-                    }
+                        override fun onSwitchToLightToolbar() { /* nothing to do */
+                        }
 
-                    override fun onSwitchToDarkToolbar() {
-                        navToolbar?.hideShadow()
-                    }
+                        override fun onSwitchToDarkToolbar() {
+                            navToolbar?.hideShadow()
+                        }
 
-                    override fun onYposChanged(yOffset: Int) {}
-                },
-                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-            )
+                        override fun onYposChanged(yOffset: Int) {}
+                    },
+                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+                )
+            }
         }
     }
 
@@ -1593,11 +1620,11 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun createShareHomeTokonow(): ShareTokonow {
         return ShareTokonow(
-                sharingText = resources.getString(R.string.tokopedianow_home_share_main_text),
+                sharingText = context?.resources?.getString(R.string.tokopedianow_home_share_main_text).orEmpty(),
                 thumbNailImage = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
                 ogImageUrl = THUMBNAIL_AND_OG_IMAGE_SHARE_URL,
-                specificPageName = resources.getString(R.string.tokopedianow_home_share_title),
-                specificPageDescription = resources.getString(R.string.tokopedianow_home_share_desc)
+                specificPageName = context?.resources?.getString(R.string.tokopedianow_home_share_title).orEmpty(),
+                specificPageDescription = context?.resources?.getString(R.string.tokopedianow_home_share_desc).orEmpty()
         )
     }
 
@@ -1666,7 +1693,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getMiniCartHeight(): Int {
-        return miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toInt()
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
     }
 
     override fun permissionAction(action: String, label: String) {

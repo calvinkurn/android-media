@@ -531,6 +531,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 position
             )
             viewModel.setOperatorDataById(operatorId)
+            getTagihanProduct()
         }
     }
 
@@ -693,6 +694,18 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun getTagihanProduct() {
+        viewModel.run {
+            setTagihanProductLoading()
+            getTagihanProduct(
+                menuId,
+                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber()
+                    ?: "",
+                getString(R.string.selection_null_product_error)
+            )
+        }
+    }
+
     private fun addToCart() {
         viewModel.run {
             setAddToCartLoading()
@@ -773,6 +786,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 userSession.userId
             )
         }
+        renderOperatorChipsByAutoSelect(operatorId)
     }
     //endregion
 
@@ -837,13 +851,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     override fun getSelectedChipOperator(operator: CatalogOperator) {
         viewModel.run {
             operatorData = operator
-            setTagihanProductLoading()
-            getTagihanProduct(
-                menuId,
-                binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber()
-                    ?: "",
-                getString(R.string.selection_null_product_error)
-            )
+            getTagihanProduct()
         }
     }
     //endregion
