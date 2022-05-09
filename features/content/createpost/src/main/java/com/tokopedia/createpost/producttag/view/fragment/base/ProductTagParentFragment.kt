@@ -143,7 +143,7 @@ class ProductTagParentFragment @Inject constructor(
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
-                requireActivity(),
+                this,
                 getStringArgument(EXTRA_PRODUCT_TAG_LIST),
                 getStringArgument(EXTRA_SHOP_BADGE),
             )

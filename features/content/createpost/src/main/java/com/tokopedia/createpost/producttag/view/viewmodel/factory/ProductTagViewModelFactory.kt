@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.savedstate.SavedStateRegistryOwner
 import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
@@ -15,16 +16,16 @@ import dagger.assisted.AssistedInject
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagViewModelFactory @AssistedInject constructor(
-    @Assisted activity: FragmentActivity,
+    @Assisted owner: SavedStateRegistryOwner,
     @Assisted(PRODUCT_TAG_SOURCE_RAW) private val productTagSourceRaw: String,
     @Assisted(SHOP_BADGE) private val shopBadge: String,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
-) : AbstractSavedStateViewModelFactory(activity, null) {
+) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @AssistedFactory
     interface Creator {
         fun create(
-            activity: FragmentActivity,
+            owner: SavedStateRegistryOwner,
             @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
             @Assisted(SHOP_BADGE) shopBadge: String,
         ): ProductTagViewModelFactory
