@@ -438,7 +438,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private fun getBulkApplyBottomSheetMode(mode: Int): DiscountBulkApplyBottomSheet.Mode {
         return when (mode) {
             SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
-                DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
+                DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {
                 DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT

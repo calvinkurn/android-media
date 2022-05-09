@@ -46,17 +46,29 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_TITLE = "title"
         private const val BUNDLE_KEY_MODE = "mode"
+        private const val BUNDLE_KEY_START_DATE = "start_date"
+        private const val BUNDLE_KEY_END_DATE = "end_date"
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
 
+        /**
+         * @param bulkUpdateDefaultStartDate
+         *  - Default start date value that will be first displayed on BULK_UPDATE mode
+         * @param bulkUpdateDefaultEndDate
+         * - Default end date value that will be first displayed on BULK_UPDATE mode
+         */
         @JvmStatic
         fun newInstance(
             bottomSheetTitle: String,
-            mode: Mode = Mode.SHOW_ALL_FIELDS
+            mode: Mode = Mode.BULK_APPLY,
+            bulkUpdateDefaultStartDate: Date? = null,
+            bulkUpdateDefaultEndDate: Date? = null
         ): DiscountBulkApplyBottomSheet {
             val args = Bundle()
             args.putString(BUNDLE_KEY_TITLE, bottomSheetTitle)
             args.putSerializable(BUNDLE_KEY_MODE, mode)
+            args.putSerializable(BUNDLE_KEY_START_DATE, bulkUpdateDefaultStartDate)
+            args.putSerializable(BUNDLE_KEY_END_DATE, bulkUpdateDefaultEndDate)
 
             val bottomSheet = DiscountBulkApplyBottomSheet().apply {
                 arguments = args
@@ -68,12 +80,22 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private val title by lazy { arguments?.getString(BUNDLE_KEY_TITLE).orEmpty() }
     private val mode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode }
+    private val bulkUpdateDefaultStartDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_START_DATE) as? Date
+    }
+    private val bulkUpdateDefaultEndDate by lazy {
+        arguments?.getSerializable(BUNDLE_KEY_END_DATE) as? Date
+    }
 
     private var binding by autoClearedNullable<BottomsheetDiscountBulkApplyBinding>()
 
+    /**
+     * BULK_APPLY = Invoked on "Atur Sekaligus"
+     * BULK_UPDATE = Invoked on "Ubah Sekaligus"
+     */
     enum class Mode {
-        SHOW_ALL_FIELDS,
-        HIDE_PERIOD_FIELDS,
+        BULK_APPLY,
+        BULK_UPDATE,
         UPDATE_PRODUCT
     }
 
@@ -246,7 +268,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         benefit: GetSlashPriceBenefitResponse.GetSlashPriceBenefit.SlashPriceBenefit,
         isUsingVps: Boolean
     ) {
-        if (mode == Mode.HIDE_PERIOD_FIELDS) {
+
+        if (mode == Mode.BULK_APPLY) {
+            binding?.chipOneYearPeriod?.chipType = ChipsUnify.TYPE_SELECTED
+        }
+
+        if (mode == Mode.BULK_UPDATE) {
             hideAllChips()
             binding?.tpgInformation?.gone()
             binding?.tfuStartDate?.gone()
@@ -255,6 +282,11 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
         if (mode == Mode.UPDATE_PRODUCT) {
             binding?.tfuStartDate?.isEnabled = false
+
+            if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
+                viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
+                viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate?: return)
+            }
         }
 
         if (isUsingVps) {
