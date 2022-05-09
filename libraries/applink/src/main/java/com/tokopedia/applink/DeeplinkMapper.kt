@@ -15,6 +15,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
+import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
@@ -483,6 +484,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.SETTING_PROFILE) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER),
             DLP.exact(ApplinkConst.MediaPicker.MEDIA_PICKER_PREVIEW, ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER_PREVIEW),
+            DLP.host(ApplinkConst.WEB_HOST) {_, _, deeplink, _ -> getWebHostWebViewLink(deeplink)},
         )
 
     fun getTokopediaSchemeList():List<DLP>{
