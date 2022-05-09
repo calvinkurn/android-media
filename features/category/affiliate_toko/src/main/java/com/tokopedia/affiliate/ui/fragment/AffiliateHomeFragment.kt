@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -60,6 +61,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -327,6 +330,22 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
             }
         })
+        affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
+            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
+                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+            }else {
+                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
+                    try {
+                        activity?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }catch (e : Exception){
+                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
+                    }
+                }
+                activity?.finish()
+            }
+        })
     }
     var lastItem : AffiliatePerformaSharedProductCardsModel? = null
     private fun setLastDataForEvent(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
@@ -351,7 +370,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         if(announcementData?.getAffiliateAnnouncement?.data?.status== ANNOUNCEMENT__TYPE_SUCCESS) {
             when (announcementData.getAffiliateAnnouncement.data.type) {
                 ANNOUNCEMENT__TYPE_CCA -> {
-                    affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
@@ -360,7 +379,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
-                    affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     isUserBlackListed = true
                     (activity as? AffiliateActivity)?.setBlackListedStatus(isUserBlackListed)
                     setupTickerView(
@@ -380,7 +399,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
-                    affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     view?.findViewById<CardView>(R.id.affiliate_announcement_ticker_cv)?.hide()
                 }
             }
