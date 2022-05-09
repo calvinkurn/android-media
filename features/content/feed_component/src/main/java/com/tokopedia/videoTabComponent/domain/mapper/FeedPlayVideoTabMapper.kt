@@ -1,9 +1,8 @@
 package com.tokopedia.videoTabComponent.domain.mapper
 
-import android.content.Context
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -32,6 +31,7 @@ private const val GIVEAWAY = "GIVEAWAY"
 
 
 object FeedPlayVideoTabMapper {
+
     fun getTabData(playGetContentSlotResponse: PlayGetContentSlotResponse): List<PlaySlot> {
         return playGetContentSlotResponse.data.filter {
             it.type == FEED_TYPE_TAB_MENU
@@ -162,7 +162,7 @@ object FeedPlayVideoTabMapper {
                         item.configurations.promoLabels.firstOrNull()?.text ?: ""
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
-                    partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
+                    partner = PlayWidgetPartnerUiModel(item.partner.id, MethodChecker.fromHtml(item.partner.name).toString()),
                     video = PlayWidgetVideoUiModel(
                         item.video.id, item.is_live,
                         item.video.cover_url, item.video.stream_source
