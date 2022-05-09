@@ -43,7 +43,7 @@ class PlayChannelDataModelBuilder {
         quickReplyInfo = quickReplyInfo,
         videoMetaInfo = videoMetaInfo,
         status = status,
-        leaderboardInfo = leaderboardInfo,
+        leaderboard = leaderboardInfo,
         channelReportInfo = channelReportInfo,
         upcomingInfo = upcomingInfo,
         tagItems = tagItems,

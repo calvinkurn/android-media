@@ -51,6 +51,12 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         }
     }
 
+    private val giveawayViewListener = object : GiveawayWidgetView.Listener {
+        override fun onTapTapClicked(view: GiveawayWidgetView) {
+            viewModel.submitAction(PlayViewerNewAction.TapGiveaway)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vmProvider = mDataSource?.getViewModelProvider() ?: ViewModelProvider(this)
@@ -145,9 +151,9 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         val giveawayStatus = giveaway.status
         if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)) {
             setChildView { ctx ->
-                val view = InteractiveFollowView(ctx)
-                view.setListener(followViewListener)
-                view
+                InteractiveFollowView(ctx).apply {
+                    setListener(followViewListener)
+                }
             }.apply {
                 setBadgeUrl(partner.badgeUrl)
                 setAvatarUrl(partner.iconUrl)
@@ -157,7 +163,9 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
             }
         } else if (giveawayStatus is InteractiveUiModel.Giveaway.Status.Ongoing) {
             setChildView { ctx ->
-                GiveawayWidgetView(ctx)
+                GiveawayWidgetView(ctx).apply {
+                    setListener(giveawayViewListener)
+                }
             }.apply {
                 setTitle(giveaway.title)
                 setTargetTime(giveawayStatus.endTime) {

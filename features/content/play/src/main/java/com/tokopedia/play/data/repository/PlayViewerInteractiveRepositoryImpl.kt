@@ -34,7 +34,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         return@withContext mapper.mapInteractive(response.data)
     }
 
-    override suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {
+    override suspend fun postGiveawayTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {
         return@withContext try {
             postInteractiveTapUseCase.apply {
                 setRequestParams(PostInteractiveTapUseCase.createParams(channelId, interactiveId))

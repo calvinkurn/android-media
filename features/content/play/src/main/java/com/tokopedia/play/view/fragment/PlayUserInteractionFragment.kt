@@ -805,7 +805,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactive, state.interactive)
+                renderInteractiveView(prevState?.interactive, state.interactive, state.bottomInsets)
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -819,7 +819,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderKebabMenuView(state.kebabMenu)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
-                renderGameResult(state = state.winnerBadge)
+                renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(state.status)
 
@@ -840,7 +840,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
-                        }.show(childFragmentManager)
+                        }.showNow(childFragmentManager)
                     }
                     is OpenPageEvent -> {
                         openPageByApplink(
@@ -1409,8 +1409,9 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(
         prevState: InteractiveStateUiModel?,
         state: InteractiveStateUiModel,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
     ) {
-        if (state.isPlaying) {
+        if (state.isPlaying || bottomInsets.isAnyShown) {
             interactiveActiveView?.hide()
             interactiveFinishView?.hide()
             return
@@ -1434,7 +1435,9 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+    private fun renderGiveawayView(
+        state: InteractiveUiModel.Giveaway,
+    ) {
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
@@ -1517,7 +1520,7 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderGameResult(state: PlayWinnerBadgeUiState){
+    private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) interactiveResultView?.show()
         else interactiveResultView?.hide()
     }

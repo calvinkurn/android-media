@@ -70,7 +70,7 @@ class PlayTapInteractiveTest {
 
         }
 
-        override fun setFinished(interactiveId: String) {
+        override fun setHasProcessedWinner(interactiveId: String) {
 
         }
 

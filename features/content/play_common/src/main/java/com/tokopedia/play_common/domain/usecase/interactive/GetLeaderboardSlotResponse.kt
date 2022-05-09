@@ -8,9 +8,15 @@ import com.tokopedia.play_common.domain.model.interactive.QuizResponse
  * @author by astidhiyaa on 06/04/22
  */
 data class GetLeaderboardSlotResponse (
-    @SerializedName("slots")
-    val data: List<SlotData> = emptyList()
+    @SerializedName("playInteractiveViewerGetLeaderboardWithSlot")
+    val data: Data = Data()
 ){
+
+    data class Data(
+        @SerializedName("slots")
+        val slots: List<SlotData> = emptyList()
+    )
+
     data class SlotData(
         //Giveaway
         @SerializedName("title")

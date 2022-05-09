@@ -10,9 +10,13 @@ interface PlayInteractiveStorage {
 
     fun save(model: InteractiveUiModel)
 
-    fun setJoined(id: Long)
+    fun setJoined(id: String)
 
-    fun hasJoined(id: Long): Boolean
+    fun hasJoined(id: String): Boolean
+
+    fun setHasProcessedWinner(interactiveId: String)
+
+    fun hasProcessedWinner(interactiveId: String): Boolean
 
     /////////
 
@@ -20,13 +24,7 @@ interface PlayInteractiveStorage {
 
     fun setActive(interactiveId: String)
 
-    fun setFinished(interactiveId: String)
-
     fun getDetail(interactiveId: String): PlayCurrentInteractiveModel?
-
-    fun setJoined(id: String)
-
-    fun hasJoined(id: String): Boolean
 
     fun getActiveInteractiveId(): String?
 
