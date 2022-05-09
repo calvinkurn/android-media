@@ -42,8 +42,8 @@
         xmlns:tools="http://schemas.android.com/tools" />
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/affiliate_home_progress_bar"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/unify_space_32"
+        android:layout_height="@dimen/unify_space_32"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

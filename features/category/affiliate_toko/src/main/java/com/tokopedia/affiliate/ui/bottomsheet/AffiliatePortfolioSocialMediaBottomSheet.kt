@@ -63,7 +63,13 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         return super.onCreateView(inflater, container, savedInstanceState)
     }
     companion object {
-
+        const val INSTA = 3
+        const val TIKTOK = 9
+        const val YOUTUBE = 13
+        const val FACEBOOK = 1
+        const val TWITTER = 10
+        const val WEBSITE = 11
+        const val OTHERS = 0
         fun newInstance(): AffiliatePortfolioSocialMediaBottomSheet {
             return AffiliatePortfolioSocialMediaBottomSheet()
         }
@@ -148,28 +154,34 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private fun addDataInRecyclerView() {
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",
+                INSTA,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: instagram.com/tokopedia",false,isChecked = false, false,
                 AFFILIATE_INSTAGRAM_REGEX,
                 INSTAGRAM_DEFAULT
             ),
-            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",
+                TIKTOK,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: tiktok.com/tokopedia",false,isChecked = false, false,
                 AFFILIATE_TIKTOK_REGEX,TIKTOK_DEFAULT
             ),
-            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",
+                YOUTUBE,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: youtube.com/tokopedia",false,isChecked = false, false,
                 AFFILIATE_YT_REGEX,YOUTUBE_DEFAULT
             ),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",
+                FACEBOOK,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: facebook.com/tokopedia",false,isChecked = false, false,defaultText = FACEBOOK_DEFAULT),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",
+                TWITTER,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: twitter.com/tokopedia",false,isChecked = false, false,
                 AFFILIATE_TWITTER_REGEX,TWITTER_DEFAULT
             ),
-            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",
+                WEBSITE,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: tokopedia.com/tokopedia",false,isChecked = false, false,defaultText = WWW),
-            AffiliateShareModel("Lainnya",null,"others", 0,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+            AffiliateShareModel("Lainnya",null,"others", OTHERS,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
                 "Contoh: yourwebiste.com",false, isChecked = false,false)
         )
         setSelectedCheckBox()
