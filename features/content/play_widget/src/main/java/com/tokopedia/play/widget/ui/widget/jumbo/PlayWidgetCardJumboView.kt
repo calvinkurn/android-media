@@ -92,9 +92,12 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
                     //need to delay (e.g. with post) because ImageUnify does not give listener that can get the resource directly
                     //without post, the drawable will be null most of the time
                     val drawable = thumbnail.drawable ?: return@post
-                    val translateY = drawable.intrinsicHeight - thumbnail.height
+                    val wScale = (thumbnail.width / drawable.intrinsicWidth).toFloat()
+                    val hScale = (thumbnail.height / drawable.intrinsicHeight).toFloat()
+
+                    val scale = wScale.coerceAtLeast(hScale)
                     thumbnail.imageMatrix = Matrix().apply {
-                        preTranslate(0f, -translateY.toFloat())
+                        postScale(scale,scale)
                     }
                 }
             }
