@@ -679,14 +679,14 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 selectedInitialPosition = null
             }
             if (denomGrid.listDenomData.isNotEmpty()) {
+                val colorHexInt = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+
                 it.rechargePdpPulsaPromoWidget.show()
                 it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
                     this,
                     denomGrid,
-                    "#" + Integer.toHexString(ContextCompat.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    ,
+                    colorHexString,
                     selectedInitialPosition
                 )
             } else {

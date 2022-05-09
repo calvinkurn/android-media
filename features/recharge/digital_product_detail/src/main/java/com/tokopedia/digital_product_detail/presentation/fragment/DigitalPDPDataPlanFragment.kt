@@ -731,15 +731,14 @@ class DigitalPDPDataPlanFragment :
                 selectedInitialPosition = null
             }
             if (denomFull.listDenomData.isNotEmpty()) {
+                val colorHexInt = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+
                 it.rechargePdpPaketDataPromoWidget.show()
                 it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
                     this,
                     denomFull,
-                    "#" + Integer.toHexString(
-                        ContextCompat.getColor(
-                        requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    ,
+                    colorHexString,
                     selectedInitialPosition
                 )
             } else {
