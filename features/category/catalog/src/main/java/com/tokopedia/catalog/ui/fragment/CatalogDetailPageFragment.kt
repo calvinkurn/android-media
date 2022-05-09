@@ -248,7 +248,11 @@ class CatalogDetailPageFragment : Fragment(),
         mToBottomLayout?.apply {
             setOnClickListener {
                 isScrollDownButtonClicked = true
-                userPressedLastTopPosition = (lastAttachItemPosition)
+                userPressedLastTopPosition = if((catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() == RecyclerView.NO_POSITION){
+                    (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                }else {
+                    (catalogPageRecyclerView?.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+                }
                 scrollToBottom()
                 slideDownMoreProductsView()
             }
