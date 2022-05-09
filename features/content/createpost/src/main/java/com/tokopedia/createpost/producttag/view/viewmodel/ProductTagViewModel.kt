@@ -7,11 +7,9 @@ import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
-import com.tokopedia.createpost.producttag.view.uimodel.state.LastPurchasedProductUiState
-import com.tokopedia.createpost.producttag.view.uimodel.state.LastTaggedProductUiState
-import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
-import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagUiState
+import com.tokopedia.createpost.producttag.view.uimodel.state.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -28,6 +26,7 @@ class ProductTagViewModel @AssistedInject constructor(
     @Assisted("authorId") private val authorId: String,
     @Assisted("authorType") private val authorType: String,
     private val repo: ProductTagRepository,
+    private val userSession: UserSessionInterface,
 ): ViewModel() {
 
     @AssistedFactory
@@ -50,6 +49,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
+    private val _myShopProduct = MutableStateFlow(MyShopProductUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -79,15 +79,26 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    private val _myShopProductUiState = _myShopProduct.map {
+        MyShopProductUiState(
+            products = it.products,
+            nextCursor = it.nextCursor,
+            state = it.state,
+            query = it.query,
+        )
+    }
+
     val uiState = combine(
         _productTagSourceUiState,
         _lastTaggedProductUiState,
         _lastPurchasedProductUiState,
-    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct ->
+        _myShopProductUiState,
+    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
             lastPurchasedProduct = lastPurchasedProduct,
+            myShopProduct = myShopProduct,
         )
     }
 
@@ -114,11 +125,14 @@ class ProductTagViewModel @AssistedInject constructor(
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
-            /** Load Tagged Product */
+            /** Tagged Product */
             ProductTagAction.LoadLastTaggedProduct -> handleLoadLastTaggedProduct()
 
-            /** Load Purchased Product */
+            /** Purchased Product */
             ProductTagAction.LoadLastPurchasedProduct -> handleLoadLastPurchasedProduct()
+
+            /** My Shop Product */
+            ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
         }
     }
 
@@ -186,6 +200,42 @@ class ProductTagViewModel @AssistedInject constructor(
             _lastPurchasedProduct.value = response
         }) {
             _lastPurchasedProduct.setValue {
+                copy(
+                    state = PagedState.Error(it)
+                )
+            }
+        }
+    }
+
+    private fun handleLoadMyShopProduct() {
+        viewModelScope.launchCatchError(block = {
+            val myShopProduct = _myShopProduct.value
+
+            if(myShopProduct.state.isLoading || myShopProduct.state.isNextPage.not()) return@launchCatchError
+
+            _myShopProduct.setValue {
+                copy(state = PagedState.Loading)
+            }
+
+            val pagedDataList = repo.getMyShopProducts(
+                rows = LIMIT_PER_PAGE,
+                start = myShopProduct.nextCursor.toIntOrNull() ?: 1,
+                query = myShopProduct.query,
+                shopId = userSession.shopId,
+                sort = 9 /** TODO: gonna change this later */
+            )
+
+            _myShopProduct.setValue {
+                copy(
+                    products = products + pagedDataList.dataList,
+                    nextCursor = pagedDataList.nextCursor,
+                    state = PagedState.Success(
+                        hasNextPage = pagedDataList.hasNextPage,
+                    )
+                )
+            }
+        }) {
+            _myShopProduct.setValue {
                 copy(
                     state = PagedState.Error(it)
                 )

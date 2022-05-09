@@ -11,6 +11,7 @@ data class ProductTagUiState(
     val productTagSource: ProductTagSourceUiState,
     val lastTaggedProduct: LastTaggedProductUiState,
     val lastPurchasedProduct: LastPurchasedProductUiState,
+    val myShopProduct: MyShopProductUiState,
 )
 
 data class ProductTagSourceUiState(
@@ -30,4 +31,11 @@ data class LastPurchasedProductUiState(
     val state: PagedState,
     val coachmark: String,
     val isCoachmarkShown: Boolean,
+)
+
+data class MyShopProductUiState(
+    val products: List<ProductUiModel>,
+    val nextCursor: String,
+    val state: PagedState,
+    val query: String,
 )

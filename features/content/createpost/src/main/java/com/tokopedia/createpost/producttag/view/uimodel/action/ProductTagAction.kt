@@ -15,4 +15,6 @@ sealed interface ProductTagAction {
 
     /** Last Purchased Product */
     object LoadLastPurchasedProduct: ProductTagAction
+
+    object LoadMyShopProduct: ProductTagAction
 }
