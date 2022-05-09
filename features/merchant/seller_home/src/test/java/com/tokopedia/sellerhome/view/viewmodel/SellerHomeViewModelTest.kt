@@ -257,6 +257,88 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get ticker when cache enabled then fetch from cache should success result`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheResult = listOf(TickerItemUiModel())
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    cacheResult
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Success(cacheResult)
+            viewModel.homeTicker.verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get ticker when cache enabled then throw exception should return remote exception`() {
+        coroutineTestRule.runBlockingTest {
+            val networkException = Exception("from network")
+            val cacheException = Exception("from cache")
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+
+            var useCaseExecutedCount = 0
+            coEvery {
+                getTickerUseCase.execute(any(), any(), any())
+            } coAnswers {
+                useCaseExecutedCount++
+                if (useCaseExecutedCount <= 1) {
+                    throw networkException
+                } else {
+                    throw cacheException
+                }
+            }
+
+            viewModel.getTicker()
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), false)
+            }
+
+            coVerify(exactly = 1) {
+                getTickerUseCase.execute(any(), any(), true)
+            }
+
+            coVerify(exactly = 2) {
+                getTickerUseCase.execute(any(), any(), any())
+            }
+
+            val expectedResult = Fail(networkException)
+            viewModel.homeTicker.verifyErrorEquals(expectedResult)
+        }
+    }
+
+    @Test
     fun `should failed when get tickers then throws exception`() = runBlocking {
         val throwable = RuntimeException("")
 
