@@ -229,7 +229,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
 
                 delayChangeCheckboxState?.cancel()
                 delayChangeCheckboxState = GlobalScope.launch(Dispatchers.Main) {
-                    delay(500L)
+                    delay(DEBOUNCE_TIME)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
