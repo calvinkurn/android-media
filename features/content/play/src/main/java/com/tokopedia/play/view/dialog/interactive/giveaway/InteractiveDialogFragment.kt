@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
@@ -77,6 +79,7 @@ class InteractiveDialogFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
         setupObserve()
     }
 
@@ -102,6 +105,10 @@ class InteractiveDialogFragment @Inject constructor(
 
     fun showNow(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
+    }
+
+    private fun setupView() {
+        view?.setOnClickListener { dismiss() }
     }
 
     private fun setupObserve() {
@@ -175,6 +182,7 @@ class InteractiveDialogFragment @Inject constructor(
                 setTargetTime(giveawayStatus.endTime) {
                     viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                 }
+                getHeader().isEditable = false
             }
         }
     }
@@ -227,6 +235,7 @@ class InteractiveDialogFragment @Inject constructor(
                     view
                 }.apply {
                     getHeader().setupQuiz(quiz.title)
+                    getHeader().isEditable = false
                 }
             }
         }
@@ -254,12 +263,20 @@ class InteractiveDialogFragment @Inject constructor(
         return if (firstChild !is V) {
             parent.removeAllViews()
             val view = viewCreator(parent.context)
-            parent.addView(view)
+            val lParams = FrameLayout.LayoutParams(
+                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            lParams.gravity = Gravity.CENTER
+            parent.addView(view, lParams)
+            view.isClickable = true
             view
         } else firstChild
     }
 
     companion object {
+        private const val WIDTH_PERCENTAGE = 0.6
+
         private const val TAG = "InteractiveDialogFragment"
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {

@@ -8,21 +8,17 @@
     android:orientation="vertical"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/gl_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.25" />
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/gl_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        tools:layout_constraintWidth_percent="0.6"
         />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
