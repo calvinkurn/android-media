@@ -112,14 +112,13 @@ class FeedAceSearchProductUseCase @Inject constructor(
             PARAM_DEVICE to "android",
             PARAM_ROWS to rows,
             PARAM_START to start,
-            PARAM_QUERY to query,
+            PARAM_QUERY to query.trim(),
             PARAM_SHOP_ID to shopId,
             PARAM_SOURCE to "universe",
             PARAM_SORT to sort,
         ).toString()
-            .replace(" ", "")
             .replace("{", "")
             .replace("}", "")
-            .replace(",", "&")
+            .replace(", ", "&")
     }
 }

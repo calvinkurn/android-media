@@ -16,5 +16,7 @@ sealed interface ProductTagAction {
     /** Last Purchased Product */
     object LoadLastPurchasedProduct: ProductTagAction
 
+    /** My Shop Product */
     object LoadMyShopProduct: ProductTagAction
+    data class SearchMyShopProduct(val query: String): ProductTagAction
 }

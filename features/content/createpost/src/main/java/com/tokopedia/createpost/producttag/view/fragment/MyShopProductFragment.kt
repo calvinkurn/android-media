@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -87,6 +88,17 @@ class MyShopProductFragment : TkpdBaseV4Fragment() {
             errorDescription.text = getString(R.string.cc_no_my_shop_product_desc)
             errorAction.gone()
             errorSecondaryAction.gone()
+        }
+
+        binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.sbShopProduct.searchBarTextField.text.toString()
+                viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
+
+                binding.sbShopProduct.searchBarTextField.clearFocus()
+                true
+            }
+            else false
         }
     }
 

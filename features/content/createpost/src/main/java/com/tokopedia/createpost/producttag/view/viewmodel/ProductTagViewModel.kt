@@ -142,6 +142,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** My Shop Product */
             ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
+            is ProductTagAction.SearchMyShopProduct -> handleSearchMyShopProduct(action.query)
         }
     }
 
@@ -228,7 +229,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val pagedDataList = repo.getMyShopProducts(
                 rows = LIMIT_PER_PAGE,
-                start = myShopProduct.nextCursor.toIntOrNull() ?: 1,
+                start = myShopProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
                 query = myShopProduct.query,
                 shopId = userSession.shopId,
                 sort = 9 /** TODO: gonna change this later */
@@ -252,8 +253,18 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleSearchMyShopProduct(query: String) {
+        _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
+                query = query,
+                nextCursor = CURSOR_DEFAULT.toString(),
+            )
+        }
+        handleLoadMyShopProduct()
+    }
+
     companion object {
         private const val LIMIT_PER_PAGE = 20
         private const val LIMIT_LAST_PURCHASE_PRODUCT_PER_PAGE = 5
+        private const val CURSOR_DEFAULT = 0
     }
 }
