@@ -11,10 +11,12 @@ interface PlayInteractiveAnalytic {
     fun clickFollowShopInteractive(
         channelId: String,
         channelType: PlayChannelType,
-        interactiveId: String
+        interactiveId: String,
+        isForQuiz: Boolean,
+        shopId: String
     )
 
-    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType)
+    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String)
 
     fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
 

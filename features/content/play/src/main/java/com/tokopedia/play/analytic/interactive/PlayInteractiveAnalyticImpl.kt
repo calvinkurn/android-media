@@ -21,22 +21,33 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
     override fun clickFollowShopInteractive(
         channelId: String,
         channelType: PlayChannelType,
-        interactiveId: String
+        interactiveId: String,
+        isForQuiz: Boolean,
+        shopId: String
     ) {
+        val (eventAction, eventLabel) = when(isForQuiz){
+            true -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
+            else -> Pair("click follow from engagement tools widget","$channelId - ${channelType.value} - $interactiveId")
+        }
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-                eventAction = "click follow from engagement tools widget",
-                eventLabel = "$channelId - ${channelType.value} - $interactiveId"
+                eventAction = eventAction,
+                eventLabel = eventLabel
         )
     }
 
-    override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType) {
+    override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String) {
+        val (eventAction, eventLabel) = when(isForQuiz){
+            true -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
+            else -> Pair("click daftar pemenang on engagement tools widget","$channelId - ${channelType.value}")
+        }
+
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
                 eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
-                eventAction = "click daftar pemenang on engagement tools widget",
-                eventLabel = "$channelId - ${channelType.value}"
+                eventAction = eventAction,
+                eventLabel = eventLabel
         )
     }
 

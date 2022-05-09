@@ -1962,6 +1962,9 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.clickWinnerBadge(
                 channelId = channelId,
                 channelType = channelType,
+                shopId = partnerId.toString(),
+                interactiveId = _interactive.value.interactive.id,
+                isForQuiz = _interactive.value.interactive is InteractiveUiModel.Quiz
         )
     }
 
@@ -1997,9 +2000,11 @@ class PlayViewModel @AssistedInject constructor(
 
             val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
             if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShopInteractive(
-                channelId,
-                channelType,
-                interactiveId,
+                channelId = channelId,
+                channelType = channelType,
+                interactiveId = interactiveId,
+                shopId = partnerId.toString(),
+                isForQuiz = _interactive.value.interactive is InteractiveUiModel.Quiz
             )
         }
     }
