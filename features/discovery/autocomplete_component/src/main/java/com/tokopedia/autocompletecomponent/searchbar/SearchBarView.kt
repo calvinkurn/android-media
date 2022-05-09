@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
 import android.speech.RecognizerIntent
@@ -172,6 +171,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             binding.autocompleteVoiceButton.visibility = View.GONE
 
             if (!isVoiceAvailable) {
+                @Suppress("MagicNumber")
                 setMargin(binding.searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
             }
         }
@@ -327,11 +327,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     override fun setBackground(background: Drawable?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            binding?.searchTopBar?.background = background
-        } else {
-            binding?.searchTopBar?.background = background
-        }
+        binding?.searchTopBar?.background = background
     }
 
     override fun setBackgroundColor(color: Int) {
@@ -399,6 +395,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
     }
 
+    @Suppress("MagicNumber")
     private fun searchTextViewShowKeyboard() {
         val searchTextView = binding?.searchTextView ?: return
         searchTextView.postDelayed({
