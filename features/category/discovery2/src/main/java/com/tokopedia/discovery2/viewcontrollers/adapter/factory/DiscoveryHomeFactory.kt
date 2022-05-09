@@ -109,6 +109,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.prod
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsingle.ProductCardSingleViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
@@ -198,6 +200,10 @@ class DiscoveryHomeFactory {
 
             //Quick Filter
             initializeComponent(ComponentsList.QuickFilter, ::QuickFilterViewHolder, ::QuickFilterViewModel)
+
+            //Product Card Single
+            initializeComponent(ComponentsList.ProductCardSingle, ::ProductCardSingleViewHolder, ::ProductCardSingleViewModel)
+            initializeComponent(ComponentsList.ProductCardSingleItem, ::MasterProductCardItemViewHolder, ::MasterProductCardItemViewModel)
 
             //Navigation Chips
             initializeComponent(ComponentsList.NavigationChips, ::NavigationChipsViewHolder, ::NavigationChipsViewModel)
