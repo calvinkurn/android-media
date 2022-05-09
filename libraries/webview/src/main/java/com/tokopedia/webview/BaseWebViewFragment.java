@@ -76,6 +76,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -184,7 +185,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         needLogin = args.getBoolean(KEY_NEED_LOGIN, false);
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
-        String host = Uri.parse(url).getHost();
+        Uri uri = Uri.parse(url);
+        String host = uri.getHost();
+        if(uri.getUserInfo()!=null) {
+            Toast.makeText(getActivity(), "this cannot be proceeded", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+
         isTokopediaUrl = host != null && host.endsWith(TOKOPEDIA_COM) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
