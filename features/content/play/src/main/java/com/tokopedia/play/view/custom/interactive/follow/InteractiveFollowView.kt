@@ -31,6 +31,7 @@ class InteractiveFollowView : ConstraintLayout {
         binding.btnFollow.setOnClickListener {
             mListener?.onFollowClicked(this)
         }
+        binding.headerView.isEditable = false
     }
 
     fun getHeader(): GameHeaderView {

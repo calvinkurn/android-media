@@ -77,7 +77,11 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
                 tvReward.text = "Hadiah: ${leaderboard.reward}"
                 tvReward.setTextGradient(intArrayOf(MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)))
             }
-            LeadeboardType.Giveaway -> ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
+            LeadeboardType.Giveaway -> {
+                ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
+                ivReward.hide()
+                tvReward.hide()
+            }
             else -> {
                 ivReward.hide()
                 tvReward.hide()
