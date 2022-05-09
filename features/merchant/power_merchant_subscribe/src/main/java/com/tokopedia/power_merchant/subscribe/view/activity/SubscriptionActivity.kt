@@ -40,7 +40,6 @@ import com.tokopedia.power_merchant.subscribe.view.bottomsheet.PMTermAndConditio
 import com.tokopedia.power_merchant.subscribe.view.fragment.PMRegistrationFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscriptionFragment
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
-import com.tokopedia.power_merchant.subscribe.view.helper.PMViewPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
@@ -85,10 +84,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private var pmActiveStatePage: PowerMerchantSubscriptionFragment? = null
     private val pmRegistrationPage: PMRegistrationFragment by lazy {
         PMRegistrationFragment.createInstance()
-    }
-
-    private val viewPagerAdapter by lazy {
-        PMViewPagerAdapter(supportFragmentManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -284,12 +279,13 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     private fun setupActiveState() {
         binding?.pmRegistrationFooterView?.gone()
         setViewForPmSuccessState()
-        viewPagerAdapter.clearFragment()
         if (pmActiveStatePage == null) {
             pmActiveStatePage = PowerMerchantSubscriptionFragment.createInstance()
         }
         pmActiveStatePage?.let {
-            viewPagerAdapter.addFragment(it, getString(R.string.pm_power_merchant))
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.framePmFragment, it)
+                .commit()
         }
     }
 
