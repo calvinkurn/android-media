@@ -134,7 +134,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AddressConstants.GPS_REQUEST) {
-                Handler().postDelayed ({getLocation()}, 1000)
+                Handler().postDelayed ({getLocation()}, 500)
             }
         }
     }
@@ -510,7 +510,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
                     hasRequestedLocation = false
-                    showDialogAskGps()
                 }
 
                 override fun onNeverAskAgain(permissionText: String) {
