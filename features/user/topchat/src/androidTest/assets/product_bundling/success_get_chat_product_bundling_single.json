@@ -70,7 +70,7 @@
                 "fraudStatus":0,
                 "replyTime":"1642049321726002000",
                 "status":1,
-                "isOpposite":false,
+                "isOpposite":true,
                 "isHighlight":false,
                 "isRead":true,
                 "blastId":0,
