@@ -205,11 +205,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
-                        return parentViewModel.productSectionList.flatMap { it.products }
+                        return if (::parentViewModel.isInitialized) {
+                            parentViewModel.productSectionList.flatMap { it.products }
+                        }
+                        else emptyList()
                     }
 
                     override fun getChannelId(): String {
-                        return parentViewModel.channelId
+                        return if (::parentViewModel.isInitialized) parentViewModel.channelId
+                        else ""
                     }
                 })
             }

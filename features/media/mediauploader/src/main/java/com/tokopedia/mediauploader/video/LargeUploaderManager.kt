@@ -237,7 +237,6 @@ class LargeUploaderManager @Inject constructor(
 
         chunkTotal = 0
         partNumber = 1
-        mUploadId = ""
         maxRetryTranscoding = 0
     }
 
