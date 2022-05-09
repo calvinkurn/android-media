@@ -40,6 +40,7 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundle
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -65,6 +66,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _currentShopIds = MutableLiveData<List<String>>()
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
+    lateinit var currentSource: MiniCartSource
 
     private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
     val currentPage: LiveData<MiniCartAnalytics.Page>
@@ -173,10 +175,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     fun getLatestWidgetState(shopIds: List<String>? = null) {
         if (shopIds != null) {
             initializeShopIds(shopIds)
-            getMiniCartListSimplifiedUseCase.setParams(shopIds)
+            getMiniCartListSimplifiedUseCase.setParams(shopIds, currentSource)
         } else {
             val tmpShopIds = getShopIds()
-            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds)
+            getMiniCartListSimplifiedUseCase.setParams(tmpShopIds, currentSource)
         }
         getMiniCartListSimplifiedUseCase.execute(
                 onSuccess = {

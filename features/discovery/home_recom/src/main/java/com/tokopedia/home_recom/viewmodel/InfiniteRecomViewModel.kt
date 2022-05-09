@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -167,7 +168,7 @@ class InfiniteRecomViewModel @Inject constructor(
 
     fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.getIODispatcher(), block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.TokonowRecommendationPage)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             _miniCartData.postValue(result.miniCartItems.toMutableMap())
             _minicartWidgetUpdater.postValue(result)

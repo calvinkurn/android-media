@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.usecase.coroutines.UseCase
@@ -68,7 +69,7 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
 
     private fun executeMiniCart(): Deferred<MiniCartSimplifiedData?> {
         return asyncCatchError(dispatcher.io, block = {
-            miniCartUseCase.setParams(shopIds)
+            miniCartUseCase.setParams(shopIds, MiniCartSource.VariantBottomSheet)
             miniCartUseCase.executeOnBackground()
         }, onError = {
             null

@@ -37,6 +37,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -190,6 +191,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
+    lateinit var miniCartSource: MiniCartSource
+
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
     val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
@@ -256,9 +259,12 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun isABTestNavigationRevamp() = true
 
-    open fun onViewCreated() {
+    open fun onViewCreated(source: MiniCartSource? = null) {
         val shopId = chooseAddressData?.shop_id ?: ""
         val warehouseId = chooseAddressData?.warehouse_id ?: ""
+        if (source != null) {
+            miniCartSource = source
+        }
 
         if (shopId.isValidId())
             processLoadDataWithShopId(shopId, warehouseId)
@@ -999,7 +1005,7 @@ abstract class BaseSearchCategoryViewModel(
         if (!shopId.isValidId()) return
 
         getMiniCartListSimplifiedUseCase.cancelJobs()
-        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
+        getMiniCartListSimplifiedUseCase.setParams(listOf(shopId), miniCartSource)
         getMiniCartListSimplifiedUseCase.execute(
             ::onViewUpdateCartItems,
             ::onGetMiniCartDataFailed,

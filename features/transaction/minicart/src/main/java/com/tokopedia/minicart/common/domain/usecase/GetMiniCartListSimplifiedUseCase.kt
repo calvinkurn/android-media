@@ -27,18 +27,19 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
     private var params: Map<String, Any>? = null
     private var shopIds: List<String> = emptyList()
 
-    fun setParams(shopIds: List<String>) {
+    fun setParams(shopIds: List<String>, source: MiniCartSource) {
         params = mapOf(
                 GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
                 GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
                         GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
                 )
         )
         this.shopIds = shopIds
     }
 
-    fun setParams(shopIds: List<String>, promoId: String, promoCode: String) {
+    fun setParams(shopIds: List<String>, promoId: String, promoCode: String, source: MiniCartSource) {
         params = mapOf(
                 GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
                 GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
@@ -47,7 +48,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                             GetMiniCartListUseCase.PARAM_KEY_PROMO_ID to promoId,
                             GetMiniCartListUseCase.PARAM_KEY_PROMO_CODE to promoCode
                         ),
-                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                        ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                        GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value
                 )
         )
     }

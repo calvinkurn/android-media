@@ -28,6 +28,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -850,7 +851,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.io, block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             _p2Data.value?.miniCart = result.miniCartItems.toMutableMap()
             _miniCartData.postValue(true)

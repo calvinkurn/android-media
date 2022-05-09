@@ -61,7 +61,7 @@ class UpdateCartTestHelper(
 
         verify {
             getMiniCartListSimplifiedUseCase.cancelJobs()
-            getMiniCartListSimplifiedUseCase.setParams(capture(shopIdListSlot))
+            getMiniCartListSimplifiedUseCase.setParams(capture(shopIdListSlot), any())
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         }
 

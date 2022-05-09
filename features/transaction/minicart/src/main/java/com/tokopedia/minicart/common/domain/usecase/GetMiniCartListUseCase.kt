@@ -22,7 +22,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_KEY_ADDITIONAL to mapOf(
                         PARAM_KEY_SHOP_IDS to shopIds,
-                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                        PARAM_KEY_SOURCE to MiniCartSource.MiniCartBottomSheet.value
                 )
         )
     }
@@ -50,6 +51,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         const val PARAM_KEY_PROMO = "promo"
         const val PARAM_KEY_PROMO_ID = "promo_id"
         const val PARAM_KEY_PROMO_CODE = "promo_code"
+        const val PARAM_KEY_SOURCE = "source"
 
         const val PARAM_VALUE_ID = "id"
 

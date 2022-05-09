@@ -23,6 +23,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
@@ -186,7 +187,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             getMiniCartJob?.cancel()
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
                 val isInitialLoad = _getLayout.value == null
 
@@ -316,7 +317,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
-                getMiniCartUseCase.setParams(listOf(shopId))
+                getMiniCartUseCase.setParams(listOf(shopId), MiniCartSource.TokonowRepurchasePage)
                 val data = getMiniCartUseCase.executeOnBackground()
                 setProductAddToCartQuantity(data)
             }) {

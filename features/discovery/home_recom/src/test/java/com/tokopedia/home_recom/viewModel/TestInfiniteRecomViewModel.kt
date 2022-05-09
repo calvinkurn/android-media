@@ -338,7 +338,7 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
         assert(viewModel.miniCartData.value == miniCartData.miniCartItems.associateBy { it.productId })
         assert(viewModel.minicartWidgetUpdater.value == miniCartData)
@@ -354,7 +354,7 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
         assert(viewModel.minicartError.value == error)
     }

@@ -284,7 +284,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getMiniCart("312")
 
         verify {
-            miniCartListSimplifiedUseCase.setParams(capture(shopIdSlot))
+            miniCartListSimplifiedUseCase.setParams(capture(shopIdSlot), any())
         }
 
         coVerify {
