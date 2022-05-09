@@ -64,7 +64,7 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private fun setupListener() {
         centerPlayButton.setOnClickListener {
             listener?.onCenterPlayButtonClicked()
-            showController()
+            if (!videoControlContainer.isVisible) showController()
         }
 
         centerPauseButton.setOnClickListener {
