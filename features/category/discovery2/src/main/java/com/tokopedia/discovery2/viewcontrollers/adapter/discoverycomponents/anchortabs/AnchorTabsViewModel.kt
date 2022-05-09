@@ -95,6 +95,8 @@ class AnchorTabsViewModel(
             if (isClickNotify)
                 pauseDispatchChanges = true
             selectedSectionId = sectionId
+        } else if (getPositionForSectionID(sectionId) == selectedSectionPos) {
+            selectedSectionId = sectionId
         }
     }
 
