@@ -18,6 +18,7 @@ object HomeMockValueHelper {
     const val MOCK_DYNAMIC_CHANNEL_COUNT = 28
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
+    private const val MOCK_FAILED_DISABLE_PAGINATION = "false"
 
     fun setupAbTestRemoteConfig(
         navigationRollence: Boolean = true,
@@ -39,6 +40,6 @@ object HomeMockValueHelper {
         val remoteConfig = FirebaseRemoteConfigImpl(
             InstrumentationRegistry.getInstrumentation().context
         )
-        remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, "false")
+        remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, MOCK_FAILED_DISABLE_PAGINATION)
     }
 }
