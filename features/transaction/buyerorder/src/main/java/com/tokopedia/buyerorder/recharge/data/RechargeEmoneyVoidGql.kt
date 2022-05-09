@@ -7,12 +7,12 @@ class RechargeEmoneyVoidGql : GqlQueryInterface {
         listOf("rechargeEmoneyVoid")
 
     override fun getQuery(): String = """
-            query rechargeEmoneyVoid(${'$'}orderID: String!) {
-              rechargeEmoneyVoid(orderID: ${'$'}orderID) {
-                status
-                message
-              }
-            }
+        query rechargeEmoneyVoid(${'$'}orderID:String!) {
+          rechargeEmoneyVoid(orderID:${'$'}orderID) {
+            status
+            message
+          }
+        }
         """.trimIndent()
 
     override fun getTopOperationName(): String = "rechargeEmoneyVoid"
