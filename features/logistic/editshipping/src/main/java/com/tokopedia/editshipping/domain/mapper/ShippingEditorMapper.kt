@@ -76,7 +76,7 @@ class ShippingEditorMapper @Inject constructor() {
             ShipperProductModel(
                     it.shipperProductId,
                     it.shipperProductName,
-                    it.isActive,
+                    it.isActive
             )
         }
     }

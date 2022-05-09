@@ -50,7 +50,7 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ShipperProductOnDemandViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
