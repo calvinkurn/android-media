@@ -12,7 +12,7 @@ interface ImagePreviewPdpView {
     fun addWishlist()
     fun removeWishlist()
     fun addWishlistV2(context: Context)
-    fun removeWishlistV2()
+    fun removeWishlistV2(context: Context)
 
     fun onSuccessAddWishlist()
     fun onSuccessRemoveWishlist()

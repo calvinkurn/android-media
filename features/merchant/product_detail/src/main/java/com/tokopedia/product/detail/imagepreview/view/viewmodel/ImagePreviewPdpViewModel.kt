@@ -89,13 +89,15 @@ class ImagePreviewPdpViewModel @Inject constructor(
         }
     }
 
-    fun removeWishListV2(productId: String, onSuccessRemoveWishlist: ((productId: String?) -> Unit)?, onErrorRemoveWishList: ((throwable: Throwable?) -> Unit)?) {
+    fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {
         if (isProductIdValid(productId)) {
             deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
-            deleteWishlistV2UseCase.execute(onSuccess = { onSuccessRemoveWishlist?.invoke(productId) },
-                    onError = { onErrorRemoveWishList?.invoke(it) })
+            deleteWishlistV2UseCase.execute(
+                    onSuccess = { result ->
+                        if (result is Success) listener.onSuccessRemoveWishlist(result.data, productId) },
+                    onError = { listener.onErrorRemoveWishlist(it, productId) })
         } else {
-            onErrorRemoveWishList?.invoke(Throwable(""))
+            listener.onErrorRemoveWishlist(Throwable(""), productId)
         }
     }
 

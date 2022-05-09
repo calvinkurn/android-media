@@ -63,47 +63,7 @@ class AddToCartDoneRecommendationProductViewHolder(
                     if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
                 }
                 if (isUsingV2) {
-                    recommendationListener.onWishlistV2Click(element.recommendationItem, !element.recommendationItem.isWishlist, object: WishlistV2ActionListener {
-                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            val errorMsg = ErrorHandler.getErrorMessage(rootView.context, throwable)
-                            showToasterError(message = errorMsg)
-                        }
-
-                        override fun onSuccessAddWishlist(
-                            result: AddToWishlistV2Response.Data.WishlistAddV2,
-                            productId: String
-                        ) {
-                            element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
-                            var msg = ""
-                            if (result.message.isEmpty()) {
-                                if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-                            } else {
-                                msg = result.message
-                            }
-
-                            var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-                            var typeToaster = TYPE_NORMAL
-                            if (result.toasterColor == TOASTER_RED || !result.success) {
-                                typeToaster = TYPE_ERROR
-                                ctaText = ""
-                            }
-
-                            showToasterWishlistV2(rootView, msg, typeToaster, ctaText)
-                        }
-
-                        override fun onErrorRemoveWishlist(
-                            throwable: Throwable,
-                            productId: String
-                        ) {
-                            val errorMsg = ErrorHandler.getErrorMessage(rootView.context, throwable)
-                            showToasterError(message = errorMsg)
-                        }
-
-                        override fun onSuccessRemoveWishlist(productId: String) {
-                            element.recommendationItem.isWishlist = !element.recommendationItem.isWishlist
-                        }
-                    })
+                    recommendationListener.onWishlistV2Click(element.recommendationItem, !element.recommendationItem.isWishlist)
                 } else {
                     recommendationListener.onWishlistClick(element.recommendationItem, !element.recommendationItem.isWishlist) { success, throwable ->
                         if (success) {

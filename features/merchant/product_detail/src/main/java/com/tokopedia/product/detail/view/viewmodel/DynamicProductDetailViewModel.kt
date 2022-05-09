@@ -107,6 +107,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -688,16 +689,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    fun removeWishListV2(productId: String,
-                       onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
-                       onErrorRemoveWishList: ((throwable: Throwable) -> Unit)?) {
+    fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-        deleteWishlistV2UseCase.get().execute(onSuccess = {
-            onSuccessRemoveWishlist?.invoke(productId)
+        deleteWishlistV2UseCase.get().execute(onSuccess = { result ->
+            if (result is Success) listener.onSuccessRemoveWishlist(result.data, productId)
         }, onError = {
             val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
             ProductDetailLogger.logThrowable(it, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-            onErrorRemoveWishList?.invoke(it)
+            listener.onErrorRemoveWishlist(it, productId)
         })
     }
 
@@ -728,16 +727,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    fun addWishListV2(productId: String,
-                    onErrorAddWishList: ((throwable: Throwable) -> Unit)?,
-                    onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
+    fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
         addToWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
-        addToWishlistV2UseCase.get().execute(onSuccess = {
-            onSuccessAddWishlist?.invoke(productId)
+        addToWishlistV2UseCase.get().execute(onSuccess = { result ->
+            if (result is Success) {
+                listener.onSuccessAddWishlist(result.data, productId)
+            }
         }, onError = {
             val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
             ProductDetailLogger.logThrowable(it, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-            onErrorAddWishList?.invoke(it)
+            listener.onErrorAddWishList(it, productId)
         })
     }
 

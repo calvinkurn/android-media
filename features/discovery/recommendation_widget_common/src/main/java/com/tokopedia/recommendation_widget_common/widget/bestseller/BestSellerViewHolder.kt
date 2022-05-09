@@ -184,11 +184,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
-    override fun onWishlistV2Click(
-        item: RecommendationItem,
-        isAddWishlist: Boolean,
-        actionListener: WishlistV2ActionListener
-    ) {}
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
 
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder

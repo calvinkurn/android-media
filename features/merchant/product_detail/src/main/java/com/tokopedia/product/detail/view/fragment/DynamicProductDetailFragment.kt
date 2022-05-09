@@ -225,9 +225,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
+import org.xml.sax.ErrorHandler
 import rx.subscriptions.CompositeSubscription
 import java.util.Locale
 import java.util.UUID
@@ -338,7 +342,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var uuid = ""
     private var urlQuery: String = ""
     private var affiliateChannel: String = ""
-    private var isUsingWishlistV2: Boolean = false
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -399,10 +402,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     addFragmentLifecycleObserver = true,
                     permissionListener = shareProductInstance?.universalSharePermissionListener
             )
-        }
-
-        context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingWishlistV2 = true
         }
     }
 
@@ -1405,13 +1404,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         if (viewModel.isUserSessionActive) {
             if (isActive) {
                 productInfo?.basic?.productID?.let {
-                    removeWishlist(it)
+                    if (context?.let { context ->
+                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
+                        } == true) removeWishlistV2(it)
+                    else removeWishlist(it)
                     DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 }
 
             } else {
                 productInfo?.basic?.productID?.let {
-                    addWishList()
+                    if (context?.let { context ->
+                            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)
+                        } == true) addWishlistV2()
+                    else addWishList()
                     productInfo.let {
                         DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
                     }
@@ -3824,25 +3829,72 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun addWishList() {
-        if (isUsingWishlistV2) {
-            viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishListV2)
-        } else {
-            viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID
-                ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
-        }
+        viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID
+            ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
+    }
+
+    private fun addWishlistV2() {
+        viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
+            ?: "", object: WishlistV2ActionListener{
+            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                view?.let { v ->
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                }
+            }
+
+            override fun onSuccessAddWishlist(
+                result: AddToWishlistV2Response.Data.WishlistAddV2,
+                productId: String
+            ) {
+                view?.let { v ->
+                    context?.let {
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, v)
+                    }
+                }
+            }
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+            override fun onSuccessRemoveWishlist(
+                result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                productId: String) {}
+        })
     }
 
     private fun removeWishlist(productId: String) {
-        if (isUsingWishlistV2) {
-            viewModel.removeWishListV2(productId,
-                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                onErrorRemoveWishList = this::onErrorRemoveWishListV2)
-        } else {
-            viewModel.removeWishList(productId,
-                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                onErrorRemoveWishList = this::onErrorRemoveWishList)
-        }
+        viewModel.removeWishList(productId,
+            onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+            onErrorRemoveWishList = this::onErrorRemoveWishList)
+    }
+
+    private fun removeWishlistV2(productId: String) {
+        viewModel.removeWishListV2(productId,
+            object: WishlistV2ActionListener{
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String) {}
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                    }
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                        }
+                    }
+                }
+
+            })
     }
 
     private fun isProductOos(): Boolean {
