@@ -22,6 +22,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -59,7 +62,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NonGroupItemsListAdapter
     private val EMPTY_SEARCH_VIEW = true
-    private val PRODUCTS_WITHOUT_GROUP = -2
     private var deleteCancel = false
     private var SingleDelGroupId = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
@@ -74,6 +76,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     companion object {
+        private const val PRODUCTS_WITHOUT_GROUP = -2
         fun createInstance(bundle: Bundle): TopAdsDashWithoutGroupFragment {
             val fragment = TopAdsDashWithoutGroupFragment()
             fragment.arguments = bundle
@@ -373,15 +376,15 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
         non_group_tiker.visibility = View.VISIBLE
         when(groupFilterSheet.getSelectedAdPlacementType()) {
-            0 -> {
+            CONST_0 -> {
                 non_group_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
                 non_group_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
             }
-            2 -> {
+            CONST_2 -> {
                 non_group_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_pencerian)
                 non_group_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_pencerian))
             }
-            3 -> {
+            CONST_3 -> {
                 non_group_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_rekoemendasi)
                 non_group_tiker.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))
             }

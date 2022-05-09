@@ -2,6 +2,7 @@ package com.tokopedia.topads.edit.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.RECOMMENDATION_BUDGET_MULTIPLIER
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 
@@ -38,7 +39,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun setDailyBudget(budget:Int){
-        dailyBudget.value = budget*40
+        dailyBudget.value = budget*RECOMMENDATION_BUDGET_MULTIPLIER
         setMaxBudgetValue()
 
     }
@@ -54,7 +55,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun setRekomendedBudget(budget:Int){
-        rekomendedBudget.value = budget*40
+        rekomendedBudget.value = budget * RECOMMENDATION_BUDGET_MULTIPLIER
         setMaxBudgetValue()
     }
 

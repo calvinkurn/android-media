@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +36,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DIHAPUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
@@ -387,7 +391,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoads_layout.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+                imgBg.background = VectorDrawableCompat.create(resources, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
@@ -532,10 +536,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
         swipe_refresh_layout.isRefreshing = false
         when (data.category) {
-            1 -> noProduct()
-            2 -> noAds()
-            3 -> manualAds()
-            4 -> autoAds()
+            CONST_1 -> noProduct()
+            CONST_2 -> noAds()
+            CONST_3 -> manualAds()
+            CONST_4 -> autoAds()
             else -> manualAds()
         }
         loadStatisticsData()
