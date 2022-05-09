@@ -1,21 +1,24 @@
-package com.tokopedia.play.broadcaster.helper
+package com.tokopedia.test.application.id_generator
 
 import android.view.View
 import android.view.ViewGroup
 
 /**
- * Created by kenny.hadisaputra on 23/02/22
+ * Created by kenny.hadisaputra on 15/04/22
  */
 class ViewHierarchyPrinter(
     private val printConditions: List<PrintCondition> = emptyList(),
+    private val customIdPrefix: String = "",
 ) {
+
+    private val mapOfViews = mutableMapOf<View, Int>()
 
     fun print(view: View) {
         printInternal(view = view)
     }
 
     fun printAsCSV(view: View): String {
-        val header = "Parent ID, Parent Class, View ID, View Class"
+        val header = "Parent Custom ID, Parent ID, Parent Class, View Custom ID, View ID, View Class"
         val body = printAsCSVInternal(view)
 
         return buildString {
@@ -29,6 +32,13 @@ class ViewHierarchyPrinter(
 
         val viewInfo = buildString {
             val parent = view.parent
+
+            /**
+             * Parent Custom ID
+             */
+            append(getViewCustomID(parent as View))
+            append(", ")
+
             if (parent is ViewGroup) {
                 append(
                     try {
@@ -39,6 +49,12 @@ class ViewHierarchyPrinter(
                 append(parent::class.java.name)
             } else append("-, -")
 
+            append(", ")
+
+            /**
+             * View Custom ID
+             */
+            append(getViewCustomID(view))
             append(", ")
 
             append(
@@ -82,6 +98,18 @@ class ViewHierarchyPrinter(
                 printInternal(level + 1, view.getChildAt(i))
             }
         }
+    }
+
+    private fun getViewCustomID(view: View): String {
+        val index = if (mapOfViews.containsKey(view)) {
+            mapOfViews[view]!!
+        } else {
+            val index = mapOfViews.keys.size
+            mapOfViews[view] = index
+            index
+        }
+
+        return "$customIdPrefix$index"
     }
 }
 
