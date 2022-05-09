@@ -470,7 +470,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock
         detailHeader.quantityEditor.addButton.isEnabled = productStock > 1
-        detailHeader.quantityEditor.subtractButton.isEnabled = productStock > 1
+        detailHeader.quantityEditor.subtractButton.isEnabled = detailHeader.quantityEditor.editText.text.toString().toInt()>1
         val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
         try {
             if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
