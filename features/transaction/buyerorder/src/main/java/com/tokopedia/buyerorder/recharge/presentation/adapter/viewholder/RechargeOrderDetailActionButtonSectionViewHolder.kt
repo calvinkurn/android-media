@@ -65,7 +65,7 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
         button.setOnClickListener {
             listener?.onActionButtonClicked(actionButton)
-            if (actionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
+            if (!actionButton.mappingUri.equals(MAPPING_URI_VOID, true)) {
                 onActionButtonClicked(context, actionButton.uri)
             } else {
                 listener?.onVoidButtonClicked()
