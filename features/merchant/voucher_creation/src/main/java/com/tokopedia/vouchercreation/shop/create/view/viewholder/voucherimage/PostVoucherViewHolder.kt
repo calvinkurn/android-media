@@ -13,10 +13,11 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.MvcPostImageBinding
 import com.tokopedia.vouchercreation.shop.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.PostVoucherUiModel
-import kotlinx.android.synthetic.main.mvc_post_image.view.*
 
 class PostVoucherViewHolder(itemView: View?,
                             private val activity: Activity?,
@@ -25,8 +26,9 @@ class PostVoucherViewHolder(itemView: View?,
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.mvc_post_image
-
     }
+
+    private var binding: MvcPostImageBinding? by viewBinding()
 
     override fun bind(element: PostVoucherUiModel) {
         itemView.run {
@@ -54,7 +56,7 @@ class PostVoucherViewHolder(itemView: View?,
 
     private fun onSuccessGetBitmap(bitmap: Bitmap) {
         activity?.runOnUiThread {
-            itemView.postVoucherImage?.setImageBitmap(bitmap)
+            binding?.postVoucherImage?.setImageBitmap(bitmap)
             onSuccessGetPostBitmap(bitmap)
         }
     }

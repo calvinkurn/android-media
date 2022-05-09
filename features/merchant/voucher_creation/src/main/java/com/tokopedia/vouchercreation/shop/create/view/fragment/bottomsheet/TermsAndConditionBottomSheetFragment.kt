@@ -10,7 +10,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.BottomsheetMvcTncBinding
-import kotlinx.android.synthetic.main.bottomsheet_mvc_tnc.*
 
 class TermsAndConditionBottomSheetFragment : BottomSheetUnify() {
     companion object {
@@ -30,7 +29,7 @@ class TermsAndConditionBottomSheetFragment : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (tncContent.isNotBlank()) tncDesc.text = MethodChecker.fromHtml(tncContent)
+        if (tncContent.isNotBlank()) binding?.tncDesc?.text = MethodChecker.fromHtml(tncContent)
     }
 
     fun setHtmlTncDesc(htmlTncDesc: String) {

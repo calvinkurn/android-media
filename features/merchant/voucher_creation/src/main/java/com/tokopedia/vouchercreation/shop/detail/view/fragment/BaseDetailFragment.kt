@@ -15,13 +15,11 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.bottmsheet.description.DescriptionBottomSheet
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherDetailBinding
-import com.tokopedia.vouchercreation.databinding.FragmentMvcVoucherListBinding
 import com.tokopedia.vouchercreation.shop.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.shop.detail.model.*
 import com.tokopedia.vouchercreation.shop.detail.view.VoucherDetailListener
 import com.tokopedia.vouchercreation.shop.detail.view.adapter.factory.VoucherDetailAdapterFactoryImpl
-import kotlinx.android.synthetic.main.fragment_mvc_voucher_detail.view.*
 
 /**
  * Created By @ilhamsuaib on 09/05/20
@@ -105,11 +103,11 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
                 .show(content, childFragmentManager)
     }
 
-    private fun setupActionBar() = view?.run {
+    private fun setupActionBar() {
         (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(toolbarMvcVoucherDetail)
+            activity.setSupportActionBar(binding?.toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
+            binding?.toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 

@@ -19,7 +19,6 @@ import com.tokopedia.vouchercreation.databinding.MvcVoucherBottomSheetViewBindin
 import com.tokopedia.vouchercreation.shop.create.data.source.TipsAndTrickStaticDataSource
 import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget.VoucherTipsAdapter
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
-import kotlinx.android.synthetic.main.mvc_voucher_bottom_sheet_view.*
 import javax.inject.Inject
 
 class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
@@ -78,7 +77,7 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
-        voucherTipsRecyclerView?.run {
+        binding?.voucherTipsRecyclerView?.run {
             layoutManager = linearLayoutManager
             adapter = voucherTipsAdapter
         }
