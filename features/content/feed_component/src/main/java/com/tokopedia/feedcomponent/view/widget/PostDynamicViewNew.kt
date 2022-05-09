@@ -2315,7 +2315,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             if (!feedXCard.products.isNullOrEmpty()
                                 && feedXCard.products.size > current) {
                                 imagePostListener.userProductImpression(
-                                             ositionInFeed,
+                                    positionInFeed,
                                     feedXCard.id,
                                     feedXCard.typename,
                                     feedXCard.author.id,
