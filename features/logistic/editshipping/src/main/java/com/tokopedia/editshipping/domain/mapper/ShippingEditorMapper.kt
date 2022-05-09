@@ -74,9 +74,9 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperProduct(response: List<ShipperProduct>): List<ShipperProductModel> {
         return response.map {
             ShipperProductModel(
-                    shipperProductId = it.shipperProductId,
-                    shipperProductName = it.shipperProductName,
-                    isActive = it.isActive,
+                    it.shipperProductId,
+                    it.shipperProductName,
+                    it.isActive,
             )
         }
     }

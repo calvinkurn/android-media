@@ -5,15 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperProductModel
-import com.tokopedia.editshipping.util.EditShippingConstant.GOCAR_SHIPPER_ID
 import com.tokopedia.editshipping.util.EditShippingConstant.GOCAR_SHIPPER_PRODUCT_ID
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) :
-    RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
+class ShipperProductItemAdapter(private var listener: ShipperProductItemListener) : RecyclerView.Adapter<ShipperProductItemAdapter.ShipperProductOnDemandViewHolder>() {
 
     interface ShipperProductItemListener {
         fun onClickInfoIcon()
@@ -22,10 +20,7 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
 
     private var shipperProduct = mutableListOf<ShipperProductModel>()
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ShipperProductOnDemandViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipperProductOnDemandViewHolder {
         return ShipperProductOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipper_product_name))
     }
 
@@ -55,10 +50,8 @@ class ShipperProductItemAdapter(private var listener: ShipperProductItemListener
         notifyDataSetChanged()
     }
 
-    inner class ShipperProductOnDemandViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        private val shipperProductName =
-            itemView.findViewById<Typography>(R.id.shipper_product_name)
+    inner class ShipperProductOnDemandViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val shipperProductName = itemView.findViewById<Typography>(R.id.shipper_product_name)
         val shipperProductCb = itemView.findViewById<CheckboxUnify>(R.id.shipper_product_cb)
         private val divider = itemView.findViewById<View>(R.id.divider_shipment)
         private val infoIcon = itemView.findViewById<IconUnify>(R.id.shipper_product_info_icon)

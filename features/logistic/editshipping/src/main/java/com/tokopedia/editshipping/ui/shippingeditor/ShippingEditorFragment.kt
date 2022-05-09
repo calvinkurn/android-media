@@ -54,10 +54,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingEditorFragment : BaseDaggerFragment(),
-    ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener,
-    ShippingEditorConventionalAdapter.ShippingEditorConventionalListener,
-    ShipperProductItemAdapter.ShipperProductItemListener {
+class ShippingEditorFragment : BaseDaggerFragment(), ShippingEditorOnDemandItemAdapter.ShippingEditorItemAdapterListener, ShippingEditorConventionalAdapter.ShippingEditorConventionalListener, ShipperProductItemAdapter.ShipperProductItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

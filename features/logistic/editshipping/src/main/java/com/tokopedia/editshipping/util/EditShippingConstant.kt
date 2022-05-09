@@ -25,9 +25,6 @@ object EditShippingConstant {
 
     const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
 
-    const val GOCAR_SHIPPER_ID = "10"
-    const val GOCAR_SHIPPER_NAME = "GoSend"
     const val GOCAR_SHIPPER_PRODUCT_ID = "28"
-    const val GOCAR_SHIPPER_PRODUCT_NAME = "Instant"
 
 }

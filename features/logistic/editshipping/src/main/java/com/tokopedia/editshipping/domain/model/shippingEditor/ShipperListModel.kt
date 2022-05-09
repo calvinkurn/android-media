@@ -53,7 +53,7 @@ data class FeatureInfoModel(
 data class ShipperProductModel(
         var shipperProductId: String = "",
         var shipperProductName: String = "",
-        var isActive: Boolean = false,
+        var isActive: Boolean = false
 ) : Parcelable
 
 data class TickerModel(

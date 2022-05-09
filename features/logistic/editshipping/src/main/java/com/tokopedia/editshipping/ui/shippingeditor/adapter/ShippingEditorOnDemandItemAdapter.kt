@@ -35,7 +35,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingEditorOnDemandViewHolder {
-        return ShippingEditorOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), productItemListener)
+        return ShippingEditorOnDemandViewHolder(parent.inflateLayout(R.layout.item_shipping_editor_card), listener, productItemListener)
     }
 
     override fun getItemCount(): Int {
@@ -77,7 +77,7 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         return activatedListIds
     }
 
-    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.ViewHolder(itemView) {
+    inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.ViewHolder(itemView) {
         lateinit var onDemandModel: OnDemandModel
         private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()

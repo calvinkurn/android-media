@@ -16,8 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="GOSENDDDD"/>
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/shipper_product_info_icon"
@@ -27,8 +26,7 @@
         app:icon_name="INFORMATION"
         app:layout_constraintStart_toEndOf="@id/shipper_product_name"
         app:layout_constraintTop_toTopOf="@id/shipper_product_name"
-        app:layout_constraintBottom_toBottomOf="@id/shipper_product_name"
-        tools:visibility="visible"/>
+        app:layout_constraintBottom_toBottomOf="@id/shipper_product_name" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/shipper_product_cb"
