@@ -9,7 +9,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -326,55 +325,11 @@ object AtcCommonMapper {
 
     fun putChatProductInfoTo(
             intent: Intent?,
-            productId: String?,
-            productInfo: VariantChild?,
-            variantResp: ProductVariant?,
-            freeOngkirImgUrl: String
+            productId: String?
     ) {
         if (intent == null || productId == null) return
-        val variants = variantResp?.mapSelectedProductVariants(productId)
-        val productImageUrl = productInfo?.picture?.original ?: ""
-        val productName = productInfo?.name ?: ""
-        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBeforeDouble = productInfo?.slashPriceDouble ?: 0.0
-        val priceBefore = if (priceBeforeDouble > 0) {
-            priceBeforeDouble.getCurrencyFormatted()
-        } else {
-            ""
-        }
-        val dropPercentage = productInfo?.roundedDiscountPercentage ?: ""
-        val productUrl = productInfo?.url ?: ""
-        val isActive = productInfo?.isBuyable ?: true
-        val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
-        val productColorVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
-        val productColorHexVariant = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_HEX_VARIANT) ?: ""
-        val productSizeVariant = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
-        val productColorVariantId = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
-        val productSizeVariantId = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
-        val isSupportVariant = variants != null
-        val productPreview = ProductPreview(
-                id = productId,
-                imageUrl = productImageUrl,
-                name = productName,
-                price = productPrice,
-                colorVariantId = productColorVariantId,
-                colorVariant = productColorVariant,
-                colorHexVariant = productColorHexVariant,
-                sizeVariantId = productSizeVariantId,
-                sizeVariant = productSizeVariant,
-                url = productUrl,
-                productFsIsActive = productFsIsActive,
-                productFsImageUrl = freeOngkirImgUrl,
-                priceBefore = priceBefore,
-                priceBeforeInt = priceBeforeDouble,
-                dropPercentage = dropPercentage,
-                isActive = isActive,
-                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER,
-                isSupportVariant = isSupportVariant,
-                campaignId = productInfo?.campaign?.campaignID.toLongOrZero()
-        )
-        val productPreviews = listOf(productPreview)
-        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        val productIds = listOf(productId)
+        val stringProductPreviews = CommonUtil.toJson(productIds)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
