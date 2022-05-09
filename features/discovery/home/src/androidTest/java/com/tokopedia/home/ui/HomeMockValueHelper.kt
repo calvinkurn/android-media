@@ -1,7 +1,7 @@
 package com.tokopedia.home.ui
 
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.remoteconfig.*
 
 object HomeMockValueHelper {
     const val DEFAULT_COUNTER_NOTIF_VALUE = "10"
@@ -30,5 +30,12 @@ object HomeMockValueHelper {
                 RollenceKey.BALANCE_VARIANT_NEW
             )
         }
+    }
+
+    fun setupRemoteConfig() {
+        val remoteConfig = FirebaseRemoteConfigImpl(
+            InstrumentationRegistry.getInstrumentation().context
+        )
+        remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, "false")
     }
 }
