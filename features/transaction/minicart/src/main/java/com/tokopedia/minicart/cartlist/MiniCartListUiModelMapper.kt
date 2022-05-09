@@ -352,6 +352,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
             if(bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
+                bundleLabelQty = productQuantity / bundleQuantity
             }
         }
     }
@@ -482,7 +483,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                 bundleOriginalPrice = visitable.bundleOriginalPrice,
                                 bundleQuantity = visitable.bundleQty,
                                 bundleMultiplier = visitable.bundleMultiplier,
-                                bundleLabelQuantity = visitable.bundleMultiplier,
+                                bundleLabelQuantity = visitable.bundleLabelQty,
                                 products = hashMapOf(key to miniCartItem)
                         )
                     } else {

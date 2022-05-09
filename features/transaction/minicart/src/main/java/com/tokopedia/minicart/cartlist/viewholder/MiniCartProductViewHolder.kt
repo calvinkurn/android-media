@@ -77,6 +77,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         renderProductAction(element)
         renderProductAlpha(element)
         renderBundleHeader(element)
+        renderBundleQuantity(element)
         renderVerticalLine(element)
         renderBottomDivider(element)
     }
@@ -611,6 +612,18 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 containerBundleHeader.show()
             } else {
                 containerBundleHeader.hide()
+            }
+        }
+    }
+
+    private fun renderBundleQuantity(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            if(element.isBundlingItem && element.bundleLabelQty > 1) {
+                labelBundleQty.text = itemView.context.getString(
+                    R.string.mini_cart_bundle_qty_label, element.bundleLabelQty)
+                labelBundleQty.show()
+            } else {
+                labelBundleQty.hide()
             }
         }
     }
