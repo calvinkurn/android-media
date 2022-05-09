@@ -8,37 +8,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
-import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 open class PermissionFragment : BaseDaggerFragment() {
 
-    @Inject lateinit var cacheManager: ParamCacheManager
+    @Inject lateinit var factory: ViewModelProvider.Factory
 
     private val binding by viewBinding<FragmentPermissionBinding>()
     private var listener: Listener? = null
 
-    private val permissionList = mutableListOf<PermissionUiModel>()
-
-    private val permissions by lazy {
-        permissionList.map { it.name }
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this,
+            factory
+        )[PermissionViewModel::class.java]
     }
 
-    private val mAdapter by lazy { PermissionAdapter(permissionList) }
-    private val param by lazy { cacheManager.get() }
+    private val mPermissionList = mutableListOf<PermissionUiModel>()
+    private val mAdapter by lazy { PermissionAdapter(mPermissionList) }
 
     private var isPermissionRationale = false
     private var mTitle = ""
@@ -58,58 +58,37 @@ open class PermissionFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        initObservable()
+        initView()
     }
 
     override fun onResume() {
         super.onResume()
-        onShowPermissionDialog()
+        onPrepareShowPermissionDialog()
     }
 
-    private fun setupView() {
-        initPermissionList()
-        initPermissionDynamicWording()
-        setupPermissionRecyclerView()
-
-        binding?.txtTitle?.text = mTitle
-        binding?.txtMessage?.text = mMessage
+    private fun initView() {
+        viewModel.getDynamicPermissionList()
+        viewModel.initOrCreateDynamicWording()
     }
 
-    private fun initPermissionList() {
-        permissionList.clear()
-        permissionList.addAll(
-            PermissionUiModel.get(
-                param.pageType(),
-                param.isImageModeOnly()
-            )
-        )
-    }
+    private fun initObservable() {
+        viewModel.dynamicWording.observe(viewLifecycleOwner) {
+            mTitle = getString(it.first)
+            mMessage = getString(it.second)
 
-    private fun initPermissionDynamicWording() {
-        val (_title, _message) = when (param.pageType()) {
-            PageType.CAMERA -> if (param.isImageModeOnly()) {
-                Pair(
-                    getString(R.string.picker_title_camera_photo_permission),
-                    getString(R.string.picker_message_camera_photo_permission)
-                )
-            } else {
-                Pair(
-                    getString(R.string.picker_title_camera_video_permission),
-                    getString(R.string.picker_message_camera_video_permission)
-                )
-            }
-            PageType.GALLERY -> Pair(
-                getString(R.string.picker_title_gallery_permission),
-                getString(R.string.picker_message_gallery_permission)
-            )
-            else -> Pair(
-                getString(R.string.picker_title_common_permission),
-                getString(R.string.picker_message_common_permission)
-            )
+            // set the title and message on boarding page
+            binding?.txtTitle?.text = mTitle
+            binding?.txtMessage?.text = mMessage
         }
 
-        mTitle = _title
-        mMessage = _message
+        viewModel.permissionList.observe(viewLifecycleOwner) {
+            mPermissionList.clear()
+            mPermissionList.addAll(it)
+
+            // setup recycler view after get the data
+            setupPermissionRecyclerView()
+        }
     }
 
     private fun setupPermissionRecyclerView() {
@@ -120,7 +99,8 @@ open class PermissionFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onShowPermissionDialog() {
+    private fun onPrepareShowPermissionDialog() {
+        val permissions = viewModel.permissionCodeName.value?: return
         var permissionGrantedAmount = 0
 
         for (permission in permissions) {
@@ -138,6 +118,7 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun onShowDialog(title: String, message: String) {
+        val permissions = viewModel.permissionCodeName.value?: return
         if (isPermissionRationale) return
 
         DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
