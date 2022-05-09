@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
@@ -205,29 +205,21 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                                 Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
                     showDefaultState()
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_LINK_ERROR,
-                            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "", userSessionInterface.userId)
+                    sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
                 } else {
                     affiliateSearchData.searchAffiliate?.data?.error?.let {
                         adapter.addElement(AffiliatePromotionErrorCardModel(it))
                     }
-                    var errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
-                    when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
+                    val errorLabel = when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
+                            AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_ELIGIBLE
+                            AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
                         AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_OS_PM_ERROR
+                            AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
+                        else -> AffiliateAnalytics.LabelKeys.NOT_URL
                     }
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            errorAction,
-                            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "", userSessionInterface.userId)
+                    sendSearchEvent(errorLabel)
                 }
             } else {
                 affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
@@ -241,14 +233,46 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         }
                     }
-                    AffiliateAnalytics.sendEvent(
-                            AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-                            AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP,
-                            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "", userSessionInterface.userId)
+                    if(items.isNotEmpty()) {
+                        items.first()?.let {
+                            sendEnhancedTracker(it)
+                        }
+                    }
+
                 }
             }
         })
+    }
+
+    private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
+        var status = ""
+        if(it.status?.messages?.isNotEmpty() == true) {
+            when (it.status?.messages?.first()?.messageType) {
+                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
+                ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
+                EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
+                PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
+                SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+            }
+        }
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
+            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            userSessionInterface.userId,
+            it.productID,
+            1,
+            it.title,
+            "${it.productID} - ${it.commission?.amount} - $status"
+        )
+    }
+
+    private fun sendSearchEvent(eventLabel: String){
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
+            eventLabel, userSessionInterface.userId)
     }
 
     private fun showData(isErrorData: Boolean) {
@@ -290,10 +314,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel = viewModel as AffiliatePromoViewModel
     }
 
-    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int, commison: String) {
+    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int, commison: String, status: String) {
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,productId, productName, productImage, productUrl,
-                productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
+                productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN,commission = commison,status = status).show(childFragmentManager, "")
     }
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
@@ -310,7 +334,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     override fun onEditState(state: Boolean) {
         AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
-                AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
+                AffiliateAnalytics.ActionKeys.CLICK_SEARCH_BOX,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
                 "", userSessionInterface.userId)
     }

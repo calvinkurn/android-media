@@ -1329,13 +1329,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
         activity?.let {
+            val items = dynamicProductInfoData.data.getGalleryItems()
+            if (items.isEmpty()) return
             val intent = ProductDetailGalleryActivity.createIntent(
                 context = it,
                 productDetailGallery = ProductDetailGallery(
                     productId = dynamicProductInfoData.basic.productID,
                     userId = viewModel.userId,
                     page = ProductDetailGallery.Page.ProductDetail,
-                    items = dynamicProductInfoData.data.getGalleryItems(),
+                    items = items,
                     selectedId = position.toString()
                 )
             )
@@ -3494,12 +3496,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             doActionOrLogin({
                 val shop = viewModel.getShopInfo()
                 activity?.let {
-                    val boData = viewModel.getBebasOngkirDataByProductId()
                     val intent = RouteManager.getIntent(it,
                             ApplinkConst.TOPCHAT_ASKSELLER,
                             product.basic.shopID, "",
                             "product", shop.shopCore.name, shop.shopAssets.avatar)
-                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID, product, viewModel.variantData, boData.imageURL)
+                    VariantMapper.putChatProductInfoTo(intent, product.basic.productID)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TOP_CHAT)
                 }
             })

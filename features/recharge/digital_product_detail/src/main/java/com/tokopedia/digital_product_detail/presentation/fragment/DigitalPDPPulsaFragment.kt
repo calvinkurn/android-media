@@ -467,7 +467,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -475,6 +474,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
                     setInputNumber(prefill.clientNumber, true)
+                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }

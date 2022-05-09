@@ -568,7 +568,6 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onSuccessGetPrefill(prefill: PrefillModel) {
-        inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
@@ -576,6 +575,7 @@ class DigitalPDPDataPlanFragment :
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
                     setInputNumber(prefill.clientNumber)
+                    inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
         }

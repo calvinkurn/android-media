@@ -24,7 +24,7 @@ class ProductMediaViewHolder(private val view: View,
         with(binding) {
 
             val optionIdAnchor = element.variantOptionIdScrollAnchor
-            val scrollPosition = if (optionIdAnchor.isNotEmpty()) {
+            val scrollPosition = if (element.shouldUpdateImage && optionIdAnchor.isNotEmpty()) {
                 element.indexOfSelectedVariantOptionId()
             } else element.initialScrollPosition
 
@@ -32,6 +32,8 @@ class ProductMediaViewHolder(private val view: View,
                     listener,
                     scrollPosition,
                     getComponentTrackData(element))
+
+            element.shouldUpdateImage = false
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
