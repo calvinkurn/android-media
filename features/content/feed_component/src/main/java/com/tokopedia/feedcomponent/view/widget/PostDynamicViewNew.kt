@@ -1935,13 +1935,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
                         }
                         setOnTouchListener { v, event ->
-                            if (event.action == MotionEvent.ACTION_UP) {
-                                v.performClick()
-                                false
-                            } else {
-                                gd.onTouchEvent(event)
-                                true
-                            }
+                            gd.onTouchEvent(event)
+                            true
                         }
                     }
                     if (imageItem != null) {
