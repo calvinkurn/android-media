@@ -9,8 +9,10 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
+import com.tokopedia.productcard.test.grid.ProductCardGridViewStubActivityTest
 import com.tokopedia.productcard.test.grid.productCardGridTestData
 import com.tokopedia.productcard.test.list.ProductCardListActivityTest
+import com.tokopedia.productcard.test.list.ProductCardListViewStubActivityTest
 import com.tokopedia.productcard.test.list.productCardListTestData
 import com.tokopedia.productcard.test.utils.productCardInPosition
 import com.tokopedia.test.application.annotations.UiTest
@@ -36,6 +38,26 @@ internal class ProductCardTest {
     @Test
     fun testProductCardList() {
         startTestActivity(ProductCardListActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
+        productCardModelMatcherData = productCardListTestData
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardGridViewStub() {
+        startTestActivity(ProductCardGridViewStubActivityTest::class.java.name)
+
+        recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
+        productCardModelMatcherData = productCardGridTestData
+
+        startTest()
+    }
+
+    @Test
+    fun testProductCardListViewStub() {
+        startTestActivity(ProductCardListViewStubActivityTest::class.java.name)
 
         recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
         productCardModelMatcherData = productCardListTestData
