@@ -19,7 +19,8 @@ sealed interface ReviewMediaVideoThumbnailUiState : Parcelable {
     @Parcelize
     data class ShowingSeeMore(
         val playable: Boolean = false,
-        val totalImageCount: Int,
+        val totalMediaCount: Int,
+        val totalMediaCountFmt: String,
         override val attachmentID: String = "",
         override val reviewID: String = "",
         override val url: String = ""

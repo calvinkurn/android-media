@@ -117,10 +117,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         reviewMediaVideoThumbnailBrokenOverlay.gone()
         icReviewMediaVideoThumbnailBroken.gone()
         groupReviewMediaVideoThumbnailSeeMore.show()
-        tvReviewMediaVideoThumbnailSeeMore.text = buildString {
-            append("+")
-            append(uiState.totalImageCount)
-        }
+        tvReviewMediaVideoThumbnailSeeMore.text = uiState.totalMediaCountFmt
         setupVideoThumbnail(uiState)
     }
 

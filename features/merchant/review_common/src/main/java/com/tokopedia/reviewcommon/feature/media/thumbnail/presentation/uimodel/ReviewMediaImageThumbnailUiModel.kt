@@ -34,7 +34,7 @@ data class ReviewMediaImageThumbnailUiModel(
 
     override fun getTotalMediaCount(): Long {
         return if (uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
-            uiState.totalImageCount.toLong()
+            uiState.totalMediaCount.toLong()
         } else -1
     }
 

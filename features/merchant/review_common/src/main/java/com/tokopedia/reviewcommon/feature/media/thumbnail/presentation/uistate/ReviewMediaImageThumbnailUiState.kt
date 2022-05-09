@@ -23,6 +23,7 @@ sealed interface ReviewMediaImageThumbnailUiState: Parcelable {
         override val reviewID: String = "",
         override val thumbnailUrl: String = "",
         override val fullSizeUrl: String = "",
-        val totalImageCount: Int = 0
+        val totalMediaCount: Int,
+        val totalMediaCountFmt: String,
     ) : ReviewMediaImageThumbnailUiState
 }

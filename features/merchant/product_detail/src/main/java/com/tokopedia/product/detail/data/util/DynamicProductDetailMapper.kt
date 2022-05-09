@@ -388,7 +388,8 @@ object DynamicProductDetailMapper {
                         attachmentID = video.attachmentID.toString(),
                         reviewID = video.feedbackID.orEmpty(),
                         url = video.url.orEmpty(),
-                        totalImageCount = totalNotShowedMedia
+                        totalMediaCount = data.detail?.mediaCount.toIntOrZero(),
+                        totalMediaCountFmt = data.detail?.mediaCountFmt.orEmpty()
                     )
                 )
             } else {
@@ -411,7 +412,8 @@ object DynamicProductDetailMapper {
                         reviewID = image.reviewID,
                         thumbnailUrl = image.uriThumbnail.orEmpty(),
                         fullSizeUrl = image.uriLarge.orEmpty(),
-                        totalImageCount = totalNotShowedMedia
+                        totalMediaCount = data.detail?.mediaCount.toIntOrZero(),
+                        totalMediaCountFmt = data.detail?.mediaCountFmt.orEmpty()
                     )
                 )
             } else {
