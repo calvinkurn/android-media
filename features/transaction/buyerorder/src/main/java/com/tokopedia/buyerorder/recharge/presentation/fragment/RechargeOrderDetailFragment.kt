@@ -482,6 +482,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 dialog.dismiss()
             }
             dialog.setOverlayClose(false)
+            dialog.show()
         }
     }
 
