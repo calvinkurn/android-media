@@ -17,4 +17,10 @@ interface PlayInteractiveAnalytic {
     fun clickWinnerBadge(channelId: String, channelType: PlayChannelType)
 
     fun clickTapTap(channelId: String, channelType: PlayChannelType, interactiveId: String)
+
+    fun clickRefreshLeaderBoard(channelId: String, interactiveId: String, shopId: String)
+
+    fun clickQuizOption(channelId: String, choiceAlphabet: String, interactiveId: String, shopId: String)
+
+    fun clickActiveInteractive(channelId: String, interactiveId: String, shopId: String)
 }

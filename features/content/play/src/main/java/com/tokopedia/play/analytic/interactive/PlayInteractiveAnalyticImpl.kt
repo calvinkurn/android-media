@@ -53,6 +53,46 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun clickRefreshLeaderBoard(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - refresh button leaderboard bottomsheet",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
+    override fun clickQuizOption(
+        channelId: String,
+        choiceAlphabet: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - multiple choice quiz popup",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId - $choiceAlphabet"
+        )
+    }
+
+    override fun clickActiveInteractive(
+        channelId: String,
+        interactiveId: String,
+        shopId: String
+    ) {
+        sendCompleteGeneralEvent(
+            event = KEY_TRACK_CLICK_CONTENT,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
+            eventAction = "click - quiz widget",
+            eventLabel = "$shopId - $channelId - $userId - $interactiveId"
+        )
+    }
+
     private fun sendCompleteGeneralEvent(
             event: String,
             eventCategory: String,
