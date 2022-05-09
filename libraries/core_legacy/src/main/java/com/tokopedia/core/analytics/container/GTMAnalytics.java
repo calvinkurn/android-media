@@ -1188,7 +1188,8 @@ public class GTMAnalytics extends ContextAnalytics {
                     fa.logEvent(FirebaseAnalytics.Event.VIEW_PROMOTION, bundle);
                     break;
                 case FirebaseAnalytics.Event.SELECT_CONTENT:
-                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST)) || "search result".equals(bundle.getString("eventCategory"))) {
+                    if ("Search Results".equals(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST)) ||
+                            "search result".equals(bundle.getString("eventCategory"))) {
                         // https://tokopedia.atlassian.net/browse/AN-36131
                         bundle.putString(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Related products");
                         fa.logEvent(FirebaseAnalytics.Event.SELECT_ITEM, bundle);
@@ -1200,7 +1201,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 case FirebaseAnalytics.Event.CHECKOUT_PROGRESS:
                     // https://tokopedia.atlassian.net/browse/AN-36179
                     // https://tokopedia.atlassian.net/browse/AN-36180
-                    if (bundle.getLong(CHECKOUT_STEP) == 2 || bundle.getLong(CHECKOUT_STEP) == 3) {
+                    if ("2".equals(bundle.getString(CHECKOUT_STEP)) ||
+                            "3".equals(bundle.getString(CHECKOUT_STEP))) {
                         fa.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
                     }
                     break;
