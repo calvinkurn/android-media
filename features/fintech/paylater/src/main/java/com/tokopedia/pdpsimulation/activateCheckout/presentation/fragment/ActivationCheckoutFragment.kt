@@ -91,7 +91,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         parentView = inflater.inflate(R.layout.fragment_activation_checkout, container, false)
         return parentView
     }
@@ -619,7 +619,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun openPriceBreakDownBottomSheet() {
         installmentModel?.let {
-            var bundle = setBundleForInstalmentBottomSheet(
+            val bundle = setBundleForInstalmentBottomSheet(
                 InstallmentBottomSheetDetail(
                     installmentDetail = it,
                     gatwayToChipMap = payLaterActivationViewModel.gatewayToChipMap,
