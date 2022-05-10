@@ -2424,14 +2424,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (wishlistResult.isSuccess) {
                 recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
                         ?: false)
-                showToasterWithAction(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                if(activity?.isFinishing == false) {
+                    showToasterWithAction(
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(
+                            com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist
+                        ),
                         typeToaster = TYPE_NORMAL,
                         actionText = getString(R.string.go_to_wishlist),
                         clickListener = View.OnClickListener {
                             RouteManager.route(context, ApplinkConst.WISHLIST)
                         }
-                )
+                    )
+                }
             } else {
                 showToaster(
                         message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
@@ -2636,7 +2640,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToaster(message: String, typeToaster: Int) {
-        showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        if(activity?.isFinishing == false) {
+            showToasterWithAction(message, typeToaster, "", View.OnClickListener { v: View? -> })
+        }
     }
 
     private fun showToasterWithAction(message: String, typeToaster: Int, actionText: String, clickListener: View.OnClickListener) {
@@ -2730,7 +2736,20 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterReviewSuccess() {
-        view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
+        if(activity?.isFinishing == false) {
+            view?.let {
+                build(
+                    it,
+                    getString(
+                        R.string.review_create_success_toaster,
+                        getHomeViewModel().getUserName()
+                    ),
+                    Snackbar.LENGTH_LONG,
+                    TYPE_NORMAL,
+                    getString(R.string.review_oke)
+                ).show()
+            }
+        }
     }
 
     /**
@@ -2821,8 +2840,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = 56f.toDpInt()
-        Toaster.build(root,
+        if(activity?.isFinishing == false) {
+            Toaster.toasterCustomBottomHeight = 56f.toDpInt()
+            Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,
                 TYPE_NORMAL,
@@ -2831,12 +2851,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     saveStateReset(false)
                     onGoToLogin()
                 }
-        ).addCallback(object : Snackbar.Callback() {
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                saveStateReset(false)
-            }
-        }).show()
+            ).addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    saveStateReset(false)
+                }
+            }).show()
+        }
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
