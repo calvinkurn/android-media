@@ -8,6 +8,7 @@ const val BUNDLE_EDIT_PROGRAM = "bundleEditProgram"
 const val BUNDLE_PROGRAM_ID = "bundleProgramId"
 const val BUNDLE_PROGRAM_TYPE = "bundleProgramType"
 const val BUNDLE_CARD_DATA = "bundleCardData"
+const val BUNDLE_PROGRAM_DATA = "bundleProgramData"
 const val BUNDLE_PROGRAM = "bundle_program"
 const val BUNDLE_REFRESH = "bundle_refresh"
 const val REQUEST_CODE_REFRESH = 1
@@ -36,4 +37,10 @@ const val DUPLICATE = "duplicate"
 
 const val LOADING_TEXT = "<b>Makan pepaya minum jus durian</b>" + "<br>" +
         "Tunggu ya, program lagi disiapkan!"
+
+const val ERROR_CREATING_TITLE = "Ada gangguan di rumah Toped"
+const val ERROR_CREATING_TITLE_RETRY= "Yaah, pengaturan TokoMember  gagal disimpan"
+const val ERROR_CREATING_DESC = "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti."
+const val ERROR_CREATING_CTA = "Coba Lagi"
+const val ERROR_CREATING_CTA_RETRY = "Ke Dashboard TokoMember"
 

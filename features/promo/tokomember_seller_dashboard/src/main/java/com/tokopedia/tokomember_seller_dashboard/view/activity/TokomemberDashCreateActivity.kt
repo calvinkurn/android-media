@@ -19,10 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCouponFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashPreviewFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.*
 
 class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
@@ -66,6 +63,9 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 supportFragmentManager.popBackStack()
             }
             supportFragmentManager.backStackEntryCount == 1 -> {
+                if ( supportFragmentManager.fragments[0] is TokomemberCreateCardFragment){
+                    //todo error ui and dialog
+                }
                 val dialogCancel =
                     DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
                 dialogCancel.apply {
@@ -127,7 +127,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 bundle.let { TokomemberProgramFragment.newInstance(it) }.let { addFragment(it, "") }
             }
             COUPON ->{
-                bundle.let { TokomemberDashCouponFragment.newInstance() }.let { addFragment(it, "") }
+                bundle.let { TokomemberKuponCreateFragment.newInstance() }.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 bundle.let { TokomemberDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }

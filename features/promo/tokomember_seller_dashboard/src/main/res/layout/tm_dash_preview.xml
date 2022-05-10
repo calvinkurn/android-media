@@ -23,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/headerPreview" />
 
-
     <View
         android:id="@+id/viewBgPreview"
         android:layout_width="match_parent"
@@ -92,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text=" 12 Jan 2022, 00:30 WIB "
+        tools:text=" 12 Jan 2022, 00:30 WIB "
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProgramMulai"
@@ -118,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text=" 12 Jan 2022, 00:30 WIB "
+        tools:text=" 12 Jan 2022, 00:30 WIB "
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvProgramBerakhir"

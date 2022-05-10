@@ -51,8 +51,9 @@ class TokomemberBottomsheet(): BottomSheetUnify() {
         tvHeading.text = tmIntroBottomsheetModel.title
         tvDesc.text = tmIntroBottomsheetModel.desc
         imgBottomsheet.loadImage(tmIntroBottomsheetModel.image)
+        btnProceed.text = tmIntroBottomsheetModel.ctaName
         btnProceed.setOnClickListener {
-            mBottomSheetClickListener?.onButtonClick()
+            mBottomSheetClickListener?.onButtonClick(tmIntroBottomsheetModel.errorCount)
         }
     }
 
@@ -87,5 +88,5 @@ class TokomemberBottomsheet(): BottomSheetUnify() {
 }
 
 interface BottomSheetClickListener{
-    fun onButtonClick()
+    fun onButtonClick(errorCount:Int)
 }

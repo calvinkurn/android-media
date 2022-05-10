@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -24,26 +25,26 @@ import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmOpenFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
-import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
+import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
+import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberBottomsheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_program_form_container.*
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import java.util.*
 import javax.inject.Inject
 
-class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
+class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
+    BottomSheetClickListener {
 
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     private var selectedTime = ""
@@ -51,6 +52,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     private var programActionType = ProgramActionType.CREATE
     private var periodInMonth = 0
     private var selectedChipPosition = 0
+    private var errorCount = 0
+    private var programUpdateResponse = ProgramUpdateDataInput()
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -83,7 +86,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_progrm_form, container, false)
+        return inflater.inflate(R.layout.tm_dash_program_form_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,11 +110,11 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                         renderProgramUI(it.data.membershipGetProgramForm)
                     }
                     else{
-                        handleError()
+                        handleErrorOnDataError()
                     }
                 }
                 is Fail -> {
-                    handleError()
+                    handleErrorOnDataError()
                 }
             }
         })
@@ -123,19 +126,35 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                         onProgramUpdateSuccess()
                     }
                     else{
-                        handleError()
+                        onProgramUpdateSuccess()
                     }
                 }
                 is Fail ->{
-                    handleError()
+                    onProgramUpdateSuccess()
                 }
             }
         })
     }
 
+    private fun handleErrorOnDataError(){
 
-    private fun handleError(){
+    }
 
+
+    private fun handleErrorOnUpdate() {
+        val title = when(errorCount){
+            0-> ERROR_CREATING_TITLE
+            else -> ERROR_CREATING_TITLE_RETRY
+        }
+        val cta = when(errorCount){
+            0-> ERROR_CREATING_CTA
+            else -> ERROR_CREATING_CTA_RETRY
+        }
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = errorCount)
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        TokomemberBottomsheet.show(bundle, childFragmentManager)
+        errorCount+=1
     }
 
     private fun callGQL(programType: Int, shopId: Int , programId:Int = 0){
@@ -160,10 +179,14 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
     }
 
     private fun onProgramUpdateSuccess() {
-        /* TODO handle by Jayant according to update type */
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
+        bundle.putInt(BUNDLE_SHOP_ID, arguments?.getInt(BUNDLE_SHOP_ID) ?: 0)
+        bundle.putParcelable(BUNDLE_CARD_DATA , arguments?.getParcelable(BUNDLE_CARD_DATA))
+        bundle.putParcelable(BUNDLE_PROGRAM_DATA, programUpdateResponse)
         when(programActionType){
             ProgramActionType.CREATE -> {
-                tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
+                tmOpenFragmentCallback.openFragment(ProgramScreenType.PREVIEW, bundle)
             }
             ProgramActionType.EXTEND ->{
                 tmOpenFragmentCallback.openFragment(ProgramScreenType.COUPON, Bundle())
@@ -320,7 +343,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
                     s.toString()
                         .toIntOrZero() <= programThreshold?.minThresholdLevel2 ?: 0 -> {
                         textFieldTranskVip.isInputError = true
-                        textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel1}")
+                        textFieldTranskVip.setMessage("Min ${programThreshold?.minThresholdLevel2}")
                     }
                     else -> {
                         textFieldTranskVip.isInputError = false
@@ -350,7 +373,7 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it
         }
-        val programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0, periodInMonth)
+        programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0, periodInMonth)
         tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
     }
 
@@ -415,5 +438,17 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback {
 
     override fun chipSelected(position: Int) {
         this.selectedChipPosition = position
+    }
+
+    override fun onButtonClick(errorCount: Int) {
+        if (errorCount == 0) {
+            tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)
+        } else {
+            (TokomemberDashIntroActivity.openActivity(
+                arguments?.getInt(BUNDLE_SHOP_ID) ?: 0,
+                false,
+                this.context
+            ))
+        }
     }
 }

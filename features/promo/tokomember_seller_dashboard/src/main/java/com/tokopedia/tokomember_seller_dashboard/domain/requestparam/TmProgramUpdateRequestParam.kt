@@ -1,7 +1,9 @@
 package com.tokopedia.tokomember_seller_dashboard.domain.requestparam
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class TmProgramUpdateResponse(
 	@Expose
@@ -9,6 +11,7 @@ data class TmProgramUpdateResponse(
 	val input: ProgramUpdateDataInput? = null
 )
 
+@Parcelize
 data class ProgramUpdateDataInput(
 	@Expose
 	@SerializedName("actionType")
@@ -34,8 +37,9 @@ data class ProgramUpdateDataInput(
 
 	@SerializedName("tierLevels")
     var tierLevels: List<TierLevelsItem?>? = null
-)
+) :Parcelable
 
+@Parcelize
 data class TimeWindow(
 	@Expose
 	@SerializedName("periodInMonth")
@@ -49,8 +53,9 @@ data class TimeWindow(
 	@Expose
 	@SerializedName("endTime")
 	val endTime: String? = null
-)
+) : Parcelable
 
+@Parcelize
 data class TierLevelsItem(
 	@Expose
 	@SerializedName("metadata")
@@ -73,8 +78,9 @@ data class TierLevelsItem(
 	@Expose
 	@SerializedName("id")
 	var id: Int? = 0
-)
+) : Parcelable
 
+@Parcelize
 data class ProgramAttributesItem(
 	@Expose
 	@SerializedName("minimumTransaction")
@@ -94,4 +100,4 @@ data class ProgramAttributesItem(
 	@Expose
 	@SerializedName("programID")
 	var programID: Int? = 0
-)
+) : Parcelable

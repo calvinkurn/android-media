@@ -33,6 +33,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
@@ -53,10 +54,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
+import kotlinx.android.synthetic.main.tm_dash_create_card_container.*
 import javax.inject.Inject
 
 class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterListener,
-    TokomemberCardBgAdapterListener  , BottomSheetClickListener {
+    TokomemberCardBgAdapterListener, BottomSheetClickListener {
 
     private lateinit var tmOpenFragmentCallback: TmOpenFragmentCallback
     @Inject
@@ -100,7 +102,7 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_create_card, container, false)
+        return inflater.inflate(R.layout.tm_dash_create_card_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,20 +179,23 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
     }
 
     private fun handleErrorUiOnErrorData(){
-
+        containerViewFlipper.displayedChild = 1
     }
 
     private fun handleErrorUiOnUpdate(){
+        val title = when(retryCount){
+            0-> ERROR_CREATING_TITLE
+            else -> ERROR_CREATING_TITLE_RETRY
+        }
+        val cta = when(retryCount){
+            0-> ERROR_CREATING_CTA
+            else -> ERROR_CREATING_CTA_RETRY
+        }
         val bundle = Bundle()
-        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
-            "Ada gangguan di rumah Toped",
-            "Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.",
-            "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png",
-            "Coba Lagi"
-        )
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(title, ERROR_CREATING_DESC , "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png", cta , errorCount = retryCount)
         bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
-        TokomemberBottomsheet().setUpBottomSheetListener(this)
         TokomemberBottomsheet.show(bundle, childFragmentManager)
+        retryCount +=1
     }
 
     private fun openLoadingDialog(){
@@ -200,7 +205,6 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
             setType(Typography.DISPLAY_2)
         }
         loaderDialog?.setLoadingText(Html.fromHtml(LOADING_TEXT))
-        retryCount +=1
         loaderDialog?.show()
     }
 
@@ -213,11 +217,6 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         bundle.putInt(BUNDLE_PROGRAM_TYPE, 0)
         bundle.putInt(BUNDLE_SHOP_ID, shopID)
         bundle.putParcelable(BUNDLE_CARD_DATA , tokomemberShopCardModel)
-//        (activity as TokomemberDashCreateActivity).addFragment(
-//            TokomemberProgramFragment.newInstance(
-//                bundle
-//            ), TAG_CARD_CREATE
-//        )
         tmOpenFragmentCallback.openFragment(ProgramScreenType.PROGRAM, bundle)
     }
 
@@ -378,8 +377,17 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
         tokomemberDashCreateViewModel.tokomemberCardModifyLiveData.removeObservers(this)
     }
 
-    override fun onButtonClick() {
-        tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
+    override fun onButtonClick(errorCount: Int) {
+        when(errorCount){
+            0 -> tokomemberDashCreateViewModel.modifyShopCard(mTmCardModifyInput)
+            else -> {
+                (TokomemberDashIntroActivity.openActivity(
+                    shopID,
+                    false,
+                    this.context
+                ))
+            }
+        }
     }
 
     companion object {
