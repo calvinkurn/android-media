@@ -65,7 +65,7 @@ class ShopDiscountManageProductVariantDiscountFragment
 
         fun createInstance(
             mode: String,
-            productData: ShopDiscountSetupProductUiModel.SetupProductData
+            productData: ShopDiscountSetupProductUiModel.SetupProductData,
         ) = ShopDiscountManageProductVariantDiscountFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
@@ -450,7 +450,8 @@ class ShopDiscountManageProductVariantDiscountFragment
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
             minStartDate,
-            maxStartDate
+            maxStartDate,
+            slashPriceStatus
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -488,7 +489,7 @@ class ShopDiscountManageProductVariantDiscountFragment
                 DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {
-                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
+                DiscountBulkApplyBottomSheet.Mode.BULK_UPDATE
             }
         }
     }

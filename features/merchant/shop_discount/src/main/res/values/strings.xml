@@ -69,6 +69,7 @@
     <string name="sd_wait">Tunggu Sebentar</string>
     <string name="sd_no_remaining_quota">Kuota diskonmu sudah habis.</string>
     <string name="sd_already_discount">Produk sudah di diskon.</string>
+    <string name="sd_discount_created_successfully">Diskon berhasil dibuat.</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
@@ -306,8 +307,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     if (!responseHeaderData.success) {
                         showToasterError(responseHeaderData.reason)
                     } else {
-                        showToasterSuccess(getString(R.string.shop_discount_manage_discount_submit_product_message))
-                        finishActivity()
+                        redirectToManageProductManagePage()
                     }
                 }
                 is Fail -> {
@@ -316,6 +316,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun redirectToManageProductManagePage() {
+        ProductManageActivity.start(requireActivity(), true)
     }
 
     private fun finishActivity() {
@@ -444,7 +448,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
             minStartDate,
-            maxStartDate
+            maxStartDate,
+            status
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -458,7 +463,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {
-                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
+                DiscountBulkApplyBottomSheet.Mode.BULK_UPDATE
             }
         }
     }

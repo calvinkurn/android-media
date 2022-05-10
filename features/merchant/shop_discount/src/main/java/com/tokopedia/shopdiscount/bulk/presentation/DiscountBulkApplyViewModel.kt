@@ -67,7 +67,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private var selectedEndDate: Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
-    private var selectedMaxQuantity = 1
+    private var selectedMaxQuantity = 0
 
 
     fun getSlashPriceBenefit() {
