@@ -44,7 +44,7 @@ class EventHomeViewModel @Inject constructor(
                     mapOf(CATEGORY to "event")
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXPIRY_TIME).build()
             val data = withContext(dispatcher) {
                 graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
             }.getSuccessData<EventHomeDataResponse.Data>()
@@ -61,5 +61,6 @@ class EventHomeViewModel @Inject constructor(
 
     companion object {
         private const val CATEGORY = "category"
+        private const val EXPIRY_TIME = 5
     }
 }
