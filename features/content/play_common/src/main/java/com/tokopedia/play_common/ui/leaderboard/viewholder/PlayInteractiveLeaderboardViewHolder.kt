@@ -7,6 +7,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
@@ -70,8 +71,8 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
         when(leaderboard.leaderBoardType){
             LeadeboardType.Quiz -> {
-                ivReward.show()
-                tvReward.show()
+                ivReward.showWithCondition(leaderboard.reward.isNotEmpty())
+                tvReward.showWithCondition(leaderboard.reward.isNotEmpty())
 
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
                 tvReward.text = "Hadiah: ${leaderboard.reward}"
