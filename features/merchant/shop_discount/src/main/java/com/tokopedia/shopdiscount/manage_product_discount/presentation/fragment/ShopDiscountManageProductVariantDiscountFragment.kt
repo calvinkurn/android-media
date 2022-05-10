@@ -62,13 +62,16 @@ class ShopDiscountManageProductVariantDiscountFragment
     companion object {
         const val PRODUCT_DATA_ARG = "product_data_arg"
         const val MODE_ARG = "mode_arg"
+        private const val STATUS_ARG = "status_arg"
 
         fun createInstance(
             mode: String,
-            productData: ShopDiscountSetupProductUiModel.SetupProductData
+            productData: ShopDiscountSetupProductUiModel.SetupProductData,
+            status: Int
         ) = ShopDiscountManageProductVariantDiscountFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
+                putInt(STATUS_ARG, status)
                 putParcelable(PRODUCT_DATA_ARG, productData)
             }
         }
@@ -88,6 +91,7 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private var mode: String = ""
+    private var status: Int = -1
     private var headerUnify: HeaderUnify? = null
     private var rvContent: RecyclerView? = null
     private var buttonApply: UnifyButton? = null
@@ -424,7 +428,10 @@ class ShopDiscountManageProductVariantDiscountFragment
         val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(slashPriceStatus)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
-            bulkApplyBottomSheetMode
+            bulkApplyBottomSheetMode,
+            null, //TODO: @CJ replace with correct start date
+            null, //TODO: @CJ replace with correct end date,
+            status // //TODO: @CJ replace with correct discount status id
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -462,7 +469,7 @@ class ShopDiscountManageProductVariantDiscountFragment
                 DiscountBulkApplyBottomSheet.Mode.BULK_APPLY
             }
             else -> {
-                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
+                DiscountBulkApplyBottomSheet.Mode.BULK_UPDATE
             }
         }
     }
@@ -540,6 +547,7 @@ class ShopDiscountManageProductVariantDiscountFragment
     private fun getArgumentsData() {
         arguments?.let {
             mode = it.getString(MODE_ARG).orEmpty()
+            status = it.getInt(STATUS_ARG).orZero()
             viewModel.setProductData(
                 it.getParcelable(PRODUCT_DATA_ARG)
                     ?: ShopDiscountSetupProductUiModel.SetupProductData()
