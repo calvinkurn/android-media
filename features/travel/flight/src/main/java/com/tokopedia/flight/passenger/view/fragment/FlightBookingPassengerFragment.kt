@@ -161,16 +161,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         })
 
-        passengerViewModel.nationalityData.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { value ->
-                value?.let { onNationalityChanged(it) }
+        passengerViewModel.nationalityData.observe(viewLifecycleOwner, {
+                it?.let { onNationalityChanged(it) }
             })
 
-        passengerViewModel.passportIssuerCountryData.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { value ->
-                value?.let { onIssuerCountryChanged(it) }
+        passengerViewModel.passportIssuerCountryData.observe(viewLifecycleOwner, {
+                it?.let { onIssuerCountryChanged(it) }
             })
     }
 
@@ -1083,40 +1079,41 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun validatePassportNumber(isNeedPassport: Boolean): Boolean =
-        if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(
-                getPassportNumber()
-            )
-        ) {
-            binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_empty_error))
-            binding?.tilPassportNo?.setError(true)
-            false
-        } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaNumeric(
-                getPassportNumber()
-            )
-        ) {
-            binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_alphanumeric_error))
-            binding?.tilPassportNo?.setError(true)
-            false
-        } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaAndNumeric(
-                getPassportNumber()
-            )
-        ) {
-            binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
-            binding?.tilPassportNo?.setError(true)
-            false
-        } else if (isNeedPassport && getPassportNumber().length > 10) {
-            binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
-            binding?.tilPassportNo?.setError(true)
-            false
-        } else if (isNeedPassport && getPassportNumber().length < 6) {
-            binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_min_length))
-            binding?.tilPassportNo?.setError(true)
-            false
-        } else {
-            true
+        when {
+            isNeedPassport && !flightPassengerInfoValidator
+                .validatePassportNumberNotEmpty(getPassportNumber()) -> {
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_empty_error))
+                binding?.tilPassportNo?.setError(true)
+                false
+            }
+            isNeedPassport && !flightPassengerInfoValidator
+                .validatePassportNumberAlphaNumeric(getPassportNumber()) -> {
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_alphanumeric_error))
+                binding?.tilPassportNo?.setError(true)
+                false
+            }
+            isNeedPassport && !flightPassengerInfoValidator
+                .validatePassportNumberAlphaAndNumeric(getPassportNumber()) -> {
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
+                binding?.tilPassportNo?.setError(true)
+                false
+            }
+            isNeedPassport && getPassportNumber().length > FlightPassengerInfoValidator.MAX_PASSPORT_NUMBER -> {
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
+                binding?.tilPassportNo?.setError(true)
+                false
+            }
+            isNeedPassport && getPassportNumber().length < FlightPassengerInfoValidator.MIN_PASSPORT_NUMBER -> {
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_min_length))
+                binding?.tilPassportNo?.setError(true)
+                false
+            }
+            else -> true
         }
 
-    private fun validatePassportExpiredDate(isNeedPassport: Boolean): Boolean {
+
+    private fun validatePassportExpiredDate(isNeedPassport: Boolean)
+            : Boolean {
         val sixMonthFromDeparture = depatureDate.toDate(DateUtil.YYYY_MM_DD)
             .addTimeToSpesificDate(Calendar.MONTH, PLUS_SIX)
         val twentyYearsFromToday = DateUtil.getCurrentDate()
@@ -1151,7 +1148,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun validatePassportNationality(isNeedPassport: Boolean): Boolean =
+    private fun validatePassportNationality(isNeedPassport: Boolean)
+            : Boolean =
         if (isNeedPassport && passengerModel.passportNationality == null) {
             binding?.tilNationality?.setMessage(getString(R.string.flight_booking_passport_nationality_empty_error))
             binding?.tilNationality?.setError(true)
@@ -1160,7 +1158,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             true
         }
 
-    private fun validatePassportIssuerCountry(isNeedPassport: Boolean): Boolean =
+    private fun validatePassportIssuerCountry(isNeedPassport: Boolean)
+            : Boolean =
         if (isNeedPassport && passengerModel.passportIssuerCountry == null) {
             binding?.tilPassportIssuerCountry?.setMessage(getString(R.string.flight_booking_passport_issuer_country_empty_error))
             binding?.tilPassportIssuerCountry?.setError(true)
@@ -1195,7 +1194,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         when {
             isAdultPassenger() -> {
-                if (isMandatoryDoB() || !isDomestic) binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
+                if (isMandatoryDoB() || !isDomestic) binding?.tilBirthDate?.setMessage(
+                    getString(R.string.flight_booking_passenger_birthdate_adult_helper_text)
+                )
             }
             isChildPassenger() -> {
                 binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_helper_text))
@@ -1221,7 +1222,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(
+        requestCode: Int, resultCode: Int, data: Intent?
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         clearAllKeyboardFocus()
         if (resultCode == Activity.RESULT_OK) {
@@ -1265,7 +1268,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 REQUEST_CODE_PICK_NATIONALITY -> {
                     if (data != null) {
                         val flightPassportNationalityViewModel =
-                            data.getParcelableExtra<TravelCountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                            data.getParcelableExtra<TravelCountryPhoneCode>(
+                                PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE
+                            )
                         flightPassportNationalityViewModel?.let {
                             onNationalityChanged(it)
                         }
@@ -1275,7 +1280,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 REQUEST_CODE_PICK_ISSUER_COUNTRY -> {
                     if (data != null) {
                         val flightPassportIssuerCountry =
-                            data.getParcelableExtra<TravelCountryPhoneCode>(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
+                            data.getParcelableExtra<TravelCountryPhoneCode>(
+                                PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE
+                            )
                         flightPassportIssuerCountry?.let {
                             onIssuerCountryChanged(it)
                         }
@@ -1322,13 +1329,19 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             bundle.putString(EXTRA_RETURN, returnId)
             bundle.putString(EXTRA_DEPARTURE_DATE, depatureDate)
             bundle.putBoolean(EXTRA_IS_AIRASIA, isAirAsiaAirlines)
-            bundle.putBoolean(EXTRA_IS_IDENTIFICATION_NUMBER, isMandatoryIdentificationNumber)
+            bundle.putBoolean(
+                EXTRA_IS_IDENTIFICATION_NUMBER,
+                isMandatoryIdentificationNumber
+            )
             bundle.putParcelable(EXTRA_PASSENGER, passengerModel)
             bundle.putParcelableArrayList(
                 EXTRA_LUGGAGES,
                 luggageModels as ArrayList<out Parcelable>
             )
-            bundle.putParcelableArrayList(EXTRA_MEALS, mealModels as ArrayList<out Parcelable>)
+            bundle.putParcelableArrayList(
+                EXTRA_MEALS,
+                mealModels as ArrayList<out Parcelable>
+            )
             bundle.putString(EXTRA_REQUEST_ID, requestId)
             bundle.putBoolean(EXTRA_IS_DOMESTIC, isDomestic)
             bundle.putString(EXTRA_AUTOFILL_NAME, autofillName)
