@@ -80,7 +80,7 @@
     <string name="content_creation_tagging_page_header_text">Pilih produk dari <![CDATA["<font color='#212121'><b> %s </b></font> ]]></string>
     <string name="content_creation_search_bs_item_tokopedia">Tokopedia</string>
     <string name="content_creation_search_bs_header_item_tokopedia">Akun saya</string>
-    <string name="content_creation_search_bs_item_terakhir">Terakhir Dibeli</string>
+    <string name="content_creation_search_bs_item_last_purchase">Terakhir Dibeli</string>
     <string name="content_creation_search_bs_item_wishlist">Wishlist</string>
     <string name="content_creation_search_bs_header_item_shop">Toko saya</string>
     <string name="content_creation_search_coachmark_header">Nge-tag produk dari mana-mana</string>
@@ -90,4 +90,9 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="content_creation_barang_text">Barang</string>
     <string name="content_creation_toko_text">Toko</string>
 
+    <!-- Product Tag -->
+    <string name="content_creation_product_tag_title">Tag Produk</string>
+    <string name="cc_product_tag_source_label">Pilih produk dari</string>
+    <string name="cc_product_tag_source_my_account_label">Akun saya</string>
+    <string name="cc_product_tag_source_my_shop_label">Toko saya</string>
 </resources>

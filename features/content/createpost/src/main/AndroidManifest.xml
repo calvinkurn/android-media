@@ -56,7 +56,7 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.tokopedia.createpost.view.plist.ShopProductListActivity"
+            android:name="com.tokopedia.createpost.view.activity.ProductTagActivity"
             android:label="@string/cp_title_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
