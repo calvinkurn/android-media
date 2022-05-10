@@ -798,7 +798,10 @@ open class TopChatViewModel @Inject constructor(
     ) {
         deleteWishlistV2UseCase.setParams(productId, userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { wishListActionListener.onSuccessRemoveWishlist(productId) },
+            onSuccess = { result ->
+                if (result is Success) {
+                    wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+                } },
             onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
     }
 
