@@ -361,7 +361,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
      */
     private fun checkDisablePartnerLogic(disable: Boolean) {
         isDisabledPartner = disable
-        this.isDisable()
+        this.checkIsDisablePartner()
     }
 
 
@@ -810,7 +810,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    override fun isDisable(): Boolean {
+    override fun checkIsDisablePartner(): Boolean {
         return isDisabledPartner
     }
 
