@@ -40,6 +40,7 @@
     <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
 
     <string name="title_transaction_section">Aktivitas saya</string>
+    <string name="title_all_category_section">Semua Kategori</string>
     <string name="title_category_section">Kategori</string>
     <string name="title_helpcenter_section">Pusat bantuan</string>
     <string name="title_wishlist_section">Wishlist</string>
