@@ -84,6 +84,7 @@ class MainNavViewModel @Inject constructor(
         private const val SOURCE = "dave_home_nav"
         private const val MAX_ORDER_TO_SHOW = 6
         private const val MAX_FAVORITE_SHOPS_TO_SHOW = 5
+        private const val isMePageUsingRollenceVariant = true
     }
 
     //network process live data, false if it is processing and true if it is finished
@@ -122,7 +123,6 @@ class MainNavViewModel @Inject constructor(
 
     private var allCategoriesCache = listOf<Visitable<*>>()
     private lateinit var allCategories: HomeNavExpandableDataModel
-    private val isMePageUsingRollenceVariant = true
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -179,9 +179,11 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun updateAllCategories(menus: List<Visitable<*>>, isExpanded: Boolean = false) {
-        allCategories.menus = menus
-        allCategories.isExpanded = isExpanded
-        updateWidget(allCategories, findBuStartIndexPosition() ?: INDEX_DEFAULT_ALL_CATEGORY)
+        if (isMePageUsingRollenceVariant) {
+            allCategories.menus = menus
+            allCategories.isExpanded = isExpanded
+            updateWidget(allCategories, findBuStartIndexPosition() ?: INDEX_DEFAULT_ALL_CATEGORY)
+        }
     }
 
     // ============================================================================================
@@ -281,7 +283,6 @@ class MainNavViewModel @Inject constructor(
 
                 if (isMePageUsingRollenceVariant) {
                     allCategoriesCache = result
-                    updateAllCategories(result)
                 } else {
                     val shimmeringDataModel = _mainNavListVisitable.find {
                         it is InitialShimmerDataModel
@@ -298,8 +299,13 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun isAllCategoriesNotContainsShimmer(): Boolean =
+        allCategories.menus.firstOrNull { it is InitialShimmerDataModel } == null
+
     private suspend fun getBuListMenu(isExpanded: Boolean = false) {
-        updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+        if (isMePageUsingRollenceVariant && isAllCategoriesNotContainsShimmer()) {
+            updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
+        }
         viewModelScope.launch {
             try {
                 getCategoryGroupUseCase.get().createParams(GetCategoryGroupUseCase.GLOBAL_MENU)
