@@ -349,8 +349,6 @@ class CatalogDetailPageFragment : Fragment(),
         if (isNewProductDesign) {
             sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
                 filterProductCount?.let {
-//                    if(it == CatalogConstant.ZERO_VALUE){ mToBottomLayout?.hide()
-//                    }else { mToBottomLayout?.show() }
                     mProductsCountText?.text = getString(
                         com.tokopedia.catalog.R.string.catalog_product_count_view_text,
                         it
@@ -476,7 +474,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun slideUpMoreProductsView() {
-        if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE){
+        if(sharedViewModel.mProductCount.value != 0 && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.VISIBLE){
             val slideUp: Animation = AnimationUtils.loadAnimation(context, R.anim.slide_up)
             mToBottomLayout?.startAnimation(slideUp)
             mToBottomLayout?.visibility = View.VISIBLE
@@ -485,7 +483,7 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun slideDownMoreProductsView() {
-        if(mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
+        if(sharedViewModel.mProductCount.value != 0  && mToTopLayout?.visibility != View.VISIBLE && mToBottomLayout?.visibility != View.INVISIBLE) {
             mToBottomLayout?.startAnimation(catalogLinearLayoutManager?.getProductCountViewSlideDownAnimation())
             mToBottomLayout?.visibility = View.INVISIBLE
         }
