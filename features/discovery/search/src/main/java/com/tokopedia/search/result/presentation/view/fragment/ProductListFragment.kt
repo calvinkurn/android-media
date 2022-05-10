@@ -137,6 +137,7 @@ import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlist_common.R as Rwishlist
@@ -960,9 +961,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     }
 
-    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean, actionListener: WishlistV2ActionListener) {
-
-    }
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) { }
 
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
         if (getSearchParameter() == null || activity == null) return
@@ -1713,30 +1712,13 @@ class ProductListFragment: BaseDaggerFragment(),
 
         if (wishlistResult.isUsingWishlistV2) {
             if (wishlistResult.isAddWishlist) {
-                val msg = wishlistResult.messageV2.ifEmpty {
-                    if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-                    else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+                context?.let {
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, it, view)
                 }
-
-                var typeToaster = TYPE_NORMAL
-                if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
-
-                var ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
-                if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-                Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
-                    actionText = ctaText
-                ) { goToWishlistPage() }.show()
             } else {
-                var msg = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
-                if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
-
-                var ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
-                if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-                Toaster.build(view, msg, Toaster.LENGTH_SHORT, TYPE_NORMAL, actionText = ctaText) {
-                    if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage()
-                }.show()
+                context?.let {
+                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, it, view)
+                }
             }
         } else {
             if (wishlistResult.isAddWishlist)
@@ -1755,7 +1737,6 @@ class ProductListFragment: BaseDaggerFragment(),
         val view = view ?: return
 
         if (wishlistResult.isUsingWishlistV2) {
-            val typeToaster = TYPE_ERROR
             var errorMsg = if (wishlistResult.isAddWishlist) {
                 getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
             } else {
@@ -1769,9 +1750,9 @@ class ProductListFragment: BaseDaggerFragment(),
                 ctaText = wishlistResult.ctaTextV2
             }
 
-            Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage()
-            }.show()
+            context?.let {
+                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMsg, ctaText, wishlistResult.ctaActionV2, view, it)
+            }
 
         } else {
             if (wishlistResult.isAddWishlist)
