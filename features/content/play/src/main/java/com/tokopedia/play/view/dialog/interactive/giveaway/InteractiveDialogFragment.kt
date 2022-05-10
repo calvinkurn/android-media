@@ -18,9 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
-import com.tokopedia.play.view.uimodel.action.ClickRetryInteractiveAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
@@ -52,7 +50,7 @@ class InteractiveDialogFragment @Inject constructor(
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowClicked(view: InteractiveFollowView) {
-            viewModel.submitAction(PlayViewerNewAction.Follow)
+            viewModel.submitAction(PlayViewerNewAction.FollowInteractive)
         }
     }
 
@@ -148,6 +146,7 @@ class InteractiveDialogFragment @Inject constructor(
                                 .className(PlayViewModel::class.java.simpleName).build())
                         doShowToaster(toasterType = Toaster.TYPE_ERROR, message = errMsg)
                     }
+                    else -> {}
                 }
             }
         }
@@ -223,19 +222,6 @@ class InteractiveDialogFragment @Inject constructor(
                         }
                     })
                     getHeader().isEditable = false
-                }
-            }
-            status is InteractiveUiModel.Quiz.Status.Failed -> {
-                setChildView { ctx ->
-                    val view = InteractiveQuizErrorView(ctx)
-                    view.setListener(object : InteractiveQuizErrorView.Listener {
-                        override fun onRetryButtonClicked(view: InteractiveQuizErrorView) {
-                            viewModel.submitAction(ClickRetryInteractiveAction)
-                        }
-                    })
-                    view
-                }.apply {
-                    getHeader().setupQuiz(quiz.title)
                 }
             }
         }

@@ -862,6 +862,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowErrorEvent -> {
+                        if (InteractiveDialogFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         val errMessage = if (event.errMessage == null) {
                             ErrorHandler.getErrorMessage(
                                 context, event.error, ErrorHandler.Builder()
@@ -880,8 +884,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
-                        if (interactiveActiveView?.isHidden() == true)
-                            doShowToaster(
+                        doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = errMessage
                         )

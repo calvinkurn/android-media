@@ -102,7 +102,7 @@ data class AllowedWhenInactiveEvent(
 /**
  * Interactive
  * */
-object QuizAnsweredEvent: PlayViewerNewUiEvent()
+object QuizAnsweredEvent : PlayViewerNewUiEvent()
 
-object OpenKebabEvent: PlayViewerNewUiEvent()
-object OpenUserReportEvent: PlayViewerNewUiEvent()
+object OpenKebabEvent : PlayViewerNewUiEvent()
+object OpenUserReportEvent : PlayViewerNewUiEvent()

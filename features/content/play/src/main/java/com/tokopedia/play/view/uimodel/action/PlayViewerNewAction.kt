@@ -20,6 +20,8 @@ sealed class PlayViewerNewAction {
 
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
+    object FollowInteractive : PlayViewerNewAction()
+
     object Follow : PlayViewerNewAction()
 }
 
@@ -29,7 +31,6 @@ sealed class PlayViewerNewAction {
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 data class InteractiveGameResultBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
-object ClickFollowInteractiveAction : PlayViewerNewAction()
 object ClickRetryInteractiveAction : PlayViewerNewAction()
 
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()

@@ -850,7 +850,7 @@ class PlayViewModel @AssistedInject constructor(
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)
-            ClickFollowInteractiveAction -> handleClickFollowInteractive()
+            PlayViewerNewAction.FollowInteractive -> handleClickFollowInteractive()
             is ClickPartnerNameAction -> handleClickPartnerName(action.appLink)
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
@@ -1826,18 +1826,24 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handlePlayingInteractive(shouldPlay: Boolean) {
-        _interactive.update {
-            val isOngoing = when (it.interactive) {
-                is InteractiveUiModel.Giveaway -> {
-                    it.interactive.status is InteractiveUiModel.Giveaway.Status.Ongoing
+        fun updateIsPlaying() {
+            _interactive.update {
+                val isOngoing = when (it.interactive) {
+                    is InteractiveUiModel.Giveaway -> {
+                        it.interactive.status is InteractiveUiModel.Giveaway.Status.Ongoing
+                    }
+                    is InteractiveUiModel.Quiz -> {
+                        it.interactive.status is InteractiveUiModel.Quiz.Status.Ongoing
+                    }
+                    else -> false
                 }
-                is InteractiveUiModel.Quiz -> {
-                    it.interactive.status is InteractiveUiModel.Quiz.Status.Ongoing
-                }
-                else -> false
+                it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
             }
-            it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
         }
+
+        if (_partnerInfo.value.status !is PlayPartnerFollowStatus.Followable) {
+            needLogin(REQUEST_CODE_LOGIN_PLAY_INTERACTIVE) { updateIsPlaying() }
+        } else updateIsPlaying()
     }
 
     private fun handleClickQuizOption(optionId: String){
@@ -1985,7 +1991,7 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * [PartnerFollowAction] from interactive will definitely [PartnerFollowAction.Follow]
      */
-    private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
+    private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE) {
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
 
@@ -2023,6 +2029,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_LOGIN_PLAY_INTERACTIVE -> handlePlayingInteractive(shouldPlay = true)
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             else -> {}
@@ -2546,6 +2553,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_LIKE = 573
         private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
         private const val REQUEST_CODE_USER_REPORT = 575
+        private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
