@@ -16,6 +16,15 @@ class OSMerchantVoucherCallback(private val dcEventHandler: DynamicChannelEventH
         dcEventHandler.goToApplink(seeMoreAppLink)
     }
 
+    override fun onViewAllClicked(
+        headerName: String,
+        seeMoreAppLink: String,
+        userId: String,
+        campaignCode: String
+    ) {
+        onViewAllCardClicked(headerName, seeMoreAppLink, userId, campaignCode)
+    }
+
     override fun onShopClicked(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) {
         val tracking = OSMerchantVoucherTracking.getShopClicked(
             element,

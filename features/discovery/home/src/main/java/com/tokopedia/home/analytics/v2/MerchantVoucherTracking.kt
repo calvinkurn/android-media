@@ -119,6 +119,20 @@ object MerchantVoucherTracking : BaseTrackerConst() {
         return Pair(Event.CLICK_HOMEPAGE, bundle)
     }
 
+    fun getClickViewAll(headerName: String, userId: String, campaignCode: String): Pair<String, Bundle> {
+        val bundle = Bundle()
+        bundle.putString(Event.KEY, Event.CLICK_HOMEPAGE)
+        bundle.putString(Action.KEY, CustomAction.MERCHANT_VOUCHER_MULTIPLE_FORMAT.format(CustomAction.CLICK_VIEW_ALL) )
+        bundle.putString(Category.KEY, Category.HOMEPAGE)
+        bundle.putString(Label.KEY, headerName)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
+        bundle.putString(CampaignCode.KEY, campaignCode)
+
+        return Pair(Event.CLICK_HOMEPAGE, bundle)
+    }
+
     fun getMerchantVoucherView(element: CarouselMerchantVoucherDataModel, horizontalPosition: Int) : Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
         val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
