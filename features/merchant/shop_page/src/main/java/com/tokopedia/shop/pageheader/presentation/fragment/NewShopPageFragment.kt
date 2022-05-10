@@ -93,7 +93,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
-import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
+import com.tokopedia.shop_widget.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop_widget.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -1744,12 +1744,20 @@ class NewShopPageFragment :
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
+        resetShopProductFilterParameterSharedViewModel()
         getInitialData()
         if (swipeToRefresh?.isRefreshing == false)
             setViewState(VIEW_LOADING)
         swipeToRefresh?.isRefreshing = true
 
         stickyLoginView?.loadContent()
+    }
+
+    private fun resetShopProductFilterParameterSharedViewModel() {
+        initialProductFilterParameter = ShopProductFilterParameter()
+        initialProductFilterParameter?.let{
+            shopProductFilterParameterSharedViewModel?.changeSharedSortData(it)
+        }
     }
 
     override fun collapseAppBar() {

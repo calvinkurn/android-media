@@ -104,8 +104,15 @@ data class ShopInfo(
 
         @SerializedName("tickerData")
         @Expose
-        val tickerData: List<TickerDataResponse> = emptyList()
+        val tickerData: List<TickerDataResponse> = emptyList(),
 
+        @SerializedName("isGoApotik")
+        @Expose
+        val isGoApotik: Boolean = false,
+
+        @SerializedName("epharmacyInfo")
+        @Expose
+        val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
 ) {
     fun isShopInfoNotEmpty():Boolean {
         return shopCore.shopID.isNotEmpty()
@@ -128,7 +135,11 @@ data class ShopInfo(
                 goldOS.isGold,
                 createdInfo.openSince,
                 shipmentsData,
-                shopSnippetUrl
+                shopSnippetUrl,
+                isGoApotik,
+                epharmacyInfo.siaNumber,
+                epharmacyInfo.sipaNumber,
+                epharmacyInfo.apj
         )
     }
 
@@ -146,6 +157,20 @@ data class ShopInfo(
         @SerializedName("result")
         @Expose
         val data: List<ShopInfo> = listOf()
+    )
+
+    data class EPharmacyInfo(
+        @SerializedName("siaNumber")
+        @Expose
+        val siaNumber: String = "",
+
+        @SerializedName("sipaNumber")
+        @Expose
+        val sipaNumber: String = "",
+
+        @SerializedName("apj")
+        @Expose
+        val apj: String = "",
     )
 
     data class ShopAssets(
