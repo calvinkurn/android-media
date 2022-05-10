@@ -587,10 +587,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
+                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
+                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
                 if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
@@ -600,11 +601,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
-                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
+                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
-                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 //                if (containsInvalidCharacter(formAccount.etNamaPenerima.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
@@ -706,10 +706,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
+                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
+                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
                 if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
@@ -719,11 +720,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
-                if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
+                if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
-                    view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 //                if (containsInvalidCharacter(formAccount.etNamaPenerima.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
