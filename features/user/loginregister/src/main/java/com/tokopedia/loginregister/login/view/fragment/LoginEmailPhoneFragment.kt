@@ -673,10 +673,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
 
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+            forgotPassword?.text = setUpForgotPasswordTitle()
             forgotPassword?.setOnClickListener {
-                analytics.trackClickForgotPassword()
-//                goToForgotPassword()
-                showNeedHelpBottomSheet()
+                if (isUsingInactivePhoneNumber()) {
+                    inactivePhoneNumberAnalytics.trackPageClickButuhBantuan()
+                    showNeedHelpBottomSheet()
+                } else {
+                    analytics.trackClickForgotPassword()
+                    goToForgotPassword()
+                }
             }
         }
 
@@ -796,6 +801,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
+    }
+
+    private fun setUpForgotPasswordTitle(): String?{
+        return context?.getString(
+            if (isUsingInactivePhoneNumber())
+                R.string.ipn_title_need_help
+            else
+                R.string.title_forgot_password
+        )
+    }
+
+    private fun isUsingInactivePhoneNumber(): Boolean {
+        val newInactivePhoneNumberAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
+            ""
+        ).orEmpty()
+        return newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
     private fun goToInactivePhoneNumber(){
@@ -1894,6 +1916,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     companion object {
+
+        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
