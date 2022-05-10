@@ -261,6 +261,7 @@ class MainNavViewModel @Inject constructor(
             this.add(SeparatorDataModel())
         } else {
             this.addAll(buildBUTitleList())
+            this.add(InitialShimmerDataModel())
         }
     }
 
@@ -430,6 +431,11 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshBuListData() {
         launchCatchError(coroutineContext, block = {
+            if (!isMePageUsingRollenceVariant) {
+                findBuStartIndexPosition()?.let {
+                    updateWidget(InitialShimmerDataModel(), it)
+                }
+            }
             getBuListMenu(isExpanded = true)
         }) {
             //no-op
