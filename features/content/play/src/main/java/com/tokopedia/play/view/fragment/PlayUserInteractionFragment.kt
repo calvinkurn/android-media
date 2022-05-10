@@ -805,7 +805,12 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactive, state.interactive, state.bottomInsets)
+                renderInteractiveView(
+                    prevState?.interactive,
+                    state.interactive,
+                    prevState?.bottomInsets,
+                    state.bottomInsets
+                )
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -857,6 +862,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowErrorEvent -> {
+                        if (InteractiveDialogFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         val errMessage = if (event.errMessage == null) {
                             ErrorHandler.getErrorMessage(
                                 context, event.error, ErrorHandler.Builder()
@@ -875,8 +884,7 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
-                        if (interactiveActiveView?.isHidden() == true)
-                            doShowToaster(
+                        doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = errMessage
                         )
@@ -1409,21 +1417,38 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(
         prevState: InteractiveStateUiModel?,
         state: InteractiveStateUiModel,
+        prevBottomInsets: Map<BottomInsetsType, BottomInsetsState>?,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
     ) {
-        if (state.isPlaying || bottomInsets.isAnyShown) {
+        if (state.isPlaying) {
             interactiveActiveView?.hide()
             interactiveFinishView?.hide()
             return
         }
 
+        val isAnyInsetsShown = bottomInsets.isAnyShown
+        /**
+         * Invisible to reduce the amount of conditions
+         * for square [com.tokopedia.unifycomponents.timer.TimerUnifySingle] to appear
+         */
+        if (isAnyInsetsShown) {
+            interactiveActiveView?.invisible()
+            interactiveFinishView?.invisible()
+            return
+        }
+
+        val prevIsAnyInsetsShown = prevBottomInsets?.isAnyShown
+
         /**
          * Render:
          * - if interactive has changed <b>or</b>
          * - if isPlaying state has changed to not playing
+         * - if any bottom insets shown state has changed to false
          */
         if (prevState?.interactive != state.interactive ||
-            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying)) {
+            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying) ||
+            (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
+
             when (state.interactive) {
                 is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
                 is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)

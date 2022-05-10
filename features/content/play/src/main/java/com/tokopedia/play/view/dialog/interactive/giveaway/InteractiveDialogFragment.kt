@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
-import com.tokopedia.play.view.uimodel.action.ClickRetryInteractiveAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
@@ -32,6 +32,7 @@ import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -39,7 +40,9 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
+class InteractiveDialogFragment @Inject constructor(
+    private val userSession: UserSessionInterface,
+) : DialogFragment() {
 
     private var mDataSource: DataSource? = null
 
@@ -47,7 +50,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowClicked(view: InteractiveFollowView) {
-            viewModel.submitAction(PlayViewerNewAction.Follow)
+            viewModel.submitAction(PlayViewerNewAction.FollowInteractive)
         }
     }
 
@@ -74,6 +77,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
         setupObserve()
     }
 
@@ -99,6 +103,10 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
     fun showNow(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
+    }
+
+    private fun setupView() {
+        view?.setOnClickListener { dismiss() }
     }
 
     private fun setupObserve() {
@@ -138,6 +146,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                                 .className(PlayViewModel::class.java.simpleName).build())
                         doShowToaster(toasterType = Toaster.TYPE_ERROR, message = errMsg)
                     }
+                    else -> {}
                 }
             }
         }
@@ -149,7 +158,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         partner: PlayPartnerInfo,
     ) {
         val giveawayStatus = giveaway.status
-        if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)) {
+        if (partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
+                !userSession.isLoggedIn) {
             setChildView { ctx ->
                 InteractiveFollowView(ctx).apply {
                     setListener(followViewListener)
@@ -171,6 +181,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                 setTargetTime(giveawayStatus.endTime) {
                     viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                 }
+                getHeader().isEditable = false
             }
         }
     }
@@ -181,7 +192,8 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
     ) {
         val status = quiz.status
         when {
-            partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) -> {
+            partner.status == PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed) ||
+            !userSession.isLoggedIn -> {
                 setChildView { ctx ->
                     val view = InteractiveFollowView(ctx)
                     view.setListener(followViewListener)
@@ -209,19 +221,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
                         }
                     })
-                }
-            }
-            status is InteractiveUiModel.Quiz.Status.Failed -> {
-                setChildView { ctx ->
-                    val view = InteractiveQuizErrorView(ctx)
-                    view.setListener(object : InteractiveQuizErrorView.Listener {
-                        override fun onRetryButtonClicked(view: InteractiveQuizErrorView) {
-                            viewModel.submitAction(ClickRetryInteractiveAction)
-                        }
-                    })
-                    view
-                }.apply {
-                    getHeader().setupQuiz(quiz.title)
+                    getHeader().isEditable = false
                 }
             }
         }
@@ -249,12 +249,20 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         return if (firstChild !is V) {
             parent.removeAllViews()
             val view = viewCreator(parent.context)
-            parent.addView(view)
+            val lParams = FrameLayout.LayoutParams(
+                (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+            lParams.gravity = Gravity.CENTER
+            parent.addView(view, lParams)
+            view.isClickable = true
             view
         } else firstChild
     }
 
     companion object {
+        private const val WIDTH_PERCENTAGE = 0.6
+
         private const val TAG = "InteractiveDialogFragment"
 
         fun get(fragmentManager: FragmentManager): InteractiveDialogFragment? {

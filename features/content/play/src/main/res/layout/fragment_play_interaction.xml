@@ -322,7 +322,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        app:layout_constraintTop_toBottomOf="@id/view_interactive_active"
         />
 
     <include
@@ -334,7 +334,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_interactive_active" />
+        app:layout_constraintTop_toBottomOf="@id/view_interactive_finish" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
