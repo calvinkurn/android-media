@@ -53,17 +53,17 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
     }
 
     companion object {
-        const val TAG = "LastTaggedProductFragment"
+        const val TAG = "GlobalSearchFragment"
 
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): LastTaggedProductFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? LastTaggedProductFragment
+        ): GlobalSearchFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? GlobalSearchFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                LastTaggedProductFragment::class.java.name
-            ) as LastTaggedProductFragment
+                GlobalSearchFragment::class.java.name
+            ) as GlobalSearchFragment
         }
     }
 }

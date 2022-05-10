@@ -16,6 +16,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
+import com.tokopedia.createpost.producttag.view.fragment.GlobalSearchFragment
 import com.tokopedia.createpost.producttag.view.fragment.LastPurchasedProductFragment
 import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
 import com.tokopedia.createpost.producttag.view.fragment.MyShopProductFragment
@@ -161,27 +162,43 @@ class ProductTagParentFragment @Inject constructor(
         }
 
         /** Update Fragment Content */
-        when(currState.selectedProductTagSource) {
+        val (fragment, tag) = getFragmentAndTag(currState.selectedProductTagSource)
+        childFragmentManager.beginTransaction()
+            .replace(binding.flCcProductTagContainer.id, fragment, tag)
+            .commit()
+    }
+
+    private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
+        return when(productTagSource) {
             ProductTagSource.LastTagProduct -> {
-                val fragment = LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
-                childFragmentManager.beginTransaction()
-                    .replace(binding.flCcProductTagContainer.id, fragment, LastTaggedProductFragment.TAG)
-                    .commit()
+                Pair(
+                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    LastTaggedProductFragment.TAG,
+                )
             }
             ProductTagSource.LastPurchase -> {
-                val fragment = LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
-                childFragmentManager.beginTransaction()
-                    .replace(binding.flCcProductTagContainer.id, fragment, LastPurchasedProductFragment.TAG)
-                    .commit()
+                Pair(
+                    LastPurchasedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    LastPurchasedProductFragment.TAG,
+                )
             }
             ProductTagSource.MyShop -> {
-                val fragment = MyShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader)
-                childFragmentManager.beginTransaction()
-                    .replace(binding.flCcProductTagContainer.id, fragment, MyShopProductFragment.TAG)
-                    .commit()
+                Pair(
+                    MyShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    MyShopProductFragment.TAG,
+                )
             }
             ProductTagSource.GlobalSearch -> {
-
+                Pair(
+                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    GlobalSearchFragment.TAG,
+                )
+            }
+            else -> {
+                Pair(
+                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    LastTaggedProductFragment.TAG,
+                )
             }
         }
     }
