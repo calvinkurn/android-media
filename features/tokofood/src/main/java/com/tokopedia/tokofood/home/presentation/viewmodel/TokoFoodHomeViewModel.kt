@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
@@ -50,12 +51,12 @@ class TokoFoodHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    fun getHomeLayout() {
+    fun getHomeLayout(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
 
             homeLayoutItemList.clear()
 
-            val homeLayoutResponse = tokoFoodDynamicChanelUseCase.execute()
+            val homeLayoutResponse = tokoFoodDynamicChanelUseCase.execute(localCacheModel)
 
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
 

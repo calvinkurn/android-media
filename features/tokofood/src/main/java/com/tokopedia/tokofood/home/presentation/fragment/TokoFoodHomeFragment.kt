@@ -26,6 +26,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -102,6 +104,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var rvHome: RecyclerView? = null
     private var swipeLayout: SwipeRefreshLayout? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private var localCacheModel: LocalCacheModel? = null
     private var movingPosition = 0
     private val homeMainToolbarHeight: Int
         get() {
@@ -158,6 +161,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         setupRecycleView()
         setupSwipeRefreshLayout()
         observeLiveData()
+        updateCurrentPageLocalCacheModelData()
 
         loadLayout()
     }
@@ -167,7 +171,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun getHomeLayout() {
-        viewModel.getHomeLayout()
+        localCacheModel?.let {
+            viewModel.getHomeLayout(it)
+        }
     }
 
     private fun getLayoutComponentData() {
@@ -268,7 +274,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
         showHomeLayout(data)
-        getHomeLayout()
+        checkIfChooseAddressWidgetDataUpdated()
+        showLayout()
     }
 
     private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
@@ -317,6 +324,30 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
         tokoFoodUSPBottomSheet.setUSP(uspResponse, getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title))
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        if (isChooseAddressWidgetDataUpdated()) {
+            updateCurrentPageLocalCacheModelData()
+        }
+    }
+
+    private fun isChooseAddressWidgetDataUpdated(): Boolean {
+        localCacheModel?.let {
+            context?.apply {
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                    this,
+                    it
+                )
+            }
+        }
+        return false
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     // region TokoFoodHomeView
