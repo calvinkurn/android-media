@@ -52,48 +52,38 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/search_shop_product_tab_layout"
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Light"
-        android:visibility="visible"
+        android:layout_height="48dp"
         app:layout_scrollFlags="enterAlways"
-        app:tabGravity="fill"
-        android:paddingTop="@dimen/unify_space_12"
-        app:tabIndicatorColor="@color/Unify_GN500"
-        app:tabIndicatorHeight="@dimen/dp_1"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/Unify_GN500"
-        app:tabTextAppearance="@style/CreatePostTabLayoutTextStyle"
-        app:tabTextColor="@color/Unify_N700_32"
+        app:tabMode="scrollable"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cl_search">
 
         <com.google.android.material.tabs.TabItem
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/content_creation_barang_text" />
 
         <com.google.android.material.tabs.TabItem
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/content_creation_toko_text" />
 
     </com.tokopedia.unifycomponents.TabsUnify>
 
     <FrameLayout
-        android:id="@+id/search_result_frame_layout"
+        android:id="@+id/fl_global_search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/transparent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintTop_toBottomOf="@id/search_shop_product_tab_layout"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.viewpager.widget.ViewPager
-            android:id="@+id/content_creation_view_pager"
+            android:id="@+id/view_pager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
