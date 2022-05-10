@@ -6,7 +6,7 @@
     android:id="@+id/uc_camera_controller"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="@color/black">
+    tools:background="@color/Unify_Static_Black">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lst_camera_mode"
