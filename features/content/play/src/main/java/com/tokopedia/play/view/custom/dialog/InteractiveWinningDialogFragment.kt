@@ -81,7 +81,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
                 commonR.drawable.bg_play_interactive
             }
             is InteractiveUiModel.Quiz -> {
-                R.drawable.bg_quiz_winner
+                commonR.drawable.bg_quiz_winner
             }
             else -> commonR.drawable.bg_play_interactive
         }

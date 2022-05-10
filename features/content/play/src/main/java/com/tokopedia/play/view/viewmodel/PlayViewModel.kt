@@ -1799,7 +1799,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun showLeaderBoard(){
-        if(!repo.hasJoined(_interactive.value.interactive.id)) return
+        if (repo.hasProcessedWinner(_interactive.value.interactive.id)) return
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
