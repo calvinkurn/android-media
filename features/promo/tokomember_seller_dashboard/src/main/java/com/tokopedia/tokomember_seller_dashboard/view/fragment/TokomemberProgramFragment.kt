@@ -365,10 +365,13 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     vip.toIntSafely()
             }
         }
-        membershipGetProgramForm?.programForm?.timeWindow?.startTime = selectedCalendar?.time?.let {
-            ProgramUpdateMapper.convertDateTime(
-                it
-            )
+        if(selectedCalendar != null) {
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime =
+                selectedCalendar?.time?.let {
+                    ProgramUpdateMapper.convertDateTime(
+                        it
+                    )
+                }
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashProgramVh
@@ -15,7 +15,7 @@ class TokomemberDashProgramAdapter(
     val fragmentManager: FragmentManager,
     val shopId: Int,
     val programActions: ProgramActions,
-    val homeFragmentCallback: HomeFragmentCallback
+    val homeFragmentCallback: TmProgramDetailCallback
 ) :
     RecyclerView.Adapter<TokomemberDashProgramVh>() {
 

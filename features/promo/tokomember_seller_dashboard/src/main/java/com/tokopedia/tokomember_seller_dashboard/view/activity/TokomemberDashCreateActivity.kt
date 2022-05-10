@@ -1,6 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.activity
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +19,10 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.*
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashPreviewFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberKuponCreateFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberProgramFragment
 
 class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
 
@@ -49,7 +52,7 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
                 intent.extras?.let { TokomemberProgramFragment.newInstance(it) }?.let  { addFragment(it, "") }
             }
             COUPON ->{
-                intent.extras?.let { TokomemberDashCouponFragment.newInstance() }?.let { addFragment(it, "") }
+                intent.extras?.let { TokomemberKuponCreateFragment.newInstance() }?.let { addFragment(it, "") }
             }
             PREVIEW ->{
                 intent.extras?.let { TokomemberDashPreviewFragment.newInstance(it) }?.let { addFragment(it, "") }
@@ -98,20 +101,20 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
     companion object{
         fun openActivity(
             shopId: Int,
-            context: Context?,
+            activity: Activity?,
             screenType: Int,
             programActionType: Int = ProgramActionType.CREATE,
             requestCode: Int?,
             programId: Int
         ){
-            context?.let {
+            activity?.let {
                 val intent = Intent(it, TokomemberDashCreateActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 intent.putExtra(BUNDLE_PROGRAM, screenType)
                 intent.putExtra(BUNDLE_PROGRAM_TYPE, programActionType)
                 intent.putExtra(BUNDLE_PROGRAM_ID, programId)
                 requestCode?.let {
-                    ActivityCompat.startActivityForResult(context as TokomemberDashCreateActivity, intent, requestCode, intent.extras)
+                    ActivityCompat.startActivityForResult(activity, intent, requestCode, intent.extras)
                 } ?:  it.startActivity(intent)
             }
         }
