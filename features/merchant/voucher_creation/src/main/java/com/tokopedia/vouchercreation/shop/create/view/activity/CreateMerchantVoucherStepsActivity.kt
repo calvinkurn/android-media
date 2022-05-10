@@ -94,7 +94,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var binding: ActivityCreateMerchantVoucherStepsBinding? by viewBinding()
+    private var binding: ActivityCreateMerchantVoucherStepsBinding? = null
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -175,7 +175,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
     }
 
     private val bottomSheet by lazy {
-        TipsAndTrickBottomSheetFragment.createInstance(this).apply {
+        TipsAndTrickBottomSheetFragment.createInstance().apply {
             this.setTitle(bottomSheetViewTitle.toBlankOrString())
             setCloseClickListener {
                 this.dismiss()
@@ -278,6 +278,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 //        if (savedInstanceState != null) {
 //            finish()
 //        }
+        binding = ActivityCreateMerchantVoucherStepsBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         initInjector()
         setupView()

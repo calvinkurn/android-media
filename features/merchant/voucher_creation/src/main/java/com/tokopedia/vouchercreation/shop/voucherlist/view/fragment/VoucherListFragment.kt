@@ -163,6 +163,7 @@ class VoucherListFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentMvcVoucherListBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

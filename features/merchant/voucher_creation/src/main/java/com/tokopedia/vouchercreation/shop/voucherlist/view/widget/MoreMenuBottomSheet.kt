@@ -59,6 +59,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
+        binding = BottomsheetMvcMoreMenuBinding.inflate(LayoutInflater.from(context))
         setTitle(String.format(context?.getString(R.string.mvc_voucher_name).orEmpty(), voucher?.name))
         setChild(binding?.root)
     }

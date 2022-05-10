@@ -1,8 +1,9 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -20,16 +21,7 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
 
     companion object {
         @JvmStatic
-        fun createInstance(context: Context?) : GeneralExpensesInfoBottomSheetFragment {
-            return GeneralExpensesInfoBottomSheetFragment().apply {
-                context.run {
-                    setChild(binding?.root)
-                    setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-                    bottomSheetViewTitle = context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
-                }
-            }
-        }
+        fun createInstance() : GeneralExpensesInfoBottomSheetFragment = GeneralExpensesInfoBottomSheetFragment()
 
         val TAG = "GeneralExpensesInfoBottomSheet"
     }
@@ -54,11 +46,28 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         TipsAndTrickStaticDataSource.getGeneralExpenseUiModelList()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        iniBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
             initView()
         }
+    }
+
+    private fun iniBottomSheet() {
+        binding = MvcVoucherBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setTitle(context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        bottomSheetViewTitle = context?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString()
     }
 
     private fun initView() {

@@ -88,6 +88,7 @@ class FilterBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
+            binding = BottomsheetMvcFilterBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_filter))
             setChild(binding?.root)
             showKnob = true

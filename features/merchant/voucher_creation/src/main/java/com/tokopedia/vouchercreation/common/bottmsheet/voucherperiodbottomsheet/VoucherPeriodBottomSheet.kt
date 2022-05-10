@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -34,6 +35,7 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcTipsTrickBinding
 import com.tokopedia.vouchercreation.databinding.BottomsheetMvcVoucherEditPeriodBinding
 import com.tokopedia.vouchercreation.shop.create.view.painter.SquareVoucherPainter
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.voucherimage.PostVoucherUiModel
@@ -96,7 +98,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
 
-    private var binding: BottomsheetMvcVoucherEditPeriodBinding? = null
+    private var binding by autoClearedNullable<BottomsheetMvcVoucherEditPeriodBinding>()
 
     private var onSuccessListener: () -> Unit = {}
     private var onFailListener: (String) -> Unit = {}
@@ -113,7 +115,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -133,9 +135,9 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                 .inject(this)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
+    private fun initBottomSheet() {
         context?.run {
-            binding = BottomsheetMvcVoucherEditPeriodBinding.inflate(LayoutInflater.from(context), container, false)
+            binding = BottomsheetMvcVoucherEditPeriodBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_edit_shown_period))
             setChild(binding?.root)
         }

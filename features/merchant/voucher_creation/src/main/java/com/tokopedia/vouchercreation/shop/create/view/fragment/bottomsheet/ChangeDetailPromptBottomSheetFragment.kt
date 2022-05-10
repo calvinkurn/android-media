@@ -2,7 +2,9 @@ package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -19,8 +21,6 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
         @JvmStatic
         fun createInstance(onCancelVoucher: () -> Unit): ChangeDetailPromptBottomSheetFragment {
             return ChangeDetailPromptBottomSheetFragment().apply {
-                setChild(binding?.root)
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 this.onCancelVoucher = onCancelVoucher
             }
         }
@@ -44,6 +44,15 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
 
     private var onBackButtonClicked: () -> Unit = {}
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        iniBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -51,8 +60,10 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
         }
     }
 
-    fun setBackButtonClickListener(action: () -> Unit) {
-        onBackButtonClicked = action
+    private fun iniBottomSheet() {
+        binding = BottomsheetMvcReviewBackBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     private fun initView() {
@@ -72,5 +83,9 @@ class ChangeDetailPromptBottomSheetFragment : BottomSheetUnify(){
     private fun onClickCancelVoucher() {
         this.dismiss()
         onCancelVoucher()
+    }
+
+    fun setBackButtonClickListener(action: () -> Unit) {
+        onBackButtonClicked = action
     }
 }

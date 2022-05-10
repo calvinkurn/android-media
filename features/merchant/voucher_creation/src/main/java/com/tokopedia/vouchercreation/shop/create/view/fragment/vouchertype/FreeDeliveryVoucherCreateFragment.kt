@@ -61,7 +61,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
+    private var binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -76,7 +76,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
     }
 
     private val freeDeliveryExpenseInfoBottomSheetField by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context).apply {
+        GeneralExpensesInfoBottomSheetFragment.createInstance().apply {
             setTitle(viewContext?.getString(R.string.mvc_create_promo_type_bottomsheet_title_promo_expenses).toBlankOrString())
         }
     }
@@ -167,6 +167,7 @@ class FreeDeliveryVoucherCreateFragment: BaseListFragment<Visitable<*>, Promotio
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
+        binding = FragmentVoucherPromotionTypeBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

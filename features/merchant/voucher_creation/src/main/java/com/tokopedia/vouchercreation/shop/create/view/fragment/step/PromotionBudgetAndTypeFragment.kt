@@ -143,7 +143,8 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.mvc_banner_voucher_fragment, container, false)
+        binding = MvcBannerVoucherFragmentBinding.inflate(LayoutInflater.from(context), container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

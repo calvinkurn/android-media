@@ -167,6 +167,7 @@ class SetVoucherPeriodFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = MvcSetVoucherPeriodFragmentBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

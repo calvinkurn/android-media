@@ -140,6 +140,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentMerchantVoucherTargetBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

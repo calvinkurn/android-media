@@ -1,5 +1,9 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -18,8 +22,6 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         @JvmStatic
         fun createInstance(getCashbackInfo: () -> CashbackPercentageInfoUiModel): CashbackExpenseInfoBottomSheetFragment {
             return CashbackExpenseInfoBottomSheetFragment().apply {
-                setChild(binding?.root)
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 this.getCashbackInfo = getCashbackInfo
             }
         }
@@ -35,6 +37,15 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
 
     private var onEditButtonClicked: () -> Unit = {}
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        iniBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onResume() {
         super.onResume()
         if (isAdded) {
@@ -42,14 +53,15 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         }
     }
 
-    fun setEditNowButtonClicked(action: () -> Unit): CashbackExpenseInfoBottomSheetFragment {
-        onEditButtonClicked = action
-        return this
+    private fun iniBottomSheet() {
+        binding = MvcCashbackExpenseInfoBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     private fun initView() {
         val title = context?.getString(R.string.mvc_create_promo_type_bottomsheet_subtitle_increase_discount)
-                ?: ""
+            ?: ""
         this.setTitle(title)
         getCashbackInfo().run {
             binding?.apply {
@@ -66,5 +78,10 @@ class CashbackExpenseInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
                 }
             }
         }
+    }
+
+    fun setEditNowButtonClicked(action: () -> Unit): CashbackExpenseInfoBottomSheetFragment {
+        onEditButtonClicked = action
+        return this
     }
 }

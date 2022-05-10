@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -25,6 +26,7 @@ import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrick
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
+import com.tokopedia.vouchercreation.databinding.BottomsheetMvcDownloadVoucherBinding
 import com.tokopedia.vouchercreation.databinding.BottomsheetMvcTipsTrickBinding
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherDisplay
 import timber.log.Timber
@@ -67,7 +69,7 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         arguments?.getBoolean(IS_PRIVATE) ?: false
     }
 
-    private var binding: BottomsheetMvcTipsTrickBinding? = null
+    private var binding by autoClearedNullable<BottomsheetMvcTipsTrickBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -94,7 +96,7 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
-            binding = BottomsheetMvcTipsTrickBinding.inflate(LayoutInflater.from(context), ConstraintLayout(this), false)
+            binding = BottomsheetMvcTipsTrickBinding.inflate(LayoutInflater.from(context))
             setTitle(getBottomSheetTitle())
             setChild(binding?.root)
         }

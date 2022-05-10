@@ -58,6 +58,7 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
+        binding = BottomsheetMvcSuccessCreateBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
     }
 

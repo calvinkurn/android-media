@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -54,9 +55,6 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
                            getPromoCodePrefix: () -> String) : CreatePromoCodeBottomSheetFragment {
             return CreatePromoCodeBottomSheetFragment().apply {
                 context?.run {
-                    setChild(binding?.root)
-                    setTitle(context.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     isKeyboardOverlap = false
                     
                     this@apply.onNextClick = onNextClick
@@ -107,6 +105,15 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
         initInjector()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        iniBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -126,6 +133,13 @@ class CreatePromoCodeBottomSheetFragment : BottomSheetUnify(), VoucherBottomView
     override fun onPause() {
         context?.hideKeyboard()
         super.onPause()
+    }
+
+    private fun iniBottomSheet() {
+        binding = MvcCreatePromoCodeBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setTitle(context?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title).toBlankOrString())
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     private fun initInjector() {

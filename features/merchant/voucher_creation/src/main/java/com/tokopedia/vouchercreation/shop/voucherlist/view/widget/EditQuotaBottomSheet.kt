@@ -111,6 +111,7 @@ class EditQuotaBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
+        binding = BottomsheetMvcEditQuotaBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setTitle(context?.getString(R.string.mvc_edit_quota).toBlankOrString())
     }

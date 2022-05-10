@@ -36,10 +36,11 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
         const val PROMO_CODE_KEY = "promo_code"
     }
 
-    protected var binding by autoClearedNullable<FragmentMvcVoucherDetailBinding>()
+    protected var baseBinding by autoClearedNullable<FragmentMvcVoucherDetailBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return binding?.root
+        baseBinding = FragmentMvcVoucherDetailBinding.inflate(LayoutInflater.from(context), container, false)
+        return baseBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,9 +106,9 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.let { activity ->
-            activity.setSupportActionBar(binding?.toolbarMvcVoucherDetail)
+            activity.setSupportActionBar(baseBinding?.toolbarMvcVoucherDetail)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            binding?.toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
+            baseBinding?.toolbarMvcVoucherDetail?.setBackgroundColor(Color.TRANSPARENT)
         }
     }
 

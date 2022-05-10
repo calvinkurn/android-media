@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -61,10 +62,10 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
 
     private var onDownloadClick: (List<DownloadVoucherUiModel>) -> Unit = {}
 
-    private var binding: BottomsheetMvcDownloadVoucherBinding? = null
+    private var binding by autoClearedNullable<BottomsheetMvcDownloadVoucherBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -73,9 +74,9 @@ class DownloadVoucherBottomSheet : BottomSheetUnify() {
         setupView(view)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
+    private fun initBottomSheet() {
         context?.run {
-            binding = BottomsheetMvcDownloadVoucherBinding.inflate(LayoutInflater.from(context), container, false)
+            binding = BottomsheetMvcDownloadVoucherBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_select_voucher_size))
             setChild(binding?.root)
         }

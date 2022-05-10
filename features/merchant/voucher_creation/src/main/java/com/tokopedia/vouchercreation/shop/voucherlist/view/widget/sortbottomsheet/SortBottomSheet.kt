@@ -69,8 +69,8 @@ class SortBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
+            binding = BottomsheetMvcSortBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_sort))
-
             setChild(binding?.root)
         }
     }

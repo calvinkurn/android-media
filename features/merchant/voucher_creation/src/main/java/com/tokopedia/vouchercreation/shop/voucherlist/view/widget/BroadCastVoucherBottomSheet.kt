@@ -61,6 +61,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private fun initBottomSheet() {
+        binding = BottomsheetMvcBroadcastVoucherBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
     }
 

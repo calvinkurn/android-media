@@ -65,6 +65,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
     private fun initBottomSheet() {
         context?.run {
+            binding = BottomsheetMvcShareVoucherBinding.inflate(LayoutInflater.from(context))
             setTitle(getString(R.string.mvc_share))
             setChild(binding?.root)
         }

@@ -119,12 +119,12 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     }
 
     private val generalExpenseBottomSheet by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+        GeneralExpensesInfoBottomSheetFragment.createInstance()
     }
 
     private val termsAndConditionBottomSheet by lazy {
         context?.run {
-            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+            TermsAndConditionBottomSheetFragment.createInstance().apply {
                 setCloseClickListener {
                     this.dismiss()
                 }
@@ -382,7 +382,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         voucherUiModel = result.data
                         sendOpenScreenTracking()
                         renderVoucherDetailInformation(result.data)
-                        binding?.rvMvcVoucherDetail?.setOnLayoutListenerReady()
+                        baseBinding?.rvMvcVoucherDetail?.setOnLayoutListenerReady()
                     }
                     is Fail -> {
                         clearAllData()

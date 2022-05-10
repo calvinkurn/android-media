@@ -2,7 +2,9 @@ package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -23,10 +25,6 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
                            userId: String) : VoucherDisplayBottomSheetFragment {
             return VoucherDisplayBottomSheetFragment().apply {
                 context?.run {
-                    // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
-                    binding?.root?.setupItemDecoration()
-                    setChild(binding?.root)
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     this@apply.getVoucherType = getVoucherType
                     this@apply.userId = userId
                 }
@@ -56,6 +54,15 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
 
     private var userId: String = ""
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
@@ -64,6 +71,14 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
     }
 
     override var bottomSheetViewTitle: String? = null
+
+    private fun initBottomSheet() {
+        binding = MvcVoucherDisplayBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
+        binding?.root?.setupItemDecoration()
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    }
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()

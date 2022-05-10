@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
@@ -54,12 +55,13 @@ class VoucherListActivity : BaseActivity(),
 
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
 
-    private var binding: ActivityMvcVoucherListBinding? by viewBinding()
+    private var binding: ActivityMvcVoucherListBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
 
         super.onCreate(savedInstanceState)
+        binding = ActivityMvcVoucherListBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
         window.decorView.setBackgroundColor(Color.WHITE)

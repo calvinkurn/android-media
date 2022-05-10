@@ -159,7 +159,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private val termsAndConditionBottomSheet by lazy {
         context?.run {
-            TermsAndConditionBottomSheetFragment.createInstance(this).apply {
+            TermsAndConditionBottomSheetFragment.createInstance().apply {
                 setCloseClickListener {
                     this.dismiss()
                 }
@@ -168,7 +168,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     }
 
     private val generalExpenseBottomSheet by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(context)
+        GeneralExpensesInfoBottomSheetFragment.createInstance()
     }
 
     private val publicVoucherTipsAndTrickBottomSheet by lazy {
@@ -235,6 +235,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var isPromoCodeEligible = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentMvcBaseListBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

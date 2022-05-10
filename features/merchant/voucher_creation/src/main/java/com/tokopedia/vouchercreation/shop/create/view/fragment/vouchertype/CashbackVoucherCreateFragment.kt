@@ -95,7 +95,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
+    private var binding by autoClearedNullable<FragmentVoucherPromotionTypeBinding>()
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -114,7 +114,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
     }
 
     private val expensesInfoBottomSheetFragment by lazy {
-        GeneralExpensesInfoBottomSheetFragment.createInstance(viewContext).apply {
+        GeneralExpensesInfoBottomSheetFragment.createInstance().apply {
             setTitle(bottomSheetViewTitle.toBlankOrString())
         }
     }
@@ -318,6 +318,7 @@ class CashbackVoucherCreateFragment : BaseListFragment<Visitable<*>, PromotionTy
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
+        binding = FragmentVoucherPromotionTypeBinding.inflate(LayoutInflater.from(context), container, false)
         return binding?.root
     }
 

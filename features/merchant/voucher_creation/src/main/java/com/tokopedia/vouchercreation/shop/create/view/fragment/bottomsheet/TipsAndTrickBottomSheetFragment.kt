@@ -1,8 +1,9 @@
 package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,15 +28,7 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
         const val TAG = "TipsAndTrickBottomSheet"
 
-        fun createInstance(context: Context) : TipsAndTrickBottomSheetFragment {
-            return TipsAndTrickBottomSheetFragment().apply {
-                context.run {
-                    setChild(binding?.root)
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-                    bottomSheetViewTitle = getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()
-                }
-            }
-        }
+        fun createInstance() : TipsAndTrickBottomSheetFragment = TipsAndTrickBottomSheetFragment()
     }
 
     private var binding by autoClearedNullable<MvcVoucherBottomSheetViewBinding>()
@@ -61,11 +54,27 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (isAdded) {
             initView()
         }
+    }
+
+    private fun initBottomSheet() {
+        binding = MvcVoucherBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+        bottomSheetViewTitle = getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()
     }
 
     private fun initInjector() {

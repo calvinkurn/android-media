@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.databinding.BottomsheetMvcDescriptionBinding
 
@@ -32,20 +33,20 @@ class DescriptionBottomSheet : BottomSheetUnify() {
         const val TAG = "DescriptionBottomSheet"
     }
 
-    private var binding: BottomsheetMvcDescriptionBinding? = null
+    private var binding by autoClearedNullable<BottomsheetMvcDescriptionBinding>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initBottomSheet(container)
+        initBottomSheet()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initBottomSheet(container: ViewGroup?) {
+    private fun initBottomSheet() {
         context?.run {
-            binding = BottomsheetMvcDescriptionBinding.inflate(LayoutInflater.from(context), container, false)
+            binding = BottomsheetMvcDescriptionBinding.inflate(LayoutInflater.from(context))
             setChild(binding?.root)
             setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         }
