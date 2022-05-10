@@ -7,6 +7,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.media.picker.common.di.DaggerTestPickerComponent
+import com.tokopedia.media.picker.common.di.DaggerTestPreviewComponent
 import com.tokopedia.media.picker.common.di.TestPickerComponent
 import com.tokopedia.media.picker.common.di.TestPreviewComponent
 import com.tokopedia.media.picker.common.di.common.DaggerTestBaseAppComponent
@@ -81,7 +82,9 @@ abstract class PickerTest {
     }
 
     private fun setupPreviewDaggerComponent() {
-
+        previewComponent = DaggerTestPreviewComponent.builder()
+            .testBaseAppComponent(baseComponent)
+            .build()
     }
 
     companion object {

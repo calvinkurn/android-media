@@ -1,7 +1,10 @@
 package com.tokopedia.media.picker.ui.gallery
 
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
+import com.tokopedia.media.picker.common.ui.activity.TestPreviewActivity
 import com.tokopedia.media.picker.ui.core.GalleryPageTest
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
@@ -30,19 +33,8 @@ class GalleryPageUiTest : GalleryPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
-    // ✅ should be able to fetch image only
-    // ✅ should be able to fetch video only
-    // ✅ should be able to fetch image and video
-    // ⏳ should be able to single selection
-    // ⏳ should be able to multiple selection with shown on drawer
-    // ⏳ should be able to remove item on drawer
-    // ⏳ should be able to select gallery item properly
-    // ⏳ should be show toaster when selected item of lower minimum dimen of images
-    // ⏳ should be show toaster when selected item of lower maximum dimen of images
-    // ⏳ should be show toaster when selected item of max image file size
-
     @Test
-    fun it_should_be_able_to_show_media_list() {
+    fun should_be_able_to_show_media_list() {
         // Given
         val imageAndVideo = imageFiles.plus(videoFile)
         interceptor.mockMedia(imageAndVideo)
@@ -56,7 +48,7 @@ class GalleryPageUiTest : GalleryPageTest() {
     }
 
     @Test
-    fun it_should_be_able_to_show_media_list_image_only() {
+    fun should_be_able_to_show_media_list_image_only() {
         // Given
         interceptor.mockMedia(imageFiles)
 
@@ -69,7 +61,7 @@ class GalleryPageUiTest : GalleryPageTest() {
     }
 
     @Test
-    fun it_should_be_able_to_show_media_list_video_only() {
+    fun should_be_able_to_show_media_list_video_only() {
         // Given
         interceptor.mockMedia(videoFile)
 
@@ -82,17 +74,49 @@ class GalleryPageUiTest : GalleryPageTest() {
     }
 
     @Test
-    fun it_should_be_able_to_click_continue_button_when_particular_item_of_gallery_is_selected() {
+    fun should_be_able_to_click_continue_button_when_particular_item_of_gallery_is_selected() {
         // Given
         interceptor.mockMedia(imageFiles)
 
         // When
-        startGalleryPage()
+        startGalleryPage {
+            minImageResolution(0)
+        }
+
         Robot.clickRecyclerViewItemAt(0)
 
         // Then
         Asserts.assertContinueButtonIsVisible()
     }
+
+    @Test
+    fun should_be_able_to_single_selection_mode() {
+        // Given
+        interceptor.mockMedia(imageFiles)
+
+        // When
+        startGalleryPage {
+            singleSelectionMode()
+        }
+
+        Robot.clickRecyclerViewItemAt(0)
+
+        // Then
+        Thread.sleep(2000)
+
+        intended(hasComponent(TestPreviewActivity::class.java.name))
+    }
+
+    // ✅ should be able to fetch image only
+    // ✅ should be able to fetch video only
+    // ✅ should be able to fetch image and video
+    // ✅ should be able to single selection
+    // ⏳ should be able to multiple selection with shown on drawer
+    // ⏳ should be able to remove item on drawer
+    // ⏳ should be able to select gallery item properly
+    // ⏳ should be show toaster when selected item of lower minimum dimen of images
+    // ⏳ should be show toaster when selected item of lower maximum dimen of images
+    // ⏳ should be show toaster when selected item of max image file size
 
     private fun startGalleryPage(param: PickerParam.() -> Unit = {}) {
         val pickerParam = PickerParam()
