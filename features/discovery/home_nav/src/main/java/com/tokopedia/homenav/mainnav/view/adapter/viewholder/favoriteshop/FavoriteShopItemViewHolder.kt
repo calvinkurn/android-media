@@ -38,7 +38,7 @@ class FavoriteShopItemViewHolder(itemView: View, val mainNavListener: MainNavLis
             binding?.iconShopBadge?.setImageUrl(favoriteShopModel.navFavoriteShopModel.badgeImageUrl)
         } else binding?.iconShopBadge?.gone()
 
-        itemView.setOnClickListener {
+        binding?.containerFavshop?.setOnClickListener {
             //tracker to be added
             //routing to be added
         }

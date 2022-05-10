@@ -50,7 +50,7 @@ class WishlistItemViewHolder(itemView: View, val mainNavListener: MainNavListene
             binding?.textDiscountPercent?.invisible()
         }
 
-        itemView.setOnClickListener {
+        binding?.containerWishlistItem?.setOnClickListener {
             //tracker to be added
             //routing to be added
         }

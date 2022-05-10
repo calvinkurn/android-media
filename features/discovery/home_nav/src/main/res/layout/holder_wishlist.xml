@@ -5,9 +5,13 @@
     app:cardUseCompatPadding="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_wishlist_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/unify_space_8">
+        android:padding="@dimen/unify_space_8"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_wishlist"
             android:layout_width="0dp"

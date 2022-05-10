@@ -103,6 +103,7 @@ class GetWishlistNavUseCase @Inject constructor (
     }
 
     override suspend fun executeOnBackground(): List<NavWishlistModel> {
+        return listOf()
         return try {
             val responseData = Success(graphqlUseCase.executeOnBackground().wishlist?:Wishlist())
             val wishlistList = mutableListOf<NavWishlistModel>()
