@@ -71,7 +71,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         viewModelProvider.get(PayLaterActivationViewModel::class.java)
     }
 
-    private var shopId: String = ""
     private lateinit var activationTenureAdapter: ActivationTenureAdapter
     private var installmentModel: InstallmentDetails? = null
     private var listOfTenureDetail: List<TenureDetail> = ArrayList()
@@ -476,9 +475,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setProductData(productData: GetProductV3) {
-        productData.shopDetail?.shopId?.let { productShopId ->
-            shopId = productShopId
-        }
+
         productData.stock?.let { productStock ->
             productStockLogic(productStock)
         }
@@ -497,7 +494,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun productPriceValue(productData: GetProductV3) =
-        if (productData.campaingnDetail?.discountedPrice ?: 0.0 != 0.0)
+        if ((productData.campaingnDetail?.discountedPrice ?: 0.0) != 0.0)
             convertPriceValueToIdrFormat(productData.campaingnDetail?.discountedPrice ?: 0.0, false)
         else
             convertPriceValueToIdrFormat(productData.price ?: 0.0, false)
@@ -642,7 +639,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 productId = payLaterActivationViewModel.selectedProductId,
                 pageSource = VariantPageSource.BNPL_PAGESOURCE,
                 isTokoNow = false,
-                shopId = shopId,
+                shopId = payLaterActivationViewModel.shopId?:"",
                 saveAfterClose = false
             ) { data, code ->
                 startActivityForResult(data, code)
