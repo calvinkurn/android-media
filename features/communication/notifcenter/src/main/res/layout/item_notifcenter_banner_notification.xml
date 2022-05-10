@@ -107,14 +107,13 @@
         app:timer_unify_single_textWidth="wrap"
         app:timer_unify_single_type="auto" />
 
-    <include
-        android:id="@+id/layout_pin_bot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        layout="@layout/layout_notif_pin_bot"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_pin_expired"
+        style="@style/BaseNotification_Expired_Pin"
         app:layout_constraintLeft_toLeftOf="@id/txt_notification_type"
         app:layout_constraintTop_toBottomOf="@id/tv_status"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        tools:text="Di-pin sampai 2 Apr 2022" />
 
 </com.tokopedia.notifcenter.widget.NotificationConstraintLayout>

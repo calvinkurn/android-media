@@ -38,7 +38,6 @@ abstract class BaseNotificationViewHolder constructor(
     protected val title: Typography? = itemView?.findViewById(R.id.txt_notification_title)
     private val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
     private val layoutPinTop: View? = itemView?.findViewById(R.id.layout_pin_top)
-    private val layoutPinBot: View? = itemView?.findViewById(R.id.layout_pin_bot)
     private val tvPinExpired: Typography? = itemView?.findViewById(R.id.tv_pin_expired)
 
     private val unClickedColor = MethodChecker.getColor(
@@ -200,18 +199,18 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun showPinNotif(element: NotificationUiModel) {
         layoutPinTop?.show()
-        layoutPinBot?.show()
         bindPinExpired(element)
         time?.hide()
     }
 
     private fun hidePinNotif() {
         layoutPinTop?.hide()
-        layoutPinBot?.hide()
+        tvPinExpired?.hide()
         time?.show()
     }
 
     private fun bindPinExpired(element: NotificationUiModel) {
+        tvPinExpired?.show()
         tvPinExpired?.text = element.pinnedText
     }
 

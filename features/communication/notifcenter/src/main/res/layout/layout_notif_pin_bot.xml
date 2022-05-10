@@ -5,22 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_pin_bot"
-        style="@style/BaseNotification_Pin_Icon_Bottom"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon_color_light_enable="@color/Unify_YN500"
-        app:icon_color_night_enable="@color/Unify_YN500"
-        app:icon_enable_state="true"
-        app:icon_name="PUSH_PIN" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_pin_expired"
         style="@style/BaseNotification_Expired_Pin"
-        app:layout_constraintLeft_toRightOf="@id/icon_pin_bot"
-        app:layout_constraintTop_toTopOf="@id/icon_pin_bot"
-        app:layout_constraintBottom_toBottomOf="@id/icon_pin_bot"
         tools:text="Di-pin sampai 2 Apr 2022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

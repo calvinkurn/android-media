@@ -18,7 +18,7 @@ object NotificationPinResult {
 
         onView(
             withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.layout_pin_bot)
+                .atPositionOnView(position, R.id.tv_pin_expired)
         ).check(matches(isDisplayed()))
     }
 
@@ -37,7 +37,7 @@ object NotificationPinResult {
 
         onView(
             withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.layout_pin_bot)
+                .atPositionOnView(position, R.id.tv_pin_expired)
         ).check(matches(not(isDisplayed())))
     }
 }
