@@ -194,9 +194,9 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToReadyToPlay()
-        viewModel.setPlaybackStateToError(newPosition)
+        viewModel.setPlaybackStateToUnknownError(newPosition)
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
-        Assert.assertTrue(currentVideoPlaybackUiState is ReviewVideoPlaybackUiState.Error)
+        Assert.assertTrue(currentVideoPlaybackUiState is ReviewVideoPlaybackUiState.UnknownError)
         Assert.assertEquals(newPosition, currentVideoPlaybackUiState.currentPosition)
     }
 
@@ -207,7 +207,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToRestoring()
-        viewModel.setPlaybackStateToError(newPosition)
+        viewModel.setPlaybackStateToUnknownError(newPosition)
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.value
         Assert.assertEquals(previousVideoPlaybackUiState, currentVideoPlaybackUiState)
     }
@@ -298,8 +298,8 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
 
     @Test
     fun `showVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Showing`() = testCoroutineRule.runBlockingTest {
-        viewModel.showVideoError()
-        Assert.assertEquals(ReviewVideoErrorUiState.Showing, viewModel.videoErrorUiState.first())
+        viewModel.showVideoUnknownError()
+        Assert.assertEquals(ReviewVideoErrorUiState.ShowingUnknownError, viewModel.videoErrorUiState.first())
     }
 
     @Test

@@ -126,7 +126,16 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         // noop
     }
 
-    override fun onReviewVideoPlayerError() {
+    override fun onReviewVideoPlayerReceiveUnknownError() {
+        with(binding) {
+            reviewMediaGalleryVideoThumbnailBrokenOverlay.show()
+            icReviewGalleryVideoThumbnailBroken.show()
+            ivReviewGalleryVideoThumbnailPlayButton.gone()
+            loaderReviewGalleryVideoThumbnail.gone()
+        }
+    }
+
+    override fun onReviewVideoPlayerReceiveInvalidErrorCode() {
         with(binding) {
             reviewMediaGalleryVideoThumbnailBrokenOverlay.show()
             icReviewGalleryVideoThumbnailBroken.show()

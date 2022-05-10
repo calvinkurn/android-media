@@ -166,10 +166,18 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
-    fun setPlaybackStateToError(currentPosition: Long) {
+    fun setPlaybackStateToUnknownError(currentPosition: Long) {
         _videoPlaybackUiState.update {
             if (_videoPlayerUiState.value is ReviewVideoPlayerUiState.ReadyToPlay) {
-                ReviewVideoPlaybackUiState.Error(currentPosition)
+                ReviewVideoPlaybackUiState.UnknownError(currentPosition)
+            } else it
+        }
+    }
+
+    fun setPlaybackStateInvalidError(currentPosition: Long) {
+        _videoPlaybackUiState.update {
+            if (_videoPlayerUiState.value is ReviewVideoPlayerUiState.ReadyToPlay) {
+                ReviewVideoPlaybackUiState.InvalidError(currentPosition)
             } else it
         }
     }
@@ -219,8 +227,12 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
-    fun showVideoError() {
-        _videoErrorUiState.value = ReviewVideoErrorUiState.Showing
+    fun showVideoUnknownError() {
+        _videoErrorUiState.value = ReviewVideoErrorUiState.ShowingUnknownError
+    }
+
+    fun showVideoInvalidError() {
+        _videoErrorUiState.value = ReviewVideoErrorUiState.ShowingInvalidError
     }
 
     fun hideVideoError() {

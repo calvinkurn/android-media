@@ -91,7 +91,12 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
         // noop
     }
 
-    override fun onReviewVideoPlayerError() {
+    override fun onReviewVideoPlayerReceiveUnknownError() {
+        binding.tvCreateReviewVideoPreviewDuration.gone()
+        binding.loaderCreateReviewVideoPreviewDuration.gone()
+    }
+
+    override fun onReviewVideoPlayerReceiveInvalidErrorCode() {
         binding.tvCreateReviewVideoPreviewDuration.gone()
         binding.loaderCreateReviewVideoPreviewDuration.gone()
     }
