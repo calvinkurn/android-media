@@ -27,6 +27,7 @@ import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -199,6 +200,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                 tab.setCustomText(fragments[position].first)
                 if (focusToUpcomingStatusTab) {
                     focusToUpcomingStatusTab()
+                    binding?.viewPager?.showToaster(getString(R.string.sd_discount_created_successfully))
                 } else {
                     focusToPreviousTab(tab, previouslySelectedPosition, position)
                 }
