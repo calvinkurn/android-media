@@ -379,7 +379,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     }
                 }
                 if (checkoutData.tenureDetail[selectedTenurePosition].tenureDisable) {
-                    setSelectToMax(checkoutData)
+                    setSelectToMaxTenureData(checkoutData)
                 }
 
                 if (selectedTenurePosition >= checkoutData.tenureDetail.size && checkoutData.tenureDetail.isNotEmpty() && !checkoutData.tenureDetail[0].tenureDisable) {
@@ -402,7 +402,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             isDisableTenure = true
     }
 
-    private fun setSelectToMax(checkoutData: CheckoutData)
+    private fun setSelectToMaxTenureData(checkoutData: CheckoutData)
     {
         var maxEnabledTenure = -1
         for (i in 0 until checkoutData.tenureDetail.size) {
