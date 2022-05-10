@@ -159,11 +159,6 @@ class CatalogDetailPageFragment : Fragment(),
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-        const val MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL = 250f
-        const val MILLI_SECONDS_PER_INCH_TOP_SCROLL = 250f
-        const val MILLI_SECONDS_FOR_UI_THREAD = 100L
-        const val MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW = 2000L
-        const val OFFSET_FOR_PRODUCT_SECTION_SNAP = 300
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -463,7 +458,7 @@ class CatalogDetailPageFragment : Fragment(),
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
-                        if(dy > 5.toPx()){
+                        if(dy > CatalogLinearLayoutManager.MINIMUM_SCROLL_FOR_ANIMATION.toPx()){
                             slideUpMoreProductsView()
                         }
                     }

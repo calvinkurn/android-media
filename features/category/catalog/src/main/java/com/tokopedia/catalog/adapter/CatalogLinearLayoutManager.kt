@@ -11,20 +11,33 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 
+/***
+This class handles the animation of [Scroll to Products] and [To the Top] buttons.
+ ***/
 class CatalogLinearLayoutManager(val context : Context, orientation : Int, reverseLayout: Boolean)
     : LinearLayoutManager(context, orientation,reverseLayout) {
 
     private var userPressedLastTopPosition : Int  = 0
     var lastComponentIndex = 0
     private var animationListener : CatalogAnimationListener? = null
+    var slideDownTimer : Runnable? = null
+    private val animationHandler = Handler(Looper.getMainLooper())
 
+    companion object {
+        const val MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL = 250f
+        const val MILLI_SECONDS_PER_INCH_TOP_SCROLL = 250f
+        const val MILLI_SECONDS_FOR_UI_THREAD = 100L
+        const val MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW = 2000L
+        const val OFFSET_FOR_PRODUCT_SECTION_SNAP = 300
+        const val MINIMUM_SCROLL_FOR_ANIMATION = 5
+    }
     private val smoothScrollerToBottom =  object : LinearSmoothScroller(context) {
         override fun getVerticalSnapPreference(): Int {
             return SNAP_TO_START
         }
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
-                return CatalogDetailPageFragment.MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL /displayMetrics.densityDpi
+                return MILLI_SECONDS_PER_INCH_BOTTOM_SCROLL /displayMetrics.densityDpi
             } else
                 super.calculateSpeedPerPixel(displayMetrics)
         }
@@ -36,7 +49,7 @@ class CatalogLinearLayoutManager(val context : Context, orientation : Int, rever
         }
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
             return if (displayMetrics != null) {
-                return CatalogDetailPageFragment.MILLI_SECONDS_PER_INCH_TOP_SCROLL /displayMetrics.densityDpi
+                return MILLI_SECONDS_PER_INCH_TOP_SCROLL /displayMetrics.densityDpi
             } else
                 super.calculateSpeedPerPixel(displayMetrics)
         }
@@ -46,12 +59,10 @@ class CatalogLinearLayoutManager(val context : Context, orientation : Int, rever
         animationListener = listener
     }
 
-    private val animationHandler = Handler(Looper.getMainLooper())
-
     private val scrollToTopPositionRunnable = Runnable {
-        scrollToPositionWithOffset(userPressedLastTopPosition, -CatalogDetailPageFragment.OFFSET_FOR_PRODUCT_SECTION_SNAP)
+        scrollToPositionWithOffset(userPressedLastTopPosition, -OFFSET_FOR_PRODUCT_SECTION_SNAP)
         animationHandler.postDelayed(smoothScrollToTopPositionRunnable,
-            CatalogDetailPageFragment.MILLI_SECONDS_FOR_UI_THREAD
+            MILLI_SECONDS_FOR_UI_THREAD
         )
     }
 
@@ -63,23 +74,23 @@ class CatalogLinearLayoutManager(val context : Context, orientation : Int, rever
 
     fun scrollToTop() {
         animationHandler.postDelayed(scrollToTopPositionRunnable,
-            CatalogDetailPageFragment.MILLI_SECONDS_FOR_UI_THREAD
+            MILLI_SECONDS_FOR_UI_THREAD
         )
     }
 
     fun scrollToBottom(lastTopPosition : Int) {
         userPressedLastTopPosition = lastTopPosition
         animationHandler.postDelayed(scrollToBottomPositionRunnable,
-            CatalogDetailPageFragment.MILLI_SECONDS_FOR_UI_THREAD
+            MILLI_SECONDS_FOR_UI_THREAD
         )
     }
 
     private val scrollToBottomPositionRunnable = Runnable {
         scrollToPositionWithOffset(lastComponentIndex,
-            CatalogDetailPageFragment.OFFSET_FOR_PRODUCT_SECTION_SNAP
+            OFFSET_FOR_PRODUCT_SECTION_SNAP
         )
         animationHandler.postDelayed(smoothScrollToBottomPositionRunnable,
-            CatalogDetailPageFragment.MILLI_SECONDS_FOR_UI_THREAD
+            MILLI_SECONDS_FOR_UI_THREAD
         )
     }
 
@@ -87,8 +98,6 @@ class CatalogLinearLayoutManager(val context : Context, orientation : Int, rever
         smoothScrollerToBottom.targetPosition = lastComponentIndex
         startSmoothScroll(smoothScrollerToBottom)
     }
-
-    var slideDownTimer : Runnable? = null
 
     fun removeOldAnimation(slideDownFunction : () -> Unit) {
         if(slideDownTimer != null)
@@ -98,7 +107,7 @@ class CatalogLinearLayoutManager(val context : Context, orientation : Int, rever
         }
         slideDownTimer = newSlideDownTimer
         animationHandler.postDelayed(newSlideDownTimer,
-            CatalogDetailPageFragment.MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW
+            MILLI_SECONDS_FOR_MORE_PRODUCTS_VIEW
         )
     }
 
