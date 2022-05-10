@@ -1,42 +1,65 @@
 package com.tokopedia.commissionbreakdown.view
 
+import android.Manifest
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.sellerhome.R
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
+import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
-class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListener {
-    private var selectedDateFrom: Date = Date()
-    private var selectedDateTo: Date = Date()
-    private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
-    private var downloadButton: UnifyButton? = null
-
-    @Inject
-    lateinit var userSession: UserSession
+class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListener {
 
     companion object {
+        private const val DOWNLOAD_URL =
+            "https://api-staging.tokopedia.com/v1/commission/report/download"
+        private const val PARAM_SHOP_ID = "shop_id"
+        private const val PARAM_START_DATE = "start_date"
+        private const val PARAM_END_DATE = "end_date"
+        private const val HEADER_ORIGIN = "Origin"
+        private const val HEADER_AUTHORIZATION = "Authorization"
+        private const val ORIGIN_TOKOPEDIA = "tokopedia.com"
+        private const val FORMAT_AUTHORIZATION = "Bearer %s"
+        private const val FORMAT_FILE_NAME = "commission_report_%s.xlsx"
+
         fun createInstance(): CommissionBreakdownFragment {
             return CommissionBreakdownFragment()
         }
     }
 
+    @Inject
+    lateinit var userSession: UserSession
+
+    private var selectedDateFrom: Date = Date()
+    private var selectedDateTo: Date = Date()
+    private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
+    private var downloadButton: UnifyButton? = null
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+
     override fun getScreenName(): String {
         return ""
     }
-
 
     override fun initInjector() {
         activity?.let {
@@ -49,7 +72,7 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(
             R.layout.fragment_commission_breakdown,
             container,
@@ -59,41 +82,107 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
         return view
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+        }
+    }
+
     private fun initView(view: View) {
         datePlaceholderText = view.findViewById(R.id.trx_download_date_selected)
         downloadButton = view.findViewById(R.id.trx_fee_download)
         downloadButton?.setSafeOnClickListener {
-            downloadFile()
+            checkPermissionDownload {
+                downloadFile("01/01/2022", "31/03/2022")
+            }
         }
 
         view.findViewById<View>(R.id.trx_download_date_card)?.setSafeOnClickListener {
             openCalender()
         }
-
-
     }
 
-    private fun downloadFile() {
-        downloadButton?.isLoading = true
-        showSuccessToaster()
-//        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse("url"))
-//        val fileName = "commission_report_${getDatePlaceholderText()}.XLS"
-//        request.addRequestHeader("Origin", "tokopedia.com")
-//        request.addRequestHeader(
-//            "Cookie",
-//            "TOPATK-DEVEL=tlGzDl_VRHGMJYqbcnhuIQ; _SID_Tokopedia_=l06OoggM_RKhCHoKOhUyrcBgPG7DmBYiVNqlX9ZWG3YV56YTyvtt_wJzoRlJz_J75ztVTIF2SNahLpq4S3kD0d_zRbcotEVosn4-glTcHz6dD0g7OXuB0JkyKkoWbpgD"
-//        )
-//        request.addRequestHeader(
-//            "Authorization",
-//            "Bearer TKPD Tokopedia:${userSession.accessToken}"
-//        )
-//        request.setTitle(fileName)
-//        request.allowScanningByMediaScanner()
-//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-//        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-//        val dm: DownloadManager? = activity?.getSystemService(DOWNLOAD_SERVICE) as DownloadManager?
-//        dm?.enqueue(request)
-//        showSuccessToaster()
+    private fun checkPermissionDownload(onGranted: () -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+            permissionCheckerHelper?.checkPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                    }
+
+                    override fun onPermissionGranted() {
+                        onGranted()
+                    }
+                })
+        } else {
+            onGranted()
+        }
+    }
+
+    private fun downloadFile(startDate: String, endDate: String) {
+        try {
+            startDownload(startDate, endDate)
+        } catch (se: SecurityException) {
+            //error security
+            downloadButton?.isLoading = false
+        } catch (ise: IllegalStateException) {
+            //error uri
+            downloadButton?.isLoading = false
+        } catch (e: Exception) {
+            //error download
+            downloadButton?.isLoading = false
+        }
+    }
+
+    private fun startDownload(startDate: String, endDate: String) {
+        activity?.let { activity ->
+            downloadButton?.isLoading = true
+            val param = mapOf<String, Any>(
+                PARAM_SHOP_ID to userSession.shopId,
+                PARAM_START_DATE to startDate,
+                PARAM_END_DATE to endDate
+            )
+            val url = UriUtil.buildUriAppendParams(DOWNLOAD_URL, param)
+            val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(url))
+            val fileName = String.format(FORMAT_FILE_NAME, getDatePlaceholderText())
+            val authorization = String.format(FORMAT_AUTHORIZATION, userSession.accessToken)
+            request.run {
+                addRequestHeader(HEADER_ORIGIN, ORIGIN_TOKOPEDIA)
+                addRequestHeader(HEADER_AUTHORIZATION, authorization)
+                setTitle(fileName)
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            }
+            val dm: DownloadManager = activity
+                .getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            activity.registerReceiver(
+                onComplete,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            )
+            dm.enqueue(request)
+        }
+    }
+
+    private val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            showSuccessToaster()
+            downloadButton?.isLoading = false
+            unsubscribeDownLoadHelper()
+        }
+    }
+
+    private fun unsubscribeDownLoadHelper() {
+        context?.unregisterReceiver(onComplete)
     }
 
     private fun openCalender() {
@@ -118,7 +207,7 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
         val dateFormat = SimpleDateFormat(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.DEFAULT_LOCALE)
         val startDateStr = dateFormat.format(selectedDateFrom)
         val endDateStr = dateFormat.format(selectedDateTo)
-       return "$startDateStr - $endDateStr"
+        return "$startDateStr - $endDateStr"
     }
 
     override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
@@ -126,7 +215,12 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
     }
 
     private fun showSuccessToaster() {
-        Toaster.build(requireView(), "Laporan biaya transaksi berhasil di download", Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        Toaster.build(
+            requireView(),
+            "Laporan biaya transaksi berhasil di download",
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL
+        ).show()
     }
 
 }
