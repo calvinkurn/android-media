@@ -112,7 +112,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                     binding.rvGlobalSearchProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, false)
+                else updateAdapterData(curr.products, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
                 updateAdapterData(curr.products, false)
