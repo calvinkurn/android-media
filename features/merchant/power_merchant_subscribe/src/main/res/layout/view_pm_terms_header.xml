@@ -6,35 +6,43 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icPmProBadge"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvPmHeaderTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvPmHeaderTitle"
+        tools:src="@tools:sample/avatars" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmHeaderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pm_registration_terms"
-        android:textColor="@color/Unify_N700_96"
+        android:text="Yuk, capai target ke"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginStart="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icPmProBadge"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmHeaderTermsStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:background="@drawable/bg_pm_terms_status"
-        android:paddingStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/unify_space_4"
         android:paddingTop="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingBottom="@dimen/spacing_lvl1"
-        android:text="@string/pm_terms_eligible"
-        android:textColor="@color/pm_static_g500_dms"
+        android:text="PM PRO Advanced"
+        android:textColor="@color/Unify_NN950"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvPmHeaderTitle"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
+        app:typographyType="body_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.iconunify.IconUnify
@@ -45,5 +53,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

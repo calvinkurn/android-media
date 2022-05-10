@@ -7,6 +7,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
@@ -42,7 +43,6 @@ object PMRegistrationTermHelper {
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
             getNetItemValueTerm(context, shopInfo),
-            getKycTerm(context, shopInfo, isPmProSelected)
         )
     }
 
@@ -61,11 +61,26 @@ object PMRegistrationTermHelper {
 
         if (isNewSeller) {
             if (!isFirstMondayNewSeller) {
+                val textColor = if (isEligibleOrder) {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                } else {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    )
+                }
                 title =
-                    context.getString(R.string.pm_title_min_order_finished_term_new_seller_before_30_days)
+                    context.getString(
+                        R.string.pm_title_min_order_finished_term_new_seller_before_30_days,
+                        textColor,
+                        shopInfo.itemSoldOneMonth.toString()
+                    )
                 description = context.getString(
                     R.string.pm_desc_min_order_finished_term_new_seller_before_30_days,
-                    shopInfo.itemSoldOneMonth.toString()
+                    shopInfo.itemSoldPmProThreshold.toString()
                 )
             } else {
                 val getItemOrderTerm = getItemOrderTerm(shopInfo, isEligibleOrder, context)
@@ -147,11 +162,28 @@ object PMRegistrationTermHelper {
 
         if (shopInfo.isNewSeller) {
             if (!shopInfo.is30DaysFirstMonday) {
+                val textColor = if (isEligible) {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                } else {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    )
+                }
+                val netItemValueThresholdFmt =
+                    CurrencyFormatHelper.convertToRupiah(shopInfo.netItemValuePmProThreshold.toString())
                 title =
-                    context.getString(R.string.pm_title_min_product_sold_term_new_seller_before_30_days)
+                    context.getString(
+                        R.string.pm_title_min_product_sold_term_new_seller_before_30_days,
+                        textColor,
+                        netItemValueFmt
+                    )
                 description = context.getString(
                     R.string.pm_desc_min_product_sold_term_new_seller_before_30_days,
-                    netItemValueFmt
+                    netItemValueThresholdFmt
                 )
             } else {
                 val netItemValueTerm = getNetItemValueTerm(shopInfo, isEligible, context)
@@ -253,18 +285,36 @@ object PMRegistrationTermHelper {
                     shopScoreFmt
                 )
                 description =
-                    context.getString(R.string.pm_desc_shop_score_term_new_seller_after_30_days)
+                    context.getString(
+                        R.string.pm_desc_shop_score_term_new_seller_after_30_days,
+                        shopScoreThreshold
+                    )
             } else {
+                val textColor = if (isEligibleShopScore) {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                } else {
+                    PMCommonUtils.getHexColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_R600
+                    )
+                }
                 title =
-                    context.getString(R.string.pm_title_shop_score_term_new_seller_before_30_days)
+                    context.getString(
+                        R.string.pm_title_shop_score_term_new_seller_before_30_days,
+                        textColor,
+                        shopScoreFmt
+                    )
                 description =
                     context.getString(
                         R.string.pm_desc_shop_score_term_new_seller_before_30_days,
-                        shopScoreFmt
+                        shopScoreThreshold
                     )
             }
-            ctaText = context.getString(R.string.pm_learn_shop_performance)
-            ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
+            ctaText = String.EMPTY
+            ctaAppLink = String.EMPTY
         } else {
             if (isEligibleShopScore) {
                 val textColor = PMCommonUtils.getHexColor(
@@ -286,8 +336,8 @@ object PMRegistrationTermHelper {
                     R.string.pm_shop_score_not_eligible_description,
                     shopScoreThreshold
                 )
-                ctaText = context.getString(R.string.pm_learn_shop_performance)
-                ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
+                ctaText = String.EMPTY
+                ctaAppLink = String.EMPTY
             }
         }
 
@@ -312,7 +362,10 @@ object PMRegistrationTermHelper {
         }
     }
 
-    private fun getResDrawableIcon(shopInfo: PMShopInfoUiModel, isEligible: Boolean): Pair<Int, Boolean> {
+    private fun getResDrawableIcon(
+        shopInfo: PMShopInfoUiModel,
+        isEligible: Boolean
+    ): Pair<Int, Boolean> {
         val isNewSeller = shopInfo.isNewSeller
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         return if (isNewSeller) {
@@ -514,26 +567,18 @@ object PMRegistrationTermHelper {
         return listOf(
             PMProBenefitUiModel(
                 description = context.getString(
-                    R.string.pm_pro_general_benefit_1,
+                    R.string.pm_pro_general_benefit_1_new,
                     Constant.POWER_MERCHANT_PRO_CHARGING
                 ),
                 icon = IconUnify.COURIER_FAST
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_3),
-                icon = IconUnify.COURIER
-            ),
-            PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_4),
+                description = context.getString(R.string.pm_pro_general_benefit_2_new),
                 imgUrl = PMConstant.Images.PM_PRO_BADGE
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_5),
-                icon = IconUnify.CALL_CENTER
-            ),
-            PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_6),
-                icon = IconUnify.STAR_CIRCLE
+                description = context.getString(R.string.pm_pro_general_benefit_3_new),
+                icon = IconUnify.PROMO
             )
         )
     }

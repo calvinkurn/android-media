@@ -47,6 +47,8 @@ class WidgetAdapterFactoryImpl(
     override fun type(model: WidgetPmProNewSellerBenefitUiModel): Int =
         ItemPMProNewSellerBenefitWidget.LAYOUT
 
+    override fun type(model: WidgetFeeServiceUiModel): Int = FeeServiceWidget.RES_LAYOUT
+
     override
     fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
@@ -83,6 +85,8 @@ class WidgetAdapterFactoryImpl(
             ItemPMProNewSellerBenefitWidget.LAYOUT -> ItemPMProNewSellerBenefitWidget(
                 parent, widgetListener
             )
+            FeeServiceWidget.RES_LAYOUT -> FeeServiceWidget(parent)
+
             else -> super.createViewHolder(parent, type)
         }
     }

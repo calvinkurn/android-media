@@ -86,6 +86,7 @@
                 android:id="@+id/horLinePmUpgrade1"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="1dp"
+                android:visibility="gone"
                 android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -160,34 +161,5 @@
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmProTncDescription"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/unify_space_12"
-        android:layout_marginEnd="@dimen/unify_space_12"
-        android:gravity="center"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardPmUpgradeBenefits"
-        app:typographyType="body_3"
-        android:visibility="gone"
-        tools:text="@string/pm_pro_upgrade_tnc_description" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnPmProUpgrade"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/unify_space_12"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        android:text="@string/pm_upgrade_to_pm_pro"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPmProTncDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

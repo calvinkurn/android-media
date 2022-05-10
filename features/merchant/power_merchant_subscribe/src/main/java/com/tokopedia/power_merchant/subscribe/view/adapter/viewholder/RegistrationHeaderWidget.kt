@@ -35,24 +35,12 @@ class RegistrationHeaderWidget(
     private val binding: WidgetPmRegistrationHeaderBinding? by viewBinding()
 
     override fun bind(element: WidgetRegistrationHeaderUiModel) {
-        setupView(element)
         setupTermsList(element)
     }
 
-    private fun setupView(element: WidgetRegistrationHeaderUiModel) = binding?.run {
-        tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
-            setOnExpandChanged(isExpanded, element)
-        }
-        tvPmHeaderTerms.setTermStatus(getPmEligibilityStatus(element))
-    }
 
-    private fun getPmEligibilityStatus(element: WidgetRegistrationHeaderUiModel): Boolean {
-        return element.registrationTerms.all { it.isChecked }
-    }
-
-    private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = binding?.run {
+    private fun setIShowTicker(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = binding?.run {
         rvPmRegistrationTerm.isVisible = isExpanded
-        tvPmHeaderTerms.setExpanded(isExpanded)
         if (isExpanded) {
             setTickerVisibility(element.shopInfo)
         } else {
@@ -82,7 +70,7 @@ class RegistrationHeaderWidget(
         showTermList(element.registrationTerms)
 
         val isEligible = element.registrationTerms.all { it.isChecked }
-        setOnExpandChanged(!isEligible, element)
+        setIShowTicker(!isEligible, element)
     }
 
     private fun onTermCtaClickedListener(term: RegistrationTermUiModel) {

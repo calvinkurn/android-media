@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PATTERN_DATE_TEXT
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -114,60 +115,7 @@ class UpgradePmProWidget(
 
     private fun setupView(element: WidgetUpgradePmProUiModel) = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
-        icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
-        val isShowTermStatus = element.registrationTerms.all { it.isChecked }
-        viewPmUpgradeTermSection.setTermStatus(isShowTermStatus)
-
-        if (element.shopInfo.isNewSeller) {
-            if (element.shopInfo.is30DaysFirstMonday) {
-                if (element.shopInfo.isEligiblePmPro) {
-                    showTncMessage()
-                    setExpandedChanged(false)
-                } else {
-                    setExpandedChanged(true)
-                }
-            } else {
-                setExpandedChanged(true)
-            }
-        } else {
-            if (element.shopInfo.isEligiblePmPro) {
-                showTncMessage()
-                setExpandedChanged(false)
-            } else {
-                setExpandedChanged(true)
-            }
-        }
-
-        viewPmUpgradeTermSection.setOnSectionHeaderClickListener {
-            setExpandedChanged(it)
-        }
-    }
-
-    private fun showTncMessage() = binding?.run {
-        val clickableText = "S&K"
-        val ctaTextColor = com.tokopedia.unifycomponents.R.color.Unify_G500
-        val termDescription = PowerMerchantSpannableUtil.createSpannableString(
-            text = root.context.getString(R.string.pm_pro_upgrade_tnc_description).parseAsHtml(),
-            highlightText = clickableText,
-            colorId = root.context.getResColor(ctaTextColor),
-            isBold = true
-        ) {
-            listener.onUpgradePmProTnCClickListener()
-        }
-        tvPmProTncDescription.movementMethod = LinkMovementMethod.getInstance()
-        tvPmProTncDescription.text = termDescription
-    }
-
-    private fun setExpandedChanged(isExpanded: Boolean) = binding?.run {
-        if (isExpanded) {
-            viewPmUpgradeTermSection.setExpanded(true)
-            rvPmUpgradeTerms.visible()
-            horLinePmUpgrade1.visible()
-        } else {
-            viewPmUpgradeTermSection.setExpanded(false)
-            rvPmUpgradeTerms.gone()
-            horLinePmUpgrade1.gone()
-        }
+        icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
     }
 
     interface Listener {
