@@ -50,8 +50,14 @@ data class ProductUiModel(
         labelGroupList = listOf(
             ProductCardModel.LabelGroup(
                 position = "integrity",
-                title = "Terjual $totalSoldFmt",
+                title = generateTotalSold(totalSold, totalSoldFmt),
             )
         )
     )
+
+    private fun generateTotalSold(totalSold: Int, totalSoldFmt: String): String {
+        if(totalSoldFmt.contains("Terjual")) return totalSoldFmt
+
+        return "Terjual $totalSold"
+    }
 }
