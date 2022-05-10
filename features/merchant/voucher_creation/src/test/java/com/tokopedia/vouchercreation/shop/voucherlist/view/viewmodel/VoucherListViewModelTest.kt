@@ -464,9 +464,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.SELLER, VoucherVps.NON_VPS)
-            val isSellerCreated = true
-            val isVps = false
-            val isSubsidy = false
+            isSellerCreated = true
+            isVps = false
+            isSubsidy = false
 
             val sourceRequestParams = getVoucherSourceRequestParams(
                 isSellerCreated,
@@ -483,9 +483,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.VPS)
-            val isSellerCreated = false
-            val isVps = true
-            val isSubsidy = false
+            isSellerCreated = false
+            isVps = true
+            isSubsidy = false
 
             val sourceRequestParams = getVoucherSourceRequestParams(
                 isSellerCreated,
@@ -502,9 +502,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.NON_VPS)
-            val isSellerCreated = false
-            val isVps = false
-            val isSubsidy = true
+            isSellerCreated = false
+            isVps = false
+            isSubsidy = true
 
             val sourceRequestParams = getVoucherSourceRequestParams(
                 isSellerCreated,
@@ -521,9 +521,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            val isSellerCreated = true
-            val isVps = true
-            val isSubsidy = true
+            isSellerCreated = true
+            isVps = true
+            isSubsidy = true
 
             val sourceRequestParams = getVoucherSourceRequestParams(
                 isSellerCreated,
@@ -559,9 +559,9 @@ class VoucherListViewModelTest {
 //        with(mViewModel) {
 //
 //            val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.NON_VPS)
-//            val isSellerCreated = true
-//            val isVps = false
-//            val isSubsidy = false
+//            isSellerCreated = true
+//            isVps = false
+//            isSubsidy = false
 //
 //            val sourceRequestParams = getVoucherSourceRequestParams(
 //                isSellerCreated,
@@ -578,9 +578,9 @@ class VoucherListViewModelTest {
 //        with(mViewModel) {
 //
 //            val dummyPair = Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.VPS)
-//            val isSellerCreated = false
-//            val isVps = true
-//            val isSubsidy = false
+//            isSellerCreated = false
+//            isVps = true
+//            isSubsidy = false
 //
 //            val sourceRequestParams = getVoucherSourceRequestParams(
 //                isSellerCreated,
@@ -597,9 +597,9 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            val isSellerCreated = null
-            val isVps = null
-            val isSubsidy = null
+            isSellerCreated = null
+            isVps = null
+            isSubsidy = null
 
             val sourceRequestParams = getVoucherSourceRequestParams(
                 isSellerCreated,
