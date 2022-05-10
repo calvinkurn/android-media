@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tool:background="@color/Unify_NN300"
     android:visibility="visible"
+    tool:viewBindingIgnore="true"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
