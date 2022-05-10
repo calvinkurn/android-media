@@ -8,16 +8,21 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object MePageRollenceController {
 
-    private var rollenceMePageValue: String? = null
+    private var rollenceMePageValue: String = ""
 
     fun fetchMePageRollenceValue() {
-        rollenceMePageValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ME_PAGE_REVAMP)
+        rollenceMePageValue = try{
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ME_PAGE_REVAMP)
+        } catch (e: Exception){
+            ""
+        }
+    }
+
+    private fun getRollenceValueMePage(): String {
+        return if (rollenceMePageValue.isNotEmpty()) rollenceMePageValue else RollenceKey.ME_PAGE_OLD
     }
 
     fun isMePageUsingRollenceVariant(): Boolean {
-        if(rollenceMePageValue == null){
-            fetchMePageRollenceValue()
-        }
-        return rollenceMePageValue == RollenceKey.ME_PAGE_REVAMP_VARIANT
+        return getRollenceValueMePage() == RollenceKey.ME_PAGE_REVAMP_VARIANT
     }
 }
