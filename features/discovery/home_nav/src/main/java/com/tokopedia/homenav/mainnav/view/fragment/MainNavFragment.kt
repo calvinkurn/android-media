@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -118,6 +119,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         context?.let {
             viewModel.setProfileCache(getProfileCacheData(it))
         }
+        MePageRollenceController.fetchMePageRollenceValue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
