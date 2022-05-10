@@ -46,7 +46,9 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
@@ -324,38 +326,33 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                             result: AddToWishlistV2Response.Data.WishlistAddV2,
                             productId: String
                         ) {
-                            val msg = result.message.ifEmpty {
-                                if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                                else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                }
                             }
-
-                            var typeToaster = Toaster.TYPE_NORMAL
-                            if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
-
-                            var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-                            if (result.button.text.isNotEmpty()) ctaText = result.button.text
-
-                            Toaster.build(requireView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-                                RouteManager.route(context, ApplinkConst.WISHLIST)
-                            }.show()
                         }
 
                         override fun onErrorRemoveWishlist(
                             throwable: Throwable,
                             productId: String
                         ) {
-                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
-                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                            val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, v)
+                            }
                         }
 
-                        override fun onSuccessRemoveWishlist(productId: String) {
-                            Toaster.build(requireView(),
-                                getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-                                Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-                            ) {}.show()
+                        override fun onSuccessRemoveWishlist(
+                            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                            productId: String
+                        ) {
+                            context?.let { context ->
+                                view?.let { v ->
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                }
+                            }
                         }
-
                     }, it)
                 } else {
                     mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
