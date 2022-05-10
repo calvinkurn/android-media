@@ -1,6 +1,5 @@
 package com.tokopedia.topads.common.view.sheet
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +15,8 @@ import java.util.*
 class ProductSortSheetList : BottomSheetUnify() {
 
     var onItemClick: ((sortId: String) -> Unit)? = null
-    var selectedSortText = 0
-    var positionSort = 0
+    private var selectedSortText = 0
+    private var positionSort = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -40,11 +39,9 @@ class ProductSortSheetList : BottomSheetUnify() {
         view.findViewById<ListUnify>(R.id.sortList)?.let {
             it.onLoadFinish {
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
-                }
+                it.setSelectedFilterOrSort(sortListItemUnify, positionSort.orZero())
 
-                it.setOnItemClickListener { adapterView, view, index, l ->
+                it.setOnItemClickListener { _, _, index, _ ->
                     onItemSortClickedBottomSheet(index, sortListItemUnify, it)
                 }
                 sortListItemUnify.forEachIndexed { index, listItemUnify ->
@@ -62,9 +59,7 @@ class ProductSortSheetList : BottomSheetUnify() {
     ) {
         try {
             positionSort = position
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
-            }
+            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             selectedSortText = position
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             onItemClick?.invoke(sortListItemUnify[position].listTitleText)
@@ -110,10 +105,10 @@ class ProductSortSheetList : BottomSheetUnify() {
     }
 
     companion object {
-        val TERBARU = "newest"
-        val TERENDAH = "cheapest"
-        val TERLARIS = "most_sales"
-        val TERTINGGI = "most_expensive"
+        const val TERBARU = "newest"
+        const val TERENDAH = "cheapest"
+        const val TERLARIS = "most_sales"
+        const val TERTINGGI = "most_expensive"
 
         fun newInstance(): ProductSortSheetList {
             return ProductSortSheetList()

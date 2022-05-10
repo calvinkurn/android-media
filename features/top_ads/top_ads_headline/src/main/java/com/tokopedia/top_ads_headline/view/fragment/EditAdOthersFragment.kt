@@ -344,7 +344,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
                     val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
                     tvToolTipText?.text = getString(R.string.topads_headline_schedule_tooltip_text)
                     val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
@@ -395,8 +395,8 @@ class EditAdOthersFragment : BaseDaggerFragment() {
     }
 
     private fun setUpAdNameEditText() {
-        headlineAdNameInput?.textFieldInput?.setText(MethodChecker.fromHtml(stepperModel?.groupName))
-        headlineAdNameInput?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        headlineAdNameInput.textFieldInput.setText(MethodChecker.fromHtml(stepperModel?.groupName))
+        headlineAdNameInput.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -404,11 +404,11 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                headlineAdNameInput?.setError(false)
+                headlineAdNameInput.setError(false)
                 if (s.toString().isBlank()) {
-                    headlineAdNameInput?.getFirstIcon()?.hide()
+                    headlineAdNameInput.getFirstIcon().hide()
                 } else {
-                    headlineAdNameInput?.getFirstIcon()?.show()
+                    headlineAdNameInput.getFirstIcon().show()
                 }
             }
         })

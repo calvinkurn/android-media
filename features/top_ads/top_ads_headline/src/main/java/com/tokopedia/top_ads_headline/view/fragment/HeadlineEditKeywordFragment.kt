@@ -152,7 +152,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(),
         setUpObservers()
         fetchNextPage()
         setAdapter()
-        addKeyword?.setCompoundDrawablesWithIntrinsicBounds(R.drawable.topads_plus_add_keyword,
+        addKeyword?.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword,
             0, 0, 0)
         addKeyword?.setOnClickListener {
             onCtaBtnClick()
@@ -177,7 +177,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(),
         startActivityForResult(intent, POSITIVE_KEYWORD_REQUEST_CODE)
     }
 
-    private fun getCurrentItems(): ArrayList<String>? {
+    private fun getCurrentItems(): ArrayList<String> {
         val list: ArrayList<String> = arrayListOf()
         adapter.getItems().forEach {
             if (it is HeadlineEditAdKeywordModel) {

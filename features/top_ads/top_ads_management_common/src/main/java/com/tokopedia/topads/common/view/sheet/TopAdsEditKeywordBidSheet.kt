@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -92,7 +93,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun checkResultIsMultipleOfFifty(result: Int) {
-        if (result % 50 != 0) {
+        if (result % BUDGET_MULTIPLE_FACTOR != 0) {
             min_suggested_bid?.visibility = View.GONE
             setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
         }

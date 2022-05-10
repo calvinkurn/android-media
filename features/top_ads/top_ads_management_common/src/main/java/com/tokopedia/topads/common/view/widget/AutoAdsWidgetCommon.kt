@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -247,8 +246,8 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private fun setSwitchAction(view: View) {
         val switch = view.findViewById<SwitchUnify>(R.id.btn_switch)
         val setting = view.findViewById<ImageView>(R.id.setting)
-        setting.setImageDrawable(AppCompatResources.getDrawable(context,
-            R.drawable.topads_common_setting))
+        setting.setImageDrawable(VectorDrawableCompat.create(resources,
+            R.drawable.topads_common_setting, null))
         switch.isChecked = true
         when (entryPoint) {
             ENTRY_FROM_EDIT_PAGE -> {

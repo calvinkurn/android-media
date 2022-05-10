@@ -31,7 +31,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     private var saveBtn: UnifyButton? = null
 
     private var storeName: String = ""
-    private val promoMsgRange = 1..19
+    private val promoMsgRange = PROMO_INITIAL_RANGE..PROMO_FINAL_RANGE
     private var promotionalMessage = ""
 
     init {
@@ -41,6 +41,8 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
+        private const val PROMO_INITIAL_RANGE = 1
+        private const val PROMO_FINAL_RANGE = 19
         fun newInstance(
             storeName: String, promotionalMessage: String, onDismissListener: (String) -> Unit,
         ): PromotionalMessageBottomSheet {

@@ -330,7 +330,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
             totalCount += it.size
         }
         selectProductInfo?.text =
-            String.format(getString(R.string.format_selected_produk), totalCount)
+            String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), totalCount)
     }
 
     private fun setUpToolTip() {
@@ -341,7 +341,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
                     tvToolTipText?.text = getString(R.string.topads_headline_tooltip_text)
 
                     val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tooltipBtn?.addItem(tooltipView)
         tooltipBtn?.setOnClickListener {
@@ -511,7 +511,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(),
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
             Toaster.build(it,
                 getString(R.string.topads_headline_over_product_selection),
                 Snackbar.LENGTH_LONG,
