@@ -2140,13 +2140,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getWidgetsData(similarWidget)
     }
 
-    private fun setupRamadhanBackgroundGradient() {
-        binding?.run {
-            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
-            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
-        }
-    }
-
     interface Listener {
         fun getShopInfo()
     }
