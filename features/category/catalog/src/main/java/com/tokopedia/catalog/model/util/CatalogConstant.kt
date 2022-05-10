@@ -27,7 +27,7 @@ object CatalogConstant {
 
     const val DEFAULT_SPECS_ICON_URL="https://image.flaticon.com/icons/png/128/3524/3524636.png"
 
-    const val ZERO_VALUE = "0"
+    const val ZERO_VALUE = 0
 
     const val CATALOG_DEEPLINK_PREFIX = "https://www.tokopedia.com/catalog/"
     const val CATALOG_URL = "tokopedia://catalog/"

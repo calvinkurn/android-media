@@ -18,7 +18,7 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
                                                      private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
-    val mProductCount = MutableLiveData<String>()
+    val mProductCount = MutableLiveData<Int>()
 
     fun getProductCatalog(catalogId: String,comparedCatalogId : String,userId : String, device : String) {
         viewModelScope.launchCatchError(
@@ -39,7 +39,7 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
                 productListResponse?.let { productResponse ->
-                    mProductCount.value = productResponse.searchProduct?.data?.totalData.toString()
+                    mProductCount.value = productResponse.searchProduct?.data?.totalData
                 }
             }
 

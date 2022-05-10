@@ -42,7 +42,7 @@ class CatalogViewModelTest {
 
     private lateinit var viewModel : CatalogDetailPageViewModel
     private var catalogDetailObserver = mockk<Observer<Result<CatalogDetailDataModel>>>(relaxed = true)
-    private var productCountObserver = mockk<Observer<String>>(relaxed = true)
+    private var productCountObserver = mockk<Observer<Int>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -137,7 +137,7 @@ class CatalogViewModelTest {
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()
         }
         viewModel.fetchProductListing(RequestParams())
-        val count = viewModel.mProductCount.value ?: ""
-        assert(count.isNotBlank())
+        val count = viewModel.mProductCount.value
+        assert(count != 0)
     }
 }

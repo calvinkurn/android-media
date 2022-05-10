@@ -28,7 +28,7 @@ class CatalogDetailProductListingViewModel
                     private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
-    val mProductCount = MutableLiveData<String>()
+    val mProductCount = MutableLiveData<Int>()
     val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
@@ -83,7 +83,7 @@ class CatalogDetailProductListingViewModel
                 list.addAll(productList as ArrayList<Visitable<CatalogTypeFactory>>)
                 pageCount++
             }
-            mProductCount.value = searchProduct.data.totalData.toString()
+            mProductCount.value = searchProduct.data.totalData
         }
     }
 

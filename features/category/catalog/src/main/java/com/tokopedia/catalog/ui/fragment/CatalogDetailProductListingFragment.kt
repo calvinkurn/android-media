@@ -324,7 +324,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         })
     }
 
-    private fun setHeaderCount(totalProductsCount : String){
+    private fun setHeaderCount(totalProductsCount : Int){
         if(CatalogConstant.ZERO_VALUE == totalProductsCount) {
             headerTitle.text = getString(R.string.catalog_search_product_zero_count_text)
             showNoDataScreen(true)
