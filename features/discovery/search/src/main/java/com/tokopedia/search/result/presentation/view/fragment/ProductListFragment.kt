@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -171,6 +172,8 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
         private const val ON_BOARDING_DELAY_MS: Long = 200
+        private const val COMPACT_SCREEN_BREAKPOINT = 580f
+        private const val MEDIUM_SCREEN_BREAKPOINT = 840f
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -250,10 +253,12 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun getSmallGridLayoutSpanCount(): Int {
         context?.let {
-            return if (DeviceScreenInfo.isTablet(it)) {
-                3
-            } else {
-                2
+            val screenDensity = it.resources.displayMetrics.density
+            val screenWidthInDp = DeviceScreenInfo.getScreenWidth(it) / screenDensity
+            return when {
+                screenWidthInDp < COMPACT_SCREEN_BREAKPOINT -> 2
+                screenWidthInDp < MEDIUM_SCREEN_BREAKPOINT -> 3
+                else -> 4
             }
         }
 
