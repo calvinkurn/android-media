@@ -244,7 +244,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
         }
         startDate.textFieldInput.isFocusable = false
         endDate.textFieldInput.isFocusable = false
-        val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+        val padding = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_8)
         startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         context?.run {

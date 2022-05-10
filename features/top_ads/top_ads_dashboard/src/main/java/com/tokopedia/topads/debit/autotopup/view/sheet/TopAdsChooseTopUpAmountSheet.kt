@@ -33,10 +33,10 @@ class TopAdsChooseTopUpAmountSheet : BottomSheetUnify() {
     var onCancel: (() -> Unit)? = null
     var onSaved: ((positionSelected: Int) -> Unit)? = null
     var bonus: Double = 0.0
-    private val defIndex = 3
     private var dismissedSaved = false
 
     companion object {
+        private const val defIndex = 3
         private const val SPAN_COUNT = 2
         private const val TOPADS_BOTTOM_SHEET_TAG = "CHOOSE_AUTO_TOPUP"
         fun newInstance(): TopAdsChooseTopUpAmountSheet = TopAdsChooseTopUpAmountSheet()

@@ -28,8 +28,6 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         return inflater.inflate(R.layout.topads_statistics_graph_fragment, container, false)
     }
 
-    private data class StatsData(val data: Float, val dataStr: String, val date: String)
-
     fun setValue(cells: List<TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics.Cell>) {
         this.cells = cells
     }
@@ -103,8 +101,8 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
         )
 
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { true }
             chartLineMode { LineChartView.LINE_MODE_CURVE }
 
@@ -132,4 +130,9 @@ class TopAdsMultiLineGraphFragment : TkpdBaseV4Fragment() {
     }
 
     data class MultiLineGraph(val id: Int, val color: Int)
+    private data class StatsData(val data: Float, val dataStr: String, val date: String)
+
+    companion object {
+        private const val ANIMATION_DURATION = 200
+    }
 }

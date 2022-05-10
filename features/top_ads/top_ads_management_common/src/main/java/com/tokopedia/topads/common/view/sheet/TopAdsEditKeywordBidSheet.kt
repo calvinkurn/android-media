@@ -22,6 +22,7 @@ import com.tokopedia.utils.text.currency.NumberTextWatcher
 
 private const val CLICK_BUDGET_CREATE = "click - biaya kata kunci box"
 private const val EVENT_CLICK_BUDGET_CREATE = "biaya yang diinput"
+private const val INTENT_FROM_EDIT = 99
 
 class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
@@ -36,7 +37,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var suggestedBid = "0"
     private var position = 0
     private var name = ""
-    private var fromEdit = 99
+    private var fromEdit = INTENT_FROM_EDIT
     private var fromDetail = false
     private var fromRekomendasi = false
     private var fromCreate = false
@@ -123,7 +124,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         position = arguments?.getInt(ITEM_POSITION) ?: 0
         suggestedBid = arguments?.getString(SUGGESTION_BID) ?: "0"
         name = arguments?.getString(KEYWORD_NAME) ?: ""
-        fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
+        fromEdit = arguments?.getInt(FROM_EDIT) ?: INTENT_FROM_EDIT
         groupId = arguments?.getString(GROUP_ID) ?: "0"
         fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
         fromCreate = arguments?.getBoolean(FROM_CREATE) ?: false

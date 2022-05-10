@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.model.beranda.*
@@ -103,7 +104,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun kataKunciItemSelected(item: KataKunciHomePageBase) {
         when (item) {
             is KataKunciSimpleButton -> {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             is RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup -> {
                 context?.resources?.let {
@@ -193,13 +194,13 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 recommendationInfoBottomSheet.show(childFragmentManager, "")
             }
             layoutkataKunci.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             layoutAnggaranHarian.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
             layoutProdukBerpostensi.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(3)
+                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
             }
         }
     }

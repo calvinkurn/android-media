@@ -22,6 +22,7 @@ import java.util.*
 
 private const val SIX_MONTH = -6
 private const val ONE_UNIT = -1
+private const val DELAY_TIME = 300L
 
 class CustomDatePicker : BottomSheetUnify() {
 
@@ -117,7 +118,7 @@ class CustomDatePicker : BottomSheetUnify() {
                     dateEnd?.textFieldInput?.setText(outputFormat.format(date))
                     listenerCalendar.onCustomDateSelected(minDate, date)
                     GlobalScope.launch {
-                        delay(300)
+                        delay(DELAY_TIME)
                         dismissAllowingStateLoss()
                     }
                 }

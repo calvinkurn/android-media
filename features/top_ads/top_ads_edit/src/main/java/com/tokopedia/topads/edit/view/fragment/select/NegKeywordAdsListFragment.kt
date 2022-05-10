@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
@@ -41,7 +42,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     private var currentList: ArrayList<String> = arrayListOf()
 
     companion object {
-
+        private const val VALIDATE_KEYWORD_LIMIT = 5
         fun createInstance(extras: Bundle?): NegKeywordAdsListFragment {
             val fragment = NegKeywordAdsListFragment()
             fragment.arguments = extras
@@ -151,7 +152,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onCheckedItem() {
         val count = adapter.getSelectedList().size
-        selectedInfo?.text = String.format(getString(R.string.format_selected_keyword), count)
+        selectedInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword), count)
     }
 
     private fun setValues(flag: Boolean, text: CharSequence) {
@@ -174,12 +175,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun validateKeyword(text: CharSequence?): CharSequence? {
-        return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
-            getString(R.string.error_max_length_keyword)
+        return if (!text.isNullOrBlank() && text.split(" ").size > VALIDATE_KEYWORD_LIMIT) {
+            getString(com.tokopedia.topads.common.R.string.error_max_length_keyword)
         } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
-            getString(R.string.error_keyword)
-        } else if (text!!.length > 50) {
-            getString(R.string.error_max_length)
+            getString(com.tokopedia.topads.common.R.string.error_keyword)
+        } else if (text!!.length > BUDGET_MULTIPLE_FACTOR) {
+            getString(com.tokopedia.topads.common.R.string.error_max_length)
         } else {
             null
         }
@@ -199,13 +200,13 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         } else {
             adapter.items.forEach {
                 if (it.tag == key) {
-                    makeToast(getString(R.string.keyword_already_exists))
+                    makeToast(getString(com.tokopedia.topads.common.R.string.keyword_already_exists))
                     return false
                 }
             }
             currentList.forEach {
                 if (it == key) {
-                    makeToast(getString(R.string.keyword_already_exists))
+                    makeToast(getString(com.tokopedia.topads.common.R.string.keyword_already_exists))
                     return false
                 }
             }

@@ -19,9 +19,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
@@ -67,14 +66,9 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     private var baseLayout: FrameLayout? = null
     private var entryPoint: Int = 0
     private var currentBudget = 0
-    private val outOfDailyBudget = 0
-    private val outOfCredit = 1
-    private val merchantClosed = 2
-    private val outOfStock = 3
-    private val AUTO_ADS_DISABLED = 111
 
     private val viewModelProvider by lazy {
-        ViewModelProviders.of(context as BaseActivity, viewModelFactory)
+        ViewModelProvider(context as BaseActivity, viewModelFactory)
     }
     private val widgetViewModel by lazy {
         viewModelProvider.get(AutoAdsWidgetViewModelCommon::class.java)
@@ -86,6 +80,11 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     }
 
     companion object {
+        private const val outOfDailyBudget = 0
+        private const val outOfCredit = 1
+        private const val merchantClosed = 2
+        private const val outOfStock = 3
+        private const val AUTO_ADS_DISABLED = 111
         private const val TOGGLE_OFF = "toggle_off"
         private const val CHANNEL = "topchat"
         private const val SOURCE = "sellerapp_autoads_creation"
@@ -101,18 +100,18 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
     }
 
     private fun renderUI() {
-        widgetViewModel.autoAdsData.observe(context as BaseActivity, Observer {
+        widgetViewModel.autoAdsData.observe(context as BaseActivity, {
             currentBudget = it.dailyBudget
             if (it.status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
                 widgetViewModel.getNotDeliveredReason(userSession.shopId)
             } else
                 setUiComponent(it.status, it.dailyUsage)
         })
-        widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, Observer {
+        widgetViewModel.adsDeliveryStatus.observe(context as BaseActivity, {
             if (it.status == 2)
                 setUi(it.statusDetail)
         })
-        widgetViewModel.autoAdsStatus.observe(context as BaseActivity, Observer {
+        widgetViewModel.autoAdsStatus.observe(context as BaseActivity, {
             val intent = RouteManager.getIntent(context,
                 ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL).apply {
                 putExtra(TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD,
@@ -157,8 +156,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     private fun getDrwableforNotDeliverd(view: View) {
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background =
-            AppCompatResources.getDrawable(context, R.drawable.topads_common_orange_bg)
+        imgBg.background = VectorDrawableCompat.create(resources, R.drawable.topads_common_orange_bg, null)
     }
 
     private fun setOutOfBudgetView() {
@@ -308,7 +306,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
+        imgBg.background = VectorDrawableCompat.create(resources,  R.drawable.topads_common_blue_bg, null)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
     }
@@ -320,7 +318,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        imgBg.background = AppCompatResources.getDrawable(context, R.drawable.topads_common_blue_bg)
+        imgBg.background = VectorDrawableCompat.create(resources,  R.drawable.topads_common_blue_bg, null)
         view.findViewById<TextView>(R.id.status_desc).text =
             context.getString(R.string.topads_common_autoads_inprogress_deactivate_desc)
         baseLayout?.removeAllViews()
@@ -332,7 +330,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
             R.layout.topads_common_auto_edit_status_active_widget, this, false
         )
         val imgBg = view.findViewById<ConstraintLayout>(R.id.auto_ad_status_image)
-        val drawable = AppCompatResources.getDrawable(context, R.drawable.topads_common_green_bg)
+        val drawable = VectorDrawableCompat.create(resources,  R.drawable.topads_common_green_bg, null)
         baseLayout?.removeAllViews()
         baseLayout?.addView(view)
         view.let {

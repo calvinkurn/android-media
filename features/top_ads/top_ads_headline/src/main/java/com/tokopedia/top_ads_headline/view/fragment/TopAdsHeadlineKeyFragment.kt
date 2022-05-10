@@ -202,7 +202,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun checkMaxSelectedValue(): String? {
         val count = keywordSelectedAdapter.itemCount
         return if (count >= KEY_LIMIT) {
-            getString(R.string.error_max_selected_keyword)
+            getString(com.tokopedia.topads.common.R.string.error_max_selected_keyword)
         } else
             null
     }
@@ -349,7 +349,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
                 item.keyword = editText?.textFieldInput?.text.toString()
                 item.totalSearch = SEARCH_NOT_AVAILABLE
                 item.fromSearch = true
-                item.bidSuggest = minSuggestedBid.toString()
+                item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
                 keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
                 if (!addedKeywords.contains(item)) {
@@ -370,7 +370,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
 
     private fun showAlreadyExistError() {
         view?.let { it1 ->
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_60)
             Toaster.build(it1,
                 getString(R.string.topads_headline_keyword_already_exist),
                 Toaster.LENGTH_LONG,
@@ -388,7 +388,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
         keywordListAdapter.setList(list, list.firstOrNull()?.minBid?.toIntOrZero()
             ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
-        list.forEachIndexed { index, keywordData ->
+        list.forEachIndexed { _, keywordData ->
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceKeywordViewEvent(
                 VIEW_PILIH_KATA_KUNCI,
                 "{${userSession.shopId}} - {${stepperModel?.groupName}}",
@@ -426,12 +426,12 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     }
 
     private fun setCount() {
-        selectedTitle?.text = String.format(getString(R.string.topads_common_selected_list_count),
+        selectedTitle?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_list_count),
             keywordSelectedAdapter.itemCount)
         selectedTitle?.visibility =
             if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
         selectKeyInfo?.text =
-            String.format(getString(R.string.format_selected_keyword), getSelectedKeywords().size)
+            String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword), getSelectedKeywords().size)
     }
 
     override fun initInjector() {

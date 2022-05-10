@@ -226,10 +226,10 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         multiActionBtn?.setOnClickListener {
-            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 0)
+            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0)
                 navigateToAdTypeSelection()
-            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == 3) {
-                val fragments = (viewPager?.adapter as TopAdsDashboardBasePagerAdapter).getList()
+            if (tab_layout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
+                val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
                 for (frag in fragments) {
                     when (frag.fragment) {
                         is TopAdsRecommendationFragment -> {

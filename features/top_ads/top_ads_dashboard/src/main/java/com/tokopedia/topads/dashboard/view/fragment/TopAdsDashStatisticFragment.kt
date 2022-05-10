@@ -36,6 +36,7 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
     companion object {
         @LayoutRes
         private val TOOLTIP_RES_LAYOUT = R.layout.topads_graph_tooltip
+        private const val ANIMATION_DURATION = 200
     }
 
     internal var summary: Summary = Summary()
@@ -116,8 +117,8 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
         val lineChartData = getLineChartData()
 
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { true }
             setChartTooltip(getLineGraphTooltip())
 

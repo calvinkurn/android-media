@@ -41,6 +41,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DIHAPUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
@@ -104,7 +107,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var isWhiteListedUser: Boolean = false
     private var isAutoBidToggleEnabled: Boolean = false
     private var isDeletedTabEnabled: Boolean = false
-    private val fragmentLoadCountThree = 3
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
@@ -607,10 +609,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
         swipeRefreshLayout?.isRefreshing = false
         when (data.category) {
-            1 -> noProduct()
-            2 -> noAds()
-            3 -> manualAds()
-            4 -> autoAds()
+            CONST_1 -> noProduct()
+            CONST_2 -> noAds()
+            CONST_3 -> manualAds()
+            CONST_4 -> autoAds()
             else -> manualAds()
         }
         loadStatisticsData()
@@ -675,6 +677,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     companion object {
+        private const val fragmentLoadCountThree = 3
         const val MILLISECONDS_PER_INCH = 200f
         const val MANUAL_AD = "-1"
         const val SINGLE_AD = "-2"

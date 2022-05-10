@@ -173,7 +173,7 @@ class ProductListAdapter(
     }
 
     private fun showRating(rating: Int, ratingView: ViewGroup) {
-        for (i in 1..5) {
+        for (i in STAR_1..STAR_5) {
             showStar(i, ratingView, i <= rating)
         }
     }

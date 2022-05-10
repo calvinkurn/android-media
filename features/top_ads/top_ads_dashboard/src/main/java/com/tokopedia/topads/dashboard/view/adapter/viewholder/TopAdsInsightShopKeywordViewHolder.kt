@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.BUDGET_MULTIPLE_FACTOR
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEW_KEYWORD
@@ -66,7 +67,7 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
     fun updateRecommBudget(item: RecommendedKeywordDetail) = with(txtRecommendedBudget) {
         val inputBudget = item.priceBid
         var isError = false
-        val message = if (inputBudget % 50 != 0) {
+        val message = if (inputBudget % BUDGET_MULTIPLE_FACTOR != 0) {
             isError = true
             resources.getString(R.string.error_bid_not_multiple_50)
         } else if (inputBudget <= item.recommendedBid && inputBudget >= item.minBid) {

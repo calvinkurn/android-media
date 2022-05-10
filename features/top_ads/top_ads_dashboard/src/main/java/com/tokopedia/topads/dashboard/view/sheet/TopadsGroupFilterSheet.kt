@@ -10,6 +10,12 @@ import android.widget.RadioGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -187,11 +193,11 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
 
     fun getSelectedSortId(): String {
         return when (sortFilter?.checkedRadioButtonId) {
-            R.id.filter1 -> list[0]
-            R.id.filter2 -> list[1]
-            R.id.filter3 -> list[2]
-            R.id.filter4 -> list[3]
-            R.id.filter5 -> list[4]
+            R.id.filter1 -> list[CONST_0]
+            R.id.filter2 -> list[CONST_1]
+            R.id.filter3 -> list[CONST_2]
+            R.id.filter4 -> list[CONST_3]
+            R.id.filter5 -> list[CONST_4]
             else -> ""
         }
     }
@@ -200,7 +206,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         return selectedAdPlacement
     }
 
-    fun getSelectedStatusId(): Int? {
+    fun getSelectedStatusId(): Int {
         return selectedStatus
     }
 

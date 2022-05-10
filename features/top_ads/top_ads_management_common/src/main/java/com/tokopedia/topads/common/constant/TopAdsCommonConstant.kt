@@ -32,6 +32,7 @@ object TopAdsCommonConstant {
     const val BROAD_POSITIVE = 11
     const val SPECIFIC_TYPE = "Spesifik"
     const val UNKNOWN_SEARCH = "belum ada data"
+    const val BUDGET_MULTIPLE_FACTOR = 50
 
 
     var TOPADS_GRAPHQL_TA_URL = when (TokopediaUrl.getInstance().TYPE) {
