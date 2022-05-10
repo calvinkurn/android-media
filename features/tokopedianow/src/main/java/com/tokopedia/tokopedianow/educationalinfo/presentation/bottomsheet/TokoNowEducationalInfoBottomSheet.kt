@@ -15,7 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOM_SHEET_RESOURCE_ID
-import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducationalInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -61,14 +61,7 @@ class TokoNowEducationalInfoBottomSheet :
             binding?.apply {
                 val boldColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
 
-                tpTime.text = MethodChecker.fromHtml(
-                    getServiceTypeFormattedCopy(
-                        context = context,
-                        key = EDU_BOTTOM_SHEET_RESOURCE_ID,
-                        serviceType = ChooseAddressUtils.getLocalizingAddressData(context).service_type,
-                        colorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                    )
-                )
+                setTimeText(ChooseAddressUtils.getLocalizingAddressData(context).service_type, boldColor)
 
                 tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
                 tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
@@ -80,6 +73,12 @@ class TokoNowEducationalInfoBottomSheet :
                     .load(BACKGROUND_BOTTOMSHEET)
                     .into(ivBackgroundImage)
             }
+        }
+    }
+
+    private fun setTimeText(serviceType: String, boldColor: String) {
+        getServiceTypeRes(EDU_BOTTOM_SHEET_RESOURCE_ID, serviceType)?.let {
+            binding?.tpTime?.text = MethodChecker.fromHtml(getString(it, boldColor))
         }
     }
 

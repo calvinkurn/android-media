@@ -570,12 +570,13 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = DynamicHeaderUiModel(
-                title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
-                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
-                ctaText = widgetResponse.header.ctaText,
-                ctaTextLink = widgetResponse.header.ctaLink,
-                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
-                timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
+                    title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
+                    subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
+                    ctaText = widgetResponse.header.ctaText,
+                    ctaTextLink = widgetResponse.header.ctaLink,
+                    statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
+                    endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
+                    timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
             productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
