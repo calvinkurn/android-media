@@ -2,7 +2,7 @@ package com.tokopedia.loginregister.inactive_phone_number.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterCheckModel (
+data class RegisterCheckModel(
     @SerializedName("registerCheck")
     val data: RegisterCheckData = RegisterCheckData()
 )

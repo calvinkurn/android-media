@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R.string.*
 import com.tokopedia.loginregister.inactive_phone_number.data.StatusPhoneNumber
-import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCaseContract
+import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCase
 import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -15,9 +15,9 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class InactivePhoneNumberViewModel @Inject constructor(
-    private val inactivePhoneNumberUseCase: InactivePhoneNumberUseCaseContract,
+    private val inactivePhoneNumberUseCase: InactivePhoneNumberUseCase,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private val _formState = MutableLiveData<PhoneFormState>()
     val formState get() = _formState
@@ -27,32 +27,34 @@ class InactivePhoneNumberViewModel @Inject constructor(
 
     var currentNumber: String = ""
 
-    private val  _isLoading = MutableLiveData(false)
+    private val _isLoading = MutableLiveData(false)
     val isLoading get() = _isLoading
 
     private fun validationNumber(number: String): Boolean {
         _formState.value =
             when {
-                number.isBlank() -> PhoneFormState(numberError = ipn_required)
-                number.length < 9 -> PhoneFormState(numberError = ipn_too_short)
-                number.length > 15 -> PhoneFormState(numberError = ipn_too_long)
+                number.isEmpty() -> PhoneFormState(numberError = ipn_required)
+                number.length < MINIMUM_LENGTH_NUMBER -> PhoneFormState(numberError = ipn_too_short)
+                number.length > MAXIMUM_LENGTH_NUMBER -> PhoneFormState(numberError = ipn_too_long)
                 else -> PhoneFormState(isDataValid = true)
             }
 
         return _formState.value?.isDataValid == true
     }
 
-    fun submitNumber(number: String){
-        if (_isLoading.value == false){
-            _isLoading.value = true
-            currentNumber = number
-            if (validationNumber(number)) postNumber(number)
+    fun submitNumber(number: String) {
+        if (_isLoading.value == false) {
+            if (validationNumber(number)) {
+                _isLoading.value = true
+                currentNumber = number
+                postNumber(number)
+            }
         }
     }
 
     private fun postNumber(number: String) {
         launchCatchError(coroutineContext, {
-            val response = inactivePhoneNumberUseCase.getData(number)
+            val response = inactivePhoneNumberUseCase(number)
 
             when {
                 response.data.status == StatusPhoneNumber.USER_ACTIVE.value ->
@@ -68,6 +70,11 @@ class InactivePhoneNumberViewModel @Inject constructor(
             _statusPhoneNumber.value = Fail(it)
             _isLoading.value = false
         })
+    }
+
+    companion object {
+        private const val MINIMUM_LENGTH_NUMBER = 9
+        private const val MAXIMUM_LENGTH_NUMBER = 15
     }
 
 }

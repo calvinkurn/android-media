@@ -11,7 +11,8 @@ import com.tokopedia.loginregister.inactive_phone_number.di.DaggerInactivePhoneN
 import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.loginregister.inactive_phone_number.view.fragment.InactivePhoneNumberFragment
 
-class InactivePhoneNumberActivity : BaseSimpleActivity(), HasComponent<InactivePhoneNumberComponent> {
+class InactivePhoneNumberActivity : BaseSimpleActivity(),
+    HasComponent<InactivePhoneNumberComponent> {
 
     private var inactivePhoneNumberComponent: InactivePhoneNumberComponent? = null
 
@@ -29,7 +30,7 @@ class InactivePhoneNumberActivity : BaseSimpleActivity(), HasComponent<InactiveP
         inactivePhoneNumberComponent ?: initializeInactivePhoneNumber()
 
     private fun initializeInactivePhoneNumber(): InactivePhoneNumberComponent {
-        val loginRegisterComponent =  DaggerLoginRegisterComponent.builder()
+        val loginRegisterComponent = DaggerLoginRegisterComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
         return DaggerInactivePhoneNumberComponent

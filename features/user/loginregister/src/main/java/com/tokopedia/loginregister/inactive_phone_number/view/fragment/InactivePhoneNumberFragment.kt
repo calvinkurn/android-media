@@ -56,15 +56,15 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return "Inantive Phone Number Page"
+        return SCREEN_NAME
     }
 
     override fun initInjector() {
         getComponent(InactivePhoneNumberComponent::class.java).inject(this)
     }
 
-    private fun formStateObserver(){
-        viewModel.formState.observe(viewLifecycleOwner){
+    private fun formStateObserver() {
+        viewModel.formState.observe(viewLifecycleOwner) {
 
             tfu2Phone.setMessage(
                 if (it.numberError != null) getString(it.numberError)
@@ -75,13 +75,13 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onClickListener(){
+    private fun onClickListener() {
         btnNext.setOnClickListener {
             submitData()
         }
     }
 
-    private fun formAction(){
+    private fun formAction() {
         tfu2Phone.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitData()
@@ -90,16 +90,16 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         }
 
         tfu2Phone.editText.setOnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER){
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 submitData()
                 true
             } else false
         }
     }
 
-    private fun statusPhoneNumberObserver(){
+    private fun statusPhoneNumberObserver() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
-            when(it){
+            when (it) {
                 is Success -> {
                     onGoToInactivePhoneNumber(it.data)
                 }
@@ -112,46 +112,56 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     private fun onGoToInactivePhoneNumber(currentNumber: String) {
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
+            val intent =
+                RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.CHANGE_INACTIVE_PHONE)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, currentNumber)
             startActivity(intent)
         }
     }
 
-    private fun onError(throwable: Throwable){
+    private fun onError(throwable: Throwable) {
         val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
         tfu2Phone.setMessage(message)
         tfu2Phone.isInputError = true
     }
 
-    private fun isLoadingObserver(){
+    private fun isLoadingObserver() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
             btnNext.isLoading = it
         }
     }
 
-    private fun hideKeyboard(){
+    private fun hideKeyboard() {
         activity?.let {
             KeyboardHandler.hideSoftKeyboard(it)
         }
     }
 
-    private fun submitData(){
+    private fun submitData() {
         hideKeyboard()
         viewModel.submitNumber(tfu2Phone.getEditableValue().toString())
     }
 
-    private fun getErrorMsgWithLogging(throwable: Throwable, flow: String, withErrorCode: Boolean = true): String {
-        val mClassName = if(flow.isEmpty()) InactivePhoneNumberFragment::class.java.name else "${InactivePhoneNumberFragment::class.java.name} - $flow"
+    private fun getErrorMsgWithLogging(
+        throwable: Throwable,
+        flow: String,
+        withErrorCode: Boolean = true
+    ): String {
+        val mClassName =
+            if (flow.isEmpty()) InactivePhoneNumberFragment::class.java.name else "${InactivePhoneNumberFragment::class.java.name} - $flow"
         val message = ErrorHandler.getErrorMessage(context, throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
                 className = mClassName
-            }.build())
+            }.build()
+        )
         return message
     }
 
     companion object {
+
+        private const val SCREEN_NAME = "Inactive Phone Number Page"
+
         @JvmStatic
         fun newInstance(bundle: Bundle) =
             InactivePhoneNumberFragment().apply {

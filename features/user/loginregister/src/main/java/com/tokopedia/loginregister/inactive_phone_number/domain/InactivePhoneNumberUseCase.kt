@@ -1,23 +1,30 @@
 package com.tokopedia.loginregister.inactive_phone_number.domain
 
-import android.annotation.SuppressLint
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.inactive_phone_number.data.model.RegisterCheckModel
 import com.tokopedia.sessioncommon.domain.query.LoginQueries
 import javax.inject.Inject
 
-@SuppressLint("DeprecatedMethod")
 class InactivePhoneNumberUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
-): InactivePhoneNumberUseCaseContract, GraphqlUseCase<RegisterCheckModel>(graphqlRepository) {
+    private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<String, RegisterCheckModel>(dispatcher.io) {
 
-    override suspend fun getData(phoneNumber: String): RegisterCheckModel {
-        setTypeClass(RegisterCheckModel::class.java)
-        setGraphqlQuery(LoginQueries.registerCheckQuery)
+    override fun graphqlQuery(): String =
+        LoginQueries.registerCheckQuery
 
-        setRequestParams(mapOf("id" to phoneNumber))
-        return executeOnBackground()
+    override suspend fun execute(params: String): RegisterCheckModel {
+        val parameters = mapOf(
+            ID to params
+        )
+        return graphqlRepository.request(graphqlQuery(), parameters)
+    }
+
+    companion object {
+        private const val ID = "id"
     }
 
 }
