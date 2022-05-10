@@ -71,5 +71,6 @@ object RollenceKey {
 
     // Global Menu (Me Page)
     const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_OLD = ""
     const val ME_PAGE_REVAMP_VARIANT = "Mepage_variant"
 }

@@ -121,8 +121,6 @@ class MainNavViewModel @Inject constructor(
     private var allCategoriesCache = listOf<Visitable<*>>()
     private lateinit var allCategories : HomeNavExpandableDataModel
 
-    private val isMePageUsingRollenceVariant = MePageRollenceController.isMePageUsingRollenceVariant()
-
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
@@ -221,7 +219,7 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
             onlyForLoggedInUser { getOngoingTransaction() }
-            if(isMePageUsingRollenceVariant){
+            if(MePageRollenceController.isMePageUsingRollenceVariant()){
                 onlyForLoggedInUser { getFavoriteShops() }
                 onlyForLoggedInUser { getWishlist() }
             }
@@ -229,7 +227,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addTransactionMenu() {
-        if(isMePageUsingRollenceVariant){
+        if(MePageRollenceController.isMePageUsingRollenceVariant()){
             this.addAll(buildTransactionMenuListRevamp())
         } else {
             this.addAll(buildTransactionMenuList())
