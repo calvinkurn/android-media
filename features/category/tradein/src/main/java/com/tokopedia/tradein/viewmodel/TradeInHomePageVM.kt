@@ -108,7 +108,7 @@ class TradeInHomePageVM @Inject constructor(
                             storage = deviceAttribute.storage
                         ),
                         finalPageInfo = Laku6TestDataModel.FinalPageInfo(
-                            imei = if(deviceAttribute.imei.isNotEmpty()) deviceAttribute.imei.firstOrNull() ?: "" else imei,
+                            imei = if(deviceAttribute.imei.isNotEmpty()) deviceAttribute.imei.firstOrNull() ?: "" else this@TradeInHomePageVM.imei,
                             productImage = data?.productImage ?: "",
                             productName = data?.productName ?: "",
                             productOriginalValue = data?.productPrice ?: 0.0,

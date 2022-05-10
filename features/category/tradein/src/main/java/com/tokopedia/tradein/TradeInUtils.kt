@@ -6,7 +6,7 @@ import java.util.*
 
 class TradeInUtils {
     companion object {
-        const val TIMER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"
+        const val TIMER_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
 
         fun parseData(date: String?, timerFormat: String = TIMER_DATE_FORMAT): Date? {
             return date?.let {
