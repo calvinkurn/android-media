@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmTermsHeaderBinding
 
 /**
@@ -27,7 +29,7 @@ class TermHeaderView : LinearLayout {
 
     init {
         binding = ViewPmTermsHeaderBinding.inflate(LayoutInflater.from(context), this, true)
-
+        binding?.icPmProBadge?.loadImage(PMConstant.Images.PM_PRO_BADGE)
         binding?.root?.setOnClickListener {
             isExpanded = !isExpanded
             changeIconExpandedStatus()

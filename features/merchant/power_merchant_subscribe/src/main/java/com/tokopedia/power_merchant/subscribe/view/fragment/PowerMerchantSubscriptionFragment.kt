@@ -39,6 +39,7 @@ import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.PMWidgetListener
 import com.tokopedia.power_merchant.subscribe.view.bottomsheet.*
+import com.tokopedia.power_merchant.subscribe.view.helper.PMActiveTermHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
 import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSharedViewModel
@@ -634,7 +635,7 @@ open class PowerMerchantSubscriptionFragment :
                 && isPmActive
         if (shouldShowUpgradePmProWidget) {
             widgets.add(WidgetDividerUiModel)
-            getUpgradePmProWidget()?.let {
+            getUpgradePmProWidget(getShopGradeWidgetData(data))?.let {
                 widgets.add(it)
             }
         }
@@ -647,6 +648,8 @@ open class PowerMerchantSubscriptionFragment :
                 )
             )
         }
+        widgets.add(WidgetDividerUiModel)
+        widgets.add(WidgetFeeServiceUiModel)
         if (isAutoExtendEnabled) {
             widgets.add(WidgetDividerUiModel)
             widgets.add(WidgetPMDeactivateUiModel)
@@ -732,7 +735,8 @@ open class PowerMerchantSubscriptionFragment :
             shopAge = shopInfo?.shopAge.orZero(),
             gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
-            pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE
+            pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
+            shopLevel = shopGrade?.shopLevel.orEmpty().toInt()
         )
     }
 
@@ -761,17 +765,18 @@ open class PowerMerchantSubscriptionFragment :
         binding?.swipeRefreshPm?.isRefreshing = false
     }
 
-    private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
+    private fun getUpgradePmProWidget(shopGradeWidgetData: WidgetShopGradeUiModel): WidgetUpgradePmProUiModel? {
         context?.let { context ->
             pmBasicInfo?.shopInfo?.let {
                 return WidgetUpgradePmProUiModel(
                     shopInfo = it,
-                    registrationTerms = PMRegistrationTermHelper.getPmProRegistrationTerms(
+                    registrationTerms = PMActiveTermHelper.getPmProRegistrationTerms(
                         requireContext(),
                         it,
                         true
                     ),
-                    generalBenefits = PMRegistrationTermHelper.getBenefitList(context)
+                    generalBenefits = PMActiveTermHelper.getBenefitList(context),
+                    isPmActive = shopGradeWidgetData.pmStatus
                 )
             }
         }
