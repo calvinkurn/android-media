@@ -197,7 +197,8 @@
 
     <string name="download_trx_fee_report_ticker_activity_title">Biaya layanan transaksi</string>
     <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
-    <string name="trx_fee_title">Biaya layanan transaksi</string>
+    <string name="trx_fee_heading">Cek laporan biaya layanan di tiap transaksi tokomu</string>
+    <string name="trx_fee_title">Pilih periode</string>
     <string name="trx_fee_desc">Transaksi periode laporan yang dapat diunduh (Maksimum 90 hari)</string>
     <string name="trx_fee_date">Pilih tanggal</string>
     <string name="trx_fee_download">Download laporan</string>

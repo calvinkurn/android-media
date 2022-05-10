@@ -125,7 +125,8 @@ class CommissionBreakdownFragment: BaseDaggerFragment(), OnDateRangeSelectListen
         setDateRangeChanged(dateFrom, dateTo)
     }
 
-    fun showSuccessToaster() {
+    private fun showSuccessToaster() {
         Toaster.build(requireView(), "Laporan biaya transaksi berhasil di download", Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
+
 }
