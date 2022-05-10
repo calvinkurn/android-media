@@ -76,6 +76,10 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
+        if(childFragment is BaseProductTagChildFragment) {
+            childFragment.createViewModelProvider(createViewModelProvider())
+        }
+
         when(childFragment) {
             is ProductTagSourceBottomSheet -> {
                 childFragment.apply {
@@ -86,15 +90,6 @@ class ProductTagParentFragment @Inject constructor(
                     })
                     setData(viewModel.productTagSourceList, viewModel.shopBadge)
                 }
-            }
-            is LastTaggedProductFragment -> {
-                childFragment.setViewModelProvider(createViewModelProvider())
-            }
-            is LastPurchasedProductFragment -> {
-                childFragment.setViewModelProvider(createViewModelProvider())
-            }
-            is MyShopProductFragment -> {
-                childFragment.setViewModelProvider(createViewModelProvider())
             }
         }
     }

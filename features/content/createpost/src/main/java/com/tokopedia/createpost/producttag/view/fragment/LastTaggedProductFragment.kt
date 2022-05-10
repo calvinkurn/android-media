@@ -16,6 +16,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
+import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -34,7 +35,7 @@ import javax.inject.Inject
  */
 class LastTaggedProductFragment @Inject constructor(
     private val userSession: UserSessionInterface,
-): TkpdBaseV4Fragment() {
+): BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastTaggedProductFragment"
 
@@ -42,7 +43,6 @@ class LastTaggedProductFragment @Inject constructor(
     private val binding: FragmentLastTaggedProductBinding
         get() = _binding!!
 
-    private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: LastTaggedProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         LastTaggedProductAdapter(
@@ -150,10 +150,6 @@ class LastTaggedProductFragment @Inject constructor(
                 ).show()
             }
         }
-    }
-
-    fun setViewModelProvider(viewModelProvider: ViewModelProvider) {
-        this.viewModelProvider = viewModelProvider
     }
 
     private fun buildAutoCompletePageParam(): String {

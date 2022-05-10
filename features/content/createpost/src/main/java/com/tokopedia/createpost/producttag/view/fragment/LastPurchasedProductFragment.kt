@@ -14,6 +14,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastPurchasedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.LastPurchasedProductAdapter
+import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -26,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
+class LastPurchasedProductFragment : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "LastPurchasedProductFragment"
 
@@ -34,7 +35,6 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
     private val binding: FragmentLastPurchasedProductBinding
         get() = _binding!!
 
-    private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: LastPurchasedProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         LastPurchasedProductAdapter(
@@ -139,10 +139,6 @@ class LastPurchasedProductFragment : TkpdBaseV4Fragment() {
             }
             else -> {}
         }
-    }
-
-    fun setViewModelProvider(viewModelProvider: ViewModelProvider) {
-        this.viewModelProvider = viewModelProvider
     }
 
     companion object {

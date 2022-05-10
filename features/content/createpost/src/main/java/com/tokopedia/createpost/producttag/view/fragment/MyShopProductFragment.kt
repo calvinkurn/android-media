@@ -19,6 +19,7 @@ import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBind
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
+import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -34,7 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 /**
  * Created By : Jonathan Darwin on April 25, 2022
  */
-class MyShopProductFragment : TkpdBaseV4Fragment() {
+class MyShopProductFragment : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "MyShopProductFragment"
 
@@ -42,7 +43,6 @@ class MyShopProductFragment : TkpdBaseV4Fragment() {
     private val binding: FragmentMyShopProductBinding
         get() = _binding!!
 
-    private lateinit var viewModelProvider: ViewModelProvider
     private lateinit var viewModel: ProductTagViewModel
     private val adapter: MyShopProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         MyShopProductAdapter(
@@ -158,10 +158,6 @@ class MyShopProductFragment : TkpdBaseV4Fragment() {
             }
             else -> {}
         }
-    }
-
-    fun setViewModelProvider(viewModelProvider: ViewModelProvider) {
-        this.viewModelProvider = viewModelProvider
     }
 
     companion object {
