@@ -145,6 +145,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           bundle_group_id
                           slash_price_label
                           bundle_grayscale_icon_url
+                          bundle_icon_url
                         }
                         products {
                           cart_id
@@ -252,6 +253,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           bundle_group_id
                           slash_price_label
                           bundle_grayscale_icon_url
+                          bundle_icon_url
                         }
                         products {
                           cart_id

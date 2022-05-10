@@ -116,13 +116,15 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         var weightTotal = 0
         miniCartData.data.availableSection.let { availableSection ->
-            availableSection.availableGroup.forEach { availableGroup ->
+            val groupCount = availableSection.availableGroup.count()
+            availableSection.availableGroup.forEachIndexed { groupIndex, availableGroup ->
                 // Add shop
                 miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
 
                 // Add available product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 val cartItemsCount = availableGroup.cartDetails.count()
+                val lastGroupItem = groupIndex == groupCount - 1
                 availableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
                     val lastCartItem = cartIndex == cartItemsCount - 1
                     cartDetail.products.forEachIndexed { productIndex, product ->
@@ -136,7 +138,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
                             notesLength = miniCartData.data.maxCharNote,
-                            lastCartItem = lastCartItem
+                            lastCartItem = lastCartItem,
+                            lastGroupItem = lastGroupItem
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                     }
@@ -159,12 +162,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             // Add unavailable reason
+            val groupCount = unavailableSection.unavailableGroup.count()
             val unavailableReasonUiModel = mapUnavailableReasonUiModel(unavailableSection.title, unavailableSection.unavailableDescription)
             miniCartUnavailableSectionUiModels.add(unavailableReasonUiModel)
-            unavailableSection.unavailableGroup.forEach { unavailableGroup ->
+            unavailableSection.unavailableGroup.forEachIndexed { groupIndex, unavailableGroup ->
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 val cartItemsCount = unavailableGroup.cartDetails.count()
+                val lastGroupItem = groupIndex == groupCount - 1
                 unavailableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
                     val lastCartItem = cartIndex == cartItemsCount - 1
                     cartDetail.products.forEachIndexed { productIndex, product ->
@@ -179,7 +184,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             isDisabled = true,
                             unavailableActionId = unavailableSection.selectedUnavailableActionId,
                             unavailableReason = unavailableSection.title,
-                            lastCartItem = lastCartItem
+                            lastCartItem = lastCartItem,
+                            lastGroupItem = lastGroupItem
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                     }
@@ -252,6 +258,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         unavailableReason: String = "",
         notesLength: Int = 0,
         lastCartItem: Boolean = false,
+        lastGroupItem: Boolean = false,
         cartStringId: String = ""
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
@@ -338,13 +345,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
             slashPriceLabel = bundleDetail.slashPriceLabel
             showBundlingHeader = firstProductItem && bundlingItem
             showBottomDivider = (bundlingItem && !lastCartItem && lastProductItem) ||
-                (!bundlingItem && !lastCartItem || !lastProductItem)
+                (!bundlingItem && !lastCartItem || !lastProductItem) || !lastGroupItem
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
             editBundleApplink = cartDetail.bundleDetail.editBundleApplink
 
             if(bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
+                bundleLabelQty = productQuantity / bundleQuantity
             }
         }
     }
@@ -475,7 +483,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                 bundleOriginalPrice = visitable.bundleOriginalPrice,
                                 bundleQuantity = visitable.bundleQty,
                                 bundleMultiplier = visitable.bundleMultiplier,
-                                bundleLabelQuantity = visitable.bundleMultiplier,
+                                bundleLabelQuantity = visitable.bundleLabelQty,
                                 products = hashMapOf(key to miniCartItem)
                         )
                     } else {
