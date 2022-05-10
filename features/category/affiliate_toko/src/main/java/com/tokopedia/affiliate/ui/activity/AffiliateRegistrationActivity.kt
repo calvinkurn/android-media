@@ -111,7 +111,7 @@ class AffiliateRegistrationActivity: BaseViewModelActivity<AffiliateRegistration
     }
 
     private fun openFragment(fragment: Fragment,tag: String) {
-        supportFragmentManager.beginTransaction().replace(R.id.parent_view,fragment).addToBackStack(
+        supportFragmentManager.beginTransaction().add(R.id.parent_view,fragment).addToBackStack(
             tag
         ).commit()
     }
