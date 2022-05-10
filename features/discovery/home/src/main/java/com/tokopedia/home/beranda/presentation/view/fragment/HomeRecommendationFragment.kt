@@ -65,8 +65,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import java.util.*
 import javax.inject.Inject
 
@@ -455,19 +454,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     private fun showMessageSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        val msg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        }
+        if (activity == null) return
+        val view = requireActivity().findViewById<View>(android.R.id.content)
 
-        var typeToaster = Toaster.TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster = Toaster.TYPE_ERROR
-
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-        view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishlist() }.show()
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, view)
         }
     }
 
@@ -502,16 +493,8 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
 
-        var msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-        if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
-
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-        view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) {
-                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
-            }.show()
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, view)
         }
     }
 
@@ -527,12 +510,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
         var msgError = ErrorHandler.getErrorMessage(activity, Throwable())
         if (wishlistResult.messageV2.isNotEmpty()) msgError = wishlistResult.messageV2
-
-        val ctaText = wishlistResult.ctaTextV2
-
-        view?.let { Toaster.build(it, msgError, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
-            if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
-        }.show() }
+        view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(msgError, it) }
     }
 
     fun smoothScrollRecyclerViewByVelocity(distance: Int) {

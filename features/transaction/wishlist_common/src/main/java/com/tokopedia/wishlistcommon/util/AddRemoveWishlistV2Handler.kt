@@ -88,6 +88,11 @@ object AddRemoveWishlistV2Handler {
         Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
+    fun showWishlistV2ErrorToasterWithCta(errorMsg: String, ctaText: String, ctaAction: String, view: View, context: Context) {
+        Toaster.build(view, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText){
+            if (ctaAction == OPEN_WISHLIST) goToWishlistPage(context) }.show()
+    }
+
     private fun goToWishlistPage(context: Context) {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }

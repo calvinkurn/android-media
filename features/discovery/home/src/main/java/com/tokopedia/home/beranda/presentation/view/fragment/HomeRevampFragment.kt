@@ -161,8 +161,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
 import rx.Observable
@@ -2433,20 +2432,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     else showToasterSuccessWishlist()
                 } else {
                     if (wishlistResult.isUsingWishlistV2) {
-                        var msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-                        if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
-
-                        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-                        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-                        var listener = View.OnClickListener {  }
-                        if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) listener = View.OnClickListener { RouteManager.route(context, ApplinkConst.WISHLIST) }
-
-                        showToasterWithAction(
-                            message = msg,
-                            typeToaster = TYPE_NORMAL,
-                            actionText = ctaText,
-                            clickListener = listener)
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+                            }
+                        }
                     } else {
                         showToasterWithAction(
                             message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
@@ -2460,16 +2450,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
                     if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
 
-                    val ctaText = wishlistResult.ctaTextV2
-                    var listener = View.OnClickListener {  }
-                    if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) listener = View.OnClickListener { RouteManager.route(context, ApplinkConst.WISHLIST) }
-
-                    showToasterWithAction(
-                        message = msg,
-                        typeToaster = TYPE_ERROR,
-                        actionText = ctaText,
-                        clickListener = listener
-                    )
+                    context?.let { context ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msg,
+                            wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, root, context)
+                    }
                 } else {
                     showToaster(
                         message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg),
@@ -2493,24 +2477,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterSuccessWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        val msg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isSuccess) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
         }
-
-        var typeToaster = TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
-
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-        showToasterWithAction(
-            message = msg,
-            typeToaster = typeToaster,
-            actionText = ctaText,
-            clickListener = {
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            })
     }
 
     private val isUserLoggedIn: Boolean
