@@ -17,13 +17,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.recentview.R
 import com.tokopedia.recentview.analytics.RecentViewTracking
 import com.tokopedia.recentview.di.DaggerRecentViewComponent
-import com.tokopedia.recentview.ext.convertRupiahToInt
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl
@@ -31,13 +29,12 @@ import com.tokopedia.recentview.view.listener.RecentView
 import com.tokopedia.recentview.view.presenter.RecentViewViewModel
 import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
@@ -166,24 +163,18 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                     result: AddToWishlistV2Response.Data.WishlistAddV2,
                     productId: String
                 ) {
-                    val msg = result.message.ifEmpty {
-                        if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-                        else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-                    }
-
-                    var typeToaster = TYPE_NORMAL
-                    if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
-
-                    var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-                    if (result.button.text.isNotEmpty()) ctaText = result.button.text
-
-                    view?.let {
-                        Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) { goToWishList() }.show()
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                        }
                     }
                 }
 
                 override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                override fun onSuccessRemoveWishlist(productId: String) {}
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {}
             })
             else viewModel.addToWishlist(productId.toString())
         } else {
@@ -248,6 +239,25 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         }
     }
 
+    private fun onSuccessAddWishlistV2(data: AddToWishlistV2Response.Data.WishlistAddV2, productID: String) {
+        dismissLoadingProgress()
+        for (i in adapter.list.indices) {
+            if (adapter.list[i] is RecentViewDetailProductDataModel) {
+                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
+                if (productID == feedDetailViewModel.productId) {
+                    feedDetailViewModel.isWishlist = true
+                    adapter.notifyItemChanged(i)
+                    break
+                }
+            }
+        }
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(data, context, v)
+            }
+        }
+    }
+
     private fun goToWishList() {
         val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
         startActivity(intent)
@@ -274,6 +284,25 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
         view?.let {
             Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
+        }
+    }
+
+    private fun onSuccessRemoveWishlistV2(productID: String, result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
+        dismissLoadingProgress()
+        for (i in adapter.list.indices) {
+            if (adapter.list[i] is RecentViewDetailProductDataModel) {
+                val feedDetailViewModel = adapter.list[i] as RecentViewDetailProductDataModel
+                if (productID == feedDetailViewModel.productId) {
+                    feedDetailViewModel.isWishlist = true
+                    adapter.notifyItemChanged(i)
+                    break
+                }
+            }
+        }
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+            }
         }
     }
 

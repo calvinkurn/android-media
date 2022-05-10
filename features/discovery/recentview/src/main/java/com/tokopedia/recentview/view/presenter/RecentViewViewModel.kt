@@ -14,6 +14,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -44,8 +46,14 @@ open class RecentViewViewModel @Inject constructor(
     val addWishlistResponse: LiveData<Result<String>> get() = _addWishlistResponse
     private val _addWishlistResponse = MutableLiveData<Result<String>>()
 
+    val addWishlistV2Response: LiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>> get() = _addWishlistV2Response
+    private val _addWishlistV2Response = MutableLiveData<Result<AddToWishlistV2Response.Data.WishlistAddV2>>()
+
     val removeWishlistResponse: LiveData<Result<String>> get() = _removeWishlistResponse
     private val _removeWishlistResponse = MutableLiveData<Result<String>>()
+
+    val removeWishlistV2Response: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>> get() = _removeWishlistV2Response
+    private val _removeWishlistV2Response = MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
 
     fun getRecentView() {
         recentViewUseCase.apply {
@@ -78,8 +86,12 @@ open class RecentViewViewModel @Inject constructor(
         addToWishlistV2UseCase.setParams(productId, userSession.userId)
         addToWishlistV2UseCase.execute(
             onSuccess = { result ->
-                if (result is Success) wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId) },
+                if (result is Success) {
+                    _addWishlistV2Response.postValue(Success(result.data))
+                    wishlistV2ActionListener.onSuccessAddWishlist(result.data, productId)
+                } },
             onError = {
+                _addWishlistV2Response.postValue(Fail(it))
                 wishlistV2ActionListener.onErrorAddWishList(it, productId)
             })
     }
@@ -104,7 +116,11 @@ open class RecentViewViewModel @Inject constructor(
     fun removeFromWishlistV2(productId: String) {
         deleteWishlistV2UseCase.setParams(productId, userSession.userId)
         deleteWishlistV2UseCase.execute(
-                onSuccess = { _removeWishlistResponse.postValue(Success(productId)) },
-                onError = { _removeWishlistResponse.postValue(Fail(it)) })
+                onSuccess = { result ->
+                    if (result is Success) {
+                        _removeWishlistV2Response.postValue(Success(result.data))
+                    } },
+                onError = {
+                    _removeWishlistV2Response.postValue(Fail(it)) })
     }
 }
