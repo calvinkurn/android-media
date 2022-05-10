@@ -73,6 +73,7 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "clientId": ".*",
+      "campaignCode": ".*",
       "userId": ".*"
     }
   ]
