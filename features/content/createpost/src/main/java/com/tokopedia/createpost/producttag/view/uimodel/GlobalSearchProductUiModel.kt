@@ -5,7 +5,7 @@ package com.tokopedia.createpost.producttag.view.uimodel
  */
 data class GlobalSearchProductUiModel(
     val products: List<ProductUiModel>,
-    val nextCursor: String,
+    val nextCursor: Int,
     val state: PagedState,
     val query: String,
 ) {
@@ -13,7 +13,7 @@ data class GlobalSearchProductUiModel(
     companion object {
         val Empty = GlobalSearchProductUiModel(
             products = emptyList(),
-            nextCursor = "",
+            nextCursor = 0,
             state = PagedState.Unknown,
             query = "pokemon", /** TODO: gonna change this later */
         )

@@ -247,7 +247,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val pagedDataList = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
-                start = myShopProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
+                start = myShopProduct.nextCursor,
                 query = myShopProduct.query,
                 shopId = userSession.shopId,
                 userId = "",
@@ -257,7 +257,7 @@ class ProductTagViewModel @AssistedInject constructor(
             _myShopProduct.setValue {
                 copy(
                     products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor,
+                    nextCursor = myShopProduct.nextCursor + LIMIT_PER_PAGE,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
                     )
@@ -275,7 +275,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private fun handleSearchMyShopProduct(query: String) {
         _myShopProduct.setValue { MyShopProductUiModel.Empty.copy(
                 query = query,
-                nextCursor = CURSOR_DEFAULT.toString(),
+                nextCursor = CURSOR_DEFAULT,
             )
         }
         handleLoadMyShopProduct()
@@ -293,7 +293,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             val pagedDataList = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
-                start = globalSearchProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
+                start = globalSearchProduct.nextCursor,
                 query = globalSearchProduct.query,
                 shopId = "",
                 userId = userSession.userId,
@@ -303,7 +303,7 @@ class ProductTagViewModel @AssistedInject constructor(
             _globalSearchProduct.setValue {
                 copy(
                     products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor,
+                    nextCursor = globalSearchProduct.nextCursor + LIMIT_PER_PAGE,
                     state = PagedState.Success(
                         hasNextPage = pagedDataList.hasNextPage,
                     )
@@ -319,7 +319,7 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     companion object {
-        private const val LIMIT_PER_PAGE = 20
+        private const val LIMIT_PER_PAGE = 10
         private const val LIMIT_LAST_PURCHASE_PRODUCT_PER_PAGE = 5
         private const val CURSOR_DEFAULT = 0
     }

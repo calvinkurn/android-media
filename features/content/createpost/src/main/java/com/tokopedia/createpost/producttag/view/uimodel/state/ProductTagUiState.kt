@@ -36,14 +36,14 @@ data class LastPurchasedProductUiState(
 
 data class MyShopProductUiState(
     val products: List<ProductUiModel>,
-    val nextCursor: String,
+    val nextCursor: Int,
     val state: PagedState,
     val query: String,
 )
 
 data class GlobalSearchProductUiState(
     val products: List<ProductUiModel>,
-    val nextCursor: String,
+    val nextCursor: Int,
     val state: PagedState,
     val query: String,
 )
