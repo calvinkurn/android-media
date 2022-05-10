@@ -103,7 +103,8 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductData.listProductVariant.forEach {
             it.variantStatus = mapToVariantStatus(it, mode)
         }
-        setupProductData.mappedResultData = mapToMappedResultData(setupProductData)
+        setupProductData.mappedResultData =
+            mapToMappedResultData(setupProductData, slashPriceStatus)
     }
 
     private fun mapToVariantStatus(
@@ -159,8 +160,15 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     private fun mapToMappedResultData(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        slashPriceStatus: Int
     ): ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData {
+        val minStartDateUnix = getStartDate(setupProductUiModel).takeIf {
+            it.all { it > 0 }
+        }?.minOrNull()
+        val minEndDateUnix = getEndDate(setupProductUiModel).takeIf {
+            it.all { it > 0 }
+        }?.minOrNull()
         return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
             minOriginalPrice = getOriginalPrice(setupProductUiModel).minOrNull().orZero(),
             maxOriginalPrice = getOriginalPrice(setupProductUiModel).maxOrNull().orZero(),
@@ -170,8 +178,38 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             maxDiscountPercentage = getDiscountPercentage(setupProductUiModel).maxOrNull().orZero(),
             totalVariant = getTotalVariant(setupProductUiModel),
             totalDiscountedVariant = getTotalDiscountedVariant(setupProductUiModel),
-            totalLocation = getTotalLocation(setupProductUiModel)
+            totalLocation = getTotalLocation(setupProductUiModel),
+            minStartDateUnix = minStartDateUnix,
+            minEndDateUnix = minEndDateUnix
         )
+    }
+
+    private fun getStartDate(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): List<Long> {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            mutableListOf<Long>().apply {
+                setupProductDataUiModel.listProductVariant.forEach {
+                    add(it.slashPriceInfo.startDate.time)
+                }
+            }.toList()
+        } else {
+            listOf(setupProductDataUiModel.slashPriceInfo.startDate.time)
+        }
+    }
+
+    private fun getEndDate(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): List<Long> {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            mutableListOf<Long>().apply {
+                setupProductDataUiModel.listProductVariant.forEach {
+                    add(it.slashPriceInfo.endDate.time)
+                }
+            }.toList()
+        } else {
+            listOf(setupProductDataUiModel.slashPriceInfo.endDate.time)
+        }
     }
 
     private fun setProductError(
@@ -321,7 +359,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): List<Int> {
         return if (setupProductDataUiModel.productStatus.isVariant) {
-            return mutableListOf<Int>().apply {
+            mutableListOf<Int>().apply {
                 setupProductDataUiModel.listProductVariant.forEach {
                     addAll(getOriginalPriceFromProductWarehouse(it))
                 }
@@ -341,7 +379,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): List<Int> {
         return if (setupProductDataUiModel.productStatus.isVariant) {
-            return mutableListOf<Int>().apply {
+            mutableListOf<Int>().apply {
                 setupProductDataUiModel.listProductVariant.forEach {
                     addAll(getDisplayedPriceFromProductWarehouse(it))
                 }
@@ -361,7 +399,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): List<Int> {
         return if (setupProductDataUiModel.productStatus.isVariant) {
-            return mutableListOf<Int>().apply {
+            mutableListOf<Int>().apply {
                 setupProductDataUiModel.listProductVariant.forEach {
                     addAll(getDiscountPercentageFromProductWarehouse(it))
                 }
