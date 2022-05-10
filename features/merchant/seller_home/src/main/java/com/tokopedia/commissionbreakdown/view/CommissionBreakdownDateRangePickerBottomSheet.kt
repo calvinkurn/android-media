@@ -193,6 +193,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         const val BOTTOM_SHEET_HEIGHT_3 = 3
         const val BOTTOM_SHEET_HEIGHT_2 = 2
         const val DATE_PATTERN = "dd MMMM yyyy"
+        const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
 
         fun getInstanceRange(dateFrom: Date?, dateTo: Date?, range: Long, minDate: Long): CommissionBreakdownDateRangePickerBottomSheet {
             return CommissionBreakdownDateRangePickerBottomSheet().apply {

@@ -205,8 +205,5 @@
     <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
     <string name="saldo_btn_oke">Oke</string>
     <string name="saldo_save_date">Simpan</string>
-
-
-
-
+    <string name="sah_commission_download_complete_message">Laporan biaya transaksi berhasil di download</string>
 </resources>

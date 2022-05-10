@@ -10,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +20,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -38,10 +43,12 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         private const val PARAM_START_DATE = "start_date"
         private const val PARAM_END_DATE = "end_date"
         private const val HEADER_ORIGIN = "Origin"
-        private const val HEADER_AUTHORIZATION = "Authorization"
+        private const val HEADER_AUTHORIZATION = "Accounts-Authorization"
         private const val ORIGIN_TOKOPEDIA = "tokopedia.com"
         private const val FORMAT_AUTHORIZATION = "Bearer %s"
         private const val FORMAT_FILE_NAME = "commission_report_%s.xlsx"
+        private const val DATE_FORMAT = "dd/MM/yyyy"
+        private const val LOADING_DELAY = 2000L
 
         fun createInstance(): CommissionBreakdownFragment {
             return CommissionBreakdownFragment()
@@ -57,9 +64,16 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     private var downloadButton: UnifyButton? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
-    override fun getScreenName(): String {
-        return ""
+    private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(ctxt: Context, intent: Intent) {
+            showSuccessToaster()
+            dismissLoading()
+            unsubscribeDownLoadHelper()
+        }
     }
+
+    override fun getScreenName(): String = String.EMPTY
 
     override fun initInjector() {
         activity?.let {
@@ -89,8 +103,26 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+            permissionCheckerHelper?.onRequestPermissionsResult(
+                context,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
+    }
+
+    override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
+        setDateRangeChanged(dateFrom, dateTo)
+    }
+
+    fun showSuccessToaster() {
+        Toaster.build(
+            requireView(),
+            getString(R.string.sah_commission_download_complete_message),
+            Snackbar.LENGTH_SHORT,
+            Toaster.TYPE_NORMAL
+        ).show()
     }
 
     private fun initView(view: View) {
@@ -98,7 +130,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         downloadButton = view.findViewById(R.id.trx_fee_download)
         downloadButton?.setSafeOnClickListener {
             checkPermissionDownload {
-                downloadFile("01/01/2022", "31/03/2022")
+                downloadFile()
             }
         }
 
@@ -129,23 +161,23 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         }
     }
 
-    private fun downloadFile(startDate: String, endDate: String) {
+    private fun downloadFile() {
         try {
-            startDownload(startDate, endDate)
-        } catch (se: SecurityException) {
-            //error security
-            downloadButton?.isLoading = false
-        } catch (ise: IllegalStateException) {
-            //error uri
-            downloadButton?.isLoading = false
+            startDownload()
         } catch (e: Exception) {
-            //error download
-            downloadButton?.isLoading = false
+            dismissLoading()
+            setOnDownloadError(e)
         }
     }
 
-    private fun startDownload(startDate: String, endDate: String) {
+    private fun setOnDownloadError(exception: Exception) {
+        Timber.e(exception)
+    }
+
+    private fun startDownload() {
         activity?.let { activity ->
+            val startDate: String = DateTimeUtil.format(selectedDateFrom.time, DATE_FORMAT)
+            val endDate: String = DateTimeUtil.format(selectedDateTo.time, DATE_FORMAT)
             downloadButton?.isLoading = true
             val param = mapOf<String, Any>(
                 PARAM_SHOP_ID to userSession.shopId,
@@ -166,23 +198,23 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
             val dm: DownloadManager = activity
                 .getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             activity.registerReceiver(
-                onComplete,
+                downloadReceiver,
                 IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
             )
             dm.enqueue(request)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                dismissLoading()
+            }, LOADING_DELAY)
         }
     }
 
-    private val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(ctxt: Context, intent: Intent) {
-            showSuccessToaster()
-            downloadButton?.isLoading = false
-            unsubscribeDownLoadHelper()
-        }
+    private fun dismissLoading() {
+        downloadButton?.isLoading = false
     }
 
     private fun unsubscribeDownLoadHelper() {
-        context?.unregisterReceiver(onComplete)
+        activity?.unregisterReceiver(downloadReceiver)
     }
 
     private fun openCalender() {
@@ -191,8 +223,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
             selectedDateTo,
             CommissionBreakdownDateRangePickerBottomSheet.MAX_RANGE_90,
             CommissionBreakdownDateRangePickerBottomSheet.TWO_YEAR_MILLIS
-        )
-            .show(childFragmentManager, "")
+        ).show(childFragmentManager, CommissionBreakdownDateRangePickerBottomSheet.TAG)
     }
 
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
@@ -208,18 +239,5 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         val startDateStr = dateFormat.format(selectedDateFrom)
         val endDateStr = dateFormat.format(selectedDateTo)
         return "$startDateStr - $endDateStr"
-    }
-
-    override fun onDateRangeSelected(dateFrom: Date, dateTo: Date) {
-        setDateRangeChanged(dateFrom, dateTo)
-    }
-
-    fun showSuccessToaster() {
-        Toaster.build(
-            requireView(),
-            "Laporan biaya transaksi berhasil di download",
-            Snackbar.LENGTH_SHORT,
-            Toaster.TYPE_NORMAL
-        ).show()
     }
 }
