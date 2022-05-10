@@ -60,6 +60,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener;
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler;
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -214,27 +215,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void showSuccessAddWishlistV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
-        String msg = "";
-        if (wishlistResult.getMessageV2().isEmpty()) {
-            if (wishlistResult.isSuccess()) msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg);
-            else msg = getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg);
-        } else {
-            msg = wishlistResult.getMessageV2();
-        }
+        if (getActivity() == null) return;
+        View view = getActivity().findViewById(android.R.id.content);
 
-        int typeToaster = Toaster.TYPE_NORMAL;
-        if (wishlistResult.getToasterColorV2().equalsIgnoreCase(TOASTER_RED) || !wishlistResult.isSuccess()) {
-            typeToaster = Toaster.TYPE_ERROR;
-        }
+        if (view == null) return;
 
-        String ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist);
-        if (!wishlistResult.getCtaTextV2().isEmpty()) ctaText = wishlistResult.getCtaTextV2();
-
-        if (getView() != null) {
-            Toaster.build(getView(), msg, Toaster.LENGTH_SHORT, typeToaster, ctaText, view -> {
-                goToWishList();
-            }).show();
-        }
+        AddRemoveWishlistV2Handler.INSTANCE.showAddToWishlistV2SuccessToaster(wishlistResult, getActivity(), view);
     }
 
     private void goToWishList() {
@@ -257,12 +243,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         if (getActivity() == null) return;
 
         View view = getActivity().findViewById(android.R.id.content);
-        String message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg);
-
         if (view == null) return;
 
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist), v -> {}).show();
+        AddRemoveWishlistV2Handler.INSTANCE.showRemoveWishlistV2SuccessToaster(wishlistResult, getActivity(), view);
     }
 
     private void handleWishlistActionFailed() {
@@ -287,7 +270,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             else errorMsg = getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg);
         }
 
-        Toaster.build(rootView, errorMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show();
+        AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
     }
 
     @Override
