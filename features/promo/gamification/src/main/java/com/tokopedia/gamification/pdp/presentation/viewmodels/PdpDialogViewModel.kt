@@ -175,7 +175,10 @@ class PdpDialogViewModel @Inject constructor(private val recommendationProductUs
     fun removeFromWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { actionListener.onSuccessRemoveWishlist(model.productId.toString()) },
+            onSuccess = { result ->
+                if (result is Success) {
+                    actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                } },
             onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
