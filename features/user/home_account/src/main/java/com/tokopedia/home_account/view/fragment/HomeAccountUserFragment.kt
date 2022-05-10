@@ -116,7 +116,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -1474,25 +1474,26 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         homeAccountAnalytic.eventClickWishlistButton(!productCardOptionsModel.isWishlisted)
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
-        if (productCardOptionsModel.wishlistResult.isSuccess)
-            if (isUsingWishlistV2) handleWishlistV2ActionSuccess(productCardOptionsModel)
-            else handleWishlistActionSuccess(productCardOptionsModel)
-        else
-            if (isUsingWishlistV2) handleWishlistV2ActionError(productCardOptionsModel.wishlistResult)
-            else handleWishlistActionError()
+        if (productCardOptionsModel.wishlistResult.isUsingWishlistV2) {
+            handleWishlistV2Action(productCardOptionsModel)
+        } else {
+            if (productCardOptionsModel.wishlistResult.isSuccess)
+                handleWishlistActionSuccess(productCardOptionsModel)
+            else
+                handleWishlistActionError()
+        }
     }
 
-    private fun handleWishlistV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+    private fun handleWishlistV2Action(productCardOptionsModel: ProductCardOptionsModel) {
         val recommendationItem = adapter?.getItems()
             ?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationItem
             ?: return
         recommendationItem.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
 
         if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            showSuccessAddWishlist()
+            showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
         else
-            showSuccessRemoveWishlist()
+            showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
     }
 
     private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1512,6 +1513,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
             Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { setOnClickSuccessAddWishlist() }.show()
+        }
+    }
+
+    private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
         }
     }
 
@@ -1595,6 +1604,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
     }
 
+    private fun showSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
+        }
+    }
+
     private fun handleWishlistActionError() {
         view?.let {
             Toaster.make(
@@ -1603,19 +1620,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             )
-        }
-    }
-
-    private fun handleWishlistV2ActionError(wishlistResult: ProductCardOptionsModel.WishlistResult) {
-        view?.let {
-            var errorMessage = ErrorHandler.getErrorMessage(it.context, null)
-            if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
-
-            val ctaText = wishlistResult.ctaTextV2
-
-            Toaster.build(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
-                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
-            }.show()
         }
     }
 
