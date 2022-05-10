@@ -8,6 +8,7 @@
     <string name="tradein_estimate_price">Estimasi HP Kamu</string>
     <string name="tradein_phone_price">HP Kamu</string>
     <string name="tradein_estimated_total">Estimasi Total Harga</string>
+    <string name="tradein_final_total">Total Harga</string>
     <string name="tradein_periode_promo">Periode Promo</string>
     <string name="tradein_salin">Salin</string>
     <string name="tradein_save_on_checkout">Biar lebih hemat, masukkan kode ini di halaman Pengiriman.</string>

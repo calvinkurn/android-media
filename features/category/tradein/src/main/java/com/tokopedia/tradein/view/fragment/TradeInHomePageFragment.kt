@@ -471,10 +471,14 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                 findViewById<Typography>(R.id.exchange_price_text).text =
                     logistic.diagnosticPriceFmt
                 findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_phone_price)
+                findViewById<Typography>(R.id.estimated_total_text).text = getString(com.tokopedia.tradein.R.string.tradein_final_total)
+                findViewById<View>(R.id.help_device_text).hide()
             }
             else {
                 findViewById<Typography>(R.id.exchange_price_text).text = logistic.estimatedPriceFmt
                 findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_estimate_price)
+                findViewById<Typography>(R.id.estimated_total_text).text = getString(com.tokopedia.tradein.R.string.tradein_estimated_total)
+                findViewById<View>(R.id.help_device_text).show()
             }
             findViewById<Typography>(R.id.estimated_price).text = getString(
                 com.tokopedia.tradein.R.string.tradein_minus,
