@@ -1,20 +1,31 @@
 package com.tokopedia.createpost.producttag.view.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.createpost.producttag.view.adapter.delegate.LastPurchasedProductAdapterDelegate
+import com.tokopedia.createpost.producttag.view.adapter.delegate.ProductTagCardAdapterDelegate
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
 /**
- * Created By : Jonathan Darwin on April 28, 2022
+ * Created By : Jonathan Darwin on April 26, 2022
  */
-class LastPurchasedProductAdapter(
+class ProductTagCardAdapter(
     onSelected: (ProductUiModel) -> Unit,
-) : BaseDiffUtilAdapter<LastPurchasedProductAdapter.Model>() {
+    private val onLoading: () -> Unit,
+) : BaseDiffUtilAdapter<ProductTagCardAdapter.Model>() {
 
     init {
         delegatesManager
-            .addDelegate(LastPurchasedProductAdapterDelegate.Product(onSelected))
-            .addDelegate(LastPurchasedProductAdapterDelegate.Loading())
+            .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
+            .addDelegate(ProductTagCardAdapterDelegate.Loading())
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        if(position == (itemCount - 1)) onLoading()
     }
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {

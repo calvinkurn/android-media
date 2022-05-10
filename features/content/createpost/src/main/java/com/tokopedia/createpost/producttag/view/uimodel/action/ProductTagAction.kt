@@ -19,4 +19,7 @@ sealed interface ProductTagAction {
     /** My Shop Product */
     object LoadMyShopProduct: ProductTagAction
     data class SearchMyShopProduct(val query: String): ProductTagAction
+
+    /** Global Search Product */
+    object LoadGlobalSearchProduct: ProductTagAction
 }

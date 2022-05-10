@@ -5,17 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
-import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
+import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
@@ -44,8 +42,8 @@ class LastTaggedProductFragment @Inject constructor(
         get() = _binding!!
 
     private lateinit var viewModel: ProductTagViewModel
-    private val adapter: LastTaggedProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
-        LastTaggedProductAdapter(
+    private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
+        ProductTagCardAdapter(
             onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
             onLoading = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
         )
@@ -114,8 +112,8 @@ class LastTaggedProductFragment @Inject constructor(
 
         fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
             val finalProducts = products.map {
-                LastTaggedProductAdapter.Model.Product(product = it)
-            } + if(hasNextPage) listOf(LastTaggedProductAdapter.Model.Loading) else emptyList()
+                ProductTagCardAdapter.Model.Product(product = it)
+            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvLastTaggedProduct.isComputingLayout.not())
                 adapter.setItemsAndAnimateChanges(finalProducts)

@@ -4,22 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.createpost.createpost.databinding.ItemLastTaggedProductListBinding
+import com.tokopedia.createpost.createpost.databinding.ItemProductTagCardListBinding
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
-import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
+import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
-internal class LastTaggedProductViewHolder private constructor() {
+internal class ProductTagCardViewHolder private constructor() {
 
     internal class Product(
-        private val binding: ItemLastTaggedProductListBinding,
+        private val binding: ItemProductTagCardListBinding,
         private val onSelected: (ProductUiModel) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: LastTaggedProductAdapter.Model.Product) {
+        fun bind(item: ProductTagCardAdapter.Model.Product) {
             binding.productView.apply {
                 setProductModel(item.product.toProductCard())
                 setOnClickListener { onSelected(item.product) }
@@ -32,7 +32,7 @@ internal class LastTaggedProductViewHolder private constructor() {
                 parent: ViewGroup,
                 onSelected: (ProductUiModel) -> Unit
             ) = Product(
-                binding = ItemLastTaggedProductListBinding.inflate(
+                binding = ItemProductTagCardListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

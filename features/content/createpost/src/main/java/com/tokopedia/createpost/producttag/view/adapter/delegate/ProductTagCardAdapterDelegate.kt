@@ -4,26 +4,26 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.producttag.view.adapter.LastTaggedProductAdapter
-import com.tokopedia.createpost.producttag.view.adapter.viewholder.LastTaggedProductViewHolder
+import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.adapter.viewholder.ProductTagCardViewHolder
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
-internal class LastTaggedProductAdapterDelegate private constructor() {
+internal class ProductTagCardAdapterDelegate private constructor() {
 
     internal class Product(
         private val onSelected: (ProductUiModel) -> Unit,
     ) : TypedAdapterDelegate<
-            LastTaggedProductAdapter.Model.Product,
-            LastTaggedProductAdapter.Model,
-            LastTaggedProductViewHolder.Product>(
+            ProductTagCardAdapter.Model.Product,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Product>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
-            item: LastTaggedProductAdapter.Model.Product,
-            holder: LastTaggedProductViewHolder.Product
+            item: ProductTagCardAdapter.Model.Product,
+            holder: ProductTagCardViewHolder.Product
         ) {
             holder.bind(item)
         }
@@ -31,29 +31,29 @@ internal class LastTaggedProductAdapterDelegate private constructor() {
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): LastTaggedProductViewHolder.Product {
-            return LastTaggedProductViewHolder.Product.create(
+        ): ProductTagCardViewHolder.Product {
+            return ProductTagCardViewHolder.Product.create(
                 parent, onSelected
             )
         }
     }
 
     internal class Loading : TypedAdapterDelegate<
-            LastTaggedProductAdapter.Model.Loading,
-            LastTaggedProductAdapter.Model,
-            LastTaggedProductViewHolder.Loading>(
+            ProductTagCardAdapter.Model.Loading,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Loading>(
         R.layout.view_cc_empty) {
 
         override fun onBindViewHolder(
-            item: LastTaggedProductAdapter.Model.Loading,
-            holder: LastTaggedProductViewHolder.Loading
+            item: ProductTagCardAdapter.Model.Loading,
+            holder: ProductTagCardViewHolder.Loading
         ) {}
 
         override fun onCreateViewHolder(
             parent: ViewGroup,
             basicView: View
-        ): LastTaggedProductViewHolder.Loading {
-            return LastTaggedProductViewHolder.Loading.create(parent)
+        ): ProductTagCardViewHolder.Loading {
+            return ProductTagCardViewHolder.Loading.create(parent)
         }
     }
 }

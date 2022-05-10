@@ -52,6 +52,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val myShopStateUnknown: Boolean
         get() = _myShopProduct.value.state == PagedState.Unknown
 
+    val globalStateProductStateUnknown: Boolean
+        get() = _globalSearchProduct.value.state == PagedState.Unknown
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
@@ -59,6 +62,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
     private val _myShopProduct = MutableStateFlow(MyShopProductUiModel.Empty)
+    private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -97,17 +101,28 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    private val _globalSearchProductUiState = _globalSearchProduct.map {
+        GlobalSearchProductUiState(
+            products = it.products,
+            nextCursor = it.nextCursor,
+            state = it.state,
+            query = it.query,
+        )
+    }
+
     val uiState = combine(
         _productTagSourceUiState,
         _lastTaggedProductUiState,
         _lastPurchasedProductUiState,
         _myShopProductUiState,
-    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct ->
+        _globalSearchProductUiState,
+    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct, globalSearchProduct ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
             lastPurchasedProduct = lastPurchasedProduct,
             myShopProduct = myShopProduct,
+            globalSearchProduct = globalSearchProduct,
         )
     }
 
@@ -143,6 +158,9 @@ class ProductTagViewModel @AssistedInject constructor(
             /** My Shop Product */
             ProductTagAction.LoadMyShopProduct -> handleLoadMyShopProduct()
             is ProductTagAction.SearchMyShopProduct -> handleSearchMyShopProduct(action.query)
+
+            /** Global Search Product */
+            ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
         }
     }
 
@@ -260,6 +278,43 @@ class ProductTagViewModel @AssistedInject constructor(
             )
         }
         handleLoadMyShopProduct()
+    }
+
+    private fun handleLoadGlobalSearchProduct() {
+        viewModelScope.launchCatchError(block = {
+            val globalSearchProduct = _globalSearchProduct.value
+
+            if(globalSearchProduct.state.isLoading || globalSearchProduct.state.isNextPage.not()) return@launchCatchError
+
+            _globalSearchProduct.setValue {
+                copy(state = PagedState.Loading)
+            }
+
+            /** TODO: change repo source */
+            val pagedDataList = repo.getMyShopProducts(
+                rows = LIMIT_PER_PAGE,
+                start = globalSearchProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
+                query = globalSearchProduct.query,
+                shopId = userSession.shopId,
+                sort = 9 /** TODO: gonna change this later */
+            )
+
+            _globalSearchProduct.setValue {
+                copy(
+                    products = products + pagedDataList.dataList,
+                    nextCursor = pagedDataList.nextCursor,
+                    state = PagedState.Success(
+                        hasNextPage = pagedDataList.hasNextPage,
+                    )
+                )
+            }
+        }) {
+            _globalSearchProduct.setValue {
+                copy(
+                    state = PagedState.Error(it)
+                )
+            }
+        }
     }
 
     companion object {
