@@ -67,6 +67,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -188,7 +189,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
         if(uri.getUserInfo()!=null) {
-            Toast.makeText(getActivity(), "this cannot be proceeded", Toast.LENGTH_SHORT).show();
+            ErrorHandler.Builder builder = new ErrorHandler.Builder();
+            builder.sendToScalyr(true);
+            builder.setErrorCode(true);
+            Toast.makeText(getActivity(), ErrorHandler.getErrorMessage(getActivity(), new NullPointerException("Unable to open link"), builder ), Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
 
