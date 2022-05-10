@@ -173,6 +173,9 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val ON_BOARDING_DELAY_MS: Long = 200
         private const val COMPACT_SCREEN_BREAKPOINT = 580f
         private const val MEDIUM_SCREEN_BREAKPOINT = 840f
+        private const val COMPACT_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT = 2
+        private const val MEDIUM_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT = 3
+        private const val EXPANDED_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT = 4
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -255,13 +258,13 @@ class ProductListFragment: BaseDaggerFragment(),
             val screenDensity = it.resources.displayMetrics.density
             val screenWidthInDp = DeviceScreenInfo.getScreenWidth(it) / screenDensity
             return when {
-                screenWidthInDp < COMPACT_SCREEN_BREAKPOINT -> 2
-                screenWidthInDp < MEDIUM_SCREEN_BREAKPOINT -> 3
-                else -> 4
+                screenWidthInDp < COMPACT_SCREEN_BREAKPOINT -> COMPACT_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT
+                screenWidthInDp < MEDIUM_SCREEN_BREAKPOINT -> MEDIUM_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT
+                else -> EXPANDED_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT
             }
         }
 
-        return 2
+        return COMPACT_SCREEN_SMALL_GRID_LAYOUT_SPAN_COUNT
     }
 
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
