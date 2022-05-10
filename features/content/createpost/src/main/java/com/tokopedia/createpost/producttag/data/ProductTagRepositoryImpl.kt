@@ -79,7 +79,7 @@ class ProductTagRepositoryImpl @Inject constructor(
                 ))
             }.executeOnBackground()
 
-            mapper.mapSearchAceProducts(response, "${start + 1}")
+            mapper.mapSearchAceProducts(response, start + rows)
         }
     }
 }

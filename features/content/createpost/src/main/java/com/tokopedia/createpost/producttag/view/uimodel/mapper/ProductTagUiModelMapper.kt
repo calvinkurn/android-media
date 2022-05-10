@@ -81,7 +81,7 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapSearchAceProducts(response: FeedAceSearchProductResponse, nextCursor: String): PagedDataUiModel<ProductUiModel> {
+    fun mapSearchAceProducts(response: FeedAceSearchProductResponse, nextCursor: Int): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = response.wrapper.data.products.map {
                 ProductUiModel(
@@ -112,7 +112,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                 )
             },
             hasNextPage = response.wrapper.data.products.isNotEmpty(),
-            nextCursor = nextCursor,
+            nextCursor = nextCursor.toString(),
         )
     }
 }
