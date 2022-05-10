@@ -29,6 +29,9 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_MOVE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -384,17 +387,17 @@ class ProductTabFragment : BaseDaggerFragment() {
             false -> View.GONE
         }
         when (groupFilterSheet.getSelectedAdPlacementType()) {
-            0 -> {
+            CONST_0 -> {
                 placementTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
                 placementTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
             }
-            2 -> {
+            CONST_2 -> {
                 placementTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_pencerian)
                 placementTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_pencerian))
             }
-            3 -> {
+            CONST_3 -> {
                 placementTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_rekoemendasi)
                 placementTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))

@@ -24,6 +24,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DELETE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
@@ -60,11 +63,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private var loader: LoaderUnify? = null
     private var actionbar: ConstraintLayout? = null
-    private var non_group_tiker: Ticker? = null
+    private var nonGroupTiker: Ticker? = null
     private var searchBar: SearchBarUnify? = null
     private var btnFilter: UnifyImageButton? = null
     private var filterCount: Typography? = null
-    private var close_butt: UnifyImageButton? = null
+    private var closeButton: UnifyImageButton? = null
     private var activate: Typography? = null
     private var deactivate: Typography? = null
     private var movetogroup: Typography? = null
@@ -73,9 +76,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NonGroupItemsListAdapter
     private val EMPTY_SEARCH_VIEW = true
-    private val PRODUCTS_WITHOUT_GROUP = -2
     private var deleteCancel = false
-    private var SingleDelGroupId = ""
+    private var singleDelGroupId = ""
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
     private var totalCount = 0
@@ -88,6 +90,8 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     companion object {
+        private const val PRODUCTS_WITHOUT_GROUP = -2
+
         fun createInstance(bundle: Bundle): TopAdsDashWithoutGroupFragment {
             val fragment = TopAdsDashWithoutGroupFragment()
             fragment.arguments = bundle
@@ -121,11 +125,11 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         recyclerView = view.findViewById(R.id.non_group_list)
         loader = view.findViewById(R.id.loader)
         actionbar = view.findViewById(R.id.actionbar)
-        non_group_tiker = view.findViewById(R.id.non_group_tiker)
+        nonGroupTiker = view.findViewById(R.id.non_group_tiker)
         searchBar = view.findViewById(R.id.searchBar)
         btnFilter = view.findViewById(R.id.btnFilter)
         filterCount = view.findViewById(R.id.filterCount)
-        close_butt = view.findViewById(R.id.close_butt)
+        closeButton = view.findViewById(R.id.close_butt)
         activate = view.findViewById(R.id.activate)
         deactivate = view.findViewById(R.id.deactivate)
         movetogroup = view.findViewById(R.id.movetogroup)
@@ -200,7 +204,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun singleItemDelete(pos: Int) {
-        SingleDelGroupId = (adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()
+        singleDelGroupId = (adapter.items[pos] as NonGroupItemsItemModel).data.adId
         performAction(ACTION_DELETE, null)
     }
 
@@ -208,12 +212,12 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         if (status != 1) {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                 TopAdsDashboardConstant.ACTION_ACTIVATE,
-                listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()),
+                listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId),
                 null)
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                 TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId.toString()),
+                listOf((adapter.items[pos] as NonGroupItemsItemModel).data.adId),
                 null)
         }
     }
@@ -231,7 +235,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             }
         }
 
-        close_butt?.setOnClickListener {
+        closeButton?.setOnClickListener {
             setSelectMode(false)
         }
         activate?.setOnClickListener {
@@ -320,10 +324,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                     Toaster.make(it!!,
                         getString(R.string.topads_without_product_del_toaster),
                         TOASTER_DURATION.toInt(), Toaster.TYPE_NORMAL,
-                        getString(com.tokopedia.topads.common.R.string.topads_common_batal),
-                        View.OnClickListener {
-                            deleteCancel = true
-                        })
+                        getString(com.tokopedia.topads.common.R.string.topads_common_batal)
+                    ) {
+                        deleteCancel = true
+                    }
                 }
             }
             val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -333,7 +337,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                     if (!deleteCancel)
                         topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                             actionActivate, getAdIds(), selectedFilter)
-                    SingleDelGroupId = ""
+                    singleDelGroupId = ""
                     deleteCancel = false
                     setSelectMode(false)
                 }
@@ -341,20 +345,20 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         } else {
             topAdsDashboardPresenter.setProductAction(::onSuccessAction,
                 actionActivate, getAdIds(), selectedFilter)
-            SingleDelGroupId = ""
+            singleDelGroupId = ""
         }
 
     }
 
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
-        return if (SingleDelGroupId.isEmpty()) {
+        return if (singleDelGroupId.isEmpty()) {
             adapter.getSelectedItems().forEach {
-                ads.add(it.data.adId.toString())
+                ads.add(it.data.adId)
             }
             ads
         } else {
-            mutableListOf(SingleDelGroupId)
+            mutableListOf(singleDelGroupId)
 
         }
     }
@@ -365,7 +369,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
-        non_group_tiker?.visibility = View.GONE
+        nonGroupTiker?.visibility = View.GONE
         adapter.items.add(NonGroupItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty())
             adapter.setEmptyView(!EMPTY_SEARCH_VIEW)
@@ -384,7 +388,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         recyclerviewScrollListener.updateStateAfterGetData()
         loader?.visibility = View.GONE
         response.data.forEach {
-            adIds.add(it.adId.toString())
+            adIds.add(it.adId)
             adapter.items.add(NonGroupItemsItemModel(it))
         }
         if (adIds.isNotEmpty()) {
@@ -394,13 +398,13 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                 Utils.format.format((parentFragment as TopAdsProductIklanFragment).endDate)
             topAdsDashboardPresenter.getProductStats(
                 resources, startDate, endDate, adIds, groupFilterSheet.getSelectedSortId(),
-                groupFilterSheet.getSelectedStatusId() ?: 0, ::OnSuccessStats)
+                groupFilterSheet.getSelectedStatusId() ?: 0, ::onSuccessStats)
         }
         (parentFragment as TopAdsProductIklanFragment).setNonGroupCount(totalCount)
         setFilterCount()
     }
 
-    private fun OnSuccessStats(stats: GetDashboardProductStatistics) {
+    private fun onSuccessStats(stats: GetDashboardProductStatistics) {
         adapter.setstatistics(stats.data)
     }
 
@@ -428,25 +432,25 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
             groupFilterSheet.getSelectedAdPlacementType(), ::onSuccessResult, ::onEmptyResult)
 
 
-        non_group_tiker?.visibility = when (isWhiteListedUser) {
+        nonGroupTiker?.visibility = when (isWhiteListedUser) {
             true -> View.VISIBLE
             false -> View.GONE
         }
         when (groupFilterSheet.getSelectedAdPlacementType()) {
-            0 -> {
-                non_group_tiker?.tickerTitle =
+            CONST_0 -> {
+                nonGroupTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
-                non_group_tiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
+                nonGroupTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_semua))
             }
-            2 -> {
-                non_group_tiker?.tickerTitle =
+            CONST_2 -> {
+                nonGroupTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_pencerian)
-                non_group_tiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_pencerian))
+                nonGroupTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_pencerian))
             }
-            3 -> {
-                non_group_tiker?.tickerTitle =
+            CONST_3 -> {
+                nonGroupTiker?.tickerTitle =
                     getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_rekoemendasi)
-                non_group_tiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))
+                nonGroupTiker?.setTextDescription(getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_description_rekoemendasi))
             }
         }
     }

@@ -48,6 +48,10 @@ private const val CLICK_ATUR_TAB = "click - tab atur"
 private const val CLICK_SIMPAN_BUTTON = "click - simpan"
 private const val CLICK_SIMPAN_BUTTON_EDIT = "click - simpan edit form"
 private const val VIEW_EDIT_FORM = "view - edit form"
+private const val CONST_0 = 0
+private const val CONST_1 = 1
+private const val CONST_2 = 2
+private const val CONST_3 = 3
 
 class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     SaveButtonStateCallBack {
@@ -165,12 +169,12 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
         viewPager?.adapter = getViewPagerAdapter()
-        viewPager?.offscreenPageLimit = 3
+        viewPager?.offscreenPageLimit = CONST_3
         tabLayout?.addNewTab(PRODUK_NAME)
         tabLayout?.addNewTab(KATA_KUNCI)
         tabLayout?.addNewTab(LAINNYA_NAME)
-        tabLayout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
-        viewPager?.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
+        tabLayout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, CONST_1) ?: CONST_2)?.select()
+        viewPager?.currentItem = bundle?.getInt(TAB_POSITION, CONST_1) ?: CONST_2
         tabLayout?.getUnifyTabLayout()
             ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -183,13 +187,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
 
                 override fun onTabSelected(p0: TabLayout.Tab) {
                     when (p0.position) {
-                        0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                        CONST_0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                             CLICK_PRODUK_TAB,
                             "")
-                        1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                        CONST_1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                             CLICK_KATA_KUNCI_TAB,
                             "")
-                        2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                        CONST_2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
                             CLICK_ATUR_TAB,
                             "")
                     }
@@ -259,7 +263,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_leave_page_conf_dialog_title))
         dialog.setDescription(getString(R.string.topads_edit_leave_page_conf_dialog_desc))
-        dialog.setPrimaryCTAText(getString(R.string.topads_common_save_butt))
+        dialog.setPrimaryCTAText(getString(com.tokopedia.topads.common.R.string.topads_common_save_butt))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_keluar))
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()

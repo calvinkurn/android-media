@@ -23,7 +23,7 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     private var goToStaticSheet: Typography? = null
 
     var onSelect: ((type: String) -> Unit)? = null
-    var selected: Int = 0
+    private var selected: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
@@ -41,7 +41,7 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
         desc2 = contentView.findViewById(R.id.desc_2)
         goToStaticSheet = contentView.findViewById(R.id.goToStaticSheet)
         showCloseIcon = true
-        setTitle(getString(R.string.topads_common_keyword_edit_info_sheet_sub_title))
+        setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_keyword_edit_info_sheet_sub_title))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,11 +53,11 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
         keySpecific?.setOnCheckedChangeListener(null)
         keyBroad?.setOnCheckedChangeListener(null)
         desc1?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc1))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc1))
         desc2?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc2))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc2))
         goToStaticSheet?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_extra))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
         if (selected == BROAD_POSITIVE)
             keyBroad?.isChecked = true
         else

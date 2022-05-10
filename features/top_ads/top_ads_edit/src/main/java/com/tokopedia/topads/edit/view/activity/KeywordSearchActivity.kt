@@ -60,15 +60,15 @@ private const val EVENT_CLICK_SUBMIT_BUTT = "kata kunci terpilih yang di ceklist
 class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> {
 
     private var rootView: ConstraintLayout? = null
-    private var header_toolbar: HeaderUnify? = null
+    private var headerToolbar: HeaderUnify? = null
     private var txtError: Typography? = null
     private var manualAd: Typography? = null
     private var dividerManual: DividerUnify? = null
     private var headlineList: ConstraintLayout? = null
-    private var keyword_list: RecyclerView? = null
-    private var tip_btn: FloatingButtonUnify? = null
-    private var btn_next: UnifyButton? = null
-    private var selected_info: Typography? = null
+    private var keywordList: RecyclerView? = null
+    private var tipBtn: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var selectedInfo: Typography? = null
     private var emptyLayout: ConstraintLayout? = null
 
     @Inject
@@ -103,8 +103,8 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
 
         setSearchBar()
         fetchData()
-        keyword_list?.adapter = adapter
-        keyword_list?.layoutManager = LinearLayoutManager(this)
+        keywordList?.adapter = adapter
+        keywordList?.layoutManager = LinearLayoutManager(this)
         val tooltipView =
             layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
                 .apply {
@@ -116,12 +116,12 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
                         com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
 
-        tip_btn?.addItem(tooltipView)
-        tip_btn?.setOnClickListener {
+        tipBtn?.addItem(tooltipView)
+        tipBtn?.setOnClickListener {
             TipSheetKeywordList().show(supportFragmentManager,
                 KeywordSearchActivity::class.java.name)
         }
-        btn_next?.setOnClickListener {
+        btnNext?.setOnClickListener {
             val eventLabel = "$groupId - $EVENT_CLICK_SUBMIT_BUTT"
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_SUBMIT_BUTT,
                 eventLabel,
@@ -136,15 +136,15 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
 
     private fun initView() {
         rootView = findViewById(R.id.rootView)
-        header_toolbar = findViewById(R.id.header_toolbar)
+        headerToolbar = findViewById(R.id.header_toolbar)
         txtError = findViewById(R.id.txtError)
         manualAd = findViewById(R.id.manualAd)
         dividerManual = findViewById(R.id.dividerManual)
         headlineList = findViewById(R.id.headlineList)
-        keyword_list = findViewById(R.id.keyword_list)
-        tip_btn = findViewById(R.id.tip_btn)
-        btn_next = findViewById(R.id.btn_next)
-        selected_info = findViewById(R.id.selected_info)
+        keywordList = findViewById(R.id.keyword_list)
+        tipBtn = findViewById(R.id.tip_btn)
+        btnNext = findViewById(R.id.btn_next)
+        selectedInfo = findViewById(R.id.selected_info)
         emptyLayout = findViewById(R.id.emptyLayout)
     }
 
@@ -170,7 +170,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
         search.layoutParams = param
         rootView?.let { Utils.setSearchListener(search, this, it, ::fetchData) }
         val searchTextField = search.searchBarTextField
-        searchTextField.hint = getString(R.string.topads_common_search_hint_activity)
+        searchTextField.hint = getString(com.tokopedia.topads.common.R.string.topads_common_search_hint_activity)
 
     }
 
@@ -180,14 +180,14 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             ViewGroup.LayoutParams.WRAP_CONTENT)
         wrapper.layoutParams = param
         wrapper.addView(search)
-        header_toolbar?.customView(wrapper)
-        header_toolbar?.setNavigationOnClickListener {
+        headerToolbar?.customView(wrapper)
+        headerToolbar?.setNavigationOnClickListener {
             onBackPressed()
         }
     }
 
     private fun onSelectedItem() {
-        selected_info?.text = String.format(getString(R.string.format_selected_keyword),
+        selectedInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword),
             adapter.getSelectedItem().size)
     }
 
@@ -238,9 +238,9 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
             manualAd?.visibility = View.VISIBLE
             dividerManual?.visibility = View.VISIBLE
             manualAd?.text =
-                Html.fromHtml(String.format(getString(R.string.topads_common_new_manual_key),
+                Html.fromHtml(String.format(getString(com.tokopedia.topads.common.R.string.topads_common_new_manual_key),
                     search.searchBarTextField.text.toString()))
-            rootView?.let { setSpannable(getString(R.string.topads_common_tambah_button), it) }
+            rootView?.let { setSpannable(getString(com.tokopedia.topads.common.R.string.topads_common_tambah_button), it) }
         }
     }
 
@@ -296,7 +296,7 @@ class KeywordSearchActivity : BaseActivity(), HasComponent<TopAdsEditComponent> 
     }
 
     private fun makeToast() {
-        SnackbarManager.make(this, getString(R.string.keyword_already_exists),
+        SnackbarManager.make(this, getString(com.tokopedia.topads.common.R.string.keyword_already_exists),
             Snackbar.LENGTH_LONG)
             .show()
     }

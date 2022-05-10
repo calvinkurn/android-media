@@ -84,7 +84,7 @@ class TopAdsInsightKeyPosFragment : BaseDaggerFragment() {
         toolTip?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_info_tooltip))
         toolTip?.setOnClickListener {
             val sheet = InsightKeyBottomSheet.createInstance(0)
-            sheet.show(fragmentManager!!, "")
+            sheet.show(requireFragmentManager(), "")
         }
         insightListPosKey?.adapter = adapter
         insightListPosKey?.layoutManager = LinearLayoutManager(context)

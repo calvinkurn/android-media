@@ -19,6 +19,8 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsMiniKeywordInsi
 /**
  * Created by Pika on 20/7/20.
  */
+
+private const val INITIAL_SIZE_LIMIT = 3
 class TopAdsInsightMiniKeyFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: TopAdsMiniKeywordInsightAdapter
@@ -71,7 +73,7 @@ class TopAdsInsightMiniKeyFragment : BaseDaggerFragment() {
         val data: HashMap<String, KeywordInsightDataMain> =
             arguments?.getSerializable(DATA_INSIGHT) as HashMap<String, KeywordInsightDataMain>
         listOfKeys.clear()
-        var sizeLimit = 3
+        var sizeLimit = INITIAL_SIZE_LIMIT
         data.forEach {
             if (sizeLimit == 0)
                 return@forEach

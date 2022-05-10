@@ -27,7 +27,7 @@ class StaticInfoBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = false
         setChild(contentView)
-        setTitle(getString(R.string.topads_common_static_bs_title))
+        setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_static_bs_title))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

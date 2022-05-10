@@ -21,10 +21,11 @@ import java.util.*
 class HiddenTrialFragment : TkpdBaseV4Fragment() {
 
     private var desc: TextView? = null
-    val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    val outputFormat: DateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
+    private val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    private val outputFormat: DateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
 
     companion object {
+        const val RANGE_LIMIT = 13
         fun newInstance(extras: Bundle?): HiddenTrialFragment {
             val fragment = HiddenTrialFragment()
             fragment.arguments = extras
@@ -57,7 +58,7 @@ class HiddenTrialFragment : TkpdBaseV4Fragment() {
 
         val date: String = outputFormat.format(inputFormat.parse(arguments?.getString(EXPIRE)))
         val text1 = getString(R.string.hidden_trial_desc1)
-        val text2 = text1.removeRange(text1.length - 13, text1.length)
+        val text2 = text1.removeRange(text1.length - RANGE_LIMIT, text1.length)
         val text = "$text2 [$date]."
         val spannableString = SpannableString(text)
         spannableString.setSpan(ForegroundColorSpan(Color.BLACK),

@@ -38,7 +38,7 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
         setChild(contentView)
         setUpView(contentView)
         showCloseIcon = true
-        setTitle(getString(R.string.topads_common_keyword_edit_info_sheet_sub_title))
+        setTitle(getString(com.tokopedia.topads.common.R.string.topads_common_keyword_edit_info_sheet_sub_title))
     }
 
     private fun setUpView(contentView: View) {
@@ -58,11 +58,11 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
         keySpecific?.setOnCheckedChangeListener(null)
         keyBroad?.setOnCheckedChangeListener(null)
         desc1?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc1))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc1))
         desc2?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc2))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_desc2))
         goToStaticSheet?.text =
-            MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_extra))
+            MethodChecker.fromHtml(getString(com.tokopedia.topads.common.R.string.topads_common_choose_type_bs_extra))
         if (selected == BROAD_POSITIVE)
             keyBroad?.isChecked = true
         else

@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
+import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -297,7 +299,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         return bundle
     }
 
-    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter? {
+    private fun getViewPagerAdapter(): TopAdsDashboardBasePagerAdapter {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         tabLayout?.getUnifyTabLayout()?.removeAllTabs()
         tabLayout?.tabLayout?.tabMode = TabLayout.MODE_SCROLLABLE
@@ -441,8 +443,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoadsLayout?.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = AppCompatResources.getDrawable(this,
-                    com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+                imgBg.background = VectorDrawableCompat.create(resources,
+                    com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
@@ -517,7 +519,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         recyclerviewScrollListener.updateStateAfterGetData()
         val adIds: MutableList<String> = mutableListOf()
         response.data.forEach {
-            adIds.add(it.adId.toString())
+            adIds.add(it.adId)
             autoAdsAdapter.items.add(AutoAdsItemsItemModel(it))
         }
         if (adIds.isNotEmpty()) {
@@ -527,7 +529,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 adIds,
                 groupFilterSheet.getSelectedSortId(),
                 0,
-                ::OnSuccessStats)
+                ::onSuccessStats)
         }
         if (!groupFilterSheet.getFilterCount().isZero()) {
             filterCount?.visibility = View.VISIBLE
@@ -537,7 +539,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         groupFilterSheet.removeStatusFilter()
     }
 
-    private fun OnSuccessStats(stats: GetDashboardProductStatistics) {
+    private fun onSuccessStats(stats: GetDashboardProductStatistics) {
         autoAdsAdapter.setstatistics(stats.data)
     }
 

@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -38,7 +38,7 @@ class TopAdsTypeSelectionActivity : BaseSimpleActivity() {
         userSession = UserSession(this)
         findViewById<CardUnify>(R.id.topads_ad_card1).run {
             findViewById<View>(R.id.card_bg)?.background =
-                AppCompatResources.getDrawable(context, R.drawable.ic_topads_added_ads_bg)
+                VectorDrawableCompat.create(resources, R.drawable.ic_topads_added_ads_bg, null)
             findViewById<ImageUnify>(R.id.card_icon)?.setImageDrawable(context.getResDrawable(R.drawable.ic_topads_added_ads_produk))
             findViewById<Typography>(R.id.card_title)?.text =
                 getString(R.string.topads_dashboard_ad_product_type_selection_title)
@@ -52,7 +52,7 @@ class TopAdsTypeSelectionActivity : BaseSimpleActivity() {
         }
         findViewById<CardUnify>(R.id.topads_ad_card2).run {
             findViewById<View>(R.id.card_bg)?.background =
-                AppCompatResources.getDrawable(context, R.drawable.ic_topads_added_ads_bg)
+                VectorDrawableCompat.create(resources, R.drawable.ic_topads_added_ads_bg, null)
             findViewById<ImageUnify>(R.id.card_icon)?.setImageDrawable(context.getResDrawable(R.drawable.ic_topads_added_ads_headline))
             findViewById<Typography>(R.id.card_title)?.text =
                 getString(R.string.topads_dashboard_ad_headline_type_selection_title)
