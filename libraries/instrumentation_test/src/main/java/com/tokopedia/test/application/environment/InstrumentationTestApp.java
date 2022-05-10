@@ -77,6 +77,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.150";
+        GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
+        GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
+        GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
+        GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);
