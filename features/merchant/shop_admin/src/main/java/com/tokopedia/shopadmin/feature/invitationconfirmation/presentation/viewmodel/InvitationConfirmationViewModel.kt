@@ -20,8 +20,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,8 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class InvitationConfirmationViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
     private val getAdminTypeUseCaseCase: Lazy<GetAdminTypeUseCaseCase>,
@@ -141,6 +138,5 @@ class InvitationConfirmationViewModel @Inject constructor(
 
     companion object {
         const val DEBOUNCE_DELAY_MILLIS = 300L
-        const val TIMEOUT_IN_MILLIS = 5000L
     }
 }
