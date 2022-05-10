@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 data class DriverPhoneNumberResponse(
     @SerializedName("tokofoodDriverPhoneNumber")
-    @Expose
     val tokofoodDriverPhoneNumber: TokofoodDriverPhoneNumber = TokofoodDriverPhoneNumber()
 ) {
     data class TokofoodDriverPhoneNumber(

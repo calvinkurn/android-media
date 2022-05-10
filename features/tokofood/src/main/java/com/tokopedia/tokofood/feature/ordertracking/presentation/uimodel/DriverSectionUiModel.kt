@@ -8,7 +8,6 @@ data class DriverSectionUiModel(
     val driverInformationList: List<DriverInformationUiModel> = emptyList(),
     val name: String,
     val photoUrl: String,
-    val phone: String,
     val licensePlateNumber: String,
     val isCallable: Boolean
 ): BaseOrderTrackingTypeFactory {

@@ -44,7 +44,7 @@ abstract class OrderDetailSectionCommon {
         )
     }
 
-    protected fun getOrderStatusLottieUrl(orderStatus: String): String {
+    private fun getOrderStatusLottieUrl(orderStatus: String): String {
         return when (orderStatus) {
             OrderStatusType.NEW, OrderStatusType.CREATED -> {
                 LottieUrl.OrderTracking.HOURGLASS
@@ -64,7 +64,7 @@ abstract class OrderDetailSectionCommon {
         }
     }
 
-    protected fun getHourGlassStepperStatus(
+    private fun getHourGlassStepperStatus(
         isIconActive: Boolean = true,
         isLineActive: Boolean
     ): StepperStatusUiModel {
@@ -75,7 +75,7 @@ abstract class OrderDetailSectionCommon {
         )
     }
 
-    protected fun getCookStepperStatus(
+    private fun getCookStepperStatus(
         isIconActive: Boolean,
         isLineActive: Boolean
     ): StepperStatusUiModel {
@@ -86,7 +86,7 @@ abstract class OrderDetailSectionCommon {
         )
     }
 
-    protected fun getDriverStepperStatus(
+    private fun getDriverStepperStatus(
         isIconActive: Boolean,
         isLineActive: Boolean
     ): StepperStatusUiModel {
@@ -97,7 +97,7 @@ abstract class OrderDetailSectionCommon {
         )
     }
 
-    protected fun getProductMoveStepperStatus(
+    private fun getProductMoveStepperStatus(
         isIconActive: Boolean = false,
         isLineActive: Boolean = false
     ): StepperStatusUiModel {

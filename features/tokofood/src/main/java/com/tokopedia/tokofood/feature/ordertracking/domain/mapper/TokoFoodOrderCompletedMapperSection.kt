@@ -6,7 +6,8 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Complet
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
 import javax.inject.Inject
 
-class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetailSectionResult() {
+class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetailSectionResult(),
+    ITokoFoodOrderLiveTrackingMapper {
 
     override fun mapToOrderDetailList(
         tokoFoodOrderDetail:
@@ -16,9 +17,12 @@ class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetai
             addCompletedStatusInfoUiModel(tokoFoodOrderDetail.orderStatus.title)
             addTickerUiModel(tokoFoodOrderDetail.additionalTickerInfo)
             addThinDividerMarginUiModel()
-            addInvoiceOrderNumberUiModel(tokoFoodOrderDetail.invoice, tokoFoodOrderDetail.payment.paymentDate)
+            addInvoiceOrderNumberUiModel(
+                tokoFoodOrderDetail.invoice,
+                tokoFoodOrderDetail.payment.paymentDate
+            )
             addThickDividerUiModel()
-            addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails, "081234567890")
+            addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails)
             addThinDividerUiModel(MARGIN_TOP_TWENTY)
             addShippingHeaderUiModel()
             addShippingDetailUiModel(tokoFoodOrderDetail.merchant, tokoFoodOrderDetail.destination)

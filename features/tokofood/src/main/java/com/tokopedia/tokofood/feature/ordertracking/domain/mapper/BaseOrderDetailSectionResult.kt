@@ -20,9 +20,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDi
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
 
-abstract class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
-
-    abstract fun mapToOrderDetailList(tokoFoodOrderDetail: TokoFoodOrderDetailResponse.TokofoodOrderDetail): List<BaseOrderTrackingTypeFactory>
+open class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addTickerUiModel(
         additionalTickerInfo:
@@ -71,8 +69,7 @@ abstract class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
     ) = add(PaymentAmountUiModel(paymentAmount.label, paymentAmount.value))
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addDriverSectionUiModel(
-        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?,
-        phoneNumber: String
+        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?
     ) {
         if (driverDetails != null) {
             add(
@@ -80,7 +77,6 @@ abstract class BaseOrderDetailSectionResult: OrderDetailSectionCommon() {
                     driverInformationList = mapToDriverInformationList(driverDetails.karma.orEmpty()),
                     name = driverDetails.name,
                     photoUrl = driverDetails.photoUrl,
-                    phone = phoneNumber,
                     licensePlateNumber = driverDetails.licensePlateNumber,
                     isCallable = true
                 )

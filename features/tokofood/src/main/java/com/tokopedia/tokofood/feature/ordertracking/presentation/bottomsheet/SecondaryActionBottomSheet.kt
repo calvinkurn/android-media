@@ -15,6 +15,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.Order
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.unifycomponents.R as RUnifyComponent
 
 class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapter.ActionButtonListener {
 
@@ -76,8 +77,8 @@ class SecondaryActionBottomSheet: BottomSheetUnify(), SecondaryActionButtonAdapt
         bottomSheetClose.run {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close_secondary_action))
             layoutParams.apply {
-                width = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl5).toInt()
-                height = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.spacing_lvl5).toInt()
+                width = context.resources.getDimension(RUnifyComponent.dimen.spacing_lvl5).toInt()
+                height = context.resources.getDimension(RUnifyComponent.dimen.spacing_lvl5).toInt()
             }
         }
     }
