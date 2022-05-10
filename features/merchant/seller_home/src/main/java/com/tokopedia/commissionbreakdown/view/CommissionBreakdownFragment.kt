@@ -12,15 +12,18 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.Toaster
@@ -62,6 +65,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     private var selectedDateTo: Date = Date()
     private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
     private var downloadButton: UnifyButton? = null
+    private var infoDownloadXls: com.tokopedia.unifyprinciples.Typography? = null
+    private var infoCommissionBreakdown: com.tokopedia.unifyprinciples.Typography? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -128,6 +133,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     private fun initView(view: View) {
         datePlaceholderText = view.findViewById(R.id.trx_download_date_selected)
         downloadButton = view.findViewById(R.id.trx_fee_download)
+        infoDownloadXls = view.findViewById(R.id.info_download_excel_report)
+        infoCommissionBreakdown = view.findViewById(R.id.info_commission_breakdown)
         downloadButton?.setSafeOnClickListener {
             checkPermissionDownload {
                 downloadFile()
@@ -137,6 +144,17 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         view.findViewById<View>(R.id.trx_download_date_card)?.setSafeOnClickListener {
             openCalender()
         }
+
+
+
+        infoCommissionBreakdown?.apply {
+            text = MethodChecker.fromHtml(activity?.getString(R.string.info_commission_breakdown))
+            setOnClickListener {
+                //TODO route edu
+            }
+        }
+
+
     }
 
     private fun checkPermissionDownload(onGranted: () -> Unit) {
@@ -231,7 +249,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         this.selectedDateTo = endDate
         datePlaceholderText?.text = getDatePlaceholderText()
         downloadButton?.isEnabled = true
-        downloadButton?.visibility = View.VISIBLE
+        downloadButton?.show()
+        infoDownloadXls?.show()
     }
 
     private fun getDatePlaceholderText(): String {

@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.commissionbreakdown.util.CommissionBreakdownDateUtil
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
@@ -151,24 +152,15 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     private fun CalendarPickerView.outOfRange() {
         setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
-                showMaxDaysDialog()
+                activity?.let {showErrorToaster(it.getString(R.string.sp_title_max_day, maxRange)) }
             }
         })
     }
 
-    private fun showMaxDaysDialog(){
-        DialogUnify(context = this.requireContext(),
-            actionType = DialogUnify.SINGLE_ACTION,
-            imageType = DialogUnify.NO_IMAGE).apply {
-            activity?.let {
-                setTitle(it.getString(R.string.saldo_calendar_range_error_title))
-                setDescription(it.getString(R.string.sp_title_max_day, maxRange))
-                setPrimaryCTAText(it.getString(R.string.saldo_btn_oke))
-                setPrimaryCTAClickListener {
-                    cancel()
-                }
-            }
-            show()
+
+    private fun showErrorToaster(errorMessage: String) {
+        dialog?.window?.decorView?.let {
+            Toaster.build(it, errorMessage, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR).show()
         }
     }
 
