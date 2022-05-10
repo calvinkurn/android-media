@@ -51,6 +51,8 @@ object ApplinkConstInternalUserPlatform {
 
     // InactivePhoneActivity
     const val CHANGE_INACTIVE_PHONE = "${NEW_INTERNAL_USER}/change-inactive-phone"
+
+    //InactivePhoneNumberActivity
     const val INACTIVE_PHONE_NUMBER = "${NEW_INTERNAL_USER}/inactive-phone-number"
 
     // HomeAccountUserActivity

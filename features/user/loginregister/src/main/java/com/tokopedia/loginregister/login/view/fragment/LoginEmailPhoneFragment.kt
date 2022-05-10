@@ -126,7 +126,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.android.synthetic.main.layout_need_help_bottomsheet.view.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
 import java.util.*
 import javax.inject.Inject
@@ -809,7 +808,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun showNeedHelpBottomSheet(){
         needHelpBottomSheetUnify = createNeedHelpBottomSheet(context)
 
-        needHelpBottomSheetUnify?.show(childFragmentManager, NEED_HELP_BOTTOM_SHEET)
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     @SuppressLint("ResourcePackage")
@@ -819,13 +818,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         bottomSheetUnify.setChild(viewChild)
         bottomSheetUnify.setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
 
-        initTokopediaCareTextNeedHelpBottomSheet(viewChild.to_need_another_help)
+        val toNeedAnotherHelp = viewChild.findViewById<Typography>(R.id.to_need_another_help)
+        initTokopediaCareTextNeedHelpBottomSheet(toNeedAnotherHelp)
 
-        viewChild.ub_forgot_password.setOnClickListener {
+        val ubForgotPassword = viewChild.findViewById<UnifyButton>(R.id.ub_forgot_password)
+        ubForgotPassword.setOnClickListener {
             goToForgotPassword()
         }
 
-        viewChild.ub_inactive_phone_number.setOnClickListener {
+        val ubInactivePhoneNumber = viewChild.findViewById<UnifyButton>(R.id.ub_inactive_phone_number)
+        ubInactivePhoneNumber.setOnClickListener {
             goToInactivePhoneNumber()
         }
 
@@ -1891,7 +1893,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
-        private const val NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
