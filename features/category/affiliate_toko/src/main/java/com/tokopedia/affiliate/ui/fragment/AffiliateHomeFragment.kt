@@ -182,9 +182,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private fun setAffiliateGreeting() {
         view?.findViewById<Typography>(R.id.affiliate_greeting)?.text = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-            in SIX..TEN -> getString(R.string.affiliate_morning)
-            in ELEVEN..FIFTEEN -> getString(R.string.affiliate_noon)
-            in SIXTEEN..EIGHTEEN -> getString(R.string.affiliate_afternoon)
+            in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
+            in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
+            in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
             else ->getString(R.string.affiliate_night)
         }
     }

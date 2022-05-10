@@ -17,12 +17,11 @@ import com.tokopedia.affiliate.AFFILIATE_HELP_URL
 import com.tokopedia.affiliate.AFFILIATE_TRX_ENABLED
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
-import com.tokopedia.affiliate.ONE
+import com.tokopedia.affiliate.FIRST_TAB
+import com.tokopedia.affiliate.FOURTH_TAB
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.THREE
-import com.tokopedia.affiliate.TWO
-import com.tokopedia.affiliate.ZERO
+import com.tokopedia.affiliate.SECOND_TAB
+import com.tokopedia.affiliate.THIRD_TAB
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
@@ -249,11 +248,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             this, this, isAffiliateWalletEnabled
         )
         if (isAffiliateWalletEnabled) {
-            INCOME_MENU = TWO
-            HELP_MENU = THREE
+            INCOME_MENU = THIRD_TAB
+            HELP_MENU = FOURTH_TAB
         } else {
-            INCOME_MENU = THREE
-            HELP_MENU = TWO
+            INCOME_MENU = FOURTH_TAB
+            HELP_MENU = THIRD_TAB
         }
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
@@ -366,10 +365,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     companion object MenuItems {
-        var HOME_MENU = ZERO
-        var PROMO_MENU = ONE
-        var INCOME_MENU = TWO
-        var HELP_MENU = THREE
+        var HOME_MENU = FIRST_TAB
+        var PROMO_MENU = SECOND_TAB
+        var INCOME_MENU = THIRD_TAB
+        var HELP_MENU = FOURTH_TAB
     }
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {

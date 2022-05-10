@@ -218,24 +218,6 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         }
     }
 
-//    private fun convertToPortfolioModel(checkedSocialList : List<AffiliateShareModel>) {
-//        val updateList : java.util.ArrayList<Visitable<AffiliateAdapterTypeFactory>> = java.util.ArrayList()
-//        updateList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-//        for (item in checkedSocialList){
-//            val portfolioDataItemText = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.text
-//            val firstItem = affiliatePortfolioViewModel.finEditTextModelWithId(item.id)?.firstTime
-//            if(portfolioDataItemText?.isNotBlank() == true){
-//                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-//                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex ,firstTime = firstItem)))
-//            }else {
-//                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
-//                        item.defaultText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)))
-//            }
-//        }
-//        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-//         affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
-//    }
-
     override fun addSocialMediaButtonClicked() {
         view?.hideKeyboard(context)
         sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_TAMBAH_SOCIAL_MEDIA)

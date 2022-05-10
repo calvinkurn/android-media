@@ -84,13 +84,13 @@ const val PATTERN = "dd MMM yyyy"
 
 const val HOUR_PATTERN = "HH:00"
 
-const val ONE = 1
+const val SECOND_TAB = 1
 
-const val TWO = 2
+const val THIRD_TAB = 2
 
-const val THREE = 3
+const val FOURTH_TAB = 3
 
-const val ZERO = 0
+const val FIRST_TAB = 0
 
 const val THIRTY_THREE = 33
 
@@ -136,12 +136,14 @@ const val CLICK_TYPE = "totalClick"
 
 const val COMMISSION_TYPE = "totalCommission"
 
-const val TEN = 10
+const val TIME_SIX = 6
 
-const val ELEVEN = 11
+const val TIME_TEN = 10
 
-const val FIFTEEN = 15
+const val TIME_ELEVEN = 11
 
-const val SIXTEEN = 16
+const val TIME_FIFTEEN = 15
 
-const val EIGHTEEN = 18
+const val TIME_SIXTEEN = 16
+
+const val TIME_EIGHTEEN = 18
