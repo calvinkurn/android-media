@@ -37,6 +37,7 @@
 /features/discovery/home_page_banner                    @tokopedia/android-miniondave-dev
 /features/merchant/official_store/                      @tokopedia/android-miniondave-dev
 /features/merchant/brandlist/                           @tokopedia/android-miniondave-dev
+/features/discovery/video_widget/             @tokopedia/android-miniondave-dev
 
 /features/common/developer_options                  	@tokopedia/android-core-dev
 /features/common/nps                                	@tokopedia/android-core-dev
@@ -186,6 +187,8 @@
 /features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
+/features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
+/features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionyoda-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev

@@ -86,6 +86,7 @@ data class ComponentsItem(
         var dynamicOriginalId: String? = "",
         var showVerticalLoader: Boolean = false,
         var rpc_PinnedProduct: String? = "",
+        var recomQueryProdId: String? = null,
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
