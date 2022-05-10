@@ -61,6 +61,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.util.PlayPreference
@@ -844,7 +845,7 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
             PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
             PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
-            is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item.id)
+            is PlayViewerNewAction.ClickQuizOptionAction -> handleClickQuizOption(action.item)
 
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
@@ -1845,21 +1846,25 @@ class PlayViewModel @AssistedInject constructor(
             }
             it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
         }
+
+        playAnalytic.clickActiveInteractive(channelId = channelId, interactiveId = _interactive.value.interactive.id, shopId = partnerId.toString())
     }
 
-    private fun handleClickQuizOption(optionId: String){
+    private fun handleClickQuizOption(option: QuizChoicesUiModel){
         val interactiveId = _interactive.value.interactive.id
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
 
-            updateQuizOptionUi(selectedId = optionId, isLoading = true)
+            playAnalytic.clickQuizOption(channelId = channelId, shopId = partnerId.toString(), interactiveId = interactiveId, choiceAlphabet = (option.type as PlayQuizOptionState.Default).alphabet.toString())
 
-            val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = optionId)
+            updateQuizOptionUi(selectedId = option.id, isLoading = true)
+
+            val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = option.id)
             repo.setJoined(interactiveId)
 
-            updateQuizOptionUi(selectedId = optionId, correctId = response)
+            updateQuizOptionUi(selectedId = option.id, correctId = response)
             _uiEvent.emit(QuizAnsweredEvent)
         }) {
             _uiEvent.emit(
@@ -2176,6 +2181,8 @@ class PlayViewModel @AssistedInject constructor(
         }
 
         checkLeaderboard(channelId)
+
+        playAnalytic.clickRefreshLeaderBoard(channelId = channelId, interactiveId = _interactive.value.interactive.id, shopId = partnerId.toString())
     }
 
     private fun handleRetryGetTagItems() {
