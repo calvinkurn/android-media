@@ -482,6 +482,11 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsAdapter.notifyDataSetChanged()
     }
 
+    override fun onDateRangeChanged() {
+        super.onDateRangeChanged()
+        loadData()
+    }
+
     private fun loadData() {
         try {
             topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
