@@ -33,9 +33,13 @@ import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.PdpGamificationAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.PdpDialogViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
@@ -279,24 +283,44 @@ class PdpGamificationView : LinearLayout {
 
             }
 
-            override fun onWishlistV2Click(
-                item: RecommendationItem,
-                isAddWishlist: Boolean,
-                actionListener: WishlistV2ActionListener
-            ) {
+            override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
                 if (viewModel.userSession.isLoggedIn) {
 
                     if (isAddWishlist) {
-                        viewModel.addToWishlistV2(item, actionListener)
+                        viewModel.addToWishlistV2(item, object: WishlistV2ActionListener{
+                            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                                val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, this@PdpGamificationView)
+                            }
+
+                            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) {
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, this@PdpGamificationView)
+                            }
+
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+
+                        })
                     } else {
-                        viewModel.removeFromWishlistV2(item, actionListener)
+                        viewModel.removeFromWishlistV2(item, object: WishlistV2ActionListener{
+                            override fun onErrorAddWishList(throwable: Throwable, productId: String) { }
+                            override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) { }
+
+                            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                                val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                                AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, this@PdpGamificationView)
+                            }
+
+                            override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, this@PdpGamificationView)
+                            }
+                        })
                     }
                 } else {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
             }
         }
-
         return listener
     }
 
