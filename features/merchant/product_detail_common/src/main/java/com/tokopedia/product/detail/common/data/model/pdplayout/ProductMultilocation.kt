@@ -10,7 +10,13 @@ data class ProductMultilocation(
         @SerializedName("cityName")
         @Expose
         val cityName: String = "",
-        @SerializedName("applink")
+        @SerializedName("eduLink")
         @Expose
-        val applink: String = "",
+        val eduLink: ProductEduLink = ProductEduLink()
+)
+
+data class ProductEduLink(
+        @SerializedName("appLink")
+        @Expose
+        val applink: String = ""
 )

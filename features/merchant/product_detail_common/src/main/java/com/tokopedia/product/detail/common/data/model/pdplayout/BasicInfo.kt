@@ -86,7 +86,7 @@ data class BasicInfo(
         @SerializedName("defaultMediaURL")
         @Expose
         val defaultMediaUrl: String = "",
-        @SerializedName("multiloc")
+        @SerializedName("shopMultilocation")
         @Expose
         val productMultilocation: ProductMultilocation = ProductMultilocation()
 ) {

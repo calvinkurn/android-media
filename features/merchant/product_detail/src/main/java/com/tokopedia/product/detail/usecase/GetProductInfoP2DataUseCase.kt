@@ -84,9 +84,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               scoreMap
             }
             shopInfo {
-              multiloc {
+              shopMultilocation {
                 warehouseCount
-                applink
+                eduLink {
+                    appLink
+                }
               }
               closedInfo {
                 closedNote

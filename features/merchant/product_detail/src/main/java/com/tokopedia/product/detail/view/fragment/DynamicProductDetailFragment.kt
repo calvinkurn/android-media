@@ -2212,7 +2212,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun showWarehouseChangeBs(productMultiloc: ProductMultilocation) {
         if (productMultiloc.isReroute && !alreadyShowMultilocBottomSheet) {
             alreadyShowMultilocBottomSheet = true
-            goToApplink(productMultiloc.applink)
+            goToApplink(productMultiloc.eduLink.applink)
         }
     }
 

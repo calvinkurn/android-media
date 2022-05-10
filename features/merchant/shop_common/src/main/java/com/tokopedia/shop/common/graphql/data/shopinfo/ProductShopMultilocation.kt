@@ -8,7 +8,13 @@ data class ProductShopMultilocation(
         @Expose
         val warehouseCount: String = "",
 
-        @SerializedName("applink")
+        @SerializedName("eduLink")
+        @Expose
+        val eduLink: ShopEduLink = ShopEduLink()
+)
+
+data class ShopEduLink(
+        @SerializedName("appLink")
         @Expose
         val applink: String = ""
 )

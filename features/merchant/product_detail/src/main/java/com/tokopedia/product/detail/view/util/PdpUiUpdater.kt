@@ -196,7 +196,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     isOs = it.data.isOS
                     isPm = it.data.isPowerMerchant
                     shopLocation = it.basic.productMultilocation.cityName
-                    shopWarehouseApplink = it.basic.productMultilocation.applink
                 }
             }
 
@@ -406,6 +405,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopAva = it.shopInfo.shopAssets.avatar
                     isGoApotik = it.isGoApotik
                     shopWarehouseCount = it.shopInfo.shopMultilocation.warehouseCount
+                    shopWarehouseApplink = it.shopInfo.shopMultilocation.eduLink.applink
                     shopTierBadgeUrl = it.shopInfo.shopTierBadgeUrl
                     infoShopData = if (context == null) listOf() else
                         getTwoShopInfoHieararchy(context,

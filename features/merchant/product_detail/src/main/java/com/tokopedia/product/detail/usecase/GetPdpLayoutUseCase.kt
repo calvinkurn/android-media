@@ -34,10 +34,12 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 name
                 pdpSession
                 basicInfo {
-                  multiloc {
+                  shopMultilocation {
                     isReroute
                     cityName
-                    applink
+                    eduLink {
+                        appLink
+                    }
                   }
                   isGiftable
                   isTokoNow

@@ -114,7 +114,7 @@ data class ShopInfo(
         @Expose
         val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
 
-        @SerializedName("warehouseCount")
+        @SerializedName("shopMultilocation")
         @Expose
         val shopMultilocation: ProductShopMultilocation = ProductShopMultilocation()
 ) {
