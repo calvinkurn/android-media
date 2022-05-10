@@ -199,13 +199,15 @@
     <string name="download_trx_fee_report">Download laporan biaya transaksi</string>
     <string name="trx_fee_heading">Cek laporan biaya layanan di tiap transaksi tokomu</string>
     <string name="trx_fee_title">Pilih periode</string>
-    <string name="trx_fee_desc">Transaksi periode laporan yang dapat diunduh (Maksimum 90 hari)</string>
+    <string name="trx_fee_desc">Maksimum 90 hari, tidak bisa memilih periode sebelum  Juni 2020</string>
     <string name="trx_fee_date">Pilih tanggal</string>
     <string name="trx_fee_download">Download laporan</string>
     <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. %d hari.</string>
     <string name="saldo_calendar_range_error_title">Pilih rentang waktu yang lebih pendek</string>
     <string name="saldo_btn_oke">Oke</string>
     <string name="saldo_save_date">Simpan</string>
+    <string name="info_download_excel_report">Laporan berupa file excel. Pastikan kamu memiliki aplikasi untuk membuka file. </string>
+    <string name="info_commission_breakdown">Untuk mempelajari detail biaya layanan per kategori bisa kamu pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;.</string>
 
 
 
