@@ -151,8 +151,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -161,9 +159,9 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -1306,21 +1304,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         result: AddToWishlistV2Response.Data.WishlistAddV2,
         productId: String
     ) {
-        val msg = result.message.ifEmpty {
-            if (result.success) getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            else getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-        }
-
-        var typeToaster = TYPE_NORMAL
-        if (result.toasterColor == TOASTER_RED || !result.success) typeToaster = TYPE_ERROR
-
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        if (result.button.text.isNotEmpty()) ctaText = result.button.text
-
-        view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-               if (result.button.action == OPEN_WISHLIST) goToWishlist()
-            }.show()
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
         }
         cartAdapter.notifyByProductId(productId, true)
         cartAdapter.notifyWishlist(productId, true)
@@ -1340,6 +1327,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun onSuccessRemoveWishlist(productId: String) {
         showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success))
+        cartAdapter.notifyByProductId(productId, false)
+        cartAdapter.removeWishlist(productId)
+        cartAdapter.notifyRecentView(productId, false)
+    }
+
+    private fun onSuccessRemoveWishlistV2(
+        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+        productId: String
+    ) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+            }
+        }
         cartAdapter.notifyByProductId(productId, false)
         cartAdapter.removeWishlist(productId)
         cartAdapter.notifyRecentView(productId, false)
@@ -1403,8 +1404,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessRemoveWishlist(productId: String) {
-                    this@CartFragment.onSuccessRemoveWishlist(productId)
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
                     if (FLAG_IS_CART_EMPTY) {
                         cartPageAnalytics.eventClickRemoveWishlistOnProductRecommendationEmptyCart()
                     } else {
@@ -1462,8 +1466,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessRemoveWishlist(productId: String) {
-                    this@CartFragment.onSuccessRemoveWishlist(productId)
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
                     cartPageAnalytics.eventRemoveWishlistUnvailableSection(FLAG_IS_CART_EMPTY, productId)
                 }
             }
@@ -1517,8 +1524,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessRemoveWishlist(productId: String) {
-                    this@CartFragment.onSuccessRemoveWishlist(productId)
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
                     cartPageAnalytics.eventRemoveWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
                 }
             }
@@ -1572,8 +1582,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
-                override fun onSuccessRemoveWishlist(productId: String) {
-                    this@CartFragment.onSuccessRemoveWishlist(productId)
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    this@CartFragment.onSuccessRemoveWishlistV2(result, productId)
                     cartPageAnalytics.eventRemoveWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
                 }
             }

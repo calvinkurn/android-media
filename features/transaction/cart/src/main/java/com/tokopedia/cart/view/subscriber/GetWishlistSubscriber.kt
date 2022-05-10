@@ -4,6 +4,10 @@ import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.wishlist.common.response.GetWishlistResponse
 import rx.Subscriber
 
+/**
+ * Created by Irfan Khoirul on 20/09/18.
+ */
+
 class GetWishlistSubscriber(private val view: ICartListView?) : Subscriber<GetWishlistResponse>() {
 
     override fun onCompleted() {
