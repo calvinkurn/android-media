@@ -1432,6 +1432,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveFinishView?.hide()
                 }
             }
+            if(interactiveActiveView?.isShown() == false) playViewModel.sendImpressInteractiveActive()
         }
     }
 
@@ -1521,7 +1522,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
-        if (state.shouldShow) interactiveResultView?.show()
+        if (state.shouldShow) {
+            interactiveResultView?.show()
+            playViewModel.sendImpressWinnerBadge()
+        }
         else interactiveResultView?.hide()
     }
 

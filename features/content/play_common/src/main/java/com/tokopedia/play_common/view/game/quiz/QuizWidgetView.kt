@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.setupQuiz
@@ -41,6 +43,7 @@ class QuizWidgetView : ConstraintLayout {
 
     private var mListener: Listener? = null
 
+    private val trackingField = ImpressHolder()
     private val quizAdapter: QuizListAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
         override fun onClicked(item: QuizChoicesUiModel) {
             mListener?.onQuizOptionClicked(item)
@@ -53,6 +56,9 @@ class QuizWidgetView : ConstraintLayout {
             adapter = quizAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(QuizOptionItemDecoration(context))
+            addOnImpressionListener(trackingField){
+                mListener?.onQuizImpressed()
+            }
         }
 
         binding.quizHeader.isEditable = false
@@ -95,5 +101,7 @@ class QuizWidgetView : ConstraintLayout {
 
     interface Listener {
         fun onQuizOptionClicked(item: QuizChoicesUiModel)
+
+        fun onQuizImpressed()
     }
 }

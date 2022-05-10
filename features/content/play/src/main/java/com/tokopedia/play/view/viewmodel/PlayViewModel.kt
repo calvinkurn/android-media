@@ -2526,6 +2526,22 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
     }
 
+    fun sendImpressInteractiveActive(){
+        playAnalytic.impressActiveInteractive(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
+    }
+
+    fun sendImpressFollowBtnInteractive(){
+        playAnalytic.impressFollowShopInteractive(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
+    }
+
+    fun sendImpressWinnerBadge(){
+        playAnalytic.impressWinnerBadge(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
+    }
+
+    fun sendImpressQuizOptions(){
+        playAnalytic.impressQuizOptions(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
+    }
+
     /**
      * Variant Util
      */

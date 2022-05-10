@@ -46,6 +46,10 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
     private lateinit var viewModel: PlayViewModel
 
     private val followViewListener = object : InteractiveFollowView.Listener {
+        override fun onFollowImpressed(view: InteractiveFollowView) {
+            viewModel.sendImpressFollowBtnInteractive()
+        }
+
         override fun onFollowClicked(view: InteractiveFollowView) {
             viewModel.submitAction(PlayViewerNewAction.Follow)
         }
@@ -209,6 +213,10 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                     setListener(object : QuizWidgetView.Listener{
                         override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
                             viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
+                        }
+
+                        override fun onQuizImpressed() {
+                            viewModel.sendImpressQuizOptions()
                         }
                     })
                 }
