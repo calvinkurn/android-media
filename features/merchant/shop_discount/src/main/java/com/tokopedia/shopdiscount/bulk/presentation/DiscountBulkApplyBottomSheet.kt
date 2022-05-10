@@ -293,9 +293,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun handleAppearanceForBulkUpdateMode() {
         hideAllChips()
-        binding?.tpgInformation?.gone()
-        binding?.tfuStartDate?.gone()
-        binding?.tfuEndDate?.gone()
 
         binding?.tfuStartDate?.isEnabled = discountStatusId == DiscountStatus.ONGOING
 
