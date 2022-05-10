@@ -31,6 +31,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
         private const val PARAM_START = "start"
         private const val PARAM_QUERY = "q"
         private const val PARAM_SHOP_ID = "shop_id"
+        private const val PARAM_USER_ID = "user_id"
         private const val PARAM_SOURCE = "source"
         private const val PARAM_SORT = "ob"
 
@@ -95,10 +96,11 @@ class FeedAceSearchProductUseCase @Inject constructor(
             start: Int,
             query: String,
             shopId: String,
+            userId: String,
             sort: Int,
         ): Map<String, Any> {
             return mapOf<String, Any>(
-                PARAMS to generateParam(rows, start, query, shopId, sort)
+                PARAMS to generateParam(rows, start, query, shopId, userId, sort)
             )
         }
 
@@ -107,16 +109,24 @@ class FeedAceSearchProductUseCase @Inject constructor(
             start: Int,
             query: String,
             shopId: String,
+            userId: String,
             sort: Int,
-        ): String = mapOf<String, Any>(
+        ): String = mutableMapOf<String, Any>(
             PARAM_DEVICE to "android",
             PARAM_ROWS to rows,
             PARAM_START to start,
             PARAM_QUERY to query.trim(),
-            PARAM_SHOP_ID to shopId,
             PARAM_SOURCE to "universe",
             PARAM_SORT to sort,
-        ).toString()
+        ).apply {
+
+            if(shopId.isNotEmpty())
+                put(PARAM_SHOP_ID, shopId)
+
+            if(userId.isNotEmpty())
+                put(PARAM_USER_ID, userId)
+
+        }.toString()
             .replace("{", "")
             .replace("}", "")
             .replace(", ", "&")

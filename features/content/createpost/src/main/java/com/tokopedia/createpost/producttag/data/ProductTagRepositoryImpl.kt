@@ -59,11 +59,12 @@ class ProductTagRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyShopProducts(
+    override suspend fun searchAceProducts(
         rows: Int,
         start: Int,
         query: String,
         shopId: String,
+        userId: String,
         sort: Int
     ): PagedDataUiModel<ProductUiModel> {
         return withContext(dispatchers.io) {
@@ -72,12 +73,13 @@ class ProductTagRepositoryImpl @Inject constructor(
                     rows = rows,
                     start = start,
                     shopId = shopId,
+                    userId = userId,
                     query = query,
                     sort = sort,
                 ))
             }.executeOnBackground()
 
-            mapper.mapMyShopProduct(response, "${start + 1}")
+            mapper.mapSearchAceProducts(response, "${start + 1}")
         }
     }
 }

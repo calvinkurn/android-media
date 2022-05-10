@@ -245,11 +245,12 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.getMyShopProducts(
+            val pagedDataList = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = myShopProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
                 query = myShopProduct.query,
                 shopId = userSession.shopId,
+                userId = "",
                 sort = 9 /** TODO: gonna change this later */
             )
 
@@ -290,12 +291,12 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            /** TODO: change repo source */
-            val pagedDataList = repo.getMyShopProducts(
+            val pagedDataList = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = globalSearchProduct.nextCursor.toIntOrNull() ?: CURSOR_DEFAULT,
                 query = globalSearchProduct.query,
-                shopId = userSession.shopId,
+                shopId = "",
+                userId = userSession.userId,
                 sort = 9 /** TODO: gonna change this later */
             )
 

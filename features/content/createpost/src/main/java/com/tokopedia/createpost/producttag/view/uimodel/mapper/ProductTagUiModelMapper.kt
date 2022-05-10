@@ -81,7 +81,7 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapMyShopProduct(response: FeedAceSearchProductResponse, nextCursor: String): PagedDataUiModel<ProductUiModel> {
+    fun mapSearchAceProducts(response: FeedAceSearchProductResponse, nextCursor: String): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
             dataList = response.wrapper.data.products.map {
                 ProductUiModel(

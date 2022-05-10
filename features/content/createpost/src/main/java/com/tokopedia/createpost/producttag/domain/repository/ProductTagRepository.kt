@@ -22,11 +22,12 @@ interface ProductTagRepository {
         limit: Int,
     ) : LastPurchasedProductUiModel
 
-    suspend fun getMyShopProducts(
+    suspend fun searchAceProducts(
         rows: Int,
         start: Int,
         query: String,
         shopId: String,
+        userId: String,
         sort: Int,
     ) : PagedDataUiModel<ProductUiModel>
 }
