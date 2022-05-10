@@ -16,29 +16,29 @@ class VoucherTipsAdapter(val itemList: List<TipsItemUiModel>,
                          private val onChevronIconAltered: (Int) -> Unit = {},
                          private val onItemClicked: (Int) -> Unit) : RecyclerView.Adapter<VoucherTipsAdapter.VoucherTipsViewHolder>() {
 
-    class VoucherTipsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
     companion object {
         private const val CHEVRON_CLOSED_ROTATION = 0f
         private const val CHEVRON_OPENED_ROTATION = 180f
     }
-
-    private var binding: MvcVoucherTipsItemBinding? = null
 
     private val voucherTipsItemAdapterTypeFactory by lazy {
         VoucherTipsItemAdapterTypeFactory()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherTipsViewHolder {
-        binding = MvcVoucherTipsItemBinding.inflate(LayoutInflater.from(parent.context),parent, false)
-        return VoucherTipsViewHolder(binding!!.root)
+        return VoucherTipsViewHolder(MvcVoucherTipsItemBinding.inflate(LayoutInflater.from(parent.context) ,parent, false))
     }
 
     override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: VoucherTipsViewHolder, position: Int) {
-        itemList[position].let { tipsItemUiModel ->
-            binding?.apply {
+        holder.bind(itemList[position])
+    }
+
+    inner class VoucherTipsViewHolder(private val binding: MvcVoucherTipsItemBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(tipsItemUiModel: TipsItemUiModel) {
+            binding.apply {
                 voucherTipsTitle.text = voucherTipsTitle.resources.getString(tipsItemUiModel.titleRes).toBlankOrString()
                 setAccordionState(tipsItemUiModel.isOpen)
                 voucherTipsItemRecyclerView.setAdapterItem(tipsItemUiModel.tipsItemList)
@@ -48,32 +48,33 @@ class VoucherTipsAdapter(val itemList: List<TipsItemUiModel>,
                 }
             }
         }
-    }
 
-    private fun setAccordionState(isItemOpen: Boolean): Boolean {
-        binding?.apply {
-            if (isItemOpen) {
-                voucherTipsChevron.rotation = CHEVRON_OPENED_ROTATION
-                voucherTipsItemRecyclerView.run {
-                    visibility = View.VISIBLE
-                    return true
+        private fun setAccordionState(isItemOpen: Boolean): Boolean {
+            binding?.apply {
+                if (isItemOpen) {
+                    voucherTipsChevron.rotation = CHEVRON_OPENED_ROTATION
+                    voucherTipsItemRecyclerView.run {
+                        visibility = View.VISIBLE
+                        return true
+                    }
+                } else {
+                    voucherTipsChevron.rotation = CHEVRON_CLOSED_ROTATION
+                    voucherTipsItemRecyclerView.visibility = View.GONE
                 }
-            } else {
-                voucherTipsChevron.rotation = CHEVRON_CLOSED_ROTATION
-                voucherTipsItemRecyclerView.visibility = View.GONE
             }
-        }
-        return false
-    }
-
-    private fun RecyclerView.setAdapterItem(tipsItemList: List<Visitable<VoucherTipsItemTypeFactory>>) {
-        if (adapter == null) {
-            val voucherTipsItemAdapter = VoucherTipsItemAdapter(voucherTipsItemAdapterTypeFactory)
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = voucherTipsItemAdapter
+            return false
         }
 
-        (adapter as? VoucherTipsItemAdapter)?.setVisitables(tipsItemList)
+        private fun RecyclerView.setAdapterItem(tipsItemList: List<Visitable<VoucherTipsItemTypeFactory>>) {
+            if (adapter == null) {
+                val voucherTipsItemAdapter = VoucherTipsItemAdapter(voucherTipsItemAdapterTypeFactory)
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                adapter = voucherTipsItemAdapter
+            }
+
+            (adapter as? VoucherTipsItemAdapter)?.setVisitables(tipsItemList)
+        }
+
     }
 
 }

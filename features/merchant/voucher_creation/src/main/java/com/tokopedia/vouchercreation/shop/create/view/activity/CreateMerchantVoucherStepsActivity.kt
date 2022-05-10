@@ -176,7 +176,6 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private val bottomSheet by lazy {
         TipsAndTrickBottomSheetFragment.createInstance().apply {
-            this.setTitle(bottomSheetViewTitle.toBlankOrString())
             setCloseClickListener {
                 this.dismiss()
             }

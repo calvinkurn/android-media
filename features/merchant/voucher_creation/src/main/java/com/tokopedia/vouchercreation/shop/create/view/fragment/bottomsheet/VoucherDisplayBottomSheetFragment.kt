@@ -44,10 +44,6 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
         VoucherDisplayScrollListener(pagerSnapHelper, ::onSnapPositionChangeListener)
     }
 
-    private val linearLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    }
-
     private var getVoucherType: () -> VoucherTargetCardType = {
         VoucherTargetCardType.PRIVATE
     }
@@ -86,6 +82,7 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
         val targetType = getVoucherType().targetType
         val voucherDisplayAdapter = VoucherDisplayAdapter(displayList, targetType, userId)
         binding?.voucherDisplayRecyclerView?.run {
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayoutManager
             linearLayoutManager.smoothScrollToPosition(this, null, 0)
             adapter = voucherDisplayAdapter

@@ -29,7 +29,7 @@ class SubInfoAdapter : RecyclerView.Adapter<SubInfoAdapter.SubInfoViewHolder>() 
     private var onPromoCodeClick: () -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubInfoViewHolder {
-        val binding = ItemMvcSubInfoBinding.inflate(LayoutInflater.from(parent.context), parent, true)
+        val binding = ItemMvcSubInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SubInfoViewHolder(binding)
     }
 

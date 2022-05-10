@@ -38,10 +38,6 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         BaseListAdapter<Visitable<VoucherTipsItemTypeFactory>, VoucherTipsItemAdapterTypeFactory>(adapterTypeFactory)
     }
 
-    private val adapterLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
-
     private val uiModelList by lazy {
         TipsAndTrickStaticDataSource.getGeneralExpenseUiModelList()
     }
@@ -74,7 +70,7 @@ class GeneralExpensesInfoBottomSheetFragment : BottomSheetUnify(), VoucherBottom
         view?.setupBottomSheetChildNoMargin()
         binding?.voucherTipsRecyclerView?.run {
             adapter = bottomSheetAdapter
-            layoutManager = adapterLayoutManager
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         bottomSheetAdapter.setVisitables(uiModelList)
     }

@@ -22,7 +22,7 @@ import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget.Vouc
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherCreationStep
 import javax.inject.Inject
 
-class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
+class TipsAndTrickBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
 
@@ -35,10 +35,6 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    private val linearLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
 
     private val voucherTipsAdapter by lazy {
         context?.run {
@@ -74,7 +70,7 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         binding = MvcVoucherBottomSheetViewBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-        bottomSheetViewTitle = getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()
+        setTitle(getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString())
     }
 
     private fun initInjector() {
@@ -87,7 +83,7 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
         binding?.voucherTipsRecyclerView?.run {
-            layoutManager = linearLayoutManager
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = voucherTipsAdapter
         }
     }
@@ -124,5 +120,4 @@ class TipsAndTrickBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
         )
     }
 
-    override var bottomSheetViewTitle: String? = null
 }

@@ -31,26 +31,26 @@ class PostVoucherViewHolder(itemView: View?,
     private var binding: MvcPostImageBinding? by viewBinding()
 
     override fun bind(element: PostVoucherUiModel) {
-        itemView.run {
-            Glide.with(context)
-                    .asDrawable()
-                    .load(element.postBaseUiModel.postBaseUrl)
-                    .signature(ObjectKey(System.currentTimeMillis().toString()))
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
+        binding?.apply {
+            Glide.with(root.context)
+                .asDrawable()
+                .load(element.postBaseUiModel.postBaseUrl)
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        return false
+                    }
 
-                        override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            activity?.runOnUiThread {
-                                val bitmap = resource.toBitmap()
-                                val painter = SquareVoucherPainter(context, bitmap, ::onSuccessGetBitmap)
-                                painter.drawInfo(element)
-                            }
-                            return false
+                    override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        activity?.runOnUiThread {
+                            val bitmap = resource.toBitmap()
+                            val painter = SquareVoucherPainter(root.context, bitmap, ::onSuccessGetBitmap)
+                            painter.drawInfo(element)
                         }
-                    })
-                    .submit()
+                        return false
+                    }
+                })
+                .submit()
         }
     }
 

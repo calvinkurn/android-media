@@ -35,7 +35,7 @@ class InfoContainerViewHolder(
 
     override fun bind(element: InfoContainerUiModel) {
         binding?.apply {
-            tvMvcInfoTitle.text = itemView.context?.getString(element.titleRes).toBlankOrString()
+            tvMvcInfoTitle.text = root.context?.getString(element.titleRes).toBlankOrString()
             rvMvcSubInfo.layoutManager = getLinearLayoutManager(rvMvcSubInfo.context)
             rvMvcSubInfo.adapter = subInfoAdapter
             tvMvcInfoCta.isVisible = element.hasCta
