@@ -209,9 +209,9 @@ open class RecomWidgetViewModel @Inject constructor(
         _miniCartData.postValue(data.toMutableMap())
     }
 
-    fun getMiniCart(shopId: String, pageName: String) {
+    fun getMiniCart(shopId: String, pageName: String, miniCartSource: MiniCartSource = MiniCartSource.PDPRecommendationWidget) {
         launchCatchError(block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), miniCartSource)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             val data = result.miniCartItems
             _miniCartData.postValue(data.toMutableMap())

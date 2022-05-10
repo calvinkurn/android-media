@@ -191,7 +191,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
-    lateinit var miniCartSource: MiniCartSource
+    var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
 
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
@@ -326,7 +326,7 @@ abstract class BaseSearchCategoryViewModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
         ))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
+        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -446,7 +446,8 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(
             TokoNowRecommendationCarouselUiModel(
                 pageName = TOKONOW_NO_RESULT,
-                keywords = getKeywordForGeneralSearchTracking()
+                keywords = getKeywordForGeneralSearchTracking(),
+                miniCartSource = miniCartSource
             )
         )
     }
