@@ -16,6 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.ParallaxScrollEffectListener
 import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -45,6 +46,11 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
             setupInitialView(bind, section)
             setupList(bind, element.digitalUnifyItems)
             setSnapEffect(bind)
+
+            bind.root.addOnImpressionListener(section) {
+                listener.onRechargeSectionItemImpression(section)
+            }
+
         } else {
             showShimmer(bind)
             listener.loadRechargeSectionData(element.visitableId())
