@@ -29,7 +29,10 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
@@ -104,7 +107,7 @@ class RecommendationLifeCycleAware constructor(
         if (isAddWishlist) {
             showSuccessAddWishlistV2(productCardOptionsModel.wishlistResult)
         } else {
-            showSuccessRemoveWishlist()
+            showSuccessRemoveWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -122,25 +125,9 @@ class RecommendationLifeCycleAware constructor(
 
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
-
-        val msg = wishlistResult.messageV2.ifEmpty {
-            if (wishlistResult.isSuccess) getString(Rwishlist.string.on_success_add_to_wishlist_msg)
-            else getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
+        context?.let { context ->
+            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, view)
         }
-
-        var typeToaster = TYPE_NORMAL
-        if (wishlistResult.toasterColorV2 == TOASTER_RED || !wishlistResult.isSuccess) typeToaster = TYPE_ERROR
-
-        var ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        if (wishlistResult.ctaTextV2.isNotEmpty()) ctaText = wishlistResult.ctaTextV2
-
-        Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster, ctaText) {
-            if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
-        }.show()
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.WISHLIST)
     }
 
     private fun getString(@StringRes stringRes: Int): String {
@@ -154,6 +141,15 @@ class RecommendationLifeCycleAware constructor(
         Toaster.build(view, message, Toaster.LENGTH_LONG).show()
     }
 
+    private fun showSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
+        val view: View? = fragment?.activity?.findViewById(android.R.id.content)
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
+            }
+        }
+    }
+
     private fun handleWishlistActionFailed() {
         val rootView = fragment?.view?.rootView
         rootView?.let {
@@ -164,16 +160,12 @@ class RecommendationLifeCycleAware constructor(
 
     private fun handleWishlistV2ActionFailed(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val rootView = fragment?.view?.rootView
-        rootView?.let {
-            var errorMessage = ErrorHandler.getErrorMessage(it.context, null)
+        rootView?.let { v ->
+
+            var errorMessage = ErrorHandler.getErrorMessage(v.context, null)
             if (wishlistResult.messageV2.isNotEmpty()) errorMessage = wishlistResult.messageV2
 
-            val ctaText = wishlistResult.ctaTextV2
-
-            Toaster.build(it, errorMessage,
-                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText) {
-                if (wishlistResult.ctaActionV2 == OPEN_WISHLIST) goToWishlist()
-            }.show()
+            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
         }
     }
 
@@ -226,14 +218,54 @@ class RecommendationLifeCycleAware constructor(
         }
     }
 
-    override fun onWishlistV2Click(
-        item: RecommendationItem,
-        isAddWishlist: Boolean,
-        actionListener: WishlistV2ActionListener) {
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (isAddWishlist) {
-            viewModel?.addWishlistV2(item, actionListener)
+            viewModel?.addWishlistV2(item, object: WishlistV2ActionListener{
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                    context?.let {
+                        AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, view)
+                    }
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
+
+            })
         } else {
-            viewModel?.removeWishlistV2(item, actionListener)
+            viewModel?.removeWishlistV2(item, object: WishlistV2ActionListener{
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String) {}
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                    val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, view)
+                }
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {
+                    val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
+                    context?.let { context ->
+                        AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, view)
+                    }
+                }
+
+            })
         }
     }
 
