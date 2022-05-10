@@ -57,6 +57,8 @@ class QuizChoicesView : ConstraintLayout {
      */
 
     fun setupView(item: QuizChoicesUiModel) {
+        binding.llQuizOptionRight.tvRespondent.hide()
+        binding.llQuizOptionRight.ivArrow.hide()
         when (item.type) {
             /**
              * Initial state, bg is default and icon is alphabet - please loop through view holder or view or anything nanti
@@ -82,6 +84,9 @@ class QuizChoicesView : ConstraintLayout {
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
+            /**
+             * For displaying number of participants in options, if correct = icon is green and the rest is default alphabet
+             */
             is PlayQuizOptionState.Participant -> {
                 binding.tvQuizQuestion.setTextColor(defaultFontColor)
                 if (item.type.isCorrect)
@@ -94,8 +99,6 @@ class QuizChoicesView : ConstraintLayout {
         }
         binding.tvQuizQuestion.text = item.text
         setupClickable(item.type)
-//        binding.llQuizOptionRight.tvRespondent.hide()
-//        binding.llQuizOptionRight.ivArrow.hide()
     }
 
     private fun getIconOption(
