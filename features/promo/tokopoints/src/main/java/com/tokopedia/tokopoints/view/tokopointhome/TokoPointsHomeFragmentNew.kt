@@ -590,12 +590,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             ) {
             }
 
-            override fun onWishlistV2Click(
-                item: RecommendationItem,
-                isAddWishlist: Boolean,
-                actionListener: com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-            ) {
-            }
+            override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
         }
     }
 
