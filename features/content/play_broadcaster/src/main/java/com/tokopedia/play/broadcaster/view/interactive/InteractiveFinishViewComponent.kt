@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.partial.game
+package com.tokopedia.play.broadcaster.view.interactive
 
 import android.view.ViewGroup
 import com.tokopedia.play.broadcaster.R
@@ -8,11 +8,11 @@ import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * Created by kenny.hadisaputra on 20/04/22
+ * Created by kenny.hadisaputra on 11/04/22
  */
-class InteractiveFinishedViewComponent(
+class InteractiveFinishViewComponent(
     container: ViewGroup,
-) : ViewComponent(container, R.id.view_interactive_finished) {
+) : ViewComponent(container, R.id.view_interactive_finish) {
 
     private val view = rootView as InteractiveFinishView
 

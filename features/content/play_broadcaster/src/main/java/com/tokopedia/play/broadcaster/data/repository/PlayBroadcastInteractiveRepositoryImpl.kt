@@ -4,8 +4,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.GetInteractiveQuizDetailsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
@@ -25,6 +27,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
     private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
+    private val getInteractiveQuizDetailsUseCase: GetInteractiveQuizDetailsUseCase,
     private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
     private val createInteractiveQuizUseCase: PostInteractiveCreateQuizUseCase,
     private val userSession: UserSessionInterface,
@@ -89,4 +92,16 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             choices = choices,
         )
     }
+
+    override suspend fun getInteractiveQuizDetail(
+        interactiveId: String
+    ): QuizDetailDataUiModel =
+        withContext(dispatchers.io) {
+            val response = getInteractiveQuizDetailsUseCase.apply {
+                setRequestParams(GetInteractiveQuizDetailsUseCase.createParams(interactiveId))
+            }.executeOnBackground()
+
+            return@withContext mapper.mapQuizDetail(response)
+        }
+
 }

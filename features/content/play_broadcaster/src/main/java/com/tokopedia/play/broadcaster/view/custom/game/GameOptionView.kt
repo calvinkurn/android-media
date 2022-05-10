@@ -6,16 +6,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewGameOptionBinding
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 
 /**
  * Created By : Jonathan Darwin on March 29, 2022
@@ -91,6 +90,29 @@ class GameOptionView : ConstraintLayout {
     }
 
     private fun addQuizImage() {
+        binding.flPreview.setChildView { QuizWidgetView(context) }.apply {
+            setTitle("Tebak berapa harga sepatunya")
+            hideTimer()
+            setupQuizForm(
+                listOf(
+                    QuizChoicesUiModel(
+                        text = "Rp.100.000",
+                        type = PlayQuizOptionState.Default('A'),
+                        id = "1"
+                    ),
+                    QuizChoicesUiModel(
+                        text = "Rp.150.000",
+                        type = PlayQuizOptionState.Default('B'),
+                        id = "2"
+                    )
+                )
+            )
+            scaleX = 0.5f
+            scaleY = 0.5f
+            val lp = FrameLayout.LayoutParams(previewWidth, previewHeight)
+            lp.gravity = Gravity.CENTER
+            layoutParams = lp
+        }
     }
 
     private inline fun <reified V: View> ViewGroup.setChildView(viewCreator: () -> V): V {

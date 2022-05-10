@@ -46,4 +46,7 @@ sealed interface PlayBroadcastAction {
     data class SaveQuizData(val quizFormData: QuizFormDataUiModel): PlayBroadcastAction
     object SubmitQuizForm: PlayBroadcastAction
     object QuizEnded : PlayBroadcastAction
+    object OngoingWidgetClicked : PlayBroadcastAction
+    object ClickCloseQuizDetailBottomSheet : PlayBroadcastAction
+    object ClickRefreshQuizDetailBottomSheet: PlayBroadcastAction
 }

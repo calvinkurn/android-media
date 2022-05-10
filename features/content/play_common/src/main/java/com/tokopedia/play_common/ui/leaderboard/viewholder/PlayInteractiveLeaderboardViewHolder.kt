@@ -18,7 +18,9 @@ import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.setTextGradient
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 
 /**
@@ -38,7 +40,9 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private val ivReward = itemView.findViewById<IconUnify>(R.id.iv_reward)
     private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
     private val rvChoices = itemView.findViewById<RecyclerView>(R.id.rv_choices)
-    private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
+    private val tvEndsIn = itemView.findViewById<Typography>(R.id.tv_ends_in)
+    private val timerEndsIn = itemView.findViewById<TimerUnifySingle>(R.id.timer_ends_in)
+    private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener {
         override fun onClicked(item: QuizChoicesUiModel) {}
     })
 
@@ -64,18 +68,15 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         setupLeaderboardType(leaderboard)
 
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
-        if(leaderboard.choices.isEmpty()) hideQuiz(leaderboard) else showQuiz(leaderboard)
+        if (leaderboard.choices.isEmpty()) hideQuiz() else showQuiz(leaderboard)
+        if (leaderboard.reward.isBlank()) hideReward() else showReward(leaderboard)
+        if (leaderboard.endsIn == 0) hideTimer() else showTimer(leaderboard.endsIn.toLong())
     }
 
-    private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
-        when(leaderboard.leaderBoardType){
+    private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel) {
+        when (leaderboard.leaderBoardType) {
             LeadeboardType.Quiz -> {
-                ivReward.show()
-                tvReward.show()
-
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
-                tvReward.text = "Hadiah: ${leaderboard.reward}"
-                tvReward.setTextGradient(intArrayOf(MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)))
             }
             LeadeboardType.Giveaway -> ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
             else -> {
@@ -108,8 +109,56 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         choicesAdapter.setItemsAndAnimateChanges(leaderboard.choices)
     }
 
-    private fun hideQuiz(leaderboard: PlayLeaderboardUiModel){
+    private fun hideQuiz(){
         rvChoices.hide()
+    }
+
+    private fun showReward(leaderboard: PlayLeaderboardUiModel) {
+        ivReward.show()
+        tvReward.show()
+        tvReward.text = "Hadiah: ${leaderboard.reward}"
+        tvReward.setTextGradient(
+            intArrayOf(
+                MethodChecker.getColor(
+                    itemView.context,
+                    R.color.play_dms_quiz_header_gradient_start
+                ),
+                MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)
+            )
+        )
+    }
+
+    private fun hideReward() {
+        ivReward.hide()
+        tvReward.hide()
+    }
+
+    private fun showTimer(duration: Long) {
+        tvEndsIn.show()
+        timerEndsIn.show()
+        setTimer(duration) {}
+    }
+
+    private fun hideTimer() {
+        tvEndsIn.hide()
+        timerEndsIn.hide()
+    }
+
+    private fun setTimer(duration: Long, onFinished: () -> Unit) {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.SECOND, duration.toInt())
+        setTargetTime(calendar, onFinished)
+    }
+
+    private fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
+        tvEndsIn.show()
+        timerEndsIn.show()
+        timerEndsIn.apply {
+            pause()
+            targetDate = targetTime
+            onFinish = onFinished
+            resume()
+        }
     }
 
     interface Listener {

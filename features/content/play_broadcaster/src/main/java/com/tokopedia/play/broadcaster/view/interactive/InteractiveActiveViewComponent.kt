@@ -1,8 +1,7 @@
-package com.tokopedia.play.broadcaster.view.partial.game
+package com.tokopedia.play.broadcaster.view.interactive
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
 import com.tokopedia.play_common.view.game.setupOngoingGiveaway
@@ -12,13 +11,21 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import java.util.*
 
 /**
- * Created by kenny.hadisaputra on 20/04/22
+ * Created by kenny.hadisaputra on 05/04/22
  */
 class InteractiveActiveViewComponent(
     container: ViewGroup,
+    listener: Listener,
 ) : ViewComponent(container, R.id.view_interactive_active) {
 
     private val parent = rootView as ViewGroup
+
+
+    init {
+        rootView.setOnClickListener {
+            listener.onWidgetClicked(this@InteractiveActiveViewComponent)
+        }
+    }
 
     fun setOngoingGiveaway(
         desc: String,
@@ -48,6 +55,7 @@ class InteractiveActiveViewComponent(
         }
     }
 
+
     fun setQuiz(
         question: String,
         targetTime: Calendar,
@@ -70,5 +78,10 @@ class InteractiveActiveViewComponent(
             parent.addView(view)
             view
         } else firstChild
+    }
+
+    interface Listener {
+
+        fun onWidgetClicked(view: InteractiveActiveViewComponent)
     }
 }

@@ -29,6 +29,8 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.BroadcastQuizState
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -137,8 +139,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableEvent
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
-    val observableQuizState: LiveData<BroadcastQuizState>
-        get() = _observableQuizState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
@@ -188,7 +188,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
-    private val _observableQuizState = MutableLiveData<BroadcastQuizState>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession =
@@ -222,6 +221,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             )
         }
 
+    private val _quizDetailState = MutableStateFlow<QuizDetailStateUiModel>(QuizDetailStateUiModel.Unknown)
+
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
             message = if (it.isActive && !it.isInvalidId) it.message else "",
@@ -249,8 +250,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _interactive,
         _interactiveConfig,
         _interactiveSetup,
+        _quizDetailState,
     ) { channelState, pinnedMessage, productMap, schedule, isExiting,
-        quizForm, interactive, interactiveConfig, interactiveSetup ->
+        quizForm, interactive, interactiveConfig, interactiveSetup, quizDetail ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
@@ -261,6 +263,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             interactive = interactive,
             interactiveConfig = interactiveConfig,
             interactiveSetup = interactiveSetup,
+            quizDetail = quizDetail,
         )
     }.stateIn(
         viewModelScope,
@@ -390,6 +393,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.CreateGiveaway -> handleCreateGiveaway(
                 event.title, event.durationInMs
             )
+            is PlayBroadcastAction.OngoingWidgetClicked -> handleOngoingWidgetClicked()
         }
     }
 
@@ -745,22 +749,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
-        when (val status = quiz.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
-                endTime = status.endTime,
-                question = quiz.title
-            )
-            is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
-            else -> {}
+        _interactive.value = quiz
+        if (quiz.status == InteractiveUiModel.Quiz.Status.Finished){
+            //TODO("Get leaderboard")
         }
-    }
-
-    private fun onQuizFinished() {
-        _observableQuizState.value = BroadcastQuizState.Finished
-    }
-
-    private fun onQuizOngoing(endTime: Calendar, question: String) {
-        _observableQuizState.value = BroadcastQuizState.Ongoing(endTime, question)
     }
 
     private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
@@ -1029,6 +1021,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val activePinned = repo.getActivePinnedMessage(channelId)
             _pinnedMessage.value = activePinned ?: PinnedMessageUiModel.Empty()
         }) {}
+    }
+
+    fun getQuizDetailData() {
+        _quizDetailState.value = QuizDetailStateUiModel.Loading
+        viewModelScope.launchCatchError(block = {
+            val quizDetailUiModel = repo.getInteractiveQuizDetail(interactiveId)
+            _quizDetailState.value = QuizDetailStateUiModel.Success(quizDetailUiModel)
+        }) {
+            _quizDetailState.value = QuizDetailStateUiModel.Error
+        }
     }
 
     private fun handleEditPinnedMessage() {
@@ -1331,8 +1333,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleOngoingWidgetClicked() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            if (uiState.value.interactive is InteractiveUiModel.Quiz) {
+                _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailBottomSheet)
+            }
+        }) { err ->
+            _uiEvent.emit(PlayBroadcastEvent.ShowQuizDetailError(err))
+        }
+    }
+
     /**
-     * Quiz
+     * Quiz Form
      */
     private fun initQuizFormData() {
         needUpdateQuizForm(true) {

@@ -35,9 +35,8 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastQuizState
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -50,6 +49,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayQuizDetailBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
@@ -59,10 +59,11 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageVie
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.dialog.InteractiveSetupDialogFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveActiveViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveFinishViewComponent
+import com.tokopedia.play.broadcaster.view.interactive.InteractiveGameResultViewComponent
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
-import com.tokopedia.play.broadcaster.view.partial.game.InteractiveActiveViewComponent
-import com.tokopedia.play.broadcaster.view.partial.game.InteractiveFinishedViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -77,8 +78,6 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
-import com.tokopedia.play_common.view.game.GameSmallWidgetView
-import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
@@ -96,7 +95,8 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic
-): PlayBaseBroadcastFragment(), FragmentWithDetachableView {
+) : PlayBaseBroadcastFragment(),
+    FragmentWithDetachableView {
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
@@ -126,8 +126,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
-    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, object : InteractiveActiveViewComponent.Listener {
+        override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+            parentViewModel.submitAction(PlayBroadcastAction.OngoingWidgetClicked)
+        }
+    }) }
+    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
@@ -208,8 +212,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
-
-    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_widget)
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -395,7 +397,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeMetrics()
         observeEvent()
         observeInteractiveConfig()
-        observeQuizState()
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
@@ -735,19 +736,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeQuizState(){
-        parentViewModel.observableQuizState.observe(viewLifecycleOwner) {state ->
-            when (state) {
-                is BroadcastQuizState.Finished -> {
-                    //handleFinishedQuiz
-                }
-                is BroadcastQuizState.Ongoing -> {
-                    handleOngoingQuiz(state)
-                }
-            }
-        }
-    }
-
     private fun observeCreateInteractiveSession() {
         parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -816,6 +804,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
+                    is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
                 }
             }
         }
@@ -1114,14 +1103,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
-        quizOngoingView.show()
-        quizOngoingView.setupQuiz(state.question,state.endTime) { gameSmallWidgetView ->
-            gameIconView.show()
-        }
-        gameIconView.hide()
-    }
-
     /** Game Region */
     private fun showQuizForm(isShow: Boolean) {
         if(isShow) gameIconView.cancelCoachMark()
@@ -1149,7 +1130,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 
+    private fun openQuizDetailSheet() {
+        val playQuizDetailBottomSheet = PlayQuizDetailBottomSheet.getFragment(
+            childFragmentManager,
+            requireContext().classLoader)
+        playQuizDetailBottomSheet.show(childFragmentManager)
+    }
+
     companion object {
         private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
     }
+
 }

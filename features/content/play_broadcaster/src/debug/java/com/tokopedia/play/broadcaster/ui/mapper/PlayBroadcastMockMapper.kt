@@ -10,12 +10,14 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizDetailResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -23,8 +25,12 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiMode
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import kotlin.random.Random
@@ -313,6 +319,50 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             correct = option.isSelected
         )
     }
+
+    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse): QuizDetailDataUiModel {
+        return with(response.playInteractiveQuizDetail) {
+            QuizDetailDataUiModel(
+                question = question,
+                reward = reward,
+                countDownEnd = countdownEnd,
+                choices = choices.map {
+                    QuizDetailDataUiModel.Choice(
+                        id = it.id,
+                        text = it.text,
+                        isCorrectAnswer = it.isCorrectAnswer,
+                        participantCount = it.participantCount
+                    )
+                }
+            )
+        }
+    }
+
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
+        return PlayLeaderboardUiModel(
+            title = dataUiModel.question,
+            reward = dataUiModel.reward,
+            choices = dataUiModel.choices.mapIndexed { index, choice ->
+                QuizChoicesUiModel(
+                    id = choice.id,
+                    text = choice.text,
+                    type = PlayQuizOptionState.Participant(
+                        alphabet = generateAlphabetChoices(index),
+                        isCorrect = choice.isCorrectAnswer,
+                        count = choice.participantCount
+                    )
+                )
+            },
+            endsIn = dataUiModel.countDownEnd,
+            otherParticipant = 0,
+            otherParticipantText = "",
+            winners = emptyList(),
+            leaderBoardType = LeadeboardType.Quiz
+        )
+    }
+
+    private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
+    private val arrayOfChoices = ('A'..'D').toList()
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

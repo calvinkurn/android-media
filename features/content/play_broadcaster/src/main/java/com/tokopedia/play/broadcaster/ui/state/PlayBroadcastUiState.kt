@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -25,6 +26,7 @@ data class PlayBroadcastUiState(
     val interactive: InteractiveUiModel,
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
+    val quizDetail: QuizDetailStateUiModel,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -44,6 +46,7 @@ data class PlayBroadcastUiState(
                 interactive = InteractiveUiModel.Unknown,
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
+                quizDetail = QuizDetailStateUiModel.Unknown,
             )
     }
 }
