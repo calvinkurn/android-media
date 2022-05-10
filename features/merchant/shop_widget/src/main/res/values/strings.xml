@@ -24,6 +24,7 @@
     <!-- Shop Note Detail -->
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
     <string name="shop_note_title">Catatan Toko</string>
+    <string name="read">Baca</string>
 
     <!-- Shop Favourite -->
     <string name="favorited_shop_title">Followers Toko</string>
