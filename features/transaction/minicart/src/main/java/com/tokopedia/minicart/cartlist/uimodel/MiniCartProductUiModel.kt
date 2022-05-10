@@ -43,6 +43,7 @@ data class MiniCartProductUiModel(
         var bundleMinOrder: Int = 0,
         var bundleMaxOrder: Int = 0,
         var bundleQty: Int = 0,
+        var bundleLabelQty: Int = 0,
         var bundleMultiplier: Int = 0,
         var bundleIconUrl: String = "",
         var slashPriceLabel: String = "",

@@ -6,6 +6,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -76,6 +77,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         renderProductAction(element)
         renderProductAlpha(element)
         renderBundleHeader(element)
+        renderBundleQuantity(element)
         renderVerticalLine(element)
         renderBottomDivider(element)
     }
@@ -614,6 +616,18 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
         }
     }
 
+    private fun renderBundleQuantity(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            if(element.isBundlingItem && element.bundleLabelQty > 1) {
+                labelBundleQty.text = itemView.context.getString(
+                    R.string.mini_cart_bundle_qty_label, element.bundleLabelQty)
+                labelBundleQty.show()
+            } else {
+                labelBundleQty.hide()
+            }
+        }
+    }
+
     private fun renderBundleDiscount(element: MiniCartProductUiModel) {
         with(viewBinding.layoutBundleHeader) {
             if (element.slashPriceLabel.isNotBlank()) {
@@ -648,6 +662,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 dividerBottom.hide()
             }
         }
+        adjustBottomMargin(element)
     }
 
     private fun adjustVerticalLine(element: MiniCartProductUiModel) {
@@ -754,6 +769,33 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     buttonDeleteCart.gone()
                 } else {
                     buttonDeleteCart.invisible()
+                }
+            }
+        }
+    }
+
+    private fun adjustBottomMargin(element: MiniCartProductUiModel) {
+        with(viewBinding) {
+            val lp = containerProduct.layoutParams
+
+            val margin = if(element.showBottomDivider) {
+                itemView.context.resources.getDimensionPixelSize(
+                    com.tokopedia.abstraction.R.dimen.dp_0)
+            } else {
+                itemView.context.resources.getDimensionPixelSize(
+                    com.tokopedia.abstraction.R.dimen.dp_16)
+            }
+
+            when(lp) {
+                is ConstraintLayout.LayoutParams -> {
+                    containerProduct.layoutParams = lp.apply {
+                        bottomMargin = margin
+                    }
+                }
+                is RecyclerView.LayoutParams -> {
+                    containerProduct.layoutParams = lp.apply {
+                        bottomMargin = margin
+                    }
                 }
             }
         }
