@@ -1,9 +1,6 @@
 package com.tokopedia.media.picker.ui.fragment.permission
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
@@ -12,7 +9,7 @@ import javax.inject.Inject
 
 class PermissionViewModel @Inject constructor(
     private val cacheManager: ParamCacheManager
-) : ViewModel() {
+) : ViewModel(), LifecycleObserver {
 
     /*
     * will return a dynamic wording of permission
@@ -31,8 +28,6 @@ class PermissionViewModel @Inject constructor(
     val permissionCodeName: LiveData<List<String>> get() = _permissionCodeName
 
     init {
-        getDynamicPermissionList()
-
         _permissionCodeName.addSource(_permissionList) {
             _permissionCodeName.value = it.map { model ->
                 model.name
@@ -40,6 +35,7 @@ class PermissionViewModel @Inject constructor(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun getDynamicPermissionList() {
         _permissionList.value = PermissionUiModel.getOrCreate(
             cacheManager.get().pageType(),

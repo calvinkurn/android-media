@@ -40,6 +40,7 @@ open class PermissionFragment : BaseDaggerFragment() {
     private val mPermissionList = mutableListOf<PermissionUiModel>()
     private val mAdapter by lazy { PermissionAdapter(mPermissionList) }
 
+    private var isPermissionDialogShown = false
     private var isPermissionRationale = false
     private var mTitle = ""
     private var mMessage = ""
@@ -62,17 +63,13 @@ open class PermissionFragment : BaseDaggerFragment() {
         initView()
     }
 
-    override fun onResume() {
-        super.onResume()
-        onPrepareShowPermissionDialog()
-    }
-
     private fun initView() {
-        viewModel.getDynamicPermissionList()
         viewModel.initOrCreateDynamicWording()
     }
 
     private fun initObservable() {
+        lifecycle.addObserver(viewModel)
+
         viewModel.dynamicWording.observe(viewLifecycleOwner) {
             mTitle = getString(it.first)
             mMessage = getString(it.second)
@@ -89,6 +86,10 @@ open class PermissionFragment : BaseDaggerFragment() {
             // setup recycler view after get the data
             setupPermissionRecyclerView()
         }
+
+        viewModel.permissionCodeName.observe(viewLifecycleOwner) {
+            onPrepareShowPermissionDialog(it)
+        }
     }
 
     private fun setupPermissionRecyclerView() {
@@ -99,27 +100,27 @@ open class PermissionFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onPrepareShowPermissionDialog() {
-        val permissions = viewModel.permissionCodeName.value?: return
+    private fun onPrepareShowPermissionDialog(permissionCodeNameList: List<String>) {
         var permissionGrantedAmount = 0
 
-        for (permission in permissions) {
+        for (permission in permissionCodeNameList) {
             if (checkSelfPermission(requireContext(), permission) == PERMISSION_GRANTED) {
                 mAdapter.updateState(permission, true)
                 permissionGrantedAmount++
             }
         }
 
-        if (permissions.size == permissionGrantedAmount) {
+        if (permissionCodeNameList.size == permissionGrantedAmount) {
             listener?.onPermissionGranted()
         } else {
-            onShowDialog(mTitle, mMessage)
+            onShowDialog(permissionCodeNameList, mTitle, mMessage)
+            isPermissionDialogShown = true
         }
     }
 
-    private fun onShowDialog(title: String, message: String) {
-        val permissions = viewModel.permissionCodeName.value?: return
+    private fun onShowDialog(permissionCodeNameList: List<String>, title: String, message: String) {
         if (isPermissionRationale) return
+        if (isPermissionDialogShown) return
 
         DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             setImageDrawable(R.drawable.bg_picker_permission_illustration)
@@ -129,7 +130,11 @@ open class PermissionFragment : BaseDaggerFragment() {
             setOverlayClose(false)
 
             setPrimaryCTAClickListener {
-                requestPermissions(permissions.toTypedArray(), PERMISSION_REQUEST_CODE)
+                requestPermissions(
+                    permissionCodeNameList.toTypedArray(),
+                    PERMISSION_REQUEST_CODE
+                )
+
                 dismiss()
             }
         }.show()
