@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
@@ -17,7 +18,10 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created By @ilhamsuaib on 02/03/21
  */
 
-class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiModel>(itemView) {
+class PotentialWidget(
+    itemView: View,
+    private val listener: Listener
+) : AbstractViewHolder<WidgetPotentialUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.widget_pm_potential
@@ -28,11 +32,7 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
 
     override fun bind(element: WidgetPotentialUiModel) {
         binding?.run {
-
-            rvPmPotential.layoutManager = object : LinearLayoutManager(root.context) {
-                override fun canScrollVertically(): Boolean = false
-            }
-            rvPmPotential.adapter = PotentialAdapter(benefitList)
+            setupRecyclerView()
 
             if (element.isNewSeller) {
                 tvPmPotentialDescription.text = root.context.getString(
@@ -41,10 +41,40 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
                 ).parseAsHtml()
             } else {
                 tvPmPotentialDescription.text = root.context.getString(
-                    R.string.pm_registration_potential_description,
-                    Constant.POWER_MERCHANT_CHARGING,
-                    Constant.OLD_POWER_MERCHANT_CHARGING
+                    R.string.pm_registration_potential_description
                 ).parseAsHtml()
+            }
+
+            tvPmPotentialCtaCategory.text = root.context.getString(
+                R.string.pm_service_fee_by_category
+            ).parseAsHtml()
+            tvPmPotentialCtaCategory.setOnClickListener {
+                listener.showServiceFeeByCategory()
+            }
+
+            showBackground()
+        }
+    }
+
+    private fun showBackground() {
+        try {
+            binding?.viewPmPotentialBg?.setBackgroundResource(R.drawable.bg_pm_registration_potential_benefit)
+        } catch (e: Exception) {
+            binding?.viewPmPotentialBg?.gone()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding?.run {
+            rvPmPotential.layoutManager = object : LinearLayoutManager(
+                root.context, HORIZONTAL, false
+            ) {
+                override fun canScrollVertically(): Boolean = false
+            }
+
+            containerPmPotentialBenefit.post {
+                val itemWidth = containerPmPotentialBenefit.measuredWidth / benefitList.size
+                rvPmPotential.adapter = PotentialAdapter(benefitList, itemWidth)
             }
         }
     }
@@ -66,5 +96,9 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
                 )
             )
         }
+    }
+
+    interface Listener {
+        fun showServiceFeeByCategory()
     }
 }
