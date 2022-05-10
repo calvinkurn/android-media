@@ -422,7 +422,10 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
     fun removeWishlistV2(model: RecommendationItem, actionListener: WishlistV2ActionListener){
         deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { actionListener.onSuccessRemoveWishlist(model.productId.toString()) },
+            onSuccess = { result ->
+                if (result is Success) {
+                    actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                } },
             onError = { actionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 

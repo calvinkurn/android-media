@@ -29,6 +29,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -60,6 +61,7 @@ internal class SimilarSearchViewModel(
     private val addWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
     private val addWishlistV2EventLiveData = MutableLiveData<Event<AddToWishlistV2Response.Data.WishlistAddV2>>()
     private val removeWishlistEventLiveData = MutableLiveData<Event<Boolean>>()
+    private val removeWishlistV2EventLiveData = MutableLiveData<Event<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
     private val trackingImpressionSimilarProductEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val trackingEmptyResultEventLiveData = MutableLiveData<Event<Boolean>>()
     private val trackingWishlistEventLiveData = MutableLiveData<Event<WishlistTrackingModel>>()
@@ -296,12 +298,14 @@ internal class SimilarSearchViewModel(
         }
 
         override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
-            removeWishlistEventLiveData.postValue(Event(false))
+            removeWishlistV2EventLiveData.postValue(Event(DeleteWishlistV2Response.Data.WishlistRemoveV2()))
         }
 
-        override fun onSuccessRemoveWishlist(productId: String) {
-            removeWishlistEventLiveData.postValue(Event(true))
-
+        override fun onSuccessRemoveWishlist(
+            result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+            productId: String
+        ) {
+            removeWishlistV2EventLiveData.postValue(Event(result))
             postUpdateWishlistOriginalProductEvent(productId,false)
         }
 
@@ -530,6 +534,10 @@ internal class SimilarSearchViewModel(
 
     fun getRemoveWishlistEventLiveData(): LiveData<Event<Boolean>> {
         return removeWishlistEventLiveData
+    }
+
+    fun getRemoveWishlistV2EventLiveData(): LiveData<Event<DeleteWishlistV2Response.Data.WishlistRemoveV2>> {
+        return removeWishlistV2EventLiveData
     }
 
     fun onViewUpdateProductWishlistStatus(productId: String?, isWishlisted: Boolean) {

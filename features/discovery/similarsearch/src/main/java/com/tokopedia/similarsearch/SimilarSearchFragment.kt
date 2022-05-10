@@ -48,6 +48,7 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 
@@ -226,6 +227,7 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeAddWishlistEventLiveData()
         observeAddWishlistV2EventLiveData()
         observeRemoveWishlistEventLiveData()
+        observeRemoveWishlistV2EventLiveData()
         observeAddToCartEventLiveData()
         observeRouteToCartEventLiveData()
         observeTrackingImpressionSimilarProductEventLiveData()
@@ -335,6 +337,12 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         })
     }
 
+    private fun observeRemoveWishlistV2EventLiveData() {
+        similarSearchViewModel?.getRemoveWishlistV2EventLiveData()?.observe(viewLifecycleOwner, EventObserver {
+            handleRemoveWishlistV2Event(it)
+        })
+    }
+
     private fun handleAddWishlistEvent(isSuccess: Boolean) {
         if (isSuccess) {
             val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -352,6 +360,14 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         context?.let { context ->
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+            }
+        }
+    }
+
+    private fun handleRemoveWishlistV2Event(result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
+        context?.let { context ->
+            view?.let { v ->
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
             }
         }
     }
