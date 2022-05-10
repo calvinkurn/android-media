@@ -79,14 +79,14 @@ class VoucherListViewModelTest {
         MockKAnnotations.init(this)
 
         mViewModel = VoucherListViewModel(
-                getVoucherListUseCase,
-                getNotStartedVoucherListUseCase,
-                cancelVoucherUseCase,
-                shopBasicDataUseCase,
-                voucherDetailUseCase,
-                getBroadCastMetaDataUseCase,
-                initiateVoucherUseCase,
-                CoroutineTestDispatchersProvider
+            getVoucherListUseCase,
+            getNotStartedVoucherListUseCase,
+            cancelVoucherUseCase,
+            shopBasicDataUseCase,
+            voucherDetailUseCase,
+            getBroadCastMetaDataUseCase,
+            initiateVoucherUseCase,
+            CoroutineTestDispatchersProvider
         )
 
         with(mViewModel) {
@@ -106,32 +106,33 @@ class VoucherListViewModelTest {
     }
 
     @Test
-    fun `success getting active voucher list first time will change shop basic data and voucher list`() = runBlocking {
-        with(mViewModel) {
-            val dummySuccessShopBasicData = ShopBasicDataResult()
+    fun `success getting active voucher list first time will change shop basic data and voucher list`() =
+        runBlocking {
+            with(mViewModel) {
+                val dummySuccessShopBasicData = ShopBasicDataResult()
 
-            coEvery {
-                shopBasicDataUseCase.executeOnBackground()
-            } returns dummySuccessShopBasicData
-            coEvery {
-                getVoucherListUseCase.executeOnBackground()
-            } returns listOf(voucherUiModel)
-            coEvery {
-                getNotStartedVoucherListUseCase.executeOnBackground()
-            } returns listOf(voucherUiModel)
+                coEvery {
+                    shopBasicDataUseCase.executeOnBackground()
+                } returns dummySuccessShopBasicData
+                coEvery {
+                    getVoucherListUseCase.executeOnBackground()
+                } returns listOf(voucherUiModel)
+                coEvery {
+                    getNotStartedVoucherListUseCase.executeOnBackground()
+                } returns listOf(voucherUiModel)
 
-            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
+                val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+                getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
 
-            coVerify {
-                shopBasicDataUseCase.executeOnBackground()
-                getVoucherListUseCase.executeOnBackground()
+                coVerify {
+                    shopBasicDataUseCase.executeOnBackground()
+                    getVoucherListUseCase.executeOnBackground()
+                }
+
+                assert(shopBasicLiveData.value == Success(dummySuccessShopBasicData))
+                assert(voucherList.value == Success(listOf(voucherUiModel, voucherUiModel)))
             }
-
-            assert(shopBasicLiveData.value == Success(dummySuccessShopBasicData))
-            assert(voucherList.value == Success(listOf(voucherUiModel, voucherUiModel)))
         }
-    }
 
     @Test
     fun `fail getting active voucher list first time`() = runBlocking {
@@ -176,7 +177,7 @@ class VoucherListViewModelTest {
             } returns listOf(voucherUiModel)
             coEvery {
                 getNotStartedVoucherListUseCase.executeOnBackground()
-            } returns  listOf(voucherUiModel)
+            } returns listOf(voucherUiModel)
 
             val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
             getActiveVoucherList(true, sourceRequestParams = sourceRequestParams)
@@ -242,7 +243,16 @@ class VoucherListViewModelTest {
             } returns listOf(voucherUiModel)
 
             val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            getVoucherListHistory(anyInt(), anyString(), listOf(anyInt()), anyString(), anyInt(), anyBoolean(), sourceRequestParams, anyString())
+            getVoucherListHistory(
+                anyInt(),
+                anyString(),
+                listOf(anyInt()),
+                anyString(),
+                anyInt(),
+                anyBoolean(),
+                sourceRequestParams,
+                anyString()
+            )
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
@@ -262,7 +272,16 @@ class VoucherListViewModelTest {
             } throws dummyThrowable
 
             val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            getVoucherListHistory(anyInt(), anyString(), listOf(anyInt()), anyString(), anyInt(), anyBoolean(), sourceRequestParams, anyString())
+            getVoucherListHistory(
+                anyInt(),
+                anyString(),
+                listOf(anyInt()),
+                anyString(),
+                anyInt(),
+                anyBoolean(),
+                sourceRequestParams,
+                anyString()
+            )
 
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
@@ -440,5 +459,254 @@ class VoucherListViewModelTest {
         }
     }
 
+    @Test
+    fun `check whether voucher source request param is returning seller only`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.SELLER, VoucherVps.NON_VPS)
+            val isSellerCreated = true
+            val isVps = false
+            val isSubsidy = false
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+    @Test
+    fun `check whether voucher source request param is returning vps only`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.VPS)
+            val isSellerCreated = false
+            val isVps = true
+            val isSubsidy = false
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+    @Test
+    fun `check whether voucher source request param is returning subsidy only`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.NON_VPS)
+            val isSellerCreated = false
+            val isVps = false
+            val isSubsidy = true
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+    @Test
+    fun `check whether voucher source request param is returning seller, vps, & subsidy`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            val isSellerCreated = true
+            val isVps = true
+            val isSubsidy = true
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+    @Test
+    fun `check whether voucher source request param is returning seller vps`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.SELLER, VoucherVps.ALL)
+            val isSellerCreated = true
+            val isVps = true
+            val isSubsidy = false
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+//    @Test
+//    fun `check whether voucher source request param is returning seller subsidy`() {
+//        with(mViewModel) {
+//
+//            val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.NON_VPS)
+//            val isSellerCreated = true
+//            val isVps = false
+//            val isSubsidy = false
+//
+//            val sourceRequestParams = getVoucherSourceRequestParams(
+//                isSellerCreated,
+//                isVps,
+//                isSubsidy
+//            )
+//
+//            assert(sourceRequestParams == dummyPair)
+//        }
+//    }
+//
+//    @Test
+//    fun `check whether voucher source request param is returning vps subsidy`() {
+//        with(mViewModel) {
+//
+//            val dummyPair = Pair(VoucherSubsidy.TOKOPEDIA, VoucherVps.VPS)
+//            val isSellerCreated = false
+//            val isVps = true
+//            val isSubsidy = false
+//
+//            val sourceRequestParams = getVoucherSourceRequestParams(
+//                isSellerCreated,
+//                isVps,
+//                isSubsidy
+//            )
+//
+//            assert(sourceRequestParams == dummyPair)
+//        }
+//    }
+
+    @Test
+    fun `check whether voucher source request param is returning default value`() {
+        with(mViewModel) {
+
+            val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            val isSellerCreated = null
+            val isVps = null
+            val isSubsidy = null
+
+            val sourceRequestParams = getVoucherSourceRequestParams(
+                isSellerCreated,
+                isVps,
+                isSubsidy
+            )
+
+            assert(sourceRequestParams == dummyPair)
+        }
+    }
+
+    @Test
+    fun `success search voucher by keyword from active voucher`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            searchVoucherByKeyword(
+                isActiveVoucher = true,
+                keyword = "test",
+                sourceRequestParams = sourceRequestParams,
+                targetBuyer = null
+            )
+
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+            }
+            assert(voucherList.value == Success(listOf(voucherUiModel, voucherUiModel)))
+        }
+    }
+
+    @Test
+    fun `fail search voucher by keyword from active voucher`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
+            coEvery {
+                getNotStartedVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            searchVoucherByKeyword(
+                isActiveVoucher = true,
+                keyword = "test",
+                sourceRequestParams = sourceRequestParams,
+                targetBuyer = null
+            )
+
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+            }
+            assert(voucherList.value is Fail)
+        }
+    }
+
+    @Test
+    fun `success search voucher by keyword from voucher list history`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getVoucherListUseCase.executeOnBackground()
+            } returns listOf(voucherUiModel)
+
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            searchVoucherByKeyword(
+                isActiveVoucher = false,
+                keyword = "test",
+                sourceRequestParams = sourceRequestParams,
+                targetBuyer = null
+            )
+
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+            }
+            assert(voucherList.value == Success(listOf( voucherUiModel)))
+        }
+    }
+
+    @Test
+    fun `fail search voucher by keyword from voucher list history`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getVoucherListUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            val sourceRequestParams = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
+            searchVoucherByKeyword(
+                isActiveVoucher = false,
+                keyword = "test",
+                sourceRequestParams = sourceRequestParams,
+                targetBuyer = null
+            )
+
+            coVerify {
+                getVoucherListUseCase.executeOnBackground()
+            }
+            assert(voucherList.value is Fail)
+        }
+    }
 
 }
