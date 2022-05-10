@@ -8,8 +8,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
 import com.tokopedia.vouchercreation.shop.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherSubsidy
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherVps
@@ -65,6 +67,9 @@ class VoucherListViewModelTest {
 
     @RelaxedMockK
     lateinit var cancelVoucherResponseObserver: Observer<in Result<Int>>
+
+    @RelaxedMockK
+    lateinit var initiateVoucherObserver: Observer<in Result<InitiateVoucherUiModel>>
 
     @RelaxedMockK
     lateinit var localVoucherListObserver: Observer<in List<VoucherUiModel>>
@@ -681,7 +686,7 @@ class VoucherListViewModelTest {
             coVerify {
                 getVoucherListUseCase.executeOnBackground()
             }
-            assert(voucherList.value == Success(listOf( voucherUiModel)))
+            assert(voucherList.value == Success(listOf(voucherUiModel)))
         }
     }
 
@@ -708,5 +713,41 @@ class VoucherListViewModelTest {
             assert(voucherList.value is Fail)
         }
     }
+
+    @Test
+    fun `success get create voucher eligibility`() = runBlocking {
+        with(mViewModel) {
+            val dummyResult = InitiateVoucherUiModel()
+            coEvery {
+                initiateVoucherUseCase.executeOnBackground()
+            } returns dummyResult
+
+            getCreateVoucherEligibility()
+
+            coVerify {
+                initiateVoucherUseCase.executeOnBackground()
+            }
+
+            assert(createVoucherEligibility.value is Success)
+        }
+    }
+
+    @Test
+    fun `fail get create voucher eligibility`() = runBlocking {
+            with(mViewModel) {
+                val dummyThrowable = MessageErrorException("")
+                coEvery {
+                    initiateVoucherUseCase.executeOnBackground()
+                } throws dummyThrowable
+
+                getCreateVoucherEligibility()
+
+                coVerify {
+                    initiateVoucherUseCase.executeOnBackground()
+                }
+
+                assert(createVoucherEligibility.value is Fail)
+            }
+        }
 
 }
