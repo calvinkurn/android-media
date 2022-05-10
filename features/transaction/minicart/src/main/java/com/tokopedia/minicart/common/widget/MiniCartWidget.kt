@@ -1,5 +1,6 @@
 package com.tokopedia.minicart.common.widget
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
@@ -95,14 +96,14 @@ class MiniCartWidget @JvmOverloads constructor(
         textCannotProcess = view?.findViewById(R.id.text_cannot_process)
         textCannotProcessQuantity = view?.findViewById(R.id.text_cannot_process_quantity)
         imageChevronUnavailable = view?.findViewById(R.id.image_chevron_unavailable)
+        val application = (context as? Activity)?.application
+        initializeInjector(application)
     }
 
     /*
     * Function to initialize the widget
     * */
     fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
-        val application = fragment.activity?.application
-        initializeInjector(application)
         removeAllViews()
 
         if (remoteConfig.isNewMiniCartEnabled()) {
