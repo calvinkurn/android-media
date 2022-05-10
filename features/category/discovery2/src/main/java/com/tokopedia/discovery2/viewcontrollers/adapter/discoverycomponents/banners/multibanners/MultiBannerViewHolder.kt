@@ -172,27 +172,31 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun setComponentPromoNameForCoupons(data: List<DataItem>) {
-        if(data.firstOrNull()?.action == BANNER_ACTION) {
-            when (bannerName) {
-                ComponentNames.SingleBanner.componentName -> data.firstOrNull()?.componentPromoName = SINGLE_PROMO_CODE
+        data.forEach {
+            if (it.action == BANNER_ACTION) {
+                when (bannerName) {
+                    ComponentNames.SingleBanner.componentName -> it.componentPromoName = SINGLE_PROMO_CODE
 
-                ComponentNames.DoubleBanner.componentName -> data.firstOrNull()?.componentPromoName = DOUBLE_PROMO_CODE
+                    ComponentNames.DoubleBanner.componentName -> it.componentPromoName = DOUBLE_PROMO_CODE
+                }
             }
         }
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        if(data.firstOrNull()?.action == BANNER_ACTION){
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
-                    data,
-                    null
-            )
-        }else {
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                    data,
-                    null,
-                    Utils.getUserId(fragment.context)
-            )
+        data.forEach {
+            if (it.action == BANNER_ACTION) {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
+                        data,
+                        null
+                )
+            } else {
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                        data,
+                        null,
+                        Utils.getUserId(fragment.context)
+                )
+            }
         }
     }
 
