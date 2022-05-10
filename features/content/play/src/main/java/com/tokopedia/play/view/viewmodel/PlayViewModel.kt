@@ -1630,8 +1630,8 @@ class PlayViewModel @AssistedInject constructor(
                 if(isFinished) processWinnerStatus(winnerStatus, interactive)
             }
             is QuizResponse -> {
-                val interactive = playSocketToModelMapper.mapQuizFromSocket(result) as InteractiveUiModel.Quiz
-                handleQuizFromNetwork(interactive)
+                val interactive = playSocketToModelMapper.mapQuizFromSocket(result)
+                setupInteractive(interactive)
             }
         }
     }
