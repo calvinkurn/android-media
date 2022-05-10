@@ -278,7 +278,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun setTenureDetailData() {
         payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let {
-            checkDisableLogic(it.disable)
+            checkDisablePartnerLogic(it.disable)
             sendOccImpressionEvent()
             listOfGateway = paylaterGetOptimizedModel
             setSelectedTenure()
@@ -356,7 +356,10 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.visibility = View.VISIBLE
     }
 
-    private fun checkDisableLogic(disable: Boolean) {
+    /**
+     * Set the global value if the Partner value is disable
+     */
+    private fun checkDisablePartnerLogic(disable: Boolean) {
         isDisabledPartner = disable
         this.isDisable()
     }
