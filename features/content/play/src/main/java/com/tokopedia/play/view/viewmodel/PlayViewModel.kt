@@ -1778,6 +1778,8 @@ class PlayViewModel @AssistedInject constructor(
 
             val isRewardAvailable: Boolean = (_interactive.value.interactive as InteractiveUiModel.Quiz).reward.isNotEmpty()
 
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+
             suspend fun checkWinnerStatus(): Boolean {
                 val winnerStatus = _winnerStatus.value
                 return if (winnerStatus != null) {
