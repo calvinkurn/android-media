@@ -16,8 +16,21 @@ class MultipleProductBundlingUiModel constructor(
         return typeFactory.type(this)
     }
 
+    fun isLoading(): Boolean {
+        var isLoading = false
+        for (bundle in listBundling) {
+            if (bundle.isLoading) {
+                isLoading = true
+                break
+            }
+        }
+        return isLoading
+    }
+
     open class Builder : SendableUiModel.Builder<Builder, MultipleProductBundlingUiModel>() {
+
         internal var listProductBundling: ArrayList<ProductBundlingUiModel> = arrayListOf()
+        private var needSync: Boolean = true
 
         override fun build(): MultipleProductBundlingUiModel {
             return MultipleProductBundlingUiModel(this)
@@ -29,6 +42,11 @@ class MultipleProductBundlingUiModel constructor(
             return self()
         }
 
+        fun withNeedSync(needSync: Boolean): Builder {
+            this.needSync = needSync
+            return self()
+        }
+
         private fun mapToListProductBundling(
             listProductBundling: List<ProductBundlingData>
         ): List<ProductBundlingUiModel> {
@@ -37,6 +55,7 @@ class MultipleProductBundlingUiModel constructor(
                 val productBundling = ProductBundlingUiModel.Builder()
                     .withIsSender(isSender)
                     .withProductBundling(listProductBundling[i])
+                    .withNeedSync(needSync)
                     .build()
                 listResult.add(productBundling)
             }

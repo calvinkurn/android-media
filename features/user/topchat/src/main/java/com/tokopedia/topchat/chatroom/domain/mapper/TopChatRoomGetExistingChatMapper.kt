@@ -33,6 +33,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -380,9 +381,16 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             item.attachment.attributes,
             ProductBundlingPojo::class.java
         )
-        return MultipleProductBundlingUiModel.Builder()
-            .withIsSender(!item.isOpposite)
-            .withProductBundlingResponse(pojo.listProductBundling)
-            .build()
+        return if (pojo.listProductBundling.size == 1) {
+            ProductBundlingUiModel.Builder()
+                .withIsSender(!item.isOpposite)
+                .withProductBundling(pojo.listProductBundling.first())
+                .build()
+        } else {
+            MultipleProductBundlingUiModel.Builder()
+                .withIsSender(!item.isOpposite)
+                .withProductBundlingResponse(pojo.listProductBundling)
+                .build()
+        }
     }
 }

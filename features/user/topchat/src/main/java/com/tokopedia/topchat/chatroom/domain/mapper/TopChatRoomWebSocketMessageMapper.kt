@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundli
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import com.tokopedia.websocket.WebSocketResponse
@@ -135,10 +136,20 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             jsonAttributes,
             ProductBundlingPojo::class.java
         )
-        return MultipleProductBundlingUiModel.Builder()
-            .withIsSender(!payload.isOpposite)
-            .withResponseFromWs(payload)
-            .withProductBundlingResponse(pojo.listProductBundling)
-            .build()
+        return if (pojo.listProductBundling.size == 1) {
+            ProductBundlingUiModel.Builder()
+                .withIsSender(!payload.isOpposite)
+                .withResponseFromWs(payload)
+                .withNeedSync(false)
+                .withProductBundling(pojo.listProductBundling.first())
+                .build()
+        } else {
+            MultipleProductBundlingUiModel.Builder()
+                .withIsSender(!payload.isOpposite)
+                .withResponseFromWs(payload)
+                .withNeedSync(false)
+                .withProductBundlingResponse(pojo.listProductBundling)
+                .build()
+        }
     }
 }

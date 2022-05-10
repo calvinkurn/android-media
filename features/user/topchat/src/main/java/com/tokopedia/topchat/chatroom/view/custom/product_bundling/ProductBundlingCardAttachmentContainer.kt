@@ -20,7 +20,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
@@ -30,6 +32,7 @@ import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -43,12 +46,14 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private var totalDiscount: Typography? = null
     private var bundlePrice: Typography? = null
     private var button: UnifyButton? = null
+    private var loader: LoaderUnify? = null
 
     private var listener: ProductBundlingListener? = null
     private var adapterListener: AdapterListener? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
     private var searchListener: SearchListener? = null
     private var commonListener: CommonViewHolderListener? = null
+    private var deferredAttachment: DeferredViewHolderAttachment? = null
 
     private var recyclerView: RecyclerView? = null
     private val adapter = MultipleBundlingItemAdapter()
@@ -131,6 +136,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         bundlePrice = findViewById(R.id.tv_bundle_price)
         button = findViewById(R.id.button_open_package)
         recyclerView = findViewById(R.id.rv_product_bundle)
+        loader = findViewById(R.id.loader_bundle)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -146,10 +152,13 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         adapterListener: AdapterListener,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
+        deferredAttachment: DeferredViewHolderAttachment
     ) {
         this.adapterPosition = adapterPosition
-        bindListener(listener, adapterListener, searchListener, commonListener)
+        bindListener(listener, adapterListener, searchListener, commonListener, deferredAttachment)
+        bindSyncBundle(element) //Single product bundling sync
         bindLayoutGravity(element)
+        bindLoading(element)
         bindBackground(element)
         bindMargin(element)
         bindLayoutStyle(element)
@@ -214,11 +223,25 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         adapterListener: AdapterListener,
         searchListener: SearchListener,
         commonListener: CommonViewHolderListener,
+        deferredAttachment: DeferredViewHolderAttachment
     ) {
         this.listener = listener
         this.adapterListener = adapterListener
         this.searchListener = searchListener
         this.commonListener = commonListener
+        this.deferredAttachment = deferredAttachment
+    }
+
+    private fun bindSyncBundle(element: ProductBundlingUiModel) {
+        if (!element.isLoading) return
+        val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
+        val attachment = chatAttachments[element.attachmentId] ?: return
+        if (attachment is ErrorAttachment) {
+            element.syncError()
+        } else if (attachment.parsedAttributes is ProductBundlingPojo) {
+            val productBundlingData = attachment.parsedAttributes as? ProductBundlingPojo
+            element.updateData(productBundlingData?.listProductBundling?.firstOrNull())
+        }
     }
 
     private fun bindLayoutGravity(element: ProductBundlingUiModel) {
@@ -226,6 +249,14 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             gravityRight()
         } else {
             gravityLeft()
+        }
+    }
+
+    private fun bindLoading(element: ProductBundlingUiModel) {
+        if (element.isLoading) {
+            loader?.show()
+        } else {
+            loader?.hide()
         }
     }
 

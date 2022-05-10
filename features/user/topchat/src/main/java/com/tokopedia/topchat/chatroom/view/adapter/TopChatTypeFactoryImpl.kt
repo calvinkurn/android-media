@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCarouselViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedChatMessageViewHolder
@@ -37,6 +38,7 @@ import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -178,6 +180,10 @@ open class TopChatTypeFactoryImpl constructor(
         return ProductBundlingCarouselViewHolder.LAYOUT
     }
 
+    override fun type(productBundlingUiModel: ProductBundlingUiModel): Int {
+        return ProductBundlingCardViewHolder.LAYOUT_SINGLE
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(
         parent: ViewGroup,
@@ -241,7 +247,11 @@ open class TopChatTypeFactoryImpl constructor(
             )
             ProductBundlingCarouselViewHolder.LAYOUT -> ProductBundlingCarouselViewHolder(
                 parent, productBundlingListener, adapterListener, productBundlingCarouselListener,
-                searchListener, commonListener
+                searchListener, commonListener, deferredAttachment
+            )
+            ProductBundlingCardViewHolder.LAYOUT_SINGLE -> ProductBundlingCardViewHolder(
+                parent, productBundlingListener, adapterListener,
+                searchListener, commonListener, deferredAttachment
             )
             else -> createViewHolder(parent, type)
         }

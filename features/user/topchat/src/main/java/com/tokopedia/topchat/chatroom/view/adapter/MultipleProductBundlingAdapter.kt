@@ -3,9 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.product_bundling.ProductBundlingCardViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
@@ -15,6 +13,7 @@ class MultipleProductBundlingAdapter(
     private val adapterListener: AdapterListener,
     private val searchListener: SearchListener,
     private val commonListener: CommonViewHolderListener,
+    private val deferredAttachment: DeferredViewHolderAttachment
 ) : RecyclerView.Adapter<ProductBundlingCardViewHolder>() {
 
     var carousel: MultipleProductBundlingUiModel? = null
@@ -29,7 +28,7 @@ class MultipleProductBundlingAdapter(
     ): ProductBundlingCardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return ProductBundlingCardViewHolder(view, listener, adapterListener,
-            searchListener, commonListener)
+            searchListener, commonListener, deferredAttachment)
     }
 
     override fun onBindViewHolder(holder: ProductBundlingCardViewHolder, position: Int) {
@@ -38,18 +37,9 @@ class MultipleProductBundlingAdapter(
         }
     }
 
-    override fun getItemCount(): Int = carousel?.listBundling?.size ?: EMPTY_PRODUCT_BUNDLING
+    override fun getItemCount(): Int = carousel?.listBundling?.size ?: 0
 
     override fun getItemViewType(position: Int): Int {
-        return when(carousel?.listBundling?.size?: EMPTY_PRODUCT_BUNDLING) {
-            EMPTY_PRODUCT_BUNDLING -> throw IllegalStateException("No such type")
-            MAX_SINGLE_SIZE -> ProductBundlingCardViewHolder.LAYOUT_SINGLE
-            else -> ProductBundlingCardViewHolder.LAYOUT_CAROUSEL
-        }
-    }
-
-    companion object {
-        private const val EMPTY_PRODUCT_BUNDLING = 0
-        private const val MAX_SINGLE_SIZE = 1
+        return ProductBundlingCardViewHolder.LAYOUT_CAROUSEL
     }
 }

@@ -182,7 +182,7 @@ class TopChatRoomAdapter constructor(
         return isSender != nextItemIsSender
     }
 
-    override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
+    override fun getCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
     }
 
