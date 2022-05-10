@@ -347,7 +347,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                     id = choice.id,
                     text = choice.text,
                     type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabet(index),
+                        alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
                         count = choice.participantCount
                     )
@@ -361,8 +361,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         )
     }
 
-    private fun generateAlphabet(index: Int) : Char = arrayOfAlphabet[index]
-    private val arrayOfAlphabet = ('A'..'Z').toMutableList()
+    private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
+    private val arrayOfChoices = ('A'..'D').toList()
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

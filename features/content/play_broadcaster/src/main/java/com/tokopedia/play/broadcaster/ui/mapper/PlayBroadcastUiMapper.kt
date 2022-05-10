@@ -452,7 +452,7 @@ class PlayBroadcastUiMapper(
                     id = choice.id,
                     text = choice.text,
                     type = PlayQuizOptionState.Participant(
-                        alphabet = generateAlphabet(index),
+                        alphabet = generateAlphabetChoices(index),
                         isCorrect = choice.isCorrectAnswer,
                         count = choice.participantCount
                     )
@@ -466,8 +466,8 @@ class PlayBroadcastUiMapper(
         )
     }
 
-    private fun generateAlphabet(index: Int): Char = arrayOfAlphabet[index]
-    private val arrayOfAlphabet = ('A'..'Z').toMutableList()
+    private fun generateAlphabetChoices(index: Int): Char = arrayOfChoices[index]
+    private val arrayOfChoices = ('A'..'D').toList()
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
