@@ -202,8 +202,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
     private fun renderHeader() {
 
         headerProgram.setNavigationOnClickListener {
-            Toast.makeText(context, "Back", Toast.LENGTH_SHORT).show()
-        }
+                activity?.onBackPressed()
+            }
 
         when(programActionType){
             ProgramActionType.CREATE ->{

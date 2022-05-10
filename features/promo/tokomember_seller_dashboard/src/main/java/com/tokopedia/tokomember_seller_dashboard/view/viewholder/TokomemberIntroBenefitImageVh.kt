@@ -49,10 +49,12 @@ class TokomemberIntroBenefitImageVh(val view: View)
         }
 
         override fun onAnimationEnd(animation: Animator?) {
+            animation?.removeAllListeners()
             holderElement?.isAnimationFinished = true
         }
 
         override fun onAnimationCancel(animation: Animator?) {
+            animation?.removeAllListeners()
         }
 
         override fun onAnimationRepeat(animation: Animator?) {

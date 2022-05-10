@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -151,7 +154,6 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         adapter.addItems(data.tokoVisitable)
-
     }
 
     private fun setVideoView(
@@ -172,20 +174,21 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(),
             isShowBackButton = true
             headerSubTitle =""
             headerTitle =""
+
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun onResume() {
         super.onResume()
-        if(frame_video.isPlaying() == false){
-            frame_video?.setVideoPlayer(videoUrl?:"");
-        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        frame_video.stopVideoPlayer()
-        frame_video.releaseVideoPlayer()
+    override fun onDestroy() {
+        super.onDestroy()
+        frame_video?.onDetach()
     }
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")

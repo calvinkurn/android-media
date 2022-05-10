@@ -20,7 +20,6 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_preview.*
 import javax.inject.Inject
 
@@ -79,6 +78,9 @@ class TokomemberDashPreviewFragment : BaseDaggerFragment() {
             title = "Buat Program"
             subtitle = "Langkah 4 dari 4"
             isShowBackButton = true
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
         progressPreview?.apply {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN

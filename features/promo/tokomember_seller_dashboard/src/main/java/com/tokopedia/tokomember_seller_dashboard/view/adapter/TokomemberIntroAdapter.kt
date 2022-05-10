@@ -27,6 +27,7 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                 isAlterNateTextView = !isAlterNateTextView
                 holder.setAnimationLeftToRight(holder.itemView, holder.adapterPosition,onAttach)
             } else {
+                isAlterNateTextView = !isAlterNateTextView
                 holder.setAnimationRightToLeft(holder.itemView, holder.adapterPosition,onAttach)
             }
         }
@@ -35,6 +36,7 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
                 isAlterNateImageView = !isAlterNateImageView
                 holder.setAnimationLeftToRight(holder.itemView, holder.adapterPosition,onAttach)
             } else {
+                isAlterNateImageView = !isAlterNateImageView
                 holder.setAnimationRightToLeft(holder.itemView, holder.adapterPosition,onAttach)
             }
         }
@@ -49,8 +51,4 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
         })
         super.onAttachedToRecyclerView(recyclerView)
     }
-}
-
-interface TokomemberIntroAdapterListener {
-    fun onItemDisplayed(tokoIntroItem: Visitable<*>, position: Int)
 }

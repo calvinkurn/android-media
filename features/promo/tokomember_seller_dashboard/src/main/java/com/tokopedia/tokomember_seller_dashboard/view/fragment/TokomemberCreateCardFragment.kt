@@ -274,6 +274,9 @@ class TokomemberCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAd
             title = "Daftar TokoMember"
             subtitle = "Langkah 1 dari 4 "
             isShowBackButton = true
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
         }
         progressCard?.apply {
             progressBarColorType = ProgressBarUnify.COLOR_GREEN

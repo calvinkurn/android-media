@@ -117,8 +117,16 @@ class TokomemberVideoView @JvmOverloads constructor(
 
     }
 
+    fun onDetach(){
+        onDetachedFromWindow()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+        videoPlayer?.pause()
+        videoPlayer?.setVideoStateListener(null)
+        videoPlayer?.destroy()
+        videoPlayer = null
     }
 
 }
