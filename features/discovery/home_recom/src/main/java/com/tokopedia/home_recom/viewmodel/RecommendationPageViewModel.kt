@@ -364,7 +364,8 @@ open class RecommendationPageViewModel @Inject constructor(
     fun removeWishlistV2(productId: String, actionListener: WishlistV2ActionListener){
         deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-                onSuccess = { actionListener.onSuccessRemoveWishlist(productId) },
+                onSuccess = { result ->
+                    if (result is Success) actionListener.onSuccessRemoveWishlist(result.data, productId) },
                 onError = { actionListener.onErrorRemoveWishlist(it, productId) })
     }
 
