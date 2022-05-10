@@ -86,6 +86,8 @@ const val HOUR_PATTERN = "HH:00"
 
 const val SECOND_TAB = 1
 
+const val TWO = 2
+
 const val THIRD_TAB = 2
 
 const val FOURTH_TAB = 3
