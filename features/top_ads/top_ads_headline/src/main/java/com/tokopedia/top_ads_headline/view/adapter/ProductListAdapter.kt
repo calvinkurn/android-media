@@ -26,6 +26,13 @@ private const val VIEW_CATEGORY = 1
 private const val MAX_DEPARTMENT_NAME_LENGTH = 20
 const val MAX_PRODUCT_SELECTION = 10
 const val SINGLE_SELECTION = 1
+private const val DEPARTMENT_RANGE_INITIAL = 0
+private const val DEPARTMENT_RANGE_FINAL = 17
+private const val STAR_1 = 1
+private const val STAR_2 = 2
+private const val STAR_3 = 3
+private const val STAR_4 = 4
+private const val STAR_5 = 5
 
 class ProductListAdapter(
     var list: ArrayList<TopAdsProductModel>,
@@ -34,7 +41,7 @@ class ProductListAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showShimmer = true
-    private val departmentLengthRange = 0..17
+    private val departmentLengthRange = DEPARTMENT_RANGE_INITIAL..DEPARTMENT_RANGE_FINAL
 
     fun setProductList(list: ArrayList<TopAdsProductModel>) {
         showShimmer = false
@@ -66,7 +73,7 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as? ProductListViewHolder)?.let { viewHolder ->
             val product = list[position]
-            val category = Category(product.departmentID.toString(), product.departmentName)
+            val category = Category(product.departmentID, product.departmentName)
             viewHolder.productName.text = product.productName
             viewHolder.productPrice.text = product.productPrice
             viewHolder.productImage.loadImage(product.productImage)
@@ -85,10 +92,10 @@ class ProductListAdapter(
             product.isSingleSelect = checkIfSingleSelect(category, product)
             if (product.isSingleSelect) {
                 holder.productCard.setBackgroundColor(
-                    ContextCompat.getColor(holder.itemView.context, R.color.Red_R100))
+                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.topads.common.R.color.Red_R100))
             } else {
                 holder.productCard.setBackgroundColor(
-                    ContextCompat.getColor(holder.itemView.context, R.color.white))
+                    ContextCompat.getColor(holder.itemView.context, com.tokopedia.topads.common.R.color.white))
             }
             product.positionInRv = position
         }
@@ -108,7 +115,7 @@ class ProductListAdapter(
             holder.itemView.setMargin(0,
                 0,
                 0,
-                holder.itemView.context.resources.getDimensionPixelSize(R.dimen.dp_72))
+                holder.itemView.context.resources.getDimensionPixelSize(com.tokopedia.topads.common.R.dimen.dp_72))
         } else {
             holder.itemView.setMargin(0, 0, 0, 0)
         }
@@ -218,7 +225,7 @@ class ProductListAdapter(
 
     private fun showStar(i: Int, ratingView: ViewGroup, show: Boolean) {
         when (i) {
-            1 -> {
+            STAR_1 -> {
                 if (show)
                     ratingView.findViewById<ImageUnify>(R.id.imageViewRating1)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
@@ -228,7 +235,7 @@ class ProductListAdapter(
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
-            2 -> {
+            STAR_2 -> {
                 if (show)
                     ratingView.findViewById<ImageUnify>(R.id.imageViewRating2)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
@@ -238,7 +245,7 @@ class ProductListAdapter(
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
-            3 -> {
+            STAR_3 -> {
                 if (show)
                     ratingView.findViewById<ImageUnify>(R.id.imageViewRating3)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
@@ -248,7 +255,7 @@ class ProductListAdapter(
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
-            4 -> {
+            STAR_4 -> {
                 if (show)
                     ratingView.findViewById<ImageUnify>(R.id.imageViewRating4)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
@@ -258,7 +265,7 @@ class ProductListAdapter(
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,
                             com.tokopedia.topads.common.R.drawable.topads_ic_rating_default))
             }
-            5 -> {
+            STAR_5 -> {
                 if (show)
                     ratingView.findViewById<ImageUnify>(R.id.imageViewRating5)
                         .setImageDrawable(AppCompatResources.getDrawable(ratingView.context,

@@ -111,23 +111,21 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                         }
                         result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                             validation2 = false
-                            setMessageErrorField(getString(R.string.topads_common_50_multiply_error),
-                                Constants.MULTIPLY_CONST,
-                                true)
+                            setMessageErrorField(getString(com.tokopedia.topads.common.R.string.topads_common_50_multiply_error),
+                                Constants.MULTIPLY_CONST, true)
                         }
                         result < minBid.toFloat() -> {
-                            setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
+                            setMessageErrorField(getString(com.tokopedia.topads.common.R.string.min_bid_error), minBid, true)
                             validation2 = false
                         }
                         result > maxBid.toFloat() -> {
                             validation2 = false
-                            setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                            setMessageErrorField(getString(com.tokopedia.topads.common.R.string.max_bid_error), maxBid, true)
                         }
                         else -> {
                             validation2 = true
-                            setMessageErrorField(getString(R.string.recommendated_bid_message),
-                                suggestBidPerClick,
-                                false)
+                            setMessageErrorField(getString(com.tokopedia.topads.common.R.string.recommendated_bid_message),
+                                suggestBidPerClick, false)
                         }
                     }
                     actionEnable()
@@ -141,7 +139,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                     super.onNumberChanged(number)
                     if (number < Constants.MULTIPLIER * currentBudget) {
                         dailyBudget?.setError(true)
-                        dailyBudget?.setMessage(String.format(getString(R.string.min_bid_error),
+                        dailyBudget?.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.min_bid_error),
                             Constants.MULTIPLIER * currentBudget))
                         validation1 = false
 
@@ -194,7 +192,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid
-        setMessageErrorField(getString(R.string.recommendated_bid_message),
+        setMessageErrorField(getString(com.tokopedia.topads.common.R.string.recommendated_bid_message),
             suggestBidPerClick,
             false)
     }

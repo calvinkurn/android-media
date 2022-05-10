@@ -116,7 +116,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         } else {
             setEmptyView()
             setEmptyLayout(true)
-            selectedInfo?.text = String.format(getString(R.string.format_selected_keyword), 0)
+            selectedInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword), 0)
         }
     }
 
@@ -143,19 +143,18 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun sortListSelected() {
-        keywordSelectedAdapter.items.sortWith(Comparator { lhs, rhs ->
+        keywordSelectedAdapter.items.sortWith { lhs, rhs ->
             lhs?.totalSearch?.toInt() ?: 0.compareTo(rhs?.totalSearch?.toInt() ?: 0)
-        })
+        }
         keywordSelectedAdapter.items.reverse()
         keywordSelectedAdapter.notifyDataSetChanged()
     }
 
     private fun sortList() {
-        keywordListAdapter.items.sortWith(Comparator
-        { lhs, rhs ->
+        keywordListAdapter.items.sortWith { lhs, rhs ->
             (lhs as KeywordItemViewModel).data.totalSearch.toInt()
                 .compareTo((rhs as KeywordItemViewModel).data.totalSearch.toInt())
-        })
+        }
         keywordListAdapter.items.reverse()
         keywordListAdapter.notifyDataSetChanged()
     }
@@ -196,12 +195,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun setBtnText() {
         if (STAGE == 0) {
-            btnNext?.text = resources.getString(R.string.topads_common_keyword_list_step)
-            txtRecommendation?.text = resources.getString(R.string.topads_common_recommended_list)
+            btnNext?.text = resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_list_step)
+            txtRecommendation?.text = resources.getString(com.tokopedia.topads.common.R.string.topads_common_recommended_list)
         } else {
-            btnNext?.text = resources.getString(R.string.lanjutkan)
+            btnNext?.text = resources.getString(com.tokopedia.topads.common.R.string.lanjutkan)
             txtRecommendation?.text =
-                resources.getString(R.string.topads_common_label_top_ads_keyword)
+                resources.getString(com.tokopedia.topads.common.R.string.topads_common_label_top_ads_keyword)
         }
     }
 
@@ -249,9 +248,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                         getString(R.string.topads_edit_keyword_duplicate_toast),
                         Toaster.LENGTH_SHORT,
                         Toaster.TYPE_NORMAL,
-                        getString(com.tokopedia.topads.common.R.string.topads_common_text_ok),
-                        View.OnClickListener {
-                        })
+                        getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+                    ) {
+                    }
                 }
                 return@lit
             }
@@ -274,7 +273,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             getTotalChosenKeywords().size
         else
             keywordSelectedAdapter.itemCount
-        selectedInfo?.text = String.format(getString(R.string.format_selected_keyword), count)
+        selectedInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_keyword), count)
         btnNext?.isEnabled = count <= KEYWORD_CHARACTER_COUNT
     }
 
@@ -343,7 +342,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         setStepLayout(View.GONE)
         selected = arguments?.getParcelableArrayList(SELECTED_DATA)
         btnNext?.setOnClickListener {
-            if (btnNext?.text == resources.getString(R.string.topads_common_keyword_list_step)) {
+            if (btnNext?.text == resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_list_step)) {
                 gotoNextStage()
                 STAGE = 1
             } else {

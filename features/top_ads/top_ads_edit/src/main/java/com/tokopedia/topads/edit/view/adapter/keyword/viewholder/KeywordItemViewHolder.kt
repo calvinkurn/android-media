@@ -51,17 +51,17 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
             when (it.competition) {
                 LOW -> {
                     keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_low))
+                    keywordCompetition.setLabel(view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low))
                 }
 
                 MEDIUM -> {
                     keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                    keywordCompetition.setLabel(view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation))
                 }
 
                 HIGH -> {
                     keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_high))
+                    keywordCompetition.setLabel(view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high))
                 }
 
             }

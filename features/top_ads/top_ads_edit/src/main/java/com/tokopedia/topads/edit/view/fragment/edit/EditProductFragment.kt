@@ -175,7 +175,7 @@ class EditProductFragment : BaseDaggerFragment() {
         val list: MutableList<String> = mutableListOf()
         adapter.items.forEach {
             if (it is EditProductItemViewModel) {
-                list.add(it.data.itemID.toString())
+                list.add(it.data.itemID)
             }
         }
         return list
@@ -189,7 +189,7 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
+        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         addProduct?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
@@ -215,7 +215,7 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        productCount?.text = String.format(getString(R.string.product_count), totalCount)
+        productCount?.text = String.format(getString(com.tokopedia.topads.common.R.string.product_count), totalCount)
     }
 
     private fun setVisibilityOperation(visiblity: Int) {

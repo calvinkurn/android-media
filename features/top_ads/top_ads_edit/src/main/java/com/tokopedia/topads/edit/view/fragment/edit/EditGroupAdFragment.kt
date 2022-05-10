@@ -42,7 +42,6 @@ import java.util.*
 import javax.inject.Inject
 
 private const val AUTOBID_DEFUALT_BUDGET = 16000
-private const val EDIT_GROUP = "android.edit_group"
 
 class EditGroupAdFragment : BaseDaggerFragment() {
 
@@ -111,10 +110,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
         txtGroupName?.textFieldInput?.setText(data.groupName)
-        val bidSettingsList: MutableList<TopAdsBidSettingsModel> =
-            mutableListOf<TopAdsBidSettingsModel>()
-        data?.bidSettings?.forEach {
-            val topAdsBidSettingsModel: TopAdsBidSettingsModel = TopAdsBidSettingsModel()
+        val bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf()
+        data.bidSettings?.forEach {
+            val topAdsBidSettingsModel = TopAdsBidSettingsModel()
             topAdsBidSettingsModel.bidType = it.bidType
             topAdsBidSettingsModel.priceBid = it.priceBid
             bidSettingsList.add(topAdsBidSettingsModel)
@@ -173,7 +171,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        toggle?.setOnCheckedChangeListener { buttonView, isChecked ->
+        toggle?.setOnCheckedChangeListener { _, _ ->
             if (toggle?.isChecked == true) {
                 dailyBudget?.visibility = View.VISIBLE
             } else {
@@ -183,7 +181,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             }
         }
         txtGroupName?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
-        txtGroupName?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+        txtGroupName?.textFieldInput?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Utils.dismissKeyboard(context, view)
                 return@setOnEditorActionListener true
@@ -204,7 +202,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                             dailyBudget?.setError(true)
                             dailyBudget?.setMessage(
                                 String.format(
-                                    getString(R.string.angarran_harrian_min_bid_error),
+                                    getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
                                     Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
                                 )
                             )
@@ -215,7 +213,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                             dailyBudget?.setError(true)
                             dailyBudget?.setMessage(
                                 String.format(
-                                    getString(R.string.topads_common_minimum_daily_budget),
+                                    getString(com.tokopedia.topads.common.R.string.topads_common_minimum_daily_budget),
                                     currentBudget
                                 )
                             )
@@ -226,7 +224,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                             dailyBudget?.setError(true)
                             dailyBudget?.setMessage(
                                 String.format(
-                                    getString(R.string.topads_common_maximum_daily_budget),
+                                    getString(com.tokopedia.topads.common.R.string.topads_common_maximum_daily_budget),
                                     MAXIMUM_LIMIT
                                 )
                             )

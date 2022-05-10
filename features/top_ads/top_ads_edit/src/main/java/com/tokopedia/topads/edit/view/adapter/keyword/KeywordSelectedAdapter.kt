@@ -42,7 +42,7 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
                 holder.keywordCount.text =
                     Utils.convertToCurrencyString(items[position].totalSearch.toLong())
         } catch (e: Exception) {
-            holder.keywordCount.text = items[holder.adapterPosition].totalSearch.toString()
+            holder.keywordCount.text = items[holder.adapterPosition].totalSearch
         }
         holder.checkBox.setOnCheckedChangeListener(null)
         holder.checkBox.isChecked = true
@@ -57,24 +57,24 @@ class KeywordSelectedAdapter(private val onChecked: ((position: Int) -> Unit)) :
         }
         if (items[holder.adapterPosition].competition.isEmpty()) {
             holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
-            holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
+            holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_unknown))
 
         } else {
             holder.keywordCompetition.visibility = View.VISIBLE
             when (items[holder.adapterPosition].competition) {
                 KeywordItemViewHolder.LOW -> {
                     holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                    holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+                    holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_low))
                 }
 
                 KeywordItemViewHolder.MEDIUM -> {
                     holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                    holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                    holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_moderation))
                 }
 
                 KeywordItemViewHolder.HIGH -> {
                     holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                    holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+                    holder.keywordCompetition.setLabel(holder.view.resources.getString(com.tokopedia.topads.common.R.string.topads_common_keyword_competition_high))
                 }
 
             }

@@ -191,7 +191,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (stepperModel?.redirectionToSummary == true) {
-            btnNext?.text = getString(R.string.topads_common_save_butt)
+            btnNext?.text = getString(com.tokopedia.topads.common.R.string.topads_common_save_butt)
         }
         context?.let {
             sortProductList = ProductSortSheetList.newInstance()
@@ -226,7 +226,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
                 context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showHeader = true
             tipsListSheet?.showKnob = false
-            tipsListSheet?.setTitle(getString(R.string.tip_memilih_produk))
+            tipsListSheet?.setTitle(getString(com.tokopedia.topads.common.R.string.tip_memilih_produk))
             tipsListSheet?.show(childFragmentManager, "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN,
                 "")
@@ -317,7 +317,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
         btnNext?.isEnabled = count > 0
     }
 
@@ -326,7 +326,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         btnNext?.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
-        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), 0)
+        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), 0)
     }
 
     private fun onError(t: Throwable) {
@@ -358,7 +358,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
         btnNext?.isEnabled = count > 0
         productListAdapter.notifyDataSetChanged()
     }

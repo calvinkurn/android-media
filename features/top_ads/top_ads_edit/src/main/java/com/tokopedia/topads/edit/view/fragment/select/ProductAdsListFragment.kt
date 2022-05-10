@@ -327,7 +327,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             getSelectedProduct().size + selectedPrevNonPro.size
         }
 
-        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
         btnNext?.isEnabled = count > 0
     }
 
@@ -371,7 +371,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         }
         val count = selectedPrevNonPro.size + selectedPrevPro.size
 
-        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        selectProductInfo?.text = String.format(getString(com.tokopedia.topads.common.R.string.format_selected_produk), count)
         btnNext?.isEnabled = count > 0
     }
 

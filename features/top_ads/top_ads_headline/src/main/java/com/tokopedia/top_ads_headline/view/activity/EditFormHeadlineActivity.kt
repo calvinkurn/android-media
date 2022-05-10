@@ -6,7 +6,6 @@ import android.view.MenuItem
 import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
@@ -42,6 +41,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+private const val VP_OFF_SCREEN_PAGE_LIMIT = 3
 private const val FRAGMENT_1 = 0
 private const val FRAGMENT_2 = 1
 private const val FRAGMENT_3 = 2
@@ -151,7 +151,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
             ViewModelProvider(this, viewModelFactory).get(EditFormHeadlineViewModel::class.java)
         sharedEditHeadlineViewModel =
             ViewModelProvider(this, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
-        sharedEditHeadlineViewModel.getEditHeadlineAdLiveData().observe(this, Observer {
+        sharedEditHeadlineViewModel.getEditHeadlineAdLiveData().observe(this, {
             hideLoader()
         })
     }
@@ -202,7 +202,7 @@ class EditFormHeadlineActivity : BaseActivity(), HasComponent<HeadlineAdsCompone
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
         viewPager?.adapter = getViewPagerAdapter()
-        viewPager?.offscreenPageLimit = 3
+        viewPager?.offscreenPageLimit = VP_OFF_SCREEN_PAGE_LIMIT
         tabLayout?.addNewTab(AD_CONTENT)
         tabLayout?.addNewTab(AD_AND_KEYWORD_COST)
         tabLayout?.addNewTab(OTHERS)
