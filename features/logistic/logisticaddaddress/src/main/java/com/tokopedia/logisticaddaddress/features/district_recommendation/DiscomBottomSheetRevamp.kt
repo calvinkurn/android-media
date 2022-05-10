@@ -510,6 +510,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
                     hasRequestedLocation = false
+                    if (!AddNewAddressUtils.isGpsEnabled(requireActivity())) {
+                        showDialogAskGps()
+                    }
                 }
 
                 override fun onNeverAskAgain(permissionText: String) {
