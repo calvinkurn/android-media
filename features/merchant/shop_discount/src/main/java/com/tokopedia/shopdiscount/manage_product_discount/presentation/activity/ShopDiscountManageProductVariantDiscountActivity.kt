@@ -32,7 +32,8 @@ class ShopDiscountManageProductVariantDiscountActivity : BaseSimpleActivity() {
         return R.layout.activity_manage_product_variant_discount
     }
 
-    override fun getNewFragment(): Fragment = ShopDiscountManageProductVariantDiscountFragment.createInstance(mode, productData)
+    //TODO: @CJ replace with correct discount status id
+    override fun getNewFragment(): Fragment = ShopDiscountManageProductVariantDiscountFragment.createInstance(mode, productData, -1)
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view

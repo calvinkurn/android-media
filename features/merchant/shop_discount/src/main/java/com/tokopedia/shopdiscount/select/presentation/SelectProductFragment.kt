@@ -208,7 +208,7 @@ class SelectProductFragment : BaseDaggerFragment() {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
-                        redirectToUpdateDiscountPage()
+                        redirectToApplyDiscountPage()
                     } else {
                         binding?.btnManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
@@ -428,7 +428,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         return userSession.shopId + Date().time
     }
 
-    private fun redirectToUpdateDiscountPage() {
+    private fun redirectToApplyDiscountPage() {
         binding?.btnManage?.isLoading = false
         ShopDiscountManageDiscountActivity.start(
             requireActivity(),

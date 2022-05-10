@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -26,6 +27,7 @@ import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
@@ -45,14 +47,24 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
         private const val DELAY_IN_MILLIS : Long = 300
+        private const val BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB = "focus_to_upcoming_status_tab"
+        private const val UPCOMING_STATUS_TAB_POSITION = 1
 
         @JvmStatic
-        fun newInstance() = ProductManageFragment().apply {
-            arguments = Bundle()
+        fun newInstance(focusToUpcomingStatusTab : Boolean) = ProductManageFragment().apply {
+            val bundle  = Bundle()
+            bundle.putBoolean(BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB, focusToUpcomingStatusTab)
+            arguments = bundle
         }
     }
 
     private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
+    private val focusToUpcomingStatusTab by lazy {
+        arguments?.getBoolean(
+            BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB
+        ).orFalse()
+    }
+
     override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
@@ -186,7 +198,12 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
-                focusToPreviousTab(tab, previouslySelectedPosition, position)
+                if (focusToUpcomingStatusTab) {
+                    focusToUpcomingStatusTab()
+                    binding?.viewPager?.showToaster(getString(R.string.sd_discount_created_successfully))
+                } else {
+                    focusToPreviousTab(tab, previouslySelectedPosition, position)
+                }
             }
         }
     }
@@ -194,14 +211,26 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun focusToPreviousTab(
         tab: TabLayout.Tab,
         previouslySelectedPosition: Int,
-        onRenderTabPosition: Int
+        currentlyRenderedTabPosition: Int
     ) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
             delay(DELAY_IN_MILLIS)
-            if (previouslySelectedPosition == onRenderTabPosition) {
+            if (previouslySelectedPosition == currentlyRenderedTabPosition) {
                 tab.select()
             }
+        }
+    }
+
+    private fun focusToUpcomingStatusTab() {
+        //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(DELAY_IN_MILLIS)
+
+            val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+            val upcomingStatusTab =
+                tabLayout?.getTabAt(UPCOMING_STATUS_TAB_POSITION) ?: return@launch
+            upcomingStatusTab.select()
         }
     }
 
