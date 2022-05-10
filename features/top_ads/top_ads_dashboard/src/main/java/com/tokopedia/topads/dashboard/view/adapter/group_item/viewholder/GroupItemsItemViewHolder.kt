@@ -46,9 +46,9 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
+    override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableMap<String, DataItem>, countList: MutableList<CountDataItem>) {
         item.let {
-
+            val stats = statsData[item.data.groupId] ?: item.data
             if(item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
                 view.img_key.visibility = View.GONE
                 view.key_count.visibility = View.GONE
@@ -88,21 +88,19 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 view.total_item.text = countList[adapterPosition].totalAds.toString()
                 view.key_count.text = countList[adapterPosition].totalKeywords.toString()
             }
-            setProgressBar(it.data)
-            statsData.forEachIndexed { index, stats ->
-                if (stats.groupId == it.data.groupId) {
-                    view.tampil_count.text = statsData[index].statTotalImpression
-                    view.klik_count.text = statsData[index].statTotalClick
-                    view.persentase_klik_count.text = statsData[index].statTotalCtr
-                    view.pengeluaran_count.text = statsData[index].statTotalSpent
-                    view.pendapatan_count.text = statsData[index].groupTotalIncome
-                    view.produk_terjual_count.text = statsData[index].statTotalConversion
-                }
-            }
+
+            view.tampil_count.text = stats.statTotalImpression
+            view.klik_count.text = stats.statTotalClick
+            view.persentase_klik_count.text = stats.statTotalCtr
+            view.pengeluaran_count.text = stats.statTotalSpent
+            view.pendapatan_count.text = stats.groupTotalIncome
+            view.produk_terjual_count.text = stats.statTotalConversion
+            setProgressBar(stats)
+            
             view.item_card?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
-                        onClickItem.invoke(item.data.groupId, item.data.groupPriceDailySpentFmt, item.data.groupName)
+                        onClickItem.invoke(item.data.groupId, stats.groupPriceDailySpentFmt, item.data.groupName)
                     else
                         onClickItem.invoke(item.data.groupId, NOT_VALID, item.data.groupName)
                 } else {
@@ -150,7 +148,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
     }
 
     private fun setProgressBar(data: DataItem) {
-        if (data.groupPriceDailyBar.isNotEmpty()) {
+        if (data.groupPriceDailySpentFmt.isNotEmpty()) {
             view.progress_layout.visibility = View.VISIBLE
             view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
             try {

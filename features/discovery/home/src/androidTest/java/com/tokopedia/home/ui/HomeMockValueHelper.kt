@@ -1,7 +1,10 @@
 package com.tokopedia.home.ui
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.remoteconfig.*
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 
 object HomeMockValueHelper {
     const val DEFAULT_COUNTER_NOTIF_VALUE = "10"
@@ -15,6 +18,7 @@ object HomeMockValueHelper {
     const val MOCK_DYNAMIC_CHANNEL_COUNT = 28
     const val MOCK_DYNAMIC_CHANNEL_ERROR_COUNT = 2
     const val MOCK_RECOMMENDATION_TAB_COUNT = 1
+    private const val MOCK_DISABLE_REMOVE_PAGINATION = "false"
 
     fun setupAbTestRemoteConfig(
         navigationRollence: Boolean = true,
@@ -36,6 +40,6 @@ object HomeMockValueHelper {
         val remoteConfig = FirebaseRemoteConfigImpl(
             InstrumentationRegistry.getInstrumentation().context
         )
-        remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, "false")
+        remoteConfig.setString(RemoteConfigKey.HOME_REMOVE_PAGINATION, MOCK_DISABLE_REMOVE_PAGINATION)
     }
 }

@@ -2255,13 +2255,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             viewModel.shippingMinimumPrice = minimumShippingPriceP2
         }
 
+        pdpUiUpdater?.removeComponentP2Data(
+                it,
+                viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview ?: "")
+
         renderRestrictionBottomSheet(it.restrictionInfo)
         updateButtonState()
-
-        if (it.helpfulReviews?.isEmpty() == true && viewModel.getDynamicProductInfoP1?.basic?.stats?.countReview.toIntOrZero() == 0) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.REVIEW)
-        }
-
         pdpUiUpdater?.updateShipmentData(
                 ratesData,
                 viewModel.getMultiOriginByProductId().isFulfillment,
@@ -2270,35 +2269,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.getUserLocationCache()
         )
 
-        if (it.upcomingCampaigns.values.isEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.NOTIFY_ME)
-        }
-
-        if (!it.shopCommitment.isNowActive) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.ORDER_PRIORITY)
-        }
-
         if (it.productPurchaseProtectionInfo.ppItemDetailPage.isProtectionAvailable) {
             DynamicProductDetailTracking.Impression.eventPurchaseProtectionAvailable(viewModel.userId,
                     viewModel.getDynamicProductInfoP1, getPPTitleName())
-        } else {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_PROTECTION)
-        }
-
-        if (!it.validateTradeIn.isEligible) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.TRADE_IN)
-        }
-
-        if (!it.merchantVoucherSummary.isShown) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.MVC)
         }
 
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
-        }
-
-        if (it.bundleInfoMap.isEmpty()) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
