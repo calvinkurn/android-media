@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.fragment
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
