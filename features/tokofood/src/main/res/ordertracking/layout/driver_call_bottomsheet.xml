@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDriverCallTitle"
@@ -16,7 +17,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/driver_call_disguised_number_title_bottomsheet"
+        tools:text="@string/driver_call_enabled_title_bottomsheet"
         android:textColor="@color/Unify_N700_96" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -31,7 +32,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/driver_call_disguised_number_desc_bottomsheet"
+        tools:text="@string/driver_call_enabled_desc_bottomsheet"
         android:textColor="@color/Unify_NN600" />
 
     <com.tokopedia.unifycomponents.UnifyButton

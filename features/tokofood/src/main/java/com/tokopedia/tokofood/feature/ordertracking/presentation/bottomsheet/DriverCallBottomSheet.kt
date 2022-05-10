@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.databinding.DriverCallBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -15,7 +17,8 @@ class DriverCallBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<DriverCallBottomsheetBinding>()
 
-    private var driverPhoneNumber = ""
+    private var driverPhoneNumber: String? = null
+    private var isCallable: Boolean? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,16 +33,34 @@ class DriverCallBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setDriverPhoneNumber()
         setTitle(getString(com.tokopedia.tokofood.R.string.driver_call_title_bottomsheet))
-        setDriverCallBtn()
+        setupViews()
     }
 
     private fun setDriverPhoneNumber() {
-        this.driverPhoneNumber = arguments?.getString(DRIVER_PHONE_NUMBER_KEY, "").orEmpty()
+        arguments?.run {
+            this@DriverCallBottomSheet.driverPhoneNumber = getString(DRIVER_PHONE_NUMBER_KEY, "").orEmpty()
+            this@DriverCallBottomSheet.isCallable = getBoolean(IS_CALLABLE_KEY, false)
+        }
+    }
+
+    private fun setupViews() {
+        binding?.run {
+            if (isCallable == true) {
+                tvDriverCallTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_title_bottomsheet)
+                tvDriverCallDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_desc_bottomsheet)
+                btnDriverCall.show()
+                setDriverCallBtn()
+            } else {
+                tvDriverCallTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_title_bottomsheet)
+                tvDriverCallDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_desc_bottomsheet)
+                btnDriverCall.hide()
+            }
+        }
     }
 
     private fun setDriverCallBtn() {
         binding?.btnDriverCall?.setOnClickListener {
-            if (driverPhoneNumber.isNotBlank()) {
+            driverPhoneNumber?.let { driverPhoneNumber ->
                 driverCallToIntent(driverPhoneNumber)
             }
         }
@@ -61,22 +82,18 @@ class DriverCallBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun dismissBottomSheet() {
-        if (isVisible) {
-            dismiss()
-        }
-    }
-
     companion object {
-        fun newInstance(driverPhoneNumber: String): DriverCallBottomSheet {
+        fun newInstance(driverPhoneNumber: String, isCallable: Boolean): DriverCallBottomSheet {
             return DriverCallBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(DRIVER_PHONE_NUMBER_KEY, driverPhoneNumber)
+                bundle.putBoolean(IS_CALLABLE_KEY, isCallable)
                 arguments = bundle
             }
         }
 
-        const val DRIVER_PHONE_NUMBER_KEY = "driverPhoneNumber"
+        private const val DRIVER_PHONE_NUMBER_KEY = "driverPhoneNumber"
+        private const val IS_CALLABLE_KEY = "isCallable"
         const val TEL_PREFIX = "tel"
 
         val TAG: String = DriverCallBottomSheet::class.java.simpleName

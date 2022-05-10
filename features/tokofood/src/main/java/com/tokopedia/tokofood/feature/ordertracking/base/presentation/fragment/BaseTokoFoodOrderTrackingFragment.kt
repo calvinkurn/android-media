@@ -196,7 +196,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private fun updateDriverCall(driverPhoneNumberUiModel: DriverPhoneNumberUiModel) {
         updateDriverCallState(driverPhoneNumberUiModel)
-        showDriverCallBottomSheet(driverPhoneNumberUiModel.phoneNumber)
+        showDriverCallBottomSheet(driverPhoneNumberUiModel)
     }
 
     private fun updateDriverCallState(driverPhoneNumberUiModel: DriverPhoneNumberUiModel) {
@@ -207,8 +207,11 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun showDriverCallBottomSheet(driverPhoneNumber: String) {
-        val driverCallBottomSheet = DriverCallBottomSheet.newInstance(driverPhoneNumber)
+    private fun showDriverCallBottomSheet(driverPhoneNumberUiModel: DriverPhoneNumberUiModel) {
+        val driverCallBottomSheet = DriverCallBottomSheet.newInstance(
+            driverPhoneNumberUiModel.phoneNumber,
+            driverPhoneNumberUiModel.isCallable
+        )
         driverCallBottomSheet.show(childFragmentManager)
     }
 
