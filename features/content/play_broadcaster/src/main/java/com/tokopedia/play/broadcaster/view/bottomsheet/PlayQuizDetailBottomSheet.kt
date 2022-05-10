@@ -53,7 +53,6 @@ class PlayQuizDetailBottomSheet @Inject constructor(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setTitle("Respon quiz")
         parentViewModel.getQuizDetailData()
         observeQuizDetail()
     }
