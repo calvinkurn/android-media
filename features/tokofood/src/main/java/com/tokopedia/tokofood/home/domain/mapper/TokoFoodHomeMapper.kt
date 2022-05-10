@@ -26,6 +26,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
+import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeUSPResponse
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
@@ -72,6 +73,20 @@ object TokoFoodHomeMapper {
             val usp = TokoFoodHomeUSPUiModel(
                 item.visitableId,
                 uspResponse,
+                TokoFoodHomeLayoutState.SHOW
+            )
+            TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.mapDynamicIcons(
+        item: TokoFoodHomeIconsUiModel,
+        result: TokoFoodHomeDynamicIconsResponse
+    ){
+        updateItemById(item.visitableId) {
+            val usp = TokoFoodHomeIconsUiModel(
+                item.visitableId,
+                result.dynamicIcon.listDynamicIcon,
                 TokoFoodHomeLayoutState.SHOW
             )
             TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)

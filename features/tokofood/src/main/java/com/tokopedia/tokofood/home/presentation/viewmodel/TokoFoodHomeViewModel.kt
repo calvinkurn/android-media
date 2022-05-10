@@ -12,11 +12,13 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.getVisitableId
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapDynamicIcons
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapUSPData
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.removeItem
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.setStateToLoading
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicChannelUseCase
+import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeDynamicIconsUseCase
 import com.tokopedia.tokofood.home.domain.usecase.TokoFoodHomeUSPUseCase
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
@@ -31,6 +33,7 @@ import javax.inject.Inject
 class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
+    private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -113,7 +116,8 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun getIconListDataAsync(item: TokoFoodHomeIconsUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            throw Throwable()
+            val dynamicIcons = tokoFoodHomeDynamicIconsUseCase.execute()
+            homeLayoutItemList.mapDynamicIcons(item, dynamicIcons)
         }){
             homeLayoutItemList.removeItem(item.id)
         }

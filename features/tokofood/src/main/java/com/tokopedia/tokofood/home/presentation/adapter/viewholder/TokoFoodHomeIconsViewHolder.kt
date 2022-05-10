@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.home.domain.data.DynamicIcon
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIcon
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -43,7 +43,7 @@ class TokoFoodHomeIconsViewHolder(
     }
 
     internal inner class TokoFoodIconAdapter: RecyclerView.Adapter<TokoFoodIconViewHolder>() {
-        private val iconList = mutableListOf<TokoFoodIcon>()
+        private val iconList = mutableListOf<DynamicIcon>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TokoFoodIconViewHolder {
             return TokoFoodIconViewHolder(
@@ -73,12 +73,12 @@ class TokoFoodHomeIconsViewHolder(
         var imgIcon : ImageUnify? = null
         var tgIcon : Typography? = null
 
-        fun bind(item: TokoFoodIcon){
+        fun bind(item: DynamicIcon){
             imgIcon = itemView.findViewById(R.id.img_icon_tokofood_home)
             tgIcon = itemView.findViewById(R.id.tg_icon_tokofood_home)
 
             imgIcon?.loadImage(item.imageUrl)
-            tgIcon?.text = item.textIcon
+            tgIcon?.text = item.name
 
             itemView?.setOnClickListener {
 
