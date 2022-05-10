@@ -777,7 +777,10 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(productId, userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { wishListActionListener.onSuccessRemoveWishlist(productId) },
+            onSuccess = { result ->
+                if (result is Success) {
+                    wishListActionListener.onSuccessRemoveWishlist(result.data, productId)
+                } },
             onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
     }
 
