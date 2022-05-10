@@ -257,7 +257,7 @@ class AddEditProductShipmentFragment:
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_CPL) {
                 val shipperServicesIdsInt = data?.getIntegerArrayListExtra(EXTRA_SHIPPER_SERVICES)
-                if (!shipperServicesIdsInt.isNullOrEmpty()) {
+                if (shipperServicesIdsInt != null) {
                     shipperServicesIds = arrayListOf()
                     shipperServicesIdsInt.forEach { ids ->
                         shipperServicesIds?.add(ids.toLong())
