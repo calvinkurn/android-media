@@ -59,6 +59,8 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response;
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response;
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener;
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler;
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
@@ -349,12 +351,66 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onWishlistV2Click(@NonNull RecommendationItem item, boolean isAddWishlist, @NonNull WishlistV2ActionListener actionListener) {
+    public void onWishlistV2Click(@NonNull RecommendationItem item, boolean isAddWishlist) {
         if (presenter.isLoggedIn()) {
             if (isAddWishlist) {
-                presenter.addWishlistV2(item, actionListener);
+                presenter.addWishlistV2(item, new WishlistV2ActionListener() {
+                    @Override
+                    public void onErrorAddWishList(@NonNull Throwable throwable, @NonNull String productId) {
+                        String errorMsg = ErrorHandler.getErrorMessage(getContext(), throwable);
+                        if (getView() == null) return;
+                        View rootView = getView().getRootView();
+                        AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+                    }
+
+                    @Override
+                    public void onSuccessAddWishlist(@NonNull AddToWishlistV2Response.Data.WishlistAddV2 result, @NonNull String productId) {
+                        if (getActivity() != null) {
+                            View view = getActivity().findViewById(android.R.id.content);
+                            if (view == null) return;
+                            if (getContext() != null) {
+                                AddRemoveWishlistV2Handler.INSTANCE.showAddToWishlistV2SuccessToaster(result, getContext(), view);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onErrorRemoveWishlist(@NonNull Throwable throwable, @NonNull String productId) {
+                        String errorMsg = ErrorHandler.getErrorMessage(getContext(), throwable);
+                        if (getView() == null) return;
+                        View rootView = getView().getRootView();
+                        AddRemoveWishlistV2Handler.INSTANCE.showWishlistV2ErrorToaster(errorMsg, rootView);
+                    }
+
+                    @Override
+                    public void onSuccessRemoveWishlist(@NonNull DeleteWishlistV2Response.Data.WishlistRemoveV2 result, @NonNull String productId) {
+                        if (getActivity() != null) {
+                            View view = getActivity().findViewById(android.R.id.content);
+                            if (view == null) return;
+                            if (getContext() != null) {
+                                AddRemoveWishlistV2Handler.INSTANCE.showRemoveWishlistV2SuccessToaster(result, getContext(), view);
+                            }
+                        }
+                    }
+                });
             } else {
-                presenter.removeWishlistV2(item, actionListener);
+                presenter.removeWishlistV2(item, new WishlistV2ActionListener() {
+                    @Override
+                    public void onErrorAddWishList(@NonNull Throwable throwable, @NonNull String productId) { }
+
+                    @Override
+                    public void onSuccessAddWishlist(@NonNull AddToWishlistV2Response.Data.WishlistAddV2 result, @NonNull String productId) { }
+
+                    @Override
+                    public void onErrorRemoveWishlist(@NonNull Throwable throwable, @NonNull String productId) {
+
+                    }
+
+                    @Override
+                    public void onSuccessRemoveWishlist(@NonNull DeleteWishlistV2Response.Data.WishlistRemoveV2 result, @NonNull String productId) {
+
+                    }
+                });
             }
         } else {
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
