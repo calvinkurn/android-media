@@ -209,11 +209,11 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when getImageList of 5 images should return expected ImageReviewModels`() {
         val expectedData = mutableListOf(
-            ImageReviewUiModel("ImageUrl1", "ImageUrl1"),
-            ImageReviewUiModel("ImageUrl2", "ImageUrl2"),
-            ImageReviewUiModel("ImageUrl3", "ImageUrl3"),
-            ImageReviewUiModel("ImageUrl4", "ImageUrl4"),
-            ImageReviewUiModel("ImageUrl5", "ImageUrl5")
+            ImageReviewUiModel("", "ImageUrl1"),
+            ImageReviewUiModel("", "ImageUrl2"),
+            ImageReviewUiModel("", "ImageUrl3"),
+            ImageReviewUiModel("", "ImageUrl4"),
+            ImageReviewUiModel("", "ImageUrl5")
         )
 
         val actualData = viewModel.getImageList(images)
@@ -231,10 +231,10 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         )
 
         val expectedData = mutableListOf(
-            ImageReviewUiModel("ImageUrl1", "ImageUrl1"),
-            ImageReviewUiModel("ImageUrl2", "ImageUrl2"),
-            ImageReviewUiModel("ImageUrl3", "ImageUrl3"),
-            ImageReviewUiModel("ImageUrl4", "ImageUrl4"),
+            ImageReviewUiModel("", "ImageUrl1"),
+            ImageReviewUiModel("", "ImageUrl2"),
+            ImageReviewUiModel("", "ImageUrl3"),
+            ImageReviewUiModel("", "ImageUrl4"),
             DefaultImageReviewUiModel()
         )
 

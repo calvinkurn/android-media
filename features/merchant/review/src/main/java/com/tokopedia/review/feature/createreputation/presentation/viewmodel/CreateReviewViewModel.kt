@@ -302,32 +302,6 @@ class CreateReviewViewModel @Inject constructor(
         .toStateFlow(CreateReviewBottomSheetUiState.Showing)
     // endregion create review bottom sheet state
 
-    private fun mapCreateReviewBottomSheetUiState(
-        reviewForm: ReviewFormRequestState
-    ): CreateReviewBottomSheetUiState {
-        return if (reviewForm is RequestState.Error) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
-                success = false,
-                message = StringRes(R.string.review_toaster_page_error),
-                feedbackId = ""
-            )
-        } else if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
-                success = false,
-                message = StringRes(R.string.review_pending_invalid_to_review),
-                feedbackId = ""
-            )
-        } else if (reviewForm is RequestState.Success && reviewForm.result.productrevGetForm.productData.productStatus == 0) {
-            CreateReviewBottomSheetUiState.ShouldDismiss(
-                success = false,
-                message = StringRes(R.string.review_pending_deleted_product_error_toaster),
-                feedbackId = ""
-            )
-        } else {
-            createReviewBottomSheetUiState.value
-        }
-    }
-
     // region incentive bottom sheet state
     val incentiveBottomSheetUiState = combine(
         canRenderForm, shouldShowIncentiveBottomSheet, incentiveOvo.filterIsInstance(),
@@ -785,6 +759,32 @@ class CreateReviewViewModel @Inject constructor(
         } else CreateReviewSubmitButtonUiState.Loading
     }
 
+    private fun mapCreateReviewBottomSheetUiState(
+        reviewForm: ReviewFormRequestState
+    ): CreateReviewBottomSheetUiState {
+        return if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_pending_invalid_to_review),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Success && reviewForm.result.productrevGetForm.productData.productStatus == 0) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_pending_deleted_product_error_toaster),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Error) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else {
+            createReviewBottomSheetUiState.value
+        }
+    }
+
     private fun mapIncentiveBottomSheetUiState(
         canRenderForm: Boolean,
         showIncentiveBottomSheet: Boolean,
@@ -1218,6 +1218,7 @@ class CreateReviewViewModel @Inject constructor(
             }.run {
                 shopId.value = productrevGetForm.shopData.shopIDStr
                 productId.value = productrevGetForm.productData.productIDStr
+                orderId.value = productrevGetForm.orderID
                 reviewForm.value = ReviewFormRequestSuccessState(this)
             }
         }) {
@@ -1613,7 +1614,7 @@ class CreateReviewViewModel @Inject constructor(
         return reviewText.value.text.length
     }
 
-    fun getNumberOfPictures(): Int {
+    fun getNumberOfMedia(): Int {
         return mediaUris.value.size
     }
 

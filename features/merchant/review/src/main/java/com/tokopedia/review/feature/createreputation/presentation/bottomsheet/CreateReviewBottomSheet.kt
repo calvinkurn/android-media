@@ -583,7 +583,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             CreateReviewTracking.eventClickSubmitForm(
                 viewModel.getRating(),
                 viewModel.getReviewMessageLength(),
-                viewModel.getNumberOfPictures(),
+                viewModel.getNumberOfMedia(),
                 viewModel.isAnonymous(),
                 viewModel.hasIncentive(),
                 viewModel.isTemplateAvailable(),
@@ -626,7 +626,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             CreateReviewTracking.eventDismissForm(
                 viewModel.getRating(),
                 viewModel.getReviewMessageLength(),
-                viewModel.getNumberOfPictures(),
+                viewModel.getNumberOfMedia(),
                 viewModel.isAnonymous(),
                 viewModel.hasIncentive(),
                 viewModel.isTemplateAvailable(),
