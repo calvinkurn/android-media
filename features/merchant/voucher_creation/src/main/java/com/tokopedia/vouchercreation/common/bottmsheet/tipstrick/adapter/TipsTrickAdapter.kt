@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.model.TipsTrickModel
@@ -13,8 +12,6 @@ import com.tokopedia.vouchercreation.databinding.ItemMvcTipsTrickBinding
 
 class TipsTrickAdapter : RecyclerView.Adapter<TipsTrickAdapter.TipsTrickViewHolder>() {
 
-    private var binding: ItemMvcTipsTrickBinding? = null
-
     private var items: List<TipsTrickModel> = emptyList()
 
     fun setItems(items: List<TipsTrickModel>) {
@@ -23,8 +20,7 @@ class TipsTrickAdapter : RecyclerView.Adapter<TipsTrickAdapter.TipsTrickViewHold
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TipsTrickViewHolder {
-        binding = ItemMvcTipsTrickBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TipsTrickViewHolder(binding!!.root)
+        return TipsTrickViewHolder(ItemMvcTipsTrickBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = items.size
@@ -34,10 +30,10 @@ class TipsTrickAdapter : RecyclerView.Adapter<TipsTrickAdapter.TipsTrickViewHold
         holder.bind(item)
     }
 
-    inner class TipsTrickViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TipsTrickViewHolder(private val binding: ItemMvcTipsTrickBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TipsTrickModel) {
-            binding?.apply {
+            binding.apply {
                 tvMvcTipsTrickNumber.text = adapterPosition.plus(1).toString()
                 tvMvcTipsTrickTitle.text = item.title
                 tvMvcTipsTrickDescription.text = item.description

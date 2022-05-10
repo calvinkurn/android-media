@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.description
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +20,8 @@ class DescriptionBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(context: Context,
-                           title: String): DescriptionBottomSheet {
-            return DescriptionBottomSheet().apply {
-                context.run {
-                    setTitle(title)
-                }
-            }
+        fun createInstance(title: String): DescriptionBottomSheet = DescriptionBottomSheet().apply {
+            setTitle(title)
         }
 
         const val TAG = "DescriptionBottomSheet"

@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -20,26 +19,25 @@ class VoucherDisplayAdapter(private val itemList: List<VoucherDisplayUiModel>,
                             @VoucherTargetType private val targetType: Int,
                             private val userId: String) : RecyclerView.Adapter<VoucherDisplayAdapter.VoucherDisplayViewHolder>() {
 
-    class VoucherDisplayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
     companion object {
         private const val CARD_WIDTH_MULTIPLIER = 3
     }
 
-    private var binding: MvcVoucherDisplayViewBinding? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VoucherDisplayViewHolder {
-        binding = MvcVoucherDisplayViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return VoucherDisplayViewHolder(binding!!.root)
+        return VoucherDisplayViewHolder(MvcVoucherDisplayViewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: VoucherDisplayViewHolder, position: Int) {
-        binding?.apply {
-            val cardWidth = getScreenWidth() - root.context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * CARD_WIDTH_MULTIPLIER
-            voucherDisplayImage.layoutParams?.width = cardWidth
-            itemList[position].let { uiModel ->
+        holder.bind(itemList[position])
+    }
+
+    inner class VoucherDisplayViewHolder(private val binding: MvcVoucherDisplayViewBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(uiModel: VoucherDisplayUiModel) {
+            binding.apply {
+                val cardWidth = getScreenWidth() - root.context.resources.getDimension(R.dimen.mvc_create_voucher_display_recycler_view_decoration).toInt() * CARD_WIDTH_MULTIPLIER
+                voucherDisplayImage.layoutParams?.width = cardWidth
                 voucherDisplayImage.run {
                     Glide.with(context)
                         .load(uiModel.imageUrl)

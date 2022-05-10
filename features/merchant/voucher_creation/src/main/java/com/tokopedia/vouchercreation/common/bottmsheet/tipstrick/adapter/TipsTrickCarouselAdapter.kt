@@ -1,7 +1,6 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.tipstrick.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -20,8 +19,6 @@ import com.tokopedia.vouchercreation.databinding.ItemMvcTipsTrickCarouselBinding
 
 class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapter<TipsTrickCarouselAdapter.ViewHolder>() {
 
-    private var binding: ItemMvcTipsTrickCarouselBinding? = null
-
     private var items: List<TipsTrickCarouselModel> = emptyList()
 
     companion object {
@@ -34,8 +31,7 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = ItemMvcTipsTrickCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding!!.root)
+        return ViewHolder(ItemMvcTipsTrickCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount(): Int = items.size
@@ -45,10 +41,10 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
         holder.bind(item)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(private val binding: ItemMvcTipsTrickCarouselBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: TipsTrickCarouselModel) {
-            binding?.apply {
+            binding.apply {
                 root.addOnImpressionListener(item.impressHolder) {
                     sendVoucherDetailImpressionTracking(
                         status = VoucherStatusConst.ONGOING,

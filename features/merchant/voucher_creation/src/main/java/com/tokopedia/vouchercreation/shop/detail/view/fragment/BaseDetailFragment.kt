@@ -100,7 +100,7 @@ abstract class BaseDetailFragment : BaseListFragment<VoucherDetailUiModel, Vouch
 
     override fun showDescriptionBottomSheet(title: String, content: String) {
         if (!isAdded) return
-        DescriptionBottomSheet.createInstance(context ?: return, title)
+        DescriptionBottomSheet.createInstance(title)
                 .show(content, childFragmentManager)
     }
 
