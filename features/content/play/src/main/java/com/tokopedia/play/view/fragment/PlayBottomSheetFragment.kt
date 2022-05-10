@@ -240,6 +240,10 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
+    override fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent) {
+        playViewModel.sendImpressRefreshLeaderBoard()
+    }
+
     /**
      * CouponSheet View Component Listener
      */

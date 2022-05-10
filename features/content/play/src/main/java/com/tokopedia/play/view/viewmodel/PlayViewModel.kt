@@ -2549,6 +2549,10 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.impressQuizOptions(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
     }
 
+    fun sendImpressRefreshLeaderBoard(){
+        playAnalytic.impressRefreshLeaderBoard(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
+    }
+
     /**
      * Variant Util
      */
