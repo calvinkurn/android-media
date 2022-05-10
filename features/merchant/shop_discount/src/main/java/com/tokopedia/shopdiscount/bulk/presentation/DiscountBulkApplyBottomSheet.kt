@@ -23,6 +23,7 @@ import com.tokopedia.shopdiscount.common.bottomsheet.datepicker.ShopDiscountDate
 import com.tokopedia.shopdiscount.databinding.BottomsheetDiscountBulkApplyBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
@@ -48,6 +49,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_MODE = "mode"
         private const val BUNDLE_KEY_START_DATE = "start_date"
         private const val BUNDLE_KEY_END_DATE = "end_date"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "discount_status_id"
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
 
@@ -62,13 +64,15 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             bottomSheetTitle: String,
             mode: Mode = Mode.BULK_APPLY,
             bulkUpdateDefaultStartDate: Date? = null,
-            bulkUpdateDefaultEndDate: Date? = null
+            bulkUpdateDefaultEndDate: Date? = null,
+            @DiscountStatus discountStatusId: Int
         ): DiscountBulkApplyBottomSheet {
             val args = Bundle()
             args.putString(BUNDLE_KEY_TITLE, bottomSheetTitle)
             args.putSerializable(BUNDLE_KEY_MODE, mode)
             args.putSerializable(BUNDLE_KEY_START_DATE, bulkUpdateDefaultStartDate)
             args.putSerializable(BUNDLE_KEY_END_DATE, bulkUpdateDefaultEndDate)
+            args.putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
 
             val bottomSheet = DiscountBulkApplyBottomSheet().apply {
                 arguments = args
@@ -86,6 +90,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     private val bulkUpdateDefaultEndDate by lazy {
         arguments?.getSerializable(BUNDLE_KEY_END_DATE) as? Date
     }
+    private val discountStatusId by lazy {
+        arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
+    }
 
     private var binding by autoClearedNullable<BottomsheetDiscountBulkApplyBinding>()
 
@@ -95,8 +102,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
      */
     enum class Mode {
         BULK_APPLY,
-        BULK_UPDATE,
-        UPDATE_PRODUCT
+        BULK_UPDATE
     }
 
     @Inject
@@ -268,32 +274,36 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         benefit: GetSlashPriceBenefitResponse.GetSlashPriceBenefit.SlashPriceBenefit,
         isUsingVps: Boolean
     ) {
+        when {
+            mode == Mode.BULK_APPLY && isUsingVps -> handleAppearanceForBulkApplyModeWithVps(benefit.expiredAt)
+            mode == Mode.BULK_APPLY -> handleAppearanceForBulkApplyMode()
+            mode == Mode.BULK_UPDATE -> handleAppearanceForBulkUpdateMode()
+        }
+    }
 
-        if (mode == Mode.BULK_APPLY) {
-            binding?.chipOneYearPeriod?.chipType = ChipsUnify.TYPE_SELECTED
+    private fun handleAppearanceForBulkApplyMode() {
+        binding?.chipOneYearPeriod?.chipType = ChipsUnify.TYPE_SELECTED
+    }
+
+    private fun handleAppearanceForBulkApplyModeWithVps(vpsExpiredDate: String) {
+        hideAllChips()
+        val endDate = vpsExpiredDate.toDate(DateConstant.DATE_TIME)
+        viewModel.setSelectedEndDate(endDate)
+    }
+
+    private fun handleAppearanceForBulkUpdateMode() {
+        hideAllChips()
+        binding?.tpgInformation?.gone()
+        binding?.tfuStartDate?.gone()
+        binding?.tfuEndDate?.gone()
+
+        binding?.tfuStartDate?.isEnabled = discountStatusId == DiscountStatus.ONGOING
+
+        if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
+            viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
+            viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate ?: return)
         }
 
-        if (mode == Mode.BULK_UPDATE) {
-            hideAllChips()
-            binding?.tpgInformation?.gone()
-            binding?.tfuStartDate?.gone()
-            binding?.tfuEndDate?.gone()
-        }
-
-        if (mode == Mode.UPDATE_PRODUCT) {
-            binding?.tfuStartDate?.isEnabled = false
-
-            if (bulkUpdateDefaultStartDate != null && bulkUpdateDefaultEndDate != null) {
-                viewModel.setSelectedStartDate(bulkUpdateDefaultStartDate ?: return)
-                viewModel.setSelectedEndDate(bulkUpdateDefaultEndDate?: return)
-            }
-        }
-
-        if (isUsingVps) {
-            val endDate = benefit.expiredAt.toDate(DateConstant.DATE_TIME)
-            viewModel.setSelectedEndDate(endDate)
-            hideAllChips()
-        }
     }
 
     private fun setupDatePicker() {
