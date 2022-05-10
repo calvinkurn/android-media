@@ -68,7 +68,10 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.wishlist_common.R as Rwishlist
@@ -371,16 +374,56 @@ class OfficialHomeFragment :
         )
     }
 
-    override fun onWishlistV2Click(
-        item: RecommendationItem,
-        isAddWishlist: Boolean,
-        actionListener: WishlistV2ActionListener
-    ) {
+    override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
         if (viewModel.isLoggedIn()) {
             if (isAddWishlist) {
-                viewModel.addWishlistV2(item, actionListener)
+                viewModel.addWishlistV2(item, object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        view?.let {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
+                        }
+                    }
+
+                    override fun onSuccessAddWishlist(
+                        result: AddToWishlistV2Response.Data.WishlistAddV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+                    override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+
+                })
             } else {
-                viewModel.removeWishlistV2(item, actionListener)
+                viewModel.removeWishlistV2(item, object: WishlistV2ActionListener{
+                    override fun onErrorAddWishList(throwable: Throwable, productId: String) { }
+                    override fun onSuccessAddWishlist(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String) { }
+
+                    override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        view?.let {
+                            AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, it)
+                        }
+                    }
+
+                    override fun onSuccessRemoveWishlist(
+                        result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                        productId: String
+                    ) {
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                    }
+
+                })
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)

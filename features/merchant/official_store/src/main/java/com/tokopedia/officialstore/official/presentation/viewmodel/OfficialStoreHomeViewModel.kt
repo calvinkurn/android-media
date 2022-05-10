@@ -390,7 +390,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
     fun removeWishlistV2(model: RecommendationItem, wishlistV2ActionListener: WishlistV2ActionListener) {
         deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { wishlistV2ActionListener.onSuccessRemoveWishlist(model.productId.toString()) },
+            onSuccess = { result ->
+                if (result is Success) {
+                    wishlistV2ActionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
+                } },
             onError = { wishlistV2ActionListener.onErrorRemoveWishlist(it, model.productId.toString()) })
     }
 
