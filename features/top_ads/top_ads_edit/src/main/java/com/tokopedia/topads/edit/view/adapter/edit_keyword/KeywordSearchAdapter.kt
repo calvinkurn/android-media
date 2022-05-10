@@ -61,7 +61,7 @@ class KeywordSearchAdapter(private val onChecked: (() -> Unit)) :
         holder.view.setOnClickListener {
             holder.checkBox.isChecked = !holder.checkBox.isChecked
         }
-        holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+        holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             items[holder.adapterPosition].onChecked = isChecked
             onChecked.invoke()
         }

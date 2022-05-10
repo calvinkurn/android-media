@@ -70,24 +70,24 @@ class TopAdsHeadlineKeySelectedAdapter(
                     result < minBid.toDouble() -> {
                         holder.keywordBid.setError(true)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_min_bid), minBid))
+                            com.tokopedia.topads.common.R.string.topads_common_min_bid), minBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     result < suggestedBid.toDouble() -> {
                         holder.keywordBid.setError(false)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_recom_bid), suggestedBid))
+                            com.tokopedia.topads.common.R.string.topads_common_recom_bid), suggestedBid))
                         onBidChange(true, items[holder.adapterPosition])
                     }
                     result > maxBid.toDouble() -> {
                         holder.keywordBid.setError(true)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_max_bid), maxBid))
+                            com.tokopedia.topads.common.R.string.topads_common_max_bid), maxBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     result % 50 != 0 -> {
                         holder.keywordBid.setError(true)
-                        holder.keywordBid.setMessage(holder.view.context.getString(R.string.error_bid_multiple_50))
+                        holder.keywordBid.setMessage(holder.view.context.getString(com.tokopedia.topads.common.R.string.error_bid_multiple_50))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     else -> {

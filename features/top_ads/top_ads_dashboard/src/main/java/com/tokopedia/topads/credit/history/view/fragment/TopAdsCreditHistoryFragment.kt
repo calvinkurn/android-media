@@ -5,12 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.tokopedia.unifyprinciples.Typography
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -39,6 +37,7 @@ import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpAct
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -82,7 +81,7 @@ class TopAdsCreditHistoryFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             viewModel = viewModelProvider.get(TopAdsCreditHistoryViewModel::class.java)
         }
     }
@@ -102,13 +101,13 @@ class TopAdsCreditHistoryFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.creditsHistory.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.creditsHistory.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetCredit(it.data)
                 is Fail -> onErrorGetCredit(it.throwable)
             }
         })
-        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getAutoTopUpStatus.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetAutoTopUpStatus(it.data)
                 is Fail -> {
@@ -116,7 +115,7 @@ class TopAdsCreditHistoryFragment :
             }
         })
 
-        viewModel.creditAmount.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.creditAmount.observe(viewLifecycleOwner, {
             creditAmount?.text = it
         })
     }

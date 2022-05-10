@@ -87,19 +87,19 @@ class TopAdsHeadlineKeyAdapter(
                     result < minimumBid -> {
                         holder.keywordBid.setError(true)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_min_bid), minimumBid))
+                            com.tokopedia.topads.common.R.string.topads_common_min_bid), minimumBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     result < bidSuggest -> {
                         holder.keywordBid.setError(false)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_recom_bid), bidSuggest))
+                            com.tokopedia.topads.common.R.string.topads_common_recom_bid), bidSuggest))
                         onBidChange(true, items[holder.adapterPosition])
                     }
                     result > maxBid.toDouble() -> {
                         holder.keywordBid.setError(true)
                         holder.keywordBid.setMessage(String.format(holder.view.context.getString(
-                            R.string.topads_common_max_bid), maxBid))
+                            com.tokopedia.topads.common.R.string.topads_common_max_bid), maxBid))
                         onBidChange(false, items[holder.adapterPosition])
                     }
                     else -> {
