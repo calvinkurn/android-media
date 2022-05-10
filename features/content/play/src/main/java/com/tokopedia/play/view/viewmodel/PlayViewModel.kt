@@ -1788,7 +1788,7 @@ class PlayViewModel @AssistedInject constructor(
                 } else false
             }
 
-            if (isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
+            if (!checkWinnerStatus() && isRewardAvailable && interactive.interactive is InteractiveUiModel.Quiz) {
                 delay(interactive.interactive.waitingDuration) //waiting duration: wait for user winner message
                 checkWinnerStatus()
             } else {
