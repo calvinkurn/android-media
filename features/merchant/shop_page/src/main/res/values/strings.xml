@@ -147,7 +147,6 @@
     <string name="total_point_format">(%1$s)</string>
 
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
-    <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
     <string name="shop_product_title">Produk</string>
@@ -166,7 +165,6 @@
     <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>
     <string name="read">Baca</string>
-    <string name="shop_page_label_follow">Follow</string>
     <string name="shop_etalase">Etalase</string>
     <string name="max_rating_value">/ 5</string>
     <string name="shop_page_header_shop_in_moderation_desc">Toko ini menyalahi peraturan yang berlaku di Tokopedia.</string>
@@ -178,9 +176,6 @@
     <string name="shop_page_header_shop_in_moderation_desc_buyer">Diharapkan untuk sementara tidak melakukan transaksi apapun dengan toko ini.</string>
     <string name="new_shop_page_header_shop_in_moderation_desc_buyer">Demi keamanan, harap tidak bertranksaksi dengan toko ini melalui media apapun.</string>
     <string name="shop_page_header_shop_see_more_info">Info Lanjut</string>
-    <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
-    <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
-    <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
