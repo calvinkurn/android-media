@@ -285,6 +285,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
                 MiniCartAnalytics.Page.DISCOVERY_PAGE -> "$MINICART_PAGE_SOURCE discovery page"
                 MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
+                else -> ""
             }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
                     .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)

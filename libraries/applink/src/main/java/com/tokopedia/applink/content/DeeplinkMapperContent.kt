@@ -74,6 +74,10 @@ object DeeplinkMapperContent {
         return deepLink
     }
 
+    fun getWebHostWebViewLink(deeplink : String): String{
+        return deeplink.replace("tokopedia://", "https://")
+    }
+
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }

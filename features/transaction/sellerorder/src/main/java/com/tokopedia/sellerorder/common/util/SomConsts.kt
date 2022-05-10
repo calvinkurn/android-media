@@ -77,11 +77,6 @@ object SomConsts {
     const val TITLE_KURIR_PENGIRIMAN = "Kurir Pengiriman"
     const val TITLE_JENIS_LAYANAN = "Jenis Layanan"
 
-    const val INPUT_ORDER_ID = "#orderId"
-    const val INPUT_SHIPPING_REF = "#shippingRef"
-    const val INPUT_AGENCY_ID = "#agencyId"
-    const val INPUT_SP_ID = "#spId"
-
     const val LABEL_EMPTY = "-"
     const val LABEL_COPY_BOOKING_CODE = "LABEL_COPY_BOOKING_CODE"
 
