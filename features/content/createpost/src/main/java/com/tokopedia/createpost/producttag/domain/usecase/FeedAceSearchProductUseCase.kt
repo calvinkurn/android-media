@@ -27,6 +27,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
     companion object {
         private const val PARAMS = "params"
         private const val PARAM_DEVICE = "device"
+        private const val PARAM_FROM = "from"
         private const val PARAM_ROWS = "rows"
         private const val PARAM_START = "start"
         private const val PARAM_QUERY = "q"
@@ -113,6 +114,7 @@ class FeedAceSearchProductUseCase @Inject constructor(
             sort: Int,
         ): String = mutableMapOf<String, Any>(
             PARAM_DEVICE to "android",
+            PARAM_FROM to "feed_content",
             PARAM_ROWS to rows,
             PARAM_START to start,
             PARAM_QUERY to query.trim(),
