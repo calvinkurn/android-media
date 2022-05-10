@@ -29,7 +29,7 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
     internal var currentPageSource: MiniCartAnalytics.Page = MiniCartAnalytics.Page.MVC_PAGE
     internal var currentBusinessUnit: String = ""
     internal var currentSite: String = ""
-    lateinit var source: MiniCartSource
+    internal var source: MiniCartSource = MiniCartSource.MVC
 
     // State Data
     private val _miniCartSimplifiedState = MutableLiveData<MiniCartSimplifiedState>()

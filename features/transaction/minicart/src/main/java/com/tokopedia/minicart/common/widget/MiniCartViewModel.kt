@@ -66,7 +66,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     private val _currentShopIds = MutableLiveData<List<String>>()
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
-    lateinit var currentSource: MiniCartSource
+    var currentSource: MiniCartSource = MiniCartSource.TokonowHome
 
     private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
     val currentPage: LiveData<MiniCartAnalytics.Page>
