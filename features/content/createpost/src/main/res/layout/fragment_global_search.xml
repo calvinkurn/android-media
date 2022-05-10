@@ -1,7 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_cc_search_bar"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_search"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:icon_name="SEARCH"
+            app:icon_color_light_enable="@color/Unify_NN500"
+            app:icon_color_night_enable="@color/Unify_NN500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/et_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:background="@android:color/transparent"
+            android:text="@string/cc_product_tag_search_hint"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintBottom_toBottomOf="@id/iv_search"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_search"
+            app:layout_constraintTop_toTopOf="@id/iv_search"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/search_shop_product_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:visibility="visible"
+        app:layout_scrollFlags="enterAlways"
+        app:tabGravity="fill"
+        android:paddingTop="@dimen/unify_space_12"
+        app:tabIndicatorColor="@color/Unify_GN500"
+        app:tabIndicatorHeight="@dimen/dp_1"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/Unify_GN500"
+        app:tabTextAppearance="@style/CreatePostTabLayoutTextStyle"
+        app:tabTextColor="@color/Unify_N700_32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_search">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/content_creation_barang_text" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/content_creation_toko_text" />
+
+    </com.tokopedia.unifycomponents.TabsUnify>
+
+    <FrameLayout
+        android:id="@+id/search_result_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/search_shop_product_tab_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/content_creation_view_pager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

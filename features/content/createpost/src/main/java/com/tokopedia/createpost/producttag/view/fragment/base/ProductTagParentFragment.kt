@@ -172,8 +172,10 @@ class ProductTagParentFragment @Inject constructor(
         return when(productTagSource) {
             ProductTagSource.LastTagProduct -> {
                 Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
+                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    GlobalSearchFragment.TAG,
+//                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+//                    LastTaggedProductFragment.TAG,
                 )
             }
             ProductTagSource.LastPurchase -> {
