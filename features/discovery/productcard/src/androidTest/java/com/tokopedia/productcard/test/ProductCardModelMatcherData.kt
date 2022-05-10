@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.test
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.FreeOngkir
@@ -2594,7 +2595,8 @@ private fun testAddToCartButtonWishlist(useViewStub: Boolean): ProductCardModelM
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (!useViewStub) productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
+    if (useViewStub) productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
+    else productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
@@ -2640,7 +2642,10 @@ private fun testSeeSimilarProductButtonWishlist(useViewStub: Boolean): ProductCa
         R.id.imageButtonThreeDotsWishlist to isDisplayed(),
     )
 
-    if (!useViewStub) {
+    if (useViewStub) {
+        productCardMatcher[R.id.buttonAddToCartStub] = isEnabled()
+    }
+    else {
         productCardMatcher[R.id.buttonAddToCart] = isNotDisplayed()
         productCardMatcher[R.id.buttonAddToCartWishlist] = isNotDisplayed()
     }
