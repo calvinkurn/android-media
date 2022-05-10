@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             app:unifyButtonVariant="ghost"
             app:unifyButtonType="alternate"
-            android:text="@string/title_forgot_password"
+            android:text="@string/ipn_title_forgot_password"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -435,6 +435,8 @@
     <string name="ipn_toolbar_title">Ubah Nomor HP</string>
     <string name="ipn_title">Masukkan nomor HP lama</string>
     <string name="ipn_old_phone_number">Nomor HP lama</string>
+    <string name="ipn_title_need_help">Butuh Bantuan?</string>
+    <string name="ipn_title_forgot_password">Lupa Kata Sandi</string>
     <string name="ipn_title_phone_number_inactive">Nomor HP Tidak Aktif</string>
     <string name="ipn_next">Lanjut</string>
     <string name="ipn_what_help_do_you_need">Butuh bantuan apa?</string>

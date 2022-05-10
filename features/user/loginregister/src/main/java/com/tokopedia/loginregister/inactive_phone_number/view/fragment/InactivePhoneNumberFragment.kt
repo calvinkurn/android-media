@@ -14,6 +14,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics.Companion.LABEL_CLICK
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics.Companion.LABEL_FAILED
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics.Companion.LABEL_SUCCESS
 import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -26,12 +30,15 @@ import javax.inject.Inject
 class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     @Inject
+    lateinit var analytics: InactivePhoneNumberAnalytics
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     val viewModel by lazy { viewModelProvider.get(InactivePhoneNumberViewModel::class.java) }
 
-    private lateinit var btnNext: UnifyButton
-    private lateinit var tfu2Phone: TextFieldUnify2
+    private var btnNext: UnifyButton? = null
+    private var tfu2Phone: TextFieldUnify2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,30 +73,34 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     private fun formStateObserver() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
-            tfu2Phone.setMessage(
-                if (it.numberError != null) getString(it.numberError)
-                else " "
+            tfu2Phone?.setMessage(
+                if (it.numberError != null) {
+                    val message = getString(it.numberError)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, viewModel.currentNumber)
+                    message
+                } else " "
             )
 
-            tfu2Phone.isInputError = !it.isDataValid
+            tfu2Phone?.isInputError = !it.isDataValid
         }
     }
 
     private fun onClickListener() {
-        btnNext.setOnClickListener {
+        btnNext?.setOnClickListener {
+            analytics.trackPageInactivePhoneNumberClickNext(LABEL_CLICK)
             submitData()
         }
     }
 
     private fun formAction() {
-        tfu2Phone.editText.setOnEditorActionListener { _, actionId, _ ->
+        tfu2Phone?.editText?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitData()
                 true
             } else false
         }
 
-        tfu2Phone.editText.setOnKeyListener { _, keyCode, event ->
+        tfu2Phone?.editText?.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 submitData()
                 true
@@ -101,10 +112,13 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         viewModel.statusPhoneNumber.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_SUCCESS)
                     onGoToInactivePhoneNumber(it.data)
                 }
                 is Fail -> {
-                    onError(it.throwable)
+                    val message = getErrorMsgWithLogging(it.throwable)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, viewModel.currentNumber)
+                    onError(message)
                 }
             }
         }
@@ -119,15 +133,14 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onError(throwable: Throwable) {
-        val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
-        tfu2Phone.setMessage(message)
-        tfu2Phone.isInputError = true
+    private fun onError(message: String) {
+        tfu2Phone?.setMessage(message)
+        tfu2Phone?.isInputError = true
     }
 
     private fun isLoadingObserver() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
-            btnNext.isLoading = it
+            btnNext?.isLoading = it
         }
     }
 
@@ -139,17 +152,17 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     private fun submitData() {
         hideKeyboard()
-        viewModel.submitNumber(tfu2Phone.getEditableValue().toString())
+        viewModel.submitNumber(tfu2Phone?.getEditableValue().toString())
     }
 
     private fun getErrorMsgWithLogging(
         throwable: Throwable,
-        flow: String,
-        withErrorCode: Boolean = true
+        withErrorCode: Boolean = false
     ): String {
         val mClassName =
-            if (flow.isEmpty()) InactivePhoneNumberFragment::class.java.name else "${InactivePhoneNumberFragment::class.java.name} - $flow"
-        val message = ErrorHandler.getErrorMessage(context, throwable,
+            InactivePhoneNumberFragment::class.java.name
+        val message = ErrorHandler.getErrorMessage(
+            context, throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
                 className = mClassName

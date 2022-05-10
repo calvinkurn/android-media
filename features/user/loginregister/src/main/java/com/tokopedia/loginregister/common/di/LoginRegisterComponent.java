@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
@@ -60,6 +61,8 @@ public interface LoginRegisterComponent {
     PermissionCheckerHelper providePermissionCheckerHelper();
 
     SeamlessLoginAnalytics provideSeamlessLoginAnalytics();
+
+    InactivePhoneNumberAnalytics provideInactivePhoneNumberAnalytics();
 
     CoroutineDispatchers provideCoroutineDispatchers();
 

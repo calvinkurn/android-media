@@ -65,6 +65,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -155,6 +156,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     @Inject
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
+
+    @Inject
+    lateinit var inactivePhoneNumberAnalytics: InactivePhoneNumberAnalytics
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -823,12 +827,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         val ubForgotPassword = viewChild.findViewById<UnifyButton>(R.id.ub_forgot_password)
         ubForgotPassword.setOnClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
         }
 
         val ubInactivePhoneNumber = viewChild.findViewById<UnifyButton>(R.id.ub_inactive_phone_number)
         ubInactivePhoneNumber.setOnClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
+        }
+
+        bottomSheetUnify.setCloseClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickClose()
+            bottomSheetUnify.dismiss()
         }
 
         return bottomSheetUnify
@@ -840,6 +851,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
+                    inactivePhoneNumberAnalytics.trackPageBottomSheetClickTokopediaCare()
                     goToTokopediaCareWebview()
                 }
 
