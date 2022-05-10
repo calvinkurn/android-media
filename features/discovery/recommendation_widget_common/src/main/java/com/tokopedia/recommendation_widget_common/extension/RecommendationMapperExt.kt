@@ -179,16 +179,10 @@ fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): Recommendatio
 fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniCartMap: MutableMap<MiniCartItemKey, MiniCartItem>?) {
     val recomItemList = mutableListOf<RecommendationItem>()
     recomWidget.recommendationItemList.forEach { item ->
-//        val minicartcopy = miniCartMap?.toMutableMap()
         miniCartMap?.let {
             if (item.isProductHasParentID()) {
                 var variantTotalItems = 0
                 variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
-//                it.values.forEach { miniCartItem ->
-//                    if (miniCartItem.productParentId == item.parentID.toString()) {
-//                        variantTotalItems += miniCartItem.quantity
-//                    }
-//                }
                 item.updateItemCurrentStock(variantTotalItems)
             } else {
                 item.updateItemCurrentStock(
@@ -201,7 +195,3 @@ fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget, miniC
     }
     recomWidget.recommendationItemList = recomItemList
 }
-
-//fun List<MiniCartItem>.convertMiniCartToProductIdMap() : MutableMap<String, MiniCartItem> {
-//    return this.associateBy({it.productId}) {it}.toMutableMap()
-//}

@@ -18,6 +18,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -208,9 +209,9 @@ open class RecomWidgetViewModel @Inject constructor(
         _miniCartData.postValue(data.toMutableMap())
     }
 
-    fun getMiniCart(shopId: String, pageName: String) {
+    fun getMiniCart(shopId: String, pageName: String, miniCartSource: MiniCartSource = MiniCartSource.PDPRecommendationWidget) {
         launchCatchError(block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), miniCartSource)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             val data = result.miniCartItems
             _miniCartData.postValue(data.toMutableMap())

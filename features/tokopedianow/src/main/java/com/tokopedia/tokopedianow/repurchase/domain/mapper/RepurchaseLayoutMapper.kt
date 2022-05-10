@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -100,7 +101,8 @@ object RepurchaseLayoutMapper {
                 carouselData = RecommendationCarouselData(
                     recommendationData = recommendationWidget,
                     state = STATE_READY
-                )
+                ),
+                miniCartSource = MiniCartSource.TokonowRepurchasePage
             )
         )
     }
@@ -118,7 +120,8 @@ object RepurchaseLayoutMapper {
             TokoNowRecommendationCarouselUiModel(
                 pageName = pageName,
                 isFirstLoad = true,
-                isBindWithPageName = true
+                isBindWithPageName = true,
+                miniCartSource = MiniCartSource.TokonowRepurchasePage
             )
         )
     }
@@ -360,7 +363,8 @@ object RepurchaseLayoutMapper {
                         recommendationData = recommendationData
                     ),
                     id = layoutUiModel.id,
-                    pageName = layoutUiModel.pageName
+                    pageName = layoutUiModel.pageName,
+                    miniCartSource = MiniCartSource.TokonowRepurchasePage
                 )
             )
         }

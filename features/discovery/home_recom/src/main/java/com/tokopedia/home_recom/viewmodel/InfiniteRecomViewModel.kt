@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -154,11 +155,6 @@ class InfiniteRecomViewModel @Inject constructor(
                 if (item.isProductHasParentID()) {
                     var variantTotalItems = 0
                     variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
-//                    it.values.forEach { miniCartItem ->
-//                        if (miniCartItem.productParentId == item.parentID.toString()) {
-//                            variantTotalItems += miniCartItem.quantity
-//                        }
-//                    }
                     item.updateItemCurrentStock(variantTotalItems)
                 } else {
                     item.updateItemCurrentStock(it.getMiniCartItemProduct(item.productId.toString())?.quantity
@@ -172,11 +168,8 @@ class InfiniteRecomViewModel @Inject constructor(
 
     fun getMiniCart(shopId: String) {
         launchCatchError(dispatcher.getIODispatcher(), block = {
-            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
+            miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.TokonowRecommendationPage)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-//            val data = result.miniCartItems.associateBy({ it.productId }) {
-//                it
-//            }
             _miniCartData.postValue(result.miniCartItems.toMutableMap())
             _minicartWidgetUpdater.postValue(result)
         }) {

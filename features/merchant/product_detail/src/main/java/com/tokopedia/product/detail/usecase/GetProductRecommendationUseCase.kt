@@ -151,11 +151,6 @@ class GetProductRecommendationUseCase @Inject constructor(
                     if (item.isProductHasParentID()) {
                         var variantTotalItems = 0
                         variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
-//                        it.values.forEach { miniCartItem ->
-//                            if (miniCartItem.productParentId == item.parentID.toString()) {
-//                                variantTotalItems += miniCartItem.quantity
-//                            }
-//                        }
                         item.updateItemCurrentStock(variantTotalItems)
                     } else {
                         item.updateItemCurrentStock(it.getMiniCartItemProduct(item.productId.toString())?.quantity
