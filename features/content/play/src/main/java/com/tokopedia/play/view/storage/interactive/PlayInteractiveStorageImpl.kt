@@ -44,13 +44,13 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
     }
 
     override fun setActive(interactiveId: String) {
-//        if (!interactiveStatusMap.containsKey(interactiveId)) {
-//            interactiveStatusMap.entries.forEach { entry ->
-//                val currValue = entry.value
-//                entry.setValue(currValue.copy(isActive = false))
-//            }
-//            interactiveStatusMap[interactiveId] = InteractiveStatus(isActive = true, isJoined = false)
-//        }
+        if (!interactiveStatusMap.containsKey(interactiveId)) {
+            interactiveStatusMap.entries.forEach { entry ->
+                val currValue = entry.value
+                entry.setValue(currValue.copy(isActive = false))
+            }
+            interactiveStatusMap[interactiveId] = InteractiveStatus(isActive = true, isJoined = false)
+        }
     }
 
     override fun getDetail(interactiveId: String): PlayCurrentInteractiveModel? {
@@ -59,8 +59,7 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
     }
 
     override fun getActiveInteractiveId(): String? {
-//        return interactiveStatusMap.entries.firstOrNull { it.value.isActive }?.key
-        return null
+        return interactiveStatusMap.entries.firstOrNull { it.value.isActive }?.key
     }
 
     data class InteractiveStatus(val isActive: Boolean, val isJoined: Boolean)

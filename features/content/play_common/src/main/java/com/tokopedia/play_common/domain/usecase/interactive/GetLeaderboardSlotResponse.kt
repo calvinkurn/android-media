@@ -11,7 +11,6 @@ data class GetLeaderboardSlotResponse (
     @SerializedName("playInteractiveViewerGetLeaderboardWithSlot")
     val data: Data = Data()
 ){
-
     data class Data(
         @SerializedName("slots")
         val slots: List<SlotData> = emptyList()
@@ -34,6 +33,9 @@ data class GetLeaderboardSlotResponse (
 
         @SerializedName("choices")
         val choices: List<QuizResponse.Choice> = emptyList(),
+
+        @SerializedName("isCorrect")
+        val isCorrect: Boolean? = null,
 
         //Must-have
         @SerializedName("winners")
