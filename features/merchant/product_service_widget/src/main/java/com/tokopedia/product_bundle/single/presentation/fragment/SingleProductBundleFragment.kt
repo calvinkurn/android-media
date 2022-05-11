@@ -389,11 +389,17 @@ class SingleProductBundleFragment(
     private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
         return if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
             /*
-             * in update mode
-             * check whether selected product bundling is not still the same or the variant of product changed and also not for the first time
-             * if yes then return action choose else package chosen copy
+             * UPDATE MODE (CART & MINI CART)
+             *
+             * isProductBundleDifferent : Would be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Would be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (it directly shows selected item), it would make atc button disabled if the value is true.
+             *
+             * Would disable the button if there is no changes and vice versa
              */
-            if ((selectedBundleId != adapter.getSelectedBundleId() || selectedProductId != adapter.getSelectedProductId().toLongOrZero()) && !isFirstSetup) {
+            val isProductBundleDifferent = selectedBundleId != adapter.getSelectedBundleId()
+            val isProductVariantChanged = selectedProductId != adapter.getSelectedProductId().toLongOrZero()
+            if ((isProductBundleDifferent || isProductVariantChanged) && !isFirstSetup) {
                 getCtaText(
                     stringRes = R.string.action_choose_package,
                     isEnabled = true
@@ -405,7 +411,11 @@ class SingleProductBundleFragment(
                 )
             }
         } else {
-            // return choose package in add mode
+            /*
+             * ADD MODE (PDP)
+             *
+             * Always enable atc button
+             */
             getCtaText(
                 stringRes = R.string.action_choose_package,
                 isEnabled = true
