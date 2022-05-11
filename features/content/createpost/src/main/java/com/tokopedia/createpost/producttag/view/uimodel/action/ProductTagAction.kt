@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.action
 
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -25,4 +26,5 @@ sealed interface ProductTagAction {
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction
+    data class ShopSelected(val shop: ShopUiModel): ProductTagAction
 }

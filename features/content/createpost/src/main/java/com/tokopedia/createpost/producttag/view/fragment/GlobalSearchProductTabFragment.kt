@@ -117,6 +117,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             is PagedState.Error -> {
                 updateAdapterData(curr.products, false)
 
+                /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
                     text = getString(R.string.cc_failed_load_product),

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created By : Jonathan Darwin on May 11, 2022
  */
 data class FeedAceSearchShopResponse(
-    @SerializedName("data")
+    @SerializedName("aceSearchShop")
     val wrapper: Data = Data(),
 ) {
     data class Data(
