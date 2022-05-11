@@ -35,13 +35,15 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
     ): View? {
         _bindingChild = LayoutNeedHelpBottomsheetBinding.inflate(layoutInflater, container, false)
         setChild(bindingChild.root)
-        setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
+
         setListener()
     }
 
