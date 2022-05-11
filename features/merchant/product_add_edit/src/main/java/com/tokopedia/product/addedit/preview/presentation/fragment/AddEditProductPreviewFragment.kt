@@ -780,24 +780,20 @@ class AddEditProductPreviewFragment :
                 viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                 viewModel.productInputModel.value?.requestCode?.set(DETAIL_DATA_INDEX, DETAIL_DATA)
                 checkEnableOrNot()
-                return
             }
             DESCRIPTION_DATA -> {
                 viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                 viewModel.productInputModel.value?.requestCode?.set(DESCRIPTION_DATA_INDEX, DESCRIPTION_DATA)
                 checkEnableOrNot()
-                return
             }
             SHIPMENT_DATA -> {
                 viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                 viewModel.productInputModel.value?.requestCode?.set(SHIPMENT_DATA_INDEX, SHIPMENT_DATA)
                 checkEnableOrNot()
-                return
             }
             NO_DATA -> {
                 viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
                 checkEnableOrNot()
-                return
             }
             else -> {
                 validateAndStartProductAddService()
