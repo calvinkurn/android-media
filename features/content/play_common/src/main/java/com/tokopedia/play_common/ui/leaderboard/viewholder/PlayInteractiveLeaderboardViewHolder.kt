@@ -78,7 +78,11 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
             LeadeboardType.Quiz -> {
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
             }
-            LeadeboardType.Giveaway -> ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
+            LeadeboardType.Giveaway -> {
+                ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
+                ivReward.hide()
+                tvReward.hide()
+            }
             else -> {
                 ivReward.hide()
                 tvReward.hide()

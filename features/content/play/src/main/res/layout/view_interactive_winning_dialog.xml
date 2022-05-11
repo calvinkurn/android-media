@@ -6,7 +6,6 @@
     android:id="@+id/rc_winning_dialog"
     android:layout_width="@dimen/play_interactive_winning_dialog_width"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_interactive"
     app:rcl_cornerRadius="@dimen/play_interactive_common_radius"
     >
 

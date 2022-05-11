@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
@@ -86,6 +87,10 @@ class QuizWidgetView : ConstraintLayout {
 
             resume()
         }
+    }
+
+    fun getHeader(): GameHeaderView {
+        return binding.quizHeader
     }
 
     fun setupQuizForm(listOfChoices: List<QuizChoicesUiModel>) {

@@ -3,14 +3,14 @@ package com.tokopedia.play.view.custom.interactive.follow
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
 /**
  * Created by kenny.hadisaputra on 07/04/22
  */
-class InteractiveFollowView : LinearLayout {
+class InteractiveFollowView : ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -28,11 +28,10 @@ class InteractiveFollowView : LinearLayout {
     private var mListener: Listener? = null
 
     init {
-        orientation = VERTICAL
-
         binding.btnFollow.setOnClickListener {
             mListener?.onFollowClicked(this)
         }
+        binding.headerView.isEditable = false
     }
 
     fun getHeader(): GameHeaderView {

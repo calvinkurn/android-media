@@ -17,12 +17,12 @@ import java.util.*
  */
 sealed interface InteractiveUiModel {
 
-    val id: Long
+    val id: String
     val title: String
     val waitingDuration: Long
 
     data class Giveaway(
-        override val id: Long,
+        override val id: String,
         override val title: String,
         override val waitingDuration: Long,
         val status: Status,
@@ -45,7 +45,7 @@ sealed interface InteractiveUiModel {
     }
 
     data class Quiz(
-        override val id: Long,
+        override val id: String,
         override val title: String,
         override val waitingDuration: Long,
         val status: Status,
@@ -63,8 +63,8 @@ sealed interface InteractiveUiModel {
     }
 
     object Unknown : InteractiveUiModel {
-        override val id: Long
-            get() = 0L
+        override val id: String
+            get() = "0"
 
         override val title: String
             get() = ""

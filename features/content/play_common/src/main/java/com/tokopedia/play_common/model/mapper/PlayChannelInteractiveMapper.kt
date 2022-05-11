@@ -14,7 +14,7 @@ import javax.inject.Inject
 class PlayChannelInteractiveMapper @Inject constructor() {
 
     fun mapInteractive(input: GiveawayResponse) = PlayCurrentInteractiveModel(
-        id = input.interactiveID,
+        id = input.interactiveID.toLong(),
         type = InteractiveType.getByValue(input.interactiveType),
         title = input.title,
         timeStatus = PlayInteractiveTimeStatus.getByValue(

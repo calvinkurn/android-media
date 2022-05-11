@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 06/04/22
  */
-class InteractiveViewerGetLeaderboardWithSlotUseCase @Inject constructor(
+class GetViewerLeaderboardUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetLeaderboardSlotResponse>(gqlRepository) {
 

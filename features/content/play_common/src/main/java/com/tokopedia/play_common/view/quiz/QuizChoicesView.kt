@@ -104,7 +104,7 @@ class QuizChoicesView : ConstraintLayout {
     private fun getIconOption(
         alphabet: Char? = null,
         isCorrect: Boolean? = null,
-        isAnswered: Boolean = false
+        isAnswered: Boolean = false,
     ) {
         alphabet?.let {
             binding.ivQuizOption.tvAlphabet.show()

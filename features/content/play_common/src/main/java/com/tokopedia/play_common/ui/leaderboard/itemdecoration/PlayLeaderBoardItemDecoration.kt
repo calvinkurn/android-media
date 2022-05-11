@@ -8,6 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play_common.R
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 14/04/22
@@ -17,7 +18,7 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
     private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
 
     private val mPaint = Paint().apply {
-        color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+        color = MethodChecker.getColor(context, unifyR.color.Unify_NN300)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
