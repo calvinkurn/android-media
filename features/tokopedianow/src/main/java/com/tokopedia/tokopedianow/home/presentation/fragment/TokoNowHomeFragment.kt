@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
@@ -25,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.observe
@@ -125,7 +127,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCal
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home15mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
 import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
 import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
@@ -182,6 +184,7 @@ class TokoNowHomeFragment: Fragment(),
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
         const val SUCCESS_CODE = "200"
+        const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -237,6 +240,7 @@ class TokoNowHomeFragment: Fragment(),
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
     private var isRefreshed = true
+    private var isOpenMiniCartList = false
     private var shareHomeTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -265,6 +269,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
+        setUriData()
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         shareHomeTokonow = createShareHomeTokonow()
         firebaseRemoteConfig.let {
@@ -1263,10 +1268,30 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.initialize(shopIds, this, this, pageName = pageName)
             miniCartWidget?.show()
             hideStickyLogin()
+
+            showBottomSheetMiniCartList()
         } else {
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
+            isOpenMiniCartList = false
         }
+    }
+
+    private fun setUriData() {
+        activity?.intent?.data?.let {
+            isOpenMiniCartList = getIsOpenMiniCartListFromUri(it)
+        }
+    }
+
+    private fun showBottomSheetMiniCartList() {
+        if (isOpenMiniCartList) {
+            miniCartWidget?.showMiniCartListBottomSheet(this)
+            isOpenMiniCartList = false
+        }
+    }
+
+    private fun getIsOpenMiniCartListFromUri(uri: Uri): Boolean {
+        return uri.getQueryParameter(KEY_IS_OPEN_MINICART_LIST)?.toBooleanStrictOrNull().orFalse()
     }
 
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
@@ -1337,7 +1362,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showSwitcherCoachMark() {
         if(!homeSharedPref.getSwitcherCoachMarkShown()) {
             rvHome?.addOneTimeGlobalLayoutListener {
-                adapter.getItem(Home15mSwitcher::class.java)?.let {
+                adapter.getItem(Home20mSwitcher::class.java)?.let {
                     val index = adapter.findPosition(it)
                     val view = rvHome?.findViewHolderForAdapterPosition(index)?.itemView
                         ?.findViewById<View>(R.id.coachMarkTarget)

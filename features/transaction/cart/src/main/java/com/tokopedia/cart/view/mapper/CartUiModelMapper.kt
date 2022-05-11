@@ -419,8 +419,8 @@ object CartUiModelMapper {
                 bundleType = cartDetail.bundleDetail.bundleType
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
                 val tmpBundleQuantity = when {
-                    minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
                     maxOrder < cartDetail.bundleDetail.bundleQty -> maxOrder
+                    minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
                     else -> cartDetail.bundleDetail.bundleQty
                 }
                 bundleQuantity = tmpBundleQuantity
@@ -448,11 +448,12 @@ object CartUiModelMapper {
                 } else {
                     min(product.productMaxOrder, product.productInvenageValue)
                 }
-                quantity = if (product.productSwitchInvenage == 0) {
-                    product.productQuantity
-                } else {
-                    min(product.productQuantity, product.productInvenageValue)
+                val tmpQuantity = when {
+                    maxOrder < product.productQuantity -> maxOrder
+                    minOrder > product.productQuantity -> minOrder
+                    else -> product.productQuantity
                 }
+                quantity = tmpQuantity
             }
             originalQty = quantity
             categoryId = product.categoryId

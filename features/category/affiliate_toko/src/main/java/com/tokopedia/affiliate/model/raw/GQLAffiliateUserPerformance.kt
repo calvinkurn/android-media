@@ -30,6 +30,7 @@ val GQL_Affiliate_USER_PERFORMANCE: String = """query getAffiliatePerformance(${
           Order
           Tooltip{
             Description
+            Ticker
             Metrics{
               MetricType
               MetricTitle
