@@ -344,10 +344,18 @@ class CatalogDetailPageFragment : Fragment(),
         if (isNewProductDesign) {
             sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
                 filterProductCount?.let {
-                    mProductsCountText?.text = getString(
-                        com.tokopedia.catalog.R.string.catalog_product_count_view_text,
-                        it
-                    )
+                    if(it == CatalogConstant.ZERO_VALUE){
+                        mProductsCountText?.text = getString(
+                            com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty,
+                            it
+                        )
+                    }else {
+                        mProductsCountText?.text = getString(
+                            com.tokopedia.catalog.R.string.catalog_product_count_view_text,
+                            it
+                        )
+                    }
+
                 }
             })
         }
