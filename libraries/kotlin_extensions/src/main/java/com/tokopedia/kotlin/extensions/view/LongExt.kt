@@ -7,6 +7,12 @@ import kotlin.math.pow
  * Created by jegul on 31/01/20
  */
 
+
+const val THOUSAND_EXPONENT = 3
+
+/**
+ * Convert to non-nullable
+ */
 fun Long?.orZero(): Long = this ?: 0
 
 /**
@@ -24,7 +30,7 @@ fun Long.toAmountString(
         separator: String = ",",
         withSpacing: Boolean = false
 ): String {
-    val exponent = 3
+    val exponent = THOUSAND_EXPONENT
     val multiplier: Long = 10L.pow(exponent)
     for ((index, suffix) in ascendingSuffix.withIndex()) {
         val nextPowerOfTen = 10.pow(index * exponent) * multiplier
