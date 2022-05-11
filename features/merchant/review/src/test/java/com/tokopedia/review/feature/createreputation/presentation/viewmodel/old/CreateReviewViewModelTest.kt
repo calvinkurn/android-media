@@ -54,7 +54,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when getSelectedImagesUrl should return expected list of Url`() {
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData =
             arrayListOf("ImageUrl1", "ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
@@ -75,9 +75,9 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `when removeImage should return expected list ofUrl`() {
-        val images = viewModel.getImageList(images)
+        val images = viewModel.getImageList(images, emptyList())
 
-        viewModel.removeImage(images.first())
+        viewModel.removeImage(images.first() as BaseImageReviewUiModel)
 
         val actualData = viewModel.getSelectedImagesUrl()
         val expectedData = arrayListOf("ImageUrl2", "ImageUrl3", "ImageUrl4", "ImageUrl5")
@@ -88,7 +88,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when removeImage in editMode should return expected list ofUrl`() {
         fillInImages()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
 
         viewModel.removeImage(
             ImageReviewUiModel(images.first().thumbnail, images.first().fullSize),
@@ -216,7 +216,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             ImageReviewUiModel("", "ImageUrl5")
         )
 
-        val actualData = viewModel.getImageList(images)
+        val actualData = viewModel.getImageList(images, emptyList())
 
         Assert.assertEquals(expectedData, actualData)
     }
@@ -238,7 +238,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             DefaultImageReviewUiModel()
         )
 
-        val actualData = viewModel.getImageList(selectedImages)
+        val actualData = viewModel.getImageList(selectedImages, emptyList())
 
         Assert.assertEquals(expectedData, actualData)
     }
@@ -260,7 +260,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onSubmitReview_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
         viewModel.getProductReputation(productId, reputationId)
         viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
@@ -280,7 +280,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onSubmitReviewError_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
         viewModel.getProductReputation(productId, reputationId)
         viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
@@ -298,7 +298,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onSubmitReviewError_thenReturn(expectedResponse)
 
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
         viewModel.getProductReputation(productId, reputationId)
         viewModel.submitReview(rating, review, reputationScore, isAnonymous, utmSource)
 
@@ -675,7 +675,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedProgressBarState = CreateReviewProgressBarState(isPhotosFilled = isPhotosFilled)
 
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
         viewModel.updateProgressBarFromPhotos()
 
         verifyProgressBarValueEquals(expectedProgressBarState)
@@ -702,7 +702,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedImageCount = 5
 
         viewModel.clearImageData()
-        viewModel.getImageList(images)
+        viewModel.getImageList(images, emptyList())
 
         Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
     }
@@ -712,7 +712,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         val expectedImageCount = 1
 
         viewModel.clearImageData()
-        viewModel.getImageList(listOf(images.first()))
+        viewModel.getImageList(listOf(images.first()), emptyList())
 
         Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
     }

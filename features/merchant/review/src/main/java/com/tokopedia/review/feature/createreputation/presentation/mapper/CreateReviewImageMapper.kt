@@ -37,7 +37,7 @@ object CreateReviewImageMapper {
         }.toMutableList()
     }
 
-    fun addDefaultModelIfLessThanFive(imageData: MutableList<BaseImageReviewUiModel>): MutableList<BaseImageReviewUiModel> {
+    fun addDefaultModelIfLessThanFive(imageData: MutableList<Any>): MutableList<Any> {
         if (imageData.size < 5 && !imageData.contains(DefaultImageReviewUiModel())) {
             imageData.add(DefaultImageReviewUiModel())
         }

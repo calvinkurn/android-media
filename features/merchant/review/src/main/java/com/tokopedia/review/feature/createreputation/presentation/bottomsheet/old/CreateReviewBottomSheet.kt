@@ -58,6 +58,8 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.Revie
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.VideoReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.ReviewBadRatingItemDecoration
@@ -77,7 +79,8 @@ import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAreaListener,
-    ImageClickListener, ReviewTemplateListener, ReviewBadRatingCategoryListener {
+    ImageClickListener, ReviewTemplateListener, ReviewBadRatingCategoryListener,
+    VideoReviewViewHolder.Listener {
 
     companion object {
         const val GOOD_RATING_THRESHOLD = 2
@@ -124,7 +127,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var templatesSelectedCount = 0
 
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter(this)
+        ImageReviewAdapter(this, this)
     }
 
     private val templatesAdapter: ReviewTemplatesAdapter by lazy {
@@ -272,6 +275,19 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
         imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item, isEditMode))
+        if (imageAdapter.isEmpty()) {
+            binding?.reviewFormPhotosRv?.hide()
+            binding?.reviewFormAddPhoto?.show()
+        }
+        createReviewViewModel.updateProgressBarFromPhotos()
+    }
+
+    override fun onAddMediaClicked() {
+        onAddImageClick()
+    }
+
+    override fun onRemoveVideoClicked(video: CreateReviewMediaUiModel.Video) {
+        imageAdapter.setImageReviewData(createReviewViewModel.removeVideo())
         if (imageAdapter.isEmpty()) {
             binding?.reviewFormPhotosRv?.hide()
             binding?.reviewFormAddPhoto?.show()

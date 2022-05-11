@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
@@ -70,6 +71,8 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.In
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.VideoReviewViewHolder
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -77,6 +80,7 @@ import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTracker
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
 import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.IncentiveOvoBottomSheet
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -89,7 +93,7 @@ import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 class CreateReviewFragment : BaseDaggerFragment(),
     ImageClickListener, TextAreaListener, ReviewScoreClickListener,
     ReviewPerformanceMonitoringContract,
-    IncentiveOvoListener {
+    IncentiveOvoListener, VideoReviewViewHolder.Listener {
 
     companion object {
         const val REQUEST_CODE_IMAGE = 111
@@ -148,7 +152,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private lateinit var animatedReviewPicker: AnimatedRatingPickerCreateReviewView
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter(this)
+        ImageReviewAdapter(this, this)
     }
     private var isLowDevice = false
 
@@ -409,6 +413,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
 
         binding?.rvImgReview?.adapter = imageAdapter
+        binding?.rvImgReview?.layoutManager = GridLayoutManager(
+            context,
+            CreateReviewViewModel.MAX_IMAGE_COUNT,
+            GridLayoutManager.VERTICAL,
+            false
+        )
 
         binding?.createReviewSubmitButton?.apply {
             if (isEditMode) {
@@ -433,7 +443,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                .withSimpleMultipleSelection(
+                    initialImagePathList = createReviewViewModel.getSelectedImagesUrl(),
+                    maxPick = createReviewViewModel.getMaxImagePickCount()
+                )
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
@@ -446,6 +459,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onRemoveImageClick(item: BaseImageReviewUiModel) {
         imageAdapter.setImageReviewData(createReviewViewModel.removeImage(item, isEditMode))
+        if (imageAdapter.isEmpty()) {
+            binding?.rvImgReview?.hide()
+            binding?.createReviewAddPhotoEmpty?.show()
+        }
+    }
+
+    override fun onAddMediaClicked() {
+        onAddImageClick()
+    }
+
+    override fun onRemoveVideoClicked(video: CreateReviewMediaUiModel.Video) {
+        imageAdapter.setImageReviewData(createReviewViewModel.removeVideo())
         if (imageAdapter.isEmpty()) {
             binding?.rvImgReview?.hide()
             binding?.createReviewAddPhotoEmpty?.show()
@@ -803,9 +828,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 playAnimation()
                 updateViewBasedOnSelectedRating(rating)
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
-                if (imageAttachments.isNotEmpty()) {
+                if (imageAttachments.isNotEmpty() || videoAttachments.isNotEmpty()) {
                     createReviewViewModel.clearImageData()
-                    val imageListData = createReviewViewModel.getImageList(imageAttachments)
+                    val imageListData = createReviewViewModel.getImageList(imageAttachments, videoAttachments)
                     imageAdapter.setImageReviewData(imageListData)
                     rvImgReview.show()
                     createReviewAddPhotoEmpty.hide()

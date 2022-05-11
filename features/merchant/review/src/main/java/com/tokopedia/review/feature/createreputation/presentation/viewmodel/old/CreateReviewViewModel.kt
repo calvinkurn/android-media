@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -16,6 +17,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevReviewImageAttachment
+import com.tokopedia.review.common.data.ProductrevReviewVideoAttachment
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
@@ -35,6 +37,7 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.ol
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.usecase.coroutines.Result
@@ -66,8 +69,9 @@ class CreateReviewViewModel @Inject constructor(
         const val MAX_IMAGE_COUNT = 5
     }
 
-    private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
+    private var mediaData: MutableList<Any> = mutableListOf()
     private var originalImages: MutableList<String> = mutableListOf()
+    private var originalVideos: MutableList<String> = mutableListOf()
 
     private var reputationDataForm = MutableLiveData<Result<ProductRevGetForm>>()
     val getReputationDataForm: LiveData<Result<ProductRevGetForm>>
@@ -146,7 +150,7 @@ class CreateReviewViewModel @Inject constructor(
     ) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())
-            if (imageData.isEmpty()) {
+            if (mediaData.isEmpty()) {
                 sendReviewWithoutImage(
                     it.reputationIDStr,
                     it.productData.productIDStr,
@@ -184,7 +188,7 @@ class CreateReviewViewModel @Inject constructor(
         isAnonymous: Boolean
     ) {
         _submitReviewResult.postValue(LoadingView())
-        if (imageData.isEmpty()) {
+        if (mediaData.isEmpty()) {
             editReviewWithoutImage(
                 feedbackId,
                 reputationId,
@@ -217,9 +221,12 @@ class CreateReviewViewModel @Inject constructor(
                 getReviewDetailUseCase.setRequestParams(feedbackId)
                 getReviewDetailUseCase.executeOnBackground()
             }
-            originalImages =
-                response.productrevGetReviewDetail.review.imageAttachments.map { it.fullSize }
-                    .toMutableList()
+            originalImages = response.productrevGetReviewDetail.review.imageAttachments.map {
+                it.fullSize
+            }.toMutableList()
+            originalVideos = response.productrevGetReviewDetail.review.videoAttachments.mapNotNull {
+                it.url
+            }.toMutableList()
             _reviewDetails.postValue(Success(response.productrevGetReviewDetail))
         }) {
             _reviewDetails.postValue(Fail(it))
@@ -229,72 +236,104 @@ class CreateReviewViewModel @Inject constructor(
     fun getAfterEditImageList(
         imagePickerResult: MutableList<String>,
         imagesFedIntoPicker: MutableList<String>
-    ): MutableList<BaseImageReviewUiModel> {
+    ): MutableList<Any> {
         // Remove old image
         val mergedImagePaths = mergeImagePickerResultWithOriginalImages(imagePickerResult, imagesFedIntoPicker)
+        val mappedOriginalVideos = originalVideos.map {
+            CreateReviewMediaUiModel.Video(
+                uri = it,
+                uploadBatchNumber = Int.ZERO,
+                remoteUrl = it,
+                state = CreateReviewMediaUiModel.State.UPLOADED
+            )
+        }
         originalImages = mergedImagePaths.filter { it.startsWith(HTTP_PREFIX) }.toMutableList()
-        when (mergedImagePaths.size) {
+        when (mergedImagePaths.size + mappedOriginalVideos.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (mergedImagePaths.map {
+                mediaData = mappedOriginalVideos.plus(mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(mergedImagePaths.map {
+                mediaData.addAll(mappedOriginalVideos.plus(mergedImagePaths.map {
                     ImageReviewUiModel(it)
-                })
-                imageData.add(DefaultImageReviewUiModel())
+                }))
+                mediaData.add(DefaultImageReviewUiModel())
             }
         }
-        return imageData
+        return mediaData
     }
 
-    fun getImageList(selectedImage: List<ProductrevReviewImageAttachment>): MutableList<BaseImageReviewUiModel> {
-        when (selectedImage.size) {
+    fun getImageList(
+        selectedImage: List<ProductrevReviewImageAttachment>,
+        videoAttachments: List<ProductrevReviewVideoAttachment>
+    ): MutableList<Any> {
+        val mappedVideoAttachments = videoAttachments.mapNotNull {
+            it.url?.let { url ->
+                CreateReviewMediaUiModel.Video(
+                    uri = url,
+                    uploadBatchNumber = Int.ZERO,
+                    remoteUrl = url,
+                    state = CreateReviewMediaUiModel.State.UPLOADED
+                )
+            }
+        }
+        when (selectedImage.size + videoAttachments.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (selectedImage.map {
+                mediaData = mappedVideoAttachments.plus(selectedImage.map {
                     ImageReviewUiModel(it.thumbnail, it.fullSize)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(selectedImage.map {
+                mediaData.addAll(mappedVideoAttachments.plus(selectedImage.map {
                     ImageReviewUiModel(it.thumbnail, it.fullSize)
-                })
-                imageData.add(DefaultImageReviewUiModel())
+                }))
+                mediaData.add(DefaultImageReviewUiModel())
             }
         }
-        return imageData
+        return mediaData
     }
 
     fun removeImage(
         image: BaseImageReviewUiModel,
         isEditMode: Boolean = false
-    ): MutableList<BaseImageReviewUiModel> {
-        imageData.remove(image)
+    ): MutableList<Any> {
+        mediaData.remove(image)
         if (isEditMode) {
             originalImages = CreateReviewImageMapper.removeImageFromList(image, originalImages)
         }
-        imageData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(imageData)
-        return imageData
+        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(mediaData)
+        return mediaData
+    }
+
+    fun removeVideo(): MutableList<Any> {
+        mediaData.removeAll { it is CreateReviewMediaUiModel.Video }
+        originalVideos.clear()
+        mediaData = CreateReviewImageMapper.addDefaultModelIfLessThanFive(mediaData)
+        return mediaData
     }
 
     fun isImageNotEmpty(): Boolean {
-        return imageData.filterIsInstance<ImageReviewUiModel>().isNotEmpty()
+        return mediaData.filterIsInstance<ImageReviewUiModel>().isNotEmpty()
     }
 
     fun clearImageData() {
-        imageData.clear()
+        mediaData.clear()
     }
 
     fun getSelectedImagesUrl(): ArrayList<String> {
         val result = arrayListOf<String>()
-        imageData.forEach {
+        mediaData.filterIsInstance<BaseImageReviewUiModel>().forEach {
             val imageUrl = CreateReviewImageMapper.getImageUrl(it)
             if (imageUrl.isNotEmpty()) {
                 result.add(imageUrl)
             }
         }
         return result
+    }
+
+    fun getMaxImagePickCount(): Int {
+        return MAX_IMAGE_COUNT - originalVideos.size
     }
 
     fun getProductReputation(productId: String, reputationId: String) {
@@ -384,7 +423,7 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun getImageCount(): Int {
-        return imageData.count { it is ImageReviewUiModel }
+        return mediaData.count { it is ImageReviewUiModel }
     }
 
     fun getBadRatingCategories() {
@@ -560,14 +599,15 @@ class CreateReviewViewModel @Inject constructor(
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
                 editReviewUseCase.setParams(
-                    feedbackId,
-                    reputationId,
-                    productId,
-                    shopId,
-                    reputationScore,
-                    rating,
-                    reviewText,
-                    isAnonymous
+                    feedbackId = feedbackId,
+                    reputationId = reputationId,
+                    productId = productId,
+                    shopId = shopId,
+                    reputationScore = reputationScore,
+                    rating = rating,
+                    reviewText = reviewText,
+                    isAnonymous = isAnonymous,
+                    oldVideoAttachmentUrls = originalVideos
                 )
                 editReviewUseCase.executeOnBackground()
             }
@@ -617,16 +657,17 @@ class CreateReviewViewModel @Inject constructor(
                     }
                 }
                 editReviewUseCase.setParams(
-                    feedbackId,
-                    reputationId,
-                    productId,
-                    shopId,
-                    reputationScore,
-                    rating,
-                    reviewText,
-                    isAnonymous,
-                    originalImages,
-                    uploadIdList
+                    feedbackId = feedbackId,
+                    reputationId = reputationId,
+                    productId = productId,
+                    shopId = shopId,
+                    reputationScore = reputationScore,
+                    rating = rating,
+                    reviewText = reviewText,
+                    isAnonymous = isAnonymous,
+                    oldAttachmentUrls = originalImages,
+                    attachmentIds = uploadIdList,
+                    oldVideoAttachmentUrls = originalVideos
                 )
                 editReviewUseCase.executeOnBackground()
             }
