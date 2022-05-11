@@ -8,6 +8,7 @@ import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingList
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagShopListBinding
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.shopwidget.shopcard.ShopCardListener
 
 /**
  * Created By : Jonathan Darwin on May 11, 2022
@@ -21,6 +22,21 @@ internal class ShopCardViewHolder private constructor() {
 
         fun bind(item: ShopCardAdapter.Model.Shop) {
             binding.shopCardView.apply {
+                setShopCardModel(item.shop.toShopCard(), object : ShopCardListener {
+                    override fun onItemImpressed() { }
+
+                    override fun onItemClicked() {
+//                        shopListener.onItemClicked(shopDataViewItem)
+                    }
+
+                    override fun onProductItemImpressed(productPreviewIndex: Int) { }
+
+                    override fun onProductItemClicked(productPreviewIndex: Int) {
+//                        val productItem = shopDataViewItem.productList.getOrNull(productPreviewIndex) ?: return
+//
+//                        shopListener.onProductItemClicked(productItem)
+                    }
+                })
 //                setProductModel(item.product.toProductCard())
 //                setOnClickListener { onSelected(item.product) }
             }
