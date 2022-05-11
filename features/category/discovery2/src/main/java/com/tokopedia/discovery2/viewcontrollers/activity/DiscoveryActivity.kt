@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -16,6 +18,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -31,6 +34,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
@@ -62,6 +66,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val ACTIVE_TAB = "activeTab"
         const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
+        const val RECOM_PRODUCT_ID = "recomProdId"
         const val PIN_PRODUCT = "pinProduct"
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"
@@ -148,6 +153,15 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
             }
+        },
+        visitShopCallback = object : ProductCardOptionsResult{
+            override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                if (productCardOptionsModel.shopId.isNotEmpty())
+                    RouteManager.route(
+                        this@DiscoveryActivity,
+                        (ApplinkConst.SHOP.replace("{shop_id}", productCardOptionsModel.shopId))
+                    )
+            }
         })
     }
 
@@ -155,7 +169,10 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
             if (productCardOptionsModel.wishlistResult.isAddWishlist) {
                 if (productCardOptionsModel.wishlistResult.isSuccess) {
-                    NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_add_wishlist))
+                    if (isFromCategory())
+                        NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_success_add_wishlist))
+                    else
+                        showToasterForWishlistAddSuccess()
                     discoveryViewModel.updateWishlist(productCardOptionsModel)
                 } else {
                     NetworkErrorHelper.showSnackbar(this, getString(R.string.discovery_msg_error_add_wishlist))
@@ -172,6 +189,18 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
         }
     }
+
+    private fun showToasterForWishlistAddSuccess (){
+        findViewById<View>(android.R.id.content)?.let {
+            Toaster.build(it, getString(R.string.discovery_msg_success_add_wishlist), Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL, actionText = getString(R.string.discovery_msg_success_add_wishlist_CTA)) { goToWishlistPage() }.show()
+        }
+    }
+
+    private fun goToWishlistPage() {
+        RouteManager.route(this, ApplinkConst.NEW_WISHLIST)
+    }
+
     override fun onStop() {
         super.onStop()
         preSelectedTab = -1

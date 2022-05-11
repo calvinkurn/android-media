@@ -142,7 +142,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
-        checkDependencies true
+        checkDependencies false
     }
 
     signingConfigs {
