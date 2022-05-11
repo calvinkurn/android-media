@@ -13,9 +13,8 @@ import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper
+import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -147,12 +146,5 @@ class HomeIdGenerator {
     ) {
         val layoutManager = homeRecyclerView.layoutManager as LinearLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPosition(position) }
-    }
-
-    private fun setupAbTestRemoteConfig() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-            RollenceKey.BALANCE_EXP,
-            RollenceKey.BALANCE_VARIANT_NEW
-        )
     }
 }
