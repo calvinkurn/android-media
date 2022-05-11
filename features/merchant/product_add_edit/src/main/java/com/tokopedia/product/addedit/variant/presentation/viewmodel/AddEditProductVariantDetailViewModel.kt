@@ -98,6 +98,22 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
+    private fun modifyHeaderPosition(firstHeaderPosition: Any,
+                                     modifiedHeaderPosition: Int,
+                                     inputFieldSize: Int) {
+        currentHeaderPositionMap.forEach {
+            val headerPosition = it.key
+            // first header position cannot be moved
+            if (headerPosition != firstHeaderPosition) {
+                // only affecting the header position after the collapsing one
+                if (headerPosition > modifiedHeaderPosition) {
+                    val newHeaderPosition = it.value + inputFieldSize
+                    currentHeaderPositionMap[headerPosition] = newHeaderPosition
+                }
+            }
+        }
+    }
+
     fun getInputFieldSize(): Int {
         return inputFieldSize
     }
@@ -130,17 +146,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         // collapsing last header position creates no impact
         if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
-            currentHeaderPositionMap.forEach {
-                val headerPosition = it.key
-                // first header position cannot be moved
-                if (headerPosition != firstHeaderPosition) {
-                    // only affecting the header position after the collapsing one
-                    if (headerPosition > collapsedHeaderPosition) {
-                        val newHeaderPosition = it.value - inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
-                    }
-                }
-            }
+            val fieldSize = -inputFieldSize
+            modifyHeaderPosition(firstHeaderPosition, collapsedHeaderPosition, fieldSize)
         }
     }
 
@@ -150,17 +157,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         // expanding last header position creates no impact
         if (currentHeaderPosition == lastCurrentHeaderPosition) return
         else {
-            currentHeaderPositionMap.forEach {
-                val headerPosition = it.key
-                // first header position cannot be moved
-                if (headerPosition != firstHeaderPosition) {
-                    // only affecting the header position after the expanding one
-                    if (headerPosition > expandedHeaderPosition) {
-                        val newHeaderPosition = it.value + inputFieldSize
-                        currentHeaderPositionMap[headerPosition] = newHeaderPosition
-                    }
-                }
-            }
+            modifyHeaderPosition(firstHeaderPosition, expandedHeaderPosition, inputFieldSize)
         }
     }
 

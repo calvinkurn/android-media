@@ -91,7 +91,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.COURIER_ORIGIN
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DELAY_CLOSE_ACTIVITY
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DESCRIPTION_DATA_INDEX
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DETAIL_DATA_INDEX
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_ADDRESS_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
@@ -106,6 +108,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.POSTAL_CODE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA_INDEX
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
@@ -742,47 +745,10 @@ class AddEditProductPreviewFragment :
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, Observer { bundle ->
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, { bundle ->
             bundle?.let { data ->
-                dataBackPressed = data.getInt(BUNDLE_BACK_PRESSED, 0)
                 updateProductInputModelOfCacheManagerId(data)
-                //only update data on preview page
-                when (dataBackPressed) {
-                    DETAIL_DATA -> {
-                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
-                        viewModel.productInputModel.value?.requestCode?.set(0, DETAIL_DATA)
-                        checkEnableOrNot()
-                        return@Observer
-                    }
-                    DESCRIPTION_DATA -> {
-                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
-                        viewModel.productInputModel.value?.requestCode?.set(1, DESCRIPTION_DATA)
-                        checkEnableOrNot()
-                        return@Observer
-                    }
-                    SHIPMENT_DATA -> {
-                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
-                        viewModel.productInputModel.value?.requestCode?.set(2, SHIPMENT_DATA)
-                        checkEnableOrNot()
-                        return@Observer
-                    }
-                    NO_DATA -> {
-                        viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
-                        checkEnableOrNot()
-                        return@Observer
-                    }
-                }
-                //upload the product to the server
-                val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
-                context?.let {
-                    val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
-                    if (validateMessage.isEmpty()) {
-                        startProductAddService(productInputModel)
-                        view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
-                    } else {
-                        Toaster.build(requireView(), validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                    }
-                }
+                handleAddModeFragmentResult(data)
             }
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
         })
@@ -804,6 +770,39 @@ class AddEditProductPreviewFragment :
             }
             removeNavigationResult(REQUEST_KEY_SHIPMENT)
         })
+    }
+
+    private fun handleAddModeFragmentResult(data: Bundle) {
+        dataBackPressed = data.getInt(BUNDLE_BACK_PRESSED, NO_DATA)
+        //only update data on preview page
+        when (dataBackPressed) {
+            DETAIL_DATA -> {
+                viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                viewModel.productInputModel.value?.requestCode?.set(DETAIL_DATA_INDEX, DETAIL_DATA)
+                checkEnableOrNot()
+                return
+            }
+            DESCRIPTION_DATA -> {
+                viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                viewModel.productInputModel.value?.requestCode?.set(DESCRIPTION_DATA_INDEX, DESCRIPTION_DATA)
+                checkEnableOrNot()
+                return
+            }
+            SHIPMENT_DATA -> {
+                viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                viewModel.productInputModel.value?.requestCode?.set(SHIPMENT_DATA_INDEX, SHIPMENT_DATA)
+                checkEnableOrNot()
+                return
+            }
+            NO_DATA -> {
+                viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
+                checkEnableOrNot()
+                return
+            }
+            else -> {
+                validateAndStartProductAddService()
+            }
+        }
     }
 
     private fun onSuccessSetCashback() {
@@ -1496,6 +1495,20 @@ class AddEditProductPreviewFragment :
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
+    }
+
+    private fun validateAndStartProductAddService() {
+        //upload the product to the server
+        val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
+        context?.let {
+            val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
+            if (validateMessage.isEmpty()) {
+                startProductAddService(productInputModel)
+                view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+            } else {
+                Toaster.build(requireView(), validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {

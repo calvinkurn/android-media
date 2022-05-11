@@ -68,9 +68,7 @@ data class SelectionInputModel(
         var unitName: String = "",
         var identifier: String = "",
         var options: List<OptionInputModel> = listOf()
-) : Parcelable {
-
-}
+) : Parcelable
 
 @Parcelize
 data class OptionInputModel(

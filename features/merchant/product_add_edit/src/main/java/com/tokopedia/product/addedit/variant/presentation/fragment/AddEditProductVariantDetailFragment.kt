@@ -68,6 +68,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 {
 
     companion object {
+        const val SCROLLING_DELAY = 500L
         fun createInstance(cacheManagerId: String): Fragment {
             return AddEditProductVariantDetailFragment().apply {
                 arguments = Bundle().apply {
@@ -474,7 +475,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         recyclerViewVariantDetailFields?.postDelayed({
             scrollToFirstError()
-        }, 500)
+        }, SCROLLING_DELAY)
     }
 
     private fun scrollToFirstError() {
