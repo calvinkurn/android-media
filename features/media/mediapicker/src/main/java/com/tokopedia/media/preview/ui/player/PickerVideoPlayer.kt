@@ -35,7 +35,6 @@ class PickerVideoPlayer constructor(
                 super.onPlayerStateChanged(playWhenReady, playbackState)
                 if(playbackState == Player.STATE_ENDED) {
                     start()
-                    listener?.onVideoLoop()
                 }
             }
 
@@ -103,7 +102,6 @@ class PickerVideoPlayer constructor(
 
     interface Listener {
         fun onIsPlayingChanged(isPlaying: Boolean)
-        fun onVideoLoop()
     }
 
 }

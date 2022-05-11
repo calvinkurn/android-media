@@ -20,7 +20,6 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 
-
 class VideoControlView(context: Context, attributeSet: AttributeSet) :
     PlayerControlView(context, attributeSet) {
 
@@ -64,7 +63,9 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private fun setupListener() {
         centerPlayButton.setOnClickListener {
             listener?.onCenterPlayButtonClicked()
-            if (!videoControlContainer.isVisible) showController()
+            if (!videoControlContainer.isVisible) {
+                showController()
+            }
         }
 
         centerPauseButton.setOnClickListener {
@@ -94,7 +95,9 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
 
     fun showController(isAutoHide: Boolean = true){
         cleanHideJob()
-        videoControlContainer.startAnimation(fadeInAlphaAnimation)
+        if(!videoControlContainer.isVisible){
+            videoControlContainer.startAnimation(fadeInAlphaAnimation)
+        }
         if(isAutoHide) hideControllerJob()
     }
 

@@ -1,14 +1,11 @@
 package com.tokopedia.media.preview.ui.activity.pagers.views
 
 import android.content.Context
-import android.os.Handler
 import android.view.View
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.media.R
 import com.tokopedia.media.preview.ui.player.PickerVideoPlayer
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
-import android.os.Looper
-import android.util.Log
 
 class VideoPreview(
     private val context: Context,
@@ -41,10 +38,7 @@ class VideoPreview(
             return
         }
         videoControl.updateCenterButtonState(isPlaying)
-    }
-
-    override fun onVideoLoop() {
-        videoControl.showController()
+        videoControl.showController(isPlaying)
     }
 
     override fun onCenterPauseButtonClicked() {
