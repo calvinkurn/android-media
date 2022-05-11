@@ -13,36 +13,31 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.databinding.FragmentInactivePhoneNumberBinding
 import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
+    private var _binding: FragmentInactivePhoneNumberBinding? = null
+    private val binding get() = _binding!!
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     val viewModel by lazy { viewModelProvider.get(InactivePhoneNumberViewModel::class.java) }
 
-    private lateinit var btnNext: UnifyButton
-    private lateinit var tfu2Phone: TextFieldUnify2
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_inactive_phone_number, container, false)
+    ): View {
+        _binding = FragmentInactivePhoneNumberBinding.inflate(inflater, container, false)
 
-        btnNext = view.findViewById(R.id.ub_next)
-        tfu2Phone = view.findViewById(R.id.tfu2_old_phone_number)
-
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,30 +61,30 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     private fun formStateObserver() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
-            tfu2Phone.setMessage(
+            binding.tfu2OldPhoneNumber.setMessage(
                 if (it.numberError != null) getString(it.numberError)
                 else " "
             )
 
-            tfu2Phone.isInputError = !it.isDataValid
+            binding.tfu2OldPhoneNumber.isInputError = !it.isDataValid
         }
     }
 
     private fun onClickListener() {
-        btnNext.setOnClickListener {
+        binding.ubNext.setOnClickListener {
             submitData()
         }
     }
 
     private fun formAction() {
-        tfu2Phone.editText.setOnEditorActionListener { _, actionId, _ ->
+        binding.tfu2OldPhoneNumber.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 submitData()
                 true
             } else false
         }
 
-        tfu2Phone.editText.setOnKeyListener { _, keyCode, event ->
+        binding.tfu2OldPhoneNumber.editText.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 submitData()
                 true
@@ -121,13 +116,15 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     private fun onError(throwable: Throwable) {
         val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
-        tfu2Phone.setMessage(message)
-        tfu2Phone.isInputError = true
+        binding.tfu2OldPhoneNumber.apply {
+            setMessage(message)
+            isInputError = true
+        }
     }
 
     private fun isLoadingObserver() {
         viewModel.isLoading.observe(viewLifecycleOwner) {
-            btnNext.isLoading = it
+            binding.ubNext.isLoading = it
         }
     }
 
@@ -139,7 +136,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     private fun submitData() {
         hideKeyboard()
-        viewModel.submitNumber(tfu2Phone.getEditableValue().toString())
+        viewModel.submitNumber(binding.tfu2OldPhoneNumber.getEditableValue().toString())
     }
 
     private fun getErrorMsgWithLogging(
@@ -156,6 +153,11 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
             }.build()
         )
         return message
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
