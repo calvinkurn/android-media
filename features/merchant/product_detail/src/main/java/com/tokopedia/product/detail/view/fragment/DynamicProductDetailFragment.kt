@@ -231,7 +231,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import org.xml.sax.ErrorHandler
 import rx.subscriptions.CompositeSubscription
 import java.util.Locale
 import java.util.UUID
@@ -2956,21 +2955,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
             ctaListener = { }
         )
-        pdpUiUpdater?.updateWishlistData(false)
-        updateUi()
-        sendIntentResultWishlistChange(productId ?: "", false)
-        if (isProductOos()) {
-            refreshPage()
+        if (productId != null) {
+            updateFabIcon(productId, false)
         }
     }
 
     private fun onErrorRemoveWishList(errorMsg: String?) {
         view?.showToasterError(getErrorMessage(errorMsg), ctaText = getString(com.tokopedia.design.R.string.oke))
-    }
-
-    private fun onErrorRemoveWishListV2(throwable: Throwable) {
-        view?.showToasterError(getErrorMessage(throwable),
-                ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
@@ -2979,24 +2970,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             ctaListener = { goToWishlist() }
         )
-        pdpUiUpdater?.updateWishlistData(true)
-        updateUi()
-        DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, viewModel.userId, pdpUiUpdater?.productDetailInfoData?.getDescription()
-                ?: "")
-        sendIntentResultWishlistChange(productId ?: "", true)
-        if (isProductOos()) {
-            refreshPage()
-        }
+        productId?.let { updateFabIcon(it, true) }
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
         view?.showToasterError(getErrorMessage(errorMessage),
             ctaText = getString(com.tokopedia.design.R.string.oke))
-    }
-
-    private fun onErrorAddWishListV2(throwable: Throwable) {
-        view?.showToasterError(getErrorMessage(throwable),
-                ctaText = getString(com.tokopedia.design.R.string.oke))
     }
 
     private fun sendIntentResultWishlistChange(productId: String, isInWishlist: Boolean) {
@@ -3852,6 +3831,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, it, v)
                     }
                 }
+                updateFabIcon(productId, true)
             }
 
             override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
@@ -3859,6 +3839,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
                 productId: String) {}
         })
+    }
+
+    private fun updateFabIcon(productId: String, isWishlisted: Boolean) {
+        pdpUiUpdater?.updateWishlistData(isWishlisted)
+        updateUi()
+        if (isWishlisted) {
+            DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, viewModel.userId, pdpUiUpdater?.productDetailInfoData?.getDescription()
+                ?: "")
+        }
+        sendIntentResultWishlistChange(productId ?: "", isWishlisted)
+        if (isProductOos()) {
+            refreshPage()
+        }
     }
 
     private fun removeWishlist(productId: String) {
@@ -3892,6 +3885,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
                         }
                     }
+                    updateFabIcon(productId, false)
                 }
 
             })
