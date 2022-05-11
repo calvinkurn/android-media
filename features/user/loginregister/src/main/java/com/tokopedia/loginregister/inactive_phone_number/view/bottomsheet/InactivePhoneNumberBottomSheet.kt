@@ -1,6 +1,5 @@
-package com.tokopedia.loginregister.common.view.bottomsheet
+package com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString

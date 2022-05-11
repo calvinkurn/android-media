@@ -76,7 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.bottomsheet.InactivePhoneNumberBottomSheet
+import com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet.InactivePhoneNumberBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -817,7 +817,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
             ""
         ).orEmpty()
-        return true //newInactivePhoneNumberAbTestKey.isNotEmpty()
+        return newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
     private fun showNeedHelpBottomSheet(){
