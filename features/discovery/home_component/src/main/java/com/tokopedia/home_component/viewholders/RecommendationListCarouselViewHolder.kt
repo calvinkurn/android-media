@@ -175,7 +175,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 shopLocation = grid.shop.shopLocation,
                 shopBadgeList = grid.badges.map {
                     ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                }
+                },
+                animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE,
         )
     }
 

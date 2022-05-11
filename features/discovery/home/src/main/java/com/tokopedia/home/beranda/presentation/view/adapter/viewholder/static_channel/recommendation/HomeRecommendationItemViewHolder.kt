@@ -10,6 +10,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by Lukas on 2019-07-15
@@ -53,7 +54,8 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                                     imageUrl = element.product.freeOngkirInformation.imageUrl
                             ),
                             labelGroupList = productCardModelLabelGroupList,
-                            hasThreeDots = true
+                            hasThreeDots = true,
+                            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {

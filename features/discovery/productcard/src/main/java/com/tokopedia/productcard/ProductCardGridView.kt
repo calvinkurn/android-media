@@ -183,6 +183,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         cartExtension.setProductModel(productCardModel)
         cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         video.setVideoURL(productCardModel.customVideoURL)
+
+        cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -187,6 +187,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         video.setVideoURL(productCardModel.customVideoURL)
 
+        cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
