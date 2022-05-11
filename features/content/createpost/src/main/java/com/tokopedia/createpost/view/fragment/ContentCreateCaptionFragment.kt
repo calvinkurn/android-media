@@ -59,10 +59,11 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         return v
     }
 
+
+
     private fun initialiseViews(v: View) {
         captionTxt = v.findViewById(R.id.caption)
         contentPreviewRv = v.findViewById(R.id.content_post_image_rv)
-
     }
 
 

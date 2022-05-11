@@ -155,7 +155,7 @@ object TopadsFeedXMapper {
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
                 name = name,
-                priceOriginalFmt = campaign.originalPrice,
+                priceOriginalFmt = campaign.originalPrice.replace(" ",""),
                 priceFmt = priceFormat.replace(" ",""),
                 isDiscount = isDiscount,
                 coverURL = imageProduct.imageUrl,

@@ -53,8 +53,6 @@ class PlayCoverSetupViewModelTest {
 
     private lateinit var viewModel: PlayCoverSetupViewModel
 
-    private val modelBuilder = UiModelBuilder()
-
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()
@@ -69,6 +67,7 @@ class PlayCoverSetupViewModelTest {
 
         viewModel = PlayCoverSetupViewModel(
                 productList = emptyList(),
+                channelId = "",
                 hydraConfigStore = HydraConfigStoreImpl(
                         channelConfigStore,
                         ProductConfigStoreImpl(),

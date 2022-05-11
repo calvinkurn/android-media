@@ -30,6 +30,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
 
     private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
     private val REQUEST_CODE_LOGIN = 123
+    var productId:String? = null
 
     @Inject
     lateinit var pdpSimulationAnalytics: dagger.Lazy<PdpSimulationAnalytics>
@@ -65,6 +66,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
         } else {
             val bundle = Bundle()
             intent.extras?.let {
+                productId = it.getString(PARAM_PRODUCT_ID)
                 bundle.putString(PARAM_GATEWAY_ID, it.getString(PARAM_GATEWAY_ID))
                 bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
                 bundle.putString(PARAM_PRODUCT_TENURE, it.getString(PARAM_PRODUCT_TENURE))
@@ -123,6 +125,8 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PayLaterAnalyticsBase) {
+        pdpSimulationEvent.productId = productId?:""
+        pdpSimulationAnalytics.get().sendPayLaterSimulationEvent(pdpSimulationEvent)
     }
 
 

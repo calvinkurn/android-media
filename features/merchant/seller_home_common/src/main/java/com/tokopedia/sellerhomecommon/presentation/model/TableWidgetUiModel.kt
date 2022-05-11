@@ -25,6 +25,7 @@ data class TableWidgetUiModel(
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     val tableFilters: List<WidgetFilterUiModel>,
     val maxData: Int,

@@ -13,8 +13,10 @@ import com.tokopedia.loginregister.login.behaviour.activity.VerificationActivity
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
+@UiTest
 class RegisterNormalCase: RegisterInitialBase() {
 
     @Test

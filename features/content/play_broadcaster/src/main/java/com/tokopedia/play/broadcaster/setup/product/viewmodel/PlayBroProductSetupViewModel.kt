@@ -347,7 +347,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     }
 
     private fun handleRetryFetchProducts() {
-        handleLoadProductList(_loadParam.value, resetList = true)
+        handleLoadProductList(_loadParam.value, resetList = false)
     }
 
     /** Product Summary */

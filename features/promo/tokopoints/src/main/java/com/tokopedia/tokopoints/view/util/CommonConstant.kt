@@ -1,5 +1,7 @@
 package com.tokopedia.tokopoints.view.util
 
+import com.tokopedia.network.constant.TkpdBaseURL.WEB_DOMAIN
+
 interface CommonConstant {
     interface CouponRedemptionCode {
         companion object {
@@ -67,10 +69,10 @@ interface CommonConstant {
 
     interface WebLink {
         companion object {
-            const val MEMBERSHIP = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/membership"
-            const val INFO = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/intro"
-            const val DETAIL = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/kupon/detail"
-            const val USERSAVING = "tokopedia://webview?url=https://m.tokopedia.com/rewards/saving"
+            val MEMBERSHIP = WEB_DOMAIN + "rewards/membership"
+            val INFO = WEB_DOMAIN + "rewards/intro"
+            val DETAIL = WEB_DOMAIN + "rewards/kupon/detail"
+            val USERSAVING = WEB_DOMAIN + "rewards/saving"
         }
     }
 

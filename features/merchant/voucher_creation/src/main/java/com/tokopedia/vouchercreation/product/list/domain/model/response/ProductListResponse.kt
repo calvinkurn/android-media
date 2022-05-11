@@ -18,9 +18,9 @@ data class ProductList(
 
 data class GoodsPriceRange(
         @SerializedName("min")
-        @Expose val min: Double,
+        @Expose val min: Long,
         @SerializedName("max")
-        @Expose val max: Double
+        @Expose val max: Long
 )
 
 data class GoodsScore(

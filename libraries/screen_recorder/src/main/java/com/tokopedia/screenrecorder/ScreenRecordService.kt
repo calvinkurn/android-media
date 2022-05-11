@@ -287,18 +287,20 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun stopRecord() {
         GlobalScope.launch(Dispatchers.Main) {
-            mediaRecorder?.stop()
+            try {
+                mediaRecorder?.stop()
 
-            releaseResources()
+                releaseResources()
 
-            withContext(Dispatchers.IO) {
-                resultVideoPath = writeResultToMovies()
-                cleanUnusedFiles()
-            }
+                withContext(Dispatchers.IO) {
+                    resultVideoPath = writeResultToMovies()
+                    cleanUnusedFiles()
+                }
 
-            stopForeground(true)
-            infoFinishToUser(resultVideoPath)
-            stopSelf()
+                stopForeground(true)
+                infoFinishToUser(resultVideoPath)
+                stopSelf()
+            } catch (e: Exception) {}
         }
     }
 
