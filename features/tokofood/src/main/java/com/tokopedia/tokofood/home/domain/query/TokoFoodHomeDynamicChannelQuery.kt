@@ -26,6 +26,7 @@ object TokoFoodHomeDynamicChannelQuery: GqlQueryInterface {
              location: ${'$'}location
            ) {
              id
+             widgetParam
              group_id
              galaxy_attribution
              persona

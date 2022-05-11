@@ -21,6 +21,9 @@ data class HomeLayoutResponse(
     @SerializedName("id")
     val id: String = "",
     @Expose
+    @SerializedName("widgetParam")
+    val widgetParam: String = "",
+    @Expose
     @SerializedName("pageName")
     val pageName: String = "",
     @Expose
