@@ -38,7 +38,7 @@ class AddToCartTokoFoodUseCase @Inject constructor(
     override fun graphqlQuery(): String = """
         query AddToCartTokofood($$PARAMS_KEY: CartTokoFoodParam!) {
           add_to_cart_general(params: $$PARAMS_KEY) {
-            error_messages
+            message
             status
             data {
               success
@@ -52,6 +52,17 @@ class AddToCartTokoFoodUseCase @Inject constructor(
                 product_id
                 quantity
               }
+              bottomsheet {
+                is_show_bottomsheet
+                title
+                description
+                buttons{
+                    text
+                    color
+                    action
+                    link
+                }
+              }   
             }
           }
         }

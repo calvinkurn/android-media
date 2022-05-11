@@ -100,16 +100,12 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         cartDataState.value = response.data
     }
 
-    fun updateAndValidateCart() {
-        // TODO: Check if this need to validate
-    }
-
     fun deleteProduct(productId: String, cartId: String, source: String) {
         launchCatchError(block = {
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val removeCartParam = getProductParamById(productId, cartId)
             removeCartTokoFoodUseCase(removeCartParam).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
                         UiEvent(
@@ -134,7 +130,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             val removeCartParam = getUnavailableProductsParam()
             removeCartTokoFoodUseCase(removeCartParam).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
                         UiEvent(state = UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS)
@@ -158,7 +154,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             }
             cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
             updateCartTokoFoodUseCase(param).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(
                         if (isDebug) {
@@ -194,7 +190,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     fun updateQuantity(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
             updateCartTokoFoodUseCase(updateParam).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
                 }
@@ -212,7 +208,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     fun updateCart(updateParam: UpdateParam, source: String) {
         launchCatchError(block = {
             updateCartTokoFoodUseCase(updateParam).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList(source)
                     cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_CART))
                 }
@@ -231,7 +227,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         launchCatchError(block = {
             val testParam = UpdateParam()
             updateCartTokoFoodUseCase(testParam).collect {
-                if (it.success == 1) {
+                if (it.isSuccess()) {
                     loadCartList("tes")
                     cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
                 }
@@ -248,12 +244,18 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     }
 
     fun addToCart(updateParam: UpdateParam, source: String) {
-        // TODO: Check for bottomsheet struct
         launchCatchError(block = {
             addToCartTokoFoodUseCase(updateParam).collect {
-                if (it.success == 1) {
-                    loadCartList(source)
-                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_ADD_TO_CART))
+                if (it.isSuccess()) {
+                    if (it.data.bottomSheet.isShowBottomSheet) {
+                        cartDataValidationState.emit(UiEvent(
+                            state = UiEvent.EVENT_PHONE_VERIFICATION,
+                            data = it.data.bottomSheet)
+                        )
+                    } else {
+                        loadCartList(source)
+                        cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_ADD_TO_CART))
+                    }
                 }
             }
         }, onError = {

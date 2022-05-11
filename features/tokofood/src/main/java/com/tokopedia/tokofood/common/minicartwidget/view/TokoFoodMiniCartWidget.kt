@@ -64,7 +64,6 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             setAmount(miniCartUiModel.totalPriceFmt)
             setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
             amountCtaView.setOnClickListener {
-                viewModel?.updateAndValidateCart()
                 onButtonClickAction()
             }
         }

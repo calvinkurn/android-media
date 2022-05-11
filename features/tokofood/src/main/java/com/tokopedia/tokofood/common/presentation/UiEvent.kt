@@ -16,5 +16,6 @@ data class UiEvent(
         const val EVENT_SUCCESS_UPDATE_CART = 8
         const val EVENT_SUCCESS_LOAD_CART = 9
         const val EVENT_SUCCESS_ADD_TO_CART = 10
+        const val EVENT_PHONE_VERIFICATION = 11
     }
 }
