@@ -1,11 +1,14 @@
 package com.tokopedia.cmhomewidget.presentation.adapter.viewholder
 
+
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.cmhomewidget.R
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetPaymentCardBinding
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetPaymentData
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.*
 
 
 class CMHomeWidgetPaymentCardViewHolder(
@@ -19,6 +22,11 @@ class CMHomeWidgetPaymentCardViewHolder(
         setAccountNo(paymentData.accountNumber)
         setTotalPayment(paymentData.totalPayment)
         setActionButtonText(paymentData.actionButton?.get(0)?.actionButtonText)
+        setOnClickListeners(paymentData)
+        paymentData.expiredTime?.let {
+            val time = it.toLong()
+            setTimer(time)
+        }
         binding.root.post {
             listener.setPaymentCardHeight(binding.root.measuredHeight)
         }
@@ -46,9 +54,36 @@ class CMHomeWidgetPaymentCardViewHolder(
         binding.btnCmHomeWidgetProduct.text = text
     }
 
+    private fun setTimer(time: Long) {
+        binding.run {
+            val epoch = System.currentTimeMillis() / 1000
+            timer.isShowClockIcon = true
+            timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
+            timer.targetDate = Calendar.getInstance().apply {
+                val timeDiff = time - epoch
+                add(Calendar.SECOND, (timeDiff % 60).toInt())
+                add(Calendar.MINUTE, ((timeDiff / 60) % 60).toInt())
+                add(Calendar.HOUR, (timeDiff / (60 * 60)).toInt())
+            }
+            timer.onFinish = {
+
+            }
+        }
+    }
+
+    private fun setOnClickListeners(dataItem: CMHomeWidgetPaymentData) {
+        binding.btnCmHomeWidgetProduct.setOnClickListener {
+            listener.onPaymentBtnClick(dataItem)
+        }
+        binding.root.setOnClickListener {
+            listener.onPaymentCardClick(dataItem)
+        }
+    }
+
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_cm_home_widget_product_card
+        val LAYOUT = R.layout.layout_cm_home_widget_payment_card
         const val RATIO_WIDTH = 0.689
     }
 

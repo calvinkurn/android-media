@@ -123,6 +123,9 @@ class CMHomeWidget @JvmOverloads constructor(
         cmHomeWidgetData?.cmHomeWidgetProductCardData?.let {
             itemsList.addAll(it)
         }
+        cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
+            itemsList.add(it)
+        }
         cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
             itemsList.add(it)
         }
@@ -143,6 +146,9 @@ class CMHomeWidget @JvmOverloads constructor(
                     it.parentId,
                     it.campaignId
                 )
+                it.cMHomeWidgetPaymentData?.let {
+
+                }
             }
         }
     }
@@ -196,7 +202,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun setPaymentCardHeight(measuredHeight: Int) {
-        productCardHeight = height
+        productCardHeight = measuredHeight
     }
 
     override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {

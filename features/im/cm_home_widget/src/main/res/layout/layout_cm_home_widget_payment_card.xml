@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_cm_home_widget_payment_card"
-    android:layout_width="@dimen/cm_home_widget_dp_260"
+    android:layout_width="248dp"
     android:layout_height="wrap_content"
     app:card_type="shadow">
 
@@ -30,7 +30,7 @@
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toEndOf="@+id/iv_cm_home_widget_payment"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -54,9 +54,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_4"
+            android:text="@string/total_pembayaran"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintBottom_toTopOf="@+id/tv_cm_home_widget_payment_amt"
             app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment"
+            app:layout_constraintEnd_toStartOf="@+id/v_cm_home_widget_divider"
             app:typographyType="body_3"
             tools:text="Total Pembayaran" />
 
@@ -75,11 +78,13 @@
         <View
             android:id="@+id/v_cm_home_widget_divider"
             android:layout_width="1dp"
-            android:layout_height="40dp"
+            android:layout_height="36dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="9dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_product"
             app:layout_constraintStart_toEndOf="@+id/tv_cm_home_widget_payment_amt_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
+            app:layout_constraintEnd_toStartOf="@+id/timer"
             android:background="#BFC9D9"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -88,39 +93,22 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/unify_space_8"
+            android:text="@string/sisa_waktu"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
+            app:layout_constraintBottom_toTopOf="@+id/timer"
             app:typographyType="body_3"
             tools:text="Sisa Waktu" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_floating_timer"
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="@dimen/dp_12"
-            android:paddingStart="@dimen/dp_24"
-            android:paddingEnd="@dimen/dp_4"
-            android:background="@drawable/cm_home_widget_bg_countdown_timer"
-            app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
-            android:textColor="#E02954"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:text="01:12:12">
-
-        </com.tokopedia.unifyprinciples.Typography>
-
-        <ImageView
-            android:id="@+id/iv_floating_egg"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginStart="18dp"
-            android:layout_gravity="center_vertical"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_clock_icon"
+            app:timer_unify_single_variant="general"
+            app:timer_unify_single_textWidth="wrap"
+            android:layout_marginStart="@dimen/dp_8"
+            app:timer_unify_single_type="hour"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
             app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
             />

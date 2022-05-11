@@ -45,6 +45,9 @@ data class CMHomeWidgetData(
     @SerializedName("widget_title")
     @Expose
     val widgetTitle: String?,
+    @SerializedName("widget_type")
+    @Expose
+    val widgetType: String?,
     @SerializedName("products")
     @Expose
     val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
