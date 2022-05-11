@@ -273,7 +273,7 @@ class GroupDetailViewModel @Inject constructor(
         val param = topAdsCreateUseCase.createRequestParamMoveGroup(
             groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
         )
-        topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
+        topAdsCreateUseCase.executeQuery(param, onSuccess)
     }
 
     fun setProductAction(
@@ -321,7 +321,7 @@ class GroupDetailViewModel @Inject constructor(
         val param = topAdsCreateUseCase.createRequestParamActionDelete(
             TopAdsDashboardConstant.SOURCE_DASH, groupId, keywordIds
         )
-        topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
+        topAdsCreateUseCase.executeQuery(param, onSuccess)
     }
 
     fun setKeywordAction(action: String, keywordIds: List<String>, resources: Resources, onSuccess: (() -> Unit)) {

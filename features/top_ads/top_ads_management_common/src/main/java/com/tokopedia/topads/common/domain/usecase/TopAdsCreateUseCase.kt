@@ -59,7 +59,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     RestRequestUseCase() {
 
     fun executeQuery(
-        param: RequestParams?, className: String,
+        param: RequestParams?,
         onSuccess: () -> Unit, onError: ((String) -> Unit)? = null,
     ) {
         execute(param, object : Subscriber<Map<Type, RestResponse>>() {
@@ -90,7 +90,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     fun createRequestParamActionDelete(
         source: String, groupIdParam: String, keywordIds: List<String>,
     ): RequestParams {
-        val input = TopadsManagePromoGroupProductInput().apply {
+        return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             this.source = source
             this.groupID = groupIdParam
@@ -100,14 +100,13 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                     KeywordEditInput(ACTION_DELETE,
                         KeywordEditInput.Keyword(id, null, null, null, null, null))
                 }
-        }
-        return input.convertToRequestParam()
+        }.convertToRequestParam()
     }
 
     fun createRequestParamMoveGroup(
         groupID: String, source: String, productIds: List<String>, productAction: String,
     ): RequestParams {
-        val input = TopadsManagePromoGroupProductInput().apply {
+        return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             this.groupID = groupID
             this.source = source
@@ -120,15 +119,14 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 }, null, null, null, null, null, null
             ))
             keywordOperation = null
-        }
-        return input.convertToRequestParam()
+        }.convertToRequestParam()
     }
 
     fun createRequestParamActionCreate(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
         suggestedBidValue: Double,
     ): RequestParams {
-        val input = TopadsManagePromoGroupProductInput().apply {
+        return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             source = ParamObject.PARAM_SOURCE_RECOM
             groupInput?.group = GroupEditInput.Group().also { group ->
@@ -152,8 +150,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 )
             }
             keywordOperation = null
-        }
-        return input.convertToRequestParam()
+        }.convertToRequestParam()
     }
 
     fun createRequestParamEditBudgetInsight(

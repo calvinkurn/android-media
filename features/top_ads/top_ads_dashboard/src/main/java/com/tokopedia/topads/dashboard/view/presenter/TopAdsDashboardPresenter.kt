@@ -244,7 +244,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         val param = topAdsCreateUseCase.createRequestParamMoveGroup(
             groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
         )
-        topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
+        topAdsCreateUseCase.executeQuery(param, onSuccess)
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>,selectedFilter: String?) {
@@ -473,7 +473,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         val param =
             topAdsCreateUseCase.createRequestParamActionCreate(productIds, currentGroupName, priceBid, suggestedBidValue)
 
-        topAdsCreateUseCase.executeQuery(param, javaClass.name, {
+        topAdsCreateUseCase.executeQuery(param, {
             error(null)
         }, {
             error(it)
