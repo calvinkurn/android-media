@@ -1980,7 +1980,7 @@ class PlayViewModel @AssistedInject constructor(
                 channelType = channelType,
                 shopId = partnerId.toString(),
                 interactiveId = _interactive.value.interactive.id,
-                isForQuiz = _interactive.value.interactive is InteractiveUiModel.Quiz
+                interactiveType = _interactive.value.interactive
         )
     }
 
@@ -2020,7 +2020,7 @@ class PlayViewModel @AssistedInject constructor(
                 channelType = channelType,
                 interactiveId = interactiveId,
                 shopId = partnerId.toString(),
-                isForQuiz = _interactive.value.interactive is InteractiveUiModel.Quiz
+                interactiveType = _interactive.value.interactive
             )
         }
     }

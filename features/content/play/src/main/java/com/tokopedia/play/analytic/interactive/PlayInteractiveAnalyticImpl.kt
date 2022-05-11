@@ -4,6 +4,7 @@ import com.tokopedia.play.analytic.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -22,12 +23,13 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         channelId: String,
         channelType: PlayChannelType,
         interactiveId: String,
-        isForQuiz: Boolean,
+        interactiveType: InteractiveUiModel,
         shopId: String
     ) {
-        val (eventAction, eventLabel) = when(isForQuiz){
-            true -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
-            else -> Pair("click follow from engagement tools widget","$channelId - ${channelType.value} - $interactiveId")
+        val (eventAction, eventLabel) = when(interactiveType){
+            is InteractiveUiModel.Quiz -> Pair("click - follow quiz popup","$shopId - $channelId - $userId - $interactiveId")
+            is InteractiveUiModel.Giveaway -> Pair("click follow from engagement tools widget","$channelId - ${channelType.value} - $interactiveId")
+            else -> Pair("","")
         }
         sendCompleteGeneralEvent(
                 event = KEY_TRACK_CLICK_GROUP_CHAT,
@@ -50,10 +52,11 @@ class PlayInteractiveAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String) {
-        val (eventAction, eventLabel) = when(isForQuiz){
-            true -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
-            else -> Pair("click daftar pemenang on engagement tools widget","$channelId - ${channelType.value}")
+    override fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, interactiveType: InteractiveUiModel, interactiveId: String) {
+        val (eventAction, eventLabel) = when(interactiveType){
+            is InteractiveUiModel.Quiz -> Pair("click - hasil game button","$shopId - $channelId - $userId - $interactiveId")
+            is InteractiveUiModel.Giveaway -> Pair("click daftar pemenang on engagement tools widget","$channelId - ${channelType.value}")
+            else -> Pair("", "")
         }
 
         sendCompleteGeneralEvent(

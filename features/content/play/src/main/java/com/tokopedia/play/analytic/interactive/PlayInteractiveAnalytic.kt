@@ -2,6 +2,7 @@ package com.tokopedia.play.analytic.interactive
 
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 
 /**
  * Created by jegul on 09/07/21
@@ -12,7 +13,7 @@ interface PlayInteractiveAnalytic {
         channelId: String,
         channelType: PlayChannelType,
         interactiveId: String,
-        isForQuiz: Boolean,
+        interactiveType: InteractiveUiModel,
         shopId: String,
     )
 
@@ -22,7 +23,7 @@ interface PlayInteractiveAnalytic {
         shopId: String,
     )
 
-    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, isForQuiz: Boolean, interactiveId: String)
+    fun clickWinnerBadge(channelId: String, channelType: PlayChannelType, shopId: String, interactiveType: InteractiveUiModel, interactiveId: String)
 
     fun impressWinnerBadge(channelId: String, shopId: String, interactiveId: String)
 
