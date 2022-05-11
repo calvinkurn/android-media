@@ -4,6 +4,7 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.repository.PlayViewerPartnerRepositoryImpl
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
+import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
@@ -35,7 +36,8 @@ class PlayViewerPartnerRepositoryTest {
     private val postFollowKolUseCase: PostFollowKolUseCase = mockk(relaxed = true)
     private val postUnfollowKolUseCase: PostUnfollowKolUseCase = mockk(relaxed = true)
 
-    lateinit var playUiModelMapper: PlayUiModelMapper
+    private val classBuilder = ClassBuilder()
+    private val mapper = classBuilder.getPlayUiModelMapper()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -47,19 +49,8 @@ class PlayViewerPartnerRepositoryTest {
     fun setUp(){
         Dispatchers.setMain(testDispatcher.coroutineDispatcher)
 
-        playUiModelMapper = PlayUiModelMapper(
-            productTagMapper = mockk(relaxed = true),
-            merchantVoucherMapper = mockk(relaxed = true),
-            chatMapper = mockk(relaxed = true),
-            channelStatusMapper = mockk(relaxed = true),
-            channelInteractiveMapper = mockk(relaxed = true),
-            interactiveLeaderboardMapper = mockk(relaxed = true),
-            cartMapper = mockk(relaxed = true),
-            playUserReportMapper = mockk(relaxed = true)
-        )
-
         partnerRepo = PlayViewerPartnerRepositoryImpl(
-            getSellerInfoUsecase, postFollowPartnerUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, playUiModelMapper, testDispatcher
+            getSellerInfoUsecase, postFollowPartnerUseCase, getFollowingKOLUseCase, postFollowKolUseCase, postUnfollowKolUseCase, mapper, testDispatcher
         )
     }
 
