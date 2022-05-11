@@ -52,7 +52,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -502,16 +501,17 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
         val route = RouteManager.getIntent(context, uri)
         (startActivityForResult(route.apply {
-            putExtra(ProofOfDeliveryActivity.EXTRA_IMAGE_ID, imageId)
-            putExtra(ProofOfDeliveryActivity.EXTRA_DESCRIPTION, description)
+            putExtra(ProofOfDeliveryActivity.POD_EXTRA_IMAGE_ID, imageId)
+            putExtra(ProofOfDeliveryActivity.POD_EXTRA_DESCRIPTION, description)
         }, ProofOfDeliveryActivity.REQUEST_POD))
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             ProofOfDeliveryActivity.REQUEST_POD -> {
-                if (requestCode != ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE) {
+                if (requestCode == ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE) {
                     Toaster.build(requireView(), "Oops, terjadi kesalahan dalam memuat gambar").show()
                 }
             }

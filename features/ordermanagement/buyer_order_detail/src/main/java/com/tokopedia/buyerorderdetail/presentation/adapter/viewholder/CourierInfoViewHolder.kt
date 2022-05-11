@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
+import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -10,6 +12,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
+import timber.log.Timber
 
 class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoViewHolderListener) : AbstractViewHolder<ShipmentInfoUiModel.CourierInfoUiModel>(itemView) {
 
@@ -22,11 +26,17 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
     private val tvBuyerOrderDetailCourierValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailCourierValue)
     private val tvBuyerOrderDetailArrivalEstimationValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailArrivalEstimationValue)
 
+    private val containerPod = itemView?.findViewById<LinearLayout>(R.id.containerPod)
+    private val ivPod = itemView?.findViewById<ImageUnify>(R.id.iv_pod)
+
     override fun bind(element: ShipmentInfoUiModel.CourierInfoUiModel?) {
         element?.let {
             setupCourierNameAndProductName(it.courierNameAndProductName)
             setupFreeShippingBadge(it.isFreeShipping, it.boBadgeUrl)
             setupArrivalEstimation(it.arrivalEstimation, it.isFreeShipping, it.etaChanged, it.etaUserInfo)
+
+            //TODO IRPAN - remove dummy to real data
+            setupPod("https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/8/24/0710dcad-abbf-4de3-a254-d0224d59a963.jpg")
         }
     }
 
@@ -43,7 +53,8 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
                         setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
                     if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping
-                        || oldItem.etaChanged != newItem.etaChanged || oldItem.etaUserInfo != newItem.etaUserInfo) {
+                        || oldItem.etaChanged != newItem.etaChanged || oldItem.etaUserInfo != newItem.etaUserInfo
+                    ) {
                         setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged, newItem.etaUserInfo)
                     }
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
@@ -77,11 +88,27 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
         }
     }
 
+    //proof of delivery view
+    private fun setupPod(imagePod: String) {
+        val canBeShow = imagePod != ""
+
+        containerPod?.showWithCondition(canBeShow)
+        containerPod?.setOnClickListener {
+            listener.onPodClicked(imagePod)
+
+        }
+        ivPod?.apply {
+            ImageUtils.loadImage2(ivPod, imagePod, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
+
+        }
+    }
+
     private fun getArrivalEstimationTopMargin(freeShipping: Boolean): Int {
         return if (freeShipping) 0 else itemView.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toInt()
     }
 
     interface CourierInfoViewHolderListener {
         fun onEtaChangedClicked(delayedInfo: String)
+        fun onPodClicked(urlPod: String)
     }
 }

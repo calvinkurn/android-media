@@ -70,4 +70,5 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="last_driver_button">Hubungi</string>
     <string name="label_pod">Proof Of Delivery</string>
     <string name="label_back">Kembali</string>
+    <string name="screen_name_pod">Proof of Delivery</string>
 </resources>

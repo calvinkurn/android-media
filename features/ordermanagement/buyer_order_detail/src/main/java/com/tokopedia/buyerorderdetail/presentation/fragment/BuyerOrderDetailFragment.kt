@@ -698,6 +698,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         showEtaBottomSheet(delayedInfo)
     }
 
+    override fun onPodClicked(urlPod: String) {
+        //TODO Irpan
+        Toaster.build(requireView(),urlPod).show()
+    }
+
     private fun showEtaBottomSheet(etaChangedDescription: String) {
         val delayedEtaBottomSheetFragment =
             DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)

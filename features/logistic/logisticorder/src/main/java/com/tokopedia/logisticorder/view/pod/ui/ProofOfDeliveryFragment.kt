@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -55,7 +56,7 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
 
     private var podData: ProofOfDeliveryModel? = null
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = this::class.java.simpleName
 
     override fun initInjector() {
         val component: ProofOfDeliveryComponent = DaggerProofOfDeliveryComponent.builder()
@@ -66,6 +67,10 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initDataInstance()
+    }
+
+    private fun initDataInstance() {
         if (arguments != null) {
             val imageId = arguments?.getString(ARGUMENTS_IMAGE_ID)
             val orderId = arguments?.getLong(ARGUMENTS_ORDER_ID)
@@ -77,22 +82,20 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentProofOfDeliveryBinding.inflate(inflater, container, false)
-        return binding?.root
+        return initBinding(inflater, container)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         onBackButtonListener()
         initImage()
-
+        showLoading()
     }
 
     private fun onBackButtonListener() {
         binding?.buttonBack?.setOnClickListener {
             requireActivity().finish()
-
         }
     }
 
@@ -108,13 +111,17 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         binding?.mainProgressBar?.visibility = View.GONE
     }
 
+
+    private fun initBinding(inflater: LayoutInflater, container: ViewGroup?): ConstraintLayout? {
+        binding = FragmentProofOfDeliveryBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
     private fun initImage() {
 
         val pod = podData ?: return finishWithToastError()
 
-        val url = getDeliveryImage(
-            pod.imageId, pod.orderId, IMAGE_LARGE_SIZE, userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId
-        )
+        val url = getDeliveryImage(pod.imageId, pod.orderId, IMAGE_LARGE_SIZE, userSession.userId, DEFAULT_OS_TYPE, userSession.deviceId)
         val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
         val newUrl = GlideUrl(url, LazyHeaders.Builder().addHeader(HEADER_KEY_AUTH, authKey).build())
 
