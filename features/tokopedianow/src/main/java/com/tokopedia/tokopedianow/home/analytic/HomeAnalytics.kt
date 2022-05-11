@@ -88,6 +88,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.LIST_HOME_PAGE_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_ATC_PAST_PURCHASE
@@ -119,6 +120,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_TITLE_CARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_CATEGORY
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_FINISHED_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_3
@@ -231,6 +233,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_IMPRESSION_LEGO_6 = "impression lego 6 banner"
         const val EVENT_ACTION_CLICK_LEGO_6 = "click lego 6 banner"
         const val EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL = "click lego 6 banner view all"
+        const val EVENT_ACTION_IMPRESSION_CATEGORY = "impression category banner"
     }
 
     object VALUE {
@@ -347,6 +350,22 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             )
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun trackCategoryImpression(category: TokoNowCategoryGridUiModel, warehouseId: String) {
+        val eventLabel = "${category.id} - ${category.title} - $warehouseId"
+
+        val event = getMarketplaceDataLayer(
+            event = EVENT_VIEW_PG_IRIS,
+            action = EVENT_ACTION_IMPRESSION_CATEGORY,
+            label = eventLabel
+        ).apply {
+            putString(KEY_CHANNEL_ID, category.id)
+            putString(KEY_USER_ID, userSession.userId)
+            putString(KEY_WAREHOUSE_ID, warehouseId)
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_PG_IRIS, event)
     }
 
     fun onClickAllProductRecom(channelId: String, headerName: String, isOoc: Boolean) {
