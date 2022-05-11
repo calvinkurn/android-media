@@ -195,7 +195,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         val description =
             getString(R.string.pm_bottom_sheet_shop_score_description, shopInfo.shopScoreThreshold)
         val ctaText = getString(R.string.pm_learn_shop_performance)
-        val illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
+        val illustrationUrl = PMConstant.Images.PM_NEW_REQUIREMENT
 
         showNotificationBottomSheet(
             title,

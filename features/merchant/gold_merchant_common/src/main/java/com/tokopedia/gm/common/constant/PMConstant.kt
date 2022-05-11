@@ -12,7 +12,6 @@ object PMConstant {
     const val PM_SETTING_INFO_SOURCE = "power-merchant-subscription-android-ui"
 
     object Images {
-        const val PM_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant@3x.png"
         const val PM_PRO_BADGE = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro@3x.png"
         const val PM_NEW_REQUIREMENT = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_new_requirement.png"
         const val PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_inactive.png"
