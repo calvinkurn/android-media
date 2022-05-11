@@ -96,7 +96,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                     tvToolTipText?.text =
                         getString(R.string.topads_headline_promotional_tooltip_text)
                     val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
                 }
         tooltipBtn?.addItem(tooltipView)
         tooltipBtn?.setOnClickListener {
