@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import android.widget.ListView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_0
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_2
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_3
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -71,10 +75,10 @@ class ProductSortSheetList : BottomSheetUnify() {
 
     fun getSelectedSortId(): String {
         return when (selectedSortText) {
-            1 -> TERBARU
-            3 -> TERENDAH
-            0 -> TERLARIS
-            2 -> TERTINGGI
+            CONST_1 -> TERBARU
+            CONST_3 -> TERENDAH
+            CONST_0 -> TERLARIS
+            CONST_2 -> TERTINGGI
             else -> TERBARU
         }
     }
