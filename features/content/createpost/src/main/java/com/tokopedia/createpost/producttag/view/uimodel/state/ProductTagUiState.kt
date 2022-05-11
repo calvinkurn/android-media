@@ -12,6 +12,7 @@ data class ProductTagUiState(
     val myShopProduct: MyShopProductUiState,
     val globalSearchProduct: GlobalSearchProductUiState,
     val globalSearchShop: GlobalSearchShopUiState,
+    val shopProduct: ShopProductUiState,
 )
 
 data class ProductTagSourceUiState(
@@ -49,6 +50,14 @@ data class GlobalSearchProductUiState(
 
 data class GlobalSearchShopUiState(
     val shops: List<ShopUiModel>,
+    val nextCursor: Int,
+    val state: PagedState,
+    val query: String,
+)
+
+data class ShopProductUiState(
+    val shop: ShopUiModel,
+    val products: List<ProductUiModel>,
     val nextCursor: Int,
     val state: PagedState,
     val query: String,

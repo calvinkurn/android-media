@@ -32,4 +32,5 @@ sealed interface ProductTagAction {
 
     /** Shop Product */
     object LoadShopProduct: ProductTagAction
+    data class SearchShopProduct(val query: String): ProductTagAction
 }

@@ -72,6 +72,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _myShopProduct = MutableStateFlow(MyShopProductUiModel.Empty)
     private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
     private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
+    private val _shopProduct = MutableStateFlow(ShopProductUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -128,6 +129,16 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    private val _shopProductUiState = _shopProduct.map {
+        ShopProductUiState(
+            shop = it.shop,
+            products = it.products,
+            nextCursor = it.nextCursor,
+            state = it.state,
+            query = it.query,
+        )
+    }
+
     val uiState = combine(
         _productTagSourceUiState,
         _lastTaggedProductUiState,
@@ -135,7 +146,10 @@ class ProductTagViewModel @AssistedInject constructor(
         _myShopProductUiState,
         _globalSearchProductUiState,
         _globalSearchShopUiState,
-    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct, globalSearchProduct, globalSearchShop ->
+        _shopProductUiState,
+    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct,
+            myShopProduct, globalSearchProduct, globalSearchShop,
+            shopProduct ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
@@ -143,6 +157,7 @@ class ProductTagViewModel @AssistedInject constructor(
             myShopProduct = myShopProduct,
             globalSearchProduct = globalSearchProduct,
             globalSearchShop = globalSearchShop,
+            shopProduct = shopProduct,
         )
     }
 
@@ -186,6 +201,10 @@ class ProductTagViewModel @AssistedInject constructor(
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
             is ProductTagAction.ShopSelected -> handleShopSelected(action.shop)
+
+            /** Shop Product */
+            ProductTagAction.LoadShopProduct -> handleLoadShopProduct()
+            is ProductTagAction.SearchShopProduct -> handleSearchShopProduct(action.query)
         }
     }
 
@@ -386,8 +405,54 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleShopSelected(shop: ShopUiModel) {
-        /** TODO: handle this later on */
+        _shopProduct.setValue { ShopProductUiModel.Empty.copy(shop = shop) }
         _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
+    }
+
+    private fun handleLoadShopProduct() {
+        viewModelScope.launchCatchError(block = {
+            val shopProduct = _shopProduct.value
+
+            if(shopProduct.state.isLoading || shopProduct.state.isNextPage.not()) return@launchCatchError
+
+            _shopProduct.setValue {
+                copy(state = PagedState.Loading)
+            }
+
+            val pagedDataList = repo.searchAceProducts(
+                rows = LIMIT_PER_PAGE,
+                start = shopProduct.nextCursor,
+                query = shopProduct.query,
+                shopId = shopProduct.shop.shopId,
+                userId = "",
+                sort = 9 /** TODO: gonna change this later */
+            )
+
+            _shopProduct.setValue {
+                copy(
+                    products = products + pagedDataList.dataList,
+                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    state = PagedState.Success(
+                        hasNextPage = pagedDataList.hasNextPage,
+                    )
+                )
+            }
+        }) {
+            _shopProduct.setValue {
+                copy(
+                    state = PagedState.Error(it)
+                )
+            }
+        }
+    }
+
+    private fun handleSearchShopProduct(query: String) {
+        _shopProduct.setValue { ShopProductUiModel.Empty.copy(
+                shop = shop,
+                query = query,
+            )
+        }
+        handleLoadShopProduct()
     }
 
     companion object {
