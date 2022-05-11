@@ -9,7 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
@@ -98,7 +97,7 @@ class MainNavViewModel @Inject constructor(
     private var pageSourceDefault: String = "Default"
     private var mainNavProfileCache: MainNavProfileCache? = null
 
-    private var _mainNavListVisitable = setInitialState()
+    private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
 
     val allProcessFinished: LiveData<Event<Boolean>>
         get() = _allProcessFinished
@@ -120,6 +119,8 @@ class MainNavViewModel @Inject constructor(
 
     private var allCategoriesCache = listOf<Visitable<*>>()
     private lateinit var allCategories : HomeNavExpandableDataModel
+
+    private var isMePageUsingRollenceVariant : Boolean = false
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -205,6 +206,11 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    fun setIsMePageUsingRollenceVariant(value: Boolean){
+        isMePageUsingRollenceVariant = value
+        _mainNavListVisitable = setInitialState()
+    }
+
     fun getMainNavData(useCacheData: Boolean) {
         _networkProcessLiveData.value = false
         launch {
@@ -219,7 +225,7 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { getNotification() }
             onlyForLoggedInUser { updateProfileData() }
             onlyForLoggedInUser { getOngoingTransaction() }
-            if(MePageRollenceController.isMePageUsingRollenceVariant()){
+            if(isMePageUsingRollenceVariant){
                 onlyForLoggedInUser { getFavoriteShops() }
                 onlyForLoggedInUser { getWishlist() }
             }
@@ -227,7 +233,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addTransactionMenu() {
-        if(MePageRollenceController.isMePageUsingRollenceVariant()){
+        if(isMePageUsingRollenceVariant){
             this.addAll(buildTransactionMenuListRevamp())
         } else {
             this.addAll(buildTransactionMenuList())

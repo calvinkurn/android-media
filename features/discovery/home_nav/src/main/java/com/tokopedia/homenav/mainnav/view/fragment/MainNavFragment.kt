@@ -114,12 +114,15 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MePageRollenceController.fetchMePageRollenceValue()
+        viewModel.setIsMePageUsingRollenceVariant(MePageRollenceController.isMePageUsingRollenceVariant())
+
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
         context?.let {
             viewModel.setProfileCache(getProfileCacheData(it))
         }
-        MePageRollenceController.fetchMePageRollenceValue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
