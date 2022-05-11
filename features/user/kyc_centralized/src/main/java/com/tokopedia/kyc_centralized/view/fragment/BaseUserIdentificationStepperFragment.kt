@@ -115,7 +115,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_liveness_image_cant_be_accessed))
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false
-            val intent = context?.let { createIntent(it, UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId) }
+            val intent = createIntent(requireContext(), UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId)
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
         super.onActivityResult(requestCode, resultCode, data)

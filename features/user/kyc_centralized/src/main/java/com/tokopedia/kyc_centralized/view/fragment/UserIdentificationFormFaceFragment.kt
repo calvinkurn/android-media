@@ -14,6 +14,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_0_5F
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_16
+import com.tokopedia.kyc_centralized.KycConstant.PADDING_ZERO
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
@@ -141,9 +144,13 @@ class UserIdentificationFormFaceFragment :
 
     private fun setExampleImages() {
         onboardingImage?.apply {
-            val paddingDp = 16
             val scale = resources.displayMetrics.density
-            setPadding(0, (paddingDp * scale + 0.5f).toInt(), 0, 0)
+            setPadding(
+                PADDING_ZERO,
+                (PADDING_16 * scale + PADDING_0_5F).toInt(),
+                PADDING_ZERO,
+                PADDING_ZERO
+            )
             loadImage(KycUrl.SCAN_SELFIE)
             show()
         }

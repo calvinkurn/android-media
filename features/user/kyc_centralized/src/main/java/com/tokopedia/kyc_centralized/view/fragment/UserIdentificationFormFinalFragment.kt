@@ -239,8 +239,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun openCameraView(viewMode: Int, requestCode: Int) {
-        val intent = if (viewMode == UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP) {
-            context?.let {
+        context?.let {
+            val intent = if (viewMode == UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP) {
                 createIntent(
                     it,
                     viewMode,
@@ -248,12 +248,12 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     useCropping = true,
                     useCompression = true
                 )
+            } else {
+                createIntent(it, viewMode, projectId)
             }
-        } else {
-            context?.let { createIntent(it, viewMode, projectId) }
-        }
 
-        startActivityForResult(intent, requestCode)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     private fun openLivenessView() {
