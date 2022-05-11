@@ -70,7 +70,7 @@ data class ProductAddParam (
         var variant: Variant? = null,
         @SerializedName("cpl")
         @Expose
-        var cpl: CPLData? = null,
+        var cpl: CPLData = CPLData(),
         @SerializedName("annotations")
         @Expose
         var annotations: List<String>? = null
