@@ -5,13 +5,14 @@ import android.animation.ValueAnimator
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
@@ -81,11 +82,7 @@ class LineGraphViewHolder(
         val data: LineGraphDataUiModel? = element.data
         itemView.show()
         when {
-            null == data -> {
-                showViewComponent(false, element)
-                onStateError(false)
-                onStateLoading(true)
-            }
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 onStateLoading(false)
                 showViewComponent(false, element)
@@ -98,6 +95,12 @@ class LineGraphViewHolder(
                 showViewComponent(true, element)
             }
         }
+    }
+
+    private fun showLoadingState(element: LineGraphWidgetUiModel) {
+        showViewComponent(false, element)
+        onStateError(false)
+        onStateLoading(true)
     }
 
     private fun setupTooltip(element: LineGraphWidgetUiModel) = with(binding) {
@@ -120,65 +123,109 @@ class LineGraphViewHolder(
     }
 
     private fun onStateError(isShown: Boolean) = with(itemView) {
-        ImageHandler.loadImageWithId(
-            errorStateBinding.imgWidgetOnError,
+        errorStateBinding.imgWidgetOnError.loadImage(
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
         errorStateBinding.commonWidgetErrorState
             .visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
-    private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) =
+    private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) {
         with(binding) {
             val componentVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
             tvLineGraphValue.visibility = componentVisibility
             tvLineGraphSubValue.visibility = componentVisibility
             btnLineGraphMore.visibility = componentVisibility
-            btnLineGraphNext.visibility = componentVisibility
             lineGraphView.visibility = componentVisibility
+            luvShcLineGraph.visibility = componentVisibility
 
-            val isCtaVisible =
-                element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
-            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-            btnLineGraphMore.visibility = ctaVisibility
-            btnLineGraphNext.visibility = ctaVisibility
-            btnLineGraphMore.text = element.ctaText
-
-            if (isCtaVisible) {
-                btnLineGraphMore.setOnClickListener {
-                    openAppLink(element)
-                }
-                btnLineGraphNext.setOnClickListener {
-                    openAppLink(element)
-                }
-            }
+            setupSeeMoreCta(element, isShown)
 
             if (isShown) {
+                setupLastUpdated(element)
                 showEmptyState = showEmpty(element)
                 showLineGraph(element)
                 itemView.addOnImpressionListener(element.impressHolder) {
                     listener.sendLineGraphImpressionEvent(element)
                 }
-                if (element.isEmpty()) {
-                    if (element.isShowEmpty) {
-                        if (element.shouldShowEmptyStateIfEmpty()) {
-                            setupEmptyState(element)
-                        } else {
-                            animateHideEmptyState()
-                        }
-                    } else {
-                        if (listener.getIsShouldRemoveWidget()) {
-                            listener.removeWidget(adapterPosition, element)
-                        } else {
-                            listener.onRemoveWidget(adapterPosition)
-                            itemView.toggleWidgetHeight(false)
-                        }
-                    }
+                setupEmptyState(element)
+            }
+
+            horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible
+                    || luvShcLineGraph.isVisible
+        }
+    }
+
+    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+        if (element.isEmpty()) {
+            if (element.isShowEmpty) {
+                if (element.shouldShowEmptyStateIfEmpty()) {
+                    showEmptyState(element)
                 } else {
                     animateHideEmptyState()
                 }
+            } else {
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
+            }
+        } else {
+            animateHideEmptyState()
+        }
+    }
+
+    private fun setupLastUpdated(element: LineGraphWidgetUiModel) {
+        element.data?.lastUpdated?.let {
+            val shouldShowRefreshBtn = element.data?.lastUpdated?.needToUpdated.orFalse()
+            binding.luvShcLineGraph.run {
+                isVisible = it.isEnabled
+                setLastUpdated(it.lastUpdatedInMillis)
+                setRefreshButtonVisibility(shouldShowRefreshBtn)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
             }
         }
+    }
+
+    private fun refreshWidget(element: LineGraphWidgetUiModel) {
+        listener.onReloadWidget(element)
+    }
+
+    private fun setupSeeMoreCta(element: LineGraphWidgetUiModel, isShown: Boolean) {
+        with(binding) {
+            val isCtaVisible =
+                element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnLineGraphMore.visibility = ctaVisibility
+
+            if (!isCtaVisible) return
+
+            btnLineGraphMore.text = element.ctaText
+            btnLineGraphMore.setOnClickListener {
+                openAppLink(element)
+            }
+
+            val iconColor = root.context.getResColor(
+                com.tokopedia.unifyprinciples.R.color.Unify_G400
+            )
+            val iconWidth = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            val iconHeight = root.context.resources.getDimension(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+            )
+            btnLineGraphMore.setUnifyDrawableEnd(
+                IconUnify.CHEVRON_RIGHT,
+                iconColor,
+                iconWidth,
+                iconHeight
+            )
+        }
+    }
 
     private fun setTagNotification(tag: String) {
         val isTagVisible = tag.isNotBlank()
@@ -198,7 +245,7 @@ class LineGraphViewHolder(
         return element.isEmpty() && element.shouldShowEmptyStateIfEmpty() && element.isShowEmpty
     }
 
-    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+    private fun showEmptyState(element: LineGraphWidgetUiModel) {
         with(element.emptyState) {
             emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
             emptyStateBinding.tvLineGraphEmptyStateDescription.text = description

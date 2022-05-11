@@ -90,7 +90,8 @@ class UpdateCouponPeriodViewModel @Inject constructor(
                         coupon.id,
                         updatedCouponInformation,
                         coupon.settings,
-                        coupon.products
+                        coupon.products,
+                        coupon.productIds.map { it.parentProductId }
                     )
                 }
                 _updateCouponResult.value = Success(result)

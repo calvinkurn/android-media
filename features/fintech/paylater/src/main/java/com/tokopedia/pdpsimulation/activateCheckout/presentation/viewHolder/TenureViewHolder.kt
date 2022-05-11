@@ -46,7 +46,7 @@ class TenureViewHolder(itemView: View, private val tenureSelectListener: Activat
         currentPosition: Int
     ) {
         if (tenureDetail.isSelectedTenure) {
-            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+            containerInCard.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN100)
             individualTenureItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioSelector.isChecked = true
         } else {

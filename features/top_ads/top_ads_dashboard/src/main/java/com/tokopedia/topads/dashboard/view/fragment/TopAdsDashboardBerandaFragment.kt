@@ -44,7 +44,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
-    private val graphLayoutFragment by lazy(LazyThreadSafetyMode.NONE) { TopAdsMultiLineGraphFragment() }
+    private val graphLayoutFragment = TopAdsMultiLineGraphFragment()
 
     private val summaryAdTypeList by lazy(LazyThreadSafetyMode.NONE) {
         context?.resources?.getSummaryAdTypes() ?: listOf()
@@ -56,14 +56,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
     private val summaryInformationBottomSheet by lazy(LazyThreadSafetyMode.NONE) { SummaryInformationBottomSheet() }
 
-    private val kataKunciChipsDetailRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandsKataKunciChipsDetailRvAdapter() }
-    private val kataKunciChipsRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    private val kataKunciChipsDetailRvAdapter = TopAdsBerandsKataKunciChipsDetailRvAdapter()
+    private val kataKunciChipsRvAdapter =
         TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected)
+    private val anggarnHarianAdapter = TopAdsBerandaAnggarnHarianAdapter()
+    private val produkBerpotensiAdapter = TopadsImageRvAdapter()
+    private val summaryRvAdapter = TopAdsBerandaSummaryRvAdapter()
+    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        LatestReadingTopAdsDashboardRvAdapter { context?.openWebView(it) }
     }
-    private val anggarnHarianAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaAnggarnHarianAdapter() }
-    private val produkBerpotensiAdapter by lazy(LazyThreadSafetyMode.NONE) { TopadsImageRvAdapter() }
-    private val summaryRvAdapter by lazy(LazyThreadSafetyMode.NONE) { TopAdsBerandaSummaryRvAdapter() }
-    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) { LatestReadingTopAdsDashboardRvAdapter() }
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -216,11 +217,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun onSummaryItemClicked(selectedItems: Set<SummaryBeranda>) {
         if (selectedItems.isEmpty()) {
-            binding.layoutRingkasan.graphLayout.hide()
+            binding.layoutRingkasan.graphLayoutBeranda.hide()
             return
         }
-        if (!binding.layoutRingkasan.graphLayout.isVisible) {
-            binding.layoutRingkasan.graphLayout.show()
+        if (!binding.layoutRingkasan.graphLayoutBeranda.isVisible) {
+            binding.layoutRingkasan.graphLayoutBeranda.show()
         }
         val items = selectedItems.map {
             TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
@@ -231,7 +232,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun initializeGraph() {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.graph_layout, graphLayoutFragment, "")
+            .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
             .commit()
     }
 
@@ -313,7 +314,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.latestReadingLiveData.observe(viewLifecycleOwner) { data ->
             when (data) {
                 is Success -> latestReadingRvAdapter.addItems(data.data)
-                else -> { binding.layoutLatestReading.root.hide() }
+                else -> {
+                    binding.layoutLatestReading.root.hide()
+                }
             }
         }
     }

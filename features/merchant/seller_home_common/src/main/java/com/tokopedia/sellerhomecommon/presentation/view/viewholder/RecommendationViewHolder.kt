@@ -1,14 +1,13 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.*
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
@@ -33,6 +32,16 @@ class RecommendationViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_recommendation_widget
+        private const val DIMEN_8_DP = 8
+        private const val DIMEN_12_DP = 12
+        private const val DIMEN_16_DP = 16
+        private const val DIMEN_20_DP = 20
+        private const val INT_60 = 60
+        private const val INT_69 = 69
+        private const val INT_70 = 70
+        private const val INT_79 = 79
+        private const val INT_80 = 80
+        private const val INT_100 = 100
     }
 
     private val binding by lazy { ShcRecommendationWidgetBinding.bind(itemView) }
@@ -55,7 +64,7 @@ class RecommendationViewHolder(
     override fun bind(element: RecommendationWidgetUiModel) {
         val data = element.data
         when {
-            data == null -> showLoadingState()
+            data == null || element.showLoadingState -> showLoadingState()
             data.error.isNotBlank() -> showErrorState(element)
             else -> setOnSuccess(element)
         }
@@ -67,10 +76,7 @@ class RecommendationViewHolder(
         containerShcRecommendationError.visible()
 
         tvShcRecommendationErrorStateTitle.text = element.title
-        ImageHandler.loadImageWithId(
-            commonErrorStateBinding.imgWidgetOnError,
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
-        )
+        commonErrorStateBinding.imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
 
         setupTooltip(tvShcRecommendationErrorStateTitle, element)
     }
@@ -113,12 +119,33 @@ class RecommendationViewHolder(
             setupCta(element)
             setTagNotification(element.tag)
             setupTooltip(tvShcRecommendationTitle, element)
+            setupLastUpdatedInfo(element)
+
+            horLineShcRecommendationBtm.isVisible = luvShcRecommendation.isVisible
+                    || tvShcRecommendationCta.isVisible
 
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.sendRecommendationImpressionEvent(element)
             }
             listener.showRecommendationWidgetCoachMark(binding.containerShcRecommendation)
         }
+    }
+
+    private fun setupLastUpdatedInfo(element: RecommendationWidgetUiModel) {
+        with(successStateBinding.luvShcRecommendation) {
+            element.data?.lastUpdated?.let { lastUpdated ->
+                isVisible = lastUpdated.isEnabled
+                setLastUpdated(lastUpdated.lastUpdatedInMillis)
+                setRefreshButtonVisibility(lastUpdated.needToUpdated)
+                setRefreshButtonClickListener {
+                    refreshWidget(element)
+                }
+            }
+        }
+    }
+
+    private fun refreshWidget(element: RecommendationWidgetUiModel) {
+        listener.onReloadWidget(element)
     }
 
     private fun setTagNotification(tag: String) {
@@ -146,7 +173,7 @@ class RecommendationViewHolder(
                 val marginTop = root.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
                 )
-                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
                 return
             }
 
@@ -175,7 +202,7 @@ class RecommendationViewHolder(
                 val marginTop = root.context.resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
                 )
-                slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
+                slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
             }
         }
     }
@@ -245,6 +272,7 @@ class RecommendationViewHolder(
                 )
                 tvShcRecommendationHeaderItem.text = data.title
 
+                val margin8dp = root.context.dpToPx(DIMEN_8_DP).toInt()
                 tvShcRecommendationHeaderItem.setOnClickListener {
                     if (rvShcRecommendationList.isVisible) {
                         rvShcRecommendationList.gone()
@@ -260,10 +288,15 @@ class RecommendationViewHolder(
                             horLineShcShopScore2.visible()
                         }
 
-                        val margin = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2
+                        val margin = root.context.dpToPx(DIMEN_16_DP).toInt()
+                        val marginTopLastUpdated = root.context.dpToPx(DIMEN_20_DP).toInt()
+                        tvShcRecommendationCta.setMargin(Int.ZERO, margin, margin8dp, margin)
+                        luvShcRecommendation.setMargin(
+                            luvShcRecommendation.left,
+                            marginTopLastUpdated,
+                            0,
+                            margin
                         )
-                        tvShcRecommendationCta.setMargin(0, margin, 0, margin)
                     } else {
                         rvShcRecommendationList.visible()
                         tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
@@ -273,13 +306,20 @@ class RecommendationViewHolder(
                         )
                         horLineShcShopScore2.visible()
 
-                        val marginTop = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+                        val marginTopLastUpdated = root.context.dpToPx(DIMEN_12_DP).toInt()
+                        val marginBottom = root.context.dpToPx(DIMEN_16_DP).toInt()
+                        tvShcRecommendationCta.setMargin(
+                            Int.ZERO,
+                            margin8dp,
+                            margin8dp,
+                            marginBottom
                         )
-                        val marginBottom = root.context.resources.getDimensionPixelSize(
-                            com.tokopedia.unifyprinciples.R.dimen.layout_lvl2
+                        luvShcRecommendation.setMargin(
+                            luvShcRecommendation.left,
+                            marginTopLastUpdated,
+                            Int.ZERO,
+                            marginBottom
                         )
-                        tvShcRecommendationCta.setMargin(0, marginTop, 0, marginBottom)
                     }
                 }
 
@@ -295,10 +335,10 @@ class RecommendationViewHolder(
 
     private fun getProgressState(value: Int, max: Int): ShopScorePMWidget.State {
         val textColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-        val barColor = when (value * max / 100) {
-            in 80..100 -> com.tokopedia.unifyprinciples.R.color.Unify_G400
-            in 70..79 -> com.tokopedia.unifyprinciples.R.color.Unify_G300
-            in 60..69 -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
+        val barColor = when (value * max / INT_100) {
+            in INT_80..INT_100 -> com.tokopedia.unifyprinciples.R.color.Unify_G400
+            in INT_70..INT_79 -> com.tokopedia.unifyprinciples.R.color.Unify_G300
+            in INT_60..INT_69 -> com.tokopedia.unifyprinciples.R.color.Unify_Y300
             else -> com.tokopedia.unifyprinciples.R.color.Unify_R500
         }
         return ShopScorePMWidget.State.Custom(textColor, barColor, barColor)
@@ -318,13 +358,6 @@ class RecommendationViewHolder(
         setProgressValue(currentProgress)
         setMaxProgressValue(maxProgress)
         setProgressColor(state)
-    }
-
-    private fun View.viewStubInflater(viewStubId: Int): Lazy<View> {
-        return lazy {
-            val viewStub: ViewStub = findViewById(viewStubId)
-            viewStub.inflate()
-        }
     }
 
     interface Listener : BaseViewHolderListener {

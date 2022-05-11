@@ -49,6 +49,11 @@ class SpecialReleaseComponentCallback(
         RouteManager.route(context, applink)
     }
 
+    override fun onSpecialReleaseItemSeeAllCardClicked(channelModel: ChannelModel, applink: String) {
+        SpecialReleaseTracking.sendSpecialReleaseSeeAllCardClick(channelModel)
+        RouteManager.route(context, applink)
+    }
+
     override fun onSpecialReleaseChannelImpressed(channelModel: ChannelModel, position: Int) {
         //no-op
     }

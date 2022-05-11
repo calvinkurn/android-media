@@ -35,8 +35,8 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/bottom_sheet_behavior"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="@dimen/unify_space_64"
-        >
+        app:behavior_peekHeight="@dimen/dp_75"
+        android:background="@drawable/bottomsheet_shadow"        >
 
     </FrameLayout>
 

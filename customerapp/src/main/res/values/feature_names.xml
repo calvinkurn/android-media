@@ -46,12 +46,16 @@
     <!--Profile completion-->
     <string name="title_module_setting_profile">Data Diri Module</string>
     <string name="title_setting_profile">Data Diri</string>
+    <string name="title_profile_info">Ubah Profil</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
-    <string name="title_change_gender">Tambah Jenis Kelamin</string>
-    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="change_profile_info_title">Ubah Info Profil</string>
+    <string name="title_change_gender">Jenis Kelamin</string>
+    <string name="title_add_phone">Tambah Nomor HP</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
+    <string name="change_profile_info">Ubah Info Profil</string>
+
 
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
@@ -308,6 +312,9 @@
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_redeem_title">Redeem Your Ticket</string>
 
+    <!-- Dynamic feature for common-->
+    <string name = "df_title_alpha_testing">Feedback Form</string>
+
     <!--Play-->
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
@@ -367,6 +374,9 @@
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
 
+    <!-- Merchant NonLogin -->
+    <string name="title_module_merchant_nonlogin">Fitur Toko Non-Login</string>
+
     <!-- Shop Page -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
@@ -393,9 +403,6 @@
     <!--Dynamic feature TokopediaNOW! -->
     <string name="title_tokopedia_now">Tokopedia NOW</string>
 
-    <!-- Review   -->
-    <string name="title_review">Ulasan</string>
-
     <string name="title_image_picker_insta_df">Media Picker</string>
 
     <string name="title_feed_create_post">Create Post</string>
@@ -405,4 +412,7 @@
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="title_dynamic_libraries">Libraries</string>
 
+    <!-- Feedback Form -->
+    <string name="create_report_title">Create Report</string>
+    <string name="draw_on_picture_label">Edit Images</string>
 </resources>

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.pdp.fintech.listner.ProductUpdateListner
 import com.tokopedia.pdp.fintech.view.PdpFintechWidget
 import com.tokopedia.product.detail.R
@@ -27,7 +28,7 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
             element.categoryId
         ) }
 
-        element?.productId?.let { fintechWidget.updateProductId(it, this) }
+        element?.productId?.let { fintechWidget.updateProductId(it, this,element.isLoggedIn) }
     }
 
     override fun removeWidget() {
@@ -44,5 +45,14 @@ class FintechWidgetViewHolder(val view: View,val  listener: DynamicProductDetail
         params.width = ViewGroup.LayoutParams.MATCH_PARENT
         itemView.layoutParams = params
     }
+
+
+    override fun fintechChipClicked(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        redirectionUrl: String
+    ) {
+        listener.fintechRedirection(fintechRedirectionWidgetDataClass, redirectionUrl)
+    }
+
 
 }

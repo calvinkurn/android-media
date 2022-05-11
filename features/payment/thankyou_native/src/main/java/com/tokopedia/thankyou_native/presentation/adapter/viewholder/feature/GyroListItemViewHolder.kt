@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder.feature
 
+import android.text.Html
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -29,7 +30,9 @@ class GyroListItemViewHolder(val view: View, val listener: GyroAdapterListener)
                 ivFeatureItem.setImageUrl(image)
             } ?: run { ivFeatureItem.gone() }
 
-            tvFeatureItemTitle.text = title ?: ""
+            title?.let {
+                tvFeatureItemTitle.text = Html.fromHtml("<b>$it</b>")
+            }
             tvFeatureItemDescription.text = description ?: ""
 
             view.setOnClickListener {

@@ -8,24 +8,25 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class CardWidgetUiModel(
-        override val id: String,
-        override val widgetType: String,
-        override val title: String,
-        override val subtitle: String,
-        override val tooltip: TooltipUiModel?,
-        override val tag: String,
-        override val appLink: String,
-        override val dataKey: String,
-        override val ctaText: String,
-        override val gridSize: Int,
-        override val isShowEmpty: Boolean,
-        override var data: CardDataUiModel?,
-        override var impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean,
-        override var isLoading: Boolean,
-        override var isFromCache: Boolean,
-        override var isNeedToBeRemoved: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel
+    override val id: String,
+    override val widgetType: String,
+    override val title: String,
+    override val subtitle: String,
+    override val tooltip: TooltipUiModel?,
+    override val tag: String,
+    override val appLink: String,
+    override val dataKey: String,
+    override val ctaText: String,
+    override val gridSize: Int,
+    override val isShowEmpty: Boolean,
+    override var data: CardDataUiModel?,
+    override var impressHolder: ImpressHolder = ImpressHolder(),
+    override var isLoaded: Boolean,
+    override var isLoading: Boolean,
+    override var isFromCache: Boolean,
+    override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false,
+    override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

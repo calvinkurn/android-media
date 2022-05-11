@@ -1,12 +1,4 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="5dp"
-    android:height="6dp"
-    android:viewportWidth="5"
-    android:viewportHeight="6">
-  <path
-      android:pathData="M0,0V0.66667C0,4.2727 0,4 3.9557,4H5L5,0L0,0Z"
-      android:fillColor="@color/Unify_BN500"/>
-  <path
-      android:pathData="M0,0V0H5C1.25,0 0,0.66667 0,2Z"
-      android:fillColor="@color/Unify_BN400"/>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="5dp" android:height="6dp" android:viewportWidth="5" android:viewportHeight="6">
+    <path android:pathData="M0 0v0.667C0 4.273 0 4 3.956 4H5V0H0z" android:fillColor="@color/Unify_BN500"/>
+    <path android:pathData="M0 0h5C1.25 0 0 0.667 0 2z" android:fillColor="@color/Unify_BN400"/>
 </vector>
