@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
