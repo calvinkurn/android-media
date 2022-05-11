@@ -1,7 +1,6 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.*
 import com.tokopedia.gm.common.data.source.local.model.*
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -30,8 +29,7 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
                 PMGradeWithBenefitsUiModel(
                     gradeName = it.gradeName.orEmpty(),
                     isActive = it.isActive ?: false,
-                    pmTier = it.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
-                    benefits = getPMGradeBenefits(it.benefits)
+                    benefits = getPMGradeBenefits(it.benefits),
                 )
             }
         }

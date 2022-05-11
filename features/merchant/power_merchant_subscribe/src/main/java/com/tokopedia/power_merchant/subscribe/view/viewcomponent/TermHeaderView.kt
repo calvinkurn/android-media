@@ -48,10 +48,6 @@ class TermHeaderView : LinearLayout {
         changeIconExpandedStatus()
     }
 
-    fun setTermStatus(isEligible: Boolean) {
-        binding?.tvPmHeaderTermsStatus?.isVisible = isEligible
-    }
-
     fun setOnSectionHeaderClickListener(callback: (isExpanded: Boolean) -> Unit) {
         this.onClickCallback = callback
     }

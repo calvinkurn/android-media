@@ -115,6 +115,7 @@ class UpgradePmProWidget(
     private fun setupView(element: WidgetUpgradePmProUiModel) = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_PRO_BADGE)
+
         val isShowTermStatus = element.registrationTerms.all { it.isChecked }
         viewPmUpgradeTermSection.setTermStatus(isShowTermStatus)
 
@@ -171,7 +172,6 @@ class UpgradePmProWidget(
     }
 
     interface Listener {
-        fun onUpgradePmProClickListener(adapterPosition: Int)
         fun onUpgradePmProTnCClickListener()
         fun onDeactivatePMClickListener()
     }
