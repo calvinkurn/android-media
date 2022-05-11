@@ -17,6 +17,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -181,7 +182,7 @@ class PromotionBudgetAndTypeFragment : BaseDaggerFragment() {
                     when(result) {
                         is Success -> {
                             with(result.data) {
-                                onSetShopInfo(shopName, shopAvatar)
+                                onSetShopInfo(MethodChecker.fromHtml(shopName).toString(), shopAvatar)
                             }
                             bannerVoucherUiModel = getVoucherUiModel()
                             drawInitialVoucherPreview()
