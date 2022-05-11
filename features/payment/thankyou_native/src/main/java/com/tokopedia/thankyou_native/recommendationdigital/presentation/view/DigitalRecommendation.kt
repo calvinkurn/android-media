@@ -62,7 +62,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         pgCategoryIds: List<Int>,
         pageType: DigitalRecommendationPage
     ) {
-        with(view_digital_recommendation){
+        with(recharge_digital_recommendation){
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
