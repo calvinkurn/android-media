@@ -69,14 +69,14 @@ object AddRemoveWishlistV2Handler {
     fun showRemoveWishlistV2SuccessToaster(result: ProductCardOptionsModel.WishlistResult,
                                            context: Context, view: View) {
         val msg = result.messageV2.ifEmpty {
-            if (result.isSuccess) context.getString(R.string.on_success_add_to_wishlist_msg)
-            else context.getString(R.string.on_failed_add_to_wishlist_msg)
+            if (result.isSuccess) context.getString(R.string.on_success_remove_from_wishlist_msg)
+            else context.getString(R.string.on_failed_remove_from_wishlist_msg)
         }
 
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColorV2 == WishlistV2CommonConsts.TOASTER_RED || !result.isSuccess) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_add_to_wishlist)
+        var ctaText = context.getString(R.string.cta_success_remove_from_wishlist)
         if (result.ctaTextV2.isNotEmpty()) ctaText = result.ctaTextV2
 
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
