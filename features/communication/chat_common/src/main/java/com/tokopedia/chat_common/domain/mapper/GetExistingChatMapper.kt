@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD_SECURE
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
 import com.tokopedia.chat_common.domain.pojo.Contact
@@ -105,7 +106,9 @@ open class GetExistingChatMapper @Inject constructor() {
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(chatItemPojoByDateByTime)
-            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+            TYPE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD)
+            TYPE_IMAGE_UPLOAD_SECURE ->
+                convertToImageUpload(chatItemPojoByDateByTime, TYPE_IMAGE_UPLOAD_SECURE)
             TYPE_IMAGE_ANNOUNCEMENT -> convertToImageAnnouncement(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSent(chatItemPojoByDateByTime)
             else -> convertToFallBackModel(chatItemPojoByDateByTime)
@@ -144,14 +147,24 @@ open class GetExistingChatMapper @Inject constructor() {
             .build()
     }
 
-    private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    private fun convertToImageUpload(
+        chatItemPojoByDateByTime: Reply,
+        attachmentType: String
+    ): Visitable<*> {
         val pojoAttribute = gson.fromJson(
-            chatItemPojoByDateByTime.attachment?.attributes,
+            chatItemPojoByDateByTime.attachment.attributes,
             ImageUploadAttributes::class.java
         )
+
+        val imageUrl = if (attachmentType == TYPE_IMAGE_UPLOAD_SECURE) {
+            pojoAttribute.imageUrlSecure
+        } else {
+            pojoAttribute.imageUrl
+        }
+
         return ImageUploadUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
-            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrl(imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
             .build()
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.chat_common.domain.pojo.imageupload
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,9 +8,9 @@ import com.google.gson.annotations.SerializedName
 class ImageUploadAttributes {
 
     @SerializedName("image_url")
-    @Expose
     val imageUrl: String = ""
     @SerializedName("image_url_thumbnail")
-    @Expose
     val thumbnail: String = ""
+    @SerializedName("image_url_secure")
+    val imageUrlSecure: String = ""
 }

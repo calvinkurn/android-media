@@ -13,7 +13,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadSecureImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.LongClickMenuItemGenerator
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
@@ -22,12 +22,14 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWi
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 class TopchatImageUploadViewHolder(
     itemView: View?,
     private val listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
     private val commonListener: CommonViewHolderListener,
+    private val userSession: UserSessionInterface
 ) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
@@ -189,7 +191,7 @@ class TopchatImageUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let {
-            attachmentUnify?.loadImage(it)
+            attachmentUnify?.loadSecureImage(it, userSession)
         }
     }
 

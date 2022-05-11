@@ -567,7 +567,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     companion object {
         const val SOURCE_ASK_BUYER = "tx_ask_buyer"
-        val REQUEST_CODE_CHAT_IMAGE = 2325
+        val REQUEST_ATTACH_IMAGE = 2325
         val LABEL_USER = "Pengguna"
         val LABEL_SELLER = "Penjual"
         val ROLE_SELLER = "shop"
