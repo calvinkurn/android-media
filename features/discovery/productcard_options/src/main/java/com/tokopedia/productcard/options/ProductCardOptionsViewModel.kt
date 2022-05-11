@@ -25,6 +25,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import rx.Subscriber
@@ -136,6 +137,19 @@ internal class ProductCardOptionsViewModel(
         wishlistEventLiveData.postValue(Event(true))
     }
 
+    private fun onSuccessRemoveWishlistV2(result: DeleteWishlistV2Response.Data.WishlistRemoveV2) {
+        productCardOptionsModel?.wishlistResult = WishlistResult(
+            isUserLoggedIn = true,
+            isSuccess = result.success,
+            isAddWishlist = false,
+            isUsingWishlistV2 = isUsingWishlistV2,
+            messageV2 = result.message,
+            toasterColorV2 = result.toasterColor,
+            ctaTextV2 = result.button.text,
+            ctaActionV2 = result.button.action)
+        wishlistEventLiveData.postValue(Event(true))
+    }
+
     private fun onErrorRemoveWishlist() {
         productCardOptionsModel?.wishlistResult = WishlistResult(isUserLoggedIn = true, isSuccess = false, isAddWishlist = false, isUsingWishlistV2 = isUsingWishlistV2)
         wishlistEventLiveData.postValue(Event(true))
@@ -191,7 +205,10 @@ internal class ProductCardOptionsViewModel(
     private fun tryRemoveWishlistV2() {
         deleteWishlistV2UseCase.setParams(getProductId(), userSession.userId)
         deleteWishlistV2UseCase.execute(
-            onSuccess = { onSuccessRemoveWishlist() },
+            onSuccess = { result ->
+                if (result is Success) {
+                    onSuccessRemoveWishlistV2(result.data)
+                } },
             onError = { onErrorRemoveWishlist() })
     }
 
