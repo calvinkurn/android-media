@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.bulk.presentation
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -8,7 +9,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -117,6 +121,15 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         setupDependencyInjection()
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        if (dialog is BottomSheetDialog) {
+            dialog.behavior.skipCollapsed = true
+            dialog.behavior.state = STATE_EXPANDED
+        }
+        return dialog
+    }
+
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -140,6 +153,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         setChild(binding?.root)
         setTitle(title)
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
 
@@ -364,7 +378,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
                 viewModel.validateInput()
             }
-            binding?.tfuDiscountAmount?.textInputLayout?.editText?.addTextChangedListener(watcher)
+            tfuDiscountAmount.textInputLayout.editText?.addTextChangedListener(watcher)
         }
 
     }
@@ -519,5 +533,11 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.chipSixMonthPeriod?.gone()
         binding?.chipOneMonthPeriod?.gone()
         binding?.chipCustomSelection?.gone()
+    }
+
+    private fun scrollDown() {
+        binding?.content?.post {
+            binding?.content?.fullScroll(View.FOCUS_DOWN)
+        }
     }
 }
