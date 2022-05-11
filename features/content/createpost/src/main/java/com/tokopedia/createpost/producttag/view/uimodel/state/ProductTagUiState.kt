@@ -3,6 +3,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.state
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -13,6 +14,7 @@ data class ProductTagUiState(
     val lastPurchasedProduct: LastPurchasedProductUiState,
     val myShopProduct: MyShopProductUiState,
     val globalSearchProduct: GlobalSearchProductUiState,
+    val globalSearchShop: GlobalSearchShopUiState,
 )
 
 data class ProductTagSourceUiState(
@@ -43,6 +45,13 @@ data class MyShopProductUiState(
 
 data class GlobalSearchProductUiState(
     val products: List<ProductUiModel>,
+    val nextCursor: Int,
+    val state: PagedState,
+    val query: String,
+)
+
+data class GlobalSearchShopUiState(
+    val shops: List<ShopUiModel>,
     val nextCursor: Int,
     val state: PagedState,
     val query: String,

@@ -3,6 +3,7 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.util.extension.combine
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -55,6 +56,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val globalStateProductStateUnknown: Boolean
         get() = _globalSearchProduct.value.state == PagedState.Unknown
 
+    val globalStateShopStateUnknown: Boolean
+        get() = _globalSearchShop.value.state == PagedState.Unknown
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
@@ -63,6 +67,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
     private val _myShopProduct = MutableStateFlow(MyShopProductUiModel.Empty)
     private val _globalSearchProduct = MutableStateFlow(GlobalSearchProductUiModel.Empty)
+    private val _globalSearchShop = MutableStateFlow(GlobalSearchShopUiModel.Empty)
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
@@ -110,19 +115,30 @@ class ProductTagViewModel @AssistedInject constructor(
         )
     }
 
+    private val _globalSearchShopUiState = _globalSearchShop.map {
+        GlobalSearchShopUiState(
+            shops = it.shops,
+            nextCursor = it.nextCursor,
+            state = it.state,
+            query = it.query,
+        )
+    }
+
     val uiState = combine(
         _productTagSourceUiState,
         _lastTaggedProductUiState,
         _lastPurchasedProductUiState,
         _myShopProductUiState,
         _globalSearchProductUiState,
-    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct, globalSearchProduct ->
+        _globalSearchShopUiState,
+    ) { productTagSource, lastTaggedProduct, lastPurchasedProduct, myShopProduct, globalSearchProduct, globalSearchShop ->
         ProductTagUiState(
             productTagSource = productTagSource,
             lastTaggedProduct = lastTaggedProduct,
             lastPurchasedProduct = lastPurchasedProduct,
             myShopProduct = myShopProduct,
             globalSearchProduct = globalSearchProduct,
+            globalSearchShop = globalSearchShop,
         )
     }
 
@@ -161,6 +177,9 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
+
+            /** Global Search Shop */
+            ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
         }
     }
 
@@ -310,6 +329,41 @@ class ProductTagViewModel @AssistedInject constructor(
             }
         }) {
             _globalSearchProduct.setValue {
+                copy(
+                    state = PagedState.Error(it)
+                )
+            }
+        }
+    }
+
+    private fun handleLoadGlobalSearchShop() {
+        viewModelScope.launchCatchError(block = {
+            val globalSearchShop = _globalSearchShop.value
+
+            if(globalSearchShop.state.isLoading || globalSearchShop.state.isNextPage.not()) return@launchCatchError
+
+            _globalSearchShop.setValue {
+                copy(state = PagedState.Loading)
+            }
+
+            val pagedDataList = repo.searchAceShops(
+                rows = LIMIT_PER_PAGE,
+                start = globalSearchShop.nextCursor,
+                query = globalSearchShop.query,
+                sort = 9 /** TODO: gonna change this later */
+            )
+
+            _globalSearchShop.setValue {
+                copy(
+                    shops = shops + pagedDataList.dataList,
+                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    state = PagedState.Success(
+                        hasNextPage = pagedDataList.hasNextPage,
+                    )
+                )
+            }
+        }) {
+            _globalSearchShop.setValue {
                 copy(
                     state = PagedState.Error(it)
                 )

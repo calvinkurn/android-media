@@ -22,4 +22,7 @@ sealed interface ProductTagAction {
 
     /** Global Search Product */
     object LoadGlobalSearchProduct: ProductTagAction
+
+    /** Global Search Shop */
+    object LoadGlobalSearchShop: ProductTagAction
 }
