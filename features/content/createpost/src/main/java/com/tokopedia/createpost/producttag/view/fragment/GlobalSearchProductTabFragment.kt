@@ -124,7 +124,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_LONG,
                     actionText = getString(R.string.feed_content_coba_lagi_text),
-                    clickListener = { viewModel.submitAction(ProductTagAction.LoadLastPurchasedProduct) }
+                    clickListener = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) }
                 ).show()
             }
             else -> {}
