@@ -2,6 +2,7 @@ package com.tokopedia.createpost.view.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.createpost.createpost.databinding.ActivityProductTagBinding
@@ -47,6 +48,19 @@ class ProductTagActivity : BaseActivity() {
             .commit()
     }
 
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when(fragment) {
+            is ProductTagParentFragment -> {
+                fragment.setListener(object : ProductTagParentFragment.Listener {
+                    override fun onCloseProductTag() {
+                        finish()
+                    }
+                })
+            }
+        }
+    }
+
     private fun inject() {
         DaggerCreatePostComponent.builder()
             .createPostModule(CreatePostModule(this))
@@ -73,7 +87,7 @@ class ProductTagActivity : BaseActivity() {
 
     override fun onBackPressed() {
         ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
-            if(it.onBackPressed().not()) super.onBackPressed()
+            it.onBackPressed()
         } ?: super.onBackPressed()
     }
 

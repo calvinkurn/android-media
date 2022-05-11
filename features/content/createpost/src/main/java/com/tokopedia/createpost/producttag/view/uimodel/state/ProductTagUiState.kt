@@ -16,7 +16,7 @@ data class ProductTagUiState(
 
 data class ProductTagSourceUiState(
     val productTagSourceList: List<ProductTagSource>,
-    val selectedProductTagSource: SelectedProductTagSource,
+    val productTagSourceStack: Set<ProductTagSource>,
 )
 
 data class LastTaggedProductUiState(

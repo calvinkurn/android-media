@@ -8,6 +8,8 @@ import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
  * Created By : Jonathan Darwin on April 25, 2022
  */
 sealed interface ProductTagAction {
+    object BackPressed: ProductTagAction
+
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
     data class ProductSelected(val product: ProductUiModel): ProductTagAction
 

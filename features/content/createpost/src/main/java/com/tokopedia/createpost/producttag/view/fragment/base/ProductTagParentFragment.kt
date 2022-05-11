@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
+import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
@@ -43,6 +45,7 @@ class ProductTagParentFragment @Inject constructor(
     override fun getScreenName(): String = "ProductTagParentFragment"
 
     private lateinit var viewModel: ProductTagViewModel
+    private var mListener: Listener? = null
 
     private var _binding: FragmentProductTagParentBinding? = null
     private val binding: FragmentProductTagParentBinding
@@ -148,11 +151,12 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if(prevState == currState) return
 
-        updateBreadcrumb(currState.selectedProductTagSource.source)
-        updateFragmentContent(currState.selectedProductTagSource)
+        updateBreadcrumb(currState.productTagSourceStack)
+        updateFragmentContent(prevState?.productTagSourceStack ?: emptySet(), currState.productTagSourceStack)
     }
 
-    private fun updateBreadcrumb(selectedSource: ProductTagSource) {
+    private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
+        val selectedSource = productTagSourceStack.currentSource
         binding.tvCcProductTagProductSource.text = getProductTagSourceText(selectedSource)
 
         if(selectedSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
@@ -164,15 +168,28 @@ class ProductTagParentFragment @Inject constructor(
         }
     }
 
-    private fun updateFragmentContent(selectedSource: SelectedProductTagSource) {
-        val (fragment, tag) = getFragmentAndTag(selectedSource.source)
-        childFragmentManager.beginTransaction()
-            .replace(binding.flCcProductTagContainer.id, fragment, tag)
-            .apply {
-                if(selectedSource.needAddToBackStack)
-                    addToBackStack(null)
+    private fun updateFragmentContent(prevStack: Set<ProductTagSource>, currStack: Set<ProductTagSource>) {
+        if(currStack.isEmpty()) {
+            mListener?.onCloseProductTag() ?: run {
+                requireActivity().finish()
             }
-            .commit()
+            return
+        }
+
+        val selectedSource = currStack.currentSource
+        val (fragment, tag) = getFragmentAndTag(selectedSource)
+        if(currStack.size >= prevStack.size) {
+            childFragmentManager.beginTransaction()
+                .replace(binding.flCcProductTagContainer.id, fragment, tag)
+                .apply {
+                    if(currStack.size > prevStack.size)
+                        addToBackStack(null)
+                }
+                .commit()
+        }
+        else {
+            childFragmentManager.popBackStack()
+        }
     }
 
     private fun getFragmentAndTag(productTagSource: ProductTagSource): Pair<BaseProductTagChildFragment, String> {
@@ -242,11 +259,12 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
-    fun onBackPressed(): Boolean {
-        return if(viewModel.selectedProductTagSource.needAddToBackStack) {
-            childFragmentManager.popBackStack()
-            true
-        } else false
+    fun onBackPressed() {
+        viewModel.submitAction(ProductTagAction.BackPressed)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
     }
 
     companion object {
@@ -320,5 +338,9 @@ class ProductTagParentFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    interface Listener {
+        fun onCloseProductTag()
     }
 }

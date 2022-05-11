@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.createpost.producttag.util.extension.combine
+import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
@@ -44,8 +45,8 @@ class ProductTagViewModel @AssistedInject constructor(
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
-    val selectedProductTagSource: SelectedProductTagSource
-        get() = _selectedProductTagSource.value
+    val selectedTagSource: ProductTagSource
+        get() = _productTagSourceStack.value.currentSource
 
     val lastTaggedProductStateUnknown: Boolean
         get() = _lastTaggedProduct.value.state == PagedState.Unknown
@@ -64,7 +65,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
-    private val _selectedProductTagSource = MutableStateFlow<SelectedProductTagSource>(SelectedProductTagSource.Empty)
+    private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
@@ -74,11 +75,11 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Ui State */
     private val _productTagSourceUiState = combine(
-        _productTagSourceList, _selectedProductTagSource
-    ) { productTagSourceList, selectedProductTagSource ->
+        _productTagSourceList, _productTagSourceStack
+    ) { productTagSourceList, productTagSourceStack ->
         ProductTagSourceUiState(
             productTagSourceList = productTagSourceList,
-            selectedProductTagSource = selectedProductTagSource,
+            productTagSourceStack = productTagSourceStack,
         )
     }
 
@@ -165,6 +166,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     fun submitAction(action: ProductTagAction) {
         when(action) {
+            is ProductTagAction.BackPressed -> handleBackPressed()
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
@@ -188,8 +190,16 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     /** Handle Action */
+    private fun handleBackPressed() {
+        _productTagSourceStack.setValue {
+            toMutableSet().apply {
+                lastOrNull()?.let { remove(it) }
+            }
+        }
+    }
+
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        _selectedProductTagSource.setValue { copy(source = source, needAddToBackStack = false) }
+        _productTagSourceStack.setValue { setOf(source) }
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
@@ -377,7 +387,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleShopSelected(shop: ShopUiModel) {
         /** TODO: handle this later on */
-        _selectedProductTagSource.setValue { copy(source = ProductTagSource.Shop, needAddToBackStack = true) }
+        _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
     }
 
     companion object {
