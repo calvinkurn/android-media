@@ -116,8 +116,6 @@ includeIfEnabled("features:im:referral")
 includeIfEnabled("features:im:install_referral")
 includeIfEnabled("features:im:cm_home_widget")
 
-includeIfEnabled("features:kyc")
-
 includeIfEnabled("features:logistic:logisticorder")
 includeIfEnabled("features:logistic:logisticaddaddress")
 includeIfEnabled("features:logistic:dropoff")

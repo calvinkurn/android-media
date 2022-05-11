@@ -48,6 +48,7 @@ afterEvaluate {
 
 task("runJacoco")
 task("runUnitTest")
+task("runLintReport")
 
 subprojects {
     tasks.withType(Test) {
@@ -111,6 +112,17 @@ subprojects {
             } else if (isLibrary && !isDF ){
                 task = project.path + ":testDebugUnitTest"
                 rootProject.tasks.runUnitTest.dependsOn(task)
+            }
+        }
+        if (project.tasks.findByName("lint")!= null) {
+            def lintTask = null
+            if (isApp) {
+                lintTask = project.path + ":lintLiveDevDebug"
+            } else if (isLibrary && !isDF ){
+                lintTask = project.path + ":lintDebug"
+            }
+            if (lintTask != null) {
+                rootProject.tasks.runLintReport.dependsOn(lintTask)
             }
         }
         try {
