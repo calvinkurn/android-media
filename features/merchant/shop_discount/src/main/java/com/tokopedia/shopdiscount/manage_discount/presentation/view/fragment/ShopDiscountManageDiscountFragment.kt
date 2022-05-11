@@ -29,7 +29,6 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
@@ -43,7 +42,6 @@ import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.rv_decoration.ShopDiscountDividerItemDecoration
-import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -93,9 +91,6 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var router: FragmentRouter
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageDiscountViewModel::class.java) }

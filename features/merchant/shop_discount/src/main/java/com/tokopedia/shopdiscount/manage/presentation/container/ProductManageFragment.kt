@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -25,10 +24,8 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
-import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -46,23 +43,41 @@ import javax.inject.Inject
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val DELAY_IN_MILLIS : Long = 300
-        private const val BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB = "focus_to_upcoming_status_tab"
-        private const val UPCOMING_STATUS_TAB_POSITION = 1
+        private const val NOT_SET = -1
+        private const val DELAY_IN_MILLIS: Long = 300
+        private const val TAB_POSITION_FIRST = 0
+        private const val TAB_POSITION_SECOND = 1
+        private const val TAB_POSITION_THIRD = 2
+        private const val BUNDLE_KEY_TOASTER_WORDING = "toaster_wording"
+        private const val BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID = "previous_discount_status_id"
 
         @JvmStatic
-        fun newInstance(focusToUpcomingStatusTab : Boolean) = ProductManageFragment().apply {
-            val bundle  = Bundle()
-            bundle.putBoolean(BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB, focusToUpcomingStatusTab)
-            arguments = bundle
+        fun newInstance(
+            previouslySelectedDiscountStatusId: Int,
+            toasterWording: String
+        ): ProductManageFragment {
+            return ProductManageFragment().apply {
+                val bundle = Bundle()
+                bundle.putInt(
+                    BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID,
+                    previouslySelectedDiscountStatusId
+                )
+                bundle.putString(BUNDLE_KEY_TOASTER_WORDING, toasterWording)
+                arguments = bundle
+            }
         }
     }
 
     private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
-    private val focusToUpcomingStatusTab by lazy {
-        arguments?.getBoolean(
-            BUNDLE_KEY_FOCUS_TO_UPCOMING_STATUS_TAB
-        ).orFalse()
+    private val toasterWording by lazy {
+        arguments?.getString(
+            BUNDLE_KEY_TOASTER_WORDING
+        ).orEmpty()
+    }
+    private val previouslySelectedDiscountStatusId by lazy {
+        arguments?.getInt(
+            BUNDLE_KEY_PREVIOUS_DISCOUNT_STATUS_ID
+        ) ?: NOT_SET
     }
 
     override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
@@ -77,21 +92,18 @@ class ProductManageFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var router: FragmentRouter
-
-    @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
-    private var listener : TabChangeListener? = null
+    private var listener: TabChangeListener? = null
 
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
 
     private val tabs = listOf(
-        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0),
-        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0),
-        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0)
+        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0, TAB_POSITION_FIRST),
+        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0, TAB_POSITION_SECOND),
+        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0, TAB_POSITION_THIRD)
     )
 
     override fun onCreateView(
@@ -105,7 +117,6 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applyUnifyBackgroundColor()
         setupViews()
         observeProductsMeta()
     }
@@ -189,7 +200,8 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
-        val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
+        val pagerAdapter =
+            TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
         val previouslySelectedPosition = viewModel.getSelectedTabPosition()
 
         binding?.run {
@@ -198,9 +210,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
-                if (focusToUpcomingStatusTab) {
-                    focusToUpcomingStatusTab()
-                    binding?.viewPager?.showToaster(getString(R.string.sd_discount_created_successfully))
+                if (isRedirectionFromAnotherPage()) {
+                    focusTo(previouslySelectedDiscountStatusId)
+                    displayToaster(toasterWording)
                 } else {
                     focusToPreviousTab(tab, previouslySelectedPosition, position)
                 }
@@ -222,19 +234,28 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun focusToUpcomingStatusTab() {
+    private fun focusTo(discountStatusId: Int) {
         //Add some spare time to make sure tabs are successfully drawn before select and focusing to a tab
         CoroutineScope(Dispatchers.Main).launch {
             delay(DELAY_IN_MILLIS)
 
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+
+            val matchedTab = tabs.find { tab -> tab.discountStatusId == discountStatusId }
+            val tabPosition = matchedTab?.tabPosition.orZero()
             val upcomingStatusTab =
-                tabLayout?.getTabAt(UPCOMING_STATUS_TAB_POSITION) ?: return@launch
+                tabLayout?.getTabAt(tabPosition) ?: return@launch
             upcomingStatusTab.select()
         }
     }
 
-    private fun createFragments(tabs : List<PageTab>): List<Pair<String, Fragment>> {
+    private fun displayToaster(wording: String) {
+        if (wording.isNotEmpty()) {
+            binding?.viewPager?.showToaster(toasterWording)
+        }
+    }
+
+    private fun createFragments(tabs: List<PageTab>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
@@ -283,17 +304,18 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.getSlashPriceProductsMeta()
     }
 
-    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, newTotalProduct : Int ->
-        val currentTab = tabs.find { it.discountStatusId == discountStatusId }
-        val updatedTabName = "${currentTab?.name} ($newTotalProduct)"
+    private val onDiscountRemoved: (Int, Int) -> Unit =
+        { discountStatusId: Int, newTotalProduct: Int ->
+            val currentTab = tabs.find { it.discountStatusId == discountStatusId }
+            val updatedTabName = "${currentTab?.name} ($newTotalProduct)"
 
-        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-        val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
+            val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+            val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
 
-        val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
-        previouslySelectedTab?.setCustomText(updatedTabName)
-        previouslySelectedTab?.select()
-    }
+            val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
+            previouslySelectedTab?.setCustomText(updatedTabName)
+            previouslySelectedTab?.select()
+        }
 
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
@@ -305,7 +327,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
             val shouldShowTicker = !isPreviouslyDismissed
-            if (shouldShowTicker){
+            if (shouldShowTicker) {
                 binding?.ticker?.visible()
             }
         }
@@ -321,5 +343,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     interface TabChangeListener {
         fun onTabChanged()
+    }
+
+    private fun isRedirectionFromAnotherPage(): Boolean {
+        return previouslySelectedDiscountStatusId != NOT_SET
     }
 }
