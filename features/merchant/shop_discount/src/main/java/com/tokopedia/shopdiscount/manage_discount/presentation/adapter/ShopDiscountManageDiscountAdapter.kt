@@ -79,14 +79,12 @@ class ShopDiscountManageDiscountAdapter(
     }
 
     fun removeProduct(productId: String) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
-            .firstOrNull {
-                it.productId == productId
-            }?.let {
-                productListData.remove(it)
-                updateProductList()
-            }
+        productListData.firstOrNull {
+            it.productId == productId
+        }?.let {
+            productListData.remove(it)
+            updateProductList()
+        }
     }
 
     fun getTotalAbusiveProduct(): Int {
