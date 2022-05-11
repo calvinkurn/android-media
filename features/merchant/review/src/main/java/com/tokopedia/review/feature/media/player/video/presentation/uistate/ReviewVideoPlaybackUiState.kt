@@ -38,12 +38,7 @@ sealed interface ReviewVideoPlaybackUiState: Parcelable {
     ) : ReviewVideoPlaybackUiState
 
     @Parcelize
-    data class UnknownError(
-        override val currentPosition: Long = 0L
-    ) : ReviewVideoPlaybackUiState
-
-    @Parcelize
-    data class InvalidError(
+    data class Error(
         override val currentPosition: Long = 0L
     ) : ReviewVideoPlaybackUiState
 }

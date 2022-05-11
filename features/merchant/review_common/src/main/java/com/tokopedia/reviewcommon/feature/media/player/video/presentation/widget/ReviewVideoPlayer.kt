@@ -17,7 +17,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -111,12 +110,7 @@ class ReviewVideoPlayer(
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
-                val sourceException = error.sourceException
-                if (sourceException is HttpDataSource.InvalidResponseCodeException) {
-                    listenerRef?.get()?.onReviewVideoPlayerReceiveInvalidErrorCode()
-                } else {
-                    listenerRef?.get()?.onReviewVideoPlayerReceiveUnknownError()
-                }
+                listenerRef?.get()?.onReviewVideoPlayerError()
             }
         })
     }
@@ -213,6 +207,5 @@ interface ReviewVideoPlayerListener {
     fun onReviewVideoPlayerIsPaused()
     fun onReviewVideoPlayerIsPreloading()
     fun onReviewVideoPlayerIsEnded()
-    fun onReviewVideoPlayerReceiveUnknownError()
-    fun onReviewVideoPlayerReceiveInvalidErrorCode()
+    fun onReviewVideoPlayerError()
 }

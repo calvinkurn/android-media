@@ -73,21 +73,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         // noop
     }
 
-    override fun onReviewVideoPlayerReceiveUnknownError() {
-        binding.loaderReviewMediaVideoThumbnail.gone()
-        when (uiState) {
-            is ReviewMediaVideoThumbnailUiState.Showing -> {
-                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
-                binding.icReviewMediaVideoThumbnailBroken.show()
-            }
-            else -> {
-                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
-                binding.icReviewMediaVideoThumbnailBroken.gone()
-            }
-        }
-    }
-
-    override fun onReviewVideoPlayerReceiveInvalidErrorCode() {
+    override fun onReviewVideoPlayerError() {
         binding.loaderReviewMediaVideoThumbnail.gone()
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {

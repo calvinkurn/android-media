@@ -170,12 +170,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         reviewVideoPlayerViewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
     }
 
-    override fun onReviewVideoPlayerReceiveUnknownError() {
-        reviewVideoPlayerViewModel.setPlaybackStateToUnknownError(videoPlayer.getCurrentPosition())
-    }
-
-    override fun onReviewVideoPlayerReceiveInvalidErrorCode() {
-        reviewVideoPlayerViewModel.setPlaybackStateInvalidError(videoPlayer.getCurrentPosition())
+    override fun onReviewVideoPlayerError() {
+        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition())
     }
 
     private fun getVideoUri(): String {
@@ -251,17 +247,11 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         reviewVideoPlayerViewModel.showVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
-                    is ReviewVideoPlaybackUiState.UnknownError -> {
+                    is ReviewVideoPlaybackUiState.Error -> {
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.showVideoThumbnail()
-                        reviewVideoPlayerViewModel.showVideoUnknownError()
-                    }
-                    is ReviewVideoPlaybackUiState.InvalidError -> {
-                        binding?.loaderReviewVideoPlayer?.gone()
-                        binding?.overlayReviewVideoPlayerLoading?.gone()
-                        reviewVideoPlayerViewModel.showVideoThumbnail()
-                        reviewVideoPlayerViewModel.showVideoInvalidError()
+                        reviewVideoPlayerViewModel.showVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Buffering,
                     is ReviewVideoPlaybackUiState.Preloading -> {
@@ -298,22 +288,14 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             !it.isCompleted
         } ?: launch {
             reviewVideoPlayerViewModel.videoErrorUiState.collectLatest {
-                val isError = it is ReviewVideoErrorUiState.ShowingUnknownError || it is ReviewVideoErrorUiState.ShowingInvalidError
-                binding?.overlayReviewVideoPlayerError?.showWithCondition(isError)
-                binding?.icReviewVideoPlayerError?.showWithCondition(isError)
-                binding?.tvReviewVideoPlayerError?.showWithCondition(isError)
-                if (it is ReviewVideoErrorUiState.ShowingUnknownError) {
+                binding?.overlayReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                binding?.icReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                binding?.tvReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                if (it is ReviewVideoErrorUiState.Showing) {
                     showToasterError(
-                        getString(R.string.review_video_player_unknown_error_message),
+                        getString(R.string.review_video_player_error_message),
                         getString(R.string.review_video_player_error_action_text)
                     )
-                    binding?.tvReviewVideoPlayerError?.text = getString(R.string.review_video_player_unknown_error_title)
-                } else if (it is ReviewVideoErrorUiState.ShowingInvalidError) {
-                    showToasterError(
-                        getString(R.string.review_video_player_invalid_error_message),
-                        getString(R.string.review_video_player_error_action_text)
-                    )
-                    binding?.tvReviewVideoPlayerError?.text = getString(R.string.review_video_player_invalid_error_title)
                 }
             }
         }
