@@ -3,16 +3,14 @@ package com.tokopedia.shopdiscount.select.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.utils.constant.ZERO
-import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
-import javax.inject.Inject
 
-class SelectProductActivity : AppCompatActivity() {
+class SelectProductActivity : BaseSimpleActivity() {
 
     companion object {
         private const val BUNDLE_KEY_BUNDLE_DISCOUNT_STATUS_ID = "discount-status-id"
@@ -25,9 +23,6 @@ class SelectProductActivity : AppCompatActivity() {
         }
     }
 
-    @Inject
-    lateinit var router: FragmentRouter
-
     private val discountStatusId by lazy {
         intent.getIntExtra(
             BUNDLE_KEY_BUNDLE_DISCOUNT_STATUS_ID,
@@ -35,12 +30,9 @@ class SelectProductActivity : AppCompatActivity() {
         ).orZero()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupDependencyInjection()
-        setContentView(R.layout.activity_select_product)
-        displayFragment()
-    }
+    override fun getLayoutRes() = R.layout.activity_select_product
+    override fun getNewFragment() = SelectProductFragment.newInstance(discountStatusId)
+    override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
@@ -49,9 +41,10 @@ class SelectProductActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun displayFragment() {
-        val fragment = SelectProductFragment.newInstance(discountStatusId)
-        router.replace(supportFragmentManager, R.id.container, fragment)
-    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupDependencyInjection()
+        setContentView(R.layout.activity_select_product)
+    }
 }

@@ -27,7 +27,6 @@ import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
-import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -74,9 +73,6 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var router: FragmentRouter
 
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
