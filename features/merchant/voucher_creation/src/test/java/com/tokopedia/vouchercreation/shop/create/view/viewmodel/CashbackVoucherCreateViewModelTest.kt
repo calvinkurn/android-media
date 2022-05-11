@@ -152,6 +152,11 @@ class CashbackVoucherCreateViewModelTest {
         getPrivateField(mViewModel, "mCashbackTypeLiveData") as MutableLiveData<CashbackType>
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private val mIsFirstTimeDrawLiveData: MutableLiveData<Boolean> by lazy {
+        getPrivateField(mViewModel, "mIsFirstTimeDrawLiveData") as MutableLiveData<Boolean>
+    }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -813,6 +818,33 @@ class CashbackVoucherCreateViewModelTest {
             changeCashbackType(CashbackType.Percentage)
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+
+            val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
+                value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
+            }
+
+            assert(isSuccess ?: false)
+        }
+    }
+
+    @Test
+    fun `check whether voucher image value change to rupiah after set cashback type & live data is not first drawn`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Rupiah.MaximumDiscount)
+            refreshValue()
+            changeCashbackType(CashbackType.Rupiah)
+
+            assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
+        }
+    }
+
+    @Test
+    fun `check whether voucher image value change to percentage after set cashback type & live data is not first drawn`() {
+        with(mViewModel) {
+            addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
+            addTextFieldValueToCalculation(DUMMY_PERCENTAGE, PromotionType.Cashback.Percentage.Amount)
+            refreshValue()
+            changeCashbackType(CashbackType.Percentage)
 
             val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
                 value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE
