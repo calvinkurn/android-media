@@ -12,18 +12,31 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
+import com.tokopedia.loginregister.inactive_phone_number.di.DaggerInactivePhoneNumberComponent
+import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
+import javax.inject.Inject
 
-class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
+class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
+
+    private val inactivePhoneNumberComponent: InactivePhoneNumberComponent by lazy(
+        LazyThreadSafetyMode.NONE
+    ) { initializeInactivePhoneNumber() }
+
+    @Inject
+    lateinit var inactivePhoneNumberAnalytics: InactivePhoneNumberAnalytics
 
     private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
     private val bindingChild get() = _bindingChild!!
@@ -37,7 +50,19 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
         setChild(bindingChild.root)
         setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
 
+        inactivePhoneNumberComponent.inject(this)
+
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initializeInactivePhoneNumber(): InactivePhoneNumberComponent {
+        val loginRegisterComponent = DaggerLoginRegisterComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
+        return DaggerInactivePhoneNumberComponent
+            .builder()
+            .loginRegisterComponent(loginRegisterComponent)
+            .build()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,16 +70,23 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
         setListener()
     }
 
-    private fun setListener(){
+    private fun setListener() {
 
         initTokopediaCareTextNeedHelpBottomSheet(bindingChild.toNeedAnotherHelp)
 
         bindingChild.ubInactivePhoneNumber.setOnClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
         }
 
         bindingChild.ubForgotPassword.setOnClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
+        }
+
+        setCloseClickListener {
+            inactivePhoneNumberAnalytics.trackPageBottomSheetClickClose()
+            dismiss()
         }
 
     }
@@ -77,7 +109,10 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
@@ -89,17 +124,23 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
         typography.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
-    private fun goToTokopediaCare(){
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)))
+    private fun goToTokopediaCare() {
+        RouteManager.route(
+            context,
+            String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                TokopediaUrl.getInstance().MOBILEWEB.plus(TOKOPEDIA_CARE_PATH)
+            )
+        )
     }
 
     private fun goToForgotPassword() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
-        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
     }
 
-    private fun goToInactivePhoneNumber(){
+    private fun goToInactivePhoneNumber() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INACTIVE_PHONE_NUMBER)
         startActivity(intent)
     }

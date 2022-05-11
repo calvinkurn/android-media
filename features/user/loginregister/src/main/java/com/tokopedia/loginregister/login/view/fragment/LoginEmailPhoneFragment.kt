@@ -673,10 +673,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
 
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+            forgotPassword?.text = setUpForgotPasswordTitle()
             forgotPassword?.setOnClickListener {
-                analytics.trackClickForgotPassword()
-//                goToForgotPassword()
-                showNeedHelpBottomSheet()
+                if (isUsingInactivePhoneNumber()) {
+                    inactivePhoneNumberAnalytics.trackPageClickButuhBantuan()
+                    showNeedHelpBottomSheet()
+                } else {
+                    analytics.trackClickForgotPassword()
+                    goToForgotPassword()
+                }
             }
         }
 
@@ -812,18 +817,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             ROLLENCE_KEY_INACTIVE_PHONE_NUMBER,
             ""
         ).orEmpty()
-        return newInactivePhoneNumberAbTestKey.isNotEmpty()
-    }
-
-    private fun goToInactivePhoneNumber(){
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INACTIVE_PHONE_NUMBER)
-        startActivity(intent)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        needHelpBottomSheetUnify = null
+        return true //newInactivePhoneNumberAbTestKey.isNotEmpty()
     }
 
     private fun showNeedHelpBottomSheet(){
@@ -1857,6 +1851,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     companion object {
+
+        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
