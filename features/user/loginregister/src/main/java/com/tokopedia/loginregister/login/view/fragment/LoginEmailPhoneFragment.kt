@@ -2,7 +2,6 @@ package com.tokopedia.loginregister.login.view.fragment
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -77,6 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.bottomsheet.InactivePhoneNumberBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -673,15 +673,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
 
             val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
-            forgotPassword?.text = setUpForgotPasswordTitle()
             forgotPassword?.setOnClickListener {
-                if (isUsingInactivePhoneNumber()) {
-                    inactivePhoneNumberAnalytics.trackPageClickButuhBantuan()
-                    showNeedHelpBottomSheet()
-                } else {
-                    analytics.trackClickForgotPassword()
-                    goToForgotPassword()
-                }
+                analytics.trackClickForgotPassword()
+//                goToForgotPassword()
+                showNeedHelpBottomSheet()
             }
         }
 
@@ -832,62 +827,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun showNeedHelpBottomSheet(){
-        needHelpBottomSheetUnify = createNeedHelpBottomSheet(context)
-
-        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
-    }
-
-    @SuppressLint("ResourcePackage")
-    private fun createNeedHelpBottomSheet(context: Context?): BottomSheetUnify {
-        val bottomSheetUnify = BottomSheetUnify()
-        val viewChild = View.inflate(context, R.layout.layout_need_help_bottomsheet, null)
-        bottomSheetUnify.setChild(viewChild)
-        bottomSheetUnify.setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
-
-        val toNeedAnotherHelp = viewChild.findViewById<Typography>(R.id.to_need_another_help)
-        initTokopediaCareTextNeedHelpBottomSheet(toNeedAnotherHelp)
-
-        val ubForgotPassword = viewChild.findViewById<UnifyButton>(R.id.ub_forgot_password)
-        ubForgotPassword.setOnClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickForgotPassword()
-            goToForgotPassword()
-        }
-
-        val ubInactivePhoneNumber = viewChild.findViewById<UnifyButton>(R.id.ub_inactive_phone_number)
-        ubInactivePhoneNumber.setOnClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
-            goToInactivePhoneNumber()
-        }
-
-        bottomSheetUnify.setCloseClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickClose()
-            bottomSheetUnify.dismiss()
-        }
-
-        return bottomSheetUnify
-    }
-
-    private fun initTokopediaCareTextNeedHelpBottomSheet(typography: Typography) {
-        val message = getString(R.string.ipn_need_another_help)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    inactivePhoneNumberAnalytics.trackPageBottomSheetClickTokopediaCare()
-                    goToTokopediaCareWebview()
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                }
-            },
-            message.indexOf(getString(R.string.call_tokopedia_care)),
-            message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
-            0
-        )
-        typography.movementMethod = LinkMovementMethod.getInstance()
-        typography.setText(spannable, TextView.BufferType.SPANNABLE)
+        val needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
+        needHelpBottomSheetUnify.showBottomSheet(childFragmentManager)
     }
 
     override fun goToTokopediaCareWebview() {
@@ -1917,8 +1858,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     companion object {
 
-        private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
-
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
@@ -1928,8 +1867,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
-
-        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
