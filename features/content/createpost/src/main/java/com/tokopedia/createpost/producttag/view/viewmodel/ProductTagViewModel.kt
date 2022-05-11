@@ -7,6 +7,9 @@ import com.tokopedia.createpost.producttag.util.extension.combine
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.*
@@ -23,8 +26,8 @@ import kotlinx.coroutines.launch
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class ProductTagViewModel @AssistedInject constructor(
-    @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-    @Assisted("shopBadge") val shopBadge: String,
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) val shopBadge: String,
     @Assisted("authorId") private val authorId: String,
     @Assisted("authorType") private val authorType: String,
     private val repo: ProductTagRepository,
@@ -34,8 +37,8 @@ class ProductTagViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-            @Assisted("shopBadge") shopBadge: String,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted("authorId") authorId: String,
             @Assisted("authorType") authorType: String,
         ): ProductTagViewModel

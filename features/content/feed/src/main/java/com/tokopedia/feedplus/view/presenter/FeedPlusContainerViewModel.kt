@@ -74,7 +74,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.setCacheStrategy(authorListEmpty)
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
-                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
+                GetWhitelistUseCase.createRequestParams(""))
         )
         getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {

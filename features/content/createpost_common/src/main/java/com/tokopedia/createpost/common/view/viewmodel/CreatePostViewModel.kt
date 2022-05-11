@@ -24,7 +24,7 @@ data class CreatePostViewModel(
     var mediaHeight: Int = 0,
     var shopName: String = "",
     var shopBadge: String = "",
-    var productTagSources: List<String> = listOf(),
+    var productTagSources: List<String> = emptyList(),
 ) : Parcelable {
     val isEditState: Boolean
         get() = postId.isNotBlank()
@@ -53,8 +53,8 @@ data class CreatePostViewModel(
             source.createTypedArrayList(MediaModel.CREATOR) ?: arrayListOf(),
             source.createTypedArrayList(RelatedProductItem.CREATOR) ?: arrayListOf(),
             source.readString() ?: "",
-        productTagSources = source.createStringArrayList() ?: listOf(),
-            )
+            productTagSources = source.createStringArrayList() ?: emptyList(),
+        )
 
     override fun describeContents() = 0
 

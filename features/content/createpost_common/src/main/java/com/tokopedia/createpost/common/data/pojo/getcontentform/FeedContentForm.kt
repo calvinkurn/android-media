@@ -1,11 +1,10 @@
 package com.tokopedia.createpost.common.data.pojo.getcontentform
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class FeedContentForm(
     @SerializedName("authors")
-    val authors: List<Author> = listOf(),
+    val authors: List<Author> = emptyList(),
 
     @SerializedName("error")
     val error: String = "",
@@ -17,7 +16,7 @@ data class FeedContentForm(
     val media: Media = Media(),
 
     @SerializedName("relatedItems")
-    val relatedItems: List<RelatedItem> = listOf(),
+    val relatedItems: List<RelatedItem> = emptyList(),
 
     @SerializedName("token")
     val token: String = "",
@@ -29,14 +28,11 @@ data class FeedContentForm(
     val defaultPlaceholder: String = "",
 
     @SerializedName("caption")
-    @Expose
     val caption: String = "",
 
     @SerializedName("defaultCaptions")
-    @Expose
-    val defaultCaptions: List<String> = listOf(),
+    val defaultCaptions: List<String> = emptyList(),
 
     @SerializedName("productTagSources")
-    @Expose
-    val productTagSources: List<String> = listOf(),
+    val productTagSources: List<String> = emptyList(),
 )

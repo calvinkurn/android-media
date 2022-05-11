@@ -70,12 +70,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 fragment.setData(mFeedAccountList)
                 fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                        /** TODO: show confirmation popup first */
-                        selectedFeedAccount = feedAccount
-                        toolbarCommon.apply {
-                            subtitle = selectedFeedAccount.name
-                            icon = selectedFeedAccount.iconUrl
+                        if(feedAccount.type != selectedFeedAccount.type && feedAccount.isShop) {
+                            showSwitchAccountDialog(feedAccount)
+                            return
                         }
+
+                        changeSelectedFeedAccount(feedAccount)
                     }
                 })
             }
@@ -309,7 +309,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(feedAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-        selectedFeedAccount = mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: FeedAccountUiModel.Empty
+        selectedFeedAccount = if(mFeedAccountList.isEmpty()) FeedAccountUiModel.Empty
+        else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId } ?: mFeedAccountList.first()
 
         toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
@@ -337,5 +338,39 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         }
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    private fun showSwitchAccountDialog(feedAccount: FeedAccountUiModel) {
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
+            setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
+            setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
+            setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
+
+            setPrimaryCTAClickListener { dismiss() }
+
+            setSecondaryCTAClickListener {
+                dismiss()
+                when(intent.extras?.get(PARAM_TYPE)) {
+                    TYPE_CONTENT_TAGGING_PAGE -> {
+                        (fragment as CreatePostPreviewFragmentNew).deleteAllProducts()
+                    }
+                    TYPE_CONTENT_PREVIEW_PAGE -> {
+                        (fragment as ContentCreateCaptionFragment).deleteAllProducts()
+                    }
+                }
+
+                changeSelectedFeedAccount(feedAccount)
+            }
+        }.show()
+    }
+
+    private fun changeSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+        selectedFeedAccount = feedAccount
+
+        toolbarCommon.apply {
+            subtitle = selectedFeedAccount.name
+            icon = selectedFeedAccount.iconUrl
+        }
     }
 }

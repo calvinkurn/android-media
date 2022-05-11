@@ -1,9 +1,11 @@
 package com.tokopedia.createpost.producttag.view.viewmodel.factory
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.savedstate.SavedStateRegistryOwner
+import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
+import com.tokopedia.createpost.producttag.util.SHOP_BADGE
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -13,20 +15,20 @@ import dagger.assisted.AssistedInject
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagViewModelFactory @AssistedInject constructor(
-    @Assisted activity: FragmentActivity,
-    @Assisted("productTagSourceRaw") private val productTagSourceRaw: String,
-    @Assisted("shopBadge") private val shopBadge: String,
+    @Assisted owner: SavedStateRegistryOwner,
+    @Assisted(PRODUCT_TAG_SOURCE_RAW) private val productTagSourceRaw: String,
+    @Assisted(SHOP_BADGE) private val shopBadge: String,
     @Assisted("authorId") private val authorId: String,
     @Assisted("authorType") private val authorType: String,
     private val productTagViewModelFactory: ProductTagViewModel.Factory,
-) : AbstractSavedStateViewModelFactory(activity, null) {
+) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @AssistedFactory
     interface Creator {
         fun create(
-            activity: FragmentActivity,
-            @Assisted("productTagSourceRaw") productTagSourceRaw: String,
-            @Assisted("shopBadge") shopBadge: String,
+            owner: SavedStateRegistryOwner,
+            @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
+            @Assisted(SHOP_BADGE) shopBadge: String,
             @Assisted("authorId") authorId: String,
             @Assisted("authorType") authorType: String,
         ): ProductTagViewModelFactory

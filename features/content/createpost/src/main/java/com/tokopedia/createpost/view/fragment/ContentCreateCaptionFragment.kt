@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -104,6 +103,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         if (createContentPostViewModel.getPostData() != null)
         createPostModel = createContentPostViewModel.getPostData()!!
     }
+
     private fun initView() {
         adapter?.updateProduct(createPostModel.completeImageList)
         if (!createPostModel.isEditState)
@@ -166,4 +166,12 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         super.onDestroy()
     }
 
+    fun deleteAllProducts() {
+        createPostModel.completeImageList.forEach {
+            it.products.clear()
+            it.tags.clear()
+        }
+        createContentPostViewModel.setNewContentData(createPostModel)
+        adapter?.updateProduct(createPostModel.completeImageList)
+    }
 }

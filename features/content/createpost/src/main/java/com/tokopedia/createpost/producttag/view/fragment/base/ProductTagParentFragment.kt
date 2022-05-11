@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -37,7 +36,6 @@ import javax.inject.Inject
 * Created By : Jonathan Darwin on April 25, 2022
 */
 class ProductTagParentFragment @Inject constructor(
-    private val fragmentFactory: FragmentFactory,
     private val userSession: UserSessionInterface,
     private val viewModelFactoryCreator: ProductTagViewModelFactory.Creator,
 ) : TkpdBaseV4Fragment() {
@@ -53,8 +51,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = createViewModelProvider()[ProductTagViewModel::class.java]
-        childFragmentManager.fragmentFactory = fragmentFactory
+        viewModel = createProductTagViewModel()
     }
 
     override fun onCreateView(
@@ -246,7 +243,7 @@ class ProductTagParentFragment @Inject constructor(
         return ViewModelProvider(
             this,
             viewModelFactoryCreator.create(
-                requireActivity(),
+                this,
                 getStringArgument(EXTRA_PRODUCT_TAG_LIST),
                 getStringArgument(EXTRA_SHOP_BADGE),
                 getStringArgument(EXTRA_AUTHOR_ID),

@@ -90,6 +90,12 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="content_creation_barang_text">Barang</string>
     <string name="content_creation_toko_text">Toko</string>
 
+    <!-- Content Creation UGC -->
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_title">Yakin mau ganti ke profil tokomu?</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_desc">Tag yang dipilih akan hilang, karena kamu hanya bisa tag dari produk tokomu.</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_primary_button">Lanjut Tag Produk</string>
+    <string name="feed_cc_dialog_switch_account_buyer_to_seller_secondary_button">Ganti sebagai penjual</string>
+
     <!-- Product Tag -->
     <string name="content_creation_product_tag_title">Tag Produk</string>
     <string name="cc_product_tag_source_label">Pilih produk dari</string>

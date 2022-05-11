@@ -89,7 +89,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
-    private var authorList: List<Author>? = null
+    private val authorList: MutableList<Author> = mutableListOf()
     private var postProgressUpdateView: PostProgressUpdateView? = null
     private var mInProgress = false
 
@@ -176,7 +176,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         })
         viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> renderFab(it.data)
+                is Success -> handleWhitelistData(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
             }
         })
@@ -273,11 +273,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onResume() {
         super.onResume()
-        if (!userSession.isLoggedIn || !isSeller)
-            fab_feed.visibility = View.GONE
-        else
-            fab_feed.visibility = View.VISIBLE
-
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
                 val isEditPost = activity?.intent?.getBooleanExtra(
@@ -403,68 +398,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
 
-        val items = arrayListOf<FloatingButtonItem>()
-
-        if (userSession.hasShop() && userSession.isLoggedIn) {
-            items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
-                    title = getString(R.string.feed_fab_create_live),
-                    listener = {
-                        fab_feed.menuOpen = false
-                        entryPointAnalytic.clickCreateLiveEntryPoint()
-
-                        RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
-                    }
-                )
-            )
-        }
-
-        if (isSeller && userSession.isLoggedIn) {
-            items.add(
-                    FloatingButtonItem(
-                            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-                            title = getString(R.string.feed_fab_create_post),
-                            listener = {
-                                try {
-                                    fab_feed.menuOpen = false
-                                    entryPointAnalytic.clickCreatePostEntryPoint()
-                                    val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-                                    if (shouldShowNewContentCreationFlow) {
-                                        val authors = viewModel.feedContentForm.authors
-                                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                                                MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                        intent.putExtra(TITLE,
-                                                getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
-                                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                                        intent.putExtra(SUB_TITLE, name)
-                                        intent.putExtra(TOOLBAR_ICON_URL,
-                                                authors.first().thumbnail
-                                        )
-                                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                        startActivity(intent)
-                                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                                    } else {
-                                        openBottomSheetToFollowOldFlow()
-                                    }
-                                } catch (e: Exception) {
-                                    Timber.e(e)
-                                }
-                            }
-                    )
-            )
-        }
-
-        if (items.isNotEmpty()) {
-            fab_feed.addItem(items)
-            fab_feed.show()
-        } else {
-            fab_feed.hide()
-        }
+        renderCompleteFab()
     }
 
     private fun enableContentCreationNewFlow(): Boolean {
@@ -548,12 +482,84 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist(authorList?.isEmpty()?:false)
+            viewModel.getWhitelist(authorList.isEmpty())
         }
     }
 
-    private fun renderFab(whitelistDomain: WhitelistDomain) {
-        authorList = whitelistDomain.authors
+    private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
+        authorList.clear()
+        authorList.addAll(whitelistDomain.authors)
+
+        renderCompleteFab()
+    }
+
+    private fun renderCompleteFab() {
+        hideAllFab()
+
+        val items = arrayListOf<FloatingButtonItem>()
+
+        if (userSession.hasShop() && userSession.isLoggedIn) {
+            items.add(createCreateLiveFab())
+        }
+
+        if(authorList.isNotEmpty()) {
+            items.add(
+                FloatingButtonItem(
+                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+                    title = getString(R.string.feed_fab_create_post),
+                    listener = {
+                        try {
+                            fab_feed.menuOpen = false
+                            entryPointAnalytic.clickCreatePostEntryPoint()
+                            val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                            if (shouldShowNewContentCreationFlow) {
+                                val authors = viewModel.feedContentForm.authors
+                                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                                    MAX_MULTI_SELECT_ALLOWED_VALUE)
+                                intent.putExtra(TITLE,
+                                    getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
+                                val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+                                intent.putExtra(SUB_TITLE, name)
+                                intent.putExtra(TOOLBAR_ICON_URL,
+                                    authors.first().thumbnail
+                                )
+                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                startActivity(intent)
+                                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                            } else {
+                                openBottomSheetToFollowOldFlow()
+                            }
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
+                    }
+                )
+            )
+        }
+
+        if (items.isNotEmpty()) {
+            fab_feed.addItem(items)
+            fab_feed.show()
+        } else {
+            fab_feed.hide()
+        }
+    }
+
+    private fun createCreateLiveFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+            title = getString(R.string.feed_fab_create_live),
+            listener = {
+                fab_feed.menuOpen = false
+                entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+            }
+        )
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
@@ -561,7 +567,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist(authorList?.isEmpty()?:false)
+                    viewModel.getWhitelist(authorList.isEmpty())
                 }
             })
         }

@@ -32,7 +32,6 @@ import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.posttag.TagViewProvider
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
@@ -60,7 +59,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private lateinit var tvImagePosition: Typography
     private lateinit var icProductTag: IconUnify
     private lateinit var tvContentTagProduct: Typography
-    private lateinit var feecdContentCarousel: CarouselUnify
+    private lateinit var feedContentCarousel: CarouselUnify
     private lateinit var pageIndicatorView: PageControl
 
     /** View Video Post */
@@ -151,18 +150,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         tvImagePosition = view.findViewById(R.id.image_position_text)
         icProductTag = view.findViewById(R.id.product_tag_button)
         tvContentTagProduct = view.findViewById(R.id.content_tag_product_text)
-        feecdContentCarousel = view.findViewById(R.id.feed_content_carousel)
+        feedContentCarousel = view.findViewById(R.id.feed_content_carousel)
         pageIndicatorView = view.findViewById(R.id.page_indicator)
 
         val relatedProducts = ArrayList(createPostModel.relatedProducts)
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
+
         createPostModel.maxProduct = 5
-        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        tvImagePosition.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
-            pos
-        )
+        updateTotalProductTaggedText()
+
         if (getLatestTotalProductCount() == 5)
             disableProductIcon()
         else
@@ -176,8 +173,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
 
         updateCarouselView()
-        feecdContentCarousel.activeIndex = createPostModel.currentCorouselIndex
+        feedContentCarousel.activeIndex = createPostModel.currentCorouselIndex
     }
+
     private fun setProductTagListener(){
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
 
@@ -203,7 +201,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
         }
-
     }
 
     private fun removeExtraTagListElement(mediaModel: MediaModel) {
@@ -224,7 +221,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
 
-        feecdContentCarousel.apply {
+        feedContentCarousel.apply {
             stage.removeAllViews()
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             if (imageList.size > 1) {
@@ -371,7 +368,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         return (videoItem)
     }
 
-    fun playVideo(mediaModel: MediaModel, position: Int = feecdContentCarousel.activeIndex) {
+    fun playVideo(mediaModel: MediaModel, position: Int = feedContentCarousel.activeIndex) {
         setVideoControl(
             mediaModel,
             position
@@ -449,6 +446,28 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
+    fun deleteAllProducts() {
+        createPostModel.completeImageList.forEach {
+            it.products.clear()
+            it.tags.clear()
+
+            if (it.type == MediaType.VIDEO) cvProductTaggingParent.hide()
+            else {
+                it.imageView?.run {
+                    val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
+                    val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
+
+                    lihatProductTagView.hide()
+                    layout.removeAllViews()
+                }
+            }
+        }
+
+        updateTotalProductTaggedText()
+        enableProductIcon()
+        updateResultIntent()
+    }
+
     override fun deleteItemFromProductTagList(
         position: Int,
         productId: String,
@@ -471,11 +490,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         } catch (e: Exception) {
             Timber.e(e)
         }
-        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        tvImagePosition.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
-            pos
-        )
+
+        updateTotalProductTaggedText()
 
         //update tagIndex
         createPostModel.completeImageList[currentImagePos].tags.forEachIndexed { index, feedXMediaTagging ->
@@ -488,7 +504,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (mediaModel.type == MediaType.VIDEO)
             bindVideo(mediaModel)
         else
-            bindImageAfterDelete(mediaModel, currentImagePos, productId)
+            removeProductTagViewFromImage(mediaModel, productId)
 
         updateResultIntent()
 
@@ -497,9 +513,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 getString(R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
-
-
     }
+
+    private fun updateTotalProductTaggedText() {
+        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
+        tvImagePosition.text = String.format(
+            requireContext().getString(R.string.feed_content_position_text),
+            pos
+        )
+    }
+
     private fun findProductIndexByProductId(productId: String, currentImagePos: Int): Int {
         createPostModel.completeImageList[currentImagePos].products.forEachIndexed { index, product ->
             if (product.id == productId)
@@ -577,16 +600,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         removeExtraTagListElement(mediaModel)
 
-        val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-
-        try {
-            tvImagePosition.text = String.format(
-                    requireContext().getString(R.string.feed_content_position_text),
-                    pos
-            )
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        updateTotalProductTaggedText()
 
         if (getLatestTotalProductCount() == 5)
             disableProductIcon()
@@ -619,6 +633,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         return count
     }
+
     private fun disableProductIcon(){
         val color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN300 ) }
         color?.let {
@@ -634,21 +649,21 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             tvContentTagProduct.setTextColor(it)
         }
     }
-    private fun bindImageAfterDelete(media: MediaModel, mediaIndex: Int, productId: String) {
+
+    private fun removeProductTagViewFromImage(media: MediaModel, productId: String) {
         val products = media.products
         val imageItem = media.imageView
+
         imageItem?.run {
             val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
+
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
             for (view in layout.children) {
-                if (view.tag == productId)
-                    layout.removeView(view)
+                if (view.tag == productId) layout.removeView(view)
             }
-
         }
-
     }
 
     private fun bindImage(media: MediaModel, mediaIndex: Int) {
