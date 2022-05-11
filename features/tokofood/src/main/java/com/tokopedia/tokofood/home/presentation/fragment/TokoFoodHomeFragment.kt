@@ -106,16 +106,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var localCacheModel: LocalCacheModel? = null
     private var movingPosition = 0
-    private val homeMainToolbarHeight: Int
-        get() {
-            val defaultHeight = resources.getDimensionPixelSize(
-                R.dimen.tokofood_default_toolbar_status_height
-            )
-            val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(unifyR.dimen.spacing_lvl3)
-
-            return height + padding
-        }
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 

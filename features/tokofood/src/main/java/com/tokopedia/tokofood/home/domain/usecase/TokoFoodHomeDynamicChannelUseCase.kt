@@ -21,7 +21,9 @@ class TokoFoodHomeDynamicChannelUseCase @Inject constructor(graphqlRepository: G
     suspend fun execute(
         localCacheModel: LocalCacheModel?
     ): TokoFoodHomeLayoutResponse {
-        delay(1000)
-        return Gson().fromJson(DummyData.dummyHomeData, TokoFoodHomeLayoutResponse::class.java)
+//        delay(1000)
+//        return Gson().fromJson(DummyData.dummyHomeData, TokoFoodHomeLayoutResponse::class.java)
+        setRequestParams(TokoFoodHomeDynamicChannelQuery.createRequestParams(localCacheModel))
+        return executeOnBackground()
     }
 }
