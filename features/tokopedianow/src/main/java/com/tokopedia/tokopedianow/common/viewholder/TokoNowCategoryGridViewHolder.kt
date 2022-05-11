@@ -29,7 +29,6 @@ class TokoNowCategoryGridViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_category_grid
-        private const val GRID_SPAN_COUNT = 2
     }
 
     private var binding: ItemTokopedianowHomeCategoryGridBinding? by viewBinding()
