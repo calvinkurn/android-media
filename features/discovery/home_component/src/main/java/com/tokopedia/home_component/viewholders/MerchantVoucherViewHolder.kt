@@ -141,7 +141,7 @@ class MerchantVoucherViewHolder(
     private fun setHeaderComponent(element: MerchantVoucherDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                merchantVoucherComponentListener.onViewAllCardClicked(
+                merchantVoucherComponentListener.onViewAllClicked(
                     element.channelModel.channelHeader.name,
                     link,
                     merchantVoucherComponentListener.getUserId(),
