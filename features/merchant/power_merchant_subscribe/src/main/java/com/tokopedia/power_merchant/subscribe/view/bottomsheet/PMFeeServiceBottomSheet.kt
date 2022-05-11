@@ -1,17 +1,12 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.view.View
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant.Url.PM_FEE_SERVICE
 import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmFeeServiceBinding
+import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class PMFeeServiceBottomSheet :
     BaseBottomSheet<BottomSheetPmFeeServiceBinding>() {
@@ -23,6 +18,10 @@ class PMFeeServiceBottomSheet :
         }
     }
 
+    private val webViewPage: BaseSessionWebViewFragment by lazy {
+        BaseSessionWebViewFragment.newInstance(PM_FEE_SERVICE)
+    }
+
     override fun bind(view: View) = BottomSheetPmFeeServiceBinding.bind(view)
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_fee_service
@@ -32,10 +31,7 @@ class PMFeeServiceBottomSheet :
             context?.getString(com.tokopedia.power_merchant.subscribe.R.string.pm_fee_service_category)
                 ?: String.EMPTY
         setTitle(title)
-        progressbar.isIndeterminate = true
-        swipeRefresh()
         setupWebView()
-
     }
 
     fun show(fm: FragmentManager) {
@@ -43,33 +39,8 @@ class PMFeeServiceBottomSheet :
     }
 
     private fun setupWebView(){
-        binding?.wvFeeService?.webViewClient = object:WebViewClient(){
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                binding?.progressbar?.gone()
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                binding?.progressbar?.gone()
-            }
-        }
-        loadUrl()
-    }
-
-    private fun loadUrl(){
-        binding?.wvFeeService?.loadUrl(PM_FEE_SERVICE)
-    }
-    private fun swipeRefresh(){
-        binding?.sflWebView?.setOnRefreshListener {
-            binding?.sflWebView?.isRefreshing = false
-            binding?.progressbar?.visible()
-            loadUrl()
-        }
+        childFragmentManager.beginTransaction()
+            .replace(R.id.frameFeeServiceFragment, webViewPage)
+            .commit()
     }
 }

@@ -203,7 +203,8 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun showServiceFeeByCategory() {
-
+        val bottomSheet = PMFeeServiceBottomSheet.createInstance()
+        bottomSheet.show(childFragmentManager)
     }
 
     protected open fun observePowerMerchantBasicInfo() {
@@ -332,20 +333,19 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     private fun showRegularPmDeactivationBottomSheet() {
-        val bottomSheet = PMFeeServiceBottomSheet.createInstance()
-//        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt())
-//        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
-//        bottomSheet.setListener(object :
-//            PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
-//            override fun onClickCancelButton() {
-//                showDeactivationQuestionnaire(PMConstant.PMTierType.POWER_MERCHANT)
-//                bottomSheet.dismiss()
-//            }
-//
-//            override fun onClickBackButton() {
-//                bottomSheet.dismiss()
-//            }
-//        })
+        val bottomSheet = PowerMerchantDeactivationBottomSheet.newInstance(getExpiredTimeFmt())
+        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) return
+        bottomSheet.setListener(object :
+            PowerMerchantDeactivationBottomSheet.BottomSheetCancelListener {
+            override fun onClickCancelButton() {
+                showDeactivationQuestionnaire(PMConstant.PMTierType.POWER_MERCHANT)
+                bottomSheet.dismiss()
+            }
+
+            override fun onClickBackButton() {
+                bottomSheet.dismiss()
+            }
+        })
         bottomSheet.show(childFragmentManager)
     }
 
