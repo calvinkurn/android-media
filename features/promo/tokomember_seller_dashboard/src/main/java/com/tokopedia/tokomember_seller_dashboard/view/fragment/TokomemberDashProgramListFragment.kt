@@ -110,7 +110,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
     }
 
-    override fun option(type: String, shopId: Int, programId: Int) {
+    override fun option(type: String, programId: Int, shopId: Int) {
         val bundle = Bundle()
         bundle.putBoolean(BUNDLE_EDIT_PROGRAM, true)
         bundle.putInt(BUNDLE_SHOP_ID, shopId)

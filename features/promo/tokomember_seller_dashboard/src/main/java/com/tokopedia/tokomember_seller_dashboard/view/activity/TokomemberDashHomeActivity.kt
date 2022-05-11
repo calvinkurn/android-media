@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
@@ -60,6 +62,14 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 it.startActivity(intent)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_CODE_REFRESH){
+            if(resultCode == Activity.RESULT_OK){
             }
         }
     }

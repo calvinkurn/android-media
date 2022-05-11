@@ -19,6 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberCreateCardFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashPreviewFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberKuponCreateFragment
@@ -137,5 +138,13 @@ class TokomemberDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback
             }
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_CODE_REFRESH){
+            if(resultCode == Activity.RESULT_OK){
+            }
+        }
     }
 }

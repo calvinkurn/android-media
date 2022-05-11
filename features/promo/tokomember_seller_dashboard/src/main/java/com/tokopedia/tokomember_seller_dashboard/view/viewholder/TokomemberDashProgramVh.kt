@@ -86,7 +86,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         btn_edit.setOnClickListener {
-            item.id?.toInt()?.let { it1 -> programActions.option(EDIT, it1, shopId) }
+            item.id?.toInt()?.let { it1 -> programActions.option(EDIT, programId = it1, shopId = shopId) }
         }
          /*   val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
             intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
