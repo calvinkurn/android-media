@@ -191,21 +191,9 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun showShopScoreTermBottomSheet(shopInfo: PMShopInfoUiModel) {
-        val isPmPro = shopInfo.shopLevel >= PMConstant.ShopLevel.TWO
-        val shopScoreThreshold = if (isPmPro) {
-            shopInfo.shopScorePmProThreshold
-        } else {
-            shopInfo.shopScoreThreshold
-        }
-        val pmLabel = if (isPmPro) {
-            getString(R.string.pm_power_merchant_pro)
-        } else {
-            getString(R.string.pm_power_merchant)
-        }
-
         val title = getString(R.string.pm_bottom_sheet_shop_score_title)
         val description =
-            getString(R.string.pm_bottom_sheet_shop_score_description, shopScoreThreshold, pmLabel)
+            getString(R.string.pm_bottom_sheet_shop_score_description, shopInfo.shopScoreThreshold)
         val ctaText = getString(R.string.pm_learn_shop_performance)
         val illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
 
