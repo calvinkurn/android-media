@@ -1314,10 +1314,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyRecentView(productId, true)
     }
 
-    private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
-    }
-
     private fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
         showToastMessageRed(errorMessage)
         cartAdapter.notifyByProductId(productId, true)
@@ -2044,7 +2040,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 forceExpand = true
             }
         }
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
+
+        val isUsingWishlistV2 = context?.let {
+            WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
+        }
+
+        if (isUsingWishlistV2 == true) {
+            dPresenter.processAddToWishlistV2(productId, cartId, object: WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                    view?.let { v ->
+                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMessage, v)
+                    }
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    onAddCartToWishlistV2Success(result, productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
+                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+
+            })
+        } else {
+            dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
+        }
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
@@ -3067,8 +3090,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.processInitialGetCartData(getCartId(), false, false)
     }
 
-    override fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
+    override fun onAddCartToWishlistSuccess(
+        message: String,
+        productId: String,
+        cartId: String,
+        isLastItem: Boolean,
+        source: String,
+        forceExpandCollapsedUnavailableItems: Boolean
+    ) {
         animateProductImage(message)
+
+        when (source) {
+            WISHLIST_SOURCE_AVAILABLE_ITEM -> {
+                cartPageAnalytics.eventAddWishlistAvailableSection(FLAG_IS_CART_EMPTY, productId)
+            }
+            WISHLIST_SOURCE_UNAVAILABLE_ITEM -> {
+                cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
+            }
+        }
+
+        val updateListResult = cartAdapter.removeProductByCartId(listOf(cartId), isLastItem, false)
+        removeLocalCartItem(updateListResult, forceExpandCollapsedUnavailableItems)
+
+        setTopLayoutVisibility()
+
+        if (isLastItem) {
+            refreshCartWithSwipeToRefresh()
+        } else {
+            setLastItemAlwaysSelected()
+        }
+    }
+
+    override fun onAddCartToWishlistV2Success(result: AddToWishlistV2Response.Data.WishlistAddV2, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
+        animateProductImageV2(result)
 
         when (source) {
             WISHLIST_SOURCE_AVAILABLE_ITEM -> {
@@ -3140,6 +3194,61 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     showToastMessageGreen(message)
+                    dPresenter.processGetWishlistData()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+            it.start()
+        }
+    }
+
+    private fun animateProductImageV2(result: AddToWishlistV2Response.Data.WishlistAddV2) {
+        val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
+        var target: Pair<Int, Int>? = null
+
+        if (isNavToolbar) {
+            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+            target = Pair(targetX, 0)
+        } else {
+            target = toolbar.getWishlistIconPosition()
+        }
+
+        tmpAnimatedImage.show()
+
+        val targetX = target.first
+        val targetY = target.second
+
+        val deltaX = targetX - (tmpAnimatedImage.width / 2)
+        val deltaY = targetY - (tmpAnimatedImage.height / 2)
+
+        val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
+        val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
+        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", ANIMATED_IMAGE_FILLED, ANIMATED_IMAGE_ALPHA)
+        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+
+        AnimatorSet().let {
+            it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
+            it.interpolator = DecelerateInterpolator()
+            it.duration = IMAGE_ANIMATION_DURATION
+            it.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
+                    binding?.tmpAnimatedImage?.gone()
+
+                    if (isNavToolbar) {
+                        binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
+                    } else {
+                        toolbar.animateWishlistIcon()
+                    }
+
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                        }
+                    }
                     dPresenter.processGetWishlistData()
                 }
 
