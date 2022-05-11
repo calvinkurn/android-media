@@ -307,7 +307,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     if (!responseHeaderData.success) {
                         showToasterError(responseHeaderData.reason)
                     } else {
-                        redirectToManageProductManagePage()
+                        redirectToManageProductPage()
                     }
                 }
                 is Fail -> {
@@ -318,8 +318,9 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun redirectToManageProductManagePage() {
+    private fun redirectToManageProductPage() {
         ProductManageActivity.start(requireActivity(), true)
+        finishActivity()
     }
 
     private fun finishActivity() {
