@@ -352,11 +352,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun collapseSrw() {
-        collapseSrwPreview()
-        adapter.collapseSrwBubble()
-    }
-
-    private fun collapseSrwPreview() {
         rvSrw?.isExpanded = false
     }
 
@@ -443,7 +438,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatMenu?.setVisibilityListener(object : ChatMenuView.VisibilityListener {
             override fun onShow() {
                 collapseSrw()
-                adapter.collapseSrwBubble()
             }
 
             override fun onHide() {
@@ -2337,6 +2331,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun addSrwBubble() {
+        expandSrwPreview()
         val srwState = rvSrw?.getStateInfo()
         val previews2 = viewModel.getAttachmentsPreview().toList()
         adapter.addSrwBubbleUiModel(srwState, previews2)
