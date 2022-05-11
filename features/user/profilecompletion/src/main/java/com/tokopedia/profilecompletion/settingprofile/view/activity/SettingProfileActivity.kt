@@ -16,19 +16,20 @@ import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfi
  * For navigate: use {@link ApplinkConstInternalGlobal.SETTING_PROFILE}
  */
 
-class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+class SettingProfileActivity : BaseSimpleActivity(),
+    HasComponent<ProfileCompletionSettingComponent> {
 
     override fun getComponent(): ProfileCompletionSettingComponent =
-            DaggerProfileCompletionSettingComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-                    .build()
+	DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
 
     override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return SettingProfileFragment.createInstance(bundle)
+	val bundle = Bundle()
+	if (intent.extras != null) {
+	    bundle.putAll(intent.extras)
+	}
+	return SettingProfileFragment.createInstance(bundle)
     }
 }

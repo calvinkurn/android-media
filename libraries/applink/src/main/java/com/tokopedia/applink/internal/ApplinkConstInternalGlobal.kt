@@ -93,10 +93,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/profile-completion
     const val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
-    // SettingProfileActivity
-    // tokopedia-android-internal://global/setting-profile
-    const val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
-
     // LandingShopCreationActivity
     // tokopedia-android-internal://global/landing-shop-creation
     const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"

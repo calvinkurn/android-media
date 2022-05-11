@@ -84,6 +84,18 @@ class FeedToolBarAnalytics @Inject constructor() {
                 )
         )
     }
+    fun userVisitsFeed(isLoggedInStatus: String, userID: String) {
+        val generalData = mapOf(
+            TrackAppUtils.EVENT to OPEN_SCREEN,
+            EVENT_BUSINESSUNIT to CONTENT,
+            EVENT_CURRENTSITE to MARKETPLACE,
+            USER_ID to userID,
+            IS_LOGGED_IN to isLoggedInStatus,
+            SCREEN_NAME to "/feed"
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(generalData)
+
+    }
      fun createAnalyticsForOpenScreen(
             position: Int,
             isLoggedInStatus: String,

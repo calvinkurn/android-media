@@ -1,0 +1,13 @@
+package com.tokopedia.digital_product_detail.domain.model
+
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
+import com.tokopedia.common.topupbills.data.TopupBillsCatalog
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
+import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
+
+data class MenuDetailModel(
+    val catalog: TopupBillsCatalog = TopupBillsCatalog(),
+    val userPerso: TopupBillsUserPerso = TopupBillsUserPerso(),
+    val tickers: List<TopupBillsTicker> = listOf(),
+    val banners: List<TopupBillsBanner> = listOf()
+)
