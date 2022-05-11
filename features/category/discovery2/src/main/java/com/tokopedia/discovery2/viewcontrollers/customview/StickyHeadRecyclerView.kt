@@ -63,6 +63,14 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.addOnScrollListener(listener)
     }
 
+    fun setOnTouchListenerRecyclerView(listener: View.OnTouchListener){
+        recyclerView.setOnTouchListener(listener)
+    }
+
+    fun addOnItemTouchListener(listener: RecyclerView.OnItemTouchListener){
+        recyclerView.addOnItemTouchListener(listener)
+    }
+
     fun removeHeaderRecyclerView() {
         if (headerRecyclerView.childCount > 0) {
             headerRecyclerView.animate().translationY(headerRecyclerView.getHeight().toFloat());

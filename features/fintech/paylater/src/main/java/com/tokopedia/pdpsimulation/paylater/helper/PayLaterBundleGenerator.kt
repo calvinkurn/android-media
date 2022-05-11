@@ -2,8 +2,12 @@ package com.tokopedia.pdpsimulation.paylater.helper
 
 import android.os.Bundle
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterBottomSheetImpression
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationAnalytics
-import com.tokopedia.pdpsimulation.paylater.domain.model.*
+import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
+import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
+import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterInstallmentFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.bottomsheet.PayLaterTokopediaGopayBottomsheet
@@ -18,9 +22,6 @@ object PayLaterBundleGenerator {
         putParcelable(PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL, cta)
     }
 
-    fun getInstallmentBundle(installmentDetails: InstallmentDetails?) = Bundle().apply {
-        putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, installmentDetails)
-    }
 
     fun getPayLaterImpressionEvent(
         data: ArrayList<SimulationUiModel>,
@@ -43,6 +44,22 @@ object PayLaterBundleGenerator {
             linkingStatus = linkStatus
         }
 
+    }
+
+
+    fun getInstallmentBundle(detail: Detail): Bundle {
+        val eventImpression = PayLaterBottomSheetImpression().apply {
+            tenureOption = detail.tenure ?: 0
+            payLaterPartnerName = detail.gatewayDetail?.name ?: ""
+            action = PdpSimulationAnalytics.BOTTOMSHEET_INSTALLMENT_ACTION
+            emiAmount = detail.installment_per_month_ceil?.toString() ?: ""
+            userStatus = detail.userState ?: ""
+            limit = detail.limit ?: ""
+        }
+        return Bundle().apply {
+            putParcelable(PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL, detail.installementDetails)
+            putParcelable(PayLaterInstallmentFeeInfo.IMPRESSION_DETAIL, eventImpression)
+        }
     }
 
 }

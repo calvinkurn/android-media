@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -84,7 +85,7 @@ class ShopCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 shopNameTextView.invisible()
             } else {
                 shopNameTextView.show()
-                shopNameTextView.text = dataItem.shopName
+                shopNameTextView.text = MethodChecker.fromHtml(dataItem.shopName)
             }
             if (dataItem.benefitTitle.isNullOrEmpty()) {
                 headerTitleTextView.invisible()
