@@ -67,8 +67,9 @@ object ReviewDetailDataMapper {
         reviewDetailState: ReviewViewState<ProductrevGetReviewDetail>
     ): ReviewMediaThumbnailUiModel {
         val thumbnails = if (reviewDetailState is Success) {
-            mutableListOf<ReviewMediaThumbnailVisitable>().includeImage(reviewDetailState)
+            mutableListOf<ReviewMediaThumbnailVisitable>()
                 .includeVideo(reviewDetailState)
+                .includeImage(reviewDetailState)
         } else emptyList()
         return ReviewMediaThumbnailUiModel(thumbnails)
     }
