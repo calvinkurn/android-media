@@ -252,7 +252,8 @@ fun actionOnBannerCarouselWidget(viewHolder: RecyclerView.ViewHolder, itemPositi
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_banner, 0)
 }
 
-fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder) {
+fun actionOnMerchantVoucherWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerViewMerchantVoucher(viewHolder.itemView, R.id.home_component_mvc_rv, 0)
 }
 
