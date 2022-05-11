@@ -349,6 +349,8 @@ class DiscoveryFragment :
                     if(mAnchorHeaderView.childCount == 0){
                         setupObserveAndShowAnchor()
                     }
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        scrollToLastSection()
                 }
             }
         })
