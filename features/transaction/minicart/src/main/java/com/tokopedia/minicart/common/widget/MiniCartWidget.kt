@@ -37,6 +37,7 @@ import com.tokopedia.minicart.common.config.MiniCartRemoteConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.oldminicart.common.widget.MiniCartWidget
 import com.tokopedia.oldminicart.common.widget.MiniCartWidgetMapper.mapToOldMiniCartData
@@ -103,7 +104,8 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener,
+                   autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page, source: MiniCartSource) {
         removeAllViews()
 
         if (remoteConfig.isNewMiniCartEnabled()) {
@@ -112,6 +114,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 initializeListener(listener)
                 initializeViewModel(fragment)
                 viewModel?.initializeCurrentPage(pageName)
+                viewModel?.currentSource = source
                 if (autoInitializeData) {
                     updateData(shopIds)
                 } else {

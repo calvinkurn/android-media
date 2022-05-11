@@ -21,11 +21,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidget
 import com.tokopedia.minicart.common.simplified.MiniCartSimplifiedWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -338,7 +343,8 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
                 promoCode = voucherUiModel?.baseCode.orEmpty(),
                 businessUnit = MvcLockedToProductTrackingConstant.Value.PHYSICAL_GOODS,
                 currentSite = MvcLockedToProductTrackingConstant.Value.TOKOPEDIA_MARKETPLACE,
-                pageSource = MiniCartAnalytics.Page.MVC_PAGE
+                pageSource = MiniCartAnalytics.Page.MVC_PAGE,
+                source = MiniCartSource.MVC
             )
             updateMiniCartWidget()
         }

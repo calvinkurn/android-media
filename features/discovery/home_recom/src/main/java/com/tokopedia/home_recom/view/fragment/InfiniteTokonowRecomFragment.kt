@@ -33,6 +33,7 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -173,6 +174,10 @@ class InfiniteTokonowRecomFragment :
 
     override fun setMiniCartPageName(): MiniCartAnalytics.Page {
         return MiniCartAnalytics.Page.RECOMMENDATION_INFINITE
+    }
+
+    override fun setMiniCartSource(): MiniCartSource {
+        return MiniCartSource.TokonowRecommendationPage
     }
 
     override fun onResume() {

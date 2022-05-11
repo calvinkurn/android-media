@@ -14,6 +14,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.viewmodel.InfiniteRecomViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -25,11 +26,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -330,7 +331,7 @@ class TestInfiniteRecomViewModel {
     @Test
     fun `given mini cart data when get mini cart data then miniCartData and minicartWidgetUpdater in viewmodel should be updated`() = runBlocking {
         val shopId = "123"
-        val miniCartItems = listOf<MiniCartItem>(MiniCartItem(productId = "1"), MiniCartItem(productId = "2"))
+        val miniCartItems = hashMapOf<MiniCartItemKey, MiniCartItem>(MiniCartItemKey("1") to MiniCartItem.MiniCartItemProduct(productId = "1"), MiniCartItemKey("2") to MiniCartItem.MiniCartItemProduct(productId = "2"))
         val miniCartData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
         coEvery {
             miniCartListSimplifiedUseCase.executeOnBackground()
@@ -338,9 +339,9 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
-        assert(viewModel.miniCartData.value == miniCartData.miniCartItems.associateBy { it.productId })
+        assert(viewModel.miniCartData.value == miniCartData.miniCartItems)
         assert(viewModel.minicartWidgetUpdater.value == miniCartData)
     }
 
@@ -354,7 +355,7 @@ class TestInfiniteRecomViewModel {
 
         viewModel.getMiniCart(shopId)
 
-        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId)) }
+        verify { miniCartListSimplifiedUseCase.setParams(listOf(shopId), any()) }
         coVerify { miniCartListSimplifiedUseCase.executeOnBackground() }
         assert(viewModel.minicartError.value == error)
     }

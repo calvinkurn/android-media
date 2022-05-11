@@ -68,10 +68,5 @@ data class ProductInfoP2UiData(
     fun getTotalStockMiniCartByParentId(parentId: String): Int {
         if (parentId == "0" || parentId.isEmpty()) return 0
         return miniCart?.getMiniCartItemParentProduct(parentId)?.totalQuantity ?: 0
-//        return miniCart?.values?.toList()?.filter {
-//            it.productParentId == parentId
-//        }?.sumBy {
-//            it.quantity
-//        } ?: 0
     }
 }

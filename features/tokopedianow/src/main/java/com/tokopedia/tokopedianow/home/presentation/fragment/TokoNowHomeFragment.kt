@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.linker.LinkerManager
@@ -43,6 +42,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -119,17 +119,17 @@ import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
+import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder.HomeProductRecomListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel.Home20mSwitcher
-import com.tokopedia.tokopedianow.home.presentation.view.coachmark.SwitcherCoachMark
-import com.tokopedia.tokopedianow.home.presentation.view.listener.BannerComponentCallback
-import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.home.util.HomeSharedPreference
@@ -1261,7 +1261,8 @@ class TokoNowHomeFragment: Fragment(),
         if(showMiniCartWidget && !outOfCoverage) {
             val pageName = MiniCartAnalytics.Page.HOME_PAGE
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget?.initialize(shopIds, this, this, pageName = pageName)
+            val source = MiniCartSource.TokonowHome
+            miniCartWidget?.initialize(shopIds, this, this, pageName = pageName, source = source)
             miniCartWidget?.show()
             hideStickyLogin()
         } else {

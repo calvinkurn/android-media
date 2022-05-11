@@ -51,7 +51,8 @@ class TokoNowRecommendationCarouselViewHolder(
                     isForceRefresh = element.isFirstLoad,
                     isTokonow = true,
                     categoryIds = element.categoryId,
-                    keyword = element.keywords
+                    keyword = element.keywords,
+                    miniCartSource = element.miniCartSource
                 )
                 element.isFirstLoad = false
             }
