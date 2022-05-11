@@ -100,7 +100,7 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun setupView() {
         binding.icCcProductTagBack.setOnClickListener {
-            /** TODO: handle this */
+            viewModel.submitAction(ProductTagAction.BackPressed)
         }
 
         binding.tvCcProductTagProductSource.setOnClickListener {
