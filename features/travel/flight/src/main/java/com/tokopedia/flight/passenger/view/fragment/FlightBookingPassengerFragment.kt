@@ -293,53 +293,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     )
             }
 
-            upsertContactList()
             finishActivityWithData()
         }
-    }
-
-    private fun upsertContactList() {
-        val contact = TravelUpsertContactModel.Contact()
-        contact.firstName = getFirstName()
-        contact.lastName = getLastName()
-        contact.title = getPassengerTitle()
-        if (isMandatoryDoB() || !isDomestic)
-            contact.birthDate = DateUtil.formatDate(
-                DateUtil.DEFAULT_VIEW_FORMAT,
-                DateUtil.YYYY_MM_DD, getPassengerBirthDate()
-            )
-        if (!isDomestic) {
-            contact.nationality = passengerModel.passportNationality?.countryId ?: "ID"
-            contact.idList = listOf(
-                TravelContactIdCard(
-                    type = "passport",
-                    title = "Paspor",
-                    number = getPassportNumber(),
-                    country = passengerModel.passportIssuerCountry?.countryId ?: "ID",
-                    expiry = DateUtil.formatDate(
-                        DateUtil.DEFAULT_VIEW_FORMAT,
-                        DateUtil.YYYY_MM_DD,
-                        getPassportExpiryDate()
-                    )
-                )
-            )
-        }
-        if (getIdentificationNumber().isNotEmpty()) {
-            val idList = mutableListOf<TravelContactIdCard>()
-            idList.addAll(contact.idList)
-            idList.add(
-                TravelContactIdCard(
-                    type = "idCard",
-                    title = "KTP",
-                    number = getIdentificationNumber(),
-                    country = "ID",
-                    expiry = ""
-                )
-            )
-            contact.idList = idList
-        }
-
-        passengerViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT, contact)
     }
 
     private fun finishActivityWithData() {
@@ -903,7 +858,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun isInfantPassenger(): Boolean =
         passengerModel.type == FlightBookingPassenger.INFANT.value
 
-    private fun isMandatoryDoB(): Boolean = isAirAsiaAirlines
+    private fun isMandatoryDoB(): Boolean = isAirAsiaAirlines ||
+            passengerModel.type == FlightBookingPassenger.INFANT.value ||
+            passengerModel.type == FlightBookingPassenger.CHILDREN.value
 
     private fun isPassportId(id: TravelContactIdCard): Boolean = id.type.equals("passport", true)
 

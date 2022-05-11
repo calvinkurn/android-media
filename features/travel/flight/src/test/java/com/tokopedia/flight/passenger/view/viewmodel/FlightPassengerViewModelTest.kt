@@ -31,16 +31,12 @@ class FlightPassengerViewModelTest {
     private val getContactListUseCase: GetContactListUseCase = mockk()
     private val getPhoneCodeByIdUseCase: TravelCountryCodeByIdUseCase = mockk()
 
-    @RelaxedMockK
-    private lateinit var upsertContactListUseCase: UpsertContactListUseCase
-
     private lateinit var viewModel: FlightPassengerViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         viewModel = FlightPassengerViewModel(getContactListUseCase,
-                upsertContactListUseCase,
                 getPhoneCodeByIdUseCase,
                 CoroutineTestDispatchersProvider)
     }
@@ -116,32 +112,6 @@ class FlightPassengerViewModelTest {
             } else {
                 item.fullName shouldBe dummyData.fullName
             }
-        }
-    }
-
-    @Test
-    fun updateContactList_shouldValidateUseCaseCalled() {
-        // given
-        val query = "DUMMY QUERY"
-        val updatedContact = TravelUpsertContactModel.Contact(
-                "dummyTitle",
-                "Muhammad Furqan",
-                "Muhammad",
-                "Furqan",
-                "1995-11-11",
-                "ID",
-                62,
-                "898989898989",
-                "aa@aa.com",
-                arrayListOf()
-        )
-
-        // when
-        viewModel.updateContactList(query, updatedContact)
-
-        // then
-        coVerify {
-            upsertContactListUseCase.execute(query, any())
         }
     }
 
