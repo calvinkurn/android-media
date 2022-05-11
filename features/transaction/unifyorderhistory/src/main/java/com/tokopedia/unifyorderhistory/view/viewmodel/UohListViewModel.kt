@@ -46,7 +46,8 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-                                           private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
+                                           private val atcUseCase: AddToCartUseCase,
+                                           private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
     val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
@@ -92,6 +93,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
         get() = _tdnBannerResult
 
+    private val _getUohPmsCounterResult = MutableLiveData<Result<PmsNotification>>()
+    val getUohPmsCounterResult: LiveData<Result<PmsNotification>>
+        get() = _getUohPmsCounterResult
+
     fun loadFilterCategory() {
         launch {
             _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
@@ -103,6 +108,12 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             _orderHistoryListResult.value = uohListUseCase.executeSuspend(paramOrder)
             UohIdlingResource.decrement()
+        }
+    }
+
+    fun loadPmsCounter() {
+        launch {
+            _getUohPmsCounterResult.value = getUohPmsCounterUseCase.executeSuspend()
         }
     }
 

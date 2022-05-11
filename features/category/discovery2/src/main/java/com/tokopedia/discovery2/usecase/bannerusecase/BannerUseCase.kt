@@ -13,13 +13,15 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
-            val bannerListData = repository.getBanner(
+            val bannerData = repository.getBanner(
                     if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
                         component.dynamicOriginalId!! else componentId,
                     mutableMapOf(),
                     pageEndPoint, it.name)
+            val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
+            component.properties = bannerData?.properties
             if (bannerListData.isEmpty()) return true
             val placeholderImageData = getPlaceHolderImage(bannerListData.size, componentId, pageEndPoint)
             if (!placeholderImageData.isNullOrEmpty()) {

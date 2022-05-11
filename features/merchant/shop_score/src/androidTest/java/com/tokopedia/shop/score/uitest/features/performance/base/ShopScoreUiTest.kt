@@ -43,8 +43,7 @@ abstract class ShopScoreUiTest: BaseShopScoreTest() {
     ): ShopInfoPeriodUiModel {
         return shopScoreCommonMapperStub.mapToGetShopInfo(
             ShopInfoPeriodWrapperResponse(
-                shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse,
-                goldGetPMSettingInfo = shopInfoPeriodResponseStub.goldGetPMSettingInfo
+                shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse
             )
         )
     }

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/uc_camera_controller"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/black">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lst_camera_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/view_item_camera_mode_slider"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/action_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lst_camera_mode"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="00:12"
+            android:textColor="@color/Unify_Static_White" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picker_separator_recording_duration"
+            android:layout_marginStart="4dp"
+            android:textColor="@color/Unify_Static_White" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_max_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            tools:text="00:30"
+            android:textColor="@color/Unify_R500" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/action_container"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/video_duration">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_picker_camera_take_border" />
+
+        <View
+            android:id="@+id/btn_take_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/unify_space_8"
+            android:background="@drawable/bg_picker_camera_take_photo" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/camera_control"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/action_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/action_container"
+        app:layout_constraintTop_toTopOf="@+id/action_container">
+
+        <ImageView
+            android:id="@+id/btn_flash"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_40"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:src="@drawable/picker_ic_camera_flash_off"/>
+
+        <ImageView
+            android:id="@+id/btn_flip"
+            android:layout_width="@dimen/unify_space_40"
+            android:layout_height="@dimen/unify_space_40"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:src="@drawable/picker_ic_camera_flip_mode" />
+
+    </LinearLayout>
+
+    <com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
+        android:id="@+id/img_thumbnail"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/action_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/action_container"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

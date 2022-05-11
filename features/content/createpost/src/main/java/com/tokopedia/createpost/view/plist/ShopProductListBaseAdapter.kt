@@ -44,8 +44,8 @@ open class ShopProductListBaseAdapter(
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
+    override fun loadData(pageNumber: Int, vararg args: String?) {
+        super.loadData(pageNumber, *args)
         viewModel.getList(pageNumber)
     }
 

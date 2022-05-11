@@ -34,8 +34,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:icon_color_light_enable="@color/tickerunify_error_icon_color"
-                app:icon_color_night_enable="@color/tickerunify_error_icon_color"
+                app:icon_color_light_enable="@color/pp_dms_tickerunify_error_icon_color"
+                app:icon_color_night_enable="@color/pp_dms_tickerunify_error_icon_color"
                 app:icon_name="ERROR"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
-                android:textColor="@color/tickerunify_content_text_color"
+                android:textColor="@color/pp_dms_tickerunify_content_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/checkout_custom_ticker_action"
                 app:layout_constraintStart_toEndOf="@+id/checkout_custom_ticker_icon"
@@ -111,6 +111,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
                 android:visibility="gone">
 
                 <include

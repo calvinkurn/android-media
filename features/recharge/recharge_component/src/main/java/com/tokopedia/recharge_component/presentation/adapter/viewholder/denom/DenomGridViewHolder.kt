@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomGridBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
@@ -29,7 +31,7 @@ class DenomGridViewHolder (
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(denomGrid: DenomData, denomType: DenomWidgetEnum,
-             isSelectedItem: Boolean, position: Int){
+             isSelectedItem: Boolean, position: Int, isPlacebo: Boolean = false){
 
         with(binding){
             tgDenomGridTitle.run {
@@ -60,6 +62,21 @@ class DenomGridViewHolder (
                     show()
                     setStatusOutOfStockColor(denomGrid.status, context)
                     text = denomGrid.price
+
+                    if (labelDenomGridSpecial.isVisible) {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(com.tokopedia.recharge_component.R.dimen.widget_denom_grid_margin_price),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0))
+                    } else {
+                        setMargin(
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.spacing_lvl2),
+                            getDimens(unifyDimens.unify_space_0),
+                            getDimens(unifyDimens.unify_space_0))
+                    }
+
                 } else hide()
             }
 
@@ -174,13 +191,15 @@ class DenomGridViewHolder (
             }
 
             cardDenomGrid.run {
-                layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                } else getDimens(R.dimen.widget_denom_grid_width)
+                if (!isPlacebo) {
+                    layoutParams.width = if (denomType == DenomWidgetEnum.GRID_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else getDimens(R.dimen.widget_denom_grid_width)
 
-                layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
-                    getDimens (R.dimen.widget_denom_grid_height)
-                } else ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE){
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    } else ViewGroup.LayoutParams.WRAP_CONTENT
+                }
 
                 setBackgroundColor(ContextCompat.getColor(rootView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
@@ -195,6 +214,10 @@ class DenomGridViewHolder (
                     denomGridListener.onDenomGridClicked(denomGrid, denomType, position, "", true)
                 }
             }
+
+            root.addOnImpressionListener(denomGrid, {
+                denomGridListener.onDenomGridImpression(denomGrid, denomType, position)
+            })
         }
     }
 }

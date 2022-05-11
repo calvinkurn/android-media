@@ -841,8 +841,16 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun updateBottomMargin() {
-        recyclerView?.removeItemDecoration(itemDecorationBottom)
-        recyclerView?.addItemDecoration(itemDecorationBottom)
+        recyclerView?.isComputingLayout?.let {
+            if (isAllowedNotify(it)) {
+                recyclerView?.removeItemDecoration(itemDecorationBottom)
+                recyclerView?.addItemDecoration(itemDecorationBottom)
+            }
+        }
+    }
+
+    private fun isAllowedNotify(isComputingLayout: Boolean): Boolean {
+        return !isComputingLayout
     }
 
     private fun generateWishlistAdditionalParamRequest(): WishlistAdditionalParamRequest {

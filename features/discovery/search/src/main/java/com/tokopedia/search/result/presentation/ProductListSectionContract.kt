@@ -10,7 +10,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
@@ -26,7 +25,6 @@ interface ProductListSectionContract {
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(startRow: Int, throwable: Throwable?)
-        val filterParamString: String
         val queryKey: String
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
@@ -90,9 +88,6 @@ interface ProductListSectionContract {
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
         fun switchSearchNavigationLayoutTypeToBigGridView(position: Int)
         fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
-        val isChooseAddressWidgetEnabled: Boolean
-        val chooseAddressData: LocalCacheModel?
-        fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
         fun trackDynamicProductCarouselImpression(
@@ -112,9 +107,15 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
     }
 
-    interface Presenter : CustomerPresenter<View> {
+    interface Presenter : CustomerPresenter<View>{
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
@@ -142,6 +143,8 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
+        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
         fun onViewResumed()

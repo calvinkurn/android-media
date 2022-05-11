@@ -17,6 +17,8 @@ internal const val KEY_SHOP_ID = "shopId"
 internal const val KEY_BUSINESS_UNIT = "businessUnit"
 internal const val KEY_CURRENT_SITE = "currentSite"
 
+internal const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+
 private const val KEY_TRACK_CURRENT_SITE = "tokopediaseller"
 private const val KEY_TRACK_CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
 internal const val KEY_TRACK_BUSINESS_UNIT = "play"

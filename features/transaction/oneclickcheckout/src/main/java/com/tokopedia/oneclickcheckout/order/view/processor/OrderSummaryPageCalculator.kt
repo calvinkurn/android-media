@@ -333,7 +333,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val isUseInsurance = shipping.isUseInsurance()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel)
-            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
+            val subtotalWithoutDiscountsAndPaymentFee = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice + totalAddOnPrice
             val totalDiscounts = productDiscount + shippingDiscount
             val subtotal = subtotalWithoutDiscountsAndPaymentFee - totalDiscounts
             val orderCost = OrderCost(
@@ -352,7 +352,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                     totalPriceWithoutPaymentFees = subtotal,
                     totalPriceWithoutDiscountsAndPaymentFees = subtotalWithoutDiscountsAndPaymentFee,
                     totalItemPriceAndShippingFee = totalProductPrice + totalShippingPrice,
-                    totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice,
+                    totalAdditionalFee = insurancePrice + totalPurchaseProtectionPrice + totalAddOnPrice,
                     totalDiscounts = totalDiscounts,
             )
             return@withContext orderCost to updatedProductIndex

@@ -31,6 +31,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     private var headerItemDecoration: FeedHeaderItemDecoration? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     private var shouldShowStickyHeader = false
+    private var isStickyHeaderEnabled = false
     private var isSLideDownAnimationEnabled = false
     private var handlerView: Handler? = Handler(Looper.getMainLooper())
     private val runnable by lazy { getRunnableForHeaderVisibility() }
@@ -47,6 +48,8 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
 
     fun addHeaderRecyclerView(view: View) {
         shouldShowStickyHeader = true
+        isStickyHeaderEnabled = true
+
         headerRecyclerView.getChildAt(0)?.let {
             if (it !== view) {
                 headerRecyclerView.removeAllViews()
@@ -122,6 +125,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
         recyclerView.addOnScrollListener(listener)
     }
     fun removeHeaderRecyclerView() {
+        isStickyHeaderEnabled = false
         shouldShowStickyHeader = false
         isSLideDownAnimationEnabled = false
         if (headerRecyclerView.childCount > 0) {
@@ -137,6 +141,7 @@ class FeedPlayStickyHeaderRecyclerView : ConstraintLayout {
     fun getLayoutManager() = recyclerView.layoutManager
 
     fun getViewHolderAtPosition(position: Int) =  recyclerView.findViewHolderForAdapterPosition(position)
+    fun isStickyRecyclerViewIsEnabled() = isStickyHeaderEnabled
 
     fun smoothScrollToPosition(position: Int = 0) {
         if (position == 0) {

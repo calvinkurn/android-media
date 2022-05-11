@@ -473,15 +473,18 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     override fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {
-        CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue, CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
+        CatalogDetailAnalytics.sendImpressionEventInQueue(trackingQueue,
+            CatalogDetailAnalytics.EventKeys.EVENT_PROMO_VIEW,
             CatalogDetailAnalytics.ActionKeys.IMPRESSION_KATALOG_PILIHAN_UNTUKMU,
             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
             "current catalog-id: $catalogId",
             catalogId,
             adapterPosition,
             userSession.userId,
-            "${model.item.id}",
-            model.item.name ?: ""
+            "${model.item?.id}",
+            model.item?.name ?: "",
+            CatalogDetailAnalytics.ActionKeys.KATALOG_PiILIHAN_UNTUKMU,
+            CatalogConstant.KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING
         )
     }
 

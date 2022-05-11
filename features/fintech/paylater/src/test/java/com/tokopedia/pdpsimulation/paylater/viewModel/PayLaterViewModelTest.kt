@@ -1,7 +1,11 @@
 package com.tokopedia.pdpsimulation.paylater.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.pdpsimulation.common.domain.model.*
+import com.tokopedia.pdpsimulation.common.domain.model.BaseProductDetailClass
+import com.tokopedia.pdpsimulation.common.domain.model.CampaignDetail
+import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
+import com.tokopedia.pdpsimulation.common.domain.model.Pictures
+import com.tokopedia.pdpsimulation.common.domain.model.ShopDetail
 import com.tokopedia.pdpsimulation.common.domain.usecase.ProductDetailUseCase
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
@@ -74,6 +78,31 @@ class PayLaterViewModelTest {
     }
 
     @Test
+    fun `productDetail fetch success but condition fail`()
+    {
+        val shopDetail = mockk<ShopDetail>(relaxed = true)
+        val campaignDetail = mockk<CampaignDetail>(relaxed = true)
+        val baseProductDetail = BaseProductDetailClass(
+            GetProductV3(
+                "", "url", shopDetail,
+                1000.0, arrayListOf(
+                    Pictures("url")
+                ), null, 0, campaignDetail
+            )
+        )
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Fail).throwable.localizedMessage,
+            "Data invalid"
+        )
+    }
+
+    @Test
     fun `productDetail fetch failed throws exception`()
     {
         coEvery {
@@ -113,6 +142,29 @@ class PayLaterViewModelTest {
                 false,
                 arrayListOf(SupervisorUiModel)))
         mockMapperResponse(list)
+        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
+        coEvery {
+            payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
+        } coAnswers {
+            firstArg<(PayLaterGetSimulation) -> Unit>().invoke(payLaterGetSimulation)
+        }
+
+        viewModel.getPayLaterAvailableDetail(10.0, "0")
+        coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
+        Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
+    }
+
+    @Test
+    fun `successPayLaterOptions With Default Selected`()
+    {
+        val payLaterGetSimulation = PayLaterGetSimulation(listOf(PayLaterAllData(1,"", "", listOf())))
+        val list = arrayListOf(SimulationUiModel(
+            1,
+            "",
+            "",
+            true,
+            arrayListOf(SupervisorUiModel)))
+        mockMapperResponse(list)
 
         coEvery {
             payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
@@ -124,6 +176,7 @@ class PayLaterViewModelTest {
         coVerify(exactly = 1) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Success).data, list)
     }
+
 
     private fun mockMapperResponse(list: ArrayList<SimulationUiModel>) {
         coEvery {
@@ -143,7 +196,6 @@ class PayLaterViewModelTest {
         }
         viewModel.getPayLaterAvailableDetail(0.0, "0")
         coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
-
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }
 
