@@ -85,9 +85,10 @@ object TokoFoodHomeMapper {
     ){
         updateItemById(item.visitableId) {
             val usp = TokoFoodHomeIconsUiModel(
-                item.visitableId,
-                result.dynamicIcon.listDynamicIcon,
-                TokoFoodHomeLayoutState.SHOW
+                id = item.visitableId,
+                widgetParam = item.widgetParam,
+                listIcons = result.dynamicIcon.listDynamicIcon,
+                state = TokoFoodHomeLayoutState.SHOW
             )
             TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
         }
@@ -157,8 +158,9 @@ object TokoFoodHomeMapper {
     private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
         val dynamicIconModel = TokoFoodHomeIconsUiModel(
             id = response.id,
+            widgetParam = response.widgetParam,
             listIcons = null,
-            TokoFoodHomeLayoutState.LOADING
+            state = TokoFoodHomeLayoutState.LOADING
         )
         return TokoFoodHomeItemUiModel(dynamicIconModel, state)
     }

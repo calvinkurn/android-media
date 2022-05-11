@@ -6,6 +6,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeTypeFactory
 
 data class TokoFoodHomeIconsUiModel(
     val id: String,
+    val widgetParam: String = "",
     val listIcons: List<DynamicIcon>?,
     @TokoFoodHomeLayoutState val state: Int
 ): TokoFoodHomeLayoutUiModel(id) {

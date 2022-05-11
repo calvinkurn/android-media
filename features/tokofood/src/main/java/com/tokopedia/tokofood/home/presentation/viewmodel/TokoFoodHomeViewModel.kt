@@ -116,7 +116,7 @@ class TokoFoodHomeViewModel @Inject constructor(
 
     private suspend fun getIconListDataAsync(item: TokoFoodHomeIconsUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val dynamicIcons = tokoFoodHomeDynamicIconsUseCase.execute()
+            val dynamicIcons = tokoFoodHomeDynamicIconsUseCase.execute(item.widgetParam)
             homeLayoutItemList.mapDynamicIcons(item, dynamicIcons)
         }){
             homeLayoutItemList.removeItem(item.id)

@@ -6,9 +6,9 @@ object TokoFoodHomeDynamicIconsQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "homeIcon"
     private val QUERY = """
-        query $OPERATION_NAME(${'$'}param: String,${'$'}location: String) { 
+        query $OPERATION_NAME(${'$'}param: String) { 
             dynamicHomeIcon { 
-                dynamicIcon(param:${'$'}param, location:${'$'}location) { 
+                dynamicIcon(param:${'$'}param) { 
                     id 
                     galaxy_attribution 
                     persona 
@@ -27,15 +27,11 @@ object TokoFoodHomeDynamicIconsQuery: GqlQueryInterface {
     """.trimIndent()
 
     private const val PARAM_KEY = "param"
-    private const val LOCATION_KEY = "location"
 
     @JvmStatic
-    fun createRequestParams() =
+    fun createRequestParams(param: String) =
         HashMap<String, Any>().apply {
-            val dummyParam = ""
-            val dummyLocation = ""
-            put(PARAM_KEY, dummyParam)
-            put(LOCATION_KEY, dummyLocation)
+            put(PARAM_KEY, param)
         }
 
     override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)

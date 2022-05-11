@@ -14,7 +14,8 @@ class TokoFoodHomeDynamicIconsUseCase @Inject constructor(graphqlRepository: Gra
        setTypeClass(TokoFoodHomeDynamicIconsResponse::class.java)
     }
 
-    suspend fun execute(): TokoFoodHomeDynamicIconsResponse {
+    suspend fun execute(param: String): TokoFoodHomeDynamicIconsResponse {
+        setRequestParams(TokoFoodHomeDynamicIconsQuery.createRequestParams(param))
         return executeOnBackground()
     }
 }
