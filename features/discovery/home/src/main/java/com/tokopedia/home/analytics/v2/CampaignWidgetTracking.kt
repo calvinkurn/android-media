@@ -83,7 +83,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             .appendUserId(userId)
             .appendAffinity(channel.trackingAttributionModel.persona)
             .appendAttribution(channel.trackingAttributionModel.galaxyAttribution)
-            .appendCampaignCode(grid.campaignCode)
+            .appendCampaignCode(grid.campaignCode.ifEmpty { channel.trackingAttributionModel.campaignCode })
             .appendShopId(grid.shopId)
             .appendChannelId(channel.id)
             .appendCategoryId(grid.categoryId)
@@ -99,6 +99,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
         ).appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(channel.id)
+            .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
 
@@ -111,6 +112,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
         ).appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendChannelId(channel.id)
+            .appendCampaignCode(channel.trackingAttributionModel.campaignCode)
         return trackingBuilder.build()
     }
 

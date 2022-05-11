@@ -45,6 +45,28 @@
       "shopId": ".*",
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all card on dynamic channel campaign",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all on dynamic channel campaign",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*"
     }
   ]
 }
