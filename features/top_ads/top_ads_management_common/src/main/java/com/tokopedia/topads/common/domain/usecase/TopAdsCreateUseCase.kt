@@ -8,8 +8,6 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -76,9 +74,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                     } else {
                         val error = (it.groupResponse.errors?.firstOrNull()?.title ?: "") +
                                 (it.keywordResponse.errors?.firstOrNull()?.title ?: "")
-                        ServerLogger.log(Priority.P1, javaClass.name, mapOf(
-                            TopAdsCommonConstant.ERROR to "error executing topadsManagePromoGroupProduct -> $error"
-                        ))
                         onError?.invoke(error)
                     }
                 }
@@ -86,10 +81,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
             override fun onCompleted() {}
             override fun onError(e: Throwable?) {
-                ServerLogger.log(Priority.P1, className, mapOf(
-                    TopAdsCommonConstant.ERROR to
-                            (e?.message ?: "error executing topadsManagePromoGroupProduct gql")
-                ))
                 onError?.invoke(e?.message ?: "")
             }
         })
@@ -97,7 +88,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
     fun createRequestParamActionDelete(
         source: String, groupIdParam: String, keywordIds: List<String>,
-    ): RequestParams? {
+    ): RequestParams {
         val input = TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             this.source = source
