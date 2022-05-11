@@ -1171,7 +1171,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {
-        view?.let {
+        binding?.root?.let {
             Toaster.build(
                 it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                 "OK"
