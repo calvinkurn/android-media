@@ -402,6 +402,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         }
     }
 
+    @Test
+    fun testSpecialCampaignWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CampaignWidgetDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCampaignWidget(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET)
+        }
+    }
+
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         waitForData()
