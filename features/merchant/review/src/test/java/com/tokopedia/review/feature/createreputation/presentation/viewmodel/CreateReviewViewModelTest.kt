@@ -4,6 +4,9 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
@@ -32,6 +35,7 @@ import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
@@ -427,6 +431,44 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         viewModel.updateMediaPicker(mutableListOf("image.jpg"), mutableListOf())
         val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
         assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
+    }
+
+    @Test
+    fun `mediaPickerUiState mediaItems should not contain CreateReviewMediaUiModel#AddSmall when contain 5 image`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.updateMediaPicker(
+            mutableListOf(
+                "image1.jpg",
+                "image2.jpg",
+                "image3.jpg",
+                "image4.jpg",
+                "image5.jpg"
+            ), mutableListOf()
+        )
+        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it is CreateReviewMediaUiModel.AddSmall })
+    }
+
+    @Test
+    fun `mediaPickerUiState mediaItems should not contain CreateReviewMediaUiModel#AddSmall when contain 1 video and 4 image`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.updateMediaPicker(
+            mutableListOf(
+                "video.mp4",
+                "image1.jpg",
+                "image2.jpg",
+                "image3.jpg",
+                "image4.jpg"
+            ), mutableListOf()
+        )
+        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
+        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it is CreateReviewMediaUiModel.AddSmall })
     }
 
     @Test
@@ -858,7 +900,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
-        mockErrorUploadMedia()
+        mockErrorUploadMedia(withException = false)
         setInitialData()
         val toasterQueueCollectorJob = launchCatchError(block = {
             val actualToasterQueue = viewModel.toasterQueue.first {
@@ -891,6 +933,56 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
         }, onError = {})
         viewModel.updateMediaPicker(listOf("image.jpg"))
+        viewModel.submitReview()
+        toasterQueueCollectorJob.join()
+    }
+
+    @Test
+    fun `should enqueue toaster when try to submit review and there's at least 1 uploading image`() = runBlockingTest {
+        val expectedToasterQueue = CreateReviewToasterUiModel(
+            message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
+            actionText = StringRes(Int.ZERO),
+            duration = Toaster.LENGTH_SHORT,
+            type = Toaster.TYPE_NORMAL
+        )
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        mockErrorUploadMedia(delayTime = 10000L)
+        setInitialData()
+        val toasterQueueCollectorJob = launchCatchError(block = {
+            val actualToasterQueue = viewModel.toasterQueue.first {
+                it.message.id == R.string.review_form_media_picker_toaster_wait_for_upload_message
+            }
+            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
+            viewModel.flush()
+        }, onError = {})
+        viewModel.updateMediaPicker(listOf("image.jpg"))
+        viewModel.submitReview()
+        toasterQueueCollectorJob.join()
+    }
+
+    @Test
+    fun `should enqueue toaster when try to submit review and there's at least 1 uploading video`() = runBlockingTest {
+        val expectedToasterQueue = CreateReviewToasterUiModel(
+            message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
+            actionText = StringRes(Int.ZERO),
+            duration = Toaster.LENGTH_SHORT,
+            type = Toaster.TYPE_NORMAL
+        )
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        mockErrorUploadMedia(delayTime = 10000L)
+        setInitialData()
+        val toasterQueueCollectorJob = launchCatchError(block = {
+            val actualToasterQueue = viewModel.toasterQueue.first {
+                it.message.id == R.string.review_form_media_picker_toaster_wait_for_upload_message
+            }
+            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
+            viewModel.flush()
+        }, onError = {})
+        viewModel.updateMediaPicker(listOf("video.mp4"))
         viewModel.submitReview()
         toasterQueueCollectorJob.join()
     }
@@ -1275,6 +1367,58 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         setInitialData()
         viewModel.submitReview()
         Assert.assertEquals(SAMPLE_FEEDBACK_ID, viewModel.getFeedbackId())
+    }
+
+    @Test
+    fun `removeMedia should remove media from list of added media`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.updateMediaPicker(listOf("image.jpg"))
+        val mediaPickerUiStateWith1Image = viewModel.mediaPickerUiState.first {
+            (it is CreateReviewMediaPickerUiState.HasMedia) && it.mediaItems.size == 2 // 2 because it contain AddSmall item
+        } as CreateReviewMediaPickerUiState.HasMedia
+        viewModel.removeMedia(mediaPickerUiStateWith1Image.mediaItems.first())
+        val mediaPickerUiStateWith0Media = viewModel.mediaPickerUiState.first {
+            (it is CreateReviewMediaPickerUiState.HasMedia) && it.mediaItems.size == 1
+        } as CreateReviewMediaPickerUiState.HasMedia
+        Assert.assertEquals(1, mediaPickerUiStateWith0Media.mediaItems.size)
+        assertInstanceOf<CreateReviewMediaUiModel.AddLarge>(mediaPickerUiStateWith0Media.mediaItems.first())
+    }
+
+    @Test
+    fun `shouldUseUniversalMediaPicker should return true when new media picker enabled through rollence`() {
+        mockkStatic(RemoteConfigInstance::class) {
+            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
+                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
+                    every {
+                        getString(RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME)
+                    } returns RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
+                }
+                every { abTestPlatform } returns mockAbTestPlatform
+            }
+            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
+
+            Assert.assertTrue(viewModel.shouldUseUniversalMediaPicker())
+        }
+    }
+
+    @Test
+    fun `shouldUseUniversalMediaPicker should return false when new media picker disabled through rollence`() {
+        mockkStatic(RemoteConfigInstance::class) {
+            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
+                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
+                    every {
+                        getString(RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME)
+                    } returns ""
+                }
+                every { abTestPlatform } returns mockAbTestPlatform
+            }
+            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
+
+            Assert.assertFalse(viewModel.shouldUseUniversalMediaPicker())
+        }
     }
 
     @Test

@@ -27,6 +27,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
+import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
 
@@ -214,8 +215,11 @@ abstract class CreateReviewViewModelTestFixture {
         coEvery { uploaderUseCase(any()) } returns UploadResult.Success()
     }
 
-    protected fun mockErrorUploadMedia() {
-        coEvery { uploaderUseCase(any()) } throws Exception()
+    protected fun mockErrorUploadMedia(withException: Boolean = true, delayTime: Long = 0L) {
+        coEvery { uploaderUseCase(any()) } coAnswers  {
+            delay(delayTime)
+            if (withException) throw Exception() else UploadResult.Error("")
+        }
     }
 
     protected fun mockSuccessSubmitReview(
