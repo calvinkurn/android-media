@@ -260,9 +260,6 @@ data class CheckoutTokoFoodConsentBottomSheet(
 )
 
 data class CheckoutTokoFoodShoppingSummary(
-    @SerializedName("hide_summary")
-    @Expose
-    val hideSummary: Boolean = false,
     @SerializedName("total")
     @Expose
     val total: CheckoutTokoFoodShoppingTotal = CheckoutTokoFoodShoppingTotal(),
@@ -271,22 +268,22 @@ data class CheckoutTokoFoodShoppingSummary(
     val costBreakdown: CheckoutTokoFoodShoppingCostBreakdown = CheckoutTokoFoodShoppingCostBreakdown(),
     @SerializedName("discount_breakdown")
     @Expose
-    val discountBreakdown: CheckoutTokoFoodShoppingDiscountBreakdown = CheckoutTokoFoodShoppingDiscountBreakdown()
+    val discountBreakdown: List<CheckoutTokoFoodShoppingDiscountBreakdown> = listOf(),
+    @SerializedName("checkout_additional_data")
+    @Expose
+    val checkoutAdditionalData: CheckoutTokoFoodAdditionalData = CheckoutTokoFoodAdditionalData(),
+    @SerializedName("summary_detail")
+    @Expose
+    val summaryDetail: CheckoutTokoFoodSummaryDetail = CheckoutTokoFoodSummaryDetail()
 )
 
 data class CheckoutTokoFoodShoppingTotal(
     @SerializedName("cost")
     @Expose
     val cost: Double = 0.0,
-    @SerializedName("cost_fmt")
-    @Expose
-    val costFmt: String = "",
     @SerializedName("savings")
     @Expose
-    val savings: Double = 0.0,
-    @SerializedName("savings_fmt")
-    @Expose
-    val savingsFmt: String = ""
+    val savings: Double = 0.0
 )
 
 data class CheckoutTokoFoodShoppingCostBreakdown(
@@ -308,21 +305,12 @@ data class CheckoutTokoFoodShoppingCostBreakdown(
 )
 
 data class CheckoutTokoFoodShoppingCostBreakdownItem(
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
     @SerializedName("original_amount")
     @Expose
     val originalAmount: Double = 0.0,
-    @SerializedName("original_amount_fmt")
-    @Expose
-    val originalAmountFmt: String = "",
     @SerializedName("amount")
     @Expose
     val amount: Double = 0.0,
-    @SerializedName("amount_fmt")
-    @Expose
-    val amountFmt: String = "",
     @SerializedName("surge")
     @Expose
     val surge: CheckoutTokoFoodShoppingSurge = CheckoutTokoFoodShoppingSurge()
@@ -332,18 +320,9 @@ data class CheckoutTokoFoodShoppingSurge(
     @SerializedName("is_surge_price")
     @Expose
     val isSurgePrice: Boolean = false,
-    @SerializedName("bottomsheet")
+    @SerializedName("factor")
     @Expose
-    val bottomsheet: CheckoutTokoFoodShoppingSurgeBottomsheet = CheckoutTokoFoodShoppingSurgeBottomsheet()
-)
-
-data class CheckoutTokoFoodShoppingSurgeBottomsheet(
-    @SerializedName("title")
-    @Expose
-    val title: String = "",
-    @SerializedName("description")
-    @Expose
-    val description: String = ""
+    val factor: Double = 0.0
 )
 
 data class CheckoutTokoFoodShoppingDiscountBreakdown(
@@ -365,4 +344,59 @@ data class CheckoutTokoFoodShoppingDiscountBreakdown(
     @SerializedName("type")
     @Expose
     val type: Int = 0
+)
+
+data class CheckoutTokoFoodAdditionalData(
+    @SerializedName("data_type")
+    @Expose
+    val dataType: String = "",
+    @SerializedName("checkout_business_id")
+    @Expose
+    val checkoutBusinessId: String = ""
+)
+
+data class CheckoutTokoFoodSummaryDetail(
+    @SerializedName("hide_summary")
+    @Expose
+    val hideSummary: Boolean = false,
+    @SerializedName("total_items")
+    @Expose
+    val totalItems: Int = 0,
+    @SerializedName("total_price")
+    @Expose
+    val totalPrice: String = "",
+    @SerializedName("details")
+    @Expose
+    val details: List<CheckoutTokoFoodSummaryItemDetail> = listOf()
+
+)
+
+data class CheckoutTokoFoodSummaryItemDetail(
+    @SerializedName("title")
+    @Expose
+    val title: String = "",
+    @SerializedName("price_fmt")
+    @Expose
+    val priceFmt: String = "",
+    @SerializedName("info")
+    @Expose
+    val info: CheckoutTokoFoodSummaryItemDetailInfo? = null
+)
+
+data class CheckoutTokoFoodSummaryItemDetailInfo(
+    @SerializedName("image_url")
+    @Expose
+    val imageUrl: String = "",
+    @SerializedName("bottomsheet")
+    @Expose
+    val bottomSheet: CheckoutTokoFoodSummaryItemDetailBottomSheet = CheckoutTokoFoodSummaryItemDetailBottomSheet()
+)
+
+data class CheckoutTokoFoodSummaryItemDetailBottomSheet(
+    @SerializedName("title")
+    @Expose
+    val title: String = "",
+    @SerializedName("description")
+    @Expose
+    val description: String = ""
 )

@@ -15,8 +15,11 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCos
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingDiscountBreakdown
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurge
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryDetail
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetail
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailBottomSheet
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetailInfo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTicker
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTickerInfo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
@@ -109,43 +112,77 @@ object CheckoutDummyProvider {
                     termsAndCondition = "Saya menyetujui Syarat & Ketentuan yang sedang berlaku"
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    hideSummary = true,
                     total = CheckoutTokoFoodShoppingTotal(
                         cost = 133000.00,
-                        costFmt = "Rp 133.000"
+                        savings = 16000.00
                     ),
                     costBreakdown = CheckoutTokoFoodShoppingCostBreakdown(
                         totalCartPrice = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Total Harga (2 item)",
-                            amount = 125000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         takeAwayFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Bungkus dari Restoran",
-                            amount = 6000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         convenienceFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Jasa Aplikasi",
-                            amount = 4000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         deliveryFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Total Ongkos Kirim",
-                            amount = 16000.00,
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                             surge = CheckoutTokoFoodShoppingSurge(
                                 isSurgePrice = true,
-                                bottomsheet = CheckoutTokoFoodShoppingSurgeBottomsheet(
-                                    title = "Ongkos kirim kamu naik, ya",
-                                    description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
-                                )
+                                factor = 1.5
                             )
                         ),
                         parkingFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Parkir",
+                            originalAmount = 0.00,
                             amount = 0.00
                         )
                     ),
-                    discountBreakdown = CheckoutTokoFoodShoppingDiscountBreakdown(
+                    discountBreakdown = listOf(CheckoutTokoFoodShoppingDiscountBreakdown(
                         title = "Total Diskon Item",
                         amount = 12000.00
+                    )),
+                    summaryDetail = CheckoutTokoFoodSummaryDetail(
+                        hideSummary = true,
+                        totalItems = 0,
+                        totalPrice = "Rp 133.000",
+                        details = listOf(
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Harga (2 item)",
+                                priceFmt = "Rp 125.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Diskon Item",
+                                priceFmt = "-Rp 12.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Biaya Bungkus dari Restoran",
+                                priceFmt = "Rp 6.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Biaya Jasa Aplikasi",
+                                priceFmt = "Rp 4.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Ongkos Kirim",
+                                priceFmt = "Rp 16.000",
+                                info = CheckoutTokoFoodSummaryItemDetailInfo(
+                                    imageUrl = "https://icons.veryicon.com/png/o/miscellaneous/zol-m-station/icon-top-arrow.png",
+                                    bottomSheet = CheckoutTokoFoodSummaryItemDetailBottomSheet(
+                                        title = "Ongkos kirim kamu naik, ya",
+                                        description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
+                                    )
+                                )
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Diskon Ongkos Kirim",
+                                priceFmt = "-Rp 6.000"
+                            )
+                        )
                     )
                 )
             )
@@ -295,43 +332,77 @@ object CheckoutDummyProvider {
                     termsAndCondition = "Saya menyetujui Syarat & Ketentuan yang sedang berlaku"
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    hideSummary = true,
                     total = CheckoutTokoFoodShoppingTotal(
                         cost = 133000.00,
-                        costFmt = "Rp 133.000"
+                        savings = 16000.00
                     ),
                     costBreakdown = CheckoutTokoFoodShoppingCostBreakdown(
                         totalCartPrice = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Total Harga (2 item)",
-                            amount = 125000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         takeAwayFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Bungkus dari Restoran",
-                            amount = 6000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         convenienceFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Jasa Aplikasi",
-                            amount = 4000.00
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                         ),
                         deliveryFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Total Ongkos Kirim",
-                            amount = 16000.00,
+                            originalAmount = 10000.00,
+                            amount = 10000.00,
                             surge = CheckoutTokoFoodShoppingSurge(
                                 isSurgePrice = true,
-                                bottomsheet = CheckoutTokoFoodShoppingSurgeBottomsheet(
-                                    title = "Ongkos kirim kamu naik, ya",
-                                    description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
-                                )
+                                factor = 1.5
                             )
                         ),
                         parkingFee = CheckoutTokoFoodShoppingCostBreakdownItem(
-                            title = "Biaya Parkir",
+                            originalAmount = 0.00,
                             amount = 0.00
                         )
                     ),
-                    discountBreakdown = CheckoutTokoFoodShoppingDiscountBreakdown(
+                    discountBreakdown = listOf(CheckoutTokoFoodShoppingDiscountBreakdown(
                         title = "Total Diskon Item",
                         amount = 12000.00
+                    )),
+                    summaryDetail = CheckoutTokoFoodSummaryDetail(
+                        hideSummary = true,
+                        totalItems = 0,
+                        totalPrice = "Rp 133.000",
+                        details = listOf(
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Harga (2 item)",
+                                priceFmt = "Rp 125.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Diskon Item",
+                                priceFmt = "-Rp 12.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Biaya Bungkus dari Restoran",
+                                priceFmt = "Rp 6.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Biaya Jasa Aplikasi",
+                                priceFmt = "Rp 4.000"
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Ongkos Kirim",
+                                priceFmt = "Rp 16.000",
+                                info = CheckoutTokoFoodSummaryItemDetailInfo(
+                                    imageUrl = "https://icons.veryicon.com/png/o/miscellaneous/zol-m-station/icon-top-arrow.png",
+                                    bottomSheet = CheckoutTokoFoodSummaryItemDetailBottomSheet(
+                                        title = "Ongkos kirim kamu naik, ya",
+                                        description = "Ongkos kirim kamu disesuaikan karena jam sibuk atau ketersediaan penyedia layanan. "
+                                    )
+                                )
+                            ),
+                            CheckoutTokoFoodSummaryItemDetail(
+                                title = "Total Diskon Ongkos Kirim",
+                                priceFmt = "-Rp 6.000"
+                            )
+                        )
                     )
                 )
             )

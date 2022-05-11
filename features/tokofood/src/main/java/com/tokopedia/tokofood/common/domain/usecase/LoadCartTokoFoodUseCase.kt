@@ -14,6 +14,7 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSummary
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -63,6 +64,10 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                   }
                 }
               }
+              summary_detail{
+                total_items
+                total_price
+              }
             }
           }
         }
@@ -98,9 +103,10 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                     )
                 ),
                 shoppingSummary = CheckoutTokoFoodShoppingSummary(
-                    total = CheckoutTokoFoodShoppingTotal(
-                        costFmt = "Rp 10.000"
-                    )
+                    summaryDetail = CheckoutTokoFoodSummaryDetail(
+                        totalPrice = "Rp 10.000",
+                        totalItems = 2
+                    ),
                 )
             )
         )

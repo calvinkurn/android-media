@@ -7,12 +7,8 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingCostBreakdown
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingDiscountBreakdown
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurge
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingSurgeBottomsheet
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
-import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodTickerInfo
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetail
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
@@ -31,7 +27,7 @@ object TokoFoodPurchaseUiModelMapper {
         needPinpoint: Boolean
     ): List<Visitable<*>> {
         val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.shoppingSummary.hideSummary
+        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
 
         return mutableListOf<Visitable<*>>().apply {
             val tickerErrorMessage = response.data.tickerErrorMessage.takeIf { it.isNotEmpty() }
@@ -81,8 +77,7 @@ object TokoFoodPurchaseUiModelMapper {
                     add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
                     add(
                         mapSummaryTransactionUiModel(
-                            response.data.shoppingSummary.costBreakdown,
-                            response.data.shoppingSummary.discountBreakdown,
+                            response.data.shoppingSummary.summaryDetail.details,
                             response.data.tickers.bottom.message
                         )
                     )
@@ -100,7 +95,7 @@ object TokoFoodPurchaseUiModelMapper {
     ): PartialTokoFoodUiModel {
         val shouldShippingShown = response.data.shipping.name.isNotEmpty()
         val shouldPromoShown = !response.data.promo.hidePromo
-        val shouldSummaryShown = !response.data.shoppingSummary.hideSummary
+        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
         return PartialTokoFoodUiModel(
             shippingUiModel = mapShippingUiModel(
                 shipping = response.data.shipping,
@@ -109,8 +104,7 @@ object TokoFoodPurchaseUiModelMapper {
             ).takeIf { shouldShippingShown },
             promoUiModel = mapPromoUiModel(response.data.promo).takeIf { shouldPromoShown },
             summaryUiModel = mapSummaryTransactionUiModel(
-                response.data.shoppingSummary.costBreakdown,
-                response.data.shoppingSummary.discountBreakdown,
+                response.data.shoppingSummary.summaryDetail.details,
                 response.data.tickers.bottom.message
             ).takeIf { shouldSummaryShown },
             totalAmountUiModel = mapTotalAmountUiModel(
@@ -249,58 +243,23 @@ object TokoFoodPurchaseUiModelMapper {
         )
     }
 
-    private fun mapSummaryTransactionUiModel(costBreakdown: CheckoutTokoFoodShoppingCostBreakdown,
-                                             discountBreakdown: CheckoutTokoFoodShoppingDiscountBreakdown,
+    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>,
                                              bottomTickerMessage: String): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
-        // TODO: Confirm to PIC about positioning
-        val transactionList = costBreakdown.mapToUiModelList().toMutableList()
-        transactionList.add(1, discountBreakdown.mapToUiModel())
+        val summaryDetailList = summaryDetails.map {
+            it.mapToUiModel()
+        }
         return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
-            transactionList.toList(),
+            summaryDetailList.toList(),
             bottomTickerMessage
         )
     }
 
-    private fun CheckoutTokoFoodShoppingCostBreakdown.mapToUiModelList(): List<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction> {
-        return listOf(
-            // TODO: Tidying transaction
-            TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                title = totalCartPrice.title,
-                value = totalCartPrice.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO),
-            TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                title = deliveryFee.title,
-                value = deliveryFee.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO,
-                surgePriceInfo = getSurgePriceInfo(deliveryFee.surge)),
-            TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                title = takeAwayFee.title,
-                value = takeAwayFee.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO),
-            TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                title = convenienceFee.title,
-                value = convenienceFee.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO),
-            TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                title = parkingFee.title,
-                value = parkingFee.amount.toLong(),
-                defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_HIDE)
-        )
-    }
-
-    private fun getSurgePriceInfo(surge: CheckoutTokoFoodShoppingSurge): CheckoutTokoFoodShoppingSurgeBottomsheet? {
-        return if (surge.isSurgePrice) {
-            surge.bottomsheet
-        } else {
-            null
-        }
-    }
-
-    private fun CheckoutTokoFoodShoppingDiscountBreakdown.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
+    private fun CheckoutTokoFoodSummaryItemDetail.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
         return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
             title = title,
-            value = -amount.toLong(),
-            defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO)
+            value = priceFmt,
+            detailInfo = info
+        )
     }
 
     private fun mapTotalAmountUiModel(isEnabled: Boolean,

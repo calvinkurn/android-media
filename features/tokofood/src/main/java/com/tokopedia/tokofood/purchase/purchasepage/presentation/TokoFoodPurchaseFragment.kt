@@ -28,7 +28,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -198,7 +197,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         showLoadingLayout()
         context?.applicationContext?.let {
             ChooseAddressUtils.getLocalizingAddressData(it).latLong.isNotEmpty().let { hasPinpoint ->
-                viewModel.setIsHasPinpoint(hasPinpoint)
+                //TODO: Set correct value
+                viewModel.setIsHasPinpoint(true)
+//                viewModel.setIsHasPinpoint(hasPinpoint)
             }
         }
         viewModel.loadData()

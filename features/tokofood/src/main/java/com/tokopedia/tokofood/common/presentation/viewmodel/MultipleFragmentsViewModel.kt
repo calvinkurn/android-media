@@ -1,7 +1,5 @@
 package com.tokopedia.tokofood.common.presentation.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
-import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
@@ -20,11 +16,9 @@ import com.tokopedia.tokofood.common.domain.usecase.AddToCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.RemoveCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
-import com.tokopedia.tokofood.common.minicartwidget.domain.model.CartProduct
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
-import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.common.util.Result
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -270,24 +264,12 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 
     // TODO: Move to mapper
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
-        val products = cartData.availableSection.products
         return MiniCartUiModel(
             shopName = cartData.shop.name,
             totalPrice = cartData.shoppingSummary.total.cost,
-            totalPriceFmt = cartData.shoppingSummary.total.costFmt,
-            totalProductQuantity = products.size
+            totalPriceFmt = cartData.shoppingSummary.summaryDetail.totalPrice,
+            totalProductQuantity = cartData.shoppingSummary.summaryDetail.totalItems
         )
-    }
-
-    private fun calculateTotal(cartMapData: Map<String, CartProduct>): Pair<Int, Long> {
-        var totalPrice = 0L
-        var totalQuantity = 0
-        cartMapData.forEach {
-            totalPrice += it.value.price
-            totalQuantity += it.value.quantity
-        }
-
-        return Pair(totalQuantity, totalPrice)
     }
 
     private fun getProductParamById(productId: String, cartId: String): CartTokoFoodParam {
