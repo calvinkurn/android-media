@@ -43,6 +43,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
@@ -641,7 +642,7 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
             if(it is Success) {
-                if(it.data.isGeneralCartATC){
+                if(it.data.requestParams.isGeneralCartATC){
                     showToasterWithAction(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
                         Toaster.LENGTH_LONG,
@@ -652,6 +653,10 @@ class DiscoveryFragment :
                                 RouteManager.route(context,ApplinkConst.CART)
                             }
                         }
+                    )
+                    analytics.trackEventProductATC(
+                        it.data.requestParams.requestingComponent,
+                        it.data.addToCartDataModel.data.cartId
                     )
                 }else {
                     getMiniCart()
@@ -1617,14 +1622,12 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int,shopId : String? = null, isGeneralCartATC:Boolean) {
+    fun addOrUpdateItemCart(discoATCRequestParams: DiscoATCRequestParams) {
+        if(discoATCRequestParams.shopId.isNullOrEmpty()){
+            discoATCRequestParams.shopId = (userAddressData?.shop_id ?: "")
+        }
         discoveryViewModel.addProductToCart(
-            parentPosition,
-            position,
-            productId,
-            quantity,
-            shopId ?: (userAddressData?.shop_id ?: ""),
-             isGeneralCartATC
+            discoATCRequestParams
         )
     }
 

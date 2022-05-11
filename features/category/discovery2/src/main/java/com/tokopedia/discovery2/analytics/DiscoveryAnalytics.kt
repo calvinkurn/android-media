@@ -18,8 +18,8 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.trackingoptimizer.model.EventModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlin.collections.set
 
@@ -644,7 +644,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackEventProductATC(componentsItems: ComponentsItem, userID: String?) {
+    override fun trackEventProductATCTokonow(componentsItems: ComponentsItem, userID: String?) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
         var productTypeName = ""
@@ -674,12 +674,49 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             CURRENCY_CODE to IDR,
             KEY_ADD to productsMap)
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_ATC,
-            eventAction = PRODUCT_ATC_ACTION, eventLabel = productTypeName)
+            eventAction = PRODUCT_ATC_ACTION_TOKONOW, eventLabel = productTypeName)
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = (userID?: "")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackEventProductATC(componentsItems: ComponentsItem, cartID: String) {
+        val list = ArrayList<Map<String, Any>>()
+        val productMap = HashMap<String, Any>()
+        var productTypeName = ""
+        componentsItems.data?.firstOrNull()?.let {
+            productTypeName = getProductName(it.typeProductCard)
+            productMap[KEY_NAME] = it.name.toString()
+            productMap[KEY_ID] = it.productId.toString()
+            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
+            productMap[KEY_BRAND] = NONE_OTHER
+            productMap[KEY_CATEGORY] = NONE_OTHER
+            productMap[KEY_ATC_CATEGORY_ID] = NONE_OTHER
+            productMap[KEY_VARIANT] = NONE_OTHER
+            productMap[KEY_QUANTITY] = it.quantity
+            productMap[KEY_ATC_SHOP_ID] = it.shopId ?: ""
+            productMap[KEY_SHOP_NAME] = it.shopName?:""
+            productMap[KEY_SHOP_TYPE] = ""
+            productMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - ${userSession.isLoggedIn} - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+            productMap[DIMENSION45] = cartID
+        }
+        list.add(productMap)
+        val productsMap = mapOf(PRODUCTS to list)
+        val eCommerce = mapOf(
+            CURRENCY_CODE to IDR,
+            KEY_ADD to productsMap)
+        val map = createGeneralEvent(eventName = EVENT_PRODUCT_ATC,
+            eventAction = PRODUCT_ATC_ACTION, eventLabel = productTypeName)
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = (userSession.userId?: "")
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_SOURCE] = sourceIdentifier
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
