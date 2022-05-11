@@ -16,10 +16,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentProductTagParentBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
-import com.tokopedia.createpost.producttag.view.fragment.GlobalSearchFragment
-import com.tokopedia.createpost.producttag.view.fragment.LastPurchasedProductFragment
-import com.tokopedia.createpost.producttag.view.fragment.LastTaggedProductFragment
-import com.tokopedia.createpost.producttag.view.fragment.MyShopProductFragment
+import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
@@ -198,8 +195,8 @@ class ProductTagParentFragment @Inject constructor(
             }
             ProductTagSource.Shop -> {
                 Pair(
-                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    GlobalSearchFragment.TAG,
+                    ShopProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    ShopProductFragment.TAG,
                 )
             }
             else -> {

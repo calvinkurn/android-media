@@ -27,4 +27,7 @@ sealed interface ProductTagAction {
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction
     data class ShopSelected(val shop: ShopUiModel): ProductTagAction
+
+    /** Shop Product */
+    object LoadShopProduct: ProductTagAction
 }

@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentMyShopProductBinding
+import com.tokopedia.createpost.createpost.databinding.FragmentShopProductBinding
 import com.tokopedia.createpost.producttag.util.extension.hideKeyboard
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.MyShopProductAdapter
+import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
@@ -35,15 +37,15 @@ class ShopProductFragment : BaseProductTagChildFragment() {
 
     override fun getScreenName(): String = "ShopProductFragment"
 
-    private var _binding: FragmentMyShopProductBinding? = null
-    private val binding: FragmentMyShopProductBinding
+    private var _binding: FragmentShopProductBinding? = null
+    private val binding: FragmentShopProductBinding
         get() = _binding!!
 
     private lateinit var viewModel: ProductTagViewModel
-    private val adapter: MyShopProductAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
-        MyShopProductAdapter(
+    private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
+        ProductTagCardAdapter(
             onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
-            onLoading = { viewModel.submitAction(ProductTagAction.LoadMyShopProduct) }
+            onLoading = { viewModel.submitAction(ProductTagAction.LoadShopProduct) }
         )
     }
 
@@ -57,7 +59,7 @@ class ShopProductFragment : BaseProductTagChildFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMyShopProductBinding.inflate(
+        _binding = FragmentShopProductBinding.inflate(
             LayoutInflater.from(requireContext()),
             container,
             false
@@ -67,10 +69,10 @@ class ShopProductFragment : BaseProductTagChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(viewModel.myShopStateUnknown)
-            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
-        setupView()
-        setupObserver()
+//        if(viewModel.myShopStateUnknown)
+//            viewModel.submitAction(ProductTagAction.LoadMyShopProduct)
+//        setupView()
+//        setupObserver()
     }
 
     override fun onDestroyView() {
@@ -78,83 +80,83 @@ class ShopProductFragment : BaseProductTagChildFragment() {
         _binding = null
     }
 
-    private fun setupView() {
-        binding.rvMyShopProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-        binding.rvMyShopProduct.adapter = adapter
-
-        binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_no_my_shop_product))
-            errorTitle.text = getString(R.string.cc_no_my_shop_product_title)
-            errorDescription.text = getString(R.string.cc_no_my_shop_product_desc)
-            errorAction.gone()
-            errorSecondaryAction.gone()
-        }
-
-        binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val query = binding.sbShopProduct.searchBarTextField.text.toString()
-                viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
-
-                textView.apply {
-                    clearFocus()
-                    hideKeyboard()
-                }
-                true
-            }
-            else false
-        }
-    }
-
-    private fun setupObserver() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.withCache().collectLatest {
-                renderMyShopProducts(it.prevValue?.myShopProduct, it.value.myShopProduct)
-            }
-        }
-    }
-
-    private fun renderMyShopProducts(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
-
-        fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                MyShopProductAdapter.Model.Product(product = it)
-            } + if(hasNextPage) listOf(MyShopProductAdapter.Model.Loading) else emptyList()
-
-            if(binding.rvMyShopProduct.isComputingLayout.not())
-                adapter.setItemsAndAnimateChanges(finalProducts)
-
-            binding.rvMyShopProduct.show()
-            binding.globalError.hide()
-        }
-
-        if(prev?.products == curr.products && prev.state == curr.state) return
-
-        when(curr.state) {
-            is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
-            }
-            is PagedState.Success -> {
-                if(curr.products.isEmpty()) {
-                    binding.rvMyShopProduct.hide()
-                    binding.globalError.show()
-                }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
-            }
-            is PagedState.Error -> {
-                updateAdapterData(curr.products, false)
-
-                Toaster.build(
-                    binding.root,
-                    text = getString(R.string.cc_failed_load_product),
-                    type = Toaster.TYPE_ERROR,
-                    duration = Toaster.LENGTH_LONG,
-                    actionText = getString(R.string.feed_content_coba_lagi_text),
-                    clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
-                ).show()
-            }
-            else -> {}
-        }
-    }
+//    private fun setupView() {
+//        binding.rvMyShopProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+//        binding.rvMyShopProduct.adapter = adapter
+//
+//        binding.globalError.apply {
+//            errorIllustration.loadImage(getString(R.string.img_no_my_shop_product))
+//            errorTitle.text = getString(R.string.cc_no_my_shop_product_title)
+//            errorDescription.text = getString(R.string.cc_no_my_shop_product_desc)
+//            errorAction.gone()
+//            errorSecondaryAction.gone()
+//        }
+//
+//        binding.sbShopProduct.searchBarTextField.setOnEditorActionListener { textView, actionId, keyEvent ->
+//            if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+//                val query = binding.sbShopProduct.searchBarTextField.text.toString()
+//                viewModel.submitAction(ProductTagAction.SearchMyShopProduct(query))
+//
+//                textView.apply {
+//                    clearFocus()
+//                    hideKeyboard()
+//                }
+//                true
+//            }
+//            else false
+//        }
+//    }
+//
+//    private fun setupObserver() {
+//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+//            viewModel.uiState.withCache().collectLatest {
+//                renderMyShopProducts(it.prevValue?.myShopProduct, it.value.myShopProduct)
+//            }
+//        }
+//    }
+//
+//    private fun renderMyShopProducts(prev: MyShopProductUiState?, curr: MyShopProductUiState) {
+//
+//        fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
+//            val finalProducts = products.map {
+//                MyShopProductAdapter.Model.Product(product = it)
+//            } + if(hasNextPage) listOf(MyShopProductAdapter.Model.Loading) else emptyList()
+//
+//            if(binding.rvMyShopProduct.isComputingLayout.not())
+//                adapter.setItemsAndAnimateChanges(finalProducts)
+//
+//            binding.rvMyShopProduct.show()
+//            binding.globalError.hide()
+//        }
+//
+//        if(prev?.products == curr.products && prev.state == curr.state) return
+//
+//        when(curr.state) {
+//            is PagedState.Loading -> {
+//                updateAdapterData(curr.products, true)
+//            }
+//            is PagedState.Success -> {
+//                if(curr.products.isEmpty()) {
+//                    binding.rvMyShopProduct.hide()
+//                    binding.globalError.show()
+//                }
+//                else updateAdapterData(curr.products, curr.state.hasNextPage)
+//            }
+//            is PagedState.Error -> {
+//                updateAdapterData(curr.products, false)
+//
+//                Toaster.build(
+//                    binding.root,
+//                    text = getString(R.string.cc_failed_load_product),
+//                    type = Toaster.TYPE_ERROR,
+//                    duration = Toaster.LENGTH_LONG,
+//                    actionText = getString(R.string.feed_content_coba_lagi_text),
+//                    clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
+//                ).show()
+//            }
+//            else -> {}
+//        }
+//    }
 
     companion object {
         const val TAG = "ShopProductFragment"

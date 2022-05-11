@@ -374,6 +374,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleShopSelected(shop: ShopUiModel) {
         /** TODO: handle this later on */
+        _selectedProductTagSource.value = ProductTagSource.Shop
     }
 
     companion object {
