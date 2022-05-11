@@ -966,8 +966,10 @@ class PlayAnalytic(
 
     fun clickActiveInteractive(
         interactiveId: String,
-        shopId: String
-    ) {
+        shopId: String,
+        interactiveType: InteractiveUiModel,
+        ) {
+        if(interactiveType !is InteractiveUiModel.Quiz) return
         sendCompleteGeneralEvent(
             event = KEY_TRACK_CLICK_CONTENT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,

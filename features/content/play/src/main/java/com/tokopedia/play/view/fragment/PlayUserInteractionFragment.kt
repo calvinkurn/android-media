@@ -507,7 +507,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
         playViewModel.submitAction(
             PlayViewerNewAction.StartPlayingInteractive)
-            analytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString())
+            analytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData)
     }
     //endregion
 
