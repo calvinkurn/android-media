@@ -72,7 +72,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState != null) {
             dealsDetail = savedInstanceState.getParcelable(EXTRA_PDP_PASS_DATA) ?: DealsDetailsResponse()
-
+            toolbar.setTitle(resources.getString(com.tokopedia.digital_deals.R.string.select_number_of_voucher))
         }
         showLayout()
         observeVerify()
