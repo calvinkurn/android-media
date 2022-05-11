@@ -44,6 +44,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
 
+    val selectedProductTagSource: SelectedProductTagSource
+        get() = _selectedProductTagSource.value
+
     val lastTaggedProductStateUnknown: Boolean
         get() = _lastTaggedProduct.value.state == PagedState.Unknown
 

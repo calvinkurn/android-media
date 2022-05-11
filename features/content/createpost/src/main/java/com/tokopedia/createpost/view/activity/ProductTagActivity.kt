@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -39,7 +40,11 @@ class ProductTagActivity : BaseActivity() {
         val authorType = intent.getStringExtra(EXTRA_AUTHOR_TYPE) ?: ""
 
         supportFragmentManager.beginTransaction()
-            .replace(binding.container.id, getParentFragment(productTagList, shopBadge, authorId, authorType,))
+            .replace(
+                binding.container.id,
+                getParentFragment(productTagList, shopBadge, authorId, authorType,),
+                ProductTagParentFragment.TAG
+            )
             .commit()
     }
 
@@ -65,6 +70,12 @@ class ProductTagActivity : BaseActivity() {
             authorId,
             authorType,
         )
+    }
+
+    override fun onBackPressed() {
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.let {
+            if(it.onBackPressed().not()) super.onBackPressed()
+        } ?: super.onBackPressed()
     }
 
     companion object {

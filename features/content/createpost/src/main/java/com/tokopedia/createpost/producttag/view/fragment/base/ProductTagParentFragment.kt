@@ -3,6 +3,7 @@ package com.tokopedia.createpost.producttag.view.fragment.base
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -242,8 +243,15 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
+    fun onBackPressed(): Boolean {
+        return if(viewModel.selectedProductTagSource.needAddToBackStack) {
+            childFragmentManager.popBackStack()
+            true
+        } else false
+    }
+
     companion object {
-        private const val TAG = "ProductTagParentFragment"
+        const val TAG = "ProductTagParentFragment"
         private const val EXTRA_PRODUCT_TAG_LIST = "EXTRA_PRODUCT_TAG_LIST"
         private const val EXTRA_SHOP_BADGE = "EXTRA_SHOP_BADGE"
         private const val EXTRA_AUTHOR_ID = "EXTRA_AUTHOR_ID"
@@ -260,6 +268,10 @@ class ProductTagParentFragment @Inject constructor(
 
         const val SOURCE_FEED = "feed"
         const val SOURCE_PLAY = "play"
+
+        fun findFragment(fragmentManager: FragmentManager): ProductTagParentFragment? {
+            return fragmentManager.findFragmentByTag(TAG) as? ProductTagParentFragment
+        }
 
         fun getFragmentWithFeedSource(
             fragmentManager: FragmentManager,
