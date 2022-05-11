@@ -353,8 +353,7 @@ class CatalogDetailPageFragment : Fragment(),
     private fun setProductCountText(productCount : Int) {
         if(productCount == CatalogConstant.ZERO_VALUE){
             mProductsCountText?.text = getString(
-                com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty,
-                productCount
+                com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty
             )
             mToBottomLayout?.hide()
         }else {
