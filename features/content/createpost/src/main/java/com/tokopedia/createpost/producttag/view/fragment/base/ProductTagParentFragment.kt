@@ -196,6 +196,12 @@ class ProductTagParentFragment @Inject constructor(
                     GlobalSearchFragment.TAG,
                 )
             }
+            ProductTagSource.Shop -> {
+                Pair(
+                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    GlobalSearchFragment.TAG,
+                )
+            }
             else -> {
                 Pair(
                     LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),

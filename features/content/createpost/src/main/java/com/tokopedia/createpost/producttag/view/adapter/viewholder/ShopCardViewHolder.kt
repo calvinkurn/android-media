@@ -26,6 +26,7 @@ internal class ShopCardViewHolder private constructor() {
                     override fun onItemImpressed() { }
 
                     override fun onItemClicked() {
+                        onSelected(item.shop)
 //                        shopListener.onItemClicked(shopDataViewItem)
                     }
 

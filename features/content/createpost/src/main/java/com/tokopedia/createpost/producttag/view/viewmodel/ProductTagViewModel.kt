@@ -180,6 +180,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
+            is ProductTagAction.ShopSelected -> handleShopSelected(action.shop)
         }
     }
 
@@ -369,6 +370,10 @@ class ProductTagViewModel @AssistedInject constructor(
                 )
             }
         }
+    }
+
+    private fun handleShopSelected(shop: ShopUiModel) {
+        /** TODO: handle this later on */
     }
 
     companion object {
