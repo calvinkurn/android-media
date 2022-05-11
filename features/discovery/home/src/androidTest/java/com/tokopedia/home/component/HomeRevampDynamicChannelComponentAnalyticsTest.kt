@@ -225,6 +225,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testCueWidgetCategory() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnCueWidgetCategory(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY)
+        }
+    }
+
+    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()
@@ -498,7 +511,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
