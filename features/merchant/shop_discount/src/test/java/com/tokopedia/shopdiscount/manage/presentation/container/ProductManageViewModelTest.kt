@@ -100,9 +100,9 @@ class ProductManageViewModelTest {
     fun `When discount status is match, should update product count from remote data`()  {
         //Given
         val ongoingDiscountStatusId = 2
-        val localData = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0))
+        val localData = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0, 0))
         val remoteData = listOf(DiscountStatusMeta("ONGOING", "Berlangsung", 20))
-        val expected = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 20))
+        val expected = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 20, 0))
 
         //When
         val actual = viewModel.findDiscountStatusCount(localData, remoteData)
@@ -115,9 +115,9 @@ class ProductManageViewModelTest {
     fun `When discount status is not match, product count should be 0`()  {
         //Given
         val ongoingDiscountStatusId = 2
-        val localData = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0))
+        val localData = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0, 0))
         val remoteData = listOf(DiscountStatusMeta("ONGOING_EVENT", "Berlangsung", 20))
-        val expected = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0))
+        val expected = listOf(PageTab("Berlangsung", "ONGOING", ongoingDiscountStatusId, 0,0))
 
         //When
         val actual = viewModel.findDiscountStatusCount(localData, remoteData)

@@ -3,15 +3,13 @@ package com.tokopedia.shopdiscount.search.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
-import javax.inject.Inject
 
-class SearchProductActivity : AppCompatActivity() {
+class SearchProductActivity : BaseSimpleActivity() {
 
     companion object {
         private const val BUNDLE_KEY_BUNDLE_DISCOUNT_STATUS_NAME = "discount-status-name"
@@ -26,9 +24,6 @@ class SearchProductActivity : AppCompatActivity() {
         }
     }
 
-    @Inject
-    lateinit var router: FragmentRouter
-
     private val discountStatusName by lazy {
         intent.getStringExtra(
             BUNDLE_KEY_BUNDLE_DISCOUNT_STATUS_NAME
@@ -42,12 +37,9 @@ class SearchProductActivity : AppCompatActivity() {
         ).orZero()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupDependencyInjection()
-        setContentView(R.layout.activity_search_product)
-        displayFragment()
-    }
+    override fun getLayoutRes() = R.layout.activity_search_product
+    override fun getNewFragment() = SearchProductFragment.newInstance(discountStatusName, discountStatusId)
+    override fun getParentViewResourceID() = R.id.container
 
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
@@ -56,9 +48,9 @@ class SearchProductActivity : AppCompatActivity() {
             .inject(this)
     }
 
-    private fun displayFragment() {
-        val fragment = SearchProductFragment.newInstance(discountStatusName, discountStatusId)
-        router.replace(supportFragmentManager, R.id.container, fragment)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupDependencyInjection()
+        setContentView(R.layout.activity_search_product)
     }
-
 }
