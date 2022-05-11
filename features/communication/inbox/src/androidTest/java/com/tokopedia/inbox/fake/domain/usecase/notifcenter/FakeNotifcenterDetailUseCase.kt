@@ -162,18 +162,6 @@ class FakeNotifcenterDetailUseCase(
             }
         }
 
-    val defaultNotificationsWithPin: NotifcenterDetailResponse
-        get() {
-            return alterResponseOf(R.raw.notifcenter_detail_v3) {
-                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
-                newList.get(0).asJsonObject.apply {
-                    addProperty(IS_PINNED, true)
-                    addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
-                    addProperty(READ_STATUS, 1)
-                }
-            }
-        }
-
     val filteredNotificationsWithPin: NotifcenterDetailResponse
         get() {
             return alterResponseOf(R.raw.notifcenter_detail_v3) {
@@ -191,6 +179,22 @@ class FakeNotifcenterDetailUseCase(
 
     private fun getNewExpiredTime(extendedTime: Long): Long {
         return (System.currentTimeMillis() / UNIX_DIVIDER) + extendedTime
+    }
+
+    fun getNotificationPinResponse(
+        showCountDown: Boolean = false,
+        typeLink: Int = 0
+    ): NotifcenterDetailResponse {
+        return alterResponseOf(R.raw.notifcenter_detail_v3) {
+            val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+            newList.get(0).asJsonObject.apply {
+                addProperty(IS_PINNED, true)
+                addProperty(PINNED_TEXT, "Di-pin sampai 02 Mei 2022")
+                addProperty(READ_STATUS, 1)
+                addProperty(IS_SHOW_EXPIRED, showCountDown)
+                addProperty(TYPE_LINK, typeLink)
+            }
+        }
     }
 
     init {
@@ -242,6 +246,8 @@ class FakeNotifcenterDetailUseCase(
         private const val IS_PINNED = "is_pinned"
         private const val PINNED_TEXT = "pinned_text"
         private const val READ_STATUS = "read_status"
+        private const val IS_SHOW_EXPIRED = "is_show_expire"
+        private const val TYPE_LINK = "type_link"
 
         private const val THREE_HOURS = 10000L
         private const val THREE_DAYS = 240000L

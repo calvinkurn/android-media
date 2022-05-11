@@ -189,29 +189,33 @@ abstract class BaseNotificationViewHolder constructor(
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnixMillis)
     }
 
-    private fun bindPin(element: NotificationUiModel) {
+    open fun bindPin(element: NotificationUiModel) {
         if (element.isPinned) {
-            showPinNotif(element)
+            showPinNotif()
+            bindPinExpired(element, isShow = true)
         } else {
             hidePinNotif()
+            bindPinExpired(isShow = false)
         }
     }
 
-    private fun showPinNotif(element: NotificationUiModel) {
+    protected fun showPinNotif() {
         layoutPinTop?.show()
-        bindPinExpired(element)
         time?.hide()
     }
 
-    private fun hidePinNotif() {
+    protected fun hidePinNotif() {
         layoutPinTop?.hide()
-        tvPinExpired?.hide()
         time?.show()
     }
 
-    private fun bindPinExpired(element: NotificationUiModel) {
-        tvPinExpired?.show()
-        tvPinExpired?.text = element.pinnedText
+    protected fun bindPinExpired(element: NotificationUiModel? = null, isShow: Boolean) {
+        if (isShow) {
+            tvPinExpired?.show()
+            tvPinExpired?.text = element?.pinnedText?: ""
+        } else {
+            tvPinExpired?.hide()
+        }
     }
 
     private fun getStringResource(stringId: Int): String {

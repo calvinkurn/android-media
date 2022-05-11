@@ -10,16 +10,23 @@ import org.hamcrest.CoreMatchers.not
 
 object NotificationPinResult {
 
-    fun assertNotificationPinned(position: Int) {
+    fun assertNotificationPinned(position: Int, isShowCountDown: Boolean = false) {
         onView(
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.layout_pin_top)
         ).check(matches(isDisplayed()))
 
-        onView(
-            withRecyclerView(R.id.recycler_view)
-                .atPositionOnView(position, R.id.tv_pin_expired)
-        ).check(matches(isDisplayed()))
+        if (isShowCountDown) {
+            onView(
+                withRecyclerView(R.id.recycler_view)
+                    .atPositionOnView(position, R.id.tv_pin_expired)
+            ).check(matches(not(isDisplayed())))
+        } else {
+            onView(
+                withRecyclerView(R.id.recycler_view)
+                    .atPositionOnView(position, R.id.tv_pin_expired)
+            ).check(matches(isDisplayed()))
+        }
     }
 
     fun assertBackgroundColor(position: Int, color: Int?) {

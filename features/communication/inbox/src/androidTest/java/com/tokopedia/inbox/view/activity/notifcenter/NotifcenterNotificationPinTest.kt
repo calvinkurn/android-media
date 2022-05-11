@@ -54,7 +54,7 @@ class NotifcenterNotificationPinTest: InboxNotifcenterTest() {
         // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response =
-                notifcenterDetailUseCase.defaultNotificationsWithPin
+                notifcenterDetailUseCase.getNotificationPinResponse()
         }
         startInboxActivity()
 
@@ -71,7 +71,7 @@ class NotifcenterNotificationPinTest: InboxNotifcenterTest() {
         // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response =
-                notifcenterDetailUseCase.defaultNotificationsWithPin
+                notifcenterDetailUseCase.getNotificationPinResponse()
         }
         startInboxActivity()
 
@@ -92,7 +92,7 @@ class NotifcenterNotificationPinTest: InboxNotifcenterTest() {
         // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response =
-                notifcenterDetailUseCase.defaultNotificationsWithPin
+                notifcenterDetailUseCase.getNotificationPinResponse()
         }
         startInboxActivity()
 
@@ -120,5 +120,49 @@ class NotifcenterNotificationPinTest: InboxNotifcenterTest() {
         // Then
         assertNotificationUnpinned(5)
         assertBackgroundColor(5, null)
+    }
+
+    @Test
+    fun should_hide_pin_expired_when_showing_count_down_in_notif_banner() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response =
+                notifcenterDetailUseCase.getNotificationPinResponse(
+                    showCountDown = true,
+                    typeLink = NOTIFICATION_BANNER
+                )
+        }
+        startInboxActivity()
+
+        //When
+        scrollToProductPosition(2)
+
+        // Then
+        assertNotificationPinned(2, isShowCountDown = true)
+        assertBackgroundColor(2, com.tokopedia.unifyprinciples.R.color.Unify_YN50)
+    }
+
+    @Test
+    fun should_show_pin_expired_when_not_showing_count_down_in_notif_banner() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response =
+                notifcenterDetailUseCase.getNotificationPinResponse(
+                    showCountDown = false,
+                    typeLink = NOTIFICATION_BANNER
+                )
+        }
+        startInboxActivity()
+
+        //When
+        scrollToProductPosition(2)
+
+        // Then
+        assertNotificationPinned(2, isShowCountDown = false)
+        assertBackgroundColor(2, com.tokopedia.unifyprinciples.R.color.Unify_YN50)
+    }
+
+    companion object {
+        private const val NOTIFICATION_BANNER = 4
     }
 }

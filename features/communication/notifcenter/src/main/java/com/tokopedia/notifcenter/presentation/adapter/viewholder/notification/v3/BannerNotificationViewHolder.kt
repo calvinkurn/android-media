@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.time.TimeHelper
 
-class BannerNotificationTitleViewHolder(
+class BannerNotificationViewHolder(
         itemView: View?,
         private val listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
@@ -64,6 +64,18 @@ class BannerNotificationTitleViewHolder(
             status?.hide()
             endDate?.hide()
             countDown?.hide()
+        }
+    }
+
+    override fun bindPin(element: NotificationUiModel) {
+        if (element.isPinned) {
+            showPinNotif()
+            if (!element.isShowExpire) {
+                bindPinExpired(element, isShow = true)
+            }
+        } else {
+            hidePinNotif()
+            bindPinExpired(isShow = false)
         }
     }
 
