@@ -26,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tool:viewBindingIgnore="true"
         app:show_timeout="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
