@@ -54,9 +54,7 @@ import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCo
 import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
-import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
@@ -162,12 +160,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         })
 
         passengerViewModel.nationalityData.observe(viewLifecycleOwner, {
-                it?.let { onNationalityChanged(it) }
-            })
+            it?.let { onNationalityChanged(it) }
+        })
 
         passengerViewModel.passportIssuerCountryData.observe(viewLifecycleOwner, {
-                it?.let { onIssuerCountryChanged(it) }
-            })
+            it?.let { onIssuerCountryChanged(it) }
+        })
     }
 
     private fun initView() {
@@ -370,6 +368,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
+        val itemCount = binding?.rvPassengerTitle?.adapter?.itemCount ?: 0;
         when {
             passengerTitle.equals(
                 FlightPassengerTitle.TUAN.salutation,
@@ -378,11 +377,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerTitle.equals(
                 FlightPassengerTitle.NYONYA.salutation,
                 true
-            ) -> binding?.rvPassengerTitle?.selectChipByPosition(1)
+            ) -> if (itemCount > 2) binding?.rvPassengerTitle?.selectChipByPosition(1)
             passengerTitle.equals(
                 FlightPassengerTitle.NONA.salutation,
                 true
-            ) -> binding?.rvPassengerTitle?.selectChipByPosition(2)
+            ) -> {
+                if (itemCount > 2) binding?.rvPassengerTitle?.selectChipByPosition(2)
+                else binding?.rvPassengerTitle?.selectChipByPosition(1)
+            }
             else -> binding?.rvPassengerTitle?.onResetChip()
         }
     }
@@ -1175,7 +1177,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             Toaster.build(
                 it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                 "OK"
-            ) { /* do nothing */ }
+            ).show()
         }
     }
 
