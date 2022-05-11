@@ -562,18 +562,19 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     private fun showDialogAskGps() {
         context?.let {
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.txt_location_not_detected))
-            dialog.setDescription(getString(R.string.discom_on_deny_location_subtitle))
-            dialog.setPrimaryCTAText(getString(R.string.btn_ok))
-            dialog.setCancelable(true)
-            dialog.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                context?.let { turnGPSOn(it) }
-            }
-            dialog.setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.txt_location_not_detected))
+                setDescription(getString(R.string.discom_on_deny_location_subtitle))
+                setPrimaryCTAText(getString(R.string.btn_ok))
+                setCancelable(true)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    turnGPSOn(it)
+                }
+                setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
             }
             dialog.show()
         }
