@@ -1,9 +1,6 @@
 package com.tokopedia.createpost.producttag.view.uimodel.state
 
-import com.tokopedia.createpost.producttag.view.uimodel.PagedState
-import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
  * Created By : Jonathan Darwin on April 25, 2022
@@ -19,7 +16,7 @@ data class ProductTagUiState(
 
 data class ProductTagSourceUiState(
     val productTagSourceList: List<ProductTagSource>,
-    val selectedProductTagSource: ProductTagSource,
+    val selectedProductTagSource: SelectedProductTagSource,
 )
 
 data class LastTaggedProductUiState(

@@ -18,6 +18,7 @@ import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.bottomsheet.ProductTagSourceBottomSheet
 import com.tokopedia.createpost.producttag.view.fragment.*
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.createpost.producttag.view.uimodel.SelectedProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
@@ -147,21 +148,30 @@ class ProductTagParentFragment @Inject constructor(
     ) {
         if(prevState == currState) return
 
-        /** Update Breadcrumb */
-        binding.tvCcProductTagProductSource.text = getProductTagSourceText(currState.selectedProductTagSource)
+        updateBreadcrumb(currState.selectedProductTagSource.source)
+        updateFragmentContent(currState.selectedProductTagSource)
+    }
 
-        if(currState.selectedProductTagSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+    private fun updateBreadcrumb(selectedSource: ProductTagSource) {
+        binding.tvCcProductTagProductSource.text = getProductTagSourceText(selectedSource)
+
+        if(selectedSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
             binding.icCcProductTagShopBadge.setImageUrl(viewModel.shopBadge)
             binding.icCcProductTagShopBadge.show()
         }
         else {
             binding.icCcProductTagShopBadge.hide()
         }
+    }
 
-        /** Update Fragment Content */
-        val (fragment, tag) = getFragmentAndTag(currState.selectedProductTagSource)
+    private fun updateFragmentContent(selectedSource: SelectedProductTagSource) {
+        val (fragment, tag) = getFragmentAndTag(selectedSource.source)
         childFragmentManager.beginTransaction()
             .replace(binding.flCcProductTagContainer.id, fragment, tag)
+            .apply {
+                if(selectedSource.needAddToBackStack)
+                    addToBackStack(null)
+            }
             .commit()
     }
 
@@ -169,10 +179,8 @@ class ProductTagParentFragment @Inject constructor(
         return when(productTagSource) {
             ProductTagSource.LastTagProduct -> {
                 Pair(
-                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    GlobalSearchFragment.TAG,
-//                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-//                    LastTaggedProductFragment.TAG,
+                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    LastTaggedProductFragment.TAG,
                 )
             }
             ProductTagSource.LastPurchase -> {
@@ -201,8 +209,8 @@ class ProductTagParentFragment @Inject constructor(
             }
             else -> {
                 Pair(
-                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    LastTaggedProductFragment.TAG,
+                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    GlobalSearchFragment.TAG,
                 )
             }
         }
@@ -210,12 +218,10 @@ class ProductTagParentFragment @Inject constructor(
 
     private fun getProductTagSourceText(source: ProductTagSource): String {
         return when(source) {
-            ProductTagSource.GlobalSearch,
-            ProductTagSource.LastTagProduct -> getString(R.string.content_creation_search_bs_item_tokopedia)
             ProductTagSource.LastPurchase -> getString(R.string.content_creation_search_bs_item_last_purchase)
             ProductTagSource.Wishlist -> getString(R.string.content_creation_search_bs_item_wishlist)
             ProductTagSource.MyShop -> userSession.shopName
-            else -> ""
+            else -> getString(R.string.content_creation_search_bs_item_tokopedia)
         }
     }
 

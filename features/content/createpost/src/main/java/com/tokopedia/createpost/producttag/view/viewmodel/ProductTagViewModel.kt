@@ -61,7 +61,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
-    private val _selectedProductTagSource = MutableStateFlow<ProductTagSource>(ProductTagSource.LastTagProduct)
+    private val _selectedProductTagSource = MutableStateFlow<SelectedProductTagSource>(SelectedProductTagSource.Empty)
 
     private val _lastTaggedProduct = MutableStateFlow(LastTaggedProductUiModel.Empty)
     private val _lastPurchasedProduct = MutableStateFlow(LastPurchasedProductUiModel.Empty)
@@ -186,7 +186,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        _selectedProductTagSource.value = source
+        _selectedProductTagSource.setValue { copy(source = source, needAddToBackStack = false) }
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
@@ -374,7 +374,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     private fun handleShopSelected(shop: ShopUiModel) {
         /** TODO: handle this later on */
-        _selectedProductTagSource.value = ProductTagSource.Shop
+        _selectedProductTagSource.setValue { copy(source = ProductTagSource.Shop, needAddToBackStack = true) }
     }
 
     companion object {
