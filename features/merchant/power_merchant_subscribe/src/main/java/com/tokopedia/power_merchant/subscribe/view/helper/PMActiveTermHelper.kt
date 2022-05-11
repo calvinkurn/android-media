@@ -45,11 +45,6 @@ object PMActiveTermHelper {
         var ctaAppLink: String? = null
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
 
-        val shopScoreThreshold = if (isPmProSelected) {
-            shopInfo.shopScorePmProThreshold
-        } else {
-            shopInfo.shopScoreThreshold
-        }
 
         if (isEligibleShopScore) {
             val textColor = PMCommonUtils.getHexColor(
@@ -58,8 +53,8 @@ object PMActiveTermHelper {
             )
             title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
             description = context.getString(
-                R.string.pm_shop_score_eligible_description,
-                shopScoreThreshold
+                com.tokopedia.power_merchant.subscribe.R.string.pm_active_shop_score_description,
+                shopInfo.shopScorePmProThreshold
             )
         } else {
             val textColor = PMCommonUtils.getHexColor(
@@ -68,8 +63,8 @@ object PMActiveTermHelper {
             )
             title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
             description = context.getString(
-                R.string.pm_shop_score_not_eligible_description,
-                shopScoreThreshold
+                com.tokopedia.power_merchant.subscribe.R.string.pm_active_shop_score_description,
+                shopInfo.shopScorePmProThreshold
             )
             ctaText = String.EMPTY
             ctaAppLink = String.EMPTY
@@ -255,17 +250,17 @@ object PMActiveTermHelper {
         return listOf(
             PMProBenefitUiModel(
                 description = context.getString(
-                    R.string.pm_pro_general_benefit_1_new,
+                    R.string.pm_pro_general_benefit_1,
                     Constant.POWER_MERCHANT_PRO_CHARGING
                 ),
                 icon = IconUnify.COURIER_FAST
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_2_new),
+                description = context.getString(R.string.pm_pro_general_benefit_2),
                 imgUrl = PMConstant.Images.PM_PRO_BADGE
             ),
             PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_3_new),
+                description = context.getString(R.string.pm_pro_general_benefit_3),
                 icon = IconUnify.PROMO
             )
         )

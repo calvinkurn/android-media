@@ -70,41 +70,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.power_merchant.subscribe.view.viewcomponent.TermHeaderView
-                android:id="@+id/viewPmUpgradeTermSection"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/unify_space_12"
-                android:paddingTop="@dimen/unify_space_12"
-                android:paddingEnd="@dimen/unify_space_12"
-                android:paddingBottom="@dimen/unify_space_12"
-                app:layout_constraintEnd_toEndOf="parent"
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/icTargetHeader"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:layout_marginStart="@dimen/unify_space_12"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/tvPmHeaderTitle"
+                app:layout_constraintBottom_toBottomOf="@id/tvPmHeaderTitle"
+                tools:src="@tools:sample/avatars" />
 
-            <View
-                android:id="@+id/horLinePmUpgrade1"
-                android:layout_width="@dimen/layout_lvl0"
-                android:layout_height="1dp"
-                android:visibility="gone"
-                android:background="@color/Unify_N75"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewPmUpgradeTermSection" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Yuk, capai target ke"
+                android:textColor="@color/Unify_NN950"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintStart_toEndOf="@id/icTargetHeader"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPmHeaderTermsStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:text="PM PRO Advanced"
+                android:textColor="@color/Unify_NN950"
+                android:textSize="@dimen/unify_font_12"
+                app:layout_constraintStart_toEndOf="@+id/tvPmHeaderTitle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPmUpgradeTerms"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_12"
-                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_12"
                 android:layout_marginBottom="@dimen/unify_space_4"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horLinePmUpgrade1"
+                app:layout_constraintTop_toBottomOf="@+id/tvPmHeaderTermsStatus"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_pm_registration_term" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -135,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
+                app:typographyWeight="bold"
                 android:text="@string/pm_pro_upgrade_description" />
 
             <androidx.recyclerview.widget.RecyclerView

@@ -29,7 +29,6 @@ class TermHeaderView : LinearLayout {
 
     init {
         binding = ViewPmTermsHeaderBinding.inflate(LayoutInflater.from(context), this, true)
-        binding?.icPmProBadge?.loadImage(PMConstant.Images.PM_PRO_BADGE)
         binding?.root?.setOnClickListener {
             isExpanded = !isExpanded
             changeIconExpandedStatus()
