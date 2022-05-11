@@ -18,7 +18,6 @@ object Lego4AutoTabletConfiguration {
     private val LAYOUT_TABLET_ABOVE_768 = R.layout.layout_lego_4_auto_item_tablet_above_768
 
     private const val SPAN_COUNT_2x2 = 2
-    private const val SPAN_COUNT_4x1 = 4
     private const val LAYOUT_WIDTH_767 = 768
     private const val LAYOUT_WIDTH_700 = 700
 
@@ -51,14 +50,7 @@ object Lego4AutoTabletConfiguration {
     fun getSpanCount(context: Context?): Int {
         context?.let {
             return if (DeviceScreenInfo.isTablet(context)) {
-                val width = context.resources.displayMetrics.widthPixels
-                val density = context.resources.displayMetrics.density
-                val widthPx = width / density
-                if (widthPx < LAYOUT_WIDTH_700) {
-                    SPAN_COUNT_2x2
-                } else {
-                    SPAN_COUNT_4x1
-                }
+                context.resources.getInteger(R.integer.span_count)
             } else {
                 SPAN_COUNT_2x2
             }
