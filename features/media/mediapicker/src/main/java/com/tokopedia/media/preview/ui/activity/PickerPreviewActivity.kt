@@ -94,6 +94,7 @@ class PickerPreviewActivity : BaseActivity()
     override fun onPause() {
         super.onPause()
         binding?.drawerSelector?.removeListener()
+        pickerPager.pauseVideoPlayer()
     }
 
     override fun onCloseClicked() {

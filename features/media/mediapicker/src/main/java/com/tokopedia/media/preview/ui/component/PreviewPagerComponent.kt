@@ -1,5 +1,6 @@
 package com.tokopedia.media.preview.ui.component
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
@@ -59,6 +60,10 @@ class PreviewPagerComponent(
         return viewPager.currentItem
     }
 
+    fun pauseVideoPlayer(){
+        adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.pause()
+    }
+
     override fun release() {} //no-op
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
@@ -69,6 +74,7 @@ class PreviewPagerComponent(
             currentItem.mVideoPlayer?.let {
                 if (!it.player().isPlaying) {
                     currentItem.mVideoPlayer?.start()
+
                 }
             }
 
