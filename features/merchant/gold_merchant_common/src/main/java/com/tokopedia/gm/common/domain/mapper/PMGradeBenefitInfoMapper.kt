@@ -23,19 +23,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
         )
     }
 
-    fun getPMGradeBenefitList(pmGradeBenefitList: List<PmGradeWithBenefitsModel>?): List<PMGradeWithBenefitsUiModel>? {
-        pmGradeBenefitList?.let { list ->
-            return list.map {
-                PMGradeWithBenefitsUiModel(
-                    gradeName = it.gradeName.orEmpty(),
-                    isActive = it.isActive ?: false,
-                    benefits = getPMGradeBenefits(it.benefits),
-                )
-            }
-        }
-        return null
-    }
-
     private fun getNextPMGrade(nextPmGrade: NextPMGradeModel?): PMNextGradeUiModel? {
         nextPmGrade?.let {
             return PMNextGradeUiModel(

@@ -114,7 +114,6 @@ class UpgradePmProWidget(
     private fun setupView() = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
-        icTargetHeader.loadImage(PMConstant.Images.PM_PRO_BADGE)
     }
 
 
