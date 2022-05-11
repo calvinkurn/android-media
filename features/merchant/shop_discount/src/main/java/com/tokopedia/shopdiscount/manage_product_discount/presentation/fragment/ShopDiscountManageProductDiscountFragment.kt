@@ -155,13 +155,11 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         discountPeriodSection?.setOnClickListener {
             openSetPeriodBottomSheet(productData)
         }
-        when (mode) {
-            ShopDiscountManageDiscountMode.CREATE -> {
-                setDiscountPeriodBasedOnBenefit(slashPriceBenefitData)
-            }
-            ShopDiscountManageDiscountMode.UPDATE -> {
-                setDiscountPeriodBasedOnExistingData(productData)
-            }
+        val startDateUnix = productData.slashPriceInfo.startDate.time
+        if (startDateUnix < 0) {
+            setDiscountPeriodBasedOnBenefit(slashPriceBenefitData)
+        } else {
+            setDiscountPeriodBasedOnExistingData(productData)
         }
     }
 

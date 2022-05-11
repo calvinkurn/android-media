@@ -114,9 +114,12 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         endDate: Date
     ) {
         productData.listProductVariant.forEach {
-            it.slashPriceInfo.apply {
-                this.startDate = startDate
-                this.endDate = endDate
+            val startDateUnix = it.slashPriceInfo.startDate.time
+            if(startDateUnix < 0) {
+                it.slashPriceInfo.apply {
+                    this.startDate = startDate
+                    this.endDate = endDate
+                }
             }
         }
     }

@@ -437,13 +437,15 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         launchCatchError(dispatcherProvider.io, {
             listProductData.forEach { productData ->
                 val minOriginalPrice = productData.mappedResultData.minOriginalPrice
-                if (productData.productStatus.isVariant) {
+                val isVariant = productData.productStatus.isVariant
+                if (isVariant) {
                     productData.listProductVariant.forEach { variantProductData ->
                         updateProductData(
                             variantProductData,
                             bulkApplyDiscountResult,
                             minOriginalPrice,
-                            slashPriceStatus
+                            slashPriceStatus,
+                            isVariant
                         )
                     }
                 } else {
@@ -451,7 +453,8 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                         productData,
                         bulkApplyDiscountResult,
                         minOriginalPrice,
-                        slashPriceStatus
+                        slashPriceStatus,
+                        false
                     )
                 }
                 updateProductStatusAndMappedData(productData, mode, slashPriceStatus)
@@ -464,7 +467,8 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         productData: ShopDiscountSetupProductUiModel.SetupProductData,
         bulkApplyDiscountResult: DiscountSettings,
         minOriginalPrice: Int,
-        slashPriceStatus: Int
+        slashPriceStatus: Int,
+        isVariant: Boolean
     ) {
         val discountedPrice: Int
         val discountedPercentage: Int
@@ -492,6 +496,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             it.discountedPrice = discountedPrice
             it.discountedPercentage = discountedPercentage
             it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
+        }
+        if(isVariant){
+            productData.variantStatus.isVariantEnabled = true
         }
     }
 

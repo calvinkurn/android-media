@@ -184,15 +184,6 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private fun configDiscountPeriodData(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
-        when (mode) {
-            ShopDiscountManageDiscountMode.CREATE -> {
-                setDiscountPeriodBasedOnBenefit(slashPriceBenefitData)
-            }
-        }
-    }
-
-
-    private fun setDiscountPeriodBasedOnBenefit(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
         val startDate = viewModel.defaultStartDate
         val endDate = if (slashPriceBenefitData.isUseVps) {
             viewModel.getVpsPackageDefaultEndDate(slashPriceBenefitData)
