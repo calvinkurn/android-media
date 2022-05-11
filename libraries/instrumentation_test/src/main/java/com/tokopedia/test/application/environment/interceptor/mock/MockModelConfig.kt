@@ -1,7 +1,6 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
 import android.content.Context
-import android.util.Log
 
 abstract class MockModelConfig {
     companion object {
@@ -19,7 +18,6 @@ abstract class MockModelConfig {
     }
 
     fun addMockResponse(key: MockKey, value: String) {
-        // key.toString() => MockKey(query=rechargeCatalogDynamicInput, variables={operator=18})
         responseList[key.toString()] = MockModel(key.inList(), value, FIND_BY_QUERY_AND_VARIABLES)
     }
 
