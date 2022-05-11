@@ -19,46 +19,6 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
         recommendationItem: RecommendationItem,
         position: Int,
     ) : HashMap<String, Any> {
-//        val isLogin = userId.isNotBlank()
-//        val trackingBuilder = BaseTrackerBuilder()
-//        val creativeName = CustomAction.CREATIVE_NAME_VIEW_COUPON_FORMAT.format(
-//            CustomAction.DEFAULT_VALUE,
-//            element.couponType,
-//            CustomAction.DEFAULT_VALUE
-//        )
-//        val creativeSlot = (horizontalPosition + 1).toString()
-//        val itemId = CustomAction.ITEM_ID_FORMAT.format(
-//            element.bannerId,
-//            element.shopId
-//        )
-//        val itemName =
-//            CustomAction.ITEM_NAME_FORMAT.format(categoryName, element.headerName)
-//        val listPromotions = arrayListOf(
-//            Promotion(
-//                creative = creativeName,
-//                position = creativeSlot,
-//                id = itemId,
-//                name = itemName
-//            )
-//        )
-//        return trackingBuilder.constructBasicPromotionView(
-//            event = Event.PRODUCT_VIEW,
-//            eventCategory = eventCategory,
-//            eventAction = String.format(
-//                            ProductRecommendationTracking.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-//                            if (isLogin) "" else ProductRecommendationTracking.VALUE_NON_LOGIN),
-//            eventLabel = String.format(
-//                            ProductRecommendationTracking.EVENT_LABEL_PRODUCT,
-//                            headerTitle,
-//                            chipsTitle),
-//            promotions = listPromotions
-//        )
-//            .appendBusinessUnit(BusinessUnit.DEFAULT)
-//            .appendCurrentSite(CurrentSite.DEFAULT)
-//            .appendUserId(userId)
-//            .build() as HashMap<String, Any>
-
-
         val isLogin = userId.isNotBlank()
         val trackingBuilder =
             BaseTrackerBuilder()
