@@ -19,8 +19,10 @@ data class ShopDiscountManageProductVariantItemUiModel(
     var maxOrder: String = "",
     val isMultiLoc: Boolean = false,
     val slashPriceStatusId: String = "",
-    var errorType: Int = 0
+    var errorType: Int = 0,
+    var selectedPeriodChip: Int = 0
 ) : Visitable<ShopDiscountManageProductVariantDiscountTypeFactory> {
+
     override fun type(typeFactory: ShopDiscountManageProductVariantDiscountTypeFactory): Int {
         return typeFactory.type(this)
     }

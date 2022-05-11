@@ -93,6 +93,7 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
     private var textFieldDiscountPercentage: TextFieldUnify2? = null
     private var quantityEditorMaxOrder: QuantityEditorUnify? = null
     private var buttonApply: UnifyButton? = null
+    private var selectedPeriodChip: Int = 0
 
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
@@ -167,10 +168,12 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         val bottomSheet = SetPeriodBottomSheet.newInstance(
             productData.slashPriceInfo.startDate.time,
             productData.slashPriceInfo.endDate.time,
-            productData.slashPriceInfo.slashPriceStatusId
+            productData.slashPriceInfo.slashPriceStatusId,
+            selectedPeriodChip
         )
-        bottomSheet.setOnApplyClickListener {
-            setDiscountPeriodBasedOnBottomSheetResult(it)
+        bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
+            this.selectedPeriodChip = selectedPeriodChip
+            setDiscountPeriodBasedOnBottomSheetResult(setPeriodResultModel)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
