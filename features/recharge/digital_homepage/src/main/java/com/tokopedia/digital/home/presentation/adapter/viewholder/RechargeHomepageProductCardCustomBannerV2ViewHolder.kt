@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomBannerV2Binding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
@@ -63,7 +64,15 @@ class RechargeHomepageProductCardCustomBannerV2ViewHolder(
     ) {
         with(bind) {
             try {
-                contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
+                if (section.label2.isNotEmpty())
+                    contentContainer.setCardBackgroundColor(Color.parseColor(section.label2))
+                else
+                    contentContainer.setCardBackgroundColor(
+                        MethodChecker.getColor(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        )
+                    )
             } catch (e: Throwable) {
                 e.printStackTrace()
             }
