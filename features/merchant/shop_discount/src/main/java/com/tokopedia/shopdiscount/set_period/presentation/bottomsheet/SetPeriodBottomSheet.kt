@@ -17,10 +17,10 @@ import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitRespons
 import com.tokopedia.shopdiscount.common.bottomsheet.datepicker.ShopDiscountDatePicker
 import com.tokopedia.shopdiscount.databinding.BottomsheetSetPeriodBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.set_period.data.uimodel.SetPeriodResultUiModel
 import com.tokopedia.shopdiscount.set_period.presentation.viewmodel.SetPeriodBottomSheetViewModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.constant.SetPeriodBottomSheetChipsState
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.showError
@@ -40,17 +40,20 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
         private const val START_DATE_ARG = "START_DATE_ARG"
         private const val END_DATE_ARG = "END_DATE_ARG"
         private const val SLASH_PRICE_STATUS_ID_ARG = "SLASH_PRICE_STATUS_ID_ARG"
+        private const val SELECTED_PERIOD_CHIP = "SELECTED_PERIOD_CHIP"
 
         fun newInstance(
             startDateUnix: Long,
             endDateUnix: Long,
-            slashPriceStatusId: String
+            slashPriceStatusId: String,
+            selectedPeriodChip: Int
         ): SetPeriodBottomSheet {
             return SetPeriodBottomSheet().apply {
                 val args = Bundle()
                 args.putLong(START_DATE_ARG, startDateUnix)
                 args.putLong(END_DATE_ARG, endDateUnix)
                 args.putString(SLASH_PRICE_STATUS_ID_ARG, slashPriceStatusId)
+                args.putInt(SELECTED_PERIOD_CHIP, selectedPeriodChip)
                 arguments = args
             }
         }
@@ -63,10 +66,11 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SetPeriodBottomSheetViewModel::class.java) }
 
-    private var onApplyClickListener: (SetPeriodResultUiModel) -> Unit = {}
+    private var onApplyClickListener: (SetPeriodResultUiModel, Int) -> Unit = { _, _ -> }
     private var startDateUnix: Long = 0
     private var endDateUnix: Long = 0
     private var slashPriceStatusId: String = ""
+    private var selectedPeriodChip: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +117,7 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             startDateUnix = it.getLong(START_DATE_ARG).orZero()
             endDateUnix = it.getLong(END_DATE_ARG).orZero()
             slashPriceStatusId = it.getString(SLASH_PRICE_STATUS_ID_ARG).orEmpty()
+            selectedPeriodChip = it.getInt(SELECTED_PERIOD_CHIP).orZero()
         }
     }
 
@@ -181,15 +186,63 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView() {
+        setupSelectedPeriodChip()
         setupChipsClickListener()
         binding?.run {
             setupDatePicker()
             btnApply.setOnClickListener {
                 val currentSelection = viewModel.getCurrentSelection()
-                onApplyClickListener(currentSelection)
+                val selectedChip = getSelectedChip()
+                onApplyClickListener(currentSelection, selectedChip)
                 dismiss()
             }
         }
+    }
+
+    private fun setupSelectedPeriodChip() {
+        binding?.let {
+            resetChipType()
+            when (selectedPeriodChip) {
+                SetPeriodBottomSheetChipsState.ONE_YEAR -> {
+                    selectChip(it.chipOneYearPeriod)
+                }
+                SetPeriodBottomSheetChipsState.SIX_MONTH -> {
+                    selectChip(it.chipSixMonthPeriod)
+                }
+                SetPeriodBottomSheetChipsState.ONE_MONTH -> {
+                    selectChip(it.chipOneMonthPeriod)
+                }
+                SetPeriodBottomSheetChipsState.CUSTOM -> {
+                    selectChip(it.chipCustomSelection)
+                }
+                else -> {
+                    selectChip(it.chipOneYearPeriod)
+                }
+            }
+        }
+    }
+
+    private fun selectChip(chipUnify: ChipsUnify?) {
+        chipUnify?.chipType = ChipsUnify.TYPE_SELECTED
+    }
+
+    private fun getSelectedChip(): Int {
+        return binding?.let {
+            when {
+                it.chipOneYearPeriod.chipType == ChipsUnify.TYPE_SELECTED -> {
+                    SetPeriodBottomSheetChipsState.ONE_YEAR
+                }
+                it.chipSixMonthPeriod.chipType == ChipsUnify.TYPE_SELECTED -> {
+                    SetPeriodBottomSheetChipsState.SIX_MONTH
+                }
+                it.chipOneMonthPeriod.chipType == ChipsUnify.TYPE_SELECTED -> {
+                    SetPeriodBottomSheetChipsState.ONE_MONTH
+                }
+                else -> {
+                    SetPeriodBottomSheetChipsState.CUSTOM
+                }
+            }
+        }.orZero()
     }
 
     private fun setupDatePicker() {
@@ -222,13 +275,20 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             }
 
             chipOneYearPeriod.chip_container.setOnClickListener {
-                chipOneYearPeriod.chipType = ChipsUnify.TYPE_SELECTED
-                chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
+                resetChipType()
+                selectChip(chipOneYearPeriod)
             }
         }
 
+    }
+
+    private fun resetChipType() {
+        binding?.apply {
+            chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
+            chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
+            chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
+            chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
+        }
     }
 
     private fun setupSixMonthPeriodChipListener() {
@@ -240,10 +300,8 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             }
 
             chipSixMonthPeriod.chip_container.setOnClickListener {
-                chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipSixMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
-                chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
+                resetChipType()
+                selectChip(chipSixMonthPeriod)
             }
         }
 
@@ -258,10 +316,8 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             }
 
             chipOneMonthPeriod.chip_container.setOnClickListener {
-                chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipOneMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
-                chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
+                resetChipType()
+                selectChip(chipOneMonthPeriod)
             }
         }
 
@@ -269,19 +325,9 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
 
     private fun setupCustomSelectionPeriodChipListener() {
         binding?.run {
-            chipCustomSelection.selectedChangeListener = { isActive ->
-                if (isActive) {
-                    chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                    chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                    chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                }
-            }
-
             chipCustomSelection.chip_container.setOnClickListener {
-                chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
-                chipCustomSelection.chipType = ChipsUnify.TYPE_SELECTED
+                resetChipType()
+                selectChip(chipCustomSelection)
             }
         }
 
@@ -298,9 +344,9 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
-                    selectCustomRangeChip()
                     viewModel.setSelectedStartDate(selectedDate)
-                    binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
+                    resetChipType()
+                    selectChip(binding?.chipCustomSelection)
                 }
             }
         )
@@ -317,20 +363,16 @@ class SetPeriodBottomSheet : BottomSheetUnify() {
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
-                    selectCustomRangeChip()
                     viewModel.setSelectedEndDate(selectedDate)
-                    binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
+                    resetChipType()
+                    selectChip(binding?.chipCustomSelection)
                 }
 
             }
         )
     }
 
-    private fun selectCustomRangeChip() {
-        binding?.chipCustomSelection?.isSelected = true
-    }
-
-    fun setOnApplyClickListener(onApplyClickListener: (SetPeriodResultUiModel) -> Unit) {
+    fun setOnApplyClickListener(onApplyClickListener: (SetPeriodResultUiModel, Int) -> Unit) {
         this.onApplyClickListener = onApplyClickListener
     }
 

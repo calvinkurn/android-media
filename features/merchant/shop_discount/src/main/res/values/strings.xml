@@ -114,7 +114,8 @@
     <string name="shop_discount_manage_discount_original_price_format">%1s-%2s</string>
     <string name="shop_discount_manage_discount_total_variant_format">%1s Varian Produk</string>
     <string name="shop_discount_manage_discount_total_discounted_variant_format">%1s Varian Diskon</string>
-    <string name="shop_discount_manage_discount_bulk_manage_label_format">Atur Sekaligus %1s Produk</string>
+    <string name="shop_discount_manage_discount_bulk_manage_label_format_manage">Atur Sekaligus %1s Produk</string>
+    <string name="shop_discount_manage_discount_bulk_manage_label_format_edit">Ubah Sekaligus %1s Produk</string>
     <string name="shop_discount_manage_discount_delete_product_message">Produk Berhasil Dihapus</string>
     <string name="shop_discount_manage_discount_submit_product_message">Diskon produk berhasil diaktifkan</string>
     <string name="shop_discount_manage_discount_delete_product_dialog_title">Yakin hapus produk dari Diskon Toko?</string>
@@ -130,6 +131,8 @@
     <string name="shop_discount_manage_discount_ticker_abusive_products"><![CDATA[<b>%1s produk</b> gagal dimasukkan ke Diskon Toko karena ada perubahan harga di luar kewajaran. <a href="%2$s">Baca Ketentuan</a>]]></string>
     <string name="shop_discount_manage_discount_bulk_apply_create_title">Atur Diskon</string>
     <string name="shop_discount_manage_discount_bulk_apply_update_title">Ubah Diskon</string>
+    <string name="shop_discount_manage_discount_success_create">Diskon berhasil dibuat.</string>
+    <string name="shop_discount_manage_discount_success_update">Diskon berhasil diubah.</string>
 
     <!--Set period bottomsheet-->
     <string name="shop_discount_set_period_bottomsheet_title">Kapan periode diskonnya?</string>
@@ -154,7 +157,8 @@
     <!--Shop discount manage product variant-->
     <string name="shop_discount_manage_product_variant_discount_manage_toolbar_title">Atur Diskon Varian</string>
     <string name="shop_discount_manage_product_variant_discount_edit_toolbar_title">Ubah Diskon Varian</string>
-    <string name="shop_discount_manage_product_variant_discount_label_bulk_apply_disabled">Aktifkan varian untuk Atur Sekaligus</string>
+    <string name="shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_manage">Aktifkan varian untuk Atur Sekaligus</string>
+    <string name="shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_edit">Aktifkan varian untuk Ubah Sekaligus</string>
     <string name="shop_discount_manage_product_variant_discount_label_bulk_apply_enabled">Atur Sekaligus %1s Varian</string>
 
 </resources>

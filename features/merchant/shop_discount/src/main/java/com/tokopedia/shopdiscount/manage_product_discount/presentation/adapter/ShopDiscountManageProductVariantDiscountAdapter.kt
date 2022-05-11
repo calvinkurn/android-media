@@ -8,6 +8,7 @@ import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.data.uimodel.ShopDiscountManageProductVariantItemUiModel
 import com.tokopedia.shopdiscount.manage_product_discount.util.ShopDiscountManageProductVariantMapper
+import java.util.*
 
 class ShopDiscountManageProductVariantDiscountAdapter(
     typeFactory: ShopDiscountManageProductVariantDiscountTypeFactoryImpl
@@ -101,6 +102,26 @@ class ShopDiscountManageProductVariantDiscountAdapter(
         val newList = getNewVisitableItems()
         newList.addAll(listVariantProduct)
         submitList(newList)
+    }
+
+    fun getMinStartDateOfProductList(): Date? {
+        return getListVariantItemUiModel().map {
+            it.startDate.time
+        }.minOfOrNull {
+            it
+        }?.let {
+            Date(it)
+        }
+    }
+
+    fun getMaxStartDateOfProductList(): Date? {
+        return getListVariantItemUiModel().map {
+            it.endDate.time
+        }.minOfOrNull {
+            it
+        }?.let {
+            Date(it)
+        }
     }
 
 }

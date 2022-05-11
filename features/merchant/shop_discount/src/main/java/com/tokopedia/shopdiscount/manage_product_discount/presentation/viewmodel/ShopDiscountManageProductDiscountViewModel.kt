@@ -16,6 +16,7 @@ import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscou
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
+import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -96,7 +97,7 @@ class ShopDiscountManageProductDiscountViewModel @Inject constructor(
         val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull {
             it.packageId.toIntOrZero() != -1
         }
-        return Date(vpsPackageData?.expiredAtUnix.orZero())
+        return Date(vpsPackageData?.expiredAtUnix?.unixToMs().orZero())
     }
 
     fun getMembershipDefaultEndDate(): Date {

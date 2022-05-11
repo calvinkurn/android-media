@@ -9,6 +9,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import java.util.*
 
 class ShopDiscountManageDiscountAdapter(
     typeFactory: ShopDiscountManageDiscountTypeFactoryImpl
@@ -78,14 +79,12 @@ class ShopDiscountManageDiscountAdapter(
     }
 
     fun removeProduct(productId: String) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
-            .firstOrNull {
-                it.productId == productId
-            }?.let {
-                productListData.remove(it)
-                updateProductList()
-            }
+        productListData.firstOrNull {
+            it.productId == productId
+        }?.let {
+            productListData.remove(it)
+            updateProductList()
+        }
     }
 
     fun getTotalAbusiveProduct(): Int {
@@ -94,6 +93,26 @@ class ShopDiscountManageDiscountAdapter(
                 it.productStatus.errorType == ALL_ABUSIVE_ERROR ||
                         it.productStatus.errorType == PARTIAL_ABUSIVE_ERROR
             }
+    }
+
+    fun getMinStartDateOfProductList(): Date? {
+        return getAllProductData().mapNotNull {
+            it.mappedResultData.minStartDateUnix
+        }.minOfOrNull {
+            it
+        }?.let {
+            Date(it)
+        }
+    }
+
+    fun getMaxStartDateOfProductList(): Date? {
+        return getAllProductData().mapNotNull {
+            it.mappedResultData.minEndDateUnix
+        }.maxOfOrNull {
+            it
+        }?.let {
+            Date(it)
+        }
     }
 
 }

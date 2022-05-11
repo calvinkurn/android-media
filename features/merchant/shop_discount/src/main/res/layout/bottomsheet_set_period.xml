@@ -28,7 +28,7 @@
                 app:centerText="true"
                 app:chipSize="medium"
                 app:chipText="@string/sd_one_year_ahead"
-                app:chipType="selected"
+                app:chipType="normal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

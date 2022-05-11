@@ -111,12 +111,24 @@ class ShopDiscountManageProductVariantItemViewHolder(
         val bottomSheet = SetPeriodBottomSheet.newInstance(
             uiModel.startDate.time,
             uiModel.endDate.time,
-            uiModel.slashPriceStatusId
+            uiModel.slashPriceStatusId,
+            uiModel.selectedPeriodChip
         )
-        bottomSheet.setOnApplyClickListener {
-            setDiscountPeriodBasedOnBottomSheetResult(it, uiModel)
+        bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
+            setSelectedPeriodChip(selectedPeriodChip, uiModel)
+            setDiscountPeriodBasedOnBottomSheetResult(
+                setPeriodResultModel,
+                uiModel
+            )
         }
         bottomSheet.show(fragmentListener.getFragmentChildManager(), bottomSheet.tag)
+    }
+
+    private fun setSelectedPeriodChip(
+        selectedPeriodChip: Int,
+        uiModel: ShopDiscountManageProductVariantItemUiModel
+    ) {
+        uiModel.selectedPeriodChip = selectedPeriodChip
     }
 
     private fun setDiscountPeriodBasedOnBottomSheetResult(

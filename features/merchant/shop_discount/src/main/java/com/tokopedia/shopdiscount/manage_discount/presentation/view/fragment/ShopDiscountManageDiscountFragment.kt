@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.common.widget.ShopDiscountLabelBulkApply
 import com.tokopedia.shopdiscount.databinding.FragmentManageDiscountBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountAdapter
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
@@ -48,6 +49,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
@@ -95,7 +97,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ShopDiscountManageDiscountViewModel::class.java) }
     private var requestId: String = ""
-    private var status: Int = -1
+    private var slashPriceStatusId: Int = -1
     private var mode: String = ""
     private var selectedProductVariantId: String = ""
 
@@ -197,7 +199,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private fun getArgumentsData() {
         arguments?.apply {
             requestId = getString(REQUEST_ID_ARG).orEmpty()
-            status = getInt(STATUS_ARG).orZero()
+            slashPriceStatusId = getInt(STATUS_ARG).orZero()
             mode = getString(MODE_ARG).orEmpty()
             selectedProductVariantId = getString(SELECTED_PRODUCT_VARIANT_ID).orEmpty()
         }
@@ -234,7 +236,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun getSetupProductListData() {
         showLoading()
-        viewModel.getSetupProductListData(requestId, selectedProductVariantId, mode, status)
+        viewModel.getSetupProductListData(requestId, selectedProductVariantId, mode, slashPriceStatusId)
     }
 
     private fun observeLiveData() {
@@ -258,6 +260,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         showToasterSuccess(getString(R.string.shop_discount_manage_discount_delete_product_message))
                         removeProduct(it.data.productId)
                         checkProductSize()
+                        updateLabelBulkApply()
                     }
                 }
                 is Fail -> {
@@ -275,9 +278,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun checkProductSize() {
         val totalProduct = getTotalProductSize()
-        setupLabelBulkApply(totalProduct)
         if (totalProduct.isZero()) {
-            finishActivity()
+            redirectToManageProductPage(slashPriceStatusId, "")
         }
     }
 
@@ -301,11 +303,24 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     if (!responseHeaderData.success) {
                         showToasterError(responseHeaderData.reason)
                     } else {
-                        showToasterSuccess(getString(R.string.shop_discount_manage_discount_submit_product_message))
-                        finishActivity()
-
-                        //TODO @CJ redirect to product manage activity
-                        //ProductManageActivity.start(requireActivity(), true)
+                        val selectedPriceStatusId: Int
+                        val successSubmitToasterWording: String
+                        when (mode) {
+                            ShopDiscountManageDiscountMode.CREATE -> {
+                                selectedPriceStatusId = SlashPriceStatusId.SCHEDULED
+                                successSubmitToasterWording =
+                                    getString(R.string.shop_discount_manage_discount_success_create)
+                            }
+                            else -> {
+                                selectedPriceStatusId = slashPriceStatusId
+                                successSubmitToasterWording =
+                                    getString(R.string.shop_discount_manage_discount_success_update)
+                            }
+                        }
+                        redirectToManageProductPage(
+                            selectedPriceStatusId,
+                            successSubmitToasterWording
+                        )
                     }
                 }
                 is Fail -> {
@@ -314,6 +329,20 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun redirectToManageProductPage(
+        selectedPriceStatusId: Int,
+        successSubmitToasterWording: String
+    ) {
+        context?.let {
+            ProductManageActivity.start(
+                it,
+                selectedPriceStatusId,
+                successSubmitToasterWording
+            )
+            finishActivity()
+        }
     }
 
     private fun finishActivity() {
@@ -355,6 +384,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         showButtonSubmit()
                         checkButtonSubmit()
                         checkProductSize()
+                        updateLabelBulkApply()
                         configTickerAbusiveProducts()
                     }
                 }
@@ -407,11 +437,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         return adapter.getAllProductData().size
     }
 
-    private fun setupLabelBulkApply(totalProduct: Int) {
-        val labelTitle = String.format(
-            getString(R.string.shop_discount_manage_discount_bulk_manage_label_format),
-            totalProduct
-        )
+    private fun updateLabelBulkApply() {
+        val totalProduct = adapter.getAllProductData().size
+        val labelTitleFormat = getLabelBulkApplyTitleFormat(mode)
+        val labelTitle = String.format(labelTitleFormat, totalProduct)
         labelBulkApply?.apply {
             show()
             setTitle(labelTitle)
@@ -421,15 +450,29 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun getLabelBulkApplyTitleFormat(mode: String): String {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_edit)
+            }
+            else -> ""
+        }
+    }
+
     private fun openBottomSheetBulkApply() {
+        val minStartDate = adapter.getMinStartDateOfProductList()
+        val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
-        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(status)
+        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(slashPriceStatusId)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
-            null, //TODO: @CJ replace with correct start date
-            null, //TODO: @CJ replace with correct end date
-            status
+            minStartDate,
+            maxStartDate,
+            slashPriceStatusId
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -468,7 +511,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun bulkUpdateProductData(bulkApplyDiscountResult: DiscountSettings) {
         val listProductData = adapter.getAllProductData()
-        viewModel.applyBulkUpdate(listProductData, bulkApplyDiscountResult, mode, status)
+        viewModel.applyBulkUpdate(listProductData, bulkApplyDiscountResult, mode, slashPriceStatusId)
     }
 
     private fun showButtonSubmit() {
@@ -494,7 +537,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
-        if(model.productStatus.isVariant)
+        if (model.productStatus.isVariant)
             redirectToManageProductVariantDiscountPage(model)
         else
             redirectToManageProductDiscountPage(model)
@@ -613,7 +656,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             adapter.getAllProductData(),
             updatedProductData,
             mode,
-            status
+            slashPriceStatusId
         )
     }
 

@@ -20,7 +20,9 @@ import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscou
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
+import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -113,9 +115,12 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         endDate: Date
     ) {
         productData.listProductVariant.forEach {
-            it.slashPriceInfo.apply {
-                this.startDate = startDate
-                this.endDate = endDate
+            val startDateUnix = it.slashPriceInfo.startDate.time
+            if(startDateUnix < 0) {
+                it.slashPriceInfo.apply {
+                    this.startDate = startDate
+                    this.endDate = endDate
+                }
             }
         }
     }
@@ -124,7 +129,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         val vpsPackageData = slashPriceBenefitData.listSlashPriceBenefitData.firstOrNull {
             it.packageId.toIntOrZero() != -1
         }
-        return Date(vpsPackageData?.expiredAtUnix.orZero())
+        return Date(vpsPackageData?.expiredAtUnix?.unixToMs().orZero())
     }
 
     fun getMembershipDefaultEndDate(): Date {
@@ -156,7 +161,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         } else {
             listVariantItemUiModel.filter {
                 it.isEnabled
-            }.all {
+            }.allCheckEmptyList {
                 it.errorType == NONE && !it.discountedPrice.isZero()
             }
         }

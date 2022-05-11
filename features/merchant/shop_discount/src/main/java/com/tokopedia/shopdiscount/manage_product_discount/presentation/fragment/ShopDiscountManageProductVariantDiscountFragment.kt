@@ -62,16 +62,13 @@ class ShopDiscountManageProductVariantDiscountFragment
     companion object {
         const val PRODUCT_DATA_ARG = "product_data_arg"
         const val MODE_ARG = "mode_arg"
-        private const val STATUS_ARG = "status_arg"
 
         fun createInstance(
             mode: String,
             productData: ShopDiscountSetupProductUiModel.SetupProductData,
-            status: Int
         ) = ShopDiscountManageProductVariantDiscountFragment().apply {
             arguments = Bundle().apply {
                 putString(MODE_ARG, mode)
-                putInt(STATUS_ARG, status)
                 putParcelable(PRODUCT_DATA_ARG, productData)
             }
         }
@@ -91,7 +88,6 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private var mode: String = ""
-    private var status: Int = -1
     private var headerUnify: HeaderUnify? = null
     private var rvContent: RecyclerView? = null
     private var buttonApply: UnifyButton? = null
@@ -188,15 +184,6 @@ class ShopDiscountManageProductVariantDiscountFragment
     }
 
     private fun configDiscountPeriodData(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
-        when (mode) {
-            ShopDiscountManageDiscountMode.CREATE -> {
-                setDiscountPeriodBasedOnBenefit(slashPriceBenefitData)
-            }
-        }
-    }
-
-
-    private fun setDiscountPeriodBasedOnBenefit(slashPriceBenefitData: ShopDiscountSellerInfoUiModel) {
         val startDate = viewModel.defaultStartDate
         val endDate = if (slashPriceBenefitData.isUseVps) {
             viewModel.getVpsPackageDefaultEndDate(slashPriceBenefitData)
@@ -402,16 +389,14 @@ class ShopDiscountManageProductVariantDiscountFragment
         val title: String
         if (totalSelectedVariant.isMoreThanZero()) {
             isLabelEnabled = true
+            val titleFormat = getLabelBulkApplyTitleFormat(mode)
             title = String.format(
-                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_enabled),
+                titleFormat,
                 totalSelectedVariant
             )
         } else {
             isLabelEnabled = false
-            title = String.format(
-                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled),
-                totalSelectedVariant
-            )
+            title = getLabelBulkApplyTitleDisabled(mode)
         }
         labelBulkApply?.apply {
             isEnabled = isLabelEnabled
@@ -422,16 +407,42 @@ class ShopDiscountManageProductVariantDiscountFragment
         }
     }
 
+    private fun getLabelBulkApplyTitleDisabled(mode: String): String {
+        return when(mode){
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_product_variant_discount_label_bulk_apply_disabled_edit)
+            }
+            else -> ""
+        }
+    }
+
+    private fun getLabelBulkApplyTitleFormat(mode: String): String {
+        return when(mode){
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_manage)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_manage_label_format_edit)
+            }
+            else -> ""
+        }
+    }
+
     private fun openBottomSheetBulkApply() {
+        val minStartDate = adapter.getMinStartDateOfProductList()
+        val maxStartDate = adapter.getMaxStartDateOfProductList()
         val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
         val slashPriceStatus = viewModel.getProductData().productStatus.slashPriceStatus
         val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(slashPriceStatus)
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
             bulkApplyBottomSheetTitle,
             bulkApplyBottomSheetMode,
-            null, //TODO: @CJ replace with correct start date
-            null, //TODO: @CJ replace with correct end date,
-            status // //TODO: @CJ replace with correct discount status id
+            minStartDate,
+            maxStartDate,
+            slashPriceStatus
         )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
@@ -547,7 +558,6 @@ class ShopDiscountManageProductVariantDiscountFragment
     private fun getArgumentsData() {
         arguments?.let {
             mode = it.getString(MODE_ARG).orEmpty()
-            status = it.getInt(STATUS_ARG).orZero()
             viewModel.setProductData(
                 it.getParcelable(PRODUCT_DATA_ARG)
                     ?: ShopDiscountSetupProductUiModel.SetupProductData()

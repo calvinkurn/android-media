@@ -113,10 +113,10 @@ class ShopDiscountSetupProductItemViewHolder(
         textTotalStock: Typography,
         uiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ) {
-        val totalStock = uiModel.stock
+        val totalStock = getTotalStock(uiModel)
         val totalLocation = uiModel.mappedResultData.totalLocation
         textTotalStock.shouldShowWithAction(
-            !totalStock.toIntOrZero().isZero() && uiModel.productStatus.errorType == NO_ERROR
+            !totalStock.isZero() && uiModel.productStatus.errorType == NO_ERROR
         ) {
             val totalStockFormattedString =
                 when {
@@ -141,6 +141,16 @@ class ShopDiscountSetupProductItemViewHolder(
                     }
                 }
             textTotalStock.text = MethodChecker.fromHtml(totalStockFormattedString)
+        }
+    }
+
+    private fun getTotalStock(uiModel: ShopDiscountSetupProductUiModel.SetupProductData): Int {
+        return if (uiModel.productStatus.isVariant) {
+            uiModel.listProductVariant.sumOf {
+                it.stock.toIntOrZero()
+            }
+        } else {
+            uiModel.stock.toIntOrZero()
         }
     }
 

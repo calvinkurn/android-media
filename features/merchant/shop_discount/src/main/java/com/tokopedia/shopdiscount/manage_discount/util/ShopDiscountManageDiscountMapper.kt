@@ -159,7 +159,9 @@ object ShopDiscountManageDiscountMapper {
         listProductData.forEach { setupProductData ->
             if (setupProductData.productStatus.isVariant) {
                 val listProductVariantRequest =
-                    setupProductData.listProductVariant.map { setupProductVariantData ->
+                    setupProductData.listProductVariant.filter {
+                        it.variantStatus.isVariantEnabled == true
+                    }.map { setupProductVariantData ->
                         mapToDoSlashPriceProductSubmissionRequest(setupProductVariantData)
                     }
                 listRequest.addAll(listProductVariantRequest)
