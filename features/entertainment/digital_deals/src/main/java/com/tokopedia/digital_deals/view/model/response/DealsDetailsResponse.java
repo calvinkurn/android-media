@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.model.response;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,15 +16,19 @@ import java.util.List;
 
 public class DealsDetailsResponse implements Parcelable {
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private int id;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("brand_id")
     @Expose
     private int brandId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("category_id")
     @Expose
     private int categoryId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("provider_id")
     @Expose
     private int providerId;
