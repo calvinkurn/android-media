@@ -805,7 +805,12 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactive, state.interactive)
+                renderInteractiveView(
+                    prevState?.interactive,
+                    state.interactive,
+                    prevState?.bottomInsets,
+                    state.bottomInsets
+                )
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -819,7 +824,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderKebabMenuView(state.kebabMenu)
 
                 renderInteractiveDialog(prevState?.interactive, state.interactive)
-                renderGameResult(state = state.winnerBadge)
+                renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(state.status)
 
@@ -839,9 +844,8 @@ class PlayUserInteractionFragment @Inject constructor(
                     is ShowWinningDialogEvent -> {
                         if (container.alpha != VISIBLE_ALPHA) return@collect
                         getInteractiveWinningDialog().apply {
-                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
-                            setInteractive(interactive = event.interactiveType)
-                        }.show(childFragmentManager)
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle, interactive = event.interactiveType)
+                        }.showNow(childFragmentManager)
                     }
                     is OpenPageEvent -> {
                         openPageByApplink(
@@ -858,6 +862,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowErrorEvent -> {
+                        if (InteractiveDialogFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         val errMessage = if (event.errMessage == null) {
                             ErrorHandler.getErrorMessage(
                                 context, event.error, ErrorHandler.Builder()
@@ -915,10 +923,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     QuizAnsweredEvent -> {
                         delay(FADE_TRANSITION_DELAY)
-                        InteractiveDialogFragment.getOrCreate(
-                            childFragmentManager,
-                            requireActivity().classLoader
-                        ).dismiss()
+                        InteractiveDialogFragment.get(childFragmentManager)?.dismiss()
                     }
                     OpenKebabEvent -> {
                         playViewModel.onShowKebabMenuSheet()
@@ -1412,6 +1417,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderInteractiveView(
         prevState: InteractiveStateUiModel?,
         state: InteractiveStateUiModel,
+        prevBottomInsets: Map<BottomInsetsType, BottomInsetsState>?,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
     ) {
         if (state.isPlaying) {
             interactiveActiveView?.hide()
@@ -1419,13 +1426,29 @@ class PlayUserInteractionFragment @Inject constructor(
             return
         }
 
+        val isAnyInsetsShown = bottomInsets.isAnyShown
+        /**
+         * Invisible to reduce the amount of conditions
+         * for square [com.tokopedia.unifycomponents.timer.TimerUnifySingle] to appear
+         */
+        if (isAnyInsetsShown) {
+            interactiveActiveView?.invisible()
+            interactiveFinishView?.invisible()
+            return
+        }
+
+        val prevIsAnyInsetsShown = prevBottomInsets?.isAnyShown
+
         /**
          * Render:
          * - if interactive has changed <b>or</b>
          * - if isPlaying state has changed to not playing
+         * - if any bottom insets shown state has changed to false
          */
         if (prevState?.interactive != state.interactive ||
-            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying)) {
+            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying) ||
+            (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
+
             when (state.interactive) {
                 is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
                 is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
@@ -1437,7 +1460,9 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+    private fun renderGiveawayView(
+        state: InteractiveUiModel.Giveaway,
+    ) {
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
@@ -1511,7 +1536,7 @@ class PlayUserInteractionFragment @Inject constructor(
             InteractiveDialogFragment.getOrCreate(
                 childFragmentManager,
                 requireActivity().classLoader
-            ).show(childFragmentManager)
+            ).showNow(childFragmentManager)
         } else if (InteractiveDialogFragment.get(childFragmentManager)?.isAdded == true){
             InteractiveDialogFragment.getOrCreate(
                 childFragmentManager,
@@ -1520,7 +1545,7 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderGameResult(state: PlayWinnerBadgeUiState){
+    private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
         if (state.shouldShow) interactiveResultView?.show()
         else interactiveResultView?.hide()
     }

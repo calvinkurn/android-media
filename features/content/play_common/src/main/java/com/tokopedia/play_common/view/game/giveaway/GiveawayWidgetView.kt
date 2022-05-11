@@ -2,10 +2,11 @@ package com.tokopedia.play_common.view.game.giveaway
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play_common.R
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.setupGiveaway
@@ -14,7 +15,7 @@ import java.util.*
 /**
  * Created by kenny.hadisaputra on 12/04/22
  */
-class GiveawayWidgetView : LinearLayout {
+class GiveawayWidgetView : ConstraintLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -39,8 +40,6 @@ class GiveawayWidgetView : LinearLayout {
     private var mListener: Listener? = null
 
     init {
-        orientation = VERTICAL
-
         setupView()
     }
 
@@ -50,7 +49,13 @@ class GiveawayWidgetView : LinearLayout {
         mListener = null
     }
 
-    fun getHeaderView(): GameHeaderView {
+    override fun setClickable(clickable: Boolean) {
+        super.setClickable(clickable)
+
+        binding.flTap.isClickable = clickable
+    }
+
+    fun getHeader(): GameHeaderView {
         return binding.headerView
     }
 
@@ -59,7 +64,7 @@ class GiveawayWidgetView : LinearLayout {
     }
 
     fun setTitle(title: String) {
-        getHeaderView().setupGiveaway(title)
+        getHeader().setupGiveaway(title)
     }
 
     fun showTimer(shouldShow: Boolean) {
@@ -77,15 +82,18 @@ class GiveawayWidgetView : LinearLayout {
         }
     }
 
-    fun setEditable(isEditable: Boolean) {
-        binding.headerView.isEditable = isEditable
-    }
-
     private fun setupView() {
         setTitle("")
-        binding.headerView.setHint(
+        getHeader().setHint(
             context.getString(R.string.play_giveaway_header_hint)
         )
+
+        binding.flTap.isHapticFeedbackEnabled = true
+        binding.flTap.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+            mListener?.onTapTapClicked(this)
+        }
     }
 
     interface Listener {

@@ -25,7 +25,7 @@ class GetCurrentInteractiveUseCase @Inject constructor(
           }){
             meta {
               active
-              waitingDuration
+              waiting_duration: waitingDuration
             }
             interactive {
               interactive_id: interactiveID

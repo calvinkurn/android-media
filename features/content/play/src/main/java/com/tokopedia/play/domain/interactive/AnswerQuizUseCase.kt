@@ -25,8 +25,8 @@ class AnswerQuizUseCase @Inject constructor(
         setTypeClass(AnswerQuizResponse::class.java)
     }
 
-    fun createParam(interactiveId: String, choiceId: String): HashMap<String, Any> {
-        return hashMapOf(
+    fun createParam(interactiveId: String, choiceId: String): Map<String, Any> {
+        return mapOf(
             INPUT to hashMapOf(
                 INTERACTIVE_ID to interactiveId,
                 CHOICE_ID to choiceId

@@ -13,27 +13,24 @@ sealed class PlayViewerNewAction {
 
     object GiveawayUpcomingEnded : PlayViewerNewAction()
     object GiveawayOngoingEnded : PlayViewerNewAction()
+    object TapGiveaway : PlayViewerNewAction()
 
     data class ClickQuizOptionAction(val item: QuizChoicesUiModel): PlayViewerNewAction()
     object QuizEnded : PlayViewerNewAction()
 
     object StartPlayingInteractive : PlayViewerNewAction()
     object StopPlayingInteractive : PlayViewerNewAction()
+    object FollowInteractive : PlayViewerNewAction()
+
     object Follow : PlayViewerNewAction()
 }
 
 /**
  * Interactive
  */
-object InteractivePreStartFinishedAction : PlayViewerNewAction()
-object InteractiveOngoingFinishedAction : PlayViewerNewAction()
-
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 data class InteractiveGameResultBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
-object InteractiveTapTapAction : PlayViewerNewAction()
-
-object ClickFollowInteractiveAction : PlayViewerNewAction()
 object ClickRetryInteractiveAction : PlayViewerNewAction()
 
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()

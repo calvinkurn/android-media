@@ -6,18 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:parentTag="android.widget.LinearLayout"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        tools:layout_constraintWidth_percent="0.6"
         />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/header_view"
+        app:layout_constraintStart_toStartOf="@+id/header_view"
+        app:layout_constraintTop_toBottomOf="@+id/header_view"
+        app:layout_constraintVertical_bias="0.0"
         android:background="@color/Unify_Background"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -41,6 +52,7 @@
             />
 
         <FrameLayout
+            android:id="@+id/fl_tap"
             android:layout_width="@dimen/play_giveaway_tap_bg_size"
             android:layout_height="@dimen/play_giveaway_tap_bg_size"
             android:layout_marginTop="@dimen/play_dp_12"
@@ -48,9 +60,8 @@
             >
 
             <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/icon_tap"
-                android:layout_width="@dimen/layout_lvl5"
-                android:layout_height="@dimen/layout_lvl5"
+                android:layout_width="@dimen/play_giveaway_tap_icon_size"
+                android:layout_height="@dimen/play_giveaway_tap_icon_size"
                 android:layout_gravity="center"
                 app:icon_color_light_enable="@color/Unify_Static_White"
                 app:icon_color_night_enable="@color/Unify_NN0"

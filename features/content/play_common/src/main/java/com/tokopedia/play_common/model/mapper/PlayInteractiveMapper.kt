@@ -26,7 +26,7 @@ class PlayInteractiveMapper @Inject constructor() {
 
     fun mapGiveaway(data: GiveawayResponse, waitingDurationInMillis: Long): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
-            id = data.interactiveID,
+            id = data.interactiveID.toString(),
             title = data.title,
             status = when (data.status) {
                 STATUS_SCHEDULED -> InteractiveUiModel.Giveaway.Status.Upcoming(

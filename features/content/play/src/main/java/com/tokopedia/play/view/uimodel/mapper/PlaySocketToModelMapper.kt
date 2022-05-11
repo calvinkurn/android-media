@@ -77,8 +77,8 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: GiveawayResponse): PlayCurrentInteractiveModel {
-        return channelInteractiveMapper.mapInteractive(input)
+    fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
+        return interactiveMapper.mapGiveaway(input, input.waitingDuration.toLong())
     }
 
     fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
@@ -99,7 +99,7 @@ class PlaySocketToModelMapper @Inject constructor(
         return userWinnerStatusMapper.mapUserWinnerStatus(userWinnerStatus)
     }
 
-    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel{
+    fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel {
         return interactiveMapper.mapQuiz(response, response.waitingDuration)
     }
 
