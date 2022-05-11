@@ -26,6 +26,7 @@ class ProductManageActivity : BaseSimpleActivity() {
                     previouslySelectedDiscountStatusId
                 )
                 .putExtra(BUNDLE_KEY_TOASTER_WORDING, toasterWording)
+            starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.startActivity(starter)
         }
     }
