@@ -58,7 +58,7 @@ object Constant {
         const val PM_PRO_IDLE =
             "https://seller.tokopedia.com/edu/status-power-merchant-pro-tidak-aktif"
         const val PM_FEE_SERVICE =
-            "https://1137-beta-feature.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori "
+            "https://1137-beta-feature.tokopedia.com/penyesuaian-layanan-toko/detail-grup-kategori"
     }
 
     object Image {
