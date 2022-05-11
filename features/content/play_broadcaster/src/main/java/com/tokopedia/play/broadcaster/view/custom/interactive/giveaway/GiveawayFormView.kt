@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,7 +15,6 @@ import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerB
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
-import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -82,7 +80,7 @@ class GiveawayFormView : ConstraintLayout {
         if(visibility == View.VISIBLE) {
             scope.launch {
                 delay(SHOW_KEYBOARD_DELAY)
-                binding.viewGiveaway.getHeaderView().setFocus(true)
+                binding.viewGiveaway.getHeader().setFocus(true)
             }
         }
     }
@@ -136,7 +134,7 @@ class GiveawayFormView : ConstraintLayout {
         else mListener?.onDone(
             this,
             Data(
-                title = binding.viewGiveaway.getHeaderView().title,
+                title = binding.viewGiveaway.getHeader().title,
                 durationInMs = mEligibleDurations[timePickerBinding.puTimer.activeIndex],
             ),
         )
@@ -147,12 +145,12 @@ class GiveawayFormView : ConstraintLayout {
     private fun onStepChanged(step: Step) {
         when (step) {
             Step.AddTitle -> {
-                binding.viewGiveaway.setEditable(true)
+                binding.viewGiveaway.getHeader().isEditable = true
                 showDurationPicker(false)
                 binding.groupActionBar.show()
             }
             Step.SetDuration -> {
-                binding.viewGiveaway.setEditable(false)
+                binding.viewGiveaway.getHeader().isEditable = false
                 showDurationPicker(true)
                 binding.groupActionBar.hide()
             }
@@ -166,7 +164,7 @@ class GiveawayFormView : ConstraintLayout {
         binding.viewGiveaway.showTimer(false)
         binding.tvBroGiveawayFormNext.setOnClickListener { next() }
 
-        binding.viewGiveaway.getHeaderView().setOnTextChangedListener {
+        binding.viewGiveaway.getHeader().setOnTextChangedListener {
             setEnabledContinue(shouldEnable = it.isNotBlank())
         }
 

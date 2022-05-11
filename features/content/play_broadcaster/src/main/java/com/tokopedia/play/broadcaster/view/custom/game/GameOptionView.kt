@@ -78,14 +78,9 @@ class GameOptionView : ConstraintLayout {
     private fun addGiveawayImage() {
         binding.flPreview.setChildView { GiveawayWidgetView(context) }.apply {
             setTitle("Giveaway Kacamata Hitam")
-            setEditable(false)
+            getHeader().isEditable = false
+            isClickable = false
             showTimer(false)
-
-            scaleX = 0.5f
-            scaleY = 0.5f
-            val lp = FrameLayout.LayoutParams(previewWidth, previewHeight)
-            lp.gravity = Gravity.CENTER
-            layoutParams = lp
         }
     }
 
@@ -107,11 +102,6 @@ class GameOptionView : ConstraintLayout {
                     )
                 )
             )
-            scaleX = 0.5f
-            scaleY = 0.5f
-            val lp = FrameLayout.LayoutParams(previewWidth, previewHeight)
-            lp.gravity = Gravity.CENTER
-            layoutParams = lp
         }
     }
 
@@ -121,7 +111,13 @@ class GameOptionView : ConstraintLayout {
             removeAllViews()
             val view = viewCreator()
             addView(view)
-            view
+            view.apply {
+                scaleX = 0.5f
+                scaleY = 0.5f
+                val lp = FrameLayout.LayoutParams(previewWidth, previewHeight)
+                lp.gravity = Gravity.CENTER
+                layoutParams = lp
+            }
         } else firstChild
     }
 }

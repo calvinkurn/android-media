@@ -49,7 +49,13 @@ class GiveawayWidgetView : ConstraintLayout {
         mListener = null
     }
 
-    fun getHeaderView(): GameHeaderView {
+    override fun setClickable(clickable: Boolean) {
+        super.setClickable(clickable)
+
+        binding.flTap.isClickable = clickable
+    }
+
+    fun getHeader(): GameHeaderView {
         return binding.headerView
     }
 
@@ -58,7 +64,7 @@ class GiveawayWidgetView : ConstraintLayout {
     }
 
     fun setTitle(title: String) {
-        getHeaderView().setupGiveaway(title)
+        getHeader().setupGiveaway(title)
     }
 
     fun showTimer(shouldShow: Boolean) {
@@ -78,9 +84,11 @@ class GiveawayWidgetView : ConstraintLayout {
 
     private fun setupView() {
         setTitle("")
-        getHeaderView().setHint(
+        getHeader().setHint(
             context.getString(R.string.play_giveaway_header_hint)
         )
+
+        binding.flTap.isHapticFeedbackEnabled = true
         binding.flTap.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 

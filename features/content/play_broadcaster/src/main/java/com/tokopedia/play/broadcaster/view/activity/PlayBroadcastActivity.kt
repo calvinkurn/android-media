@@ -312,14 +312,15 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator {
     }
 
     private fun configureChannelType(channelType: ChannelType) {
-        if (isRecreated) return
-        when (channelType) {
-            ChannelType.Pause -> {
-                openBroadcastActivePage()
-                showDialogContinueLiveStreaming()
-            }
-            else -> openBroadcastSetupPage()
-        }
+//        if (isRecreated) return
+//        when (channelType) {
+//            ChannelType.Pause -> {
+//                openBroadcastActivePage()
+//                showDialogContinueLiveStreaming()
+//            }
+//            else -> openBroadcastSetupPage()
+//        }
+        openBroadcastActivePage()
     }
 
     private fun requestPermission() {
