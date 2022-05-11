@@ -26,7 +26,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
