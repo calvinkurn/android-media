@@ -428,6 +428,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                  }
                  mediaCountFmt
                  mediaCount
+                 mediaCountTitle
                }
               hasNext
               hasPrev
