@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel.mapper
 
 import com.tokopedia.createpost.producttag.model.FeedAceSearchProductResponse
+import com.tokopedia.createpost.producttag.model.FeedAceSearchShopResponse
 import com.tokopedia.createpost.producttag.model.GetFeedLastPurchaseProductResponse
 import com.tokopedia.createpost.producttag.model.GetFeedLastTaggedProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
@@ -112,6 +113,36 @@ class ProductTagUiModelMapper @Inject constructor() {
                 )
             },
             hasNextPage = response.wrapper.data.products.isNotEmpty(),
+            nextCursor = nextCursor.toString(),
+        )
+    }
+
+    fun mapSearchAceShops(response: FeedAceSearchShopResponse, nextCursor: Int): PagedDataUiModel<ShopUiModel> {
+        return PagedDataUiModel(
+            dataList = response.wrapper.shops.map {
+                ShopUiModel(
+                    shopId = it.shopId,
+                    shopName = it.shopName,
+                    shopDomain = it.shopDomain,
+                    shopUrl = it.shopUrl,
+                    shopImage = it.shopImage,
+                    shopImage300 = it.shopImage300,
+                    shopDescription = it.shopDescription,
+                    shopTagline = it.shopTagline,
+                    shopLocation = it.shopLocation,
+                    shopTotalTransaction = it.shopTotalTransaction,
+                    shopTotalFavorite = it.shopTotalFavorite,
+                    shopGoldShop = it.shopGoldShop,
+                    shopIsOwner = it.shopIsOwner,
+                    shopRateSpeed = it.shopRateSpeed,
+                    shopRateAccuracy = it.shopRateAccuracy,
+                    shopRateService = it.shopRateService,
+                    shopStatus = it.shopStatus,
+                    reputationImageUri = it.reputationImageUri,
+                    isOfficial = it.isOfficial,
+                )
+            },
+            hasNextPage = response.wrapper.shops.isNotEmpty(),
             nextCursor = nextCursor.toString(),
         )
     }

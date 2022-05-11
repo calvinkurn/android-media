@@ -1,9 +1,6 @@
 package com.tokopedia.createpost.producttag.domain.repository
 
-import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.LastTaggedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
@@ -30,4 +27,11 @@ interface ProductTagRepository {
         userId: String,
         sort: Int,
     ) : PagedDataUiModel<ProductUiModel>
+
+    suspend fun searchAceShops(
+        rows: Int,
+        start: Int,
+        query: String,
+        sort: Int,
+    ) : PagedDataUiModel<ShopUiModel>
 }
