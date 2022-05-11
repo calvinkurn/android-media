@@ -67,17 +67,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <ImageView
-        android:id="@+id/toTopImg"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:visibility="gone"
-        android:src="@drawable/catalog_to_top"
+    <LinearLayout
+        android:id="@+id/toTopLayout"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:visibility="visible"/>
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@drawable/catalog_capsule_bg"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/toTopImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/spacing_lvl3"
+            app:icon_name="BACK_TO_TOP"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/toBottomLayout"
@@ -92,13 +104,14 @@
         android:orientation="horizontal"
         tools:visibility="visible">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/toBottomImage"
-            android:layout_width="@dimen/spacing_lvl4"
-            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/catalog_to_bottom"
             android:layout_marginStart="@dimen/spacing_lvl4"
+            app:icon_name="ARROW_DOWN"
+            app:icon_color_light_enable="@color/Unify_Static_White"
             />
 
         <com.tokopedia.unifyprinciples.Typography

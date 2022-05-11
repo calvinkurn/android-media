@@ -12,7 +12,7 @@ import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 
 /***
-This class handles the animation of [Scroll to Products] and [To the Top] buttons.
+This class handles the animation of [Scroll to Products] and [Scroll to Top] buttons.
  ***/
 class CatalogLinearLayoutManager(val context : Context, orientation : Int, reverseLayout: Boolean)
     : LinearLayoutManager(context, orientation,reverseLayout) {

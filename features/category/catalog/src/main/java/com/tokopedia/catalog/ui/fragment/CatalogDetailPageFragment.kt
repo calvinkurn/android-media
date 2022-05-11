@@ -136,7 +136,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
     private var mToBottomLayout : LinearLayout? = null
     private var mProductsCountText : Typography? = null
-    private var mToTopLayout : ImageView ? = null
+    private var mToTopLayout : LinearLayout ? = null
 
     private lateinit var userSession: UserSession
 
@@ -180,13 +180,7 @@ class CatalogDetailPageFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRollence()
-        component.inject(this)
-        activity?.let { observer ->
-            if (isNewProductDesign){
-                val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
-                sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
-            }
-        }
+        injectComponents()
         initViews(view)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
@@ -207,7 +201,14 @@ class CatalogDetailPageFragment : Fragment(),
             setUpAnimationViews()
     }
 
-    private fun initSmoothScroller() {
+    private fun injectComponents(){
+        component.inject(this)
+        activity?.let { observer ->
+            if (isNewProductDesign){
+                val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
+                sharedViewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
+            }
+        }
     }
 
     private fun setUpAnimationViews() {
@@ -250,9 +251,8 @@ class CatalogDetailPageFragment : Fragment(),
         }
         mToBottomLayout = parentView.findViewById(R.id.toBottomLayout)
         mProductsCountText = parentView.findViewById(R.id.products_count_text)
-        mToTopLayout = parentView.findViewById(R.id.toTopImg)
+        mToTopLayout = parentView.findViewById(R.id.toTopLayout)
         initNavToolbar()
-        initSmoothScroller()
         if(isNewProductDesign){
             bottom_sheet_fragment_container.hide()
         }else {
