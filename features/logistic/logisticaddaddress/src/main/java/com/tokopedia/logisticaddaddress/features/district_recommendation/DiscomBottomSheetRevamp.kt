@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -89,9 +91,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     private var fm: FragmentManager? = null
-    // for edit revamp get user current loc
+
+    // get user current loc
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private var hasRequestedLocation: Boolean = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
     interface DiscomRevampListener {
@@ -134,7 +136,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AddressConstants.GPS_REQUEST) {
-                Handler().postDelayed ({getLocation()}, 500)
+                if (allPermissionsGranted()) {
+                    getLocation()
+                }
             }
         }
     }
@@ -505,11 +509,10 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         }
     }
 
-    fun requestPermissionLocation() {
+    private fun requestPermissionLocation() {
         permissionCheckerHelper?.checkPermissions(this, getPermissions(),
             object : PermissionCheckerHelper.PermissionCheckListener {
                 override fun onPermissionDenied(permissionText: String) {
-                    hasRequestedLocation = false
                     if (!AddNewAddressUtils.isGpsEnabled(requireActivity())) {
                         showDialogAskGps()
                     }
@@ -521,27 +524,33 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
                 @SuppressLint("MissingPermission")
                 override fun onPermissionGranted() {
-                    getLocation()
+                    if (AddNewAddressUtils.isGpsEnabled(requireActivity())) {
+                        getLocation()
+                    }
                 }
 
             }, getString(R.string.rationale_need_location))
     }
 
+    private fun allPermissionsGranted(): Boolean {
+        for (permission in getPermissions()) {
+            if (activity?.let { ContextCompat.checkSelfPermission(it, permission) } != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
+    }
+
     @SuppressLint("MissingPermission")
     fun getLocation() {
-        if (AddNewAddressUtils.isGpsEnabled(requireActivity())) {
-            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
-                if (data != null) {
-                    presenter.autoFill(data.latitude, data.longitude)
-                } else {
-                    fusedLocationClient?.requestLocationUpdates(
-                        AddNewAddressUtils.getLocationRequest(),
-                        createLocationCallback(), null)
-                }
+        fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+            if (data != null) {
+                presenter.autoFill(data.latitude, data.longitude)
+            } else {
+                fusedLocationClient?.requestLocationUpdates(
+                    AddNewAddressUtils.getLocationRequest(),
+                    createLocationCallback(), null)
             }
-        } else {
-            hasRequestedLocation = false
-            showDialogAskGps()
         }
     }
 
@@ -619,9 +628,6 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     fun createLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                if (!hasRequestedLocation) {
-                    hasRequestedLocation = true
-                }
                 presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
