@@ -70,7 +70,8 @@
       "eventLabel": ".*",
       "categoryId": ".*",
       "channelId": ".*",
-      "campaignCode": ".*"
+      "campaignCode": ".*",
+      "businessUnit": "home & browse"
     },
     {
       "businessUnit": "home & browse",
