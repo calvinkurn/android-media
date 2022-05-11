@@ -229,10 +229,6 @@
     <string name="editaddress_back_dialog_description">Kamu akan membatalkan perubahan alamat. Semua perubahan data tidak akan disimpan.</string>
     <string name="editaddress_back_dialog_cta">Keluar</string>
     <string name="pinpointpage_chips_search_edit">Cari Ulang Alamat</string>
-    <string name="invalid_character_nama_penerima">Oops, nama penerima hanya boleh terdiri dari huruf, angka, dan tanda baca ini saja . , \' ().</string>
-    <string name="invalid_character_label_alamat">Oops, label alamat hanya boleh terdiri dari huruf, angka, dan tanda baca ini saja . , \' ().</string>
-    <string name="invalid_character_alamat">Oops, alamat hanya boleh terdiri dari huruf, angka, dan tanda baca ini saja . , &amp; / - \' () : + =</string>
-    <string name="invalid_character_notes">Oops, catatan untuk kurir hanya boleh terdiri dari huruf, angka, dan tanda baca ini saja . , &amp; / - \' () : + =</string>
     <string name="error_min_char_phone_number">Nomor HP penerima terlalu pendek, min 9 angka</string>
     <string name="error_invalid_format_phone_number">Format nomor HP salah, silakan cek ulang.</string>
 </resources>
