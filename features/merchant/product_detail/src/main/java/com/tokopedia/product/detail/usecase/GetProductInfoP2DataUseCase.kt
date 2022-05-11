@@ -129,6 +129,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 name
                 tagLine
                 url
+                ownerID
               }
               shopLastActive
               location
