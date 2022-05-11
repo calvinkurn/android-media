@@ -8,6 +8,9 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 
+/**
+ * Created by kenny.hadisaputra on 11/05/22
+ */
 interface ChannelStatusBuilder {
 
     fun buildStatus(
