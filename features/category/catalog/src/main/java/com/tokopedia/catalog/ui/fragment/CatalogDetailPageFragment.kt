@@ -333,7 +333,7 @@ class CatalogDetailPageFragment : Fragment(),
 
         catalogDetailPageViewModel.mProductCount.observe(viewLifecycleOwner, { totalProducts ->
             totalProducts?.let {
-                mProductsCountText?.text = getString(com.tokopedia.catalog.R.string.catalog_product_count_view_text,it)
+                sharedViewModel.mProductCount.value = it
             }
         })
 
@@ -344,20 +344,24 @@ class CatalogDetailPageFragment : Fragment(),
         if (isNewProductDesign) {
             sharedViewModel.mProductCount.observe(viewLifecycleOwner, { filterProductCount ->
                 filterProductCount?.let {
-                    if(it == CatalogConstant.ZERO_VALUE){
-                        mProductsCountText?.text = getString(
-                            com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty,
-                            it
-                        )
-                    }else {
-                        mProductsCountText?.text = getString(
-                            com.tokopedia.catalog.R.string.catalog_product_count_view_text,
-                            it
-                        )
-                    }
-
+                    setProductCountText(it)
                 }
             })
+        }
+    }
+
+    private fun setProductCountText(productCount : Int) {
+        if(productCount == CatalogConstant.ZERO_VALUE){
+            mProductsCountText?.text = getString(
+                com.tokopedia.catalog.R.string.catalog_product_count_view_text_empty,
+                productCount
+            )
+            mToBottomLayout?.hide()
+        }else {
+            mProductsCountText?.text = getString(
+                com.tokopedia.catalog.R.string.catalog_product_count_view_text,
+                productCount
+            )
         }
     }
 
