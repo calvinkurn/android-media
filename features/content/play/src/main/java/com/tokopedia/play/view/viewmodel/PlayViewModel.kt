@@ -398,6 +398,9 @@ class PlayViewModel @AssistedInject constructor(
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
 
+    val interactiveData: InteractiveUiModel
+        get() = _interactive.value.interactive
+
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
@@ -1755,12 +1758,6 @@ class PlayViewModel @AssistedInject constructor(
         }
 
         val giveaway = _interactive.value.interactive as? InteractiveUiModel.Giveaway ?: return
-
-        playAnalytic.clickTapTap(
-            channelId = channelId,
-            channelType = channelType,
-            interactiveId = giveaway.id,
-        )
     }
 
     private fun handleQuizEnded() {
@@ -1851,7 +1848,6 @@ class PlayViewModel @AssistedInject constructor(
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.Followable) {
             needLogin(REQUEST_CODE_LOGIN_PLAY_INTERACTIVE) { updateIsPlaying() }
         } else updateIsPlaying()
-        playAnalytic.clickActiveInteractive(channelId = channelId, interactiveId = _interactive.value.interactive.id, shopId = partnerId.toString())
     }
 
     private fun handleClickQuizOption(option: QuizChoicesUiModel){
@@ -1860,9 +1856,6 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             if (repo.hasJoined(activeInteractiveId)) return@launchCatchError
-
-            playAnalytic.clickQuizOption(channelId = channelId, shopId = partnerId.toString(), interactiveId = interactiveId, choiceAlphabet = (option.type as PlayQuizOptionState.Default).alphabet.toString())
-
             updateQuizOptionUi(selectedId = option.id, isLoading = true)
 
             val response = repo.answerQuiz(interactiveId = interactiveId, choiceId = option.id)
@@ -1974,14 +1967,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
-
-        playAnalytic.clickWinnerBadge(
-                channelId = channelId,
-                channelType = channelType,
-                shopId = partnerId.toString(),
-                interactiveId = _interactive.value.interactive.id,
-                interactiveType = _interactive.value.interactive
-        )
     }
 
     private fun handleCloseLeaderboardSheet() {
@@ -2015,13 +2000,6 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
-            if (_partnerInfo.value.type == PartnerType.Shop) playAnalytic.clickFollowShopInteractive(
-                channelId = channelId,
-                channelType = channelType,
-                interactiveId = interactiveId,
-                shopId = partnerId.toString(),
-                interactiveType = _interactive.value.interactive
-            )
         }
     }
 
@@ -2186,8 +2164,6 @@ class PlayViewModel @AssistedInject constructor(
         }
 
         checkLeaderboard(channelId)
-
-        playAnalytic.clickRefreshLeaderBoard(channelId = channelId, interactiveId = _interactive.value.interactive.id, shopId = partnerId.toString())
     }
 
     private fun handleRetryGetTagItems() {
@@ -2530,27 +2506,6 @@ class PlayViewModel @AssistedInject constructor(
     fun sendUpcomingReminderImpression(sectionUiModel: ProductSectionUiModel.Section){
         playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
     }
-
-    fun sendImpressInteractiveActive(){
-        playAnalytic.impressActiveInteractive(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
-    }
-
-    fun sendImpressFollowBtnInteractive(){
-        playAnalytic.impressFollowShopInteractive(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
-    }
-
-    fun sendImpressWinnerBadge(){
-        playAnalytic.impressWinnerBadge(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
-    }
-
-    fun sendImpressQuizOptions(){
-        playAnalytic.impressQuizOptions(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
-    }
-
-    fun sendImpressRefreshLeaderBoard(){
-        playAnalytic.impressRefreshLeaderBoard(channelId = channelId, shopId = partnerId.toString(), interactiveId = _interactive.value.interactive.id)
-    }
-
     /**
      * Variant Util
      */

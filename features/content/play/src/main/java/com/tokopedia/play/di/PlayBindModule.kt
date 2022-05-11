@@ -2,8 +2,6 @@ package com.tokopedia.play.di
 
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
-import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
-import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
@@ -18,8 +16,6 @@ import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.domain.repository.*
-import com.tokopedia.play.util.share.PlayShareExperience
-import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
@@ -83,10 +79,6 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindPartnerAnalytic(analytic: PlayPartnerAnalyticImpl): PlayPartnerAnalytic
-
-    @Binds
-    @PlayScope
-    abstract fun bindInteractiveAnalytic(analytic: PlayInteractiveAnalyticImpl): PlayInteractiveAnalytic
 
     @Binds
     @PlayScope
