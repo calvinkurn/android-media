@@ -16,7 +16,8 @@
             android:id="@+id/img_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:src="@tools:sample/avatars"/>
+            tools:src="@tools:sample/avatars"
+            android:contentDescription="@string/picker_cd_thumbnail"/>
 
         <View
             android:id="@+id/bg_video_shadow"
