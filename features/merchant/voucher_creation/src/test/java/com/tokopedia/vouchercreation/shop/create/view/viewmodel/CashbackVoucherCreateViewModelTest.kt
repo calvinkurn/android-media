@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.shop.create.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -733,6 +734,42 @@ class CashbackVoucherCreateViewModelTest {
         val currentValue = mViewModel.isPercentageInputError
         mViewModel.isPercentageInputError = true
         assert(mViewModel.isPercentageInputError != currentValue)
+    }
+
+    @Test
+    fun `check whether getMinimumPurchase is returning Rupiah minimum purchase value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Rupiah.MinimumPurchase
+            val minimumPurchase = getMinimumPurchase(promotionType)
+            assert(minimumPurchase == mRupiahMinimumPurchaseLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getMinimumPurchase is returning Percentage minimum purchase value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Percentage.MinimumPurchase
+            val minimumPurchase = getMinimumPurchase(promotionType)
+            assert(minimumPurchase == mPercentageMinimumPurchaseLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getVoucherQuota is returning Rupiah voucher quota value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Rupiah.VoucherQuota
+            val voucherQuota = getVoucherQuota(promotionType)
+            assert(voucherQuota == mRupiahVoucherQuotaLiveData.value.orZero())
+        }
+    }
+
+    @Test
+    fun `check whether getVoucherQuota is returning Percentage voucher quota value`() {
+        with(mViewModel) {
+            val promotionType = PromotionType.Cashback.Percentage.VoucherQuota
+            val voucherQuota = getVoucherQuota(promotionType)
+            assert(voucherQuota == mPercentageVoucherQuotaLiveData.value.orZero())
+        }
     }
 
     // helper functions
