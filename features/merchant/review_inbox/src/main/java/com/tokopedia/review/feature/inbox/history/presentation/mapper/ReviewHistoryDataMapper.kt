@@ -18,7 +18,7 @@ object ReviewHistoryDataMapper {
     private fun MutableList<ReviewMediaThumbnailVisitable>.includeImage(
         reviewHistory: ProductrevFeedbackHistory
     ) = apply {
-        reviewHistory.review.imageAttachments.map {
+        addAll(reviewHistory.review.imageAttachments.map {
             ReviewMediaImageThumbnailUiModel(
                 uiState = ReviewMediaImageThumbnailUiState.Showing(
                     attachmentID = it.attachmentID,
@@ -27,7 +27,7 @@ object ReviewHistoryDataMapper {
                     fullSizeUrl = it.fullSize
                 )
             )
-        }
+        })
     }
 
     private fun MutableList<ReviewMediaThumbnailVisitable>.includeVideo(
@@ -68,8 +68,8 @@ object ReviewHistoryDataMapper {
                     history,
                     ReviewMediaThumbnailUiModel(
                         mutableListOf<ReviewMediaThumbnailVisitable>()
-                            .includeImage(history)
                             .includeVideo(history)
+                            .includeImage(history)
                     )
                 )
             }
