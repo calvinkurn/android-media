@@ -1,6 +1,5 @@
 package com.tokopedia.digital_product_detail.domain.usecase
 
-import android.util.Log
 import com.tokopedia.common.topupbills.data.requests.DigiPersoRequestParam
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberChipsData
