@@ -10,11 +10,11 @@ class ReviewInboxDatum(
 
     @SerializedName("review_inbox_id")
     @Expose
-    val reviewInboxId: Long = 0,
+    val reviewInboxId: String = "",
 
     @SerializedName("review_id")
     @Expose
-    val reviewId: Long = 0,
+    val reviewId: String = "",
 
     @SerializedName("review_has_reviewed")
     @Expose

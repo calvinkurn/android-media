@@ -1,12 +1,8 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
-import static android.content.Context.CLIPBOARD_SERVICE;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -35,6 +31,8 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -66,12 +64,14 @@ import com.tokopedia.buyerorder.detail.data.PassengerInformation;
 import com.tokopedia.buyerorder.detail.data.PayMethod;
 import com.tokopedia.buyerorder.detail.data.PaymentData;
 import com.tokopedia.buyerorder.detail.data.Pricing;
+import com.tokopedia.buyerorder.detail.data.RedeemVoucherModel;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
+import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
@@ -80,6 +80,7 @@ import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
+import com.tokopedia.kotlin.extensions.view.ViewExtKt;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
@@ -170,6 +171,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private IconUnify icCopyInvoice;
 
     private LocalCacheHandler localCacheHandler;
+
+    private int totalItems = 0;
 
     @Override
     protected String getScreenName() {
@@ -391,7 +394,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         icCopyInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                copyInvoice(view, invoiceView.getText().toString());
+                BuyerUtils.copyTextToClipBoard(KEY_TEXT, invoiceView.getText().toString(),requireContext() );
             }
         });
     }
@@ -911,38 +914,97 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
-    private void showEventQR(ActionButton actionButton, Items item) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
-        Dialog dialog = new Dialog(getContext());
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(view);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
-        dialog.getWindow().setAttributes(lp);
-        View v = dialog.getWindow().getDecorView();
-        v.setBackgroundResource(com.tokopedia.design.R.color.transparent);
+    private void showEventQR(ActionButton actionButton){
+        View view = ViewExtKt.inflateLayout(mainView, R.layout.layout_scan_qr_code, false);
+        BottomSheetUnify bottomSheet = new BottomSheetUnify();
+        bottomSheet.setTitle(getString(R.string.text_redeem_voucher));
+        bottomSheet.setCloseClickListener(v -> {
+            bottomSheet.dismiss();
+            return Unit.INSTANCE;
+        });
 
-        ImageView qrCode = view.findViewById(R.id.qrCode);
-        LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
-        TextView closeButton = view.findViewById(R.id.redeem_ticket);
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+        RecyclerView rvVoucher  = view.findViewById(R.id.rv_voucher);
+        Typography tvLabelCount = view.findViewById(R.id.tv_label_count);
+        LinearLayout layoutIndicator = view.findViewById(R.id.item_indicator);
 
+        ArrayList<RedeemVoucherModel> voucherModel = new ArrayList<>();
+        ArrayList<ImageView> indicatorItem = new ArrayList<>();
         if (!actionButton.getBody().getBody().isEmpty()) {
             String[] voucherCodes = actionButton.getBody().getBody().split(",");
-            if (voucherCodes.length > 0) {
-                voucherCodeLayout.setVisibility(View.VISIBLE);
-                for (int i = 0; i < voucherCodes.length; i++) {
-                    BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], 0, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes[i].length());
-                    bookingCodeView.setBackground(getContext().getResources().getDrawable(com.tokopedia.design.R.drawable.bg_search_input_text_area));
-                    voucherCodeLayout.addView(bookingCodeView);
+            for (int i=0; i<voucherCodes.length; i++) {
+                voucherModel.add(mapToRedeemModel(actionButton, voucherCodes[i]));
+                totalItems = voucherCodes.length;
+                ImageView indicator = new ImageView(requireContext());
+                indicator.setPadding(5,0,5,0);
+                if (i == 0) {
+                    indicator.setImageResource(R.drawable.ic_indicator_selected);
+                }else{
+                    indicator.setImageResource(R.drawable.ic_indicator_unselected);
+                }
+
+                indicatorItem.add(indicator);
+                layoutIndicator.addView(indicator);
+            }
+
+            ViewExtKt.showWithCondition(tvLabelCount, voucherCodes.length > 1);
+            ViewExtKt.showWithCondition(layoutIndicator, voucherCodes.length > 1);
+        }
+
+        RedeemVoucherAdapter adapter = new RedeemVoucherAdapter(voucherModel);
+
+        rvVoucher.setAdapter(adapter);
+        rvVoucher.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvVoucher.setHasFixedSize(true);
+
+        tvLabelCount.setText(getString(R.string.deals_voucher_label_count, 1, totalItems));
+        rvVoucher.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) rvVoucher.getLayoutManager();
+                if (layoutManager != null){
+                    int currentPos = layoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (currentPos != -1) rvVoucher.smoothScrollToPosition(currentPos);
+                    for (int i = 0; i < indicatorItem.size(); i++){
+                        if (currentPos != i){
+                            indicatorItem.get(i).setImageResource(R.drawable.ic_indicator_unselected);
+                        }else{
+                            indicatorItem.get(i).setImageResource(R.drawable.ic_indicator_selected);
+                        }
+                    }
+                    int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition() + 1;
+                    tvLabelCount.setText(getString(R.string.deals_voucher_label_count, firstVisiblePosition, totalItems));
                 }
             }
+        });
+
+        if (rvVoucher.getOnFlingListener() == null){
+            PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+            pagerSnapHelper.attachToRecyclerView(rvVoucher);
         }
-        closeButton.setOnClickListener(v1 -> dialog.dismiss());
-        dialog.show();
+
+        adapter.setOnCopiedListener( voucherCode -> {
+            BuyerUtils.copyTextToClipBoard(KEY_TEXT, voucherCode, requireContext());
+            Toaster.build(view, getString(R.string.deals_msg_copy), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+            return Unit.INSTANCE;
+        });
+
+        bottomSheet.setOnDismissListener(() -> {
+            rvVoucher.setOnFlingListener(null);
+            return Unit.INSTANCE;
+        });
+
+        bottomSheet.setChild(view);
+        bottomSheet.show(requireActivity().getSupportFragmentManager(), "");
+    }
+
+    private RedeemVoucherModel mapToRedeemModel(ActionButton actionButton, String voucherCode){
+        return new RedeemVoucherModel(
+                actionButton.getHeaderObject().getPowered_by(),
+                actionButton.getBody().getAppURL(),
+                voucherCode,
+                actionButton.getHeaderObject().getStatusLabel()
+        );
     }
 
     private void addCoachmarkBannerDeals(){
@@ -976,7 +1038,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID) {
             showDealsQR(actionButton);
         } else {
-            showEventQR(actionButton, item);
+            showEventQR(actionButton);
         }
     }
 
@@ -1008,13 +1070,5 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setActionButtonText(String txt) {
         actionButtonText.setText(txt);
-    }
-
-    private void copyInvoice(View view, String invoice){
-        ClipData myClip;
-        ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
-        myClip = ClipData.newPlainText(KEY_TEXT, invoice);
-        myClipboard.setPrimaryClip(myClip);
-        Toaster.build(view, getString(R.string.deals_order_detail_copied_message), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v1 -> { }).show();
     }
 }

@@ -68,4 +68,8 @@ object RollenceKey {
 
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
+
+    // Video Carousel Widget
+    const val SEARCH_VIDEO_WIDGET = "VideoWidget"
+    const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
 }

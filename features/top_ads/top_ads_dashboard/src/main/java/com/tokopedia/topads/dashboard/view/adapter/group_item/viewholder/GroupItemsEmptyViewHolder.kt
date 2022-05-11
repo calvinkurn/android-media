@@ -22,7 +22,7 @@ class GroupItemsEmptyViewHolder(val view: View) : GroupItemsViewHolder<GroupItem
         val LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: GroupItemsEmptyModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
+    override fun bind(item: GroupItemsEmptyModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableMap<String, DataItem>, countList: MutableList<CountDataItem>) {
         if (!fromSearch) {
             view.text_title.text = view.context.getString(R.string.topads_dash_empty_group_title)
             view.text_desc.text = view.context.getString(R.string.topads_dash_empty_group_desc)

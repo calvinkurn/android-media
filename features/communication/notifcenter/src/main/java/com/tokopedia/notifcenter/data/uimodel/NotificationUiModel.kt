@@ -83,7 +83,9 @@ data class NotificationUiModel(
         @SerializedName("is_last_journey")
         val isLastJourney: Boolean = false,
         @SerializedName("unique_id")
-        val order_id: String = ""
+        val order_id: String = "",
+        @SerializedName("is_show_expire")
+        val isShowExpire: Boolean = false
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient
