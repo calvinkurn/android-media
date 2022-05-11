@@ -20,6 +20,7 @@ import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscou
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.ERROR_PRICE_MIN
 import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscountErrorValidation.Companion.NONE
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.usecase.coroutines.Fail
@@ -160,7 +161,7 @@ class ShopDiscountManageProductVariantDiscountViewModel @Inject constructor(
         } else {
             listVariantItemUiModel.filter {
                 it.isEnabled
-            }.all {
+            }.allCheckEmptyList {
                 it.errorType == NONE && !it.discountedPrice.isZero()
             }
         }

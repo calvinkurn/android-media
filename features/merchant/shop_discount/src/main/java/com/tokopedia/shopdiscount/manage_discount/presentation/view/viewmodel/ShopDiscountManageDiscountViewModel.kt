@@ -27,6 +27,7 @@ import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProdu
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
+import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -103,8 +104,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         setupProductData.listProductVariant.forEach {
             it.variantStatus = mapToVariantStatus(it, mode)
         }
-        setupProductData.mappedResultData =
-            mapToMappedResultData(setupProductData, slashPriceStatus)
+        setupProductData.mappedResultData = mapToMappedResultData(setupProductData)
     }
 
     private fun mapToVariantStatus(
@@ -160,14 +160,13 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     private fun mapToMappedResultData(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
-        slashPriceStatus: Int
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData {
         val minStartDateUnix = getStartDate(setupProductUiModel).takeIf {
-            it.all { it > 0 }
+            it.allCheckEmptyList { it > 0 }
         }?.minOrNull()
         val minEndDateUnix = getEndDate(setupProductUiModel).takeIf {
-            it.all { it > 0 }
+            it.allCheckEmptyList { it > 0 }
         }?.minOrNull()
         return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
             minOriginalPrice = getOriginalPrice(setupProductUiModel).minOrNull().orZero(),
@@ -241,7 +240,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariant: Boolean
     ): Boolean {
         return if (isVariant) {
-            setupProductUiModel.listProductVariant.any {
+            setupProductUiModel.listProductVariant.filter {
+                it.variantStatus.isVariantEnabled == true
+            }.any {
                 checkProductValueError(it)
             }
         } else {
@@ -262,7 +263,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariant: Boolean
     ): Boolean {
         return if (isVariant) {
-            setupProductUiModel.listProductVariant.any {
+            setupProductUiModel.listProductVariant.filter {
+                it.variantStatus.isVariantEnabled == true
+            }.any {
                 checkProductWarehousePartialAbusiveRuleError(it)
             }
         } else {
@@ -283,7 +286,9 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         isVariant: Boolean
     ): Boolean {
         return if (isVariant) {
-            setupProductUiModel.listProductVariant.all {
+            setupProductUiModel.listProductVariant.filter {
+                it.variantStatus.isVariantEnabled == true
+            }.allCheckEmptyList {
                 checkProductWarehouseAllAbusiveRuleError(it)
             }
         } else {
@@ -294,7 +299,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private fun checkProductWarehouseAllAbusiveRuleError(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.getListEnabledProductWarehouse().all {
+        return setupProductUiModel.getListEnabledProductWarehouse().allCheckEmptyList {
             it.abusiveRule
         }
     }
@@ -327,19 +332,17 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     ): Boolean {
         return if (isVariant) {
             setupProductDataUiModel.listProductVariant.any {
-                getIsProductDiscountedBasedOnProductWarehouse(it)
+                getIsProductDiscountedBasedOnSlashPriceDate(it)
             }
         } else {
-            getIsProductDiscountedBasedOnProductWarehouse(setupProductDataUiModel)
+            getIsProductDiscountedBasedOnSlashPriceDate(setupProductDataUiModel)
         }
     }
 
-    private fun getIsProductDiscountedBasedOnProductWarehouse(
+    private fun getIsProductDiscountedBasedOnSlashPriceDate(
         setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
     ): Boolean {
-        return setupProductUiModel.listProductWarehouse.any {
-            !it.discountedPercentage.isZero()
-        }
+        return setupProductUiModel.slashPriceInfo.startDate.time > 0
     }
 
     private fun isMultiLoc(
@@ -503,7 +506,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
-        val isEnableButtonSubmit = allProductData.all {
+        val isEnableButtonSubmit = allProductData.allCheckEmptyList {
             it.productStatus.isProductDiscounted && it.productStatus.errorType == NO_ERROR
         }
         _enableButtonSubmitLiveData.postValue(isEnableButtonSubmit)
