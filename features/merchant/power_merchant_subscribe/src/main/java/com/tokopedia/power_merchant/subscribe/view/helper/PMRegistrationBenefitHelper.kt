@@ -5,6 +5,7 @@ import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMBenefitItemUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 
@@ -34,9 +35,11 @@ object PMRegistrationBenefitHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): PMGradeWithBenefitsUiModel {
-        return PMGradeWithBenefitsUiModel(
+        return PMGradeWithBenefitsUiModel.PMProUltimate(
             gradeName = Constant.PM_PRO_ULTIMATE,
-            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.FOUR,
+            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.FOUR && shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_pro_ultimate),
+            tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -56,9 +59,11 @@ object PMRegistrationBenefitHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): PMGradeWithBenefitsUiModel {
-        return PMGradeWithBenefitsUiModel(
+        return PMGradeWithBenefitsUiModel.PMProExpert(
             gradeName = Constant.PM_PRO_EXPERT,
-            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.THREE,
+            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.THREE && shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_pro_expert),
+            tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -78,9 +83,11 @@ object PMRegistrationBenefitHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): PMGradeWithBenefitsUiModel {
-        return PMGradeWithBenefitsUiModel(
+        return PMGradeWithBenefitsUiModel.PMProAdvance(
             gradeName = Constant.PM_PRO_ADVANCED,
-            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.TWO,
+            isTabActive = shopInfo.shopLevel == PMConstant.ShopLevel.TWO && shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_pro_advanced),
+            tabResIcon = IconUnify.BADGE_PMPRO_FILLED,
             benefitList = listOf(
                 getTopAdsBenefit(
                     context,
@@ -90,8 +97,14 @@ object PMRegistrationBenefitHelper {
                 getSpecialReleaseBenefit(context, Constant.PM_PRO_ADV_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRO_ADV_PRODUCT_BUNDLING),
                 getFreeDeliveryBenefit(context),
-                getFlashSaleBenefit(context),
-                getCashBackBenefit(context)
+                PMBenefitItemUiModel(
+                    resIcon = R.drawable.ic_pm_flash_sale,
+                    benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
+                ),
+                PMBenefitItemUiModel(
+                    resIcon = R.drawable.ic_pm_cash_back,
+                    benefitDescription = context.getString(R.string.pm_benefit_reward)
+                )
             )
         )
     }
@@ -100,15 +113,18 @@ object PMRegistrationBenefitHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel
     ): PMGradeWithBenefitsUiModel {
-        return PMGradeWithBenefitsUiModel(
+        return PMGradeWithBenefitsUiModel.PM(
             gradeName = Constant.POWER_MERCHANT,
-            isActive = shopInfo.shopLevel == PMConstant.ShopLevel.ONE,
+            isTabActive = shopInfo.shopLevel <= PMConstant.ShopLevel.ONE
+                    || !shopInfo.isEligiblePm || !shopInfo.isEligiblePmPro,
+            tabLabel = context.getString(R.string.pm_power_merchant),
+            tabResIcon = IconUnify.BADGE_PM_FILLED,
             benefitList = listOf(
                 getTopAdsBenefit(context, Constant.PM_TOP_ADS_CREDIT, Constant.PM_BROAD_CAST_CHAT),
                 getSpecialReleaseBenefit(context, Constant.PM_SPECIAL_RELEASE),
                 getProductBundlingBenefit(context, Constant.PM_PRODUCT_BUNDLING),
                 PMBenefitItemUiModel(
-                    resIcon = R.drawable.ic_pm_product_bundling,
+                    resIcon = R.drawable.ic_pm_free_delivery,
                     benefitDescription = context.getString(
                         R.string.pm_benefit_free_delivery_pm,
                         Constant.PM_FREE_DELIVERY
@@ -128,7 +144,7 @@ object PMRegistrationBenefitHelper {
     private fun getFlashSaleBenefit(context: Context): PMBenefitItemUiModel {
         return PMBenefitItemUiModel(
             resIcon = R.drawable.ic_pm_flash_sale,
-            benefitDescription = context.getString(R.string.pm_benefit_flash_sale)
+            benefitDescription = context.getString(R.string.pm_benefit_flash_sale_and_discount)
         )
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -9,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
@@ -30,6 +32,8 @@ class GradeBenefitWidget(
 ) : AbstractViewHolder<WidgetGradeBenefitUiModel>(itemView) {
 
     companion object {
+        private const val SATURATION_INACTIVE = 0.0f
+        private const val SATURATION_ACTIVE = 1f
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
     }
 
@@ -49,7 +53,7 @@ class GradeBenefitWidget(
     }
 
     private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) = binding?.run {
-        val selected = element.benefitPages.indexOfFirst { it.isActive }
+        val selected = element.benefitPages.indexOfFirst { it.isTabActive }
         if (selected != RecyclerView.NO_POSITION) {
             rvPmGradeBenefitPager.scrollToPosition(selected)
             tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
@@ -60,11 +64,18 @@ class GradeBenefitWidget(
         binding?.tabPmGradeBenefit?.run {
             tabLayout.removeAllTabs()
             try {
-                getTabList(element.benefitPages).filterNotNull()
-                    .forEachIndexed { i, pair ->
-                        addNewTab(pair.first)
-                        getUnifyTabLayout().getTabAt(i)?.setIconUnify(pair.second)
+                val activeTabIndex = element.benefitPages.indexOfLast { it.isTabActive }
+                element.benefitPages.forEachIndexed { i, page ->
+                    addNewTab(page.tabLabel)
+                    getUnifyTabLayout().getTabAt(i)?.run {
+                        setIconUnify(page.tabResIcon)
+                        if (i == activeTabIndex) {
+                            setUnifyTabIconColorFilter(this.customView, SATURATION_ACTIVE)
+                        } else {
+                            setUnifyTabIconColorFilter(this.customView, SATURATION_INACTIVE)
+                        }
                     }
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -72,6 +83,15 @@ class GradeBenefitWidget(
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     setOnTabSelected(tabLayout.selectedTabPosition)
+
+                    for (i in Int.ZERO..getUnifyTabLayout().tabCount.minus(Int.ONE)) {
+                        val view = getUnifyTabLayout().getTabAt(i)
+                        if (i == tabLayout.selectedTabPosition) {
+                            setUnifyTabIconColorFilter(view?.customView, SATURATION_ACTIVE)
+                        } else {
+                            setUnifyTabIconColorFilter(view?.customView, SATURATION_INACTIVE)
+                        }
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -79,7 +99,7 @@ class GradeBenefitWidget(
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             post {
-                val selectedTabPosition = element.benefitPages.indexOfFirst { it.isActive }
+                val selectedTabPosition = element.benefitPages.indexOfLast { it.isTabActive }
                 if (selectedTabPosition != RecyclerView.NO_POSITION) {
                     tabLayout.getTabAt(selectedTabPosition)?.select()
                 }
@@ -87,24 +107,12 @@ class GradeBenefitWidget(
         }
     }
 
-    private fun getTabList(benefitPages: List<PMGradeWithBenefitsUiModel>): List<Pair<String, Int>?> {
-        return benefitPages.mapIndexed { i, _ ->
-            return@mapIndexed when (i) {
-                Constant.POWER_MERCHANT_TAB_INDEX -> {
-                    Pair(getString(R.string.pm_power_merchant), IconUnify.BADGE_PM_FILLED)
-                }
-                Constant.PM_PRO_ADVANCED_TAB_INDEX -> {
-                    Pair(getString(R.string.pm_pro_advanced), IconUnify.BADGE_PMPRO_FILLED)
-                }
-                Constant.PM_PRO_EXPERT_TAB_INDEX -> {
-                    Pair(getString(R.string.pm_pro_expert), IconUnify.BADGE_PMPRO_FILLED)
-                }
-                Constant.PM_PRO_ULTIMATE_TAB_INDEX -> {
-                    Pair(getString(R.string.pm_pro_ultimate), IconUnify.BADGE_PMPRO_FILLED)
-                }
-                else -> null
-            }
-        }
+    private fun setUnifyTabIconColorFilter(view: View?, saturation: Float) {
+        val colorMatrix = ColorMatrix()
+        colorMatrix.setSaturation(saturation)
+        val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
+        view?.findViewById<IconUnify>(R.id.tab_item_icon_unify_id)?.colorFilter =
+            colorMatrixColorFilter
     }
 
     private fun setOnTabSelected(position: Int) = binding?.run {
