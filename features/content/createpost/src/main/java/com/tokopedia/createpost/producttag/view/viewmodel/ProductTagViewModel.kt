@@ -3,6 +3,8 @@ package com.tokopedia.createpost.producttag.view.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
+import com.tokopedia.createpost.producttag.util.AUTHOR_ID
+import com.tokopedia.createpost.producttag.util.AUTHOR_TYPE
 import com.tokopedia.createpost.producttag.util.extension.combine
 import com.tokopedia.createpost.producttag.util.extension.currentSource
 import com.tokopedia.createpost.producttag.util.extension.setValue
@@ -28,8 +30,8 @@ import kotlinx.coroutines.launch
 class ProductTagViewModel @AssistedInject constructor(
     @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
     @Assisted(SHOP_BADGE) val shopBadge: String,
-    @Assisted("authorId") private val authorId: String,
-    @Assisted("authorType") private val authorType: String,
+    @Assisted(AUTHOR_ID) private val authorId: String,
+    @Assisted(AUTHOR_TYPE) private val authorType: String,
     private val repo: ProductTagRepository,
     private val userSession: UserSessionInterface,
 ): ViewModel() {
@@ -39,8 +41,8 @@ class ProductTagViewModel @AssistedInject constructor(
         fun create(
             @Assisted(PRODUCT_TAG_SOURCE_RAW) productTagSourceRaw: String,
             @Assisted(SHOP_BADGE) shopBadge: String,
-            @Assisted("authorId") authorId: String,
-            @Assisted("authorType") authorType: String,
+            @Assisted(AUTHOR_ID) authorId: String,
+            @Assisted(AUTHOR_TYPE) authorType: String,
         ): ProductTagViewModel
     }
 

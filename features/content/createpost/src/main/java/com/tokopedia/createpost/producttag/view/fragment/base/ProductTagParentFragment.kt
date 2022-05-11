@@ -51,7 +51,7 @@ class ProductTagParentFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = createProductTagViewModel()
+        viewModel = createViewModelProvider()[ProductTagViewModel::class.java]
     }
 
     override fun onCreateView(
