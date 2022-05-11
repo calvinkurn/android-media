@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
@@ -387,8 +388,12 @@ class SingleProductBundleFragment(
 
     private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
         return if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
-            // return string when in update mode
-            if (selectedBundleId != adapter.getSelectedBundleId() && !isFirstSetup) {
+            /*
+             * in update mode
+             * check whether selected product bundling is not still the same or the variant of product changed and also not for the first time
+             * if yes then return action choose else package chosen copy
+             */
+            if ((selectedBundleId != adapter.getSelectedBundleId() || selectedProductId != adapter.getSelectedProductId().toLongOrZero()) && !isFirstSetup) {
                 getCtaText(
                     stringRes = R.string.action_choose_package,
                     isEnabled = true
@@ -400,7 +405,7 @@ class SingleProductBundleFragment(
                 )
             }
         } else {
-            // return string when in add mode
+            // return choose package in add mode
             getCtaText(
                 stringRes = R.string.action_choose_package,
                 isEnabled = true
