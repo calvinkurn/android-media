@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="@dimen/unify_space_16">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/btnApply"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,7 +112,7 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/unify_space_2"
+                android:layout_height="@dimen/sd_space_1"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +153,7 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/dividerBottom"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/unify_space_2"
+                android:layout_height="@dimen/sd_space_1"
                 android:layout_marginTop="@dimen/unify_space_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -214,10 +217,14 @@
         android:layout_below="@id/content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_32"
         android:enabled="false"
         android:text="@string/sd_apply"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/content"
         app:unifyButtonRightLoader="false"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
@@ -230,10 +237,10 @@
         android:layout_height="@dimen/unify_space_64"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
