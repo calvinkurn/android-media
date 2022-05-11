@@ -73,7 +73,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         // noop
     }
 
-    override fun onReviewVideoPlayerError() {
+    override fun onReviewVideoPlayerError(errorCode: String) {
         binding.loaderReviewMediaVideoThumbnail.gone()
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {

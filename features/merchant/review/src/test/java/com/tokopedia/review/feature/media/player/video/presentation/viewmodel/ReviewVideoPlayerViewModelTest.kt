@@ -3,11 +3,11 @@ package com.tokopedia.review.feature.media.player.video.presentation.viewmodel
 import android.graphics.Bitmap
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.review.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.review.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
 import com.tokopedia.review.feature.media.player.video.presentation.uistate.ReviewVideoPlayerUiState
 import com.tokopedia.review.feature.media.player.video.presentation.uistate.ReviewVideoThumbnailUiState
+import com.tokopedia.reviewcommon.extension.getSavedState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -194,7 +194,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         val newPosition = 100L
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToReadyToPlay()
-        viewModel.setPlaybackStateToError(newPosition)
+        viewModel.setPlaybackStateToError(newPosition, "")
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
         Assert.assertTrue(currentVideoPlaybackUiState is ReviewVideoPlaybackUiState.Error)
         Assert.assertEquals(newPosition, currentVideoPlaybackUiState.currentPosition)
@@ -207,7 +207,7 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         val previousVideoPlaybackUiState = viewModel.videoPlaybackUiState.first()
         viewModel.setVideoUri(newVideoUri)
         viewModel.setVideoPlayerStateToRestoring()
-        viewModel.setPlaybackStateToError(newPosition)
+        viewModel.setPlaybackStateToError(newPosition, "")
         val currentVideoPlaybackUiState = viewModel.videoPlaybackUiState.value
         Assert.assertEquals(previousVideoPlaybackUiState, currentVideoPlaybackUiState)
     }
@@ -298,8 +298,8 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
 
     @Test
     fun `showVideoError should update _videoErrorUiState to ReviewVideoErrorUiState#Showing`() = testCoroutineRule.runBlockingTest {
-        viewModel.showVideoError()
-        Assert.assertEquals(ReviewVideoErrorUiState.Showing, viewModel.videoErrorUiState.first())
+        viewModel.showVideoError("")
+        Assert.assertEquals(ReviewVideoErrorUiState.Showing(""), viewModel.videoErrorUiState.first())
     }
 
     @Test

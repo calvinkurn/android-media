@@ -126,7 +126,7 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         // noop
     }
 
-    override fun onReviewVideoPlayerError() {
+    override fun onReviewVideoPlayerError(errorCode: String) {
         with(binding) {
             reviewMediaGalleryVideoThumbnailBrokenOverlay.show()
             icReviewGalleryVideoThumbnailBroken.show()

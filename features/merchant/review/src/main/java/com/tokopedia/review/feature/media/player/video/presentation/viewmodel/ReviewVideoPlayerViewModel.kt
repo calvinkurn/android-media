@@ -166,10 +166,10 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
-    fun setPlaybackStateToError(currentPosition: Long) {
+    fun setPlaybackStateToError(currentPosition: Long, errorCode: String) {
         _videoPlaybackUiState.update {
             if (_videoPlayerUiState.value is ReviewVideoPlayerUiState.ReadyToPlay) {
-                ReviewVideoPlaybackUiState.Error(currentPosition)
+                ReviewVideoPlaybackUiState.Error(currentPosition, errorCode)
             } else it
         }
     }
@@ -219,8 +219,8 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
-    fun showVideoError() {
-        _videoErrorUiState.value = ReviewVideoErrorUiState.Showing
+    fun showVideoError(errorCode: String) {
+        _videoErrorUiState.value = ReviewVideoErrorUiState.Showing(errorCode)
     }
 
     fun hideVideoError() {

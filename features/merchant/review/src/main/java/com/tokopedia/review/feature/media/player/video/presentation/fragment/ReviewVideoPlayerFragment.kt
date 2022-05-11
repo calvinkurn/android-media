@@ -170,8 +170,8 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         reviewVideoPlayerViewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
     }
 
-    override fun onReviewVideoPlayerError() {
-        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition())
+    override fun onReviewVideoPlayerError(errorCode: String) {
+        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition(), errorCode)
     }
 
     private fun getVideoUri(): String {
@@ -251,7 +251,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                         binding?.loaderReviewVideoPlayer?.gone()
                         binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.showVideoThumbnail()
-                        reviewVideoPlayerViewModel.showVideoError()
+                        reviewVideoPlayerViewModel.showVideoError(it.errorCode)
                     }
                     is ReviewVideoPlaybackUiState.Buffering,
                     is ReviewVideoPlaybackUiState.Preloading -> {
@@ -293,7 +293,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                 binding?.tvReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
                 if (it is ReviewVideoErrorUiState.Showing) {
                     showToasterError(
-                        getString(R.string.review_video_player_error_message),
+                        getString(R.string.review_video_player_error_message, it.errorCode),
                         getString(R.string.review_video_player_error_action_text)
                     )
                 }

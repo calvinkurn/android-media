@@ -20,6 +20,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.reviewcommon.feature.media.player.video.data.cache.MediaPlayerCache
 import java.lang.ref.WeakReference
 import kotlin.math.ceil
@@ -110,7 +111,8 @@ class ReviewVideoPlayer(
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
-                listenerRef?.get()?.onReviewVideoPlayerError()
+                val errorCode = ErrorHandler.getErrorMessagePair(context, error, ErrorHandler.Builder()).second
+                listenerRef?.get()?.onReviewVideoPlayerError(errorCode)
             }
         })
     }
@@ -207,5 +209,5 @@ interface ReviewVideoPlayerListener {
     fun onReviewVideoPlayerIsPaused()
     fun onReviewVideoPlayerIsPreloading()
     fun onReviewVideoPlayerIsEnded()
-    fun onReviewVideoPlayerError()
+    fun onReviewVideoPlayerError(errorCode: String)
 }
