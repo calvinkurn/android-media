@@ -433,7 +433,7 @@ class SelectProductFragment : BaseDaggerFragment() {
         ShopDiscountManageDiscountActivity.start(
             requireActivity(),
             viewModel.getRequestId(),
-            discountStatusId,
+            ZERO,
             ShopDiscountManageDiscountMode.CREATE
         )
     }
