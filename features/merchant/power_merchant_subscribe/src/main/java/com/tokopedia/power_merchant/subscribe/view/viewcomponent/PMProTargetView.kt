@@ -77,7 +77,7 @@ class PMProTargetView : ConstraintLayout {
                 }
             )
 
-            val isEligibleIncome = completedOrder >= Constant.PM_PRO_MIN_INCOME
+            val isEligibleIncome = netIncome >= Constant.PM_PRO_MIN_INCOME
             val netIncomeColor = if (isEligibleIncome) {
                 eligibleColor
             } else {

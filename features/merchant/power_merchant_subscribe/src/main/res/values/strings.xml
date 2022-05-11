@@ -17,7 +17,7 @@
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Kirim Jawaban</string>
 
-    <string name="power_merchant_register_now">Daftar Sekarang</string>
+    <string name="power_merchant_register_now">Gabung Sekarang</string>
     <string name="power_merchant_learn_more">Pelajari Selengkapnya</string>
     <string name="power_merchant_performance_tips">Tips Tingkatkan Performa</string>
     <string name="power_merchant_max_score">/100</string>
@@ -97,7 +97,7 @@
     <string name="pm_bottom_sheet_shop_score_description"><![CDATA[Capai skor <b>min. %1$d</b> untuk gabung jadi Power Merchant. Pelajari tipsnya untuk meningkatkan Performa Tokomu dulu, ya!]]></string>
     <string name="pm_bottom_sheet_active_product_title">Tambahkan minimal 1 \nproduk aktif dulu, yuk!</string>
     <string name="pm_bottom_sheet_active_product_description"><![CDATA[Untuk daftar Power Merchant, tokomu harus <br>punya <b>min. 1 produk</b>. Tambah produk dulu, <br>kemudian daftar lagi, ya!]]></string>
-    <string name="pm_interested_to_register">Saya Tertarik Untuk Daftar</string>
+    <string name="pm_interested_to_register">Saya Tertarik Untuk Bergabung</string>
     <string name="pm_verify_data_clickable">Verifikasi Data</string>
     <string name="pm_verify_again_clickable">Verifikasi Ulang</string>
     <string name="pm_tnc_agreement_error_message">Kamu belum menyetujui S&amp;K yang berlaku.</string>
