@@ -86,6 +86,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         })
     }
 
+
     fun createRequestParamActionDelete(
         source: String, groupIdParam: String, keywordIds: List<String>,
     ): RequestParams {
@@ -126,7 +127,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     fun createRequestParamActionCreate(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
         suggestedBidValue: Double,
-    ): RequestParams? {
+    ): RequestParams {
         val input = TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             source = ParamObject.PARAM_SOURCE_RECOM
@@ -153,6 +154,30 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             keywordOperation = null
         }
         return input.convertToRequestParam()
+    }
+
+    fun createRequestParamEditBudgetInsight(
+        adOperationList: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        priceBid: Float?, dailyBudgetValue: Double?, groupId: String
+    ): RequestParams {
+        return TopadsManagePromoGroupProductInput(
+            shopID = userSession.shopId,
+            source = ParamObject.PARAM_RECOM_EDIT_SOURCE,
+            groupID = groupId,
+            groupInput = GroupEditInput(
+                action = ParamObject.PARAM_EDIT_OPTION,
+                group = GroupEditInput.Group(
+                    name = null, status = null, type = null,
+                    bidSettings = listOf(
+                        GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid),
+                        GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid)
+                    ),
+                    dailyBudget = dailyBudgetValue,
+                    adOperations = adOperationList
+                ),
+            ),
+            keywordOperation = null
+        ).convertToRequestParam()
     }
 
     fun setParam(

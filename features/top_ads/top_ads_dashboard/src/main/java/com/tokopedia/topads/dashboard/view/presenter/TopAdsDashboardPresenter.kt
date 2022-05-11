@@ -70,7 +70,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val getStatisticUseCase: GetStatisticUseCase,
             private val budgetRecomUseCase: GraphqlUseCase<DailyBudgetRecommendationModel>,
             private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
-            private val topAdsEditUseCase: TopAdsEditUseCase,
             private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
             private val topAdsCreateUseCase: TopAdsCreateUseCase,
             private val bidInfoUseCase: BidInfoUseCase,
@@ -423,23 +422,35 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         )
     }
 
-    fun editBudgetThroughInsight(productData: MutableList<GroupEditInput.Group.AdOperationsItem>?, groupData: HashMap<String, Any?>?, onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit, onError: ((String)) -> Unit) {
-        val params = topAdsEditUseCase.setParam(productData, groupData)
-        topAdsEditUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+    fun editBudgetThroughInsight(
+        adOperations: MutableList<GroupEditInput.Group.AdOperationsItem>?,
+        priceBid: Float?, currentGroupId: String, dailyBudget: Double?,
+        onSuccess: ((FinalAdResponse.TopadsManageGroupAds)) -> Unit,
+        onError: ((String)) -> Unit,
+    ) {
+
+        val params = topAdsCreateUseCase.createRequestParamEditBudgetInsight(
+            adOperations,
+            priceBid,
+            dailyBudget,
+            currentGroupId
+        )
+        topAdsCreateUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable?) {
                 e?.printStackTrace()
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s", e?.localizedMessage)
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_EDIT_RECOM_BUDGET#%s",
+                    e?.localizedMessage)
             }
 
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
                 val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
                 val restResponse: RestResponse? = typeResponse[token]
                 val response = restResponse?.getData() as DataResponse<FinalAdResponse>
-                response?.data?.topadsManageGroupAds?.let { onSuccess(it) }
+                response.data?.topadsManageGroupAds?.let { onSuccess(it) }
             }
         })
     }
@@ -529,7 +540,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         topAdsInsightUseCase.unsubscribe()
         budgetRecomUseCase.cancelJobs()
         validGroupUseCase.cancelJobs()
-        topAdsEditUseCase.unsubscribe()
         productRecomUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()

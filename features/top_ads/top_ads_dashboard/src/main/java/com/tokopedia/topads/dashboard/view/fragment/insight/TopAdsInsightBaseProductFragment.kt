@@ -255,11 +255,11 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             }
         } else {
             val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
-            val map = HashMap<String, Any?>()
-            map[PARAM_GROUP_Id] = currentGroupId
-            map[PARAM_GROUP_TYPE] = currentGroupType
-            map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
-            topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit, ::onError)
+            val priceBid = data.firstOrNull()?.minBid?.toFloatOrNull()
+            topAdsDashboardPresenter.editBudgetThroughInsight(
+                productList, priceBid, currentGroupId, null,
+                ::onResultEdit, ::onError
+            )
             currentGroupId = ""
         }
         sheet.dismiss()
