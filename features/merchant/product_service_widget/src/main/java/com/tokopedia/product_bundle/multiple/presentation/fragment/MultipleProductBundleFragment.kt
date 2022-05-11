@@ -368,11 +368,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             /*
              * UPDATE MODE (CART & MINI CART)
              *
-             * isProductBundleDifferent : Would be true if user chooses the other product bundle.
-             * isProductVariantChanged  : Would be true if user changes the product variant of product bundle.
-             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it would make atc button disabled if the value is true.
+             * isProductBundleDifferent : Will be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
              *
-             * Would disable the button if there is no changes and vice versa
+             * Will disable the button if there is no changes and vice versa
              */
             val isProductBundleDifferent = viewModel.selectedBundleId != viewModel.getSelectedProductBundleMaster().bundleId
             val isProductVariantChanged = !viewModel.variantProductNotChanged(viewModel.getSelectedProductBundleDetails())
