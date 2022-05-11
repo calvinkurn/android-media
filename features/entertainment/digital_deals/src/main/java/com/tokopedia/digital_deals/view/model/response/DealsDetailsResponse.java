@@ -234,6 +234,8 @@ public class DealsDetailsResponse implements Parcelable {
         this.appUrl = in.readString();
         this.checkoutBusinessType = in.readInt();
         this.checkoutDataType = in.readString();
+        this.minQty = in.readInt();
+        this.maxQty = in.readInt();
     }
 
     public String getWebUrl() {
@@ -676,6 +678,8 @@ public class DealsDetailsResponse implements Parcelable {
         dest.writeString(appUrl);
         dest.writeInt(checkoutBusinessType);
         dest.writeString(checkoutDataType);
+        dest.writeInt(minQty);
+        dest.writeInt(maxQty);
 
     }
 
