@@ -70,6 +70,10 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            dealsDetail = savedInstanceState.getParcelable(EXTRA_PDP_PASS_DATA) ?: DealsDetailsResponse()
+
+        }
         showLayout()
         observeVerify()
     }
@@ -81,7 +85,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dealsDetail = dealFragmentCallback.dealDetails
+        dealFragmentCallback?.dealDetails?.let {
+            dealsDetail = it
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -95,7 +101,13 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(EXTRA_PDP_PASS_DATA, dealsDetail)
+    }
+
     private fun showLayout(){
+        dealFragmentCallback?.hideMainToolbar()
         toolbar?.apply {
             (activity as BaseSimpleActivity).setSupportActionBar(this)
             setNavigationIcon(ContextCompat.getDrawable(context, com.tokopedia.digital_deals.R.drawable.ic_close_deals))
@@ -234,6 +246,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     companion object{
         const val REQUEST_CODE_LOGIN = 101
+        private const val EXTRA_PDP_PASS_DATA = "EXTRA_PDP_DETAIL_PASS_DATA"
 
         fun createInstance(): RevampSelecDealsQuantityFragment {
             return RevampSelecDealsQuantityFragment()
