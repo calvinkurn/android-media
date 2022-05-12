@@ -5,15 +5,22 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.google.android.play.core.splitinstall.*
+import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitinstall.SplitInstallException
+import com.google.android.play.core.splitinstall.SplitInstallHelper
+import com.google.android.play.core.splitinstall.SplitInstallManager
+import com.google.android.play.core.splitinstall.SplitInstallRequest
+import com.google.android.play.core.splitinstall.SplitInstallSessionState
+import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -24,13 +31,14 @@ import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import com.tokopedia.dynamicfeatures.utils.PlayServiceUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
-import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.android.synthetic.main.fragment_df_installer.*
-import kotlinx.android.synthetic.main.fragment_df_installer.button_download
-import kotlinx.android.synthetic.main.fragment_df_installer.subtitle_txt
-import kotlinx.android.synthetic.main.fragment_df_installer.title_txt
-import kotlinx.coroutines.*
-import java.lang.Exception
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -198,10 +206,12 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             SplitInstallHelper.updateAppInfo(requireContext())
         }
-        successInstall = DFInstaller.isInstalled(requireContext(), moduleId)
-        progressGroup?.visibility = View.INVISIBLE
-        if (successInstall) {
-            redirectToDestinationFragment()
+        Handler(Looper.getMainLooper()).post {
+            successInstall = DFInstaller.isInstalled(requireContext(), moduleId)
+            progressGroup?.visibility = View.INVISIBLE
+            if (successInstall) {
+                redirectToDestinationFragment()
+            }
         }
     }
 
