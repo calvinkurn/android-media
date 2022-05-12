@@ -113,7 +113,7 @@ class OptimizedCheckoutActivity : BaseSimpleActivity(), HasComponent<PdpSimulati
     }
 
     override fun getComponent() = pdpSimulationComponent
-    override fun setGatewayValue(gatewaySelected: Int) {
+    override fun setGatewayValue(gatewaySelected: String) {
         (this.fragment as ActivationCheckoutFragment).updateSelectedTenure(gatewaySelected)
     }
 

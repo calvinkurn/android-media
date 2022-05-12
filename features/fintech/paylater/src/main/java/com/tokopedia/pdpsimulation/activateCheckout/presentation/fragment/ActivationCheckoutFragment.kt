@@ -157,8 +157,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         gatewayDetailLayout.visibility = View.GONE
     }
 
-    fun updateSelectedTenure(gatewaySelected: Int) {
-        payLaterActivationViewModel.setGatewayId(gatewaySelected.toString())
+    fun updateSelectedTenure(gatewaySelected: String) {
+        payLaterActivationViewModel.setGatewayId(gatewaySelected)
     }
 
     private fun observerProductData() {
