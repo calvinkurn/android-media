@@ -13,31 +13,14 @@ object Lego4AutoTabletConfiguration {
     @LayoutRes
     private val LAYOUT_MOBILE = R.layout.layout_lego_4_auto_item_mobile
     @LayoutRes
-    private val LAYOUT_TABLET_BELOW_768 = R.layout.layout_lego_4_auto_item_tablet_below_768
-    @LayoutRes
-    private val LAYOUT_TABLET_ABOVE_768 = R.layout.layout_lego_4_auto_item_tablet_above_768
+    private val LAYOUT_TABLET = R.layout.layout_lego_4_auto_item_tablet
 
     private const val SPAN_COUNT_2x2 = 2
-    private const val LAYOUT_WIDTH_767 = 768
-    private const val LAYOUT_WIDTH_700 = 700
 
     fun getLayout(context: Context?): Int {
         context?.let {
             return if (DeviceScreenInfo.isTablet(context)) {
-                val width = context.resources.displayMetrics.widthPixels
-                val density = context.resources.displayMetrics.density
-                val widthPx = (width / density).toInt()
-                when {
-                    widthPx < LAYOUT_WIDTH_700 -> {
-                        LAYOUT_MOBILE
-                    }
-                    widthPx in LAYOUT_WIDTH_700..LAYOUT_WIDTH_767 -> {
-                        LAYOUT_TABLET_BELOW_768
-                    }
-                    else -> {
-                        LAYOUT_TABLET_ABOVE_768
-                    }
-                }
+                LAYOUT_TABLET
             } else
                 LAYOUT_MOBILE
         }
