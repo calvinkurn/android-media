@@ -11,7 +11,7 @@ class InitialShimmeringTransactionDataViewHolder (itemView: View)
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_nav_shimmer_transaction_data
+        val LAYOUT = R.layout.holder_nav_shimmer_transaction_data_revamp
     }
 
     override fun bind(element: InitialShimmerTransactionDataModel) {

@@ -43,9 +43,9 @@ class TransactionListViewHolder(itemView: View,
             )
         }
         val visitableList = mutableListOf<Visitable<*>>()
-        visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
+        visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentRevampModel(it) })
         visitableList.addAll(element.orderListModel.reviewList.map { OrderReviewModel(it) })
-        visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
+        visitableList.addAll(element.orderListModel.orderList.map { OrderProductRevampModel(it) })
         if (element.othersTransactionCount.isMoreThanZero()) {
             visitableList.add(OtherTransactionModel(element.othersTransactionCount))
         }

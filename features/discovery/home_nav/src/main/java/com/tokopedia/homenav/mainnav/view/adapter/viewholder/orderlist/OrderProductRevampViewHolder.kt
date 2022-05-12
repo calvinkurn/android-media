@@ -11,45 +11,47 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderTransactionProductBinding
+import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductModel>(itemView) {
-    private var binding: HolderTransactionProductBinding? by viewBinding()
+class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductRevampModel>(itemView) {
+    private var binding: HolderTransactionProductRevampBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_transaction_product
+        val LAYOUT = R.layout.holder_transaction_product_revamp
     }
 
-    override fun bind(element: OrderProductModel, payloads: MutableList<Any>) {
+    override fun bind(element: OrderProductRevampModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    override fun bind(productModel: OrderProductModel) {
+    override fun bind(productRevampModel: OrderProductRevampModel) {
         val context = itemView.context
 
-        itemView.addOnImpressionListener(productModel)  {
+        itemView.addOnImpressionListener(productRevampModel)  {
             mainNavListener.putEEToTrackingQueue(
                     TrackingTransactionSection.getImpressionOnOrderStatus(
                         userId = mainNavListener.getUserId(),
-                        orderLabel = productModel.navProductModel.statusText,
+                        orderLabel = productRevampModel.navProductModel.statusText,
                         position = adapterPosition,
-                        orderId = productModel.navProductModel.id)
+                        orderId = productRevampModel.navProductModel.id)
             )
         }
         //title
-        binding?.orderProductName?.text = productModel.navProductModel.productNameText
+        binding?.orderProductName?.text = productRevampModel.navProductModel.productNameText
 
         //image
-        if (productModel.navProductModel.imageUrl.isNotEmpty()) {
+        if (productRevampModel.navProductModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.orderProductImage
             val shimmer = binding?.orderProductImageShimmer
             Glide.with(itemView.context)
-                    .load(productModel.navProductModel.imageUrl)
+                    .load(productRevampModel.navProductModel.imageUrl)
                     .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                     .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                     .dontAnimate()
@@ -75,28 +77,28 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         }
 
         //description
-        binding?.orderProductDescription?.text = productModel.navProductModel.descriptionText
-        if (productModel.navProductModel.descriptionTextColor.isNotEmpty()) {
+        binding?.orderProductDescription?.text = productRevampModel.navProductModel.descriptionText
+        if (productRevampModel.navProductModel.descriptionTextColor.isNotEmpty()) {
             binding?.orderProductDescription?.setTextColor(
-                   Color.parseColor(productModel.navProductModel.descriptionTextColor)
+                   Color.parseColor(productRevampModel.navProductModel.descriptionTextColor)
             )
         }
 
         //status
-        binding?.orderProductStatus?.text = productModel.navProductModel.statusText
+        binding?.orderProductStatus?.text = productRevampModel.navProductModel.statusText
         var productStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
-        if (productModel.navProductModel.statusTextColor.isNotEmpty()) {
-            productStatusColor = Color.parseColor(productModel.navProductModel.statusTextColor)
+        if (productRevampModel.navProductModel.statusTextColor.isNotEmpty()) {
+            productStatusColor = Color.parseColor(productRevampModel.navProductModel.statusTextColor)
         }
         binding?.orderProductStatus?.setTextColor(productStatusColor)
 
         //more than 1 product
-        if (productModel.navProductModel.additionalProductCount != 0) {
+        if (productRevampModel.navProductModel.additionalProductCount != 0) {
             binding?.orderProductImageLayer?.visibility = View.VISIBLE
             binding?.orderProductCount?.visibility = View.VISIBLE
             binding?.orderProductCount?.text = String.format(
                     context.getString(R.string.transaction_item_total_product),
-                    productModel.navProductModel.additionalProductCount
+                    productRevampModel.navProductModel.additionalProductCount
             )
         } else {
             binding?.orderProductImageLayer?.visibility = View.GONE
@@ -106,8 +108,8 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         binding?.orderProductContainer?.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
-                    productModel.navProductModel.statusText)
-            RouteManager.route(context, productModel.navProductModel.applink)
+                    productRevampModel.navProductModel.statusText)
+            RouteManager.route(context, productRevampModel.navProductModel.applink)
         }
     }
 }

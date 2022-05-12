@@ -13,52 +13,52 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.databinding.HolderTransactionPaymentBinding
+import com.tokopedia.homenav.databinding.HolderTransactionPaymentRevampBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
-import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
+import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderPaymentModel>(itemView) {
-    private var binding: HolderTransactionPaymentBinding? by viewBinding()
+class OrderPaymentRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderPaymentRevampModel>(itemView) {
+    private var binding: HolderTransactionPaymentRevampBinding? by viewBinding()
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.holder_transaction_payment
+        val LAYOUT = R.layout.holder_transaction_payment_revamp
     }
 
-    override fun bind(element: OrderPaymentModel, payloads: MutableList<Any>) {
+    override fun bind(element: OrderPaymentRevampModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    override fun bind(paymentModel: OrderPaymentModel) {
+    override fun bind(paymentRevampModel: OrderPaymentRevampModel) {
         val context = itemView.context
 
-        itemView.addOnImpressionListener(paymentModel)  {
+        itemView.addOnImpressionListener(paymentRevampModel)  {
             mainNavListener.putEEToTrackingQueue(
                     TrackingTransactionSection.getImpressionOnOrderStatus(
                         userId = mainNavListener.getUserId(),
-                        orderLabel = paymentModel.navPaymentModel.statusText,
+                        orderLabel = paymentRevampModel.navPaymentModel.statusText,
                         position = adapterPosition,
-                        orderId = paymentModel.navPaymentModel.id)
+                        orderId = paymentRevampModel.navPaymentModel.id)
             )
         }
         //title
         binding?.orderPaymentName?.text = String.format(
                 context.getString(R.string.transaction_rupiah_value),
-                CurrencyFormatHelper.convertToRupiah(paymentModel.navPaymentModel.paymentAmountText)
+                CurrencyFormatHelper.convertToRupiah(paymentRevampModel.navPaymentModel.paymentAmountText)
         )
 
         //image
-        if (paymentModel.navPaymentModel.imageUrl.isNotEmpty()) {
+        if (paymentRevampModel.navPaymentModel.imageUrl.isNotEmpty()) {
             val imageView = binding?.orderPaymentImage
             val shimmer = binding?.orderPaymentImageShimmer
             imageView?.scaleType = ImageView.ScaleType.CENTER_INSIDE
             Glide.with(itemView.context)
-                    .load(paymentModel.navPaymentModel.imageUrl)
+                    .load(paymentRevampModel.navPaymentModel.imageUrl)
                     .centerInside()
                     .error(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
                     .into(object : CustomTarget<Drawable>() {
@@ -83,18 +83,18 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
         }
 
         //description
-        binding?.orderPaymentDescription?.text = paymentModel.navPaymentModel.descriptionText
+        binding?.orderPaymentDescription?.text = paymentRevampModel.navPaymentModel.descriptionText
 
         //status
         binding?.orderPaymentStatus?.text =
-                if (paymentModel.navPaymentModel.statusText.isNotEmpty())
-                    paymentModel.navPaymentModel.statusText
+                if (paymentRevampModel.navPaymentModel.statusText.isNotEmpty())
+                    paymentRevampModel.navPaymentModel.statusText
                 else
                     context.getString(R.string.transaction_item_default_status)
 
         var paymentStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
-        if (paymentModel.navPaymentModel.statusTextColor.isNotEmpty()) {
-            paymentStatusColor = Color.parseColor(paymentModel.navPaymentModel.statusTextColor)
+        if (paymentRevampModel.navPaymentModel.statusTextColor.isNotEmpty()) {
+            paymentStatusColor = Color.parseColor(paymentRevampModel.navPaymentModel.statusTextColor)
         }
         binding?.orderPaymentStatus?.setTextColor(paymentStatusColor)
 
@@ -102,7 +102,7 @@ class OrderPaymentViewHolder(itemView: View, val mainNavListener: MainNavListene
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     binding?.orderPaymentStatus?.text.toString())
-            RouteManager.route(context, if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentModel.navPaymentModel.applink)
+            RouteManager.route(context, if(binding?.orderPaymentStatus?.text == context.getString(R.string.transaction_item_default_status)) ApplinkConst.PMS else paymentRevampModel.navPaymentModel.applink)
         }
     }
 }

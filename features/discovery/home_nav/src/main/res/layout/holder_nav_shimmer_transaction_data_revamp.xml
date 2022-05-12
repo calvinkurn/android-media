@@ -5,10 +5,10 @@
     android:layout_marginStart="16dp"
     android:orientation="horizontal">
 
-    <include layout="@layout/holder_transaction_payment_shimmer" />
+    <include layout="@layout/holder_transaction_payment_shimmer_revamp" />
 
     <include
-        layout="@layout/holder_transaction_payment_shimmer"
+        layout="@layout/holder_transaction_payment_shimmer_revamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp" />
