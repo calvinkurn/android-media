@@ -2,19 +2,15 @@ package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.dummy.DUMMY_NATIONALITY_SUCCESS
 import com.tokopedia.flight.dummy.DUMMY_PASSENGER_DATA
 import com.tokopedia.flight.shouldBe
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
-import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
-import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
