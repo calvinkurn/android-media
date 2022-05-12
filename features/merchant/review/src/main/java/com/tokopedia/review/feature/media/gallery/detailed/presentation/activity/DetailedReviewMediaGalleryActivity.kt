@@ -25,15 +25,16 @@ import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDet
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.review.R
+import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
+import com.tokopedia.reviewcommon.extension.hideSystemUI
+import com.tokopedia.reviewcommon.extension.intersectWith
+import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
-import com.tokopedia.reviewcommon.databinding.ActivityDetailedReviewMediaGalleryBinding
-import com.tokopedia.reviewcommon.extension.hideSystemUI
-import com.tokopedia.reviewcommon.extension.intersectWith
-import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -118,7 +119,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         initInjector()
         initUiState(savedInstanceState)
         super.onCreate(savedInstanceState)
-        setContentView(com.tokopedia.reviewcommon.R.layout.activity_detailed_review_media_gallery)
+        setContentView(R.layout.activity_detailed_review_media_gallery)
         gestureDetector = GestureDetectorCompat(this, gestureListener)
         setupInsetListener()
         setupMainLayout()
@@ -185,7 +186,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun attachGalleryFragment() {
         galleryFragment?.let {
             supportFragmentManager.beginTransaction()
-                .replace(com.tokopedia.reviewcommon.R.id.fragmentReviewGallery, it, ReviewMediaGalleryFragment.TAG)
+                .replace(R.id.fragmentReviewGallery, it, ReviewMediaGalleryFragment.TAG)
                 .commitAllowingStateLoss()
         }
     }
@@ -194,7 +195,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         galleryControllerFragment?.let {
             supportFragmentManager.beginTransaction()
                 .replace(
-                    com.tokopedia.reviewcommon.R.id.fragmentReviewGalleryController,
+                    R.id.fragmentReviewGalleryController,
                     it,
                     ReviewMediaPlayerControllerFragment.TAG
                 )
@@ -205,7 +206,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun attachReviewDetailFragment() {
         reviewDetailFragment?.let {
             supportFragmentManager.beginTransaction()
-                .replace(com.tokopedia.reviewcommon.R.id.fragmentReviewDetail, it, ReviewDetailFragment.TAG)
+                .replace(R.id.fragmentReviewDetail, it, ReviewDetailFragment.TAG)
                 .commitAllowingStateLoss()
         }
     }
