@@ -1982,7 +1982,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.data.addAll(newWidgets)
             diffUtilResult.dispatchUpdatesTo(adapter)
         } catch (e: Exception) {
-            adapter.notifyDataSetChanged()
+            try {
+                recyclerView?.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } catch (notifyException: Exception) {
+                SellerHomeErrorHandler.logException(notifyException, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+            }
             SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
         }
     }
