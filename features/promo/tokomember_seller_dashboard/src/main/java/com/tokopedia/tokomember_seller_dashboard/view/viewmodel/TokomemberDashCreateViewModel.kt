@@ -116,7 +116,7 @@ class TokomemberDashCreateViewModel @Inject constructor(
             )
             getCardColorData(it)
         }, {
-            it.printStackTrace()
+            _tokomemberCardResultLiveData.postValue(Fail(it))
         }, cardID)
     }
 

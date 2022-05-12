@@ -1,0 +1,224 @@
+package com.tokopedia.tokomember_seller_dashboard
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
+import com.tokopedia.tokomember_seller_dashboard.domain.*
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
+import com.tokopedia.tokomember_seller_dashboard.model.*
+import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
+@ExperimentalCoroutinesApi
+class TokomemberCreateViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private val mockThrowable = Throwable(message = "exception")
+    private val dispatcher = TestCoroutineDispatcher()
+    private lateinit var viewModel: TokomemberDashCreateViewModel
+    private val tokomemberDashEditCardUsecase = mockk<TokomemberDashEditCardUsecase>(relaxed = true)
+    private val tokomemberDashCardUsecase = mockk<TokomemberDashCardUsecase>(relaxed = true)
+    private val tokomemberDashGetProgramListUsecase =
+        mockk<TokomemberDashGetProgramListUsecase>(relaxed = true)
+    private val tokomemberDashGetProgramFormUsecase =
+        mockk<TokomemberDashGetProgramFormUsecase>(relaxed = true)
+    private val tokomemberDashUpdateProgramUsecase =
+        mockk<TokomemberDashUpdateProgramUsecase>(relaxed = true)
+    private val tokomemberCardColorMapperUsecase =
+        mockk<TokomemberCardColorMapperUsecase>(relaxed = true)
+    private val tokomemeberCardBgUsecase = mockk<TokomemeberCardBgUsecase>(relaxed = true)
+    private val tokomemberDashPreviewUsecase = mockk<TokomemberDashPreviewUsecase>(relaxed = true)
+
+    private val editCardObserver: Observer<TokoLiveDataResult<MembershipCreateEditCard>> = mockk(relaxed = true)
+
+    @Before
+    fun setUp() {
+        viewModel = TokomemberDashCreateViewModel(
+            tokomemberDashCardUsecase,
+            tokomemberCardColorMapperUsecase,
+            tokomemeberCardBgUsecase,
+            tokomemberDashEditCardUsecase,
+            tokomemberDashPreviewUsecase,
+            tokomemberDashGetProgramListUsecase,
+            tokomemberDashGetProgramFormUsecase,
+            tokomemberDashUpdateProgramUsecase, dispatcher
+        )
+    }
+
+    @Test
+    fun successCardInfo() {
+        val data = mockk<CardData>(relaxed = true)
+        coEvery {
+            tokomemberDashCardUsecase.getMembershipCardInfo(any(), any(), 0)
+        } coAnswers {
+            firstArg<(CardData) -> Unit>().invoke(data)
+        }
+        viewModel.getCardInfo(0)
+
+        val cardData = mockk<CardDataTemplate>(relaxed = true)
+        every {
+            cardData.card
+        } returns data.membershipGetCardForm?.card
+        every {
+            cardData.cardTemplate
+        } returns data.membershipGetCardForm?.cardTemplate
+        every {
+            cardData.cardTemplateImageList
+        } returns data.membershipGetCardForm?.cardTemplateImageList
+
+        Assert.assertEquals(
+            (viewModel.tokomemberCardResultLiveData.value as Success).data,
+            cardData
+        )
+    }
+
+    @Test
+    fun failCardInfo() {
+        coEvery {
+            tokomemberDashCardUsecase.getMembershipCardInfo(any(), any(), 0)
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getCardInfo(0)
+        Assert.assertEquals(
+            (viewModel.tokomemberCardResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun successProgramForm(){
+        val data = mockk<ProgramDetailData>(relaxed = true)
+        coEvery {
+            tokomemberDashGetProgramFormUsecase.getProgramInfo(any(), any(), 0,0,"","")
+        } coAnswers {
+            firstArg<(ProgramDetailData) -> Unit>().invoke(data)
+        }
+        viewModel.getProgramInfo(0,0,"","")
+
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramResultLiveData.value as Success).data,
+            data
+        )
+    }
+
+    @Test
+    fun failProgramForm() {
+        coEvery {
+            tokomemberDashGetProgramFormUsecase.getProgramInfo(any(), any(), 0,0,"","")
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getProgramInfo(0,0,"","")
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun successProgramList(){
+        val data = mockk<ProgramList>(relaxed = true)
+        coEvery {
+            tokomemberDashGetProgramListUsecase.getProgramList(any(), any(), 0,0,0,0,0)
+        } coAnswers {
+            firstArg<(ProgramList) -> Unit>().invoke(data)
+        }
+        viewModel.getProgramList(0,0,0,0,0)
+
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramListResultLiveData.value as Success).data,
+            data
+        )
+    }
+
+    @Test
+    fun failProgramList() {
+        coEvery {
+            tokomemberDashGetProgramListUsecase.getProgramList(any(), any(), 0,0,0,0,0)
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getProgramList(0,0,0,0,0)
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramListResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun successUpdateProgram(){
+        val data = mockk<ProgramUpdateResponse>(relaxed = true)
+        coEvery {
+            tokomemberDashUpdateProgramUsecase.updateProgram(any(), any(), any())
+        } coAnswers {
+            firstArg<(ProgramUpdateResponse) -> Unit>().invoke(data)
+        }
+        viewModel.updateProgram(ProgramUpdateDataInput())
+
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramUpdateResultLiveData.value as Success).data,
+            data
+        )
+    }
+
+    @Test
+    fun failUpdateProgram() {
+        coEvery {
+            tokomemberDashUpdateProgramUsecase.updateProgram(any(), any(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.updateProgram(ProgramUpdateDataInput())
+        Assert.assertEquals(
+            (viewModel.tokomemberProgramUpdateResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+
+    @Test
+    fun successUpdateCard(){
+        val observer = mockk<Observer<TokoLiveDataResult<MembershipCreateEditCard>>> {
+            every { onChanged(any()) } just Runs
+        }
+        val data = mockk<MembershipCreateEditCard>(relaxed = true)
+        coEvery {
+            tokomemberDashEditCardUsecase.modifyShopCard(any(), any(), any())
+        } coAnswers {
+            firstArg<(MembershipCreateEditCard) -> Unit>().invoke(data)
+        }
+        viewModel.modifyShopCard(TmCardModifyInput())
+
+        Assert.assertEquals(
+            viewModel.tokomemberCardModifyLiveData.value?.data ,
+            data
+        )
+    }
+
+    @Test
+    fun failUpdateCard() {
+        coEvery {
+            tokomemberDashEditCardUsecase.modifyShopCard(any(), any(), any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.modifyShopCard(TmCardModifyInput())
+        Assert.assertEquals(
+            (viewModel.tokomemberCardModifyLiveData.value?.error),
+            mockThrowable
+        )
+    }
+
+}
