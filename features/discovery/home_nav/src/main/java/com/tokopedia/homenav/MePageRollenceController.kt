@@ -8,18 +8,19 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object MePageRollenceController {
 
+    const val ME_PAGE_OLD = ""
     private var rollenceMePageValue: String = ""
 
     fun fetchMePageRollenceValue() {
         rollenceMePageValue = try{
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.ME_PAGE_REVAMP)
         } catch (e: Exception){
-            ""
+            ME_PAGE_OLD
         }
     }
 
     private fun getRollenceValueMePage(): String {
-        return if (rollenceMePageValue.isNotEmpty()) rollenceMePageValue else RollenceKey.ME_PAGE_OLD
+        return if (rollenceMePageValue.isNotEmpty()) rollenceMePageValue else ME_PAGE_OLD
     }
 
     fun isMePageUsingRollenceVariant(): Boolean {
