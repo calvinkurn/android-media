@@ -127,14 +127,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         setupDependencyInjection()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        if (dialog is BottomSheetDialog) {
-            dialog.behavior.skipCollapsed = true
-            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-        return dialog
-    }
 
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
