@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 import android.accounts.NetworkErrorException
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -47,11 +48,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
@@ -134,11 +131,7 @@ import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.Edit
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageMoreMenuBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageStockLocationBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.*
 import com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageFilterTab
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
@@ -860,6 +853,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         return searchKeyword.isEmpty() && selectedFilters?.selectedFilterCount.orZero() == 0 && filterTab?.isFilterActive() == false
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupInterceptor() {
         interceptor?.setOnTouchListener { v, event ->
             searchBar?.clearFocus()

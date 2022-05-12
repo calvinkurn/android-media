@@ -21,26 +21,19 @@ import com.tokopedia.product.manage.common.databinding.FragmentQuickEditStockBin
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.ext.*
-import com.tokopedia.product.manage.common.feature.list.ext.getId
-import com.tokopedia.product.manage.common.feature.list.ext.getName
-import com.tokopedia.product.manage.common.feature.list.ext.getStatus
-import com.tokopedia.product.manage.common.feature.list.ext.getStock
 import com.tokopedia.product.manage.common.feature.list.ext.hasEditProductAccess
-import com.tokopedia.product.manage.common.feature.list.ext.hasEditStockAccess
 import com.tokopedia.product.manage.common.feature.list.ext.isActive
-import com.tokopedia.product.manage.common.feature.list.ext.isCampaign
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper
-import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_STOCK_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_STOCK
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(
