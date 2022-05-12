@@ -128,8 +128,17 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
 
+        initMinimizeIcon();
         prepareScreenHeight();
         return view;
+    }
+
+    private void initMinimizeIcon(){
+        try {
+            minimizeButtonLeft.setImageResource(com.tokopedia.promogamification.common.R.drawable.gami_core_minimize_button);
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void prepareScreenHeight(){
