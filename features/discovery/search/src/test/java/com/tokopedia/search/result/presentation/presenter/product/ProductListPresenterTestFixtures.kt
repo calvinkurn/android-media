@@ -12,6 +12,7 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -77,6 +78,7 @@ internal open class ProductListPresenterTestFixtures {
             topAdsHeadlineHelper,
             { performanceMonitoring },
             ChooseAddressPresenterDelegate(chooseAddressView),
+            RequestParamsGenerator(userSession),
         )
         productListPresenter.attachView(productListView)
 
