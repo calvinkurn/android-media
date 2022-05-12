@@ -53,7 +53,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:layout_collapseMode="pin">
-
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:id="@+id/affiliate_announcement_ticker"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+                            app:tickerType="announcement"
+                            app:titleText="Saat ini lagi ada pemeliharaan sistem" />
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/withdrawal_home_widget"
                             android:layout_width="match_parent"
@@ -61,7 +71,7 @@
                             android:layout_marginLeft="@dimen/spacing_lvl4"
                             android:layout_marginRight="@dimen/spacing_lvl4"
                             app:card_type="shadow"
-                            app:layout_constraintTop_toTopOf="parent">
+                            app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker">
 
                             <com.tokopedia.unifycomponents.ImageUnify
                                 android:id="@+id/affiliate_background_image"

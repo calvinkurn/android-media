@@ -12,7 +12,8 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 abstract class AffiliateBaseFragment< T : BaseViewModel> : BaseViewModelFragment<T>(){
     fun onGetValidateUserData(validateUserdata: AffiliateValidateUserData?) {
         if(validateUserdata?.validateAffiliateUserStatus?.data?.isEligible == false) onUserNotEligible()
-        else if(validateUserdata?.validateAffiliateUserStatus?.data?.isRegistered == true) onUserRegistered()
+        else if(validateUserdata?.validateAffiliateUserStatus?.data?.isRegistered == true &&
+            validateUserdata.validateAffiliateUserStatus.data?.isReviewed == false) onUserRegistered()
         else if(validateUserdata?.validateAffiliateUserStatus?.data?.isSystemDown == true) onSystemDown()
         else if(validateUserdata?.validateAffiliateUserStatus?.data?.isReviewed == true) onReviewed()
     }
