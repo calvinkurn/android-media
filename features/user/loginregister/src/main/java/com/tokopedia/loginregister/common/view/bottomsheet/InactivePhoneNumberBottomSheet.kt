@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -61,14 +60,6 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
 
     }
 
-    fun showBottomSheet(
-        fragmentManager: FragmentManager
-    ): InactivePhoneNumberBottomSheet {
-        val inactivePhoneNumberBottomSheet = InactivePhoneNumberBottomSheet()
-        inactivePhoneNumberBottomSheet.show(fragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
-        return inactivePhoneNumberBottomSheet
-    }
-
     private fun initTokopediaCareTextNeedHelpBottomSheet(typography: Typography) {
         val message = getString(R.string.ipn_need_another_help)
         val spannable = SpannableString(message)
@@ -114,6 +105,5 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = "help"
-        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
     }
 }

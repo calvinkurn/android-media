@@ -798,7 +798,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (needHelpBottomSheetUnify == null)
             needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
 
-        needHelpBottomSheetUnify?.showBottomSheet(childFragmentManager)
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     override fun goToTokopediaCareWebview() {
@@ -1827,6 +1827,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     companion object {
+
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
