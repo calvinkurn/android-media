@@ -70,7 +70,11 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
             binding.tfu2OldPhoneNumber.setMessage(
-                if (it.numberError != null) getString(it.numberError)
+                if (it.numberError != null) {
+                    val message = getString(it.numberError)
+                    analytics.trackPageInactivePhoneNumberClickNext(LABEL_FAILED, message, binding.tfu2OldPhoneNumber.getEditableValue().toString())
+                    message
+                }
                 else " "
             )
 
@@ -80,6 +84,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     private fun onClickListener() {
         binding.ubNext.setOnClickListener {
+            analytics.trackPageInactivePhoneNumberClickNext(LABEL_CLICK)
             submitData()
         }
     }

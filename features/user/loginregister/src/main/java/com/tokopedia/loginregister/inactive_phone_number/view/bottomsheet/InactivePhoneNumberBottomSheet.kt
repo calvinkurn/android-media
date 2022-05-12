@@ -104,6 +104,7 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
+                    inactivePhoneNumberAnalytics.trackPageBottomSheetClickTokopediaCare()
                     goToTokopediaCare()
                 }
 

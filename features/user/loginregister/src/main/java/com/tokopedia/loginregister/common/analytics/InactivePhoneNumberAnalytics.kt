@@ -9,8 +9,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageClickButuhBantuan() {
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_BUTUH_BANTUAN,
             CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_ON_BUTTON_BUTUH_BANTUAN,
             LABEL_EMPTY
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -23,8 +23,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageBottomSheetClickClose(){
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_CLOSE_BUTUH_BANTUAN,
             CATEGORY_WIDGET_LOGIN_PAGE,
+            ACTION_CLICK_ON_BUTTON_CLOSE_BUTUH_BANTUAN,
             LABEL_WIDGET_BUTUH_BANTUAN
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -37,8 +37,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageBottomSheetClickForgotPassword(){
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_LUPA_KATA_SANDI,
             CATEGORY_WIDGET_LOGIN_PAGE,
+            ACTION_CLICK_ON_BUTTON_LUPA_KATA_SANDI,
             LABEL_WIDGET_BUTUH_BANTUAN
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -51,8 +51,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageBottomSheetClickInactivePhoneNumber(){
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_NOMOR_HP_TIDAK_AKTIF,
             CATEGORY_WIDGET_LOGIN_PAGE,
+            ACTION_CLICK_ON_BUTTON_NOMOR_HP_TIDAK_AKTIF,
             LABEL_WIDGET_BUTUH_BANTUAN
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -65,8 +65,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageBottomSheetClickTokopediaCare(){
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_HUBUNGI_TOKOPEDIA_CARE,
             CATEGORY_WIDGET_LOGIN_PAGE,
+            ACTION_CLICK_ON_BUTTON_HUBUNGI_TOKOPEDIA_CARE,
             LABEL_WIDGET_BUTUH_BANTUAN
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -85,8 +85,8 @@ class InactivePhoneNumberAnalytics {
 
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_LANJUT,
             CATEGORY_ACCOUNT_SETTING,
+            ACTION_CLICK_ON_BUTTON_LANJUT,
             label
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
@@ -99,8 +99,8 @@ class InactivePhoneNumberAnalytics {
     fun trackPageInactivePhoneNumberClickBack(){
         val data = TrackAppUtils.gtmData(
             EVENT_CLICK_ACCOUNT,
-            ACTION_CLICK_ON_BUTTON_BACK,
             CATEGORY_ACCOUNT_SETTING,
+            ACTION_CLICK_ON_BUTTON_BACK,
             LABEL_INACTIVE_PHONE_NUMBER
         )
         data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
