@@ -194,7 +194,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
-    private var needHelpBottomSheetUnify: BottomSheetUnify? = null
+    private var needHelpBottomSheetUnify: InactivePhoneNumberBottomSheet? = null
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -821,8 +821,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun showNeedHelpBottomSheet(){
-        val needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
-        needHelpBottomSheetUnify.showBottomSheet(childFragmentManager)
+        if (needHelpBottomSheetUnify == null)
+            needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
+
+        needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }
 
     override fun goToTokopediaCareWebview() {
@@ -1853,6 +1855,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
 
         private const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
+
+        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 
         private const val LOGIN_LOAD_TRACE = "gb_login_trace"
         private const val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"

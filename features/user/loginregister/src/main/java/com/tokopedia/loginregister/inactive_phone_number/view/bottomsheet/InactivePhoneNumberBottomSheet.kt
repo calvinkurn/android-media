@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet
 
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
@@ -10,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -47,7 +47,6 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
     ): View? {
         _bindingChild = LayoutNeedHelpBottomsheetBinding.inflate(layoutInflater, container, false)
         setChild(bindingChild.root)
-        setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
 
         inactivePhoneNumberComponent.inject(this)
 
@@ -66,6 +65,9 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
+
         setListener()
     }
 
@@ -88,14 +90,6 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
             dismiss()
         }
 
-    }
-
-    fun showBottomSheet(
-        fragmentManager: FragmentManager
-    ): InactivePhoneNumberBottomSheet {
-        val inactivePhoneNumberBottomSheet = InactivePhoneNumberBottomSheet()
-        inactivePhoneNumberBottomSheet.show(fragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
-        return inactivePhoneNumberBottomSheet
     }
 
     private fun initTokopediaCareTextNeedHelpBottomSheet(typography: Typography) {
@@ -137,6 +131,7 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
 
     private fun goToForgotPassword() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
     }
 
@@ -153,6 +148,5 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = "help"
-        private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
     }
 }

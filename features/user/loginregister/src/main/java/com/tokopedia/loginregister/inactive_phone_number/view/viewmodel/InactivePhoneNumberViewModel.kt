@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R.string.*
-import com.tokopedia.loginregister.inactive_phone_number.data.StatusPhoneNumber
 import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCase
 import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
 import com.tokopedia.network.exception.MessageErrorException
@@ -57,7 +56,7 @@ class InactivePhoneNumberViewModel @Inject constructor(
             val response = inactivePhoneNumberUseCase(number)
 
             when {
-                response.data.status == StatusPhoneNumber.USER_ACTIVE.value ->
+                response.data.status == STATUS_USER_ACTIVE ->
                     _statusPhoneNumber.value = Success(currentNumber)
                 response.data.errors.isNotEmpty() ->
                     _statusPhoneNumber.value = Fail(MessageErrorException(response.data.errors[0]))
@@ -75,6 +74,7 @@ class InactivePhoneNumberViewModel @Inject constructor(
     companion object {
         private const val MINIMUM_LENGTH_NUMBER = 9
         private const val MAXIMUM_LENGTH_NUMBER = 15
+        private const val STATUS_USER_ACTIVE = 1
     }
 
 }
