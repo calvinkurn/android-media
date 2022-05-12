@@ -91,6 +91,7 @@ import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -115,7 +116,10 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener, RegisterInitialRouter {
+open class RegisterInitialFragment : BaseDaggerFragment(),
+    PartialRegisterInputView.PartialRegisterInputViewListener,
+    RegisterInitialRouter,
+    ITelemetryActivity{
 
     private lateinit var optionTitle: Typography
     private lateinit var separator: View
@@ -1457,5 +1461,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             return fragment
         }
     }
+
+    override fun getTelemetrySectionName() = "register"
 
 }
