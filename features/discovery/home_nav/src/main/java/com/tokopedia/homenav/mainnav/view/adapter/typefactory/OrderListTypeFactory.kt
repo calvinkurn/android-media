@@ -6,6 +6,7 @@ interface OrderListTypeFactory {
     fun type(orderProductRevampModel: OrderProductRevampModel): Int
     fun type(orderPaymentRevampModel: OrderPaymentRevampModel): Int
     fun type(orderPaymentModel: OrderPaymentModel): Int
+    fun type(orderProductModel: OrderProductModel): Int
     fun type(otherTransactionModel: OtherTransactionModel): Int
     fun type(orderReviewModel: OrderReviewModel): Int
     fun type(orderEmptyModel: OrderEmptyModel): Int
