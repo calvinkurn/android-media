@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchBinding
+import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
-import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
+import kotlinx.coroutines.flow.collect
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
 * Created By : Jonathan Darwin on May 10, 2022
@@ -47,6 +51,19 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setupObserver()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if(childFragment is BaseProductTagChildFragment) {
+            childFragment.createViewModelProvider(viewModelProvider)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun setupView() {
@@ -56,16 +73,22 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setupObserver() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collect {
+                renderSearchBar(it.value.globalSearchProduct.query)
+            }
+        }
     }
 
-    override fun onAttachFragment(childFragment: Fragment) {
-        super.onAttachFragment(childFragment)
-        if(childFragment is BaseProductTagChildFragment) {
-            childFragment.createViewModelProvider(viewModelProvider)
-        }
+    private fun renderSearchBar(query: String) {
+        binding.etSearch.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                if(query.isEmpty()) unifyR.color.Unify_NN600 else unifyR.color.Unify_NN950
+            )
+        )
+        binding.etSearch.text = query
     }
 
     companion object {

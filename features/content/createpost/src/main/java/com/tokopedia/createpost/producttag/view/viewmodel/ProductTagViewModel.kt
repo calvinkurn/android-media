@@ -190,6 +190,7 @@ class ProductTagViewModel @AssistedInject constructor(
             is ProductTagAction.BackPressed -> handleBackPressed()
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
 
+            is ProductTagAction.SetKeyword -> handleSetKeyword(action.query, action.source)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
@@ -229,6 +230,25 @@ class ProductTagViewModel @AssistedInject constructor(
                 }
                 2 -> {
                     _productTagSourceStack.setValue { removeLast() }
+                }
+            }
+        }
+    }
+
+    private fun handleSetKeyword(query: String, source: ProductTagSource) {
+        when(source) {
+            ProductTagSource.GlobalSearch -> {
+                _globalSearchProduct.setValue {
+                    GlobalSearchProductUiModel.Empty.copy(query = query)
+                }
+                _globalSearchShop.setValue {
+                    GlobalSearchShopUiModel.Empty.copy(query = query)
+                }
+            }
+            ProductTagSource.Shop -> {
+                /** TODO: load shop info */
+                _shopProduct.setValue {
+                    ShopProductUiModel.Empty.copy(query = query)
                 }
             }
         }

@@ -11,6 +11,7 @@ import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import javax.inject.Inject
 
 /**
@@ -68,10 +69,15 @@ class ProductTagActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        val data = intent?.data
 
-        /** TODO: gonna handle this */
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent()
+        val path = intent?.data?.path.toString()
+        val source = if(path.contains(PRODUCT)) ProductTagSource.GlobalSearch
+                    else if(path.contains(SHOP)) ProductTagSource.Shop
+                    else ProductTagSource.Unknown
+
+        val query = intent?.extras?.getString(KEY_QUERY) ?: ""
+
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query)
     }
 
     private fun inject() {
@@ -109,5 +115,10 @@ class ProductTagActivity : BaseActivity() {
         private const val EXTRA_SHOP_BADGE = "shop_badge"
         private const val EXTRA_AUTHOR_ID = "author_id"
         private const val EXTRA_AUTHOR_TYPE = "author_type"
+
+        private const val PRODUCT = "product"
+        private const val SHOP = "shop"
+
+        private const val KEY_QUERY = "q"
     }
 }

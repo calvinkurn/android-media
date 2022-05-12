@@ -15,7 +15,7 @@ data class GlobalSearchShopUiModel(
             shops = emptyList(),
             nextCursor = 0,
             state = PagedState.Unknown,
-            query = "pokemon", /** TODO: gonna change this later */
+            query = "",
         )
     }
 }

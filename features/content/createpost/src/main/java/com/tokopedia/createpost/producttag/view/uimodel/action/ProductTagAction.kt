@@ -11,6 +11,7 @@ sealed interface ProductTagAction {
     object BackPressed: ProductTagAction
     object ClickBreadcrumb: ProductTagAction
 
+    data class SetKeyword(val query: String, val source: ProductTagSource): ProductTagAction
     data class SelectProductTagSource(val source: ProductTagSource): ProductTagAction
     data class ProductSelected(val product: ProductUiModel): ProductTagAction
 

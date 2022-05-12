@@ -249,8 +249,8 @@ class ProductTagParentFragment @Inject constructor(
             }
             else -> {
                 Pair(
-                    GlobalSearchFragment.getFragment(childFragmentManager, requireActivity().classLoader),
-                    GlobalSearchFragment.TAG,
+                    LastTaggedProductFragment.getFragment(childFragmentManager, requireActivity().classLoader),
+                    LastTaggedProductFragment.TAG,
                 )
             }
         }
@@ -283,8 +283,9 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
-    fun onNewIntent() {
-
+    fun onNewIntent(source: ProductTagSource, query: String) {
+        viewModel.submitAction(ProductTagAction.SetKeyword(query, source))
+        viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
     }
 
     fun onBackPressed() {
