@@ -174,6 +174,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getLoadingState()
     }
 
+    private fun showNoPinPoin(){
+        viewModel.getNoPinPoinState()
+    }
+
     private fun setupUi() {
         view?.apply {
             navToolbar = binding?.navToolbar
@@ -255,6 +259,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     private fun onHideHomeLayout(data: TokoFoodHomeListUiModel) {
+        showHomeLayout(data)
     }
 
     private fun onShowHomeLayout(data: TokoFoodHomeListUiModel) {
@@ -264,8 +269,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
         showHomeLayout(data)
-        checkIfChooseAddressWidgetDataUpdated()
-        showLayout()
+        checkAddressDataAndServiceArea()
     }
 
     private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
@@ -314,6 +318,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         val tokoFoodUSPBottomSheet = TokoFoodUSPBottomSheet.getInstance()
         tokoFoodUSPBottomSheet.setUSP(uspResponse, getString(com.tokopedia.tokofood.R.string.home_usp_bottom_sheet_title))
         tokoFoodUSPBottomSheet.show(parentFragmentManager, "")
+    }
+
+    private fun checkAddressDataAndServiceArea(){
+        checkIfChooseAddressWidgetDataUpdated()
+
+        if (!localCacheModel?.lat.isNullOrEmpty() && !localCacheModel?.long.isNullOrEmpty()){
+            showLayout()
+        } else {
+            showNoPinPoin()
+        }
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {

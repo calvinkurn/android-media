@@ -24,6 +24,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
@@ -33,6 +34,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeNoPinPoinUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 
 object TokoFoodHomeMapper {
@@ -50,6 +52,14 @@ object TokoFoodHomeMapper {
         val loadingLayout = TokoFoodHomeLoadingStateUiModel(id = LOADING_STATE)
         add(TokoFoodHomeItemUiModel(loadingLayout, TokoFoodHomeLayoutItemState.LOADED))
     }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.addNoPinPointState() {
+        val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
+        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
+
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeNoPinPoinUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
+    }
+
 
     fun MutableList<TokoFoodHomeItemUiModel>.mapHomeLayoutList(
         responses: List<HomeLayoutResponse>
