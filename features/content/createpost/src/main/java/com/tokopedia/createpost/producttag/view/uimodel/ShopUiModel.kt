@@ -1,7 +1,5 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
-import com.tokopedia.shopwidget.shopcard.ShopCardModel
-
 /**
  * Created By : Jonathan Darwin on May 11, 2022
  */
@@ -39,34 +37,13 @@ data class ShopUiModel(
     val isInactive: Boolean
         get() = shopStatus == KEY_SHOP_STATUS_INACTIVE
 
+    val isShopAccessible: Boolean
+        get() = isClosed.not() && isModerated.not() && isInactive.not()
+
     companion object {
         const val KEY_SHOP_GOLD_SHOP = 1
         const val KEY_SHOP_STATUS_CLOSED = 2
         const val KEY_SHOP_STATUS_MODERATED = 3
         const val KEY_SHOP_STATUS_INACTIVE = 4
     }
-//    fun toShopCard(): ShopCardModel {
-//        return ShopCardModel(
-//            id = shopId,
-//            name = shopName,
-//            domain = shopDomain,
-//            url = shopUrl,
-//            image = shopImage,
-//            image300 = shopImage300,
-//            description = shopDescription,
-//            tagLine = shopTagline,
-//            location = shopLocation,
-//            totalTransaction = shopTotalTransaction,
-//            totalFavorite = shopTotalFavorite,
-//            goldShop = shopGoldShop,
-//            isOwner = shopIsOwner,
-//            rateSpeed = shopRateSpeed,
-//            rateService = shopRateService,
-//            rateAccuracy = shopRateAccuracy,
-//            status = shopStatus,
-//            reputationImageUri = reputationImageUri,
-//            isOfficial = isOfficial,
-//            isPMPro = isPMPro,
-//        )
-//    }
 }

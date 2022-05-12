@@ -410,8 +410,10 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleShopSelected(shop: ShopUiModel) {
-        _shopProduct.setValue { ShopProductUiModel.Empty.copy(shop = shop) }
-        _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
+        if(shop.isShopAccessible) {
+            _shopProduct.setValue { ShopProductUiModel.Empty.copy(shop = shop) }
+            _productTagSourceStack.setValue { toMutableSet().apply { add(ProductTagSource.Shop) } }
+        }
     }
 
     private fun handleLoadShopProduct() {

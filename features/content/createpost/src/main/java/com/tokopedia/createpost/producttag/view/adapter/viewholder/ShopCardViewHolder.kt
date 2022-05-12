@@ -10,12 +10,8 @@ import com.tokopedia.createpost.createpost.databinding.ItemProductTagShopListBin
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.util.isContainNull
-import com.tokopedia.shopwidget.shopcard.ShopCardListener
 
 /**
  * Created By : Jonathan Darwin on May 11, 2022
@@ -42,7 +38,7 @@ internal class ShopCardViewHolder private constructor() {
 
                 val shopStatusText = getShopStatusText(item.shop)
                 tvShopStatus.text = shopStatusText
-                clShopStatus.showWithCondition(shopStatusText.isNotEmpty())
+                clShopStatus.showWithCondition(item.shop.isShopAccessible.not())
 
                 btnSeeShop.setOnClickListener {
                     onSelected(item.shop)
