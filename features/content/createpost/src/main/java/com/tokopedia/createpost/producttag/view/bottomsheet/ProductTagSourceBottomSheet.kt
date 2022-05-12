@@ -57,7 +57,7 @@ class ProductTagSourceBottomSheet @Inject constructor(
         updateList()
 
         binding.clGlobalSearch.setOnClickListener {
-            mListener?.onSelectProductTagSource(ProductTagSource.LastTagProduct)
+            mListener?.onSelectProductTagSource(ProductTagSource.GlobalSearch)
             dismiss()
         }
 

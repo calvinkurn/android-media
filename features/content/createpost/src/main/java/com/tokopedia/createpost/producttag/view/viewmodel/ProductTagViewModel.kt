@@ -262,8 +262,11 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        if(_productTagSourceStack.value.size == 1)
-            _productTagSourceStack.setValue { setOf(source) }
+        if(_productTagSourceStack.value.size == 1) {
+            val finalSource = if(isNeedToShowDefaultSource(source)) ProductTagSource.LastTagProduct
+                                else source
+            _productTagSourceStack.setValue { setOf(finalSource) }
+        }
     }
 
     private fun handleProductSelected(product: ProductUiModel) {
@@ -500,6 +503,11 @@ class ProductTagViewModel @AssistedInject constructor(
             )
         }
         handleLoadShopProduct()
+    }
+
+    /** Util */
+    private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
+        return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.query.isEmpty()
     }
 
     companion object {
