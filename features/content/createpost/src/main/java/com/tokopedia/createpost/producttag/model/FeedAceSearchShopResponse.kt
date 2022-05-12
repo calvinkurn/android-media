@@ -71,5 +71,8 @@ data class FeedAceSearchShopResponse(
 
         @SerializedName("is_official")
         val isOfficial: Boolean = false,
+
+        @SerializedName("is_pm_pro")
+        val isPMPro: Boolean = false,
     )
 }

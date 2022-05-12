@@ -4,10 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagShopListBinding
 import com.tokopedia.createpost.producttag.view.adapter.ShopCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.isContainNull
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 
 /**
@@ -21,25 +28,34 @@ internal class ShopCardViewHolder private constructor() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ShopCardAdapter.Model.Shop) {
-            binding.shopCardView.apply {
-                setShopCardModel(item.shop.toShopCard(), object : ShopCardListener {
-                    override fun onItemImpressed() { }
+            binding.apply {
+                tvShopName.text = item.shop.shopName
+                tvShopLocation.text = item.shop.shopLocation
+                ivShopAvatar.loadImageCircle(item.shop.shopImage)
 
-                    override fun onItemClicked() {
-                        onSelected(item.shop)
-//                        shopListener.onItemClicked(shopDataViewItem)
-                    }
+                icShopBadge.showWithCondition(item.shop.isOfficial || item.shop.isPMPro || item.shop.isPM)
+                when {
+                    item.shop.isOfficial -> icShopBadge.setImage(IconUnify.BADGE_OS_FILLED)
+                    item.shop.isPMPro -> icShopBadge.setImage(IconUnify.BADGE_PMPRO_FILLED)
+                    item.shop.isPM -> icShopBadge.setImage(IconUnify.BADGE_PM_FILLED)
+                }
 
-                    override fun onProductItemImpressed(productPreviewIndex: Int) { }
+                val shopStatusText = getShopStatusText(item.shop)
+                tvShopStatus.text = shopStatusText
+                clShopStatus.showWithCondition(shopStatusText.isNotEmpty())
 
-                    override fun onProductItemClicked(productPreviewIndex: Int) {
-//                        val productItem = shopDataViewItem.productList.getOrNull(productPreviewIndex) ?: return
-//
-//                        shopListener.onProductItemClicked(productItem)
-                    }
-                })
-//                setProductModel(item.product.toProductCard())
-//                setOnClickListener { onSelected(item.product) }
+                btnSeeShop.setOnClickListener {
+                    onSelected(item.shop)
+                }
+            }
+        }
+
+        private fun getShopStatusText(shop: ShopUiModel): String {
+            return when {
+                shop.isClosed -> itemView.context.getString(R.string.cc_shop_closed)
+                shop.isModerated -> itemView.context.getString(R.string.cc_shop_moderated)
+                shop.isInactive -> itemView.context.getString(R.string.cc_shop_inactive)
+                else -> ""
             }
         }
 

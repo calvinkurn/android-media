@@ -112,4 +112,8 @@ dibeli, Wishlist, dan bahkan produk tokomu.</string>
     <string name="cc_no_my_shop_product_desc">Yuk, upload produk di tokomu dulu supaya bisa nge-tag di postingan!</string>
     <string name="cc_product_stock_template">Stok %d</string>
     <string name="cc_product_discount_template">%d%%</string>
+
+    <string name="cc_shop_closed">Toko Tutup Sementara</string>
+    <string name="cc_shop_moderated">Dalam Pengawasan</string>
+    <string name="cc_shop_inactive">Toko Sudah Tidak Aktif</string>
 </resources>

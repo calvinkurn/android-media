@@ -25,29 +25,48 @@ data class ShopUiModel(
     val shopStatus: Int = 0,
     val reputationImageUri: String = "",
     val isOfficial: Boolean = false,
+    val isPMPro: Boolean = false,
 ) {
+    val isPM: Boolean
+        get() = shopGoldShop == KEY_SHOP_GOLD_SHOP
 
-    fun toShopCard(): ShopCardModel {
-        return ShopCardModel(
-            id = shopId,
-            name = shopName,
-            domain = shopDomain,
-            url = shopUrl,
-            image = shopImage,
-            image300 = shopImage300,
-            description = shopDescription,
-            tagLine = shopTagline,
-            location = shopLocation,
-            totalTransaction = shopTotalTransaction,
-            totalFavorite = shopTotalFavorite,
-            goldShop = shopGoldShop,
-            isOwner = shopIsOwner,
-            rateSpeed = shopRateSpeed,
-            rateService = shopRateService,
-            rateAccuracy = shopRateAccuracy,
-            status = shopStatus,
-            reputationImageUri = reputationImageUri,
-            isOfficial = isOfficial,
-        )
+    val isClosed: Boolean
+        get() = shopStatus == KEY_SHOP_STATUS_CLOSED
+
+    val isModerated: Boolean
+        get() = shopStatus == KEY_SHOP_STATUS_MODERATED
+
+    val isInactive: Boolean
+        get() = shopStatus == KEY_SHOP_STATUS_INACTIVE
+
+    companion object {
+        const val KEY_SHOP_GOLD_SHOP = 1
+        const val KEY_SHOP_STATUS_CLOSED = 2
+        const val KEY_SHOP_STATUS_MODERATED = 3
+        const val KEY_SHOP_STATUS_INACTIVE = 4
     }
+//    fun toShopCard(): ShopCardModel {
+//        return ShopCardModel(
+//            id = shopId,
+//            name = shopName,
+//            domain = shopDomain,
+//            url = shopUrl,
+//            image = shopImage,
+//            image300 = shopImage300,
+//            description = shopDescription,
+//            tagLine = shopTagline,
+//            location = shopLocation,
+//            totalTransaction = shopTotalTransaction,
+//            totalFavorite = shopTotalFavorite,
+//            goldShop = shopGoldShop,
+//            isOwner = shopIsOwner,
+//            rateSpeed = shopRateSpeed,
+//            rateService = shopRateService,
+//            rateAccuracy = shopRateAccuracy,
+//            status = shopStatus,
+//            reputationImageUri = reputationImageUri,
+//            isOfficial = isOfficial,
+//            isPMPro = isPMPro,
+//        )
+//    }
 }

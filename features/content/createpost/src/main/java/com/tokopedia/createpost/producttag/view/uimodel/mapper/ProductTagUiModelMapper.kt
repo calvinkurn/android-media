@@ -140,6 +140,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     shopStatus = it.shopStatus,
                     reputationImageUri = it.reputationImageUri,
                     isOfficial = it.isOfficial,
+                    isPMPro = it.isPMPro,
                 )
             },
             hasNextPage = response.wrapper.shops.isNotEmpty(),

@@ -50,6 +50,7 @@ class FeedAceSearchShopUseCase @Inject constructor(
                   shop_status
                   reputation_image_uri
                   is_official
+                  is_pm_pro
                 }
               }
             }
