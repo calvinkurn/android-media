@@ -16,7 +16,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
@@ -28,7 +28,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     private lateinit var homeHeader: HeaderUnify
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
-    private lateinit var homeFragmentCallback: HomeFragmentCallback
+    private lateinit var homeFragmentCallback: TmProgramDetailCallback
 
 
     @Inject
@@ -40,8 +40,8 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is HomeFragmentCallback) {
-            homeFragmentCallback =  context as HomeFragmentCallback
+        if (context is TmProgramDetailCallback) {
+            homeFragmentCallback =  context as TmProgramDetailCallback
         } else {
             throw RuntimeException(requireContext().toString() )
         }

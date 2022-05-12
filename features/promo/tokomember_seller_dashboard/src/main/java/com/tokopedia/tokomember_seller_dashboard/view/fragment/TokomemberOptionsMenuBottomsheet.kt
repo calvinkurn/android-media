@@ -104,7 +104,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
         childLayout.setOnClickListener {
             parentFragment?.let{
                 if(it is ProgramActions){
-                    it.option(type, shopId, programId)
+                    it.option(type, shopId = shopId, programId = programId)
                 }
             }
             dismiss()

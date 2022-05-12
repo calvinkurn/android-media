@@ -1,5 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,14 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
 import com.tokopedia.unifycomponents.TabsUnify
 
-class TokomemberDashHomeActivity : AppCompatActivity(), HomeFragmentCallback {
+class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback {
 
     private lateinit var homeHeader: HeaderUnify
     private lateinit var homeTabs: TabsUnify
@@ -46,8 +49,11 @@ class TokomemberDashHomeActivity : AppCompatActivity(), HomeFragmentCallback {
             .addToBackStack(tag).commit()
     }
 
-    override fun addFragment() {
-        addFragment(TokomemberDashProgramDetailFragment.newInstance(intent.extras), TAG_HOME)
+    override fun openDetailFragment(shopId: Int, programId: Int) {
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_SHOP_ID, shopId)
+        bundle.putInt(BUNDLE_PROGRAM_ID, programId)
+        addFragment(TokomemberDashProgramDetailFragment.newInstance(bundle), TAG_HOME)
     }
 
     companion object{
@@ -56,6 +62,14 @@ class TokomemberDashHomeActivity : AppCompatActivity(), HomeFragmentCallback {
                 val intent = Intent(it, TokomemberDashHomeActivity::class.java)
                 intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 it.startActivity(intent)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_CODE_REFRESH){
+            if(resultCode == Activity.RESULT_OK){
             }
         }
     }

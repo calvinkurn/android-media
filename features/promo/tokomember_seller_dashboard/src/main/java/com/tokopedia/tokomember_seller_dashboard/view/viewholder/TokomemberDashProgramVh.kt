@@ -10,13 +10,14 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
+import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
@@ -41,7 +42,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     lateinit var optionMenu: ImageUnify
 
     @SuppressLint("ResourcePackage")
-    fun bind(item: ProgramSellerListItem, shopId: Int, programActions: ProgramActions, homeFragmentCallback: HomeFragmentCallback) {
+    fun bind(item: ProgramSellerListItem, shopId: Int, programActions: ProgramActions, homeFragmentCallback: TmProgramDetailCallback) {
         programStatus = itemView.findViewById(R.id.programStatus)
         periodProgram = itemView.findViewById(R.id.periodProgram)
         programStartDate = itemView.findViewById(R.id.programStartDate)
@@ -70,7 +71,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         itemView.setOnClickListener {
-            homeFragmentCallback.addFragment()
+            item.id?.toInt()?.let { it1 -> homeFragmentCallback.openDetailFragment(shopId, it1) }
 //            val intent = Intent(itemView.context, TokomemberDashProgramDetailActivity::class.java)
 //            intent.putExtra(BUNDLE_PROGRAM_ID, item.id?.toInt())
 //            intent.putExtra(BUNDLE_SHOP_ID, shopId)
@@ -85,13 +86,14 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         btn_edit.setOnClickListener {
+            item.id?.toInt()?.let { it1 -> programActions.option(EDIT, programId = it1, shopId = shopId) }
+        }
          /*   val intent = Intent(itemView.context, TokomemberDashCreateProgramActivity::class.java)
             intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
             intent.putExtra(BUNDLE_SHOP_ID, shopId)
             intent.putExtra(BUNDLE_PROGRAM_ID, item.id)
             intent.putExtra(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
             itemView.context.startActivity(intent)*/
-        }
 
         when(item.status){
             DRAFT ->{

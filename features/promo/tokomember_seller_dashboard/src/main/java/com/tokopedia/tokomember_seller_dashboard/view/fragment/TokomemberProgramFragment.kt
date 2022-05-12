@@ -1,6 +1,6 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokomember_common_widget.TokomemberLoaderDialog
 import com.tokopedia.tokomember_common_widget.callbacks.ChipGroupCallback
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
@@ -29,7 +29,21 @@ import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpda
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramThreshold
 import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_DATA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_TYPE
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -140,7 +154,6 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
 
     }
 
-
     private fun handleErrorOnUpdate() {
         val title = when(errorCount){
             0-> ERROR_CREATING_TITLE
@@ -169,7 +182,6 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EXTEND)
             }
             ProgramActionType.EDIT ->{
-                //TODO actionType edit pending from backend
                 tokomemberDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_EDIT)
             }
             ProgramActionType.CANCEL ->{
@@ -193,8 +205,9 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
             ProgramActionType.EDIT ->{
                 val intent = Intent()
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
+//                activity?.setResult(RESULT_OK, intent)
+//                activity?.finish()
+                targetFragment?.onActivityResult(targetRequestCode, RESULT_OK, intent)
             }
         }
     }
@@ -235,7 +248,6 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
             ProgramActionType.EDIT ->{
                 //TODO actionType edit pending from backend
-
                 headerProgram?.apply {
                     title = "Ubah Program"
                     isShowBackButton = true
@@ -365,13 +377,20 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
                     vip.toIntSafely()
             }
         }
-        membershipGetProgramForm?.programForm?.timeWindow?.startTime = selectedCalendar?.time?.let {
-            ProgramUpdateMapper.convertDateTime(
-                it
-            )
+        if(selectedCalendar != null) {
+            membershipGetProgramForm?.programForm?.timeWindow?.startTime =
+                selectedCalendar?.time?.let {
+                    ProgramUpdateMapper.convertDateTime(
+                        it
+                    )
+                }
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(selectedChipPosition)?.months?.let {
             periodInMonth = it
+        }
+        if(programActionType == ProgramActionType.EDIT){
+            context?.let { TokomemberLoaderDialog.showLoaderDialog(it, "Makan pepaya minum jus durian\n" +
+                    "Tunggu ya, program lagi disiapkan!") }
         }
         programUpdateResponse = ProgramUpdateMapper.formToUpdateMapper(membershipGetProgramForm, arguments?.getInt(BUNDLE_PROGRAM_TYPE)?:0, periodInMonth)
         tokomemberDashCreateViewModel.updateProgram(programUpdateResponse)

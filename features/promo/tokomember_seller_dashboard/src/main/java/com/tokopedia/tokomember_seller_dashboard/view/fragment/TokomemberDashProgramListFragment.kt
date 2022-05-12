@@ -15,8 +15,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_common_widget.util.ProgramScreenType
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.callbacks.HomeFragmentCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
+import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_EDIT_PROGRAM
@@ -36,8 +36,8 @@ import javax.inject.Inject
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     private var shopId = 0
-    private var cardId = 3827
-    private lateinit var homeFragmentCallback: HomeFragmentCallback
+    private var cardId = 3668
+    private lateinit var homeFragmentCallback: TmProgramDetailCallback
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
         TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager, shopId, this, homeFragmentCallback)
@@ -49,8 +49,8 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             shopId = it
         }
 
-        if (context is HomeFragmentCallback) {
-            homeFragmentCallback =  context as HomeFragmentCallback
+        if (context is TmProgramDetailCallback) {
+            homeFragmentCallback =  context as TmProgramDetailCallback
         } else {
             throw RuntimeException(context.toString() )
         }
@@ -110,7 +110,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
     }
 
-    override fun option(type: String, shopId: Int, programId: Int) {
+    override fun option(type: String, programId: Int, shopId: Int) {
         val bundle = Bundle()
         bundle.putBoolean(BUNDLE_EDIT_PROGRAM, true)
         bundle.putInt(BUNDLE_SHOP_ID, shopId)
@@ -119,7 +119,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             type.equals(EXTEND) -> {
 //                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EXTEND)
 //                (activity as TokomemberDashHomeActivity).addFragment(TokomemberProgramFragment.newInstance(bundle), TAG_HOME)
-                TokomemberDashCreateActivity.openActivity(shopId, context, ProgramScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
+                TokomemberDashCreateActivity.openActivity(shopId, activity, ProgramScreenType.PROGRAM, ProgramActionType.EXTEND, null, programId)
 
             }
             type.equals(CANCEL) -> {
@@ -147,7 +147,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 //                bundle.putInt(BUNDLE_PROGRAM_TYPE, ProgramType.EDIT)
                 TokomemberDashCreateActivity.openActivity(
                     shopId,
-                    context,
+                    activity,
                     ProgramScreenType.PROGRAM,
                     ProgramActionType.EDIT,
                     REQUEST_CODE_REFRESH,
