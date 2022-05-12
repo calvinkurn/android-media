@@ -52,7 +52,6 @@ object DeeplinkMapperContent {
     }
 
     fun getContentCreatePostDeepLink(deepLink: String): String {
-        val uri = Uri.parse(deepLink)
         if(deepLink.startsWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)){
 
                 val regexExp = "${ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2}/?".toRegex()
@@ -71,7 +70,7 @@ object DeeplinkMapperContent {
         }
 
         if(deepLink.startsWithPattern(ApplinkConst.FEED_CREATION_SHOP_SEARCH)){
-            val regexExp = "${ApplinkConst.FEED_CREATION_SHOP_SEARCH}/?".toRegex()
+            val regexExp = "${ApplinkConst.FEED_CREATION_SHOP_SEARCH}".toRegex()
             return deepLink.replace(regexExp, INTERNAL_FEED_CREATION_SHOP_SEARCH)
         }
 

@@ -283,6 +283,10 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
+    fun onNewIntent() {
+
+    }
+
     fun onBackPressed() {
         viewModel.submitAction(ProductTagAction.BackPressed)
     }
