@@ -15,6 +15,8 @@ private fun buildAutoCompletePageParam(query: String): String {
         append("srp_page_title=Tokopedia%20Feed")
         append("&")
         append("srp_page_id=0")
+        append("&")
+        append("baseSRPApplink=${ApplinkConst.FEED_CREATION_PRODUCT_SEARCH}")
 
         if(query.isNotEmpty())
             append("&")
