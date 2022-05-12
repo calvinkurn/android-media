@@ -171,29 +171,29 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setDetailsData(OrderDetails details) {
         hideProgressBar();
-        setStatus(details.status());
-        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
-            setConditionalInfo(details.conditionalInfo());
+        setStatus(details.getStatus());
+        if (details.getConditionalInfo().getText() != null && !details.getConditionalInfo().getText().equals("")) {
+            setConditionalInfo(details.getConditionalInfo());
         }
-        for (Title title : details.title()) {
+        for (Title title : details.getTitle()) {
             setTitle(title);
         }
-        setInvoice(details.invoice());
-        for (int i = 0; i < details.detail().size(); i++) {
-            setDetail(details.detail().get(i));
+        setInvoice(details.getInvoice());
+        for (int i = 0; i < details.getDetail().size(); i++) {
+            setDetail(details.getDetail().get(i));
         }
 
         if (details.getItems() != null && details.getItems().size() > 0) {
             Flags flags = details.getFlags();
             if (flags != null)
-                setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+                setItems(details.getItems(), flags.isOrderTradeIn(), details);
             else
                 setItems(details.getItems(), false, details);
         }
-        if (details.additionalInfo().size() > 0) {
+        if (details.getAdditionalInfo().size() > 0) {
             setAdditionInfoVisibility(View.VISIBLE);
         }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+        for (AdditionalInfo additionalInfo : details.getAdditionalInfo()) {
 
             setAdditionalInfo(additionalInfo);
         }
@@ -206,23 +206,23 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 setPayMethodInfo(payMethod, false);
         }
 
-        for (Pricing pricing : details.pricing()) {
+        for (Pricing pricing : details.getPricing()) {
             setPricing(pricing, false);
         }
 
-        setPaymentData(details.paymentData(), false);
-        setContactUs(details.contactUs(), details.getHelpLink());
+        setPaymentData(details.getPaymentData(), false);
+        setContactUs(details.getContactUs(), details.getHelpLink());
 
         if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
             setActionButtonsVisibility(View.GONE, View.GONE);
         } else {
-            if (details.actionButtons().size() == 2) {
-                ActionButton leftActionButton = details.actionButtons().get(0);
-                ActionButton rightActionButton = details.actionButtons().get(1);
+            if (details.getActionButtons().size() == 2) {
+                ActionButton leftActionButton = details.getActionButtons().get(0);
+                ActionButton rightActionButton = details.getActionButtons().get(1);
                 setTopActionButton(leftActionButton);
                 setBottomActionButton(rightActionButton);
-            } else if (details.actionButtons().size() == 1) {
-                ActionButton actionButton = details.actionButtons().get(0);
+            } else if (details.getActionButtons().size() == 1) {
+                ActionButton actionButton = details.getActionButtons().get(0);
                 setButtonMargin();
                 if (actionButton.getLabel().equals(BuyerConsts.INVOICE)) {
                     setBottomActionButton(actionButton);
@@ -241,10 +241,10 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setStatus(Status status) {
-        statusLabel.setText(status.statusLabel());
-        statusValue.setText(status.statusText());
-        if (!status.textColor().equals(""))
-            statusValue.setTextColor(Color.parseColor(status.textColor()));
+        statusLabel.setText(status.getStatusLabel());
+        statusValue.setText(status.getStatusText());
+        if (!status.getTextColor().equals(""))
+            statusValue.setTextColor(Color.parseColor(status.getTextColor()));
     }
 
     @Override
@@ -254,17 +254,17 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
-        if (!TextUtils.isEmpty(conditionalInfo.color().background())) {
-            shape.setColor(Color.parseColor(conditionalInfo.color().background()));
+        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBackground())) {
+            shape.setColor(Color.parseColor(conditionalInfo.getColor().getBackground()));
         }
-        if (!TextUtils.isEmpty(conditionalInfo.color().border())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.color().border()));
+        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBorder())) {
+            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.getColor().getBorder()));
         }
         conditionalInfoText.setBackground(shape);
         conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
-        conditionalInfoText.setText(conditionalInfo.text());
-        if (!TextUtils.isEmpty(conditionalInfo.color().textColor())) {
-            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.color().textColor()));
+        conditionalInfoText.setText(conditionalInfo.getText());
+        if (!TextUtils.isEmpty(conditionalInfo.getColor().getTextColor())) {
+            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.getColor().getTextColor()));
         }
 
     }
@@ -272,8 +272,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setTitle(Title title) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(title.label());
-        doubleTextView.setBottomText(title.value());
+        doubleTextView.setTopText(title.getLabel());
+        doubleTextView.setBottomText(title.getValue());
         doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         statusDetail.addView(doubleTextView);
@@ -283,41 +283,41 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void setInvoice(final Invoice invoice) {
         String orderId = (getArguments().getString(KEY_ORDER_ID) != null) ?
                 getArguments().getString(KEY_ORDER_ID) : "";
-        invoiceView.setText(invoice.invoiceRefNum());
-        if (!BuyerUtils.isValidUrl(invoice.invoiceUrl())) {
+        invoiceView.setText(invoice.getInvoiceRefNum());
+        if (!BuyerUtils.isValidUrl(invoice.getInvoiceUrl())) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
             String orderCategory = getArguments().getString(KEY_ORDER_CATEGORY) != null ?
                     getArguments().getString(KEY_ORDER_CATEGORY) : "";
-            presenter.onLihatInvoiceButtonClick(invoice.invoiceUrl());
+            presenter.onLihatInvoiceButtonClick(invoice.getInvoiceUrl());
             if (orderCategory != null && orderCategory.equals(OrderCategory.DIGITAL)) {
                 startActivity(SeeInvoiceActivity.newInstance(getContext(),
                         presenter.getOrderCategoryName(),
                         presenter.getOrderProductName(),
                         orderId,
-                        invoice.invoiceUrl(),
-                        invoice.invoiceRefNum(),
+                        invoice.getInvoiceUrl(),
+                        invoice.getInvoiceRefNum(),
                         getString(R.string.title_invoice),
                         OrderCategory.DIGITAL));
             } else {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.invoiceUrl());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.getInvoiceUrl());
             }
         });
     }
 
     @Override
     public void setDetail(Detail detail) {
-        if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
+        if (VOUCHER_CODE.equalsIgnoreCase(detail.getLabel())) {
             CopyableDetailItemView itemView = new CopyableDetailItemView(getActivity());
-            itemView.setTitle(detail.label());
-            itemView.setDescription(detail.value());
+            itemView.setTitle(detail.getLabel());
+            itemView.setDescription(detail.getValue());
             itemView.setListener(new CopyableDetailItemView.Listener() {
                 @Override
                 public void onCopyValue() {
                     if (getContext() != null) {
-                        presenter.onCopyButtonClick(detail.value());
-                        BuyerUtils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                        presenter.onCopyButtonClick(detail.getValue());
+                        BuyerUtils.copyTextToClipBoard("voucher code", detail.getValue(), getContext());
                         BuyerUtils.vibrate(getContext());
                         Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
                     }
@@ -326,8 +326,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             detailContent.addView(itemView);
         } else {
             DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-            doubleTextView.setTopText(detail.label());
-            doubleTextView.setBottomText(detail.value());
+            doubleTextView.setTopText(detail.getLabel());
+            doubleTextView.setBottomText(detail.getValue());
             doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
             detailContent.addView(doubleTextView);
@@ -349,8 +349,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setAdditionalInfo(AdditionalInfo additionalInfo) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(additionalInfo.label());
-        doubleTextView.setBottomText(additionalInfo.value());
+        doubleTextView.setTopText(additionalInfo.getLabel());
+        doubleTextView.setBottomText(additionalInfo.getValue());
         doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         additionalInfoLayout.addView(doubleTextView);
@@ -421,11 +421,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setBottomText(paymentData.value());
+        doubleTextView.setTopText(paymentData.getLabel());
+        doubleTextView.setBottomText(paymentData.getValue());
         doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-        if (!paymentData.textColor().equals(""))
-            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
+        if (!paymentData.getTextColor().equals(""))
+            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.getTextColor()));
         else
             doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         doubleTextView.setBottomTextSize(16);
@@ -435,13 +435,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setContactUs(final ContactUs contactUs, String helpLink) {
-        String text = Html.fromHtml(contactUs.helpText()).toString();
+        String text = Html.fromHtml(contactUs.getHelpText()).toString();
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, contactUs.helpUrl());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, contactUs.getHelpUrl());
             }
 
             @Override

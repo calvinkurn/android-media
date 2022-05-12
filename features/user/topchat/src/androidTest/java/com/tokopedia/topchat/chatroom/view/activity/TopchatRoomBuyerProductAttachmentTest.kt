@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.test.application.annotations.UiTest
@@ -432,27 +431,8 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         val testVariantColor = "Putih"
         val exProductId = "1111"
         fun putProductAttachmentIntent(intent: Intent) {
-            val productPreviews = listOf(
-                    ProductPreview(
-                            exProductId,
-                            ProductPreviewAttribute.productThumbnail,
-                            ProductPreviewAttribute.productName,
-                            "Rp 23.000.000",
-                            "",
-                            testVariantColor,
-                            "",
-                            "",
-                            testVariantSize,
-                            "tokopedia://product/1111",
-                            false,
-                            "",
-                            "Rp 50.000.000",
-                            500000.0,
-                            "50%",
-                            false
-                    )
-            )
-            val stringProductPreviews = CommonUtil.toJson(productPreviews)
+            val productIds = listOf(exProductId)
+            val stringProductPreviews = CommonUtil.toJson(productIds)
             intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
         }
     }

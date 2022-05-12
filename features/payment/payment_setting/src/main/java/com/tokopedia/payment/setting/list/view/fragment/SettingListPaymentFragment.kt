@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
@@ -172,7 +173,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             dialog.setSecondaryCTAText(getString(R.string.payment_label_cancel_dialog_verif))
             dialog.setPrimaryCTAClickListener {
                 activity?.run {
-                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
+                    val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalUserPlatform.SETTING_PROFILE)
                     this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
                 }
                 dialog.dismiss()

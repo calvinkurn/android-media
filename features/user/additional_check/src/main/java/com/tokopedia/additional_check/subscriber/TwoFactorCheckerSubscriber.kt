@@ -226,13 +226,13 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     private fun gotoLinkAccountReminder(mActivity: Activity?) {
 	if (whiteListedPageAccountLinkReminder.contains(mActivity?.javaClass?.simpleName)) {
 	    val intent =
-		RouteManager.getIntent(mActivity, ApplinkConstInternalGlobal.LINK_ACC_REMINDER)
+		RouteManager.getIntent(mActivity, ApplinkConstInternalUserPlatform.LINK_ACC_REMINDER)
 	    mActivity?.startActivity(intent)
 	}
     }
 
     private fun goTo2FAPage(activity: Activity?, twoFactorResult: TwoFactorResult) {
-	val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER)
+	val i = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER)
 	    .apply {
 		putExtras(Bundle().apply {
 		    putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
