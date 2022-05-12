@@ -4,21 +4,40 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetShopAdminInfoResponse(
-    @SerializedName("shop")
+    @SerializedName("shopInfoByID")
     @Expose
-    val shop: Shop = Shop(),
+    val shopInfoByID: ShopInfoByID = ShopInfoByID(),
     @SerializedName("getAdminInfo")
     @Expose
     val getAdminInfo: GetAdminInfo = GetAdminInfo()
 ) {
-    data class Shop(
-        @SerializedName("logo")
+
+    data class ShopInfoByID(
+        @SerializedName("result")
         @Expose
-        val logo: String = "",
-        @SerializedName("shop_name")
-        @Expose
-        val shopName: String = ""
-    )
+        val result: List<Result> = listOf()
+    ) {
+        data class Result(
+            @SerializedName("shopAssets")
+            @Expose
+            val shopAssets: ShopAssets = ShopAssets(),
+            @SerializedName("shopCore")
+            @Expose
+            val shopCore: ShopCore = ShopCore()
+        ) {
+            data class ShopAssets(
+                @SerializedName("avatar")
+                @Expose
+                val avatar: String = ""
+            )
+
+            data class ShopCore(
+                @SerializedName("name")
+                @Expose
+                val name: String = ""
+            )
+        }
+    }
 
     data class GetAdminInfo(
         @SerializedName("admin_data")

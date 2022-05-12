@@ -1,6 +1,7 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.param.ParamShopInfoByID
 import com.tokopedia.usecase.RequestParams
 
 object GetShopAdminInfoQuery: GqlQueryInterface {
@@ -8,13 +9,20 @@ object GetShopAdminInfoQuery: GqlQueryInterface {
     private const val OPERATION_NAME = "getShopAdminInfo"
     private const val SHOP_ID_KEY = "shop_id"
     private const val SOURCE_KEY = "source"
+    private const val INPUT_KEY = "input"
     private const val SOURCE = "getShopAdminInfo-android"
 
     private val GQL_QUERY = """
-        query ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shop_id: Int!) {
-           shop {
-              shop_name
-              logo
+        query ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shop_id: Int!, ${'$'}input: ParamShopInfoByID!) {
+            shopInfoByID(input: ${'$'}input) {
+                result {
+                  shopCore {
+                    name
+                  }
+                  shopAssets {
+                    avatar
+                  }
+                }
            }
            getAdminInfo(source: ${'$'}source, shop_id: ${'$'}shop_id) {
               admin_data {
@@ -24,10 +32,11 @@ object GetShopAdminInfoQuery: GqlQueryInterface {
         }
     """.trimIndent()
 
-    fun createRequestParams(shopId: Long): Map<String, Any> {
+    fun createRequestParams(shopId: Long, paramShopInfoByID: ParamShopInfoByID): Map<String, Any> {
         return RequestParams.create().apply {
             putString(SOURCE_KEY, SOURCE)
             putLong(SHOP_ID_KEY, shopId)
+            putObject(INPUT_KEY, paramShopInfoByID)
         }.parameters
     }
 

@@ -11,10 +11,14 @@ import javax.inject.Inject
 class AdminInvitationConfirmationMapper @Inject constructor() {
 
     fun mapToShopAdminInfoUiModel(shopAdminInfoResponse: GetShopAdminInfoResponse): ShopAdminInfoUiModel {
-        val shop = shopAdminInfoResponse.shop
+        val shop = shopAdminInfoResponse.shopInfoByID.result.firstOrNull()
         val shopManageID =
             shopAdminInfoResponse.getAdminInfo.adminData.firstOrNull()?.shopManageId.orEmpty()
-        return ShopAdminInfoUiModel(shopName = shop.shopName, shop.logo, shopManageID)
+        return ShopAdminInfoUiModel(
+            shopName = shop?.shopCore?.name.orEmpty(),
+            shop?.shopAssets?.avatar.orEmpty(),
+            shopManageID
+        )
     }
 
     fun mapToValidateAdminUiModel(validateAdminEmailResponse: ValidateAdminEmailResponse): ValidateAdminEmailUiModel {
