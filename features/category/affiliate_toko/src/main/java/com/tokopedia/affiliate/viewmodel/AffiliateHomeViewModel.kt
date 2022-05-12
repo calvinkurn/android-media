@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.pojo.AffiliateUserPerformaData
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
@@ -39,7 +40,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
-    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
@@ -56,9 +57,9 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
-            progressBar.value = true
             validateUserdata.value =
                 affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            progressBar.value = false
         }, onError = {
             progressBar.value = false
             it.printStackTrace()
@@ -68,13 +69,10 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAnnouncementInformation() {
         launchCatchError(block = {
-            progressBar.value = true
             affiliateAnnouncement.value =
                 affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         }, onError = {
-            progressBar.value = false
             it.printStackTrace()
-            affiliateErrorMessage.value = it
         })
     }
 
@@ -200,8 +198,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
-    fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
-    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
         affiliateDataList

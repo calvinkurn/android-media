@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Validate
 import com.tokopedia.affiliate.repository.AffiliateRepository
@@ -15,11 +16,28 @@ class AffiliateValidateUserStatusUseCase @Inject constructor(
     }
 
     suspend fun validateUserStatus(email: String): AffiliateValidateUserData {
-        return repository.getGQLData(
-                GQL_Affiliate_Validate,
-                AffiliateValidateUserData::class.java,
-                createRequestParams(email)
-        )
+        return Gson().fromJson("{\n" +
+                "    \"validateAffiliateUserStatus\": {\n" +
+                "      \"Data\": {\n" +
+                "        \"Status\": 1,\n" +
+                "        \"IsEligible\": true,\n" +
+                "        \"IsReviewed\": false,\n" +
+                "        \"IsRegistered\": true,\n" +
+                "        \"IsSystemDown\": false,\n" +
+                "        \"Error\": {\n" +
+                "          \"ErrorType\": 0,\n" +
+                "          \"Message\": \"\",\n" +
+                "          \"CtaText\": \"\",\n" +
+                "          \"CtaLink\": {\n" +
+                "            \"DesktopURL\": \"\",\n" +
+                "            \"MobileURL\": \"\",\n" +
+                "            \"AndroidURL\": \"\",\n" +
+                "            \"IosURL\": \"\"\n" +
+                "          }\n" +
+                "        }\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }",AffiliateValidateUserData::class.java)
     }
 
     companion object {
