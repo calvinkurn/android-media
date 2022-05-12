@@ -137,8 +137,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableInteractiveState: LiveData<BroadcastInteractiveState>
-        get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
@@ -187,7 +185,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveViewState = MutableLiveData<PlayLiveViewState>()
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession =
@@ -626,11 +623,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
     }
 
-    fun onInteractiveLiveEnded() {
-        sharedPref.setNotFirstInteractive()
-        viewModelScope.launch { onInteractiveFinished() }
-    }
-
     fun createInteractiveSession(title: String, durationInMs: Long) {
         _observableCreateInteractiveSession.value = NetworkResult.Loading
         if (!isCreateSessionAllowed(durationInMs)) {
@@ -670,9 +662,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** TODO: should save config on flow instead */
             setInteractiveDurations(gameConfig.giveawayConfig.availableStartTimeInMs)
 
-            if (gameConfig.isNoGameActive()) {
-                _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
-            } else {
+            if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
             }
@@ -701,31 +691,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val currentInteractive = repo.getCurrentInteractive(channelId)
             handleActiveInteractiveFromNetwork(currentInteractive)
         } catch (e: Throwable) {
-            e
-            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+            _interactive.value = InteractiveUiModel.Unknown
         }
     }
 
     private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
-        setInteractiveId(interactive.id.toString())
+        setInteractiveId(interactive.id)
         setActiveInteractiveTitle(interactive.title)
         when (interactive) {
             is InteractiveUiModel.Giveaway -> setupGiveaway(interactive)
             is InteractiveUiModel.Quiz -> setupQuiz(interactive)
             else -> {}
         }
-//        when (val status = interactive.timeStatus) {
-//            is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
-//                timeToStartInMs = status.timeToStartInMs,
-//                durationInMs = status.interactiveDurationInMs,
-//                title = interactive.title
-//            )
-//            is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
-//            is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
-//            else -> {
-//                _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-//            }
-//        }
     }
 
     private suspend fun setupGiveaway(giveaway: InteractiveUiModel.Giveaway) {
@@ -745,7 +722,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 //                }
 //            } catch (e: Throwable) {}
         }
-
     }
 
     private fun setupQuiz(quiz: InteractiveUiModel.Quiz) {
@@ -755,38 +731,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
-        _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Schedule(
-            timeToStartInMs = timeToStartInMs,
-            durationInMs = durationInMs,
-            title = title
-        )
-    }
-
-    private fun onInteractiveLiveStarted(durationInMs: Long) {
-        _observableInteractiveState.value =
-            BroadcastInteractiveState.Allowed.Live(remainingTimeInMs = durationInMs)
-    }
-
-    private suspend fun onInteractiveFinished() {
-        _observableInteractiveState.value =
-            BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
-        delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-        val err = getLeaderboardInfo(channelId)
-        if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
-            val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
-            val coachMark =
-                if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
-                    leaderboard.config.loserMessage,
-                    leaderboard.config.sellerMessage
-                )
-            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(
-                state = BroadcastInteractiveInitState.HasPrevious(coachMark)
-            )
-        } else {
-            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
-        }
-    }
+//    private suspend fun onInteractiveFinished() {
+//        _observableInteractiveState.value =
+//            BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
+//        delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
+//        val err = getLeaderboardInfo(channelId)
+//        if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
+//            val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
+//            val coachMark =
+//                if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
+//                    leaderboard.config.loserMessage,
+//                    leaderboard.config.sellerMessage
+//                )
+//            _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(
+//                state = BroadcastInteractiveInitState.HasPrevious(coachMark)
+//            )
+//        } else {
+//            _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+//        }
+//    }
 
     private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
@@ -800,14 +763,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _observableLeaderboardInfo.value = NetworkResult.Fail(err)
             err
         }
-    }
-
-    private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
-        return BroadcastInteractiveState.Allowed.Init(
-            state = BroadcastInteractiveInitState.NoPrevious(
-                showOnBoarding = sharedPref.isFirstInteractive(),
-            ),
-        )
     }
 
     private fun findSuitableInteractiveDurations(): List<Long> {
@@ -1272,6 +1227,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleGiveawayOngoingEnded() {
+        sharedPref.setNotFirstInteractive()
         viewModelScope.launchCatchError(dispatcher.computation, block = {
             val interactive = _interactive.getAndUpdate {
                 if (it !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
@@ -1359,7 +1315,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
 
-            _quizFormData.setValue {
+            _quizFormData.update {
                 QuizFormDataUiModel(
                     durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
                     options = initialOptions
