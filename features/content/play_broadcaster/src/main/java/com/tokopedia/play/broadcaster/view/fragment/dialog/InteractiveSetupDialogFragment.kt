@@ -17,12 +17,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
 import com.tokopedia.play.broadcaster.view.custom.interactive.giveaway.GiveawayFormView
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -34,6 +39,10 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
     private var mDataSource: DataSource? = null
 
     private lateinit var viewModel: PlayBroadcastViewModel
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(it.requireView(), it.viewLifecycleOwner) }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), R.style.Dialog_Setup_Interactive) {
@@ -92,6 +101,7 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
 
     private fun setupObserve() {
         observeUiState()
+        observeUiEvent()
     }
 
     private fun observeUiState() {
@@ -104,6 +114,25 @@ class InteractiveSetupDialogFragment @Inject constructor() : DialogFragment() {
                     is GameType.Giveaway -> renderGiveawaySetup(
                         state.interactiveSetup, state.interactiveConfig
                     )
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayBroadcastEvent.CreateInteractive.Error -> {
+                        toaster.showError(
+                            err = event.error,
+                            customErrMessage = getString(
+                                R.string.play_interactive_broadcast_create_fail
+                            ),
+                            duration = Toaster.LENGTH_SHORT,
+                        )
+                    }
                     else -> {}
                 }
             }

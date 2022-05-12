@@ -151,6 +151,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     /** Game */
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClicked() {
+                analytic.onClickInteractiveTool(channelId = parentViewModel.channelId)
                 openSelectInteractiveSheet()
             }
         })
@@ -340,7 +341,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeChatList()
         observeMetrics()
         observeEvent()
-        observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
     }
@@ -666,35 +666,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun observeCreateInteractiveSession() {
-        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                /** TODO: gonna delete this */
-//                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
-                is NetworkResult.Success -> {
-                    analytic.onStartInteractive(
-                        channelId = parentViewModel.channelId,
-                        interactiveId = parentViewModel.interactiveId,
-                        interactiveTitle = parentViewModel.activeInteractiveTitle,
-                        durationInMs = state.data.durationInMs
-                    )
-                    /** TODO: gonna delete this */
-//                    interactiveSetupView.setLoading(false)
-//                    interactiveSetupView.reset()
-                }
-                is NetworkResult.Fail -> {
-                    /** TODO: gonna delete this */
-//                    interactiveSetupView.setLoading(false)
-                    showErrorToaster(
-                        err = state.error,
-                        customErrMessage = getString(R.string.play_interactive_broadcast_create_fail),
-                        duration = Toaster.LENGTH_SHORT
-                    )
-                }
-            }
-        }
-    }
-
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
@@ -740,6 +711,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                     is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                     is PlayBroadcastEvent.ShowQuizDetailBottomSheet -> openQuizDetailSheet()
+                    is PlayBroadcastEvent.CreateInteractive.Success -> {
+                        analytic.onStartInteractive(
+                            channelId = parentViewModel.channelId,
+                            interactiveId = parentViewModel.interactiveId,
+                            interactiveTitle = parentViewModel.activeInteractiveTitle,
+                            durationInMs = event.durationInMs,
+                        )
+                    }
+                    else -> {}
                 }
             }
         }

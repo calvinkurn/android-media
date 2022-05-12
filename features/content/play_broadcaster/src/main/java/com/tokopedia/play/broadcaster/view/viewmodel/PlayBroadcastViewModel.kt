@@ -139,8 +139,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableEvent
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
-    val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
-        get() = _observableCreateInteractiveSession
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
     val interactiveId: String
@@ -187,8 +185,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
-    private val _observableCreateInteractiveSession =
-        MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
     private val _observableLivePusherStats = MutableLiveData<LivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
@@ -621,26 +617,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun setSelectedInteractiveDuration(durationInMs: Long) {
         getCurrentSetupDataStore().setSelectedInteractiveDuration(durationInMs)
-    }
-
-    fun createInteractiveSession(title: String, durationInMs: Long) {
-        _observableCreateInteractiveSession.value = NetworkResult.Loading
-        if (!isCreateSessionAllowed(durationInMs)) {
-            _observableCreateInteractiveSession.value =
-                NetworkResult.Fail(Throwable("not allowed to create session"))
-            return
-        }
-
-        viewModelScope.launchCatchError(block = {
-            val interactiveUiModel = repo.createGiveaway(channelId, title, durationInMs)
-            setInteractiveId(interactiveUiModel.id)
-            setActiveInteractiveTitle(interactiveUiModel.title)
-            handleActiveInteractive()
-            resetSetupInteractive()
-            _observableCreateInteractiveSession.value = NetworkResult.Success(interactiveUiModel)
-        }) {
-            _observableCreateInteractiveSession.value = NetworkResult.Fail(it)
-        }
     }
 
     private fun isCreateSessionAllowed(durationInMs: Long): Boolean {
@@ -1273,7 +1249,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            repo.createGiveaway(channelId, title, durationInMs)
+            val session = repo.createGiveaway(channelId, title, durationInMs)
             handleActiveInteractive()
             _interactiveSetup.update {
                 it.copy(
@@ -1281,11 +1257,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     isSubmitting = false,
                 )
             }
-        }) {
-            //TODO("Show Error")
+            _uiEvent.emit(PlayBroadcastEvent.CreateInteractive.Success(session.durationInMs))
+        }) { err ->
             _interactiveSetup.update {
                 it.copy(isSubmitting = false)
             }
+            _uiEvent.emit(PlayBroadcastEvent.CreateInteractive.Error(err))
         }
     }
 
