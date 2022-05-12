@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.bulk.presentation
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -8,7 +9,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -112,10 +116,17 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private var onApplyClickListener: (DiscountSettings) -> Unit = {}
 
+    init {
+        clearContentPadding = true
+        isSkipCollapseState = true
+        isKeyboardOverlap = false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
     }
+
 
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
@@ -136,12 +147,10 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetDiscountBulkApplyBinding.inflate(inflater, container, false)
-        isKeyboardOverlap = false
-        clearContentPadding = true
         setChild(binding?.root)
         setTitle(title)
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -364,7 +373,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
                 viewModel.validateInput()
             }
-            binding?.tfuDiscountAmount?.textInputLayout?.editText?.addTextChangedListener(watcher)
+            tfuDiscountAmount.textInputLayout.editText?.addTextChangedListener(watcher)
         }
 
     }
