@@ -442,7 +442,7 @@ class MainNavViewModel @Inject constructor(
             it.value is ErrorStateOngoingTransactionModel
         }
         transactionPlaceHolder?.let {
-            updateWidget(InitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
+            updateWidget(InitialShimmerTransactionRevampDataModel(), transactionPlaceHolder.index)
         }
         launchCatchError(coroutineContext, block = {
             getOngoingTransaction()
@@ -457,7 +457,7 @@ class MainNavViewModel @Inject constructor(
             it.value is ErrorStateOngoingTransactionModel
         }
         transactionErrorState?.let {
-            updateWidget(InitialShimmerTransactionDataModel(), it.index)
+            updateWidget(InitialShimmerTransactionRevampDataModel(), it.index)
         }
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
@@ -468,22 +468,25 @@ class MainNavViewModel @Inject constructor(
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
-                    NavOrderListModel(orderListToShow, paymentList, reviewList), othersTransactionCount)
+                    NavOrderListModel(orderListToShow, paymentList, reviewList),
+                    othersTransactionCount,
+                    isMePageUsingRollenceVariant
+                )
 
                 //find shimmering and change with result value
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                     updateWidget(transactionListItemViewModel, it)
                 }
             } else {
-                val emptyTransaction = TransactionListItemDataModel(NavOrderListModel())
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                val emptyTransaction = TransactionListItemDataModel(NavOrderListModel(), isMePageUsingRollenceVariant = isMePageUsingRollenceVariant)
+                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                     updateWidget(emptyTransaction, it)
                 }
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
             //find shimmering and change with result value
-            findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+            findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
@@ -604,7 +607,7 @@ class MainNavViewModel @Inject constructor(
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
                         it.getSectionTitle(ClientMenuGenerator.IDENTIFIER_TITLE_MY_ACTIVITY),
-                        InitialShimmerTransactionDataModel(),
+                        InitialShimmerTransactionRevampDataModel(),
                         it.getMenu(menuId = ClientMenuGenerator.ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
@@ -632,7 +635,7 @@ class MainNavViewModel @Inject constructor(
                 transactionDataList = mutableListOf(
                     SeparatorDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_ORDER_HISTORY),
-                        InitialShimmerTransactionDataModel(),
+                        InitialShimmerTransactionRevampDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
                         ShimmerWishlistDataModel(),
                         it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP),

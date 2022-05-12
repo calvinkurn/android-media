@@ -83,7 +83,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringProfileDataViewHolder.LAYOUT
     }
 
-    override fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel): Int {
+    override fun type(initialShimmerTransactionRevampDataModel: InitialShimmerTransactionRevampDataModel): Int {
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 

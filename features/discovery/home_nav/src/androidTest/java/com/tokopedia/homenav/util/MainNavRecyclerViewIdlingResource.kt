@@ -8,7 +8,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.viewholder.InitialShimmeringDa
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.InitialShimmeringTransactionDataViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerDataModel
-import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerTransactionDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerTransactionRevampDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 
 private const val NAME = "Recycler view has item idling resource"
@@ -39,7 +39,7 @@ internal class MainNavRecyclerViewIdlingResource(
             )
 
             val isTransactionShimmeringExist = isModelExist(
-                { it is InitialShimmerTransactionDataModel },
+                { it is InitialShimmerTransactionRevampDataModel },
                 { it is InitialShimmeringTransactionDataViewHolder }
             )
 
