@@ -1610,7 +1610,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
-                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id), product.isProductBundling),
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id), product.isProductBundling,product.suspendLevel),
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
@@ -1636,7 +1636,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
-                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id),suspendLevel = product.suspendLevel),
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {

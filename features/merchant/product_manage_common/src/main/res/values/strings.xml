@@ -36,5 +36,6 @@
     <string name="product_manage_campaign_stock_open_campaign">Untuk mengubah stok campaign, pergi ke seller.tokopedia.com melalui laptop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
     <string name="product_manage_campaign_count">%d Promosi</string>
+    <string name="product_manage_suspend_stock_info_description">Stok dikosongkan karena sering terjadi pembatalan</string>
 
 </resources>

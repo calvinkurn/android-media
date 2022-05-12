@@ -127,7 +127,7 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition(product.isEmpty() && (product.isNotViolation() || product.isSuspendLevelTwoUntilFour()))
+            ?.showWithCondition((product.isEmpty() && product.isNotViolation()) || product.isSuspend())
     }
 
     private fun showProductImage(product: ProductUiModel) {
