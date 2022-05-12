@@ -1,5 +1,7 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+import com.tokopedia.iconunify.IconUnify
+
 /**
  * Created By : Jonathan Darwin on May 11, 2022
  */
@@ -40,10 +42,22 @@ data class ShopUiModel(
     val isShopAccessible: Boolean
         get() = isClosed.not() && isModerated.not() && isInactive.not()
 
+    val isShopHasBadge: Boolean
+        get() = badge != KEY_NO_BADGE
+
+    val badge: Int
+        get() = when {
+            isPM -> IconUnify.BADGE_PM_FILLED
+            isPMPro -> IconUnify.BADGE_PMPRO_FILLED
+            isOfficial -> IconUnify.BADGE_OS_FILLED
+            else -> KEY_NO_BADGE
+        }
+
     companion object {
-        const val KEY_SHOP_GOLD_SHOP = 1
-        const val KEY_SHOP_STATUS_CLOSED = 2
-        const val KEY_SHOP_STATUS_MODERATED = 3
-        const val KEY_SHOP_STATUS_INACTIVE = 4
+        private const val KEY_NO_BADGE = 0
+        private const val KEY_SHOP_GOLD_SHOP = 1
+        private const val KEY_SHOP_STATUS_CLOSED = 2
+        private const val KEY_SHOP_STATUS_MODERATED = 3
+        private const val KEY_SHOP_STATUS_INACTIVE = 4
     }
 }

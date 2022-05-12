@@ -29,12 +29,8 @@ internal class ShopCardViewHolder private constructor() {
                 tvShopLocation.text = item.shop.shopLocation
                 ivShopAvatar.loadImageCircle(item.shop.shopImage)
 
-                icShopBadge.showWithCondition(item.shop.isOfficial || item.shop.isPMPro || item.shop.isPM)
-                when {
-                    item.shop.isOfficial -> icShopBadge.setImage(IconUnify.BADGE_OS_FILLED)
-                    item.shop.isPMPro -> icShopBadge.setImage(IconUnify.BADGE_PMPRO_FILLED)
-                    item.shop.isPM -> icShopBadge.setImage(IconUnify.BADGE_PM_FILLED)
-                }
+                icShopBadge.showWithCondition(item.shop.isShopHasBadge)
+                if(item.shop.isShopHasBadge) icShopBadge.setImage(item.shop.badge)
 
                 val shopStatusText = getShopStatusText(item.shop)
                 tvShopStatus.text = shopStatusText

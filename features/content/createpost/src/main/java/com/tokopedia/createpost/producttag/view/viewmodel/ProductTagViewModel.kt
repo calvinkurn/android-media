@@ -68,6 +68,9 @@ class ProductTagViewModel @AssistedInject constructor(
     val globalStateShopStateUnknown: Boolean
         get() = _globalSearchShop.value.state == PagedState.Unknown
 
+    val selectedShop: ShopUiModel
+        get() = _shopProduct.value.shop
+
     /** Flow */
     private val _productTagSourceList = MutableStateFlow<List<ProductTagSource>>(emptyList())
     private val _productTagSourceStack = MutableStateFlow<Set<ProductTagSource>>(setOf(ProductTagSource.Unknown))

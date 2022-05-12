@@ -25,8 +25,10 @@ import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.uimodel.state.ProductTagSourceUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.createpost.producttag.view.viewmodel.factory.ProductTagViewModelFactory
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -153,15 +155,36 @@ class ProductTagParentFragment @Inject constructor(
     }
 
     private fun updateBreadcrumb(productTagSourceStack: Set<ProductTagSource>) {
-        val selectedSource = productTagSourceStack.currentSource
-        binding.tvCcProductTagProductSource.text = getProductTagSourceText(selectedSource)
+        /** Update the First Part */
+        if(productTagSourceStack.isNotEmpty()) {
+            val firstSource = productTagSourceStack.first()
 
-        if(selectedSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
-            binding.icCcProductTagShopBadge.setImageUrl(viewModel.shopBadge)
-            binding.icCcProductTagShopBadge.show()
+            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
+            binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
+            if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
+                binding.icCcProductTagShopBadge.setImageUrl(viewModel.shopBadge)
+                binding.icCcProductTagShopBadge.show()
+            }
+            else {
+                binding.icCcProductTagShopBadge.hide()
+            }
         }
-        else {
-            binding.icCcProductTagShopBadge.hide()
+
+        /** Update the Last Part */
+        val hasLastPart = productTagSourceStack.size == 2
+        binding.icCcProductTagShopBadge2.showWithCondition(hasLastPart)
+        binding.tvCcProductTagProductSource2.showWithCondition(hasLastPart)
+        binding.icCcProductTagChevron2.showWithCondition(hasLastPart)
+
+        if(hasLastPart) {
+            val lastSource = productTagSourceStack.last()
+
+            binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_RIGHT)
+            binding.tvCcProductTagProductSource2.text = getProductTagSourceText(lastSource)
+            binding.icCcProductTagShopBadge2.apply {
+                showWithCondition(viewModel.selectedShop.isShopHasBadge)
+                if(viewModel.selectedShop.isShopHasBadge) setImage(viewModel.selectedShop.badge)
+            }
         }
     }
 
@@ -235,6 +258,7 @@ class ProductTagParentFragment @Inject constructor(
             ProductTagSource.LastPurchase -> getString(R.string.content_creation_search_bs_item_last_purchase)
             ProductTagSource.Wishlist -> getString(R.string.content_creation_search_bs_item_wishlist)
             ProductTagSource.MyShop -> userSession.shopName
+            ProductTagSource.Shop -> viewModel.selectedShop.shopName
             else -> getString(R.string.content_creation_search_bs_item_tokopedia)
         }
     }
