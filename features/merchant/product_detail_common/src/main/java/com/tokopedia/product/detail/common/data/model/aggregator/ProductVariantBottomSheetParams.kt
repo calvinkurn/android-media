@@ -16,6 +16,7 @@ data class ProductVariantBottomSheetParams(
         var shopId: String = "",
         var dismissAfterTransaction: Boolean = false,
         var saveAfterClose: Boolean = true,
+        var extParams:String = "",
 
         /**
          * PDP only

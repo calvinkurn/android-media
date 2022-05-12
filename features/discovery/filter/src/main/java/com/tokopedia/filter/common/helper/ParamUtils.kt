@@ -23,7 +23,7 @@ private fun String.createKeyValuePair(): Pair<String, String> {
 private const val NON_FILTER_SRP_PREFIX = "srp_"
 private const val NON_FILTER_USER_PREFIX = "user_"
 private const val NON_FILTER_EXCLUDE_PREFIX = OptionHelper.EXCLUDE_PREFIX
-val nonFilterParameterKeyList = setOf(
+private val nonFilterParameterKeyList = setOf(
     SearchApiConst.Q,
     SearchApiConst.RF,
     SearchApiConst.ACTIVE_TAB,
@@ -42,6 +42,10 @@ val nonFilterParameterKeyList = setOf(
     SearchApiConst.USER_ID,
     SearchApiConst.TYPO,
     SearchApiConst.PAGE,
+)
+private val postProcessingFilterKeys = setOf(
+    SearchApiConst.IS_FULFILLMENT,
+    SearchApiConst.GIFTING,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
@@ -146,3 +150,8 @@ fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> 
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
 }
+
+fun isPostProcessingFilter(searchParameter: Map<String, Any>): Boolean =
+    searchParameter
+        .filterKeys { postProcessingFilterKeys.contains(it) }
+        .any { it.value.toString().toBoolean() }

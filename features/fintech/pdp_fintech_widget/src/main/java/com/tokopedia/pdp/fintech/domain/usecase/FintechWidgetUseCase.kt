@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.pdp.fintech.constants.GQL_GET_WIDGET_DETAIL_V2
 import com.tokopedia.pdp.fintech.domain.datamodel.WidgetDetail
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import javax.inject.Inject
 
 
@@ -18,7 +18,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         onSuccess: (WidgetDetail) -> Unit,
         onError: (Throwable) -> Unit,
         productCategory: String,
-        listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>,
+        listofAmountandUrls: HashMap<String, FintechPriceDataModel>,
 
         ) {
         try {
@@ -39,7 +39,7 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 
 
     private fun getRequestParams(
-        productCategory: String, listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>
+        productCategory: String, listofAmountandUrls: HashMap<String, FintechPriceDataModel>
     ): MutableMap<String, Any?> {
 
         var listOfVariantDetail: MutableList<WidgetRequestModel> =
@@ -49,14 +49,13 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
     }
 
     private fun setAmountList(
-        listofAmountandUrls: HashMap<String, FintechPriceUrlDataModel>
+        listofAmountandUrls: HashMap<String, FintechPriceDataModel>
     ): MutableList<WidgetRequestModel> {
         val listOfVariantDetail: MutableList<WidgetRequestModel> = ArrayList()
         listofAmountandUrls.forEach { (key, value) ->
             listOfVariantDetail.add(
                 WidgetRequestModel(
-                    amount = value.price?.toDouble() ?: 0.0,
-                    redirectionUrl = value.url
+                    amount = value.price?.toDouble() ?: 0.0
                 )
             )
         }
@@ -89,6 +88,5 @@ class FintechWidgetUseCase @Inject constructor(graphqlRepository: GraphqlReposit
 data class WidgetRequestModel(
     @SerializedName("amount")
     val amount: Double,
-    @SerializedName("redirect_url")
-    val redirectionUrl: String?
-)
+
+    )

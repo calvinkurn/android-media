@@ -15,13 +15,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.InstallmentBottomSheetDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
@@ -79,6 +82,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     var quantity = 1
     var isDisabled = false
     private var variantName = ""
+    var itemProductStock = 1
 
     private val bottomSheetNavigator: BottomSheetNavigator by lazy(LazyThreadSafetyMode.NONE) {
         BottomSheetNavigator(childFragmentManager)
@@ -377,14 +381,14 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
     }
 
     private fun setTenureData(tenureSelectedModel: TenureSelectedModel?) {
-        tenureSelectedModel?.also { tenureSelectedModel ->
-            tenureSelectedModel.installmentDetails?.let { installmentDetails ->
+        tenureSelectedModel?.also { tenureSelectedData ->
+            tenureSelectedData.installmentDetails?.let { installmentDetails ->
                 this.installmentModel = installmentDetails
             }
-            tenureSelectedModel.tenure?.let { tenure ->
+            tenureSelectedData.tenure?.let { tenure ->
                 paymentDuration.text = "x$tenure"
             }
-            amountToPay.text = tenureSelectedModel.priceText.orEmpty()
+            amountToPay.text = tenureSelectedData.priceText.orEmpty()
         }
     }
 
@@ -441,6 +445,7 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             shopId = productShopId
         }
         productData.stock?.let { productStock ->
+            itemProductStock = productStock
             productStockLogic(productStock)
         }
         productData.pictures?.get(0)?.let { pictures ->
@@ -465,8 +470,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun productStockLogic(productStock: Int) {
         detailHeader.quantityEditor.maxValue = productStock
-        detailHeader.quantityEditor.addButton.isEnabled = productStock != 1
-        detailHeader.quantityEditor.subtractButton.isEnabled = productStock != 1
+        detailHeader.quantityEditor.addButton.isEnabled = productStock > MINIMUM_THRESHOLD_QUANTITY
+        detailHeader.quantityEditor.subtractButton.isEnabled = detailHeader.quantityEditor.editText.text.toString().toIntOrZero() > MINIMUM_THRESHOLD_QUANTITY
         val currentDetailQuantityValue = detailHeader.quantityEditor.editText.text.toString()
         try {
             if (currentDetailQuantityValue.replace("[^0-9]".toRegex(), "").toInt() > productStock) {
@@ -474,8 +479,8 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                 quantity = productStock
             }
         } catch (e: java.lang.Exception) {
-            detailHeader.quantityEditor.editText.setText("1")
-            quantity = 1
+            detailHeader.quantityEditor.editText.setText("0")
+            quantity = 0
         }
     }
 
@@ -546,9 +551,27 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             openPriceBreakDownBottomSheet()
         }
         proceedToCheckout.setOnClickListener {
+            sendCTAClickEvent()
             payLaterActivationViewModel.addProductToCart(
                 payLaterActivationViewModel.selectedProductId,
                 quantity
+            )
+        }
+    }
+
+    private fun sendCTAClickEvent() {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickCTACheckoutPage(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState ?: "",
+                    checkoutData.gateway_name.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.tenure.toString(),
+                    quantity.toString(),
+                    checkoutData.userAmount ?: "",
+                    variantName
+                )
             )
         }
     }
@@ -565,12 +588,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun openPriceBreakDownBottomSheet() {
         installmentModel?.let {
-            val bundle = Bundle().apply {
-                putParcelable(
-                    PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                    installmentModel
-                )
-            }
+          var bundle =   setBundleForInstalmentBottomSheet( InstallmentBottomSheetDetail(
+                installmentDetail =  it,
+                gatwayToChipMap =  payLaterActivationViewModel.gatewayToChipMap,
+                selectedProductPrice = payLaterActivationViewModel.price.toString(),
+                gatewayIdSelected =  payLaterActivationViewModel.selectedGatewayId.toInt(),
+                selectedTenure = selectedTenurePosition
+            ))
             bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
         }
     }
@@ -686,22 +710,20 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
                     1
                 }
 
-                when {
-                    mQuantity > detailHeader.quantityEditor.maxValue -> {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text =
-                            "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
-                    }
-                    mQuantity < 1 -> {
-                        detailHeader.limiterMessage.visibility = View.VISIBLE
-                        detailHeader.limiterMessage.text =
-                            getString(R.string.paylater_occ_min_quantity)
-                    }
-                    else -> detailHeader.limiterMessage.visibility = View.GONE
-                }
+                if (mQuantity >= detailHeader.quantityEditor.maxValue || itemProductStock == 0) {
+                    detailHeader.limiterMessage.visibility = View.VISIBLE
+                    detailHeader.limiterMessage.text =
+                        "${getString(R.string.paylater_occ_quantity_overflow)} ${detailHeader.quantityEditor.maxValue}"
+                } else if (mQuantity < 1) {
+                    detailHeader.limiterMessage.visibility = View.VISIBLE
+                    detailHeader.limiterMessage.text =
+                        getString(R.string.paylater_occ_min_quantity)
+                } else
+                    detailHeader.limiterMessage.visibility = View.GONE
             }
         }
     }
+
 
     private fun closeKeyboard() {
         context?.let {
@@ -741,14 +763,6 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(bundle: Bundle): ActivationCheckoutFragment {
-            val fragment = ActivationCheckoutFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
 
     override fun isDisable(): Boolean {
         return isDisabled
@@ -763,7 +777,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
+        sendTenureSelectedAnalytics(newPositionToSelect)
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
+    }
+
+    private fun sendTenureSelectedAnalytics(newPositionToSelect:Int) {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let{ checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickTenureEvent(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState?:"",
+                    payLaterActivationViewModel.price.toString(),
+                    checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
+                    checkoutData.gateway_name?:""
+                )
+            )
+        }
     }
 
     private fun updateRecyclerViewData(
@@ -778,4 +807,15 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         selectedTenurePosition = newPositionToSelect
         payLaterActivationViewModel.setTenure(tenureSelectedModel.tenure.toString())
     }
+
+    companion object {
+        const val MINIMUM_THRESHOLD_QUANTITY = 1
+        @JvmStatic
+        fun newInstance(bundle: Bundle): ActivationCheckoutFragment {
+            val fragment = ActivationCheckoutFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+
 }

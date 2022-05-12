@@ -26,25 +26,21 @@ class CouponImagePreviewViewModel @Inject constructor(
         get() = _couponImage
 
     fun previewImage(
+        isCreateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        productCount: Int,
-        firstProductImageUrl: String,
-        secondProductImageUrl: String,
-        thirdProductImageUrl: String,
+        parentProductIds : List<Long>,
         imageRatio: ImageRatio
     ) {
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
                     getCouponImagePreviewUseCase.execute(
+                        isCreateMode,
                         this,
                         couponInformation,
                         couponSettings,
-                        productCount,
-                        firstProductImageUrl,
-                        secondProductImageUrl,
-                        thirdProductImageUrl,
+                        parentProductIds,
                         imageRatio
                     )
                 }

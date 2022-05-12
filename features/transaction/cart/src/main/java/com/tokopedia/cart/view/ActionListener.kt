@@ -94,4 +94,8 @@ interface ActionListener {
 
     fun onLocalizingAddressUpdatedFromWidget()
 
+    fun onClickAddOnCart(productId: String, addOnId: String)
+
+    fun addOnImpression(productId: String)
+
 }

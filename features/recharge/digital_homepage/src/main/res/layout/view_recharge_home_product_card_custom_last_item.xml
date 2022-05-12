@@ -50,7 +50,7 @@
             android:id="@+id/rv_recharge_custom_last_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_4"
             android:layout_marginBottom="@dimen/unify_space_4"
             android:clipToPadding="false"
             android:paddingStart="@dimen/unify_space_16"

@@ -97,10 +97,24 @@ fun ImageView.loadImageWithoutPlaceholder(url: String, fpmItemLabel: String = ""
     }
 }
 
-fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1){
+fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: ImageHandler.ImageLoaderStateListener? = null){
     this.loadImage(url) {
         setPlaceHolder(placeholder)
         centerCrop()
+        if (listener != null) {
+            listener({ _, mediaDataSource ->
+                listener.successLoad()
+            }, {
+                GlideErrorLogHelper().logError(context, it, url)
+                listener.failedLoad()
+            })
+        }
+    }
+}
+
+fun ImageView.loadImageNormal(url: String, placeholder: Int = -1){
+    this.loadImage(url) {
+        setPlaceHolder(placeholder)
     }
 }
 

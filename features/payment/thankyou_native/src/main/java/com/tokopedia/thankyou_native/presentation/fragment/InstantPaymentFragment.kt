@@ -7,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,9 +15,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
@@ -40,8 +35,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import okhttp3.Route
-import java.util.ArrayList
 
 
 const val CHARACTER_LOADER_JSON_ZIP_FILE = "thanks_page_instant_anim.zip"
@@ -197,6 +190,8 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private fun setSummaryData(thanksSummaryInfo: ArrayList<ThanksSummaryInfo>) {
         context?.let {
+            dividerSeparator.visible()
+            llSummaryContainer.visible()
             val inflater: LayoutInflater = LayoutInflater.from(context)
             llSummaryContainer.removeAllViews()
             thanksSummaryInfo.forEach { info ->

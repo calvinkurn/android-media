@@ -35,7 +35,7 @@ class CarouselPlayWidgetViewHolder(
     override fun bind(element: CarouselPlayWidgetDataModel?) {
         element?.let {
             setupAnalyticVariable(element)
-            playWidgetViewHolder.bind(element.widgetUiModel)
+            playWidgetViewHolder.bind(element.widgetState)
             setChannelDivider(element)
         }
     }
@@ -45,11 +45,9 @@ class CarouselPlayWidgetViewHolder(
     }
 
     private fun setupAnalyticVariable(element: CarouselPlayWidgetDataModel) {
-        if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
-            playWidgetAnalyticListener.widgetId = element.homeChannel.id
-            playWidgetAnalyticListener.widgetName = element.widgetUiModel.title
-            playWidgetAnalyticListener.setBusinessWidgetPosition(element.widgetUiModel.config.businessWidgetPosition)
-        }
+        playWidgetAnalyticListener.widgetId = element.homeChannel.id
+        playWidgetAnalyticListener.widgetName = element.widgetState.model.title
+        playWidgetAnalyticListener.setBusinessWidgetPosition(element.widgetState.model.config.businessWidgetPosition)
     }
 
     private fun setChannelDivider(element: CarouselPlayWidgetDataModel) {

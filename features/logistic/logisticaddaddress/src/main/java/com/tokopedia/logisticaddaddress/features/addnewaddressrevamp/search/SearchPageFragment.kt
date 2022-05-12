@@ -53,7 +53,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject

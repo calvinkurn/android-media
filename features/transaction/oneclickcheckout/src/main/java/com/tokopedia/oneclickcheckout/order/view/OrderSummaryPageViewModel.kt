@@ -52,6 +52,10 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
+import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -144,7 +148,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             updateOrderProducts.value = emptyList()
             orderProfile.value = result.orderProfile
             orderPreferenceData = result.orderPreference
-            orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderProfile, result.addressState)) {
+            val isValidAddressState = !isInvalidAddressState(result.orderProfile, result.addressState)
+            orderPreference.value = if (result.throwable == null && isValidAddressState) {
                 OccState.FirstLoad(result.orderPreference)
             } else {
                 OccState.Failed(Failure(result.throwable))
@@ -384,7 +389,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShipment.value = if (orderProfile.value.shipment.isDisableChangeCourier) {
                 shipping.copy(serviceErrorMessage = FAIL_GET_RATES_ERROR_MESSAGE, isApplyLogisticPromo = false, logisticPromoShipping = null)
             } else {
-                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromoUiModel.title}" else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
+                shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromoUiModel.tickerAvailableFreeShippingCourierTitle else null, isApplyLogisticPromo = false, logisticPromoShipping = null)
             }
             if (resultValidateUse != null) {
                 validateUsePromoRevampUiModel = resultValidateUse
@@ -477,7 +482,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             val shippingRecommendationData = orderShipment.value.shippingRecommendationData
             if (shippingRecommendationData != null) {
                 globalEvent.value = OccGlobalEvent.Loading
-                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
+                val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, shipping.logisticPromoViewModel?.promoCode), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
                     val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
                     if (newShipment != null) {
@@ -848,13 +853,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun checkUserEligibilityForAnaRevamp(token: Token? = null) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
-            },
-            {
-                eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
+                {
+                    eligibleForAnaRevamp.value = OccState.Success(OrderEnableAddressFeature(it, token))
+                },
+                {
+                    eligibleForAnaRevamp.value = OccState.Failed(Failure(it))
+                },
+                AddressConstant.ANA_REVAMP_FEATURE_ID
         )
     }
 
@@ -877,6 +882,61 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
+    fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult) {
+        // Add on currently only support single product on OCC
+        val orderProduct = orderProducts.value.first()
+        val orderShop = orderShop.value
+        val addOnResult = saveAddOnStateResult.addOns.firstOrNull()
+        if (addOnResult != null) {
+            if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_ORDER && addOnResult.addOnKey == "${orderCart.cartString}-0") {
+                orderShop.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                this.orderShop.value = orderShop
+                orderProducts.value = listOf(orderProduct)
+                orderCart.shop = this.orderShop.value
+
+                orderTotal.value = orderTotal.value.copy(
+                        orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                        ?: 0.0
+                        )
+                )
+            } else if (addOnResult.addOnLevel == AddOnConstant.ADD_ON_LEVEL_PRODUCT && addOnResult.addOnKey == "${orderCart.cartString}-${orderProduct.cartId}") {
+                orderProduct.addOn = AddOnMapper.mapAddOnBottomSheetResult(addOnResult)
+                orderProducts.value = listOf(orderProduct)
+
+                orderTotal.value = orderTotal.value.copy(
+                        orderCost = orderTotal.value.orderCost.copy(
+                                hasAddOn = true,
+                                addOnPrice = addOnResult.addOnData.firstOrNull()?.addOnPrice?.toDouble()
+                                        ?: 0.0
+                        )
+                )
+            }
+        } else {
+            setDefaultAddOnState(orderShop, orderProduct)
+        }
+
+        calculateTotal()
+    }
+
+    private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
+        if (orderShop.isFulfillment) {
+            orderShop.addOn = AddOnsDataModel()
+            this.orderShop.value = orderShop
+        } else {
+            orderProduct?.let {
+                it.addOn = AddOnsDataModel()
+                orderProducts.value = listOf(it)
+            }
+        }
+        orderTotal.value = orderTotal.value.copy(
+                orderCost = orderTotal.value.orderCost.copy(
+                        hasAddOn = false
+                )
+        )
     }
 
     override fun onCleared() {

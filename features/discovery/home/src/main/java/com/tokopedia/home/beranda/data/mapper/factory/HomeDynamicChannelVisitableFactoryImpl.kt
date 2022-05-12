@@ -53,6 +53,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val CUE_WIDGET_MIN_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -188,11 +190,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
+                DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER -> {
+                    createMerchantVoucher(channel, position)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
                     createHomeToDoWidget(channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
                     createPayLaterHomeToDoWidget(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_CUE_WIDGET -> {
+                    createCueCategory(channel, position)
                 }
             }
         }
@@ -422,6 +430,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     else VALUE_BANNER_DEFAULT
                 )
             }
+            else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MERCHANT_VOUCHER) {
+                channel.promoName = String.format(PROMO_NAME_BANNER_CAROUSEL, position.toString(),
+                        if (channel.header.name.isNotEmpty()) channel.header.name
+                        else VALUE_BANNER_DEFAULT
+                )
+                channel.setPosition(position)
+            }
             else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name
                 val layoutType = if (channel.layout.isEmpty()) VALUE_BANNER_UNKNOWN_LAYOUT_TYPE else channel.layout
@@ -575,6 +590,29 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingMerchantVoucherComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        return MerchantVoucherDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
+        )
+    }
+
+    private fun mappingCueCategoryComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return CueCategoryDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -628,6 +666,23 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     channel,
                     position,
                     questData
+                )
+            )
+        }
+    }
+
+    private fun createMerchantVoucher(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        visitableList.add(mappingMerchantVoucherComponent(
+                channel, isCache, verticalPosition
+        ))
+    }
+
+    private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= CUE_WIDGET_MIN_SIZE) {
+            visitableList.add(
+                mappingCueCategoryComponent(
+                    channel, isCache, verticalPosition
                 )
             )
         }

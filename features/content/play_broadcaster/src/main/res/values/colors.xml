@@ -40,4 +40,12 @@
 
     <!--Summary-->
     <color name="play_dms_broadcast_summary_info_bg">#40454C</color>
+
+    <!-- Preparation -->
+    <color name="play_dms_broadcast_start_livestream">#E02954</color>
+    <color name="play_bro_dms_title_form_border">#BFC9D9</color>
+    <color name="play_bro_dms_preparation_overlay">#AD31353B</color>
+
+    <!--Live-->
+    <color name="play_dms_product_icon_dot">#03AC0E</color>
 </resources>

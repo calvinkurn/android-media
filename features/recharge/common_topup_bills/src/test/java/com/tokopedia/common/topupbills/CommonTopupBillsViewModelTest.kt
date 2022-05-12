@@ -9,6 +9,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
+import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -68,10 +69,13 @@ class CommonTopupBillsViewModelTest {
     @RelaxedMockK
     lateinit var digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase
 
+    @RelaxedMockK
+    lateinit var rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, testCoroutineRule.dispatchers)
+        topupBillsViewModel = TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers)
     }
 
     @Test
@@ -548,7 +552,7 @@ class CommonTopupBillsViewModelTest {
 
     @Test
     fun createExpressCheckoutFieldParam_expressCheckoutInputNotEmpty_isCalled() {
-        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, testCoroutineRule.dispatchers), recordPrivateCalls = true)
+        val topupBillsViewModelSpyk = spyk(TopupBillsViewModel(graphqlRepository, digitalCheckVoucherUseCase, rechargeFavoriteNumberUseCase, testCoroutineRule.dispatchers), recordPrivateCalls = true)
 
         every { topupBillsViewModelSpyk["createExpressCheckoutFieldParam"](allAny<String>(), allAny<String>()) } returns mapOf<String, String>()
 

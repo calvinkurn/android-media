@@ -11,5 +11,6 @@ data class ShopHomeProductBundleItemUiModel(
 ): ImpressHolder() {
     companion object {
         const val DEFAULT_BUNDLE_PRODUCT_PARENT_ID = "0"
+        const val DEFAULT_BUNDLE_QUANTITY = 1
     }
 }

@@ -125,11 +125,19 @@ class ProfileViewHolder(
     }
 
     private fun setBackground(context: Context) {
-        if(context.isDarkMode()) {
-            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark))
-        } else {
-            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop))
-        }
+        try {
+            if (context.isDarkMode()) {
+                MethodChecker.setBackground(
+                    binding?.accountUserItemProfileContainer,
+                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                )
+            } else {
+                MethodChecker.setBackground(
+                    binding?.accountUserItemProfileContainer,
+                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                )
+            }
+        } catch (e: Exception) {}
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {

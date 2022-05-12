@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
@@ -71,6 +72,9 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
             if (GuardianLivenessDetectionSDK.isDeviceSupportLiveness) {
                 intent.extras?.let {
                     extras = it
+
+                    val projectId = intent?.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)
+                    extras.putString(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
                 }
                 livenessFragment = LivenessFragment.newInstance(extras)
                 if (livenessFragment?.isAdded == false) {

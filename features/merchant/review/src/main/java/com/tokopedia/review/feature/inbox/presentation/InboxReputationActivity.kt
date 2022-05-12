@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.inbox.presentation
 
 import android.app.NotificationManager
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -23,9 +21,11 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.R
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
@@ -55,20 +55,14 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
     InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
 
     companion object {
-        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
-        const val GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW"
         const val IS_DIRECTLY_GO_TO_RATING = "is_directly_go_to_rating"
-        const val TAB_BUYER_REVIEW = 3
-        const val TAB_SELLER_REPUTATION_HISTORY = 2
+        const val TAB_PENALTY_AND_REWARD = 3
+        const val TAB_BUYER_REVIEW = 2
         const val TAB_SELLER_INBOX_REVIEW = 1
+        const val TAB_RATING_PRODUCT = 0
         const val NOTIFICATION = 100
         private const val MARGIN_TAB = 8
         private const val MARGIN_START_END_TAB = 16
-        private const val SELLER_INBOX_REVIEW_TAB = "inbox-ulasan"
-
-        fun getCallingIntent(context: Context?): Intent {
-            return Intent(context, InboxReputationActivity::class.java)
-        }
     }
 
     protected var reviewSellerFragment: Fragment? = null
@@ -85,8 +79,6 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
     @Inject
     lateinit var reputationTracking: ReputationTracking
 
-    private var goToReputationHistory = false
-    private var goToBuyerReview = false
     private var canFireTracking = false
     private var isAppLinkProccessed = false
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
@@ -95,11 +87,9 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        goToReputationHistory = intent.getBooleanExtra(GO_TO_REPUTATION_HISTORY, false)
-        goToBuyerReview = intent.getBooleanExtra(GO_TO_BUYER_REVIEW, false)
-        val tab = intent.data?.getQueryParameter(ReviewInboxConstants.PARAM_TAB)
+        val tab = intent.data?.getQueryParameter(ReviewApplinkConst.PARAM_TAB)
         val source = intent.data?.getQueryParameter(ReviewInboxConstants.PARAM_SOURCE)
-        canFireTracking = !goToReputationHistory
+        canFireTracking = !isGoToReputationHistoryTab()
         component.inject(this)
         if (!GlobalConfig.isSellerApp()) {
             startActivity(createNewInstance(this, tab, source))
@@ -194,7 +184,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         val fragmentList = mutableListOf<Fragment>()
         reviewSellerFragment?.let { fragmentList.add(it) }
         inboxReviewFragment?.let { fragmentList.add(it) }
-        fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW))
+        fragmentList.add(InboxReputationFragment.createInstance(ReviewInboxConstants.TAB_BUYER_REVIEW))
         sellerReputationPenaltyFragment?.let { fragmentList.add(it) }
         this.fragmentList = fragmentList
     }
@@ -213,11 +203,7 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         setupToolbar()
         createRatingProductFragment()
         val reviewSellerBundle = Bundle()
-        if (isExistParamTab(tab)) {
-            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, goToReputationHistory)
-        } else {
-            reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !goToReputationHistory)
-        }
+        reviewSellerBundle.putBoolean(IS_DIRECTLY_GO_TO_RATING, !isGoToReputationHistoryTab())
         reviewSellerFragment?.arguments = reviewSellerBundle
         inboxReviewFragment = InboxReviewFragment.createInstance()
         sellerReputationPenaltyFragment = newInstance()
@@ -266,16 +252,14 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
         viewPager?.adapter = sectionAdapter
         if (GlobalConfig.isSellerApp()) {
             if (isExistParamTab(tab)) {
-                if (tab == SELLER_INBOX_REVIEW_TAB) {
-                    viewPager?.currentItem = TAB_SELLER_INBOX_REVIEW
+                viewPager?.currentItem = when (tab) {
+                    ReviewApplinkConst.RATING_PRODUCT_TAB -> TAB_RATING_PRODUCT
+                    ReviewApplinkConst.SELLER_INBOX_REVIEW_TAB -> TAB_SELLER_INBOX_REVIEW
+                    ReviewApplinkConst.BUYER_REVIEW_TAB -> TAB_BUYER_REVIEW
+                    ReviewApplinkConst.PENALTY_AND_REWARD_TAB -> TAB_PENALTY_AND_REWARD
+                    else -> viewPager?.currentItem.orZero()
                 }
             }
-        }
-        if (goToReputationHistory) {
-            viewPager?.currentItem = TAB_SELLER_REPUTATION_HISTORY
-        }
-        if (goToBuyerReview) {
-            viewPager?.currentItem = TAB_BUYER_REVIEW
         }
         wrapTabIndicatorToTitle(
             indicator?.getUnifyTabLayout(), DptoPx(this, MARGIN_START_END_TAB)
@@ -389,6 +373,14 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
                 LocalCacheHandler.clearCache(this, ReviewInboxConstants.GCM_NOTIFICATION)
             }
         }
+    }
+
+    private fun isGoToReputationHistoryTab(): Boolean {
+        return getParamTabFromIntent() == ReviewApplinkConst.BUYER_REVIEW_TAB
+    }
+
+    private fun getParamTabFromIntent(): String? {
+        return intent.data?.getQueryParameter(ReviewApplinkConst.PARAM_TAB)
     }
 
     protected open fun createRatingProductFragment() {

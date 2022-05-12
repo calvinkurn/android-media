@@ -154,12 +154,13 @@ class VideoDetailFragment :
             INTENT_COMMENT -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.let {
-                        calculateTotalComment(
-                            it.getIntExtra(
-                                KolCommentFragment.ARGS_TOTAL_COMMENT,
-                                0
+                        if (::dynamicPostViewModel.isInitialized)
+                            calculateTotalComment(
+                                it.getIntExtra(
+                                    KolCommentFragment.ARGS_TOTAL_COMMENT,
+                                    0
+                                )
                             )
-                        )
                     }
                 }
             }
@@ -179,27 +180,28 @@ class VideoDetailFragment :
     }
 
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
+        if (::dynamicPostViewModel.isInitialized) {
+            val like = dynamicPostViewModel.feedXCard.like
+            like.isLiked = !like.isLiked
+            if (like.isLiked) {
+                try {
+                    val likeValue = Integer.valueOf(like.countFmt) + 1
+                    like.countFmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
 
-        val like = dynamicPostViewModel.feedXCard.like
-        like.isLiked = !like.isLiked
-        if (like.isLiked) {
-            try {
-                val likeValue = Integer.valueOf(like.countFmt) + 1
-                like.countFmt = likeValue.toString()
-            } catch (ignored: NumberFormatException) {
+                like.count = like.count + 1
+            } else {
+                try {
+                    val likeValue = Integer.valueOf(like.countFmt) - 1
+                    like.countFmt = likeValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                like.count = like.count - 1
             }
-
-            like.count = like.count + 1
-        } else {
-            try {
-                val likeValue = Integer.valueOf(like.countFmt) - 1
-                like.countFmt = likeValue.toString()
-            } catch (ignored: NumberFormatException) {
-            }
-
-            like.count = like.count - 1
+            bindLike(like)
         }
-        bindLike(like)
     }
 
     override fun onLikeKolError(message: String) {
@@ -301,8 +303,10 @@ class VideoDetailFragment :
         ivClose.setOnClickListener {
             val intent = Intent()
             intent.putExtra(POST_POSITION, arguments?.getInt(POST_POSITION))
-            intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.feedXCard.comments.count)
-            intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.feedXCard.like.isLiked)
+            if (::dynamicPostViewModel.isInitialized) {
+                intent.putExtra(PARAM_COMMENT_COUNT, dynamicPostViewModel.feedXCard.comments.count)
+                intent.putExtra(PARAM_LIKE_COUNT, dynamicPostViewModel.feedXCard.like.isLiked)
+            }
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }

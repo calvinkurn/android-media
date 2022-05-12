@@ -10,8 +10,8 @@ import com.tokopedia.vouchercreation.product.list.view.viewholder.SortItemViewHo
 
 @SuppressLint("NotifyDataSetChanged")
 class SortListAdapter :
-        RecyclerView.Adapter<SortItemViewHolder>(),
-        SortItemViewHolder.OnListItemClickListener {
+    RecyclerView.Adapter<SortItemViewHolder>(),
+    SortItemViewHolder.OnListItemClickListener {
 
     private var sortSelections: List<SortSelection> = listOf()
 
@@ -30,9 +30,9 @@ class SortListAdapter :
 
     override fun onListItemClicked(position: Int) {
         val selectedSort = sortSelections[position]
-        sortSelections.filter { sortSelection ->
-            sortSelection.id != selectedSort.id
-        }.forEach { selection -> selection.isSelected = false }
+        sortSelections
+            .filter { sortSelection -> sortSelection.name != selectedSort.name }
+            .forEach { selection -> selection.isSelected = false }
         sortSelections[position].isSelected = true
         notifyDataSetChanged()
     }
