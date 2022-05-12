@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -22,7 +23,6 @@ import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
 import com.tokopedia.loginregister.inactive_phone_number.di.DaggerInactivePhoneNumberComponent
-import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -30,15 +30,16 @@ import javax.inject.Inject
 
 class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
 
-    private val inactivePhoneNumberComponent: InactivePhoneNumberComponent by lazy(
-        LazyThreadSafetyMode.NONE
-    ) { initializeInactivePhoneNumber() }
-
     @Inject
     lateinit var inactivePhoneNumberAnalytics: InactivePhoneNumberAnalytics
 
     private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
     private val bindingChild get() = _bindingChild!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        initializeInactivePhoneNumber()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,19 +49,18 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
         _bindingChild = LayoutNeedHelpBottomsheetBinding.inflate(layoutInflater, container, false)
         setChild(bindingChild.root)
 
-        inactivePhoneNumberComponent.inject(this)
-
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initializeInactivePhoneNumber(): InactivePhoneNumberComponent {
+    private fun initializeInactivePhoneNumber() {
         val loginRegisterComponent = DaggerLoginRegisterComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
-        return DaggerInactivePhoneNumberComponent
+        DaggerInactivePhoneNumberComponent
             .builder()
             .loginRegisterComponent(loginRegisterComponent)
             .build()
+            .inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
