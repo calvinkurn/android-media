@@ -557,6 +557,19 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `combine pin hashing param`() {
+        val oldParam = mutableMapOf<String, Any>(
+            OtpValidateUseCase.PARAM_CODE to "1234"
+        )
+
+        val result = viewmodel.combineWithV2param(oldParam, hashedPin = "abc", true, "1234")
+        assert(result[OtpValidateUseCase.PARAM_PIN] == "abc")
+        assert(result[OtpValidateUseCase.PARAM_PIN_HASH] == "1234")
+        assert(result[OtpValidateUseCase.PARAM_USE_PIN_HASH] == true)
+        assert(result[OtpValidateUseCase.PARAM_CODE] == "")
+    }
+
+    @Test
     fun `on viewmodel clear`() {
         viewmodel.done = false
         viewmodel.isLoginRegisterFlow = true
