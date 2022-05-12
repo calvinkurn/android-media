@@ -143,16 +143,16 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     private fun setValidateEmailMessage(validateAdminEmailUiModel: ValidateAdminEmailUiModel) {
         confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.run {
             if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.message.isNotEmpty()) {
-                setMessage(validateAdminEmailUiModel.message)
                 setError(true)
+                setMessage(validateAdminEmailUiModel.message)
                 setAccessAcceptedBtnDisabled()
             } else if (!validateAdminEmailUiModel.isSuccess && validateAdminEmailUiModel.existsUser) {
-                setMessage(getString(R.string.error_message_email_has_been_registered))
                 setError(true)
+                setMessage(getString(R.string.error_message_email_has_been_registered))
                 setAccessAcceptedBtnDisabled()
             } else {
-                setMessage("")
                 setError(false)
+                setMessage("")
                 setAccessAcceptedBtnActive()
             }
         }
