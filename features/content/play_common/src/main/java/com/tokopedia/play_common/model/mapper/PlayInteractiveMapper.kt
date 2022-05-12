@@ -66,10 +66,11 @@ class PlayInteractiveMapper @Inject constructor() {
                 QuizChoicesUiModel(
                     item.id,
                     item.text,
-                    if(item.id == data.userChoice)
-                        PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
-                    else
-                        PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
+                    when {
+                        item.id == data.userChoice -> PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
+                        data.userChoice.isNotEmpty() -> PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
+                        else -> PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
+                    }
                 )
             },
             reward = data.prize,
