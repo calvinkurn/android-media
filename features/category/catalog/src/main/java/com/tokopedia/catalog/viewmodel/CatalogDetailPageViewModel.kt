@@ -43,7 +43,9 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
 
             override fun onCompleted() {}
 
-            override fun onError(e: Throwable) {}
+            override fun onError(e: Throwable) {
+                mProductCount.value =  0
+            }
         })
     }
 }

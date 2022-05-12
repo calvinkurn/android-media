@@ -12,6 +12,8 @@ import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -139,5 +141,15 @@ class CatalogViewModelTest {
         viewModel.fetchProductListing(RequestParams())
         val count = viewModel.mProductCount.value
         assert(count != 0)
+    }
+
+
+    @Test
+    fun `Get Catalog Product Response Fail`() {
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
+        }
+        viewModel.fetchProductListing(RequestParams())
+        assert(viewModel.mProductCount.value == 0)
     }
 }
