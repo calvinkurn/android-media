@@ -608,15 +608,8 @@ class VoucherListViewModelTest {
         with(mViewModel) {
 
             val dummyPair = Pair(VoucherSubsidy.SELLER_AND_TOKOPEDIA, VoucherVps.ALL)
-            isSellerCreated = null
-            isVps = null
-            isSubsidy = null
 
-            val sourceRequestParams = getVoucherSourceRequestParams(
-                isSellerCreated,
-                isVps,
-                isSubsidy
-            )
+            val sourceRequestParams = getVoucherSourceRequestParams()
 
             assert(sourceRequestParams == dummyPair)
         }
