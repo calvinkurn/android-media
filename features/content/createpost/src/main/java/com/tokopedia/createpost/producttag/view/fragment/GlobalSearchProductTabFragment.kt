@@ -64,7 +64,10 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupObserver()
+    }
 
+    override fun onResume() {
+        super.onResume()
         if(viewModel.globalStateProductStateUnknown)
             viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct)
     }

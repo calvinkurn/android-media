@@ -189,6 +189,7 @@ class ProductTagViewModel @AssistedInject constructor(
         when(action) {
             is ProductTagAction.BackPressed -> handleBackPressed()
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
+            ProductTagAction.ClickSearchBar -> handleClickSearchBar()
 
             is ProductTagAction.SetKeyword -> handleSetKeyword(action.query, action.source)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
@@ -232,6 +233,12 @@ class ProductTagViewModel @AssistedInject constructor(
                     _productTagSourceStack.setValue { removeLast() }
                 }
             }
+        }
+    }
+
+    private fun handleClickSearchBar() {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductTagUiEvent.OpenAutoCompletePage(_globalSearchProduct.value.query))
         }
     }
 

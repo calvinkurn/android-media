@@ -8,11 +8,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentLastTaggedProductBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
@@ -93,10 +93,7 @@ class LastTaggedProductFragment @Inject constructor(
         }
 
         binding.clSearch.setOnClickListener {
-            RouteManager.route(
-                requireContext(),
-                "${ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE}?${buildAutoCompletePageParam()}"
-            )
+            RouteManager.route(requireContext(), getAutocompleteApplink(""))
         }
     }
 
@@ -147,16 +144,6 @@ class LastTaggedProductFragment @Inject constructor(
                     clickListener = { viewModel.submitAction(ProductTagAction.LoadLastTaggedProduct) }
                 ).show()
             }
-        }
-    }
-
-    private fun buildAutoCompletePageParam(): String {
-        return buildString {
-            append("navsource=feed_product")
-            append("&")
-            append("srp_page_title=Tokopedia%20Feed")
-            append("&")
-            append("srp_page_id=0")
         }
     }
 

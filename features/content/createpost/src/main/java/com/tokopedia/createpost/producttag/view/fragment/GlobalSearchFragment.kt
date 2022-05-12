@@ -8,10 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
+import com.tokopedia.createpost.producttag.util.getAutocompleteApplink
 import com.tokopedia.createpost.producttag.view.adapter.GlobalSearchResultPagerAdapter
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
+import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
+import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import kotlinx.coroutines.flow.collect
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -71,12 +75,26 @@ class GlobalSearchFragment : BaseProductTagChildFragment() {
 
         binding.viewPager.adapter = tabAdapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
+
+        binding.clSearch.setOnClickListener {
+            viewModel.submitAction(ProductTagAction.ClickSearchBar)
+        }
     }
 
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collect {
                 renderSearchBar(it.value.globalSearchProduct.query)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                when(it) {
+                    is ProductTagUiEvent.OpenAutoCompletePage -> {
+                        RouteManager.route(requireContext(), getAutocompleteApplink(it.query))
+                    }
+                }
             }
         }
     }

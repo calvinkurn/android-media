@@ -9,4 +9,5 @@ sealed interface ProductTagUiEvent {
 
     data class ProductSelected(val product: ProductUiModel): ProductTagUiEvent
     object ShowSourceBottomSheet: ProductTagUiEvent
+    data class OpenAutoCompletePage(val query: String): ProductTagUiEvent
 }
