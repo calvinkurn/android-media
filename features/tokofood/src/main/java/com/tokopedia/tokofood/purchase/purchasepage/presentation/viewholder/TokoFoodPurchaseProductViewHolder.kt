@@ -178,7 +178,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 qtyEditorProduct.gone()
                 return
             }
-
+            var hasSetQuantityListener = false
             qtyEditorProduct.show()
             qtyEditorProduct.autoHideKeyboard = true
             qtyEditorProduct.minValue = element.minQuantity
@@ -191,7 +191,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     val quantity = p0.toString().toIntOrZero()
-                    if (quantity != element.quantity) {
+                    if (quantity != element.quantity && hasSetQuantityListener) {
                         element.quantity = quantity
                         listener.onQuantityChanged()
                     }
@@ -201,6 +201,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
                 }
             })
+            hasSetQuantityListener = true
             qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             qtyEditorProduct.editText.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {

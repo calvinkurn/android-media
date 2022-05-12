@@ -53,9 +53,44 @@ class LoadCartTokoFoodUseCase @Inject constructor(
                   product_id
                   price
                   notes
+                  quantity
                   variants {
                     variant_id
                     name
+                    rules {
+                      selection_rules {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
+                    options {
+                      option_id
+                      name
+                      price
+                    }
+                  }
+                }
+              }
+              unavailable_section {
+                products {
+                  cart_id
+                  product_id
+                  price
+                  notes
+                  quantity
+                  variants {
+                    variant_id
+                    name
+                    rules {
+                      selection_rules {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
                     options {
                       option_id
                       name

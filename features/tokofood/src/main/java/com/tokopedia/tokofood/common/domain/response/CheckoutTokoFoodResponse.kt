@@ -171,6 +171,9 @@ data class CheckoutTokoFoodProduct(
     @SerializedName("notes")
     @Expose
     val notes: String = "",
+    @SerializedName("quantity")
+    @Expose
+    val quantity: Int = 0,
     @SerializedName("variants")
     @Expose
     val variants: List<CheckoutTokoFoodProductVariant> = listOf()
@@ -183,10 +186,43 @@ data class CheckoutTokoFoodProductVariant(
     @SerializedName("name")
     @Expose
     val name: String = "",
+    @SerializedName("rules")
+    @Expose
+    val rules: CheckoutTokoFoodProductVariantRules = CheckoutTokoFoodProductVariantRules(),
     @SerializedName("options")
     @Expose
     val options: List<CheckoutTokoFoodProductVariantOption> = listOf()
 )
+
+data class CheckoutTokoFoodProductVariantRules(
+    @SerializedName("selection_rules")
+    @Expose
+    val selectionRules: CheckoutTokoFoodProductVariantSelectionRules = CheckoutTokoFoodProductVariantSelectionRules()
+)
+
+data class CheckoutTokoFoodProductVariantSelectionRules(
+    @SerializedName("type")
+    @Expose
+    val type: Int = 0,
+    @SerializedName("max_quantity")
+    @Expose
+    val maxQuantity: Int = 0,
+    @SerializedName("min_quantity")
+    @Expose
+    val minQuantity: Int = 0,
+    @SerializedName("required")
+    @Expose
+    val isRequired: Boolean = false
+) {
+    companion object {
+        // Unspecified.
+        const val TYPE_UNSPECIFIED = 0
+        // Allows only one option to be selected.
+        const val SELECT_ONE = 1
+        // Allows multiple options to be selected.
+        const val SELECT_MANY = 2
+    }
+}
 
 data class CheckoutTokoFoodProductVariantOption(
     @SerializedName("is_selected")

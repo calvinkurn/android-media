@@ -101,9 +101,18 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   original_price_fmt
                   discount_percentage
                   notes
+                  quantity
                   variants {
                     variant_id
                     name
+                    rules {
+                      selection_rules {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
                     options {
                       is_selected
                       option_id
@@ -130,9 +139,18 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                   original_price_fmt
                   discount_percentage
                   notes
+                  quantity
                   variants {
                     variant_id
                     name
+                    rules {
+                      selection_rules {
+                        type
+                        max_quantity
+                        min_quantity
+                        required
+                      }
+                    }
                     options {
                       is_selected
                       option_id
@@ -280,6 +298,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                             originalPriceFmt = "Rp 50.000",
                             discountPercentage = "50%",
                             notes = "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang...",
+                            quantity = 1,
                             variants = listOf(
                                 CheckoutTokoFoodProductVariant(
                                     name = "Sugar Level",
@@ -311,7 +330,8 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                             originalPrice = 150000.00,
                             originalPriceFmt = "Rp 200.000",
                             discountPercentage = "33%",
-                            notes = ""
+                            notes = "",
+                            quantity = 1
                         )
                     )
                 ),
@@ -329,6 +349,7 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                             originalPriceFmt = "Rp 50.000",
                             discountPercentage = "50%",
                             notes = "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang...",
+                            quantity = 1,
                             variants = listOf(
                                 CheckoutTokoFoodProductVariant(
                                     name = "Sugar Level",
@@ -360,7 +381,8 @@ class CheckoutTokoFoodUseCase @Inject constructor(
                             originalPrice = 150000.00,
                             originalPriceFmt = "Rp 200.000",
                             discountPercentage = "33%",
-                            notes = ""
+                            notes = "",
+                            quantity = 1
                         )
                     )
                 ),

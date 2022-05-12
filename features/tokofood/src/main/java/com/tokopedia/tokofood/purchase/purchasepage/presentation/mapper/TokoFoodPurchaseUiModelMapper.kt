@@ -17,6 +17,9 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
 
+    private const val MIN_QUANTITY_STOCK = 1
+    private const val MAX_QUANTITY_STOCK = 99999
+
     fun mapShopInfoToUiModel(shop: CheckoutTokoFoodShop): TokoFoodPurchaseFragmentUiModel {
         return TokoFoodPurchaseFragmentUiModel(true, shop.name, shop.distance)
     }
@@ -212,10 +215,10 @@ object TokoFoodPurchaseUiModelMapper {
             // TODO: Change price to fmt
             price = product.price.toLong(),
             // TODO: Add quantity in pojo,
-            quantity = 1,
+            quantity = product.quantity,
             // TODO: Check for min/max quantity
-            minQuantity = 1,
-            maxQuantity = 10,
+            minQuantity = MIN_QUANTITY_STOCK,
+            maxQuantity = MAX_QUANTITY_STOCK,
             notes = product.notes,
             addOns = addOnsAndParamPair.map { it.first },
             // TODO: Change original price to fmt
