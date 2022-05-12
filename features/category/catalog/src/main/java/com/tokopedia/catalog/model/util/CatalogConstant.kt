@@ -60,5 +60,6 @@ object CatalogConstant {
     const val KEY_UNIQUE_CATALOG_FOR_YOU_TRACKING  = "Catalog For You List Analytics"
 
     const val CATALOG_PRODUCT_BS_NEW_DESIGN = "catalog_product_list"
+    const val DIGITS_RATING_DECIMAL = 3
 
 }

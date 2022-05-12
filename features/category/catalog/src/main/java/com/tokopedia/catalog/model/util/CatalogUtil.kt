@@ -58,9 +58,9 @@ object CatalogUtil {
         if(rating.isNullOrBlank()){
             return ""
         }
-        return if(rating.length >= 3){
-            rating.replace(".",",").substring(0,3)
-        }else if(rating.length <= 2 && rating.isNotBlank()) {
+        return if(rating.length >= CatalogConstant.DIGITS_RATING_DECIMAL){
+            rating.replace(".",",").substring(0,CatalogConstant.DIGITS_RATING_DECIMAL)
+        }else if(rating.length <= (CatalogConstant.DIGITS_RATING_DECIMAL - 1) && rating.isNotBlank()) {
             rating.substring(0,1)
         }else {
             ""
