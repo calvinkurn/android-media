@@ -493,7 +493,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         isBulkDeleteShow = false
         listBulkDelete.clear()
         wishlistV2Adapter.hideCheckbox()
-        wishlistV2Adapter.resetTicker()
 
         binding?.run {
             containerDelete.gone()
@@ -1395,6 +1394,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         currRecommendationListPage = 1
         loadWishlistV2()
         showSortFilter()
+        wishlistV2Adapter.resetTicker()
     }
 
     private fun showSortFilter() {
