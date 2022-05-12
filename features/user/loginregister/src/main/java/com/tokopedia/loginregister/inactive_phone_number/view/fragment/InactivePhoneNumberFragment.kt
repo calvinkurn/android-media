@@ -16,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentInactivePhoneNumberBinding
 import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
+import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
 import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,7 +66,8 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         viewModel.formState.observe(viewLifecycleOwner) {
 
             binding?.tfu2OldPhoneNumber?.setMessage(
-                if (it.numberError != null) getString(it.numberError)
+                if (!it.isDataValid && it.numberError != PhoneFormState.DEFAULT_NUMBER_ERROR)
+                    getString(it.numberError)
                 else " "
             )
 

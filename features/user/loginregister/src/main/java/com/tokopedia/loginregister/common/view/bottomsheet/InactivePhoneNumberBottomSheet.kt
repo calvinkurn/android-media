@@ -41,7 +41,7 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setTitle(context?.getString(R.string.ipn_what_help_do_you_need) ?: "")
+        setTitle(context?.getString(R.string.loginregister_what_help_do_you_need) ?: "")
 
         setListener()
     }
@@ -61,7 +61,7 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
     }
 
     private fun initTokopediaCareText(typography: Typography) {
-        val message = getString(R.string.ipn_need_another_help)
+        val message = getString(R.string.loginregister_need_another_help)
         val spannable = SpannableString(message)
         spannable.setSpan(
             object : ClickableSpan() {

@@ -20,6 +20,7 @@ class InactivePhoneNumberViewModel @Inject constructor(
 
     private val _formState = MutableLiveData<PhoneFormState>()
     val formState get() = _formState
+    private val phoneFormState = PhoneFormState()
 
     private val _statusPhoneNumber = MutableLiveData<Result<String>>()
     val statusPhoneNumber get() = _statusPhoneNumber
@@ -30,13 +31,33 @@ class InactivePhoneNumberViewModel @Inject constructor(
     val isLoading get() = _isLoading
 
     private fun validationNumber(number: String): Boolean {
-        _formState.value =
-            when {
-                number.isEmpty() -> PhoneFormState(numberError = ipn_required)
-                number.length < MINIMUM_LENGTH_NUMBER -> PhoneFormState(numberError = ipn_too_short)
-                number.length > MAXIMUM_LENGTH_NUMBER -> PhoneFormState(numberError = ipn_too_long)
-                else -> PhoneFormState(isDataValid = true)
+        when {
+            number.isEmpty() -> {
+                phoneFormState.apply {
+                    numberError = ipn_required
+                    isDataValid = false
+                }
             }
+            number.length < MINIMUM_LENGTH_NUMBER -> {
+                phoneFormState.apply {
+                    numberError = ipn_too_short
+                    isDataValid = false
+                }
+            }
+            number.length > MAXIMUM_LENGTH_NUMBER -> {
+                phoneFormState.apply {
+                    numberError = ipn_too_long
+                    isDataValid = false
+                }
+            }
+            else -> {
+                phoneFormState.apply {
+                    isDataValid = true
+                }
+            }
+        }
+
+        _formState.value = phoneFormState
 
         return _formState.value?.isDataValid == true
     }
