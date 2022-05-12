@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -37,6 +38,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -71,6 +73,8 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var orderLiveTrackingFragment: TokoFoodOrderLiveTrackingFragment? = null
 
+    private var orderId: String? = null
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -88,6 +92,7 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setOrderIdFromArgument()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail(ORDER_TRACKING_RESOURCE)
@@ -141,6 +146,10 @@ class BaseTokoFoodOrderTrackingFragment :
     override val parentPool: RecyclerView.RecycledViewPool
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
+    private fun setOrderIdFromArgument() {
+        this.orderId = arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
+
     private fun setupToolbar() {
         toolbarHandler = OrderTrackingToolbarHandler(WeakReference(activity), binding)
     }
@@ -158,7 +167,7 @@ class BaseTokoFoodOrderTrackingFragment :
             hideError()
             showLoadingShimmer(LoadingModel())
         }
-        viewModel.fetchOrderDetail(resourceId)
+        viewModel.fetchOrderDetail(orderId.orEmpty(), resourceId)
     }
 
     private fun observeOrderDetail() {
@@ -340,10 +349,27 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
+    private fun showErrorToaster(errorMessage: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                text = errorMessage,
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            ).show()
+        }
+    }
+
     companion object {
 
-        fun newInstance(): BaseTokoFoodOrderTrackingFragment {
-            return BaseTokoFoodOrderTrackingFragment()
+        fun newInstance(bundle: Bundle?): BaseTokoFoodOrderTrackingFragment {
+            return if (bundle == null) {
+                BaseTokoFoodOrderTrackingFragment()
+            } else {
+                BaseTokoFoodOrderTrackingFragment().apply {
+                    arguments = bundle
+                }
+            }
         }
 
         private val ORDER_TRACKING_RESOURCE = R.raw.ordertracking

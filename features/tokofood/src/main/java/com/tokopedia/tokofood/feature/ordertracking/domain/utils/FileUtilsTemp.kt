@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.ordertracking.domain.utils
 
 import android.content.res.Resources
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import java.io.IOException
 import java.io.InputStream
@@ -12,7 +11,6 @@ class FileUtilsTemp @Inject constructor() {
 
     inline fun <reified T> getJsonResources(json: String): T {
         val gson = Gson()
-        val type = object : TypeToken<T>() {}.type
         return gson.fromJson(json, T::class.java)
     }
 

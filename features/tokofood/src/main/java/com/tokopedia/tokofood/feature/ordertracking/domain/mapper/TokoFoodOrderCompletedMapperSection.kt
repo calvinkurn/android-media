@@ -7,7 +7,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Shippin
 import javax.inject.Inject
 
 class TokoFoodOrderCompletedMapperSection @Inject constructor() : BaseOrderDetailSectionResult(),
-    ITokoFoodOrderLiveTrackingMapper {
+    ITokoFoodOrderCompletedMapper {
 
     override fun mapToOrderDetailList(
         tokoFoodOrderDetail:

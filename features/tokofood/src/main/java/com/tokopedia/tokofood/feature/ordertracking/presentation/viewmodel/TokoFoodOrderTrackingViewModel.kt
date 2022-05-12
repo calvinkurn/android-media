@@ -80,7 +80,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         fetchOrderLiveTracking()
     }
 
-    fun fetchOrderDetail(resourceId: Int) {
+    fun fetchOrderDetail(orderId: String, resourceId: Int) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
@@ -104,7 +104,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         })
     }
 
-    private fun fetchOrderCompletedLiveTracking(resourceId: Int) {
+    private fun fetchOrderCompletedLiveTracking(orderId: String, resourceId: Int) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
@@ -119,7 +119,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getFoodItems() = foodItems
     fun getOrderId() = orderId
-    fun getOrderStatus() = orderStatus
 
     fun updateOrderId(orderId: String) {
         _orderId.tryEmit(orderId)
@@ -138,10 +137,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
                 index++
                 when (orderStatus) {
                     OrderStatusType.CANCELLED -> {
-                        fetchOrderCompletedLiveTracking(canceledOrder)
+                        fetchOrderCompletedLiveTracking(it, canceledOrder)
                     }
                     OrderStatusType.COMPLETED -> {
-                        fetchOrderCompletedLiveTracking(successOrder)
+                        fetchOrderCompletedLiveTracking(it, successOrder)
                     }
                     else -> {
                         _orderLiveTrackingStatus.emit(Success(orderStatusResult))

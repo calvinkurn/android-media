@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import javax.inject.Inject
 
-class TokoFoodOrderLiveTrackingMapperSection @Inject constructor() : BaseOrderDetailSectionResult(), ITokoFoodOrderCompletedMapper {
+class TokoFoodOrderLiveTrackingMapperSection @Inject constructor() : BaseOrderDetailSectionResult(), ITokoFoodOrderLiveTrackingMapper {
 
     override fun mapToOrderDetailList(
         tokoFoodOrderDetail:
