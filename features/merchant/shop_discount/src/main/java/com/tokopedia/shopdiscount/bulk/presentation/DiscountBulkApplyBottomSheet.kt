@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -116,18 +116,29 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private var onApplyClickListener: (DiscountSettings) -> Unit = {}
 
+    init {
+        clearContentPadding = true
+        isSkipCollapseState = true
+        isKeyboardOverlap = false
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        if (dialog is BottomSheetDialog) {
-            dialog.behavior.skipCollapsed = true
-            dialog.behavior.state = STATE_EXPANDED
+        val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
+
+        bottomSheetDialog.setOnShowListener {
+            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.skipCollapsed = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-        return dialog
+
+        return bottomSheetDialog
     }
 
     private fun setupDependencyInjection() {
@@ -149,13 +160,10 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetDiscountBulkApplyBinding.inflate(inflater, container, false)
-        isKeyboardOverlap = false
-        clearContentPadding = true
         setChild(binding?.root)
         setTitle(title)
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
