@@ -76,8 +76,9 @@ class ProductTagActivity : BaseActivity() {
                     else ProductTagSource.Unknown
 
         val query = intent?.extras?.getString(KEY_QUERY) ?: ""
+        val shopId = intent?.data?.lastPathSegment ?: ""
 
-        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query)
+        ProductTagParentFragment.findFragment(supportFragmentManager)?.onNewIntent(source, query, shopId)
     }
 
     private fun inject() {

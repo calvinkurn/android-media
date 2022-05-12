@@ -283,8 +283,8 @@ class ProductTagParentFragment @Inject constructor(
         return arguments?.getString(key) ?: ""
     }
 
-    fun onNewIntent(source: ProductTagSource, query: String) {
-        viewModel.submitAction(ProductTagAction.SetKeyword(query, source))
+    fun onNewIntent(source: ProductTagSource, query: String, shopId: String) {
+        viewModel.submitAction(ProductTagAction.SetDataFromAutoComplete(source, query, shopId))
         viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
     }
 

@@ -8,22 +8,10 @@ import com.tokopedia.iconunify.IconUnify
 data class ShopUiModel(
     val shopId: String = "",
     val shopName: String = "",
-    val shopDomain: String = "",
-    val shopUrl: String = "",
     val shopImage: String = "",
-    val shopImage300: String = "",
-    val shopDescription: String = "",
-    val shopTagline: String = "",
     val shopLocation: String = "",
-    val shopTotalTransaction: String = "",
-    val shopTotalFavorite: String = "",
     val shopGoldShop: Int = 0,
-    val shopIsOwner: Int = 0,
-    val shopRateSpeed: Int = 0,
-    val shopRateAccuracy: Int = 0,
-    val shopRateService: Int = 0,
     val shopStatus: Int = 0,
-    val reputationImageUri: String = "",
     val isOfficial: Boolean = false,
     val isPMPro: Boolean = false,
 ) {
@@ -47,9 +35,9 @@ data class ShopUiModel(
 
     val badge: Int
         get() = when {
-            isPM -> IconUnify.BADGE_PM_FILLED
-            isPMPro -> IconUnify.BADGE_PMPRO_FILLED
             isOfficial -> IconUnify.BADGE_OS_FILLED
+            isPMPro -> IconUnify.BADGE_PMPRO_FILLED
+            isPM -> IconUnify.BADGE_PM_FILLED
             else -> KEY_NO_BADGE
         }
 

@@ -191,7 +191,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
             ProductTagAction.ClickSearchBar -> handleClickSearchBar()
 
-            is ProductTagAction.SetKeyword -> handleSetKeyword(action.query, action.source)
+            is ProductTagAction.SetDataFromAutoComplete -> handleSetDataFromAutoComplete(action.source, action.query, action.shopId)
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
@@ -242,23 +242,28 @@ class ProductTagViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSetKeyword(query: String, source: ProductTagSource) {
-        when(source) {
-            ProductTagSource.GlobalSearch -> {
-                _globalSearchProduct.setValue {
-                    GlobalSearchProductUiModel.Empty.copy(query = query)
+    private fun handleSetDataFromAutoComplete(source: ProductTagSource, query: String, shopId: String) {
+        viewModelScope.launchCatchError(block = {
+            when(source) {
+                ProductTagSource.GlobalSearch -> {
+                    _globalSearchProduct.setValue {
+                        GlobalSearchProductUiModel.Empty.copy(query = query)
+                    }
+                    _globalSearchShop.setValue {
+                        GlobalSearchShopUiModel.Empty.copy(query = query)
+                    }
                 }
-                _globalSearchShop.setValue {
-                    GlobalSearchShopUiModel.Empty.copy(query = query)
+                ProductTagSource.Shop -> {
+                    val shop = getShopInfo(shopId)
+                    _shopProduct.setValue {
+                        ShopProductUiModel.Empty.copy(
+                            shop = shop,
+                            query = query,
+                        )
+                    }
                 }
             }
-            ProductTagSource.Shop -> {
-                /** TODO: load shop info */
-                _shopProduct.setValue {
-                    ShopProductUiModel.Empty.copy(query = query)
-                }
-            }
-        }
+        }) { }
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
@@ -506,6 +511,20 @@ class ProductTagViewModel @AssistedInject constructor(
     }
 
     /** Util */
+    private suspend fun getShopInfo(shopId: String): ShopUiModel {
+        /** TODO: gonna hit GQL */
+        return ShopUiModel(
+            shopId = shopId,
+            shopName = "Testing saja",
+            shopImage = "",
+            shopLocation = "",
+            shopGoldShop = 1,
+            shopStatus = 1,
+            isOfficial = true,
+            isPMPro = true,
+        )
+    }
+
     private fun isNeedToShowDefaultSource(source: ProductTagSource): Boolean {
         return source == ProductTagSource.GlobalSearch && _globalSearchProduct.value.query.isEmpty()
     }

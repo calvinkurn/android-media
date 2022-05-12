@@ -42,13 +42,10 @@ class FeedAceSearchShopUseCase @Inject constructor(
                 shops {
                   shop_id
                   shop_name
-                  shop_domain
-                  shop_url
                   shop_image
                   shop_location
                   shop_gold_shop
                   shop_status
-                  reputation_image_uri
                   is_official
                   is_pm_pro
                 }
