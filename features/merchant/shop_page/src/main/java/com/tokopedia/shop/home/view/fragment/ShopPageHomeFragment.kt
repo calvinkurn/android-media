@@ -1116,7 +1116,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeAdapter.setProductListEmptyState(isOwner)
         } else {
             addChangeProductGridSection(totalProductData)
-            shopHomeAdapter.setProductListData(productList)
+            shopHomeAdapter.setProductListData(productList, isOwner)
             updateScrollListenerState(hasNextPage)
         }
     }
