@@ -612,6 +612,9 @@ class AtcVariantViewModel @Inject constructor(
 
         val variantGalleryItems = variantAggregatorData?.getVariantGalleryItems()
 
+        val items = variantGalleryItems ?: emptyList()
+        if (items.isEmpty()) return
+
         val productDetailGalleryData = ProductDetailGallery(
             productId = productId,
             userId = userId,
@@ -622,7 +625,7 @@ class AtcVariantViewModel @Inject constructor(
                 tag = mainImageTag,
                 type = ProductDetailGallery.Item.Type.Image
             ),
-            items = variantGalleryItems ?: emptyList(),
+            items = items,
             selectedId = selectedOptionId
         )
 
