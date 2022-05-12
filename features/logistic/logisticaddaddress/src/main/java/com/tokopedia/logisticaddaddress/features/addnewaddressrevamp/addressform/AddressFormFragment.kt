@@ -771,6 +771,42 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         return validated
     }
 
+    fun validateReceiverName() : Boolean {
+        binding?.formAccount?.etNamaPenerima?.let { field ->
+            val receiverName = field.textFieldInput.text.toString()
+            if (receiverName.length < 2) {
+                if (receiverName.isEmpty() || receiverName == " ") {
+                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+                view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                return false
+            }
+            else {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun validatePhoneNumber() : Boolean {
+        binding?.formAccount?.etNomorHp?.let { field ->
+            val phoneNumber = field.textFieldInput.text.toString()
+            if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
+                if (phoneNumber.isEmpty()  || phoneNumber == " ") {
+                    setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+                view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                return false
+            } else if (!isPhoneNumberValid(phoneNumber)) {
+                view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                return false
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+
 
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
         return object : TextWatcher {
