@@ -160,7 +160,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     companion object {
 
-        private const val SCREEN_NAME = "Inactive Phone Number Page"
+        private val SCREEN_NAME = InactivePhoneNumberFragment::class.java.simpleName
 
         @JvmStatic
         fun newInstance(bundle: Bundle) =

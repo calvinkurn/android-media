@@ -48,7 +48,7 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
 
     private fun setListener(){
 
-        initTokopediaCareTextNeedHelpBottomSheet(bindingChild.toNeedAnotherHelp)
+        initTokopediaCareText(bindingChild.toNeedAnotherHelp)
 
         bindingChild.ubInactivePhoneNumber.setOnClickListener {
             goToInactivePhoneNumber()
@@ -60,7 +60,7 @@ class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
 
     }
 
-    private fun initTokopediaCareTextNeedHelpBottomSheet(typography: Typography) {
+    private fun initTokopediaCareText(typography: Typography) {
         val message = getString(R.string.ipn_need_another_help)
         val spannable = SpannableString(message)
         spannable.setSpan(

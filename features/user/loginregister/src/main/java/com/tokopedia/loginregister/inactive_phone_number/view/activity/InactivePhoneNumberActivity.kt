@@ -24,8 +24,6 @@ class InactivePhoneNumberActivity : BaseSimpleActivity(),
         return InactivePhoneNumberFragment.newInstance(bundle)
     }
 
-    override fun getLayoutRes(): Int = R.layout.activity_inactive_phone_number
-
     override fun getComponent(): InactivePhoneNumberComponent =
         inactivePhoneNumberComponent ?: initializeInactivePhoneNumber()
 
