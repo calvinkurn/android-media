@@ -11,6 +11,7 @@ import com.tokopedia.createpost.producttag.util.extension.setValue
 import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.createpost.producttag.util.SHOP_BADGE
+import com.tokopedia.createpost.producttag.util.extension.removeLast
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.event.ProductTagUiEvent
@@ -49,9 +50,6 @@ class ProductTagViewModel @AssistedInject constructor(
     /** Public Getter */
     val productTagSourceList: List<ProductTagSource>
         get() = _productTagSourceList.value
-
-    val selectedTagSource: ProductTagSource
-        get() = _productTagSourceStack.value.currentSource
 
     val lastTaggedProductStateUnknown: Boolean
         get() = _lastTaggedProduct.value.state == PagedState.Unknown
@@ -190,6 +188,8 @@ class ProductTagViewModel @AssistedInject constructor(
     fun submitAction(action: ProductTagAction) {
         when(action) {
             is ProductTagAction.BackPressed -> handleBackPressed()
+            ProductTagAction.ClickBreadcrumb -> handleClickBreadcrumb()
+
             is ProductTagAction.SelectProductTagSource -> handleSelectProductTagSource(action.source)
             is ProductTagAction.ProductSelected -> handleProductSelected(action.product)
 
@@ -218,15 +218,25 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleBackPressed() {
-        _productTagSourceStack.setValue {
-            toMutableSet().apply {
-                lastOrNull()?.let { remove(it) }
+        _productTagSourceStack.setValue { removeLast() }
+    }
+
+    private fun handleClickBreadcrumb() {
+        viewModelScope.launch {
+            when(_productTagSourceStack.value.size) {
+                1 -> {
+                    _uiEvent.emit(ProductTagUiEvent.ShowSourceBottomSheet)
+                }
+                2 -> {
+                    _productTagSourceStack.setValue { removeLast() }
+                }
             }
         }
     }
 
     private fun handleSelectProductTagSource(source: ProductTagSource) {
-        _productTagSourceStack.setValue { setOf(source) }
+        if(_productTagSourceStack.value.size == 1)
+            _productTagSourceStack.setValue { setOf(source) }
     }
 
     private fun handleProductSelected(product: ProductUiModel) {

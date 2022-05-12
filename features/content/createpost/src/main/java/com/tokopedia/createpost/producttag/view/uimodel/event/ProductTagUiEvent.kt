@@ -8,4 +8,5 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
 sealed interface ProductTagUiEvent {
 
     data class ProductSelected(val product: ProductUiModel): ProductTagUiEvent
+    object ShowSourceBottomSheet: ProductTagUiEvent
 }

@@ -106,10 +106,7 @@ class ProductTagParentFragment @Inject constructor(
         }
 
         binding.tvCcProductTagProductSource.setOnClickListener {
-            ProductTagSourceBottomSheet.getFragment(
-                childFragmentManager,
-                requireActivity().classLoader
-            ).showNow(childFragmentManager)
+            viewModel.submitAction(ProductTagAction.ClickBreadcrumb)
         }
     }
 
@@ -137,6 +134,12 @@ class ProductTagParentFragment @Inject constructor(
                         }
                         requireActivity().setResult(Activity.RESULT_OK, data)
                         requireActivity().finish()
+                    }
+                    is ProductTagUiEvent.ShowSourceBottomSheet -> {
+                        ProductTagSourceBottomSheet.getFragment(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).showNow(childFragmentManager)
                     }
                 }
             }
