@@ -53,7 +53,7 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     }
 
-    private val trackingField = ImpressHolder()
+    private val impressHolder = ImpressHolder()
 
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
@@ -70,7 +70,7 @@ class PlayInteractiveLeaderboardViewComponent(
             listener.onRefreshButtonClicked(this)
         }
 
-        btnRefreshError.addOnImpressionListener(trackingField){
+        btnRefreshError.addOnImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
         }
 

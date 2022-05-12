@@ -44,7 +44,7 @@ class QuizWidgetView : ConstraintLayout {
 
     private var mListener: Listener? = null
 
-    private val trackingField = ImpressHolder()
+    private val impressHolder = ImpressHolder()
     private val quizAdapter: QuizListAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
         override fun onClicked(item: QuizChoicesUiModel) {
             mListener?.onQuizOptionClicked(item)
@@ -57,7 +57,7 @@ class QuizWidgetView : ConstraintLayout {
             adapter = quizAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(QuizOptionItemDecoration(context))
-            addOnImpressionListener(trackingField){
+            addOnImpressionListener(impressHolder){
                 mListener?.onQuizImpressed()
             }
         }
