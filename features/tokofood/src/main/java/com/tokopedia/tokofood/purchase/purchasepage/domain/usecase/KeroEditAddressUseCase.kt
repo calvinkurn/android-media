@@ -7,20 +7,34 @@ import com.tokopedia.tokofood.purchase.purchasepage.domain.query.KeroEditAddress
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class KeroEditAddressUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<KeroEditAddressResponse>(graphqlRepository) {
+class KeroEditAddressUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    private val keroGetAddressUseCase: KeroGetAddressUseCase
+) : GraphqlUseCase<KeroEditAddressResponse>(graphqlRepository) {
+
+    private val isDebug = true
 
     init {
         setGraphqlQuery(KeroEditAddressQuery)
         setTypeClass(KeroEditAddressResponse::class.java)
     }
 
-    suspend fun execute(): Boolean {
-        // TODO: Pass actual params and run actual query
-        setRequestParams(KeroEditAddressQuery.createRequestParams())
-//        return executeOnBackground().keroEditAddress.data.isEditSuccess()
-        delay(1000)
-        return true
+    suspend fun execute(
+        addressId: String,
+        latitude: String,
+        longitude: String
+    ): Boolean {
+        if (isDebug) {
+            val addressParam = keroGetAddressUseCase.execute(addressId).copy(
+                latitude = latitude,
+                longitude = longitude
+            )
+            setRequestParams(KeroEditAddressQuery.createRequestParams(addressParam))
+            return executeOnBackground().keroEditAddress.data.isEditSuccess()
+        } else {
+            delay(1000)
+            return true
+        }
     }
 
 }

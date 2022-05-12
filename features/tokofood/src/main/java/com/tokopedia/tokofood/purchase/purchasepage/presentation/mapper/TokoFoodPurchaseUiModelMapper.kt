@@ -212,17 +212,15 @@ object TokoFoodPurchaseUiModelMapper {
             id = product.productId,
             name = product.productName,
             imageUrl = product.imageUrl,
-            // TODO: Change price to fmt
-            price = product.price.toLong(),
-            // TODO: Add quantity in pojo,
+            price = product.price,
+            priceFmt = product.priceFmt,
             quantity = product.quantity,
-            // TODO: Check for min/max quantity
             minQuantity = MIN_QUANTITY_STOCK,
             maxQuantity = MAX_QUANTITY_STOCK,
             notes = product.notes,
             addOns = addOnsAndParamPair.map { it.first },
-            // TODO: Change original price to fmt
-            originalPrice = product.originalPrice.toLong(),
+            originalPrice = product.originalPrice,
+            originalPriceFmt = product.originalPriceFmt,
             discountPercentage = product.discountPercentage,
             cartId = product.cartId,
             variants = addOnsAndParamPair.map { it.second }

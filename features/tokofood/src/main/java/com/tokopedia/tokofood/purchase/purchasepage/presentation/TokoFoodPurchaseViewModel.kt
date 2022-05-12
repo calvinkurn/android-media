@@ -80,7 +80,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     // Temporary field to store collapsed unavailable products
     private var tmpCollapsedUnavailableItems = mutableListOf<Visitable<*>>()
 
-    private val _isAddressHasPinpoint = MutableStateFlow(false)
+    private val _isAddressHasPinpoint = MutableStateFlow("" to false)
 
     private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>?> =
         MutableSharedFlow()
@@ -122,8 +122,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun setIsHasPinpoint(hasPinpoint: Boolean) {
-        _isAddressHasPinpoint.value = hasPinpoint
+    fun setIsHasPinpoint(addressId: String, hasPinpoint: Boolean) {
+        _isAddressHasPinpoint.value = addressId to hasPinpoint
     }
 
     fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
@@ -146,9 +146,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Check for success status
                 val isEnabled = it.isEnabled()
                 _visitables.value =
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value)
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value.second)
                         .toMutableList()
-                if (_isAddressHasPinpoint.value) {
+                if (_isAddressHasPinpoint.value.second) {
                     _uiEvent.value = PurchaseUiEvent(
                         state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE,
                         data = it
@@ -168,7 +168,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                         lastResponse,
                         lastResponse.isEnabled(),
-                        !_isAddressHasPinpoint.value
+                        !_isAddressHasPinpoint.value.second
                     ).toMutableList()
                 }
                 _uiEvent.value = PurchaseUiEvent(
@@ -201,7 +201,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
                     isEnabled,
-                    !_isAddressHasPinpoint.value
+                    !_isAddressHasPinpoint.value.second
                 )
                 val dataList = getVisitablesValue().toMutableList().apply {
                     getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
@@ -244,7 +244,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(
                     lastResponse,
                     lastResponse.isEnabled(),
-                    !_isAddressHasPinpoint.value
+                    !_isAddressHasPinpoint.value.second
                 ).toMutableList()
             }
             _uiEvent.value = PurchaseUiEvent(
@@ -505,22 +505,23 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         )
     }
 
-    fun updateAddressPinpoint(latitude: String, longitude: String) {
-        // Todo : hit API set address pinpoint, then reload purchase page if success
+    fun updateAddressPinpoint(addressId: String,
+                              latitude: String,
+                              longitude: String) {
         launchCatchError(
             block = {
                 val isSuccess = withContext(dispatcher.io) {
-                    keroEditAddressUseCase.execute()
+                    keroEditAddressUseCase.execute(addressId, latitude, longitude)
                 }
                 if (isSuccess) {
-                    _isAddressHasPinpoint.value = latitude.isNotEmpty() && longitude.isNotEmpty()
+                    _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
                 } else {
-                    _isAddressHasPinpoint.value = false
+                    _isAddressHasPinpoint.value = addressId to false
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                 }
             }, onError = {
-                _isAddressHasPinpoint.value = false
+                _isAddressHasPinpoint.value = addressId to false
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
             }
         )

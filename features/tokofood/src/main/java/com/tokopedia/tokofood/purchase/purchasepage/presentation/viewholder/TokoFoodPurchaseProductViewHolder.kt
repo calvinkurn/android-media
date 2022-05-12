@@ -18,8 +18,6 @@ import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.purchase.removeDecimalSuffix
-import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchaseProductBinding,
                                         private val listener: TokoFoodPurchaseActionListener)
@@ -95,9 +93,9 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun renderProductPrice(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            if (element.originalPrice > 0) {
+            if (element.originalPriceFmt.isNotEmpty()) {
                 productSlashPrice.run {
-                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.originalPrice, false).removeDecimalSuffix()
+                    text = element.originalPriceFmt
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     show()
                     renderAlphaProductItem(element)
@@ -105,7 +103,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             } else {
                 productSlashPrice.gone()
             }
-            productPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.price, false).removeDecimalSuffix()
+            productPrice.text = element.priceFmt
             productPrice.renderAlphaProductItem(element)
             if (element.discountPercentage.isNotBlank()) {
                 slashPriceInfo.run {

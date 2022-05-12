@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.domain.model.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class AgreeConsentResponse(
     @SerializedName("data")
@@ -17,6 +18,7 @@ data class AgreeConsentData(
     @Expose
     val message: String = ""
 ) {
-    // TODO: Move to const
-    fun isSuccess() = success == 1
+
+    fun isSuccess() = success == TokoFoodCartUtil.SUCCESS_STATUS
+
 }

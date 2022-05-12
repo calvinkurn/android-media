@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.domain.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.KeroEditAddressParam
+import com.tokopedia.tokofood.purchase.purchasepage.domain.model.param.KeroAddressParamData
 
 object KeroEditAddressQuery : GqlQueryInterface {
 
@@ -21,13 +21,9 @@ object KeroEditAddressQuery : GqlQueryInterface {
     private const val INPUT_KEY = "input"
 
     @JvmStatic
-    fun createRequestParams() =
+    fun createRequestParams(addressParam: KeroAddressParamData) =
         HashMap<String, Any>().apply {
-            // TODO: Change to real input
-            val dummyParam = KeroEditAddressParam(
-                123, "", "", "", "", "",
-                "", "", "", "", "", "")
-            put(INPUT_KEY, dummyParam)
+            put(INPUT_KEY, addressParam)
         }
 
     override fun getOperationNameList(): List<String> =
