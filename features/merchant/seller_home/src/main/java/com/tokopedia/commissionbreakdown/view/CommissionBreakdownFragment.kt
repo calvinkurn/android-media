@@ -145,16 +145,12 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
             openCalender()
         }
 
-
-
         infoCommissionBreakdown?.apply {
             text = MethodChecker.fromHtml(activity?.getString(R.string.info_commission_breakdown))
             setOnClickListener {
                 //TODO route edu
             }
         }
-
-
     }
 
     private fun checkPermissionDownload(onGranted: () -> Unit) {

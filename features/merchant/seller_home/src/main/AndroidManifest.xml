@@ -146,7 +146,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name="com.tokopedia.commissionbreakdown.view.CommissionBreakdownActivity"
             android:label="@string/download_trx_fee_report_ticker_activity_title"

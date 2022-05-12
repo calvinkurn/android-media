@@ -11,8 +11,14 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.dat
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
-class TickerDownloadFeeTransactionViewHolder(itemView: View) :
-    AbstractViewHolder<TickerDownloadFeeTransactionModel>(itemView) {
+class TickerDownloadFeeTransactionViewHolder(
+    itemView: View
+) : AbstractViewHolder<TickerDownloadFeeTransactionModel>(itemView) {
+
+    companion object {
+        val LAYOUT = R.layout.ticker_download_fee_transaction
+    }
+
     override fun bind(element: TickerDownloadFeeTransactionModel) {
 
         val linkStr = getString(R.string.download_trx_fee_report_ticker_title_link)
@@ -28,6 +34,7 @@ class TickerDownloadFeeTransactionViewHolder(itemView: View) :
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     openCommissionBreakdown(context)
                 }
+
                 override fun onDismiss() {
                 }
             })
@@ -37,9 +44,4 @@ class TickerDownloadFeeTransactionViewHolder(itemView: View) :
     private fun openCommissionBreakdown(context: Context?) {
         RouteManager.route(context, ApplinkConstInternalGlobal.COMMISSION_BREAKDOWN)
     }
-
-    companion object {
-        val LAYOUT = R.layout.ticker_download_fee_transaction
-    }
-
 }

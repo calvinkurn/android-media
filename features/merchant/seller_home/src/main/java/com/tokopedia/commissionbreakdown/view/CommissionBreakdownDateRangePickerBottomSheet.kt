@@ -20,6 +20,32 @@ import java.util.*
 
 class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
+    companion object {
+        private const val MAX_RANGE = 30L
+        private const val ARG_DATE_FROM = "ARG_DATE_FROM"
+        private const val ARG_DATE_TO = "ARG_DATE_TO"
+        private const val ARG_MAX_RANGE = "ARG_MAX_RANGE"
+        private const val ARG_MIN_DATE_GAP = "ARG_MIN_DATE_GAP"
+        private const val BOTTOM_SHEET_HEIGHT_3 = 3
+        private const val BOTTOM_SHEET_HEIGHT_2 = 2
+        private const val DATE_PATTERN = "dd MMMM yyyy"
+
+        const val TWO_YEAR_MILLIS = (2 * 365 * 24 * 3600 * 1000L)
+        const val MAX_RANGE_90 = 90L
+        const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
+
+        fun getInstanceRange(dateFrom: Date?, dateTo: Date?, range: Long, minDate: Long): CommissionBreakdownDateRangePickerBottomSheet {
+            return CommissionBreakdownDateRangePickerBottomSheet().apply {
+                val bundle = Bundle()
+                bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
+                bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
+                bundle.putLong(ARG_MAX_RANGE, range)
+                bundle.putLong(ARG_MIN_DATE_GAP, minDate)
+                arguments = bundle
+            }
+        }
+    }
+
     private val maxDate = Date()
     private var minDate = Date(System.currentTimeMillis() - TWO_YEAR_MILLIS)
 
@@ -34,7 +60,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     private var unifyButtonSelect : UnifyButton? = null
     private var calendarUnify : UnifyCalendar? = null
 
-    lateinit var childView: View
+    private var childView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,17 +93,19 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     ): View? {
         setDefaultParams()
         childView = View.inflate(context, R.layout.commission_breakdown_bottomsheet_choose_date, null)
-        setChild(childView)
-        dateFromTextField = childView.findViewById(R.id.commission_range_date_from)
-        dateToTextField = childView.findViewById(R.id.commission_range_date_to)
-        unifyButtonSelect = childView.findViewById(R.id.unifyButtonSelect)
-        calendarUnify = childView.findViewById(R.id.calendar_unify)
+        childView?.run {
+            setChild(this)
+            dateFromTextField = findViewById(R.id.commission_range_date_from)
+            dateToTextField = findViewById(R.id.commission_range_date_to)
+            unifyButtonSelect = findViewById(R.id.unifyButtonSelect)
+            calendarUnify = findViewById(R.id.calendar_unify)
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childView.layoutParams.height = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
+        childView?.layoutParams?.height = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         initCalender()
         unifyButtonSelect?.setOnClickListener {
             if (newSelectedDateFrom != null && newSelectedDateTO != null &&
@@ -109,6 +137,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private fun CalendarPickerView.selectDateClickListener() {
         setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+
             override fun onDateSelected(date: Date) {
                 val selectedDates = calendarUnify?.calendarPickerView?.selectedDates
                 when {
@@ -171,32 +200,7 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         isHideable = true
         isFullpage = false
         customPeekHeight = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
-        setTitle("Pilih rentang waktu")
-    }
-
-    companion object {
-        const val TWO_YEAR_MILLIS = (2 * 365 * 24 * 3600 * 1000L)
-        const val MAX_RANGE = 30L
-        const val MAX_RANGE_90 = 90L
-        const val ARG_DATE_FROM = "ARG_DATE_FROM"
-        const val ARG_DATE_TO = "ARG_DATE_TO"
-        const val ARG_MAX_RANGE = "ARG_MAX_RANGE"
-        const val ARG_MIN_DATE_GAP = "ARG_MIN_DATE_GAP"
-        const val BOTTOM_SHEET_HEIGHT_3 = 3
-        const val BOTTOM_SHEET_HEIGHT_2 = 2
-        const val DATE_PATTERN = "dd MMMM yyyy"
-        const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
-
-        fun getInstanceRange(dateFrom: Date?, dateTo: Date?, range: Long, minDate: Long): CommissionBreakdownDateRangePickerBottomSheet {
-            return CommissionBreakdownDateRangePickerBottomSheet().apply {
-                val bundle = Bundle()
-                bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
-                bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
-                bundle.putLong(ARG_MAX_RANGE, range)
-                bundle.putLong(ARG_MIN_DATE_GAP, minDate)
-                arguments = bundle
-            }
-        }
+        setTitle(getString(R.string.sah_select_date_range))
     }
 }
 

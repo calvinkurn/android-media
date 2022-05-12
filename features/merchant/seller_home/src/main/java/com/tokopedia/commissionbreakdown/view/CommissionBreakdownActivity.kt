@@ -13,8 +13,12 @@ import com.tokopedia.commissionbreakdown.di.component.DaggerCommissionBreakdownC
 
  */
 
+class CommissionBreakdownActivity : BaseSimpleActivity(),
+    HasComponent<CommissionBreakdownComponent> {
 
-class CommissionBreakdownActivity : BaseSimpleActivity(), HasComponent<CommissionBreakdownComponent> {
+    companion object {
+        private const val TAG = "COMMISSION_BREAKDOWN_FRAGMENT"
+    }
 
     override fun getNewFragment(): Fragment {
         return CommissionBreakdownFragment.createInstance()
@@ -22,19 +26,11 @@ class CommissionBreakdownActivity : BaseSimpleActivity(), HasComponent<Commissio
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        initializeView()
-    }
-    private fun initializeView() {
-
     }
 
     override fun getTagFragment() = TAG
+
     override fun getScreenName() = null
-
-    companion object {
-        private val TAG = "COMMISSION_BREAKDOWN_FRAGMENT"
-    }
-
 
     override fun getComponent(): CommissionBreakdownComponent {
         return DaggerCommissionBreakdownComponent.builder()

@@ -63,6 +63,5 @@
             android:name=".transactionDetailPages.invoice.InvoiceDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
-
     </application>
 </manifest>

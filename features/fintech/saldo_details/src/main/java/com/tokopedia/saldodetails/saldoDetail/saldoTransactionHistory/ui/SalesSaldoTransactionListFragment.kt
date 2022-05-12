@@ -27,6 +27,7 @@ class SalesSaldoTransactionListFragment : BaseSaldoTransactionListFragment() {
             }
         }
     }
+
     override fun onDataLoaded(historyList: List<Visitable<*>>, hasMore: Boolean) {
         val list: List<Visitable<*>> = if(GlobalConfig.isSellerApp()) {
             if(historyList.isEmpty()) {
@@ -39,5 +40,4 @@ class SalesSaldoTransactionListFragment : BaseSaldoTransactionListFragment() {
         }
         super.onDataLoaded(list, hasMore)
     }
-
 }
