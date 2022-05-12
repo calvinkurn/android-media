@@ -63,7 +63,12 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     }
 
     fun showNow(manager: FragmentManager) {
-        if (!isAdded) showNow(manager, TAG)
+        if (!isAdded) {
+            showNow(manager, TAG)
+            view?.postDelayed({
+                view?.let { dismiss() }
+            }, DISMISS_DELAY)
+        }
     }
 
     fun setData(imageUrl: String, title: String, subtitle: String, interactive: InteractiveUiModel) {
@@ -81,7 +86,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
                 commonR.drawable.bg_play_interactive
             }
             is InteractiveUiModel.Quiz -> {
-                R.drawable.bg_quiz_winner
+                commonR.drawable.bg_quiz_winner
             }
             else -> commonR.drawable.bg_play_interactive
         }
@@ -106,6 +111,7 @@ class InteractiveWinningDialogFragment @Inject constructor(): DialogFragment() {
     companion object {
 
         private const val TAG = "Interactive Winning Dialog"
+        private const val DISMISS_DELAY = 3000L
 
         fun get(manager: FragmentManager): InteractiveWinningDialogFragment? {
             return manager.findFragmentByTag(TAG) as? InteractiveWinningDialogFragment

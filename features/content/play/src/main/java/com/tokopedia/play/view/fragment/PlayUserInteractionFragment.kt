@@ -506,8 +506,8 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
         playViewModel.submitAction(
-            PlayViewerNewAction.StartPlayingInteractive
-        )
+            PlayViewerNewAction.StartPlayingInteractive)
+            analytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData)
     }
     //endregion
 
@@ -1457,6 +1457,8 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveFinishView?.hide()
                 }
             }
+            if(interactiveActiveView?.isShown() == false)
+                analytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
         }
     }
 
@@ -1546,7 +1548,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderWinnerBadge(state: PlayWinnerBadgeUiState){
-        if (state.shouldShow) interactiveResultView?.show()
+        if (state.shouldShow) {
+            interactiveResultView?.show()
+            analytic.impressWinnerBadge(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id)
+        }
         else interactiveResultView?.hide()
     }
 
@@ -1770,6 +1775,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
         playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
+        analytic.clickWinnerBadge(
+            shopId = playViewModel.partnerId.toString(),
+            interactiveId = playViewModel.interactiveData.id,
+            interactiveType = playViewModel.interactiveData
+        )
     }
 
     companion object {

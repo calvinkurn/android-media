@@ -11,8 +11,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -36,6 +38,7 @@ class PlayInteractiveLeaderboardViewComponent(
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
     private val llPlaceholder: LinearLayout = findViewById(R.id.ll_leaderboard_placeholder)
+    private val btnRefreshError: UnifyButton = findViewById(R.id.btn_action_leaderboard_error)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -50,6 +53,8 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     }
 
+    private val impressHolder = ImpressHolder()
+
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
             .setText(R.string.play_interactive_leaderboard_title)
@@ -61,8 +66,12 @@ class PlayInteractiveLeaderboardViewComponent(
 
         rvLeaderboard.adapter = leaderboardAdapter
 
-        findViewById<UnifyButton>(R.id.btn_action_leaderboard_error).setOnClickListener {
+        btnRefreshError.setOnClickListener {
             listener.onRefreshButtonClicked(this)
+        }
+
+        btnRefreshError.addOnImpressionListener(impressHolder){
+            listener.onRefreshButtonImpressed(this)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
@@ -142,5 +151,6 @@ class PlayInteractiveLeaderboardViewComponent(
         ) {
         }
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
+        fun onRefreshButtonImpressed(view: PlayInteractiveLeaderboardViewComponent)
     }
 }
