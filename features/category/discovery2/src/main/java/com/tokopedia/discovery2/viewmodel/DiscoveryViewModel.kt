@@ -15,6 +15,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.CONSTANT_0
+import com.tokopedia.discovery2.CONSTANT_11
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -460,8 +462,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun getShareUTM(data:PageInfo) : String{
         var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if(data.campaignCode != null && data.campaignCode.length > 11){
-            campaignCode = data.campaignCode.substring(0,11)
+        if(data.campaignCode != null && data.campaignCode.length > CONSTANT_11){
+            campaignCode = data.campaignCode.substring(CONSTANT_0, CONSTANT_11)
         }
         return "${data.identifier}-${campaignCode}"
     }
