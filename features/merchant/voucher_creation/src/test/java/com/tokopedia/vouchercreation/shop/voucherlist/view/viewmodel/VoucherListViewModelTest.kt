@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.shop.voucherlist.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -73,6 +74,11 @@ class VoucherListViewModelTest {
 
     @RelaxedMockK
     lateinit var localVoucherListObserver: Observer<in List<VoucherUiModel>>
+
+    @Suppress("UNCHECKED_CAST")
+    private val keywordLiveData: MutableLiveData<String> by lazy {
+        getPrivateField(mViewModel, "_keywordLiveData") as MutableLiveData<String>
+    }
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -750,4 +756,43 @@ class VoucherListViewModelTest {
             }
         }
 
+    @Test
+    fun `success set search keyword`() {
+        with(mViewModel) {
+            setSearchKeyword("test")
+            assert(keywordLiveData.value == "test")
+        }
+    }
+
+    @Test
+    fun `check whether Free BroadCast Icon visible value is set to true when broadcast quota is more than 0`() {
+        with(mViewModel) {
+            setIsFreeBroadCastIconVisible(1)
+            assert(isFreeBroadCastIconVisible())
+        }
+    }
+
+    @Test
+    fun `check whether Free BroadCast Icon visible value is set to false when broadcast quota is equal to 0`() {
+        with(mViewModel) {
+            setIsFreeBroadCastIconVisible(0)
+            assert(!isFreeBroadCastIconVisible())
+        }
+    }
+    @Test
+    fun `check whether success dialog value is set correctly`() {
+        with(mViewModel) {
+            setIsSuccessDialogDisplayed(true)
+            assert(isSuccessDialogDisplayed())
+        }
+    }
+
+    // helper functions
+
+    private fun getPrivateField(owner: Any, name: String): Any? {
+        return owner::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(owner)
+        }
+    }
 }
