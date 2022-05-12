@@ -24,12 +24,15 @@ public class GraphqlHelper {
 
     public static String streamToString(InputStream in) {
         String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         StringBuilder stringBuilder = new StringBuilder();
         try {
             while ((temp = bufferedReader.readLine()) != null) {
                 stringBuilder.append(temp + "\n");
             }
+            bufferedReader.close();
+            inputStreamReader.close();
         } catch (IOException e) {
         }
         return stringBuilder.toString();

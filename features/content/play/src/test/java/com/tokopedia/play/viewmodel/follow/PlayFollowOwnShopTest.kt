@@ -29,6 +29,9 @@ import org.junit.Test
  * Created by jegul on 15/07/21
  */
 class PlayFollowOwnShopTest {
+    /***
+     * Only for user's shop
+     */
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -62,31 +65,7 @@ class PlayFollowOwnShopTest {
     }
 
     @Test
-    fun `given user is logged in and has not followed shop, when click follow, the shop should be followable but not followed`() {
-        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
-
-        givenPlayViewModelRobot(
-                repo = mockRepo,
-                dispatchers = testDispatcher,
-                userSession = mockUserSession,
-        ) {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhen {
-            submitAction(ClickFollowAction)
-        } thenVerify {
-            withState {
-                partner.status.assertEqualTo(
-                        PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `given user is logged in and has followed shop, when click follow, the shop should be followable and not followed`() {
+    fun `given user is logged in and can't see follow, even we clicked manually from code the status must be not followable`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsFollowingPartner(any()) } returns true
         coEvery { mockRepo.postFollowStatus(any(), any()) } returns false
@@ -104,12 +83,45 @@ class PlayFollowOwnShopTest {
         } thenVerify {
             withState {
                 partner.status.assertEqualTo(
-                        PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
+                        PlayPartnerFollowStatus.NotFollowable
                 )
             }
         }
     }
 
+    @Test
+    fun `when shop visit their own channel hide follow button, set as NotFollowble (hide from user)` (){
+        val mockChannelData = channelDataBuilder.buildChannelData(
+            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
+                id = partnerId,
+            ),
+        )
+
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
+
+        givenPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.NotFollowable
+                )
+            }
+        }
+    }
+
+    /**
+     * Non login case
+     */
     @Test
     fun `given user is not logged in, when click follow, the shop should be not unknown`() {
         val mockChannelData = channelDataBuilder.buildChannelData(

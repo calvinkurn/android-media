@@ -19,8 +19,6 @@
 
     <string name="path_home_credit_register">/home-credit-register</string>
 
-    <string name="path_upgrade">/upgrade</string>
-    <string name="path_upgrade_status">/upgradestatus</string>
 
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>

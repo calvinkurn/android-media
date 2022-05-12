@@ -72,9 +72,14 @@ import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSiz
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
+import com.tokopedia.video_widget.carousel.InspirationCarouselVideoViewHolder
+import com.tokopedia.video_widget.carousel.InspirationVideoCarouselListener
+import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import com.tokopedia.video_widget.util.networkmonitor.NetworkMonitor
 import com.tokopedia.search.utils.FragmentProvider
 
 @Suppress("LongParameterList")
@@ -98,6 +103,9 @@ class ProductListTypeFactoryImpl(
     private val lastFilterListener: LastFilterListener,
     private val inspirationSizeListener: InspirationSizeListener,
     private val violationListener: ViolationListener,
+    private val videoCarouselListener: InspirationVideoCarouselListener,
+    private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
+    private val networkMonitor: NetworkMonitor,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -140,6 +148,10 @@ class ProductListTypeFactoryImpl(
 
     override fun type(inspirationCarouselDataView: InspirationCarouselDataView): Int {
         return InspirationCarouselViewHolder.LAYOUT
+    }
+
+    override fun type(inspirationCarouselDataView: InspirationCarouselVideoDataView): Int {
+        return InspirationCarouselVideoViewHolder.LAYOUT
     }
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
@@ -232,6 +244,12 @@ class ProductListTypeFactoryImpl(
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
                 InspirationCarouselViewHolder(view, inspirationCarouselListener)
+            InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
+                    view,
+                    videoCarouselListener,
+                    videoCarouselWidgetCoordinator,
+                    networkMonitor
+                )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             RecommendationItemViewHolder.LAYOUT ->

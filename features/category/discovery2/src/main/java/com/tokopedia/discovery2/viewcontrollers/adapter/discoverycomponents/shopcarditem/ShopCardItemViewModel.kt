@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlin.coroutines.CoroutineContext
 
-class ShopCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ShopCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
 
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
@@ -18,9 +18,6 @@ class ShopCardItemViewModel(val application: Application, val components: Compon
         components.shouldRefreshComponent = null
         componentData.value = components
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
     fun getComponentLiveData() = componentData
 
