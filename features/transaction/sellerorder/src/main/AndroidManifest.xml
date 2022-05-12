@@ -151,7 +151,7 @@
 
                 <data
                     android:host="@string/host_seller"
-                    android:path="@string/path_rpu"
+                    android:path="@string/path_reschedule"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
