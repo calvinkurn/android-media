@@ -12,7 +12,6 @@ import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomLastIte
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardTypeFactory
@@ -37,11 +36,6 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
             hideLoading()
             setupInitialView(element)
             setupList(element)
-
-            binding.root.addOnImpressionListener(section) {
-                listener.onRechargeSectionItemImpression(section)
-            }
-
         } else {
             showLoading()
             listener.loadRechargeSectionData(element.visitableId())
