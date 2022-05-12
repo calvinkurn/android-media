@@ -1221,7 +1221,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onTickerCloseIconClicked() {
-        println("++ ok masuk sini")
         wishlistV2Adapter.hideTicker()
     }
 

@@ -3205,57 +3205,65 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animateProductImageV2(result: AddToWishlistV2Response.Data.WishlistAddV2) {
-        val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
-        var target: Pair<Int, Int>? = null
+        if (result.success) {
+            val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
+            var target: Pair<Int, Int>? = null
 
-        if (isNavToolbar) {
-            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
-            target = Pair(targetX, 0)
-        } else {
-            target = toolbar.getWishlistIconPosition()
-        }
+            if (isNavToolbar) {
+                val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+                target = Pair(targetX, 0)
+            } else {
+                target = toolbar.getWishlistIconPosition()
+            }
 
-        tmpAnimatedImage.show()
+            tmpAnimatedImage.show()
 
-        val targetX = target.first
-        val targetY = target.second
+            val targetX = target.first
+            val targetY = target.second
 
-        val deltaX = targetX - (tmpAnimatedImage.width / 2)
-        val deltaY = targetY - (tmpAnimatedImage.height / 2)
+            val deltaX = targetX - (tmpAnimatedImage.width / 2)
+            val deltaY = targetY - (tmpAnimatedImage.height / 2)
 
-        val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
-        val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
-        val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", ANIMATED_IMAGE_FILLED, ANIMATED_IMAGE_ALPHA)
-        val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
-        val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+            val animY = ObjectAnimator.ofFloat(tmpAnimatedImage, "y", deltaY.toFloat())
+            val animX = ObjectAnimator.ofFloat(tmpAnimatedImage, "x", deltaX.toFloat())
+            val animAlpha = ObjectAnimator.ofFloat(tmpAnimatedImage, "alpha", ANIMATED_IMAGE_FILLED, ANIMATED_IMAGE_ALPHA)
+            val animScaleX = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleX", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
+            val animScaleY = ObjectAnimator.ofFloat(tmpAnimatedImage, "scaleY", ANIMATED_SCALE_FULL, ANIMATED_SCALE_HALF)
 
-        AnimatorSet().let {
-            it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
-            it.interpolator = DecelerateInterpolator()
-            it.duration = IMAGE_ANIMATION_DURATION
-            it.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
-                override fun onAnimationEnd(animation: Animator) {
-                    binding?.tmpAnimatedImage?.gone()
+            AnimatorSet().let {
+                it.playTogether(animY, animX, animAlpha, animScaleX, animScaleY)
+                it.interpolator = DecelerateInterpolator()
+                it.duration = IMAGE_ANIMATION_DURATION
+                it.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {}
+                    override fun onAnimationEnd(animation: Animator) {
+                        binding?.tmpAnimatedImage?.gone()
 
-                    if (isNavToolbar) {
-                        binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
-                    } else {
-                        toolbar.animateWishlistIcon()
-                    }
-
-                    context?.let { context ->
-                        view?.let { v ->
-                            AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                        if (isNavToolbar) {
+                            binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
+                        } else {
+                            toolbar.animateWishlistIcon()
                         }
-                    }
-                    dPresenter.processGetWishlistData()
-                }
 
-                override fun onAnimationCancel(animation: Animator) {}
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
-            it.start()
+                        context?.let { context ->
+                            view?.let { v ->
+                                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                            }
+                        }
+                        dPresenter.processGetWishlistData()
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {}
+                    override fun onAnimationRepeat(animation: Animator) {}
+                })
+                it.start()
+            }
+        } else {
+            context?.let { context ->
+                view?.let { v ->
+                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                }
+            }
         }
     }
 

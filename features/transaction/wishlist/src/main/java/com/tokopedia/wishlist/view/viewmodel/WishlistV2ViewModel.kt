@@ -162,6 +162,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 val bundleTickerData = WishlistV2TickerCleanerData(tickerCleanerData = wishlistV2Response.ticker,
                 bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet)
                 listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
+                isTickerShow = true
+                recommPosition += 1
             }
 
             // only for wishlist which has 1 page response
@@ -348,10 +350,11 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     companion object {
-        private const val recommPosition = 4
+        private var recommPosition = 4
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+        private var isTickerShow = false
     }
 }

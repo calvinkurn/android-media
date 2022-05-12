@@ -51,19 +51,22 @@ object AddRemoveWishlistV2Handler {
     fun showRemoveWishlistV2SuccessToaster(result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
                                            context: Context, view: View) {
         val msg = result.message.ifEmpty {
-            if (result.success) context.getString(R.string.on_success_add_to_wishlist_msg)
-            else context.getString(R.string.on_failed_add_to_wishlist_msg)
+            if (result.success) context.getString(R.string.on_success_remove_from_wishlist_msg)
+            else context.getString(R.string.on_failed_remove_from_wishlist_msg)
         }
 
         var typeToaster = Toaster.TYPE_NORMAL
         if (result.toasterColor == WishlistV2CommonConsts.TOASTER_RED || !result.success) typeToaster = Toaster.TYPE_ERROR
 
-        var ctaText = context.getString(R.string.cta_success_add_to_wishlist)
+        var ctaText = context.getString(R.string.cta_success_remove_from_wishlist)
         if (result.button.text.isNotEmpty()) ctaText = result.button.text
+
+        var ctaAction = { }
+        if (result.button.action == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }
 
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
-        ) { goToWishlistPage(context) }.show()
+        ) { ctaAction }.show()
     }
 
     fun showRemoveWishlistV2SuccessToaster(result: ProductCardOptionsModel.WishlistResult,
@@ -79,9 +82,12 @@ object AddRemoveWishlistV2Handler {
         var ctaText = context.getString(R.string.cta_success_remove_from_wishlist)
         if (result.ctaTextV2.isNotEmpty()) ctaText = result.ctaTextV2
 
+        var ctaAction = { }
+        if (result.ctaActionV2 == OPEN_WISHLIST) ctaAction = { goToWishlistPage(context) }
+
         Toaster.build(view, msg, Toaster.LENGTH_SHORT, typeToaster,
             actionText = ctaText
-        ) { if (result.ctaActionV2 == OPEN_WISHLIST) goToWishlistPage(context) }.show()
+        ) { ctaAction }.show()
     }
 
     fun showWishlistV2ErrorToaster(errorMsg: String, view: View) {
