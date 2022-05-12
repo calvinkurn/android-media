@@ -267,7 +267,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 		"pin" -> {
 		    val intent = RouteManager.getIntent(
 			activity,
-			ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER
+			ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER
 		    )
 		    result.popupType = POPUP_TYPE_PIN
 		    intent
@@ -275,7 +275,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 		"phone" -> {
 		    val intent = RouteManager.getIntent(
 			activity,
-			ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER
+			ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER
 		    )
 		    result.popupType = POPUP_TYPE_PHONE
 		    intent
@@ -285,13 +285,13 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 			if (whiteListedPageAccountLinkReminder.contains(activity.javaClass.simpleName)) {
 			    return RouteManager.getIntent(
 				activity,
-				ApplinkConstInternalGlobal.LINK_ACC_REMINDER
+				ApplinkConstInternalUserPlatform.LINK_ACC_REMINDER
 			    )
 			}
 		    }
 		    return RouteManager.getIntent(
 			activity,
-			ApplinkConstInternalGlobal.LINK_ACC_REMINDER
+			ApplinkConstInternalUserPlatform.LINK_ACC_REMINDER
 		    )
 		}
 		"biometric" -> {
