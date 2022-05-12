@@ -119,15 +119,7 @@ class AddProductViewModelTest {
                 getProductListUseCase.executeOnBackground()
             } throws dummyThrowable
 
-            getProductList(
-                1,
-                "test",
-                "1",
-                warehouseLocationId = 0,
-                shopShowCaseIds = listOf(),
-                categoryList = listOf(),
-                sort = null
-            )
+            getProductList()
 
             coVerify {
                 getProductListUseCase.executeOnBackground()
