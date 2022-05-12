@@ -1,5 +1,6 @@
 package com.tokopedia.flight.passenger.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
@@ -168,6 +169,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initView() {
         context?.let {
 
@@ -241,6 +243,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
             binding?.tilFirstName?.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
+            binding?.fragmentLayout?.setOnClickListener {
+                clearAllKeyboardFocus()
+            }
             binding?.fragmentLayout?.setOnTouchListener { _, _ ->
                 clearAllKeyboardFocus()
                 true
