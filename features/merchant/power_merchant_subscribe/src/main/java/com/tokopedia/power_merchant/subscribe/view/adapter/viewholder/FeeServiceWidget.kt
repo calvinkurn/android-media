@@ -3,20 +3,28 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemFeeServiceBinding
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetUpgradePmProBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetFeeServiceUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 03/03/21
  */
 
-class FeeServiceWidget(itemView: View) : AbstractViewHolder<WidgetFeeServiceUiModel>(itemView) {
+class FeeServiceWidget(itemView: View, private val listener: PotentialWidget.Listener) :
+    AbstractViewHolder<WidgetFeeServiceUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.item_fee_service
     }
 
-    override fun bind(element: WidgetFeeServiceUiModel?) {
+    private val binding: ItemFeeServiceBinding? by viewBinding()
 
+    override fun bind(element: WidgetFeeServiceUiModel?) {
+        binding?.chevron?.setOnClickListener {
+            listener.showServiceFeeByCategory()
+        }
     }
 }

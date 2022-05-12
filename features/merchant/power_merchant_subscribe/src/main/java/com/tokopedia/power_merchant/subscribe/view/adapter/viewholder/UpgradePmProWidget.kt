@@ -17,8 +17,10 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.WidgetUpgradePmProBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProBenefitAdapter
+import com.tokopedia.power_merchant.subscribe.view.adapter.PmActiveTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.PmActiveTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetUpgradePmProUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -40,7 +42,7 @@ class UpgradePmProWidget(
     }
 
     private val binding: WidgetUpgradePmProBinding? by viewBinding()
-    private val termAdapter by lazy { RegistrationTermAdapter() }
+    private val termAdapter by lazy { PmActiveTermAdapter() }
 
     override fun bind(element: WidgetUpgradePmProUiModel) {
         setupView()
@@ -100,7 +102,7 @@ class UpgradePmProWidget(
             adapter = benefitAdapter
         }
 
-    private fun showTermsList(terms: List<RegistrationTermUiModel>) {
+    private fun showTermsList(terms: List<PmActiveTermUiModel>) {
         binding?.rvPmUpgradeTerms?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false

@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.PmActiveTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
@@ -18,7 +19,7 @@ object PMActiveTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel,
         isPmProSelected: Boolean
-    ): List<RegistrationTermUiModel> {
+    ): List<PmActiveTermUiModel> {
         return listOf(
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
@@ -30,7 +31,7 @@ object PMActiveTermHelper {
         context: Context,
         shopInfo: PMShopInfoUiModel,
         isPmProSelected: Boolean
-    ): RegistrationTermUiModel.ShopScore {
+    ): PmActiveTermUiModel.ShopScore {
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
         val isEligibleShopScore =
             (isPmProSelected && shopInfo.isEligibleShopScorePmPro()) || (!isPmProSelected && shopInfo.isEligibleShopScore())
@@ -70,22 +71,20 @@ object PMActiveTermHelper {
             ctaAppLink = String.EMPTY
         }
 
-        return RegistrationTermUiModel.ShopScore(
+        return PmActiveTermUiModel.ShopScore(
             title = title,
             descriptionHtml = description,
             resDrawableIcon = shopScoreResIcon,
             clickableText = ctaText,
             appLinkOrUrl = ctaAppLink,
             isChecked = isChecked,
-            isFirstMondayNewSeller = isFirstMondayNewSeller,
-            isNewSeller = shopInfo.isNewSeller
         )
     }
 
     private fun getTotalOrderTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel
-    ): RegistrationTermUiModel.Order {
+    ): PmActiveTermUiModel.Order {
         val isEligibleOrder = shopInfo.itemSoldOneMonth >= shopInfo.itemSoldPmProThreshold
         val isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday
 
@@ -101,22 +100,20 @@ object PMActiveTermHelper {
         title = getItemOrderTerm.first
         description = getItemOrderTerm.second
 
-        return RegistrationTermUiModel.Order(
+        return PmActiveTermUiModel.Order(
             title = title,
             descriptionHtml = description,
             resDrawableIcon = resDrawableIcon,
             clickableText = null,
             appLinkOrUrl = null,
-            isChecked = isChecked,
-            isFirstMondayNewSeller = isFirstMondayNewSeller,
-            isNewSeller = shopInfo.isNewSeller
+            isChecked = isChecked
         )
     }
 
     private fun getNetItemValueTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel
-    ): RegistrationTermUiModel.NetItemValue {
+    ): PmActiveTermUiModel.NetItemValue {
         val isEligible = shopInfo.netItemValueOneMonth >= shopInfo.netItemValuePmProThreshold
 
         val (resDrawableIcon, isChecked) = getResDrawableIcon(
@@ -131,15 +128,13 @@ object PMActiveTermHelper {
         title = netItemValueTerm.first
         description = netItemValueTerm.second
 
-        return RegistrationTermUiModel.NetItemValue(
+        return PmActiveTermUiModel.NetItemValue(
             title = title,
             descriptionHtml = description,
             resDrawableIcon = resDrawableIcon,
             clickableText = null,
             appLinkOrUrl = null,
-            isChecked = isChecked,
-            isFirstMondayNewSeller = shopInfo.is30DaysFirstMonday,
-            isNewSeller = shopInfo.isNewSeller
+            isChecked = isChecked
         )
     }
 
