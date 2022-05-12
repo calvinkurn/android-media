@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -128,17 +128,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
-
-        bottomSheetDialog.setOnShowListener {
-            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            behavior.skipCollapsed = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        val dialog = super.onCreateDialog(savedInstanceState)
+        if (dialog is BottomSheetDialog) {
+            dialog.behavior.skipCollapsed = true
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-
-        return bottomSheetDialog
+        return dialog
     }
 
     private fun setupDependencyInjection() {
@@ -541,11 +536,5 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.chipSixMonthPeriod?.gone()
         binding?.chipOneMonthPeriod?.gone()
         binding?.chipCustomSelection?.gone()
-    }
-
-    private fun scrollDown() {
-        binding?.content?.post {
-            binding?.content?.fullScroll(View.FOCUS_DOWN)
-        }
     }
 }
