@@ -64,7 +64,7 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
     private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
 
     private val ratio: Double
-        get() = 4.0/5.0
+        get() = WIDTH_RATIO/ HEIGHT_RATIO
 
     private lateinit var mModel: PlayWidgetChannelUiModel
 
@@ -248,5 +248,10 @@ class PlayWidgetCardJumboView : FrameLayout, PlayVideoPlayerReceiver {
             item: PlayWidgetChannelUiModel,
             reminderType: PlayWidgetReminderType,
         )
+    }
+
+    companion object {
+        private const val WIDTH_RATIO = 4.0
+        private const val HEIGHT_RATIO = 5.0
     }
 }
