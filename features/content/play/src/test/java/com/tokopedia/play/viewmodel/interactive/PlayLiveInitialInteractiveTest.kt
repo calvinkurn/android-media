@@ -12,6 +12,7 @@ import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.millisFromNow
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -80,7 +81,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(
+                interactive.interactive.assertEqualTo(
                     InteractiveUiModel.Unknown
                 )
             }
@@ -97,14 +98,15 @@ class PlayLiveInitialInteractiveTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val timeBeforeStartTap = 15000L
-        val durationTap = 5000L
+        val timeBeforeStartTap = 15000L.millisFromNow()
+        val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
 
         val giveawayModel = InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Upcoming(timeBeforeStartTap, durationTap),
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
         coEvery { repo.getCurrentInteractive(any()) } returns giveawayModel
 
@@ -118,7 +120,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(giveawayModel)
+                interactive.interactive.assertEqualTo(giveawayModel)
             }
         }
     }
@@ -133,12 +135,13 @@ class PlayLiveInitialInteractiveTest {
         every { socket.listenAsFlow() } returns socketFlow
 
         val repo: PlayViewerRepository = mockk(relaxed = true)
-        val durationTap = 5000L
+        val durationTap = 5000L.millisFromNow()
         val title = "Giveaway"
         val giveawayModel = InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Ongoing(durationTap),
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
         coEvery { repo.getCurrentInteractive(any()) } returns giveawayModel
 
@@ -152,7 +155,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(giveawayModel)
+                interactive.interactive.assertEqualTo(giveawayModel)
             }
         }
     }
@@ -171,7 +174,8 @@ class PlayLiveInitialInteractiveTest {
         val giveawayModel = InteractiveUiModel.Giveaway(
             status = InteractiveUiModel.Giveaway.Status.Finished,
             title = title,
-            id = 1L,
+            id = "1",
+            waitingDuration = 200L,
         )
         coEvery { repo.getCurrentInteractive(any()) } returns giveawayModel
         coEvery { repo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
@@ -187,7 +191,9 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.assertEqualTo(giveawayModel)
+                interactive.interactive.assertEqualTo(
+                    InteractiveUiModel.Unknown
+                )
                 winnerBadge.shouldShow.assertFalse()
             }
         }
