@@ -393,7 +393,7 @@ class SingleProductBundleFragment(
              *
              * isProductBundleDifferent : Will be true if user chooses the other product bundle.
              * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
-             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (it directly shows selected item), it will make atc button disabled if the value is true.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
              *
              * Will disable the button if there is no changes and vice versa
              */
