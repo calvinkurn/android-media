@@ -5,6 +5,7 @@
 
     <!--host-->
     <string name="host_tokofood" translatable="false">tokofood</string>
+    <string name="host_food" translatable="false">food</string>
 
     <!--path-->
     <string name="path_tokofood_discovery" translatable="false">/discovery</string>
