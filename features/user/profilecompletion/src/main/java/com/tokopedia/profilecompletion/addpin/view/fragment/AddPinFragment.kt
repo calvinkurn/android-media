@@ -88,10 +88,6 @@ open class AddPinFragment : BaseDaggerFragment() {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(CREATE_PIN_ROLLENCE, "").isNotEmpty()
     }
 
-    private fun isResetPinV2(): Boolean {
-	return RemoteConfigInstance.getInstance().abTestPlatform.getString(RESET_PIN_ROLLENCE, "").isNotEmpty()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 	super.onCreate(savedInstanceState)
 	ColorUtils.setBackgroundColor(context, activity)
@@ -126,11 +122,7 @@ open class AddPinFragment : BaseDaggerFragment() {
 			    displayErrorPin(errorMessage)
 			}
 		    } else {
-		        if(isCreatePinV2()) {
-		            addChangePinViewModel.checkPinV2(s.toString())
-			} else {
-			    addChangePinViewModel.checkPin(s.toString())
-			}
+			addChangePinViewModel.checkPin(s.toString())
 		    }
 		} else {
 		    hideErrorPin()
@@ -374,18 +366,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun addPinMediator(validateToken: String) {
-        if(isCreatePinV2()) {
-            val confirmPin = inputPin?.pinTextField?.text.toString()
-            if(initialPin.isNotEmpty() && confirmPin.isNotEmpty()) {
-		addChangePinViewModel.addPinV2(
-		    pin = initialPin,
-		    confirmPin = confirmPin,
-		    validateToken = validateToken
-		)
-	    }
-	} else {
-	    addChangePinViewModel.addPin(validateToken)
-	}
+	addChangePinViewModel.addPin(validateToken)
     }
 
     companion object {
@@ -393,7 +374,6 @@ open class AddPinFragment : BaseDaggerFragment() {
 	const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
 	const val OTP_TYPE_PHONE_VERIFICATION = 124
 	const val CREATE_PIN_ROLLENCE = "pdh_crt_and"
-	const val RESET_PIN_ROLLENCE = "pdh_rp_and"
 
 	const val PIN_LENGTH = 6
 	fun createInstance(bundle: Bundle): AddPinFragment {
