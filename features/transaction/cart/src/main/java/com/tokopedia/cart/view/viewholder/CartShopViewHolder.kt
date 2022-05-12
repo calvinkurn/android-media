@@ -191,10 +191,10 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
             val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
             if (cartShopHolderData.isCollapsed) {
-                binding.imageChevron.rotation = 0f
+                binding.imageChevron.rotation = CHEVRON_ROTATION_0
                 binding.textAccordion.text = showMoreWording
             } else {
-                binding.imageChevron.rotation = 180f
+                binding.imageChevron.rotation = CHEVRON_ROTATION_180
                 binding.textAccordion.text = showLessWording
             }
 
@@ -509,6 +509,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val ITEM_DECORATION_PADDING_LEFT = 48
         private const val SHOP_HEADER_PADDING_10 = 10
         private const val SCROLL_PADDING_OFFSET = 12
+
+        private const val CHEVRON_ROTATION_0 = 0f
+        private const val CHEVRON_ROTATION_180 = 180f
     }
 
 }
