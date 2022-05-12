@@ -590,14 +590,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                     view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
                 if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                     view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
@@ -709,14 +707,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (!isPhoneNumberValid(formAccount.etNomorHp.textFieldInput.text.toString())) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                     view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
                 if (formAccount.etNomorHp.textFieldInput.text.toString().length < MIN_CHAR_PHONE_NUMBER) {
                     validated = false
                     field.add( getString(R.string.field_nomor_hp))
-                    setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                     view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 

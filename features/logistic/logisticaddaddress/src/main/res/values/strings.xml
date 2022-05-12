@@ -230,5 +230,5 @@
     <string name="editaddress_back_dialog_cta">Keluar</string>
     <string name="pinpointpage_chips_search_edit">Cari Ulang Alamat</string>
     <string name="error_min_char_phone_number">Nomor HP penerima terlalu pendek, min 9 angka</string>
-    <string name="error_invalid_format_phone_number">Format nomor HP salah, silakan cek ulang.</string>
+    <string name="error_invalid_format_phone_number">Nomor HP harus diawali angka 0 atau 62.</string>
 </resources>
