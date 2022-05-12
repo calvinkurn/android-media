@@ -78,7 +78,7 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailWrongHaveDotAt_ShouldNotValid() {
         // given
-        val email : String = "asdfasf.@asdfasdf"
+        val email : String = "asdfasf.@asdfasdf.com"
 
         // when
         val result = viewModel.isValidEmailInput(email)
@@ -92,7 +92,7 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailWrongHaveAtDot_ShouldNotValid() {
         // given
-        val email : String = "asdfasf@.asdfasdf"
+        val email = "asdfasf@.asdf@asdf.com"
 
         // when
         val result = viewModel.isValidEmailInput(email)
