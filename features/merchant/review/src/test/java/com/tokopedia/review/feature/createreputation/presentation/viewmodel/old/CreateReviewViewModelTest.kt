@@ -45,6 +45,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -70,7 +71,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.clearImageData()
 
         assertFalse(viewModel.isImageNotEmpty())
-        assertEquals(viewModel.getImageCount(), expectedImageCount)
+        assertEquals(viewModel.getMediaCount(), expectedImageCount)
     }
 
     @Test
@@ -427,6 +428,38 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when editReview with images results in upload error should return failure`() {
+        val imagePickerResult = mutableListOf("picture1")
+        val originalImageUrl = mutableListOf<String>()
+        val expectedResponse = Throwable()
+        val expectedUploadResponse = UploadResult.Error("Network error")
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
+            ProductrevGetReviewDetail(
+                review = ProductrevGetReviewDetailReview(videoAttachments = videos)
+            )
+        )
+
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+        onUploadImage_thenReturn(expectedUploadResponse)
+        onEditReviewError_thenReturn(expectedResponse)
+
+        viewModel.getReviewDetails(feedbackID)
+        viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
+        viewModel.editReview(
+            feedbackID,
+            reputationId,
+            productId,
+            shopId,
+            reputationScore,
+            rating,
+            review,
+            isAnonymous
+        )
+
+        verifyEditReviewError(com.tokopedia.review.common.data.Fail(expectedResponse))
+    }
+
+    @Test
     fun `when getAfterEditImageList should add all images when 5 images`() {
         val imagePickerResult =
             mutableListOf("picture1", "picture2", "picture3", "picture4", "picture5")
@@ -698,23 +731,23 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when getImageCount should get expected imageCount`() {
-        val expectedImageCount = 5
+    fun `when getMediaCount should get expected mediaCount`() {
+        val expectedMediaCount = 5
 
         viewModel.clearImageData()
-        viewModel.getImageList(images, emptyList())
+        viewModel.getImageList(images.take(4), videos)
 
-        Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
+        Assert.assertEquals(expectedMediaCount, viewModel.getMediaCount())
     }
 
     @Test
-    fun `when getImageCount contains only one ImageReviewUiModel should return 1`() {
+    fun `when getMediaCount contains only one ImageReviewUiModel should return 1`() {
         val expectedImageCount = 1
 
         viewModel.clearImageData()
         viewModel.getImageList(listOf(images.first()), emptyList())
 
-        Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
+        Assert.assertEquals(expectedImageCount, viewModel.getMediaCount())
     }
 
     @Test
@@ -1001,6 +1034,110 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
+    @Test
+    fun `when existing uploaded video removed then edit review should not send existing video`() {
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
+            ProductrevGetReviewDetail(
+                review = ProductrevGetReviewDetailReview(videoAttachments = videos)
+            )
+        )
+        val expectedEditReviewResponse = ProductRevEditReviewResponseWrapper(
+            ProductRevSuccessIndicator(success = true)
+        )
+
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+        onEditReview_thenReturn(expectedEditReviewResponse)
+
+        viewModel.getReviewDetails(feedbackID)
+        viewModel.removeVideo()
+        viewModel.editReview(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyBoolean()
+        )
+
+        verifyEditReviewParams(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyBoolean(),
+            ArgumentMatchers.anyList(),
+            ArgumentMatchers.anyList(),
+            emptyList(),
+        )
+    }
+
+    @Test
+    fun `when edit review with image and existing uploaded video not removed then edit review should send existing video`() {
+        val imagePickerResult = mutableListOf("picture1")
+        val originalImageUrl = mutableListOf<String>()
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
+            ProductrevGetReviewDetail(
+                review = ProductrevGetReviewDetailReview(videoAttachments = videos)
+            )
+        )
+        val expectedEditReviewResponse = ProductRevEditReviewResponseWrapper(
+            ProductRevSuccessIndicator(success = true)
+        )
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+        onUploadImage_thenReturn(UploadResult.Success(ArgumentMatchers.anyString()))
+        onEditReview_thenReturn(expectedEditReviewResponse)
+        viewModel.getReviewDetails(feedbackID)
+        viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
+        viewModel.editReview(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyBoolean()
+        )
+        verifyEditReviewParams(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyInt(),
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.anyBoolean(),
+            ArgumentMatchers.anyList(),
+            listOf(ArgumentMatchers.anyString()),
+            videos.map { it.url!! },
+        )
+    }
+
+    @Test
+    fun `getMaxImagePickCount should return 4 when contain uploaded video`() {
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
+            ProductrevGetReviewDetail(
+                review = ProductrevGetReviewDetailReview(videoAttachments = videos)
+            )
+        )
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+        viewModel.getReviewDetails(feedbackID)
+        Assert.assertEquals(4, viewModel.getMaxImagePickCount())
+    }
+
+    @Test
+    fun `getMaxImagePickCount should return 5 when doesn't contain uploaded video`() {
+        val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper()
+        onGetReviewDetails_thenReturn(expectedReviewDetailResponse)
+        viewModel.getReviewDetails(feedbackID)
+        Assert.assertEquals(5, viewModel.getMaxImagePickCount())
+    }
+
     private fun fillInImages() {
         val feedbackId = anyString()
         val expectedReviewDetailResponse = ProductrevGetReviewDetailResponseWrapper(
@@ -1109,6 +1246,36 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun verifyEditReviewError(viewState: com.tokopedia.review.common.data.Fail<Boolean>) {
         viewModel.editReviewResult.verifyReviewErrorEquals(viewState)
+    }
+
+    private fun verifyEditReviewParams(
+        feedbackId: String,
+        reputationId: String,
+        productId: String,
+        shopId: String,
+        reputationScore: Int = 0,
+        rating: Int,
+        reviewText: String,
+        isAnonymous: Boolean,
+        oldAttachmentUrls: List<String> = emptyList(),
+        attachmentIds: List<String> = emptyList(),
+        oldVideoAttachmentUrls: List<String> = emptyList()
+    ) {
+        coVerify {
+            editReviewUseCase.setParams(
+                feedbackId,
+                reputationId,
+                productId,
+                shopId,
+                reputationScore,
+                rating,
+                reviewText,
+                isAnonymous,
+                oldAttachmentUrls,
+                attachmentIds,
+                oldVideoAttachmentUrls
+            )
+        }
     }
 
     private fun verifyReviewTemplatesSuccess(reviewTemplates: Success<List<String>>) {

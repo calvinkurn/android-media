@@ -422,8 +422,8 @@ class CreateReviewViewModel @Inject constructor(
         }.orFalse()
     }
 
-    fun getImageCount(): Int {
-        return mediaData.count { it is ImageReviewUiModel }
+    fun getMediaCount(): Int {
+        return mediaData.count { it is ImageReviewUiModel || it is CreateReviewMediaUiModel.Video }
     }
 
     fun getBadRatingCategories() {
@@ -445,7 +445,7 @@ class CreateReviewViewModel @Inject constructor(
                     ProductrevGetPostSubmitBottomSheetUseCase.PostSubmitReviewRequestParams(
                         feedbackId = feedbackId,
                         reviewText = reviewText,
-                        mediasTotal = getImageCount(),
+                        mediasTotal = getMediaCount(),
                         isInboxEmpty = hasPendingIncentive.not(),
                         incentiveAmount = getIncentiveAmount()
                     )

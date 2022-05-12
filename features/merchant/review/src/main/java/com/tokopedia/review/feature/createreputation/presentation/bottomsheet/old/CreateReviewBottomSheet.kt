@@ -666,7 +666,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             CreateReviewTracking.eventClickSubmitForm(
                 getRating(),
                 getReviewMessageLength(),
-                getNumberOfPictures(),
+                getNumberOfMedia(),
                 isAnonymous(),
                 hasIncentive(),
                 isTemplateAvailable(),
@@ -779,7 +779,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             CreateReviewTracking.eventDismissForm(
                 getRating(),
                 getReviewMessageLength(),
-                getNumberOfPictures(),
+                getNumberOfMedia(),
                 isAnonymous(),
                 hasIncentive(),
                 isTemplateAvailable(),
@@ -1126,8 +1126,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         return binding?.reviewFormTextArea?.getText()?.length ?: 0
     }
 
-    private fun getNumberOfPictures(): Int {
-        return createReviewViewModel.getImageCount()
+    private fun getNumberOfMedia(): Int {
+        return createReviewViewModel.getMediaCount()
     }
 
     private fun hasIncentive(): Boolean {

@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.createreputation.presentation.viewmodel.old
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.review.common.data.ProductrevReviewImageAttachment
+import com.tokopedia.review.common.data.ProductrevReviewVideoAttachment
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -61,6 +62,9 @@ abstract class CreateReviewViewModelTestFixture {
         ProductrevReviewImageAttachment("ImageUrl3", "ImageUrl3"),
         ProductrevReviewImageAttachment("ImageUrl4", "ImageUrl4"),
         ProductrevReviewImageAttachment("ImageUrl5", "ImageUrl5")
+    )
+    protected val videos = listOf(
+        ProductrevReviewVideoAttachment("1234567890", "https://tokopedia.com/video.mp4")
     )
     protected val feedbackID = ArgumentMatchers.anyString()
     protected val reputationId = ArgumentMatchers.anyString()
