@@ -68,7 +68,7 @@ class PlayInteractiveMapper @Inject constructor() {
                     item.text,
                     when {
                         item.id == data.userChoice -> PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
-                        data.userChoice.isNotEmpty() -> PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
+                        data.userChoice != "0" -> PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
                         else -> PlayQuizOptionState.Default(alphabet = generateAlphabet(index))
                     }
                 )
