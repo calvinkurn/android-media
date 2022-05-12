@@ -39,7 +39,7 @@ data class PermissionUiModel(
                     }
                 }
                 PageType.GALLERY -> listOf(storage())
-                else -> listOf(microphone(), camera(), storage())
+                else -> listOf(camera(), microphone(), storage())
             }
         }
     }
