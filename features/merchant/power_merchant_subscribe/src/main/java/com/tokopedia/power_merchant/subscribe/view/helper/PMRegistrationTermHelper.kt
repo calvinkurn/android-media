@@ -22,15 +22,14 @@ object PMRegistrationTermHelper {
     fun getPmRegistrationTerms(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean,
         isRegularMerchant: Boolean
     ): List<RegistrationTermUiModel> {
         val firstTerm = if (shopInfo.isNewSeller) {
             getActiveProductTerm(context, shopInfo)
         } else {
-            getShopScoreTerm(context, shopInfo, isPmProSelected)
+            getShopScoreTerm(context, shopInfo, false)
         }
-        return listOf(firstTerm, getKycTerm(context, shopInfo, isPmProSelected, isRegularMerchant))
+        return listOf(firstTerm, getKycTerm(context, shopInfo, isRegularMerchant))
     }
 
     fun getPmProRegistrationTerms(
@@ -42,7 +41,7 @@ object PMRegistrationTermHelper {
             getShopScoreTerm(context, shopInfo, isPmProSelected),
             getTotalOrderTerm(context, shopInfo),
             getNetItemValueTerm(context, shopInfo),
-            getKycTerm(context, shopInfo, isPmProSelected)
+            getKycTerm(context, shopInfo)
         )
     }
 
@@ -228,12 +227,6 @@ object PMRegistrationTermHelper {
         var ctaAppLink: String? = null
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(shopInfo.shopScore)
 
-        val shopScoreThreshold = if (isPmProSelected) {
-            shopInfo.shopScorePmProThreshold
-        } else {
-            shopInfo.shopScoreThreshold
-        }
-
         if (isNewSeller) {
             if (isFirstMondayNewSeller) {
                 val textColor = if (isEligibleShopScore) {
@@ -274,7 +267,8 @@ object PMRegistrationTermHelper {
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
                     R.string.pm_shop_score_eligible_description,
-                    shopScoreThreshold
+                    shopInfo.shopScoreThreshold,
+                    shopInfo.shopScorePmProThreshold
                 )
             } else {
                 val textColor = PMCommonUtils.getHexColor(
@@ -284,7 +278,7 @@ object PMRegistrationTermHelper {
                 title = context.getString(R.string.pm_term_shop_score, textColor, shopScoreFmt)
                 description = context.getString(
                     R.string.pm_shop_score_not_eligible_description,
-                    shopScoreThreshold
+                    shopInfo.shopScoreThreshold
                 )
                 ctaText = context.getString(R.string.pm_learn_shop_performance)
                 ctaAppLink = ApplinkConst.SHOP_SCORE_DETAIL
@@ -373,18 +367,12 @@ object PMRegistrationTermHelper {
     private fun getKycTerm(
         context: Context,
         shopInfo: PMShopInfoUiModel,
-        isPmProSelected: Boolean,
         isRegularMerchant: Boolean = false
     ): RegistrationTermUiModel {
-        val isEligibleShopScore = (!isPmProSelected && !shopInfo.isEligibleShopScore()) ||
-                (isPmProSelected && !shopInfo.isEligibleShopScorePmPro())
-        val kycAppLink = if (isPmProSelected) {
-            PMConstant.AppLink.KYC_POWER_MERCHANT_PRO
-        } else {
-            PMConstant.AppLink.KYC_POWER_MERCHANT
-        }
+        val isEligibleShopScore = !shopInfo.isEligibleShopScore()
+        val kycAppLink = PMConstant.AppLink.KYC_POWER_MERCHANT
 
-        var shopKycResIcon: Int
+        val shopKycResIcon: Int
         val title: String
         val description: String
         var ctaText: String? = null
@@ -469,11 +457,6 @@ object PMRegistrationTermHelper {
                 shopKycResIcon = R.drawable.ic_pm_failed
             }
         }
-        if (shopInfo.isNewSeller && isPmProSelected) {
-            if (!shopInfo.is30DaysFirstMonday) {
-                shopKycResIcon = R.drawable.ic_not_completed_new_seller
-            }
-        }
         return RegistrationTermUiModel.Kyc(
             title = title,
             descriptionHtml = description,
@@ -518,10 +501,6 @@ object PMRegistrationTermHelper {
                     Constant.POWER_MERCHANT_PRO_CHARGING
                 ),
                 icon = IconUnify.COURIER_FAST
-            ),
-            PMProBenefitUiModel(
-                description = context.getString(R.string.pm_pro_general_benefit_2),
-                icon = IconUnify.SEARCH
             ),
             PMProBenefitUiModel(
                 description = context.getString(R.string.pm_pro_general_benefit_3),
