@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
@@ -99,6 +100,20 @@ internal class PlayBroadcastViewModelRobot(
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiStateList
+    }
+
+    fun recordEvent(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): List<PlayBroadcastEvent> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        val uiEvents = mutableListOf<PlayBroadcastEvent>()
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiEvents
     }
 
     fun cancelRemainingTasks() {

@@ -12,8 +12,7 @@
     <string name="add_on_label_dialog_confirmation_primary_cta">Ya, Batal</string>
     <string name="add_on_label_dialog_confirmation_secondary_cta">Tetap di Sini</string>
     <string name="add_on_label_header">Bungkus barang dengan (opsional):</string>
-    <string name="add_on_label_header_toko_cabang_single_product">Bungkus barang jadi satu dengan (opsional):</string>
-    <string name="add_on_label_header_toko_cabang_multiple_product">Bungkus %d barang jadi satu dengan (opsional):</string>
+    <string name="add_on_label_header_toko_cabang_multiple_product"><![CDATA[Bungkus %d barang <b>jadi satu</b> dengan (opsional):]]></string>
     <string name="add_on_label_message_custom_note">Bisa ubah pesan yang disediakan</string>
     <string name="add_on_label_message_pre_defined_note">Menggunakan pesan yang disediakan</string>
     <string name="add_on_label_note_filled">Pesan</string>

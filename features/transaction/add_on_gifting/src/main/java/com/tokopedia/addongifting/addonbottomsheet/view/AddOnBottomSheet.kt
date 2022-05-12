@@ -37,6 +37,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -222,6 +223,7 @@ class AddOnBottomSheet(private val addOnProductData: AddOnProductData, val sourc
             } else {
                 setCtaText(context.getString(R.string.add_on_label_total_amount_cta_save))
             }
+            amountCtaView.setPadding(20.toPx(), 0, 20.toPx(), 0)
             amountCtaView.show()
             amountCtaView.setOnClickListener {
                 viewBinding.totalAmount.amountCtaView.isLoading = true

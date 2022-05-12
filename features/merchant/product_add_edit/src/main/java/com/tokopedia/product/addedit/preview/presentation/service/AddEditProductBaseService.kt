@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -10,14 +11,17 @@ import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPEG
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT_JPG
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.IMAGE_SOURCE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.REQUEST_DELAY_MILLIS
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -35,8 +39,12 @@ import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCa
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageProcessingUtil.DEF_HEIGHT
+import com.tokopedia.utils.image.ImageProcessingUtil.DEF_WIDTH
+import com.tokopedia.utils.image.ImageProcessingUtil.resizeBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -103,16 +111,17 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantInputModel: VariantInputModel){
         val imagePathList = filterPathOnly(imageUrlOrPathList)
+        val imagePathListCompressed = compressImages(imagePathList)
         val pathImageCount = imagePathList.size
         val uploadIdList: ArrayList<String> = ArrayList()
-        val primaryImagePathOrUrl = imageUrlOrPathList.getOrNull(0).orEmpty()
+        val primaryImagePathOrUrl = imageUrlOrPathList.firstOrNull().orEmpty()
 
-        notificationManager = getNotificationManager(pathImageCount)
+        notificationManager = getNotificationManager(pathImageCount + variantInputModel.products.size)
         notificationManager?.onStartUpload(primaryImagePathOrUrl)
 
         launchCatchError(block = {
             repeat(pathImageCount) { i ->
-                val imageId = uploadImageAndGetId(imagePathList[i])
+                val imageId = uploadImageAndGetId(imagePathListCompressed[i])
                 if (imageId.isNotEmpty()) {
                     notificationManager?.onAddProgress()
                     uploadIdList.add(imageId)
@@ -131,6 +140,16 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         })
     }
 
+    private fun compressImages(imagePathList: List<String>): List<String> {
+        return imagePathList.map {
+            if (it.endsWith(EXT_JPG) || it.endsWith(EXT_JPEG)) {
+                it // cancel compressing jpeg, image file will bigger if use jpeg as input
+            } else {
+                resizeBitmap(it, DEF_WIDTH, DEF_HEIGHT, true, Bitmap.CompressFormat.WEBP)
+            }
+        }
+    }
+
     protected fun getErrorMessage(throwable: Throwable): String {
         // don't display gql error message to user
         return if (throwable.message == null || throwable.message?.contains(GQL_ERROR_SUBSTRING) == true) {
@@ -145,7 +164,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val errorMessage = String.format(
                 "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
                 userSession.userId,
-                getErrorMessage(throwable),
+                throwable.message,
                 URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
@@ -192,8 +211,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             productVariants: List<ProductVariantInputModel>
     ): List<ProductVariantInputModel> {
         productVariants.forEach {
+            notificationManager?.onAddProgress()
             it.pictures.firstOrNull()?.let { picture ->
                 if (picture.picID.isEmpty() && picture.urlOriginal.isNotEmpty()) {
+                    delay(REQUEST_DELAY_MILLIS) // add delay when uploading to reduce server load
                     val uploadId = uploadImageAndGetId(picture.urlOriginal)
                     if (uploadId.isNotEmpty()) {
                         picture.uploadId = uploadId

@@ -8,6 +8,8 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
@@ -27,6 +29,8 @@ data class PlayViewerNewUiState(
     val status: PlayStatusUiModel,
     val quickReply: PlayQuickReplyInfoUiModel,
     val kebabMenu: PlayKebabMenuUiState,
+    val selectedVariant: NetworkResult<VariantUiModel>,
+    val isLoadingBuy: Boolean,
 )
 
 data class PlayInteractiveViewUiState(
@@ -92,6 +96,12 @@ data class PlayTitleUiState(
 data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
+
+enum class KebabMenuType{
+    ThreeDots,
+    UserReportList,
+    UserReportSubmission
+}
 
 enum class ViewVisibility {
 

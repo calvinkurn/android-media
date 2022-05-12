@@ -41,4 +41,20 @@ interface PlayWidgetInListSmallAnalyticListener {
         businessWidgetPosition: Int,
     ) {
     }
+
+    fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean,
+    ) {}
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean,
+    ) {}
 }

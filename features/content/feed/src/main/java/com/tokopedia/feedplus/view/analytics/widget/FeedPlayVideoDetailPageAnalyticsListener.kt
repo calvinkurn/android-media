@@ -18,7 +18,7 @@ class FeedPlayVideoDetailPageAnalyticsListener @Inject constructor(
     private val shopId: String = userSession.shopId
 
     companion object{
-         const val DEFAULT_FILTER_VALUE = "Untukmu"
+         const val DEFAULT_FILTER_VALUE = ""
     }
 
 

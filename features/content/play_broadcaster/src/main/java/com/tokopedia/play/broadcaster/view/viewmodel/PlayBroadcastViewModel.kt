@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
+import android.net.Network
 import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
@@ -8,6 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
@@ -22,6 +24,7 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -32,6 +35,7 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -128,7 +132,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
     val observableInteractiveConfig: LiveData<InteractiveConfigUiModel>
         get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
@@ -156,6 +159,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    val summaryLeaderboardInfo: SummaryLeaderboardInfo
+        get() = SummaryLeaderboardInfo(
+            _observableLeaderboardInfo.value != null,
+            if(_observableLeaderboardInfo.value is NetworkResult.Success) {
+                (_observableLeaderboardInfo.value as NetworkResult.Success).data.totalParticipant
+            }
+            else "0"
+        )
+
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -185,6 +198,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     )
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
+    private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -206,15 +220,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
+        _schedule,
         _isExiting
-    ) { channelState, pinnedMessage, productMap, isExiting ->
+    ) { channelState, pinnedMessage, productMap, schedule, isExiting ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
+            schedule = schedule,
             isExiting = isExiting,
         )
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        PlayBroadcastUiState.Empty,
+    )
 
     private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
     val uiEvent: Flow<PlayBroadcastEvent>
@@ -312,6 +332,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
             is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
+            is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
+            PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
         }
     }
 
@@ -336,16 +358,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     // also when complete draft is true
                     || configUiModel.channelType == ChannelType.CompleteDraft
                     || configUiModel.channelType == ChannelType.Draft) {
-                        val deferredChannel = async { getChannelById(configUiModel.channelId) }
-                        val deferredProductMap = async {
+                        val deferredChannel = asyncCatchError(block = {
+                            getChannelById(configUiModel.channelId)
+                        }) { it }
+                        val deferredProductMap = asyncCatchError(block = {
                             repo.getProductTagSummarySection(channelID = configUiModel.channelId)
-                        }
+                        }) { emptyList() }
 
                         val error = deferredChannel.await()
                         val productMap = deferredProductMap.await()
 
                         if (error != null) throw error
-                        setSelectedProduct(productMap)
+                        setSelectedProduct(productMap.orEmpty())
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
@@ -564,8 +588,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return remainingLiveDuration > durationInMs + delayGqlDuration
     }
 
-    fun getLeaderboardData() {
-        viewModelScope.launch { getLeaderboardInfo() }
+    fun getLeaderboardData(channelId: String) {
+        viewModelScope.launch { getLeaderboardInfo(channelId) }
     }
 
     private fun getInteractiveConfig() {
@@ -627,7 +651,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private suspend fun onInteractiveFinished() {
         _observableInteractiveState.value = BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.Loading)
         delay(INTERACTIVE_GQL_LEADERBOARD_DELAY)
-        val err = getLeaderboardInfo()
+        val err = getLeaderboardInfo(channelId)
         if (err == null && _observableLeaderboardInfo.value is NetworkResult.Success) {
             val leaderboard = (_observableLeaderboardInfo.value as NetworkResult.Success).data
             val coachMark = if (leaderboard.leaderboardWinners.firstOrNull()?.winners.isNullOrEmpty()) BroadcastInteractiveCoachMark.NoCoachMark else BroadcastInteractiveCoachMark.HasCoachMark(
@@ -640,7 +664,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getLeaderboardInfo(): Throwable? {
+    private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
             val leaderboard = repo.getInteractiveLeaderboard(channelId) {
@@ -779,7 +803,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun setBroadcastSchedule(schedule: BroadcastScheduleUiModel) {
-        getCurrentSetupDataStore().setBroadcastSchedule(schedule)
+        _schedule.update {
+            it.copy(schedule = schedule)
+        }
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
@@ -808,6 +834,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         hydraConfigStore.setMinScheduleDate(scheduleConfigModel.minimum)
         hydraConfigStore.setMaxScheduleDate(scheduleConfigModel.maximum)
         hydraConfigStore.setDefaultScheduleDate(scheduleConfigModel.default)
+
+        _schedule.update {
+            it.copy(
+                config = ScheduleConfigUiModel(
+                    maxDate = scheduleConfigModel.maximum,
+                    minDate = scheduleConfigModel.minimum,
+                    defaultDate = scheduleConfigModel.default,
+                ),
+                canSchedule = repo.canSchedule()
+            )
+        }
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {
@@ -882,6 +919,49 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
         setSelectedProduct(productSectionList)
+    }
+
+    private fun handleSetSchedule(selectedDate: Date) {
+        _schedule.update {
+            it.copy(state = NetworkState.Loading)
+        }
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val isEdit = _schedule.value.schedule != BroadcastScheduleUiModel.NoSchedule
+            _schedule.update {
+                it.copy(
+                    schedule = repo.updateSchedule(channelId, selectedDate),
+                    state = NetworkState.Success,
+                )
+            }
+            _uiEvent.emit(
+                PlayBroadcastEvent.SetScheduleSuccess(isEdit = isEdit)
+            )
+        }) { err ->
+            _schedule.update {
+                it.copy(state = NetworkState.Failed)
+            }
+            _uiEvent.emit(PlayBroadcastEvent.ShowScheduleError(err))
+        }
+    }
+
+    private fun handleDeleteSchedule() {
+        _schedule.update {
+            it.copy(state = NetworkState.Loading)
+        }
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            _schedule.update {
+                it.copy(
+                    schedule = repo.updateSchedule(channelId, null),
+                    state = NetworkState.Success,
+                )
+            }
+            _uiEvent.emit(PlayBroadcastEvent.DeleteScheduleSuccess)
+        }) { err ->
+            _schedule.update {
+                it.copy(state = NetworkState.Failed)
+            }
+            _uiEvent.emit(PlayBroadcastEvent.ShowScheduleError(err))
+        }
     }
 
     /**
