@@ -5,7 +5,7 @@ import androidx.test.espresso.IdlingResource
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.AccountHeaderViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.InitialShimmeringDataViewHolder
-import com.tokopedia.homenav.mainnav.view.adapter.viewholder.InitialShimmeringTransactionDataViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.InitialShimmeringTransactionDataRevampViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.InitialShimmerTransactionRevampDataModel
@@ -40,7 +40,7 @@ internal class MainNavRecyclerViewIdlingResource(
 
             val isTransactionShimmeringExist = isModelExist(
                 { it is InitialShimmerTransactionRevampDataModel },
-                { it is InitialShimmeringTransactionDataViewHolder }
+                { it is InitialShimmeringTransactionDataRevampViewHolder }
             )
 
             val isAccountTransactionShimmeringExist = isModelExist(

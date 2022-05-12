@@ -31,6 +31,8 @@ interface MainNavTypeFactory {
 
     fun type(initialShimmerTransactionRevampDataModel: InitialShimmerTransactionRevampDataModel) : Int
 
+    fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel) : Int
+
     fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel) : Int
 
     fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel) : Int
