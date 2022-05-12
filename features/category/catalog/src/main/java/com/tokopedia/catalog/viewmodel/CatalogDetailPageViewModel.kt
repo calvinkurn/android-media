@@ -38,9 +38,7 @@ class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUs
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
-                productListResponse?.let { productResponse ->
-                    mProductCount.value = productResponse.searchProduct?.data?.totalData
-                }
+                mProductCount.value = productListResponse?.searchProduct?.data?.totalData ?: 0
             }
 
             override fun onCompleted() {}
