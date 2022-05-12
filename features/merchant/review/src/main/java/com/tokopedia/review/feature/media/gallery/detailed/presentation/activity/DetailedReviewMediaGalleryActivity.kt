@@ -21,20 +21,20 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.review.R
-import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
 import com.tokopedia.review.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.review.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.review.R
+import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
+import com.tokopedia.reviewcommon.extension.hideSystemUI
+import com.tokopedia.reviewcommon.extension.intersectWith
+import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.review.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
-import com.tokopedia.reviewcommon.extension.hideSystemUI
-import com.tokopedia.reviewcommon.extension.intersectWith
-import com.tokopedia.reviewcommon.extension.showSystemUI
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
@@ -119,8 +119,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         initInjector()
         initUiState(savedInstanceState)
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailedReviewMediaGalleryBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        setContentView(R.layout.activity_detailed_review_media_gallery)
         gestureDetector = GestureDetectorCompat(this, gestureListener)
         setupInsetListener()
         setupMainLayout()
