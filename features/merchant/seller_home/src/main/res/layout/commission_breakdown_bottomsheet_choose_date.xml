@@ -18,7 +18,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
-                android:id="@+id/commission_range_date_from"
+                android:id="@+id/tvSahCommissionStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -32,7 +32,7 @@
                 android:layout_weight="1" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
-                android:id="@+id/commission_range_date_to"
+                android:id="@+id/tvSahCommissionEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -42,9 +42,10 @@
         </LinearLayout>
 
         <com.tokopedia.calendar.UnifyCalendar
-            android:id="@+id/calendar_unify"
+            android:id="@+id/calendarSahCommission"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/unifyButtonSelect"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
