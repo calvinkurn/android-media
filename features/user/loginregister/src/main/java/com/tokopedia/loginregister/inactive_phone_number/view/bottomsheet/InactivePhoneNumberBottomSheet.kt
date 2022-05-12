@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,9 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
-import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
-import com.tokopedia.loginregister.inactive_phone_number.di.DaggerInactivePhoneNumberComponent
+import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponentBuilder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
@@ -38,7 +36,7 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        initializeInactivePhoneNumber()
+        InactivePhoneNumberComponentBuilder.getComponent(activity?.application).inject(this)
     }
 
     override fun onCreateView(
@@ -50,17 +48,6 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
         setChild(bindingChild.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initializeInactivePhoneNumber() {
-        val loginRegisterComponent = DaggerLoginRegisterComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-        DaggerInactivePhoneNumberComponent
-            .builder()
-            .loginRegisterComponent(loginRegisterComponent)
-            .build()
-            .inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
