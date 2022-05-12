@@ -165,11 +165,18 @@ class ProductTagParentFragment @Inject constructor(
             binding.icCcProductTagChevron1.setImage(IconUnify.CHEVRON_DOWN)
             binding.tvCcProductTagProductSource.text = getProductTagSourceText(firstSource)
             if(firstSource == ProductTagSource.MyShop && userSession.shopAvatar.isNotEmpty()) {
-                binding.icCcProductTagShopBadge.setImageUrl(viewModel.shopBadge)
-                binding.icCcProductTagShopBadge.show()
+                binding.imgCcProductTagShopBadge1.setImageUrl(viewModel.shopBadge)
+                binding.imgCcProductTagShopBadge1.show()
+                binding.icCcProductTagShopBadge1.hide()
+            }
+            else if(firstSource == ProductTagSource.Shop) {
+                binding.icCcProductTagShopBadge1.setImage(viewModel.selectedShop.badge)
+                binding.icCcProductTagShopBadge1.show()
+                binding.imgCcProductTagShopBadge1.hide()
             }
             else {
-                binding.icCcProductTagShopBadge.hide()
+                binding.imgCcProductTagShopBadge1.hide()
+                binding.icCcProductTagShopBadge1.hide()
             }
         }
 

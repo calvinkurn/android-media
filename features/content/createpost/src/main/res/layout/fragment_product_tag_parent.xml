@@ -47,7 +47,19 @@
         app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ic_cc_product_tag_shop_badge"
+        android:id="@+id/img_cc_product_tag_shop_badge_1"
+        android:layout_width="@dimen/dp_12"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_cc_product_tag_product_source_label"
+        app:layout_constraintStart_toEndOf="@id/tv_cc_product_tag_product_source_label"
+        app:layout_constraintTop_toTopOf="@id/tv_cc_product_tag_product_source_label"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_cc_product_tag_shop_badge_1"
         android:layout_width="@dimen/dp_12"
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/spacing_lvl2"
@@ -65,9 +77,9 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         app:layout_goneMarginStart="@dimen/spacing_lvl2"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@id/ic_cc_product_tag_shop_badge"
-        app:layout_constraintTop_toTopOf="@id/ic_cc_product_tag_shop_badge"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_cc_product_tag_shop_badge"
+        app:layout_constraintStart_toEndOf="@id/ic_cc_product_tag_shop_badge_1"
+        app:layout_constraintTop_toTopOf="@id/ic_cc_product_tag_shop_badge_1"
+        app:layout_constraintBottom_toBottomOf="@+id/ic_cc_product_tag_shop_badge_1"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Toko Siapa Ya"
@@ -107,8 +119,8 @@
         app:layout_goneMarginStart="@dimen/spacing_lvl2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/ic_cc_product_tag_shop_badge_2"
-        app:layout_constraintTop_toTopOf="@id/ic_cc_product_tag_shop_badge"
-        app:layout_constraintBottom_toBottomOf="@+id/ic_cc_product_tag_shop_badge"
+        app:layout_constraintTop_toTopOf="@id/tv_cc_product_tag_product_source"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_cc_product_tag_product_source"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Toko Siapa Ya"
