@@ -299,7 +299,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
             if (confirmReqPickupResponse.dataSuccess.ticker.text.isNotEmpty()) {
                 val tickerData = confirmReqPickupResponse.dataSuccess.ticker
                 tickerInfoCourier.run {
-                    val formattedDesc = String.format("%s <a href=\"%s\">%s</a>", tickerData.text, tickerData.urlDetail, tickerData.urlText)
+                    val formattedDesc = getString(R.string.req_pickup_ticket_desc_template, tickerData.text, tickerData.urlDetail, tickerData.urlText)
                     setHtmlDescription(formattedDesc)
                     tickerType = Utils.mapStringTickerTypeToUnifyTickerType(tickerData.type)
                     tickerShape = Ticker.SHAPE_LOOSE
