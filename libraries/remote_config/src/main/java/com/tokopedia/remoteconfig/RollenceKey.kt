@@ -68,4 +68,8 @@ object RollenceKey {
 
     // Logistic
     const val LCA_REFRESH = "android_lca_refresh"
+
+    // Global Menu (Me Page)
+    const val ME_PAGE_REVAMP = "Navigation_Mepage"
+    const val ME_PAGE_REVAMP_VARIANT = "Mepage_variant"
 }

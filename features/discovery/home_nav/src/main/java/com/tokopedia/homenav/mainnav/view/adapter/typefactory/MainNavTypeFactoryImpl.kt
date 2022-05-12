@@ -16,14 +16,20 @@ import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.EmptyFavoriteShopViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ErrorFavoriteShopViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.favoriteshop.ShimmeringFavoriteShopViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.EmptyWishlistViewHolder
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ErrorWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.wishlist.ShimmeringWishlistViewHolder
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.EmptyStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ErrorStateFavoriteShopDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.FavoriteShopListDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.favoriteshop.ShimmerFavoriteShopDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.EmptyStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ErrorStateWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
@@ -82,8 +88,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     }
 
     override fun type(shimmerFavoriteShopDataModel: ShimmerFavoriteShopDataModel): Int {
-        //Temporary, set to be changed into separate viewholder
-        return InitialShimmeringTransactionDataViewHolder.LAYOUT
+        return ShimmeringFavoriteShopViewHolder.LAYOUT
     }
 
     override fun type(shimmerWishlistDataModel: ShimmerWishlistDataModel): Int {
@@ -99,13 +104,19 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
     }
 
     override fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int {
-        //Temporary, set to be changed into separate viewholder
-        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+        return ErrorFavoriteShopViewHolder.LAYOUT
     }
 
     override fun type(errorStateWishlistDataModel: ErrorStateWishlistDataModel): Int {
-        //Temporary, set to be changed into separate viewholder
-        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+        return ErrorWishlistViewHolder.LAYOUT
+    }
+
+    override fun type(emptyStateWishlistDataModel: EmptyStateWishlistDataModel): Int {
+        return EmptyWishlistViewHolder.LAYOUT
+    }
+
+    override fun type(emptyStateFavoriteShopDataModel: EmptyStateFavoriteShopDataModel): Int {
+        return EmptyFavoriteShopViewHolder.LAYOUT
     }
 
     override fun type(visitable: HomeNavExpandableDataModel): Int {
@@ -129,6 +140,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             FavoriteShopViewHolder.LAYOUT -> FavoriteShopViewHolder(view, mainNavListener)
             ShimmeringFavoriteShopViewHolder.LAYOUT -> ShimmeringFavoriteShopViewHolder(view)
             ShimmeringWishlistViewHolder.LAYOUT -> ShimmeringWishlistViewHolder(view)
+            EmptyWishlistViewHolder.LAYOUT -> EmptyWishlistViewHolder(view)
+            EmptyFavoriteShopViewHolder.LAYOUT -> EmptyFavoriteShopViewHolder(view)
+            ErrorWishlistViewHolder.LAYOUT -> ErrorWishlistViewHolder(view, mainNavListener)
+            ErrorFavoriteShopViewHolder.LAYOUT -> ErrorFavoriteShopViewHolder(view, mainNavListener)
             HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>

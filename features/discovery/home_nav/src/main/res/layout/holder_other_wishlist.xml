@@ -2,7 +2,7 @@
 <com.tokopedia.viewallcard.ViewAllCard
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view_all_favshop"
+    android:id="@+id/card_view_all_wishlist"
     android:clickable="true"
     android:focusable="true"
     android:layout_width="@dimen/product_card_flashsale_width"

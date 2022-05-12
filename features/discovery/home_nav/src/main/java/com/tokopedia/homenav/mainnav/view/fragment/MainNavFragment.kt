@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOU
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -117,6 +118,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MePageRollenceController.fetchMePageRollenceValue()
+        viewModel.setIsMePageUsingRollenceVariant(MePageRollenceController.isMePageUsingRollenceVariant())
+
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
         context?.let {
