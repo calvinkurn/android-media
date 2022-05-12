@@ -25,6 +25,7 @@ class UsageProgressViewHolder(
 
     companion object {
         private const val PERCENT = 100
+        private const val MVC_PROGRESS_HEIGHT = 6
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_usage_progress
     }
@@ -35,7 +36,7 @@ class UsageProgressViewHolder(
         binding?.apply {
             val progressBarValue = (element.confirmedQuota / element.quota) * PERCENT
             progressMvcUsage.setValue(progressBarValue, true)
-            progressMvcUsage.progressBarHeight = progressMvcUsage.context.pxToDp(6).toInt()
+            progressMvcUsage.progressBarHeight = progressMvcUsage.context.pxToDp(MVC_PROGRESS_HEIGHT).toInt()
 
             tvMvcUsedQuota.text = element.confirmedQuota.toString()
             tvMvcTotalQuota.text = String.format(tvMvcTotalQuota.context.getString(R.string.mvc_detail_total_quota).toBlankOrString(), element.quota.toString())
