@@ -1,11 +1,14 @@
 package com.tokopedia.flight.resend_eticket.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.util.PatternsCompat
 import com.tokopedia.flight.resend_eticket.domain.FlightOrderResendEmailUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,6 +67,8 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailWrongFormat_ShouldNotValid() {
         // given
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns false
         val email : String = "asdfasf@asdfasdf"
 
         // when
@@ -78,6 +83,8 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailWrongHaveDotAt_ShouldNotValid() {
         // given
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
         val email : String = "asdfasf.@asdfasdf.com"
 
         // when
@@ -92,6 +99,8 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailWrongHaveAtDot_ShouldNotValid() {
         // given
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
         val email = "asdfasf@.asdf@asdf.com"
 
         // when
@@ -106,6 +115,8 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailContainsPlus_ShouldNotValid() {
         // given
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
         val email : String = "furqan+1@gmail.com"
 
         // when
@@ -120,6 +131,8 @@ class FlightResendETicketViewModelTest {
     @Test
     fun isEmailValid_whenEmailCorrect_ShouldBeValid() {
         // given
+        mockkObject(PatternsCompat.EMAIL_ADDRESS)
+        every { PatternsCompat.EMAIL_ADDRESS.matcher(any()).matches() } returns true
         val email : String = "furqan@gmail.com"
 
         // when
