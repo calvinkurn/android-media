@@ -44,6 +44,8 @@ const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
 const val DEFAULT_TIME_DATA: Long = 0
+const val CONSTANT_0 = 0
+const val CONSTANT_11 = 11
 
 class Utils {
 

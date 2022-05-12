@@ -260,18 +260,20 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             )
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
-                if (!productItem.productId.isNullOrEmpty())
-                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
-                        DiscoATCRequestParams(
-                            parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
-                            position = masterProductCardItemViewModel.position,
-                            productId = productItem.productId!!,
-                            quantity = quantity,
-                            shopId = if (isGeneralCartATC) productItem.shopId else null,
-                            isGeneralCartATC = isGeneralCartATC,
-                            requestingComponent = masterProductCardItemViewModel.components
+                productItem.productId?.let { productId ->
+                    if (productId.isNotEmpty())
+                        (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                            DiscoATCRequestParams(
+                                parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
+                                position = masterProductCardItemViewModel.position,
+                                productId = productId,
+                                quantity = quantity,
+                                shopId = if (isGeneralCartATC) productItem.shopId else null,
+                                isGeneralCartATC = isGeneralCartATC,
+                                requestingComponent = masterProductCardItemViewModel.components
+                            )
                         )
-                    )
+                }
             }
         } else {
             masterProductCardItemViewModel.handleATCFailed()
