@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify.Companion.SINGLE_ACTION
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
@@ -387,8 +388,18 @@ class SingleProductBundleFragment(
 
     private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
         return if (pageSource == PAGE_SOURCE_CART || pageSource == PAGE_SOURCE_MINI_CART) {
-            // return string when in update mode
-            if (selectedBundleId != adapter.getSelectedBundleId() && !isFirstSetup) {
+            /*
+             * UPDATE MODE (CART & MINI CART)
+             *
+             * isProductBundleDifferent : Will be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
+             *
+             * Will disable the button if there is no changes and vice versa
+             */
+            val isProductBundleDifferent = selectedBundleId != adapter.getSelectedBundleId()
+            val isProductVariantChanged = selectedProductId != adapter.getSelectedProductId().toLongOrZero()
+            if ((isProductBundleDifferent || isProductVariantChanged) && !isFirstSetup) {
                 getCtaText(
                     stringRes = R.string.action_choose_package,
                     isEnabled = true
@@ -400,7 +411,11 @@ class SingleProductBundleFragment(
                 )
             }
         } else {
-            // return string when in add mode
+            /*
+             * ADD MODE (PDP)
+             *
+             * Always enable atc button
+             */
             getCtaText(
                 stringRes = R.string.action_choose_package,
                 isEnabled = true

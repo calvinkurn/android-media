@@ -23,6 +23,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -106,8 +107,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     private var productBundleDetailView: RecyclerView? = null
     private var productBundleDetailAdapter: ProductBundleDetailAdapter? = null
 
-    private var selectedBundleId: Long? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -120,13 +119,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
         // get data from activity
         var productBundleInfo: ArrayList<BundleInfo>? = null
-        var selectedVariantIds: List<String> = emptyList()
         var emptyVariantProductIds: List<String> = emptyList()
         if (arguments != null) {
             productBundleInfo = arguments?.getParcelableArrayList(PRODUCT_BUNDLE_INFO)
-            selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull()
+            viewModel.selectedBundleId = arguments?.getString(SELECTED_BUNDLE_ID)?.toLongOrNull().orZero()
             emptyVariantProductIds = arguments?.getStringArrayList(EMPTY_VARIANT_PRODUCT_IDS).orEmpty()
-            selectedVariantIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
+            viewModel.selectedProductIds = arguments?.getStringArrayList(SELECTED_PRODUCT_IDS).orEmpty()
             viewModel.pageSource = arguments?.getString(PAGE_SOURCE) ?: ""
         }
 
@@ -154,12 +152,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 // get product bundle master from the map - single source of truth
                 val productBundleMasters = viewModel.getProductBundleMasters()
                 // get selected product bundle master - return the first bundle master if no selection exist
-                val selectedProductBundleMaster = viewModel.getSelectedBundle(selectedBundleId, productBundleMasters)
+                val selectedProductBundleMaster = viewModel.getSelectedBundle(viewModel.selectedBundleId, productBundleMasters)
                 selectedProductBundleMaster?.run {
                     // render product bundle master chips
                     productBundleMasterAdapter?.setProductBundleMasters(productBundleMasters, this.bundleId)
                     // set selected product variants to bundle details
-                    viewModel.setSelectedVariants(selectedVariantIds,this)
+                    viewModel.setSelectedVariants(viewModel.selectedProductIds,this)
                     // set selected bundle master to live data to render details
                     viewModel.setSelectedProductBundleMaster(this)
                     // update the process day
@@ -367,8 +365,18 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private fun getAddUpdateModeCtaText(isFirstSetup: Boolean): String {
         return if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
-            // return string when in update mode
-            if (selectedBundleId != viewModel.getSelectedProductBundleMaster().bundleId && !isFirstSetup) {
+            /*
+             * UPDATE MODE (CART & MINI CART)
+             *
+             * isProductBundleDifferent : Will be true if user chooses the other product bundle.
+             * isProductVariantChanged  : Will be true if user changes the product variant of product bundle.
+             * isFirstSetup             : Flag to indicate first attempt opening bottomsheet (directly show selected item), it will make atc button disabled if the value is true.
+             *
+             * Will disable the button if there is no changes and vice versa
+             */
+            val isProductBundleDifferent = viewModel.selectedBundleId != viewModel.getSelectedProductBundleMaster().bundleId
+            val isProductVariantChanged = !viewModel.variantProductNotChanged(viewModel.getSelectedProductBundleDetails())
+            if ((isProductBundleDifferent || isProductVariantChanged) && !isFirstSetup) {
                 getCtaText(
                     stringRes = R.string.action_choose_package,
                     isEnabled = true
@@ -380,7 +388,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 )
             }
         } else {
-            // return string when in add mode
+            /*
+             * ADD MODE (PDP)
+             *
+             * Always enable atc button
+             */
             getCtaText(
                 stringRes = R.string.action_choose_package,
                 isEnabled = true
@@ -501,6 +513,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // update total amount view
                     val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
                     updateProductBundleOverView(productBundleOverView, selectedBundleDetails)
+                    getAddUpdateModeCtaText(false)
                 }
             }
             productBundleOverView?.bottomContentView?.apply {

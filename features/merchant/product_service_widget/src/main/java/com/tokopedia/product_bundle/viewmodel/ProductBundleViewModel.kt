@@ -369,6 +369,15 @@ class ProductBundleViewModel @Inject constructor(
         return isAddToCartInputValid
     }
 
+    fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
+        productBundleDetails
+            .filter { it.hasVariant }
+            .all { bundleDetail ->
+                selectedProductIds.any {
+                    bundleDetail.selectedVariantId == it
+                }
+            }
+
     private fun createBundleListParam(productId: Long): List<Bundle> {
         // if given product ID is 0, then use bundle ID to search bundle info
         return if (productId == Int.ZERO.toLong()) {
@@ -377,15 +386,6 @@ class ProductBundleViewModel @Inject constructor(
             emptyList()
         }
     }
-
-    private fun variantProductNotChanged(productBundleDetails: List<ProductBundleDetail>) =
-        productBundleDetails
-            .filter { it.hasVariant }
-            .all { bundleDetail ->
-                selectedProductIds.any {
-                    bundleDetail.selectedVariantId == it
-                }
-            }
 
     private fun isProductVariantSelectionComplete(productBundleDetails: List<ProductBundleDetail>): Boolean {
         val invalidInput = productBundleDetails.find { productBundleDetail ->
