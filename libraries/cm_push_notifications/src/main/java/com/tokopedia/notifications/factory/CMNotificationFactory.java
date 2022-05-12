@@ -41,7 +41,11 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.GENERAL:
             case CMConstant.NotificationType.BIG_IMAGE:
             case CMConstant.NotificationType.ACTION_BUTTONS: {
-                return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                if (baseNotificationModel.isReviewOn()) {
+                    return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
+                } else {
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                }
             }
 
             case CMConstant.NotificationType.PERSISTENT:

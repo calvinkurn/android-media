@@ -100,6 +100,12 @@ class ShopHomeAdapter(
         submitList(newList)
     }
 
+    fun setProductListEmptyState(isOwner: Boolean) {
+        val newList = getNewVisitableItems()
+        newList.add(ShopHomeProductListEmptyUiModel(isOwner))
+        submitList(newList)
+    }
+
     fun setEtalaseTitleData() {
         val newList = getNewVisitableItems()
         if(newList.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
