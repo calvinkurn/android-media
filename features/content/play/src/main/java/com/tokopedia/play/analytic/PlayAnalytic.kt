@@ -858,7 +858,7 @@ class PlayAnalytic(
             else -> Pair("","")
         }
         sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_VIEW_CONTENT_IRIS else KEY_TRACK_CLICK_GROUP_CHAT,
+            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = eventAction,
             eventLabel = eventLabel
@@ -871,7 +871,7 @@ class PlayAnalytic(
     ) {
         sendCompleteGeneralEvent(
             event = KEY_TRACK_VIEW_CONTENT_IRIS,
-            eventCategory = com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM,
+            eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = "view - follow quiz popup",
             eventLabel = "$shopId - $channelId - $userId - $interactiveId"
         )
@@ -885,7 +885,7 @@ class PlayAnalytic(
         }
 
         sendCompleteGeneralEvent(
-            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_VIEW_CONTENT_IRIS else KEY_TRACK_CLICK_GROUP_CHAT,
+            event = if(interactiveType is InteractiveUiModel.Quiz) KEY_TRACK_CLICK_CONTENT else KEY_TRACK_CLICK_GROUP_CHAT,
             eventCategory = KEY_TRACK_GROUP_CHAT_ROOM,
             eventAction = eventAction,
             eventLabel = eventLabel
