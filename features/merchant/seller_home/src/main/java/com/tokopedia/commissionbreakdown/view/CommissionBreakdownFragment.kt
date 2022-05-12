@@ -12,22 +12,23 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.commissionbreakdown.di.component.CommissionBreakdownComponent
 import com.tokopedia.commissionbreakdown.util.setSafeOnClickListener
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.databinding.FragmentCommissionBreakdownBinding
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -36,12 +37,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-
 class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListener {
 
     companion object {
         private const val DOWNLOAD_URL =
             "https://api-staging.tokopedia.com/v1/commission/report/download"
+        private const val SELLER_EDU = "https://seller.tokopedia.com/edu/biaya-layanan-tokopedia/"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_START_DATE = "start_date"
         private const val PARAM_END_DATE = "end_date"
@@ -63,10 +64,6 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
 
     private var selectedDateFrom: Date = Date()
     private var selectedDateTo: Date = Date()
-    private var datePlaceholderText: com.tokopedia.unifyprinciples.Typography? = null
-    private var downloadButton: UnifyButton? = null
-    private var infoDownloadXls: com.tokopedia.unifyprinciples.Typography? = null
-    private var infoCommissionBreakdown: com.tokopedia.unifyprinciples.Typography? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private val downloadReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -77,6 +74,8 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
             unsubscribeDownLoadHelper()
         }
     }
+
+    private var binding: FragmentCommissionBreakdownBinding? = null
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -91,14 +90,14 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(
-            R.layout.fragment_commission_breakdown,
-            container,
-            false
-        )
-        initView(view)
-        return view
+    ): View? {
+        binding = FragmentCommissionBreakdownBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
     }
 
     override fun onRequestPermissionsResult(
@@ -130,26 +129,41 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         ).show()
     }
 
-    private fun initView(view: View) {
-        datePlaceholderText = view.findViewById(R.id.trx_download_date_selected)
-        downloadButton = view.findViewById(R.id.trx_fee_download)
-        infoDownloadXls = view.findViewById(R.id.info_download_excel_report)
-        infoCommissionBreakdown = view.findViewById(R.id.info_commission_breakdown)
-        downloadButton?.setSafeOnClickListener {
-            checkPermissionDownload {
-                downloadFile()
+    private fun initView() {
+        binding?.run {
+            sahTrxFeeDownload.setSafeOnClickListener {
+                checkPermissionDownload {
+                    downloadFile()
+                }
             }
-        }
 
-        view.findViewById<View>(R.id.trx_download_date_card)?.setSafeOnClickListener {
-            openCalender()
-        }
-
-        infoCommissionBreakdown?.apply {
-            text = MethodChecker.fromHtml(activity?.getString(R.string.info_commission_breakdown))
-            setOnClickListener {
-                //TODO route edu
+            sahTrxDownloadDateCard.setSafeOnClickListener {
+                openCalender()
             }
+
+            sahInfoCommissionBreakdown.apply {
+                text = getString(R.string.info_commission_breakdown).parseAsHtml()
+                setOnClickListener {
+                    openSellerEdu()
+                }
+            }
+
+            setBackdropBackground()
+        }
+    }
+
+    private fun openSellerEdu() {
+        RouteManager.route(context, SELLER_EDU)
+    }
+
+    private fun setBackdropBackground() {
+        try {
+            binding?.sahCommissionBg?.setBackgroundResource(R.drawable.bg_sah_download_commission)
+        } catch (e: Exception) {
+            val resColor = requireContext().getResColor(
+                com.tokopedia.unifyprinciples.R.color.Unify_GN50
+            )
+            binding?.sahCommissionBg?.setBackgroundColor(resColor)
         }
     }
 
@@ -192,7 +206,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
         activity?.let { activity ->
             val startDate: String = DateTimeUtil.format(selectedDateFrom.time, DATE_FORMAT)
             val endDate: String = DateTimeUtil.format(selectedDateTo.time, DATE_FORMAT)
-            downloadButton?.isLoading = true
+            binding?.sahTrxFeeDownload?.isLoading = true
             val param = mapOf<String, Any>(
                 PARAM_SHOP_ID to userSession.shopId,
                 PARAM_START_DATE to startDate,
@@ -224,7 +238,7 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     }
 
     private fun dismissLoading() {
-        downloadButton?.isLoading = false
+        binding?.sahTrxFeeDownload?.isLoading = false
     }
 
     private fun unsubscribeDownLoadHelper() {
@@ -243,10 +257,12 @@ class CommissionBreakdownFragment : BaseDaggerFragment(), OnDateRangeSelectListe
     private fun setDateRangeChanged(dateFrom: Date, endDate: Date) {
         this.selectedDateFrom = dateFrom
         this.selectedDateTo = endDate
-        datePlaceholderText?.text = getDatePlaceholderText()
-        downloadButton?.isEnabled = true
-        downloadButton?.show()
-        infoDownloadXls?.show()
+        binding?.run {
+            sahTrxDownloadDateSelected.text = getDatePlaceholderText()
+            sahTrxFeeDownload.isEnabled = true
+            sahTrxFeeDownload.show()
+            sahInfoDownloadExcelReport.show()
+        }
     }
 
     private fun getDatePlaceholderText(): String {

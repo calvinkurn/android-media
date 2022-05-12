@@ -34,8 +34,14 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         const val MAX_RANGE_90 = 90L
         const val TAG = "CommissionBreakdownDateRangePickerBottomSheet"
 
-        fun getInstanceRange(dateFrom: Date?, dateTo: Date?, range: Long, minDate: Long): CommissionBreakdownDateRangePickerBottomSheet {
+        fun getInstanceRange(
+            dateFrom: Date?,
+            dateTo: Date?,
+            range: Long,
+            minDate: Long
+        ): CommissionBreakdownDateRangePickerBottomSheet {
             return CommissionBreakdownDateRangePickerBottomSheet().apply {
+                isFullpage = true
                 val bundle = Bundle()
                 bundle.putSerializable(ARG_DATE_FROM, dateFrom ?: Date())
                 bundle.putSerializable(ARG_DATE_TO, dateTo ?: Date())
@@ -51,14 +57,14 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     private var defaultDateFrom: Date? = null
     private var defaultDateTo: Date? = null
-    private var newSelectedDateFrom : Date? = Date()
-    private var newSelectedDateTO : Date? = Date()
-    private var maxRange:Long = MAX_RANGE
+    private var newSelectedDateFrom: Date? = Date()
+    private var newSelectedDateTO: Date? = Date()
+    private var maxRange: Long = MAX_RANGE
 
-    private var dateFromTextField : TextFieldUnify2? = null
-    private var dateToTextField :TextFieldUnify2? = null
-    private var unifyButtonSelect : UnifyButton? = null
-    private var calendarUnify : UnifyCalendar? = null
+    private var dateFromTextField: TextFieldUnify2? = null
+    private var dateToTextField: TextFieldUnify2? = null
+    private var unifyButtonSelect: UnifyButton? = null
+    private var calendarUnify: UnifyCalendar? = null
 
     private var childView: View? = null
 
@@ -92,7 +98,11 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         setDefaultParams()
-        childView = View.inflate(context, R.layout.commission_breakdown_bottomsheet_choose_date, null)
+        childView = inflater.inflate(
+            R.layout.commission_breakdown_bottomsheet_choose_date,
+            container,
+            false
+        )
         childView?.run {
             setChild(this)
             dateFromTextField = findViewById(R.id.commission_range_date_from)
@@ -105,12 +115,15 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        childView?.layoutParams?.height = (getScreenHeight() / BOTTOM_SHEET_HEIGHT_3 * BOTTOM_SHEET_HEIGHT_2)
         initCalender()
         unifyButtonSelect?.setOnClickListener {
             if (newSelectedDateFrom != null && newSelectedDateTO != null &&
                 !(CommissionBreakdownDateUtil.isDatesAreSame(newSelectedDateTO, defaultDateTo)
-                        && CommissionBreakdownDateUtil.isDatesAreSame(newSelectedDateFrom, defaultDateFrom))) {
+                        && CommissionBreakdownDateUtil.isDatesAreSame(
+                    newSelectedDateFrom,
+                    defaultDateFrom
+                ))
+            ) {
                 if (parentFragment is OnDateRangeSelectListener) {
                     (parentFragment as OnDateRangeSelectListener)
                         .onDateRangeSelected(newSelectedDateFrom!!, newSelectedDateTO!!)
@@ -181,7 +194,14 @@ class CommissionBreakdownDateRangePickerBottomSheet : BottomSheetUnify() {
     private fun CalendarPickerView.outOfRange() {
         setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
-                activity?.let {showErrorToaster(it.getString(R.string.sp_title_max_day, maxRange)) }
+                activity?.let {
+                    showErrorToaster(
+                        it.getString(
+                            R.string.sp_title_max_day,
+                            maxRange
+                        )
+                    )
+                }
             }
         })
     }
