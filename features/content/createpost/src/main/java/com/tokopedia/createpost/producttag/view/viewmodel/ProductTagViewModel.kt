@@ -512,7 +512,12 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Util */
     private suspend fun getShopInfo(shopId: String): ShopUiModel {
-        /** TODO: gonna hit GQL */
+        /** TODO: gonna hit GQL from shop_page i guess.
+         * iOS team get it from SuggestionData which we can't use bcs the autocomplete module
+         * forces us to use applink,
+         * the other ways is consume the shopInfo from ace_search_product, but if the product is not found,
+         * we can't get the shopInfo and will leave the breadcrumb empty :(
+         * */
         return ShopUiModel(
             shopId = shopId,
             shopName = "Testing saja",
