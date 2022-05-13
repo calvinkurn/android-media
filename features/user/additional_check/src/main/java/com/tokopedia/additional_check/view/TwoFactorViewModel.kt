@@ -1,6 +1,5 @@
 package com.tokopedia.additional_check.view
 
-import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.additional_check.data.OfferingData
@@ -14,7 +13,6 @@ import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,29 +27,28 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
 
     fun getOffering(isSupportBiometric: Boolean, onSuccess: (MutableList<OfferingData>) -> Unit, onError: (Throwable) -> Unit) {
         if(userSession.isLoggedIn && additionalCheckPreference.isNeedCheck()) {
-            viewModelScope.launch {
-                try {
-                    val offering = offerInterruptUseCase(mapOf(
-                        OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
-                        OfferInterruptUseCase.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
-                    ))
-                    additionalCheckPreference.setInterval(offering.data.interval)
-                    if (offering.data.errorMessages.isNotEmpty() && offering.data.errorMessages.first().isEmpty()) {
-                        if(offering.data.offers.size > 1) {
-                            val firstOffering = offering.data.offers[1]
-                            val jsonString = Gson().toJson(firstOffering)
-                            additionalCheckPreference.setNextOffering(jsonString)
-                        }
-                        onSuccess(offering.data.offers)
-                    } else {
-                        onError(Throwable(offering.data.errorMessages.first()))
+            launchCatchError(block = {
+                val offering = offerInterruptUseCase(mapOf(
+                    OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
+                    OfferInterruptUseCase.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
+                ))
+                additionalCheckPreference.setInterval(offering.data.interval)
+                if (offering.data.errorMessages.isNotEmpty() && offering.data.errorMessages.first().isEmpty()) {
+                    if(offering.data.offers.size > 1) {
+                        val firstOffering = offering.data.offers[1]
+                        val jsonString = Gson().toJson(firstOffering)
+                        additionalCheckPreference.setNextOffering(jsonString)
                     }
-                } catch (e: Exception) {
-                    onError(e)
+                    onSuccess(offering.data.offers)
+                } else {
+                    onError(Throwable(offering.data.errorMessages.first()))
                 }
-            }
+            }, onError = {
+                onError(it)
+            })
         }
     }
+
     fun check(onSuccess: (ShowInterruptData) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
             launchCatchError(block = {

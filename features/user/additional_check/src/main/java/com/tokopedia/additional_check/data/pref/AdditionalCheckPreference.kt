@@ -15,6 +15,8 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
         private const val USER_ADDITIONAL_CHECK_INTERVAL_KEY = "user_additional_check"
         private const val USER_LINK_ACCOUNT_REMINDER_INTERVAL_KEY = "user_account_link_reminder"
         private const val USER_ADDITIONAL_CHECK_NEXT_OFFER_KEY = "user_additional_check_next_offering"
+
+        const val MS_MULTIPLIER = 60000
     }
 
     private var sharedPrefs: SharedPreferences? = null
@@ -27,7 +29,7 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
 
     fun setInterval(interval: Int){
         // interval is in minute, so we need to convert it to ms and then save to sharedpreference
-        val days = interval * 60000
+        val days = interval * MS_MULTIPLIER
         val nextCheck = days + System.currentTimeMillis()
         sharedPrefs?.edit()?.putLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, nextCheck)?.apply()
     }
