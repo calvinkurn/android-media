@@ -120,6 +120,7 @@ class ProductTagViewModel @AssistedInject constructor(
     private val _globalSearchProductUiState = _globalSearchProduct.map {
         GlobalSearchProductUiState(
             products = it.products,
+            quickFilters = it.quickFilters,
             nextCursor = it.nextCursor,
             state = it.state,
             query = it.query,
@@ -211,6 +212,7 @@ class ProductTagViewModel @AssistedInject constructor(
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
             ProductTagAction.TickerClicked -> handleTickerClicked()
             ProductTagAction.CloseTicker -> handleCloseTicker()
+            is ProductTagAction.SelectQuickFilter -> handleSelectQuickFilter(action.quickFilter)
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -399,6 +401,11 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
+            val quickFilters = repo.getQuickFilter(
+                query = globalSearchProduct.query,
+                extraParams = "" /** TODO: empty for not */
+            )
+
             val result = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = globalSearchProduct.nextCursor,
@@ -411,6 +418,7 @@ class ProductTagViewModel @AssistedInject constructor(
             _globalSearchProduct.setValue {
                 copy(
                     products = products + result.pagedData.dataList,
+                    quickFilters = quickFilters,
                     nextCursor = result.pagedData.nextCursor.toInt(),
                     state = PagedState.Success(
                         hasNextPage = result.pagedData.hasNextPage,
@@ -438,6 +446,20 @@ class ProductTagViewModel @AssistedInject constructor(
         _globalSearchProduct.setValue {
             copy(ticker = TickerUiModel())
         }
+    }
+
+    private fun handleSelectQuickFilter(quickFilter: QuickFilterUiModel) {
+        _globalSearchProduct.setValue {
+            copy(
+                selectedQuickFilters = selectedQuickFilters.toMutableList().apply {
+                    val isExists = firstOrNull { it == quickFilter } != null
+                    if(isExists) remove(quickFilter)
+                    else add(quickFilter)
+                }
+            )
+        }
+
+        /** TODO: it should refresh the page */
     }
 
     private fun handleLoadGlobalSearchShop() {

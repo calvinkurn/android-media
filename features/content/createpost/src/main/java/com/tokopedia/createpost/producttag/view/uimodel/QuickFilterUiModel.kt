@@ -1,5 +1,8 @@
 package com.tokopedia.createpost.producttag.view.uimodel
 
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
+
 /**
  * Created By : Jonathan Darwin on May 13, 2022
  */
@@ -8,4 +11,13 @@ data class QuickFilterUiModel(
     val icon: String,
     val key: String,
     val value: String,
-)
+    val isSelected: Boolean,
+) {
+    fun toSortFilterItem(listener: () -> Unit): SortFilterItem {
+        return SortFilterItem(
+            title = name,
+            listener = listener,
+            type = if(isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL,
+        )
+    }
+}

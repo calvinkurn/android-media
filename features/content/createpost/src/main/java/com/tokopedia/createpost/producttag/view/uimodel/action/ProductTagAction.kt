@@ -2,6 +2,7 @@ package com.tokopedia.createpost.producttag.view.uimodel.action
 
 import com.tokopedia.createpost.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
 
 /**
@@ -30,6 +31,7 @@ sealed interface ProductTagAction {
     object LoadGlobalSearchProduct: ProductTagAction
     object TickerClicked: ProductTagAction
     object CloseTicker: ProductTagAction
+    data class SelectQuickFilter(val quickFilter: QuickFilterUiModel): ProductTagAction
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction

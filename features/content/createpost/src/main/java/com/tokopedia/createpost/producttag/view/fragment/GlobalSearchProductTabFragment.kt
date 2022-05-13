@@ -16,11 +16,14 @@ import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecorat
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.QuickFilterUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.action.ProductTagAction
 import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProductUiState
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_global_search_ticker_list.*
 import kotlinx.coroutines.flow.collectLatest
@@ -89,6 +92,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderGlobalSearchProduct(it.prevValue?.globalSearchProduct, it.value.globalSearchProduct)
+                renderQuickFilter(it.prevValue?.globalSearchProduct?.quickFilters, it.value.globalSearchProduct.quickFilters)
             }
         }
     }
@@ -149,6 +153,25 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                 ).show()
             }
             else -> {}
+        }
+    }
+
+    private fun renderQuickFilter(prev: List<QuickFilterUiModel>?, curr: List<QuickFilterUiModel>) {
+        if(prev == curr) return
+
+        binding.sortFilter.apply {
+            sortFilterItems.removeAllViews()
+            addItem(
+                curr.map {
+                    it.toSortFilterItem { viewModel.submitAction(ProductTagAction.SelectQuickFilter(it)) }
+                } as ArrayList<SortFilterItem>
+            )
+            textView?.text = getString(R.string.cc_product_tag_filter_label)
+            parentListener = {
+                /** TODO: open sort & filter bottomsheet */
+            }
+
+            show()
         }
     }
 
