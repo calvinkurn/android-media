@@ -306,8 +306,6 @@ class TokoNowCategoryFragment:
         }
     }
 
-
-
     override fun onNavToolbarShareClicked() {
         updateShareHomeData(
             isScreenShot = false,
