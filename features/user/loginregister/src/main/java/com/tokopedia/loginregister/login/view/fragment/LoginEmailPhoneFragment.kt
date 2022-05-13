@@ -806,7 +806,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setUpForgotPasswordTitle(): String?{
         return context?.getString(
             if (isUsingInactivePhoneNumber())
-                R.string.ipn_title_need_help
+                R.string.loginregister_need_help
             else
                 R.string.title_forgot_password
         )
