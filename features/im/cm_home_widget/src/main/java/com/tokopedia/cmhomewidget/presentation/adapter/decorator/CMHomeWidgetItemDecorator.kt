@@ -23,10 +23,8 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
         val currentViewType = currentItemViewHolder.itemViewType
         val currentItemPosition = currentItemViewHolder.adapterPosition
         val totalItems = state.itemCount
-
         setItemSpacing(outRect, currentItemPosition, totalItems)
-
-        setItemWidth(parent, view, currentViewType)
+        setItemWidth(parent, view, currentViewType, totalItems)
     }
 
     private fun setItemSpacing(outRect: Rect, currentItemPosition: Int, totalItems: Int) {
@@ -49,7 +47,8 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
     private fun setItemWidth(
         parent: RecyclerView,
         view: View,
-        currentViewType: Int
+        currentViewType: Int,
+        totalItems: Int
     ) {
         var ratio = CMHomeWidgetProductCardViewHolder.RATIO_WIDTH
         when (currentViewType) {
@@ -63,6 +62,10 @@ class CMHomeWidgetItemDecorator @Inject constructor() :
             }
             CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetPaymentCardViewHolder.RATIO_WIDTH
+                if (totalItems == 1) {
+                    ratio = CMHomeWidgetPaymentCardViewHolder.SINGLE_ITEM_RATIO_WIDTH
+                }
+
             }
         }
         val layoutParams: ViewGroup.LayoutParams = view.layoutParams

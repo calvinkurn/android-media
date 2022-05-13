@@ -1,5 +1,6 @@
 package com.tokopedia.cmhomewidget.presentation.customview
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -88,6 +89,7 @@ class CMHomeWidget @JvmOverloads constructor(
             )
             addItemDecoration(itemDecorator.get())
             adapter = (this@CMHomeWidget).adapter.get()
+            adapter?.notifyDataSetChanged()
             setHasFixedSize(true)
         }
     }
@@ -132,23 +134,28 @@ class CMHomeWidget @JvmOverloads constructor(
         if (itemsList.isNotEmpty()) {
             binding.root.visibility = View.VISIBLE
             adapter.get().loadData(itemsList)
+            cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
+                it.widgetDataItemSize = itemsList.size
+            }
         } else {
             adapter.get().clearAllElements()
             binding.root.visibility = View.GONE
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
         this.cmHomeWidgetCloseClickListener = cmHomeWidgetCloseClickListener
         binding.ivCmHomeWidgetClose.setOnClickListener {
+            cmHomeWidgetData?.cMHomeWidgetPaymentData?.let {
+                it.isWidgetClosePress = true
+                binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
+            }
             cmHomeWidgetData?.let {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
                     it.parentId,
                     it.campaignId
                 )
-                it.cMHomeWidgetPaymentData?.let {
-
-                }
             }
         }
     }
@@ -203,6 +210,15 @@ class CMHomeWidget @JvmOverloads constructor(
 
     override fun setPaymentCardHeight(measuredHeight: Int) {
         productCardHeight = measuredHeight
+    }
+
+    override fun timerUpWidgetClose() {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetCloseClickListener?.onCMHomeWidgetDismissClick(
+                it.parentId,
+                it.campaignId
+            )
+        }
     }
 
     override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {

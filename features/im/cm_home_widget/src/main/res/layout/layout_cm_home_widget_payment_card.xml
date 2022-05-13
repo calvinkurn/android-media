@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_cm_home_widget_payment"
             app:layout_constraintEnd_toStartOf="@+id/v_cm_home_widget_divider"
             app:typographyType="body_3"
-            tools:text="Total Pembayaran" />
+            tools:text="@string/total_pembayaran" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cm_home_widget_payment_amt"
@@ -79,7 +79,7 @@
             android:id="@+id/v_cm_home_widget_divider"
             android:layout_width="1dp"
             android:layout_height="36dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="9dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_cm_home_widget_product"
@@ -91,7 +91,7 @@
             android:id="@+id/tv_cm_home_widget_payment_timer_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_14"
             android:layout_marginTop="@dimen/unify_space_8"
             android:text="@string/sisa_waktu"
             android:textColor="@color/Unify_N700_96"
@@ -99,7 +99,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_account_no"
             app:layout_constraintBottom_toTopOf="@+id/timer"
             app:typographyType="body_3"
-            tools:text="Sisa Waktu" />
+            tools:text="@string/sisa_waktu" />
 
         <com.tokopedia.unifycomponents.timer.TimerUnifySingle
             android:id="@+id/timer"
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content"
             app:timer_unify_single_variant="general"
             app:timer_unify_single_textWidth="wrap"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_14"
             app:timer_unify_single_type="hour"
             app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_payment_timer_label"
             app:layout_constraintStart_toEndOf="@+id/v_cm_home_widget_divider"
