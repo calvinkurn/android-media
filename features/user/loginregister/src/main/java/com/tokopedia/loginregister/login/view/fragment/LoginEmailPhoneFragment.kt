@@ -64,7 +64,7 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
@@ -76,7 +76,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet.InactivePhoneNumberBottomSheet
+import com.tokopedia.loginregister.login.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -158,7 +158,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     lateinit var seamlessAnalytics: SeamlessLoginAnalytics
 
     @Inject
-    lateinit var inactivePhoneNumberAnalytics: InactivePhoneNumberAnalytics
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -194,7 +194,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
-    private var needHelpBottomSheetUnify: InactivePhoneNumberBottomSheet? = null
+    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -676,7 +676,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             forgotPassword?.text = setUpForgotPasswordTitle()
             forgotPassword?.setOnClickListener {
                 if (isUsingInactivePhoneNumber()) {
-                    inactivePhoneNumberAnalytics.trackPageClickButuhBantuan()
+                    needHelpAnalytics.trackPageClickButuhBantuan()
                     showNeedHelpBottomSheet()
                 } else {
                     analytics.trackClickForgotPassword()
@@ -822,7 +822,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun showNeedHelpBottomSheet(){
         if (needHelpBottomSheetUnify == null)
-            needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
 
         needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }

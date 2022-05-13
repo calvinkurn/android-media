@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.inactive_phone_number.view.bottomsheet
+package com.tokopedia.loginregister.login.view.bottomsheet
 
 import android.content.Context
 import android.content.Intent
@@ -18,25 +18,25 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics
 import com.tokopedia.loginregister.databinding.LayoutNeedHelpBottomsheetBinding
-import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponentBuilder
+import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
-class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
+class NeedHelpBottomSheet: BottomSheetUnify() {
 
     @Inject
-    lateinit var inactivePhoneNumberAnalytics: InactivePhoneNumberAnalytics
+    lateinit var needHelpAnalytics: NeedHelpAnalytics
 
     private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
     private val bindingChild get() = _bindingChild!!
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        InactivePhoneNumberComponentBuilder.getComponent(activity?.application).inject(this)
+        activity?.application?.let { LoginComponentBuilder.getComponent(it).inject(this) }
     }
 
     override fun onCreateView(
@@ -63,17 +63,17 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
         initTokopediaCareText(bindingChild.toNeedAnotherHelp)
 
         bindingChild.ubInactivePhoneNumber.setOnClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
+            needHelpAnalytics.trackPageBottomSheetClickInactivePhoneNumber()
             goToInactivePhoneNumber()
         }
 
         bindingChild.ubForgotPassword.setOnClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickForgotPassword()
+            needHelpAnalytics.trackPageBottomSheetClickForgotPassword()
             goToForgotPassword()
         }
 
         setCloseClickListener {
-            inactivePhoneNumberAnalytics.trackPageBottomSheetClickClose()
+            needHelpAnalytics.trackPageBottomSheetClickClose()
             dismiss()
         }
 
@@ -85,7 +85,7 @@ class InactivePhoneNumberBottomSheet : BottomSheetUnify() {
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
-                    inactivePhoneNumberAnalytics.trackPageBottomSheetClickTokopediaCare()
+                    needHelpAnalytics.trackPageBottomSheetClickTokopediaCare()
                     goToTokopediaCare()
                 }
 

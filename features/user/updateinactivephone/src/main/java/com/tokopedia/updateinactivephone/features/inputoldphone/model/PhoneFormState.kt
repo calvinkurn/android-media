@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.inactive_phone_number.view.model
+package com.tokopedia.updateinactivephone.features.inputoldphone.model
 
 data class PhoneFormState(
     var numberError: Int = DEFAULT_NUMBER_ERROR,

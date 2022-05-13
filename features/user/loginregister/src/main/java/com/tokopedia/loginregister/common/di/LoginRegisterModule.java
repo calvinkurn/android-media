@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.loginregister.common.analytics.InactivePhoneNumberAnalytics;
+import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
@@ -66,12 +66,6 @@ public class LoginRegisterModule {
     OvoCreationAnalytics provideOvoCreationAnalytics(
             @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
         return new OvoCreationAnalytics(userSessionInterface);
-    }
-
-    @LoginRegisterScope
-    @Provides
-    InactivePhoneNumberAnalytics provideInactivePhoneNumberAnalytics() {
-        return new InactivePhoneNumberAnalytics();
     }
 
     @LoginRegisterScope

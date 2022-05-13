@@ -3,7 +3,7 @@ package com.tokopedia.loginregister.common.analytics
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
-class InactivePhoneNumberAnalytics {
+class NeedHelpAnalytics {
 
     //1
     fun trackPageClickButuhBantuan() {
@@ -75,40 +75,6 @@ class InactivePhoneNumberAnalytics {
         sendData(data)
     }
 
-    //7
-    fun trackPageInactivePhoneNumberClickNext(labelAction: String, errorMessage: String = "", inactivePhoneNumber: String = ""){
-
-        val label = if (labelAction == LABEL_CLICK || labelAction == LABEL_SUCCESS)
-            labelAction
-        else
-            labelErrorMessage(labelAction, errorMessage, inactivePhoneNumber)
-
-        val data = TrackAppUtils.gtmData(
-            EVENT_CLICK_ACCOUNT,
-            CATEGORY_ACCOUNT_SETTING,
-            ACTION_CLICK_ON_BUTTON_LANJUT,
-            label
-        )
-        data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
-        data[KEY_CURRENT_SITE] = CURRENT_SITE
-
-        sendData(data)
-    }
-
-    //8
-    fun trackPageInactivePhoneNumberClickBack(){
-        val data = TrackAppUtils.gtmData(
-            EVENT_CLICK_ACCOUNT,
-            CATEGORY_ACCOUNT_SETTING,
-            ACTION_CLICK_ON_BUTTON_BACK,
-            LABEL_INACTIVE_PHONE_NUMBER
-        )
-        data[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
-        data[KEY_CURRENT_SITE] = CURRENT_SITE
-
-        sendData(data)
-    }
-
     private fun sendData(data: Map<String, Any>){
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
@@ -127,24 +93,11 @@ class InactivePhoneNumberAnalytics {
         private const val ACTION_CLICK_ON_BUTTON_LUPA_KATA_SANDI = "click on button lupa kata sandi"
         private const val ACTION_CLICK_ON_BUTTON_NOMOR_HP_TIDAK_AKTIF = "click on button nomor hp tidak aktif"
         private const val ACTION_CLICK_ON_BUTTON_HUBUNGI_TOKOPEDIA_CARE = "click on button hubungi tokopedia care"
-        private const val ACTION_CLICK_ON_BUTTON_LANJUT = "click on button lanjut"
-        private const val ACTION_CLICK_ON_BUTTON_BACK = "click on button back"
 
         private const val CATEGORY_LOGIN_PAGE = "login page"
         private const val CATEGORY_WIDGET_LOGIN_PAGE = "widget login page"
-        private const val CATEGORY_ACCOUNT_SETTING = "account setting - change phone number"
 
         private const val LABEL_WIDGET_BUTUH_BANTUAN = "widget butuh bantuan"
-        private const val LABEL_INACTIVE_PHONE_NUMBER = "inactive phone number"
         private const val LABEL_EMPTY = ""
-
-        const val LABEL_CLICK = "click"
-        const val LABEL_SUCCESS = "success"
-        const val LABEL_FAILED = "failed"
-
-        private fun labelErrorMessage(label: String, errorMessage: String, inactivePhoneNumber: String): String{
-            return "$label - $errorMessage - $inactivePhoneNumber"
-        }
-
     }
 }

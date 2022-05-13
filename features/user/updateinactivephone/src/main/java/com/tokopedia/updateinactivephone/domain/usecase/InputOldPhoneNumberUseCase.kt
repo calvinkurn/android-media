@@ -1,20 +1,26 @@
-package com.tokopedia.loginregister.inactive_phone_number.domain
+package com.tokopedia.updateinactivephone.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.inactive_phone_number.data.model.RegisterCheckModel
-import com.tokopedia.sessioncommon.domain.query.LoginQueries
+import com.tokopedia.updateinactivephone.domain.data.RegisterCheckModel
 import javax.inject.Inject
 
-class InactivePhoneNumberUseCase @Inject constructor(
+class InputOldPhoneNumberUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<String, RegisterCheckModel>(dispatcher.io) {
 
     override fun graphqlQuery(): String =
-        LoginQueries.registerCheckQuery
+        """
+        mutation register_check (${'$'}id: String!){
+            registerCheck(id: ${'$'}id) {
+                status
+                errors
+            }
+        }
+        """.trimIndent()
 
     override suspend fun execute(params: String): RegisterCheckModel {
         val parameters = mapOf(
