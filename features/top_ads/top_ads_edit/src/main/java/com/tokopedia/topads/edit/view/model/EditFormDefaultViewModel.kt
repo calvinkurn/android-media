@@ -25,6 +25,9 @@ import javax.inject.Inject
  * Created by Pika on 6/4/20.
  */
 
+private const val KEYWORD_STATUS_KEY1 = 1
+private const val KEYWORD_STATUS_KEY2 = 3
+
 class EditFormDefaultViewModel @Inject constructor(
     dispatcher: CoroutineDispatcher,
     private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
@@ -36,21 +39,27 @@ class EditFormDefaultViewModel @Inject constructor(
     private val editSingleAdUseCase: EditSingleAdUseCase,
     private val getAdInfoUseCase: TopAdsGetPromoUseCase,
     private val userSession: UserSessionInterface,
-    private val topAdsCreateUseCase: TopAdsCreateUseCase
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
 ) : BaseViewModel(dispatcher) {
 
-    fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit)) {
+    fun validateGroup(
+        groupName: String,
+        onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateName) -> Unit),
+    ) {
         validGroupUseCase.setParams(groupName)
         validGroupUseCase.execute(
-                {
-                    onSuccess(it.topAdsGroupValidateName)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsGroupValidateName)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfoDefault(
+        suggestions: List<DataSuggestions>,
+        onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit,
+    ) {
         bidInfoDefaultUseCase.setParams(suggestions, ParamObject.GROUP)
         bidInfoDefaultUseCase.executeQuerySafeMode(
             {
@@ -64,57 +73,80 @@ class EditFormDefaultViewModel @Inject constructor(
     fun editSingleAd(adId: String, priceBid: Float, priceDaily: Float) {
         editSingleAdUseCase.setParams(adId, priceBid, priceDaily)
         editSingleAdUseCase.executeQuerySafeMode(
-                {
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
-    fun getAds(page: Int, groupId: String?, source: String, onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit) {
+    fun getAds(
+        page: Int,
+        groupId: String?,
+        source: String,
+        onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit,
+    ) {
 
         getAdsUseCase.setParams(page, groupId, source)
         getAdsUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topadsGetListProductsOfGroup.data, it.topadsGetListProductsOfGroup.page.total, it.topadsGetListProductsOfGroup.page.perPage)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topadsGetListProductsOfGroup.data,
+                    it.topadsGetListProductsOfGroup.page.total,
+                    it.topadsGetListProductsOfGroup.page.perPage)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
-    fun getGroupInfo(groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
+    fun getGroupInfo(
+        groupId: String,
+        onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit,
+    ) {
 
         groupInfoUseCase.setParams(groupId)
         groupInfoUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topAdsGetPromoGroup?.data!!)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsGetPromoGroup?.data!!)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
-    fun getAdKeyword(groupId: Int, cursor: String, onSuccess: (List<GetKeywordResponse.KeywordsItem>, cursor: String) -> Unit) {
-        getAdKeywordUseCase.setParams(groupId, cursor, userSession.shopId, source = ParamObject.KEYWORD_SOURCE, keywordStatus = listOf(1, 3))
+    fun getAdKeyword(
+        groupId: Int,
+        cursor: String,
+        onSuccess: (List<GetKeywordResponse.KeywordsItem>, cursor: String) -> Unit,
+    ) {
+        getAdKeywordUseCase.setParams(groupId,
+            cursor,
+            userSession.shopId,
+            source = ParamObject.KEYWORD_SOURCE,
+            keywordStatus = listOf(
+                KEYWORD_STATUS_KEY1, KEYWORD_STATUS_KEY2))
         getAdKeywordUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topAdsListKeyword.data.keywords, it.topAdsListKeyword.data.pagination.cursor)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topAdsListKeyword.data.keywords,
+                    it.topAdsListKeyword.data.pagination.cursor)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit) {
+    fun getBidInfo(
+        suggestions: List<DataSuggestions>,
+        onSuccess: (List<TopadsBidInfo.DataItem>) -> Unit,
+    ) {
         bidInfoUseCase.setParams(suggestions, KEYWORD)
         bidInfoUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it.topadsBidInfo.data)
-                },
-                { throwable ->
-                    throwable.printStackTrace()
-                })
+            {
+                onSuccess(it.topadsBidInfo.data)
+            },
+            { throwable ->
+                throwable.printStackTrace()
+            })
     }
 
     fun topAdsCreated(
@@ -134,7 +166,8 @@ class EditFormDefaultViewModel @Inject constructor(
             if (dataGroup.errors.isNullOrEmpty() && dataKeyword.errors.isNullOrEmpty())
                 onSuccess()
             else {
-                val error = dataGroup.errors?.firstOrNull()?.detail + dataKeyword.errors?.firstOrNull()?.detail
+                val error =
+                    dataGroup.errors?.firstOrNull()?.detail + dataKeyword.errors?.firstOrNull()?.detail
                 onError(error)
             }
         }, onError = {
@@ -147,12 +180,12 @@ class EditFormDefaultViewModel @Inject constructor(
     fun getSingleAdInfo(adId: String, onSuccess: ((List<SingleAd>) -> Unit)) {
         getAdInfoUseCase.setParams(adId, userSession.shopId)
         getAdInfoUseCase.execute(
-                {
-                    onSuccess(it.topAdsGetPromo.data)
-                },
-                {
-                    it.printStackTrace()
-                }
+            {
+                onSuccess(it.topAdsGetPromo.data)
+            },
+            {
+                it.printStackTrace()
+            }
         )
     }
 
