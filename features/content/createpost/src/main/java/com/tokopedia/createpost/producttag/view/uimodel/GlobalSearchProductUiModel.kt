@@ -8,6 +8,7 @@ data class GlobalSearchProductUiModel(
     val nextCursor: Int,
     val state: PagedState,
     val query: String,
+    val suggestion: String,
 ) {
 
     companion object {
@@ -16,6 +17,7 @@ data class GlobalSearchProductUiModel(
             nextCursor = 0,
             state = PagedState.Unknown,
             query = "",
+            suggestion = "",
         )
     }
 }

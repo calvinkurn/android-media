@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.producttag.domain.repository
 
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.*
 
 /**
@@ -26,7 +27,7 @@ interface ProductTagRepository {
         shopId: String,
         userId: String,
         sort: Int,
-    ) : PagedDataUiModel<ProductUiModel>
+    ) : PagedGlobalSearchProductResponse
 
     suspend fun searchAceShops(
         rows: Int,

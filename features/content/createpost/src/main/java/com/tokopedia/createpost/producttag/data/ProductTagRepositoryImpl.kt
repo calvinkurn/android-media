@@ -6,6 +6,7 @@ import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchProductUs
 import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchShopUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
 import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
+import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
 import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
@@ -69,7 +70,7 @@ class ProductTagRepositoryImpl @Inject constructor(
         shopId: String,
         userId: String,
         sort: Int
-    ): PagedDataUiModel<ProductUiModel> {
+    ): PagedGlobalSearchProductResponse {
         return withContext(dispatchers.io) {
             val response = feedAceSearchProductUseCase.apply {
                 setRequestParams(FeedAceSearchProductUseCase.createParams(

@@ -12,6 +12,9 @@ data class FeedAceSearchProductResponse(
     data class Wrapper(
         @SerializedName("data")
         val data: Data = Data(),
+
+        @SerializedName("suggestion")
+        val suggestion: Suggestion = Suggestion(),
     )
 
     data class Data(
@@ -94,5 +97,10 @@ data class FeedAceSearchProductResponse(
 
         @SerializedName("imgUrl")
         val imgUrl: String = "",
+    )
+
+    data class Suggestion(
+        @SerializedName("text")
+        val text: String = "",
     )
 }

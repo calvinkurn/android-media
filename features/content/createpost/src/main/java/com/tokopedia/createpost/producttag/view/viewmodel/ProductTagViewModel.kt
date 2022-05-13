@@ -350,7 +350,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
+            val result = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = myShopProduct.nextCursor,
                 query = myShopProduct.query,
@@ -361,10 +361,10 @@ class ProductTagViewModel @AssistedInject constructor(
 
             _myShopProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    nextCursor = result.pagedData.nextCursor.toInt(),
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     )
                 )
             }
@@ -395,7 +395,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
+            val result = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = globalSearchProduct.nextCursor,
                 query = globalSearchProduct.query,
@@ -406,11 +406,12 @@ class ProductTagViewModel @AssistedInject constructor(
 
             _globalSearchProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    nextCursor = result.pagedData.nextCursor.toInt(),
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
-                    )
+                        hasNextPage = result.pagedData.hasNextPage,
+                    ),
+                    suggestion = result.suggestion,
                 )
             }
         }) {
@@ -474,7 +475,7 @@ class ProductTagViewModel @AssistedInject constructor(
                 copy(state = PagedState.Loading)
             }
 
-            val pagedDataList = repo.searchAceProducts(
+            val result = repo.searchAceProducts(
                 rows = LIMIT_PER_PAGE,
                 start = shopProduct.nextCursor,
                 query = shopProduct.query,
@@ -485,10 +486,10 @@ class ProductTagViewModel @AssistedInject constructor(
 
             _shopProduct.setValue {
                 copy(
-                    products = products + pagedDataList.dataList,
-                    nextCursor = pagedDataList.nextCursor.toInt(),
+                    products = products + result.pagedData.dataList,
+                    nextCursor = result.pagedData.nextCursor.toInt(),
                     state = PagedState.Success(
-                        hasNextPage = pagedDataList.hasNextPage,
+                        hasNextPage = result.pagedData.hasNextPage,
                     )
                 )
             }
