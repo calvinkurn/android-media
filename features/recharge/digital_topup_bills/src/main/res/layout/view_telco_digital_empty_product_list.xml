@@ -13,7 +13,6 @@
         android:id="@+id/telco_image_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/unify_globalerrors_404"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
