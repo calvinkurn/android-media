@@ -86,9 +86,7 @@ class ShopProductFragment : BaseProductTagChildFragment() {
         binding.rvShopProduct.adapter = adapter
 
         binding.globalError.apply {
-            errorIllustration.loadImage(getString(R.string.img_no_my_shop_product))
-            errorTitle.text = getString(R.string.cc_no_my_shop_product_title)
-            errorDescription.text = getString(R.string.cc_no_my_shop_product_desc)
+            errorIllustration.loadImage(getString(R.string.img_no_shop_product))
             errorAction.gone()
             errorSecondaryAction.gone()
         }
@@ -139,7 +137,7 @@ class ShopProductFragment : BaseProductTagChildFragment() {
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     binding.rvShopProduct.hide()
-                    binding.globalError.show()
+                    showEmptyState(curr.hasFilter())
                 }
                 else updateAdapterData(curr.products, curr.state.hasNextPage)
             }
@@ -156,6 +154,20 @@ class ShopProductFragment : BaseProductTagChildFragment() {
                 ).show()
             }
             else -> {}
+        }
+    }
+
+    private fun showEmptyState(hasFilter: Boolean) {
+        binding.globalError.apply {
+            errorTitle.text = getString(
+                if(hasFilter) R.string.cc_no_shop_product_filter_title
+                else R.string.cc_no_shop_product_title
+            )
+            errorDescription.text = getString(
+                if(hasFilter) R.string.cc_no_shop_product_filter_desc
+                else R.string.cc_no_shop_product_desc
+            )
+            show()
         }
     }
 

@@ -127,7 +127,7 @@ class GlobalSearchShopTabFragment : BaseProductTagChildFragment() {
                 /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
-                    text = getString(R.string.cc_failed_load_product),
+                    text = getString(R.string.cc_failed_load_shop),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_LONG,
                     actionText = getString(R.string.feed_content_coba_lagi_text),
