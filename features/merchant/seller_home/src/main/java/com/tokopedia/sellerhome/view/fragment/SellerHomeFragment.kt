@@ -133,11 +133,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
-
-        private const val GRADIENT_LEFT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_left.png"
-        private const val GRADIENT_RIGHT_URL =
-            "https://images.tokopedia.net/img/android/others/ic_sah_ramadhan_gradient_right.png"
     }
 
     @Inject
@@ -884,7 +879,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
-        setupRamadhanBackgroundGradient()
+        setViewBackground()
     }
 
     private fun setupEmptyState() {
@@ -1594,6 +1589,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    private fun setViewBackground() = binding?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
+        }
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
@@ -2142,13 +2147,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
-    }
-
-    private fun setupRamadhanBackgroundGradient() {
-        binding?.run {
-            ivSahRamadhanBgLeft.loadImageWithoutPlaceholder(GRADIENT_LEFT_URL)
-            ivSahRamadhanBgRight.loadImageWithoutPlaceholder(GRADIENT_RIGHT_URL)
-        }
     }
 
     interface Listener {

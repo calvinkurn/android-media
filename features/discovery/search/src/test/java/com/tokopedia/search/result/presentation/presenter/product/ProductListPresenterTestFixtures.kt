@@ -25,7 +25,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -81,10 +80,6 @@ internal open class ProductListPresenterTestFixtures {
             RequestParamsGenerator(userSession),
         )
         productListPresenter.attachView(productListView)
-
-        verify {
-            chooseAddressView.isChooseAddressWidgetEnabled
-        }
     }
 
     protected fun `Then verify visitable list with product items`(
