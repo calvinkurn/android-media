@@ -46,7 +46,7 @@ object ReschedulePickupMapper {
     private fun mapDayOptionToModel(days: List<GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData.DayOption>): List<RescheduleDayOptionModel> {
         return days.map {
             RescheduleDayOptionModel(
-                formattedDay = DateUtil.formatDate("yyyy-MM-dd", "EEEE, dd MMM yyyy", it.day),
+                formattedDay = DateUtil.formatDate("dd-MM-YYYY", "EEEE, dd MMM yyyy", it.day),
                 day = it.day,
                 timeOptions = mapTimeOptionToModel(it.chooseTime)
             )
