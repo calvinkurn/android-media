@@ -13,7 +13,6 @@ import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
@@ -47,7 +46,6 @@ interface ProductListTypeFactory {
     fun type(searchProductTitleDataView: SearchProductTitleDataView): Int
     fun type(separatorDataView: SeparatorDataView): Int
     fun type(searchInTokopediaDataView: SearchInTokopediaDataView): Int
-    fun type(searchProductCountDataView: SearchProductCountDataView): Int
     fun type(searchProductTopAdsImageDataView: SearchProductTopAdsImageDataView): Int
     fun type(chooseAddressDataView: ChooseAddressDataView): Int
     fun type(bannerDataView: BannerDataView): Int
