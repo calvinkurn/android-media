@@ -7,8 +7,9 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.utils.ListUnifyUtils.setSelectedItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.topads_dash_datepicker_bottomsheet_layout.*
+import com.tokopedia.unifycomponents.list.ListUnify
 
 class DatePickerSheet {
 
@@ -22,7 +23,8 @@ class DatePickerSheet {
             val listUnify = ArrayList<ListItemUnify>()
             val dateModel = Utils.getPeriodRangeList(context)
 
-            dialog.btn_close.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
+            dialog.findViewById<ImageUnify>(R.id.btn_close)
+                ?.setImageDrawable(context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_create_ic_group_close))
             dateModel.forEachIndexed { index, periodRangeModel ->
 
                 val data = if (index != CUSTOM_DATE)
@@ -34,11 +36,13 @@ class DatePickerSheet {
                 data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
                 listUnify.add(data)
             }
-            dialog.date_list.setData(listUnify)
+            dialog.findViewById<ListUnify>(R.id.date_list)?.setData(listUnify)
 
             fun onSelect(position: Int) {
                 if (position != CUSTOM_DATE) {
-                    onItemClick?.invoke(dateModel[position].startDate, dateModel[position].endDate, position)
+                    onItemClick?.invoke(dateModel[position].startDate,
+                        dateModel[position].endDate,
+                        position)
                     dialog.dismiss()
                 } else {
                     customDatepicker?.invoke()
@@ -46,7 +50,7 @@ class DatePickerSheet {
                 }
             }
 
-            dialog.date_list.run {
+            dialog.findViewById<ListUnify>(R.id.date_list)?.run {
                 this.onLoadFinish {
                     this.setOnItemClickListener { parent, view, position, id ->
                         this.setSelectedItem(listUnify, position) {
@@ -64,7 +68,7 @@ class DatePickerSheet {
                     this.setSelectedItem(listUnify, index) {}
                 }
             }
-            dialog.btn_close.setOnClickListener {
+            dialog.findViewById<ImageUnify>(R.id.btn_close)?.setOnClickListener {
                 dismissDialog()
             }
         }
@@ -82,7 +86,8 @@ class DatePickerSheet {
 
         fun newInstance(context: Context, index: Int, range: String): DatePickerSheet {
             val fragment = DatePickerSheet()
-            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
+            fragment.dialog = BottomSheetDialog(context,
+                com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
             fragment.dialog?.setContentView(R.layout.topads_dash_datepicker_bottomsheet_layout)
             fragment.setupView(context, index, range)
             return fragment
