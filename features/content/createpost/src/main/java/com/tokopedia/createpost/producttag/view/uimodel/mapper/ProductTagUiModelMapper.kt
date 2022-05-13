@@ -139,4 +139,17 @@ class ProductTagUiModelMapper @Inject constructor() {
             nextCursor = nextCursor.toString(),
         )
     }
+
+    fun mapQuickFilter(response: FeedQuickFilterResponse): List<QuickFilterUiModel> {
+        return response.wrapper.filter
+            .flatMap { it.options }
+            .map {
+                QuickFilterUiModel(
+                    name = it.name,
+                    icon = it.icon,
+                    key = it.key,
+                    value = it.value,
+                )
+            }
+    }
 }

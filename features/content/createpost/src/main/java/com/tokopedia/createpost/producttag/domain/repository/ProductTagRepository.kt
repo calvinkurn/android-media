@@ -35,4 +35,9 @@ interface ProductTagRepository {
         query: String,
         sort: Int,
     ) : PagedDataUiModel<ShopUiModel>
+
+    suspend fun getQuickFilter(
+        query: String,
+        extraParams: String,
+    ) : List<QuickFilterUiModel>
 }

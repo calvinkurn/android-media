@@ -2,15 +2,9 @@ package com.tokopedia.createpost.producttag.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchProductUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.FeedAceSearchShopUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastPurchaseProductUseCase
-import com.tokopedia.createpost.producttag.domain.usecase.GetFeedLastTaggedProductUseCase
+import com.tokopedia.createpost.producttag.domain.usecase.*
 import com.tokopedia.createpost.producttag.model.PagedGlobalSearchProductResponse
-import com.tokopedia.createpost.producttag.view.uimodel.LastPurchasedProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.PagedDataUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
-import com.tokopedia.createpost.producttag.view.uimodel.ShopUiModel
+import com.tokopedia.createpost.producttag.view.uimodel.*
 import com.tokopedia.createpost.producttag.view.uimodel.mapper.ProductTagUiModelMapper
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,6 +17,7 @@ class ProductTagRepositoryImpl @Inject constructor(
     private val getFeedLastPurchaseProductUseCase: GetFeedLastPurchaseProductUseCase,
     private val feedAceSearchProductUseCase: FeedAceSearchProductUseCase,
     private val feedAceSearchShopUseCase: FeedAceSearchShopUseCase,
+    private val feedQuickFilterUseCase: FeedQuickFilterUseCase,
     private val mapper: ProductTagUiModelMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : ProductTagRepository {
@@ -104,6 +99,22 @@ class ProductTagRepositoryImpl @Inject constructor(
             }.executeOnBackground()
 
             mapper.mapSearchAceShops(response, start + rows)
+        }
+    }
+
+    override suspend fun getQuickFilter(
+        query: String,
+        extraParams: String
+    ): List<QuickFilterUiModel> {
+        return withContext(dispatchers.io) {
+            val response = feedQuickFilterUseCase.apply {
+                setRequestParams(FeedQuickFilterUseCase.createParams(
+                    query = query,
+                    extraParams = extraParams,
+                ))
+            }.executeOnBackground()
+
+            mapper.mapQuickFilter(response)
         }
     }
 }
