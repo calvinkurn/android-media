@@ -103,8 +103,8 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
                     add(
                         ProductTagCardAdapter.Model.Ticker(
                             text = state.ticker.text,
-                            onTickerClicked = { },
-                            onTickerClosed = { },
+                            onTickerClicked = { viewModel.submitAction(ProductTagAction.TickerClicked) },
+                            onTickerClosed = { viewModel.submitAction(ProductTagAction.CloseTicker) },
                         )
                     )
 
@@ -120,7 +120,10 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
             binding.globalError.hide()
         }
 
-        if(prev?.products == curr.products && prev.state == curr.state) return
+        if(prev?.products == curr.products &&
+            prev.state == curr.state &&
+            prev.ticker == curr.ticker
+        ) return
 
         when(curr.state) {
             is PagedState.Loading -> {

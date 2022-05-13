@@ -209,6 +209,8 @@ class ProductTagViewModel @AssistedInject constructor(
 
             /** Global Search Product */
             ProductTagAction.LoadGlobalSearchProduct -> handleLoadGlobalSearchProduct()
+            ProductTagAction.TickerClicked -> handleTickerClicked()
+            ProductTagAction.CloseTicker -> handleCloseTicker()
 
             /** Global Search Shop */
             ProductTagAction.LoadGlobalSearchShop -> handleLoadGlobalSearchShop()
@@ -423,6 +425,18 @@ class ProductTagViewModel @AssistedInject constructor(
                     state = PagedState.Error(it)
                 )
             }
+        }
+    }
+
+    private fun handleTickerClicked() {
+        if(_globalSearchProduct.value.ticker.query.isEmpty()) return
+
+        /** TODO: refresh global search && apply additional param from query */
+    }
+
+    private fun handleCloseTicker() {
+        _globalSearchProduct.setValue {
+            copy(ticker = TickerUiModel())
         }
     }
 

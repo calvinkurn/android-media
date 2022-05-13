@@ -28,6 +28,8 @@ sealed interface ProductTagAction {
 
     /** Global Search Product */
     object LoadGlobalSearchProduct: ProductTagAction
+    object TickerClicked: ProductTagAction
+    object CloseTicker: ProductTagAction
 
     /** Global Search Shop */
     object LoadGlobalSearchShop: ProductTagAction

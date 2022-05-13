@@ -47,7 +47,6 @@ internal class ProductTagCardViewHolder private constructor() {
 
     internal class Ticker(
         private val binding: ItemGlobalSearchTickerListBinding,
-//        private val onTickerClicked: () -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
