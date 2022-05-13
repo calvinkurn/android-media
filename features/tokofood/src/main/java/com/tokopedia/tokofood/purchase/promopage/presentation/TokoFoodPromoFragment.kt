@@ -248,7 +248,8 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         viewBinding?.let {
 
             it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
-            it.totalAmountPurchasePromo.setCtaText("Pakai Promo (${fragmentUiModel.promoCount})")
+            it.totalAmountPurchasePromo.setCtaText(
+                context?.getString(R.string.text_purchase_use_promo, fragmentUiModel.promoCount).orEmpty())
             it.totalAmountPurchasePromo.setLabelTitle(fragmentUiModel.promoTitle)
             it.totalAmountPurchasePromo.setAmount(fragmentUiModel.promoAmountStr)
             it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {

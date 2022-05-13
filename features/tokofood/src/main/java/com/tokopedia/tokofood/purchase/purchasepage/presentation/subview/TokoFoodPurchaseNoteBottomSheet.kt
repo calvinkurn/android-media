@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseNotesBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -48,7 +49,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomSheetPurchaseNotesBinding) {
-        setTitle("Catatan pesanan")
+        setTitle(context?.getString(R.string.text_purchase_order_notes).orEmpty())
         showCloseIcon = true
         showHeader = true
         isDragable = true
@@ -67,7 +68,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
 
                 override fun onTextChanged(notes: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (currentNote?.isBlank() == true) {
-                        buttonSaveNotes.isEnabled = notes?.length ?: 0 > 0
+                        buttonSaveNotes.isEnabled = notes?.length ?: Int.ZERO > Int.ZERO
                     } else {
                         buttonSaveNotes.isEnabled = true
                     }

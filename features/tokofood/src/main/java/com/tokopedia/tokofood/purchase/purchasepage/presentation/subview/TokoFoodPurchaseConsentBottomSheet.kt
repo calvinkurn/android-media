@@ -96,7 +96,9 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
     private fun collectAgreeConsentData() {

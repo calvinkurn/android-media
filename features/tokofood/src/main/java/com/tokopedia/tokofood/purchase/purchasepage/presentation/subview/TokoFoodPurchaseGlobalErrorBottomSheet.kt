@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
@@ -48,7 +49,9 @@ class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
     private var listener: Listener? = null
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,7 +94,7 @@ class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
                     listener?.onRetry()
                 }
             } else {
-                layoutGlobalError.errorAction.text = "Ke Homepage"
+                layoutGlobalError.errorAction.text = context?.getString(R.string.text_purchase_to_homepage).orEmpty()
                 layoutGlobalError.setActionClickListener {
                     dismiss()
                     listener?.onGoToHome()

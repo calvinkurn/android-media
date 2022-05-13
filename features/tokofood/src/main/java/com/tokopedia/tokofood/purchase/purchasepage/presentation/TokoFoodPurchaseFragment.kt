@@ -93,20 +93,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private var loaderDialog: LoaderDialog? = null
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
 
-    companion object {
-        const val HAS_ELEVATION = 6
-        const val NO_ELEVATION = 0
-
-        const val REQUEST_CODE_CHANGE_ADDRESS = 111
-        const val REQUEST_CODE_SET_PINPOINT = 112
-
-        private const val SOURCE = "checkout_page"
-
-        fun createInstance(): TokoFoodPurchaseFragment {
-            return TokoFoodPurchaseFragment()
-        }
-    }
-
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
@@ -196,10 +182,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun loadData() {
         showLoadingLayout()
         context?.applicationContext?.let {
-            ChooseAddressUtils.getLocalizingAddressData(it).latLong.isNotEmpty().let { hasPinpoint ->
+            ChooseAddressUtils.getLocalizingAddressData(it).let { addressData ->
                 //TODO: Set correct value
-                viewModel.setIsHasPinpoint(true)
-//                viewModel.setIsHasPinpoint(hasPinpoint)
+                viewModel.setIsHasPinpoint(addressData.address_id, true)
+//                viewModel.setIsHasPinpoint(addressData.latLong.isNotEmpty())
             }
         }
         viewModel.loadData()
@@ -792,4 +778,19 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         consentBottomSheet?.dismiss()
         showToasterError(throwable)
     }
+
+    companion object {
+        const val HAS_ELEVATION = 6
+        const val NO_ELEVATION = 0
+
+        const val REQUEST_CODE_CHANGE_ADDRESS = 111
+        const val REQUEST_CODE_SET_PINPOINT = 112
+
+        private const val SOURCE = "checkout_page"
+
+        fun createInstance(): TokoFoodPurchaseFragment {
+            return TokoFoodPurchaseFragment()
+        }
+    }
+
 }

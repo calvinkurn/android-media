@@ -6,19 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFood
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductById
@@ -41,11 +41,8 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.ConnectException
 import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.RuntimeException
 
 @FlowPreview
 class TokoFoodPurchaseViewModel @Inject constructor(
@@ -53,13 +50,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
-
-    companion object {
-        private const val SOURCE = "checkout_page"
-
-        private const val TOTO_LATITUDE = "-6.2216771"
-        private const val TOTO_LONGITUDE = "106.8184023"
-    }
 
     private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
     val purchaseUiEvent: LiveData<PurchaseUiEvent>
@@ -96,7 +86,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _updateQuantityState
-                .debounce(1000)
+                .debounce(UPDATE_QUANTITY_DEBOUCE_TIME)
                 .flatMapConcat { productList ->
                     flow {
                         productList?.let {
@@ -143,7 +133,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
                 checkoutTokoFoodResponse.value = it
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
-                // TODO: Check for success status
                 val isEnabled = it.isEnabled()
                 _visitables.value =
                     TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value.second)
@@ -197,7 +186,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 checkoutTokoFoodResponse.value = it
                 isConsentAgreed.value = !it.data.checkoutConsentBottomSheet.isShowBottomsheet
                 // TODO: Check for success status
-                val isEnabled = it.status == 1
+                val isEnabled = it.isSuccess()
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
                     isEnabled,
@@ -205,7 +194,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 )
                 val dataList = getVisitablesValue().toMutableList().apply {
                     getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
-                        if (shippingIndex >= 0) {
+                        if (shippingIndex >= Int.ZERO) {
                             removeAt(shippingIndex)
                             partialData.shippingUiModel?.let { shippingUiModel ->
                                 add(shippingIndex, shippingUiModel)
@@ -213,7 +202,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                     }
                     getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
-                        if (promoIndex >= 0) {
+                        if (promoIndex >= Int.ZERO) {
                             removeAt(promoIndex)
                             partialData.promoUiModel?.let { promoUiModel ->
                                 add(promoIndex, promoUiModel)
@@ -221,7 +210,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                     }
                     getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
-                        if (summaryIndex >= 0) {
+                        if (summaryIndex >= Int.ZERO) {
                             removeAt(summaryIndex)
                             partialData.summaryUiModel?.let { summaryUiModel ->
                                 add(summaryIndex, summaryUiModel)
@@ -229,7 +218,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                         }
                     }
                     getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
-                        if (totalAmountIndex >= 0) {
+                        if (totalAmountIndex >= Int.ZERO) {
                             removeAt(totalAmountIndex)
                             add(totalAmountIndex, partialData.totalAmountUiModel)
                         }
@@ -285,13 +274,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     from = toBeDeletedProduct.first - 3
                 }
                 var to = toBeDeletedProduct.first
-                if (from < 0) from = 0
-                if (to >= dataList.size) to = dataList.size - 1
+                if (from < Int.ZERO) from = Int.ZERO
+                if (to >= dataList.size) to = dataList.size - Int.ONE
                 val availableHeaderAndDivider = dataList.subList(from, to).toMutableList()
                 toBeDeleteItems.addAll(availableHeaderAndDivider)
             }
 
-            deleteProducts(toBeDeleteItems, 1)
+            deleteProducts(toBeDeleteItems, Int.ONE)
         }
     }
 
@@ -312,7 +301,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     private fun isLastAvailableProduct(): Boolean {
         val dataList = getVisitablesValue()
-        var count = 0
+        var count = Int.ZERO
         loop@ for (data in dataList) {
             when {
                 data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isAvailable -> {
@@ -346,14 +335,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         var indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
         var indexOfFirstUnavailableProduct = unavailableProducts.first
-        if (indexOfUnavailableHeaderDivider < 0) indexOfUnavailableHeaderDivider = 0
-        if (indexOfFirstUnavailableProduct >= dataList.size) indexOfFirstUnavailableProduct = dataList.size - 1
+        if (indexOfUnavailableHeaderDivider < Int.ZERO) indexOfUnavailableHeaderDivider = Int.ZERO
+        if (indexOfFirstUnavailableProduct >= dataList.size) indexOfFirstUnavailableProduct = dataList.size - Int.ONE
         val unavailableSectionDividerHeaderAndReason = dataList.subList(indexOfUnavailableHeaderDivider, indexOfFirstUnavailableProduct)
         unavailableSectionItems.addAll(unavailableSectionDividerHeaderAndReason)
         unavailableSectionItems.addAll(unavailableProducts.second)
         val accordionUiModel = getVisitablesValue().getAccordionUiModel()
         accordionUiModel?.let {
-            val accordionDivider = dataList.get(accordionUiModel.first - 1)
+            val accordionDivider = dataList.get(accordionUiModel.first - Int.ONE)
             unavailableSectionItems.add(accordionDivider)
             unavailableSectionItems.add(it.second)
         }
@@ -389,7 +378,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             var from = mUnavailableReasonData.first + 2
             var to = mAccordionData.first - 1
             tmpCollapsedUnavailableItems.clear()
-            if (from < 0) from = 0
+            if (from < Int.ZERO) from = Int.ZERO
             if (to >= dataList.size) to = dataList.size - 1
             tmpCollapsedUnavailableItems = dataList.subList(from, to).toMutableList()
         }
@@ -420,22 +409,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         return CartTokoFoodParam(
             carts = cartList
         )
-    }
-
-    private fun Throwable.getGlobalErrorType(): Int {
-        return when(this) {
-            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
-            is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
-            }
-            else -> GlobalError.SERVER_ERROR
-        }
     }
 
     fun scrollToUnavailableItem() {
@@ -505,29 +478,29 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         )
     }
 
-    fun updateAddressPinpoint(addressId: String,
-                              latitude: String,
+    fun updateAddressPinpoint(latitude: String,
                               longitude: String) {
-        launchCatchError(
-            block = {
-                val isSuccess = withContext(dispatcher.io) {
-                    keroEditAddressUseCase.execute(addressId, latitude, longitude)
-                }
-                if (isSuccess) {
-                    _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
-                } else {
+        _isAddressHasPinpoint.value.first.takeIf { it.isNotEmpty() }?.let { addressId ->
+            launchCatchError(
+                block = {
+                    val isSuccess = withContext(dispatcher.io) {
+                        keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                    }
+                    if (isSuccess) {
+                        _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                    } else {
+                        _isAddressHasPinpoint.value = addressId to false
+                        _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                    }
+                }, onError = {
                     _isAddressHasPinpoint.value = addressId to false
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                 }
-            }, onError = {
-                _isAddressHasPinpoint.value = addressId to false
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
-            }
-        )
+            )
+        }
     }
 
-    // TODO: refresh cart
     fun refreshPartialCartInformation() {
         launch {
             showPartialLoading()
@@ -586,7 +559,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val dataList = getVisitablesValue().toMutableList().apply {
             getUiModel<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>()?.let { pair ->
                 val (totalAmountIndex, uiModel) = pair
-                if (totalAmountIndex >= 0) {
+                if (totalAmountIndex >= Int.ZERO) {
                     removeAt(totalAmountIndex)
                     add(totalAmountIndex, uiModel.copy(isButtonLoading = isLoading))
                 }
@@ -608,8 +581,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         _visitables.value = dataList
     }
 
-    private fun getAddressInfo() {
+    companion object {
+        private const val SOURCE = "checkout_page"
 
+        private const val TOTO_LATITUDE = "-6.2216771"
+        private const val TOTO_LONGITUDE = "106.8184023"
+
+        private const val UPDATE_QUANTITY_DEBOUCE_TIME = 1000L
     }
 
 }

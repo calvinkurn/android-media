@@ -68,7 +68,9 @@ class TokoFoodPurchaseSurgeBottomSheet: BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, TAG)
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
 }

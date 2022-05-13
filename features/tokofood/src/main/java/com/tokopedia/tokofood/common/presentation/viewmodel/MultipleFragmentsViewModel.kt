@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
@@ -34,7 +35,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                                                      private val updateCartTokoFoodUseCase: UpdateCartTokoFoodUseCase,
                                                      private val removeCartTokoFoodUseCase: RemoveCartTokoFoodUseCase
 ) : ViewModel(), CoroutineScope {
-    val inputFlow = MutableSharedFlow<String>(1)
+    val inputFlow = MutableSharedFlow<String>(Int.ONE)
 
     val isDebug = true
 
@@ -48,7 +49,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     private val miniCartUiModelState = MutableStateFlow<Result<MiniCartUiModel>>(Result.Success(MiniCartUiModel()))
     val miniCartFlow = miniCartUiModelState.asStateFlow()
 
-    private val miniCartLoadingQueue = MutableLiveData(-1)
+    private val miniCartLoadingQueue = MutableLiveData(-Int.ONE)
 
     private val shopId: String
         get() = cartDataState.value.shop.shopId
@@ -73,19 +74,18 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 
     fun loadCartList(source: String) {
         launchCatchError(block = {
-            // TODO: Check for whether the loading is already shown
-            miniCartLoadingQueue.value = miniCartLoadingQueue.value?.plus(1)
+            miniCartLoadingQueue.value = miniCartLoadingQueue.value?.plus(Int.ONE)
             miniCartUiModelState.emit(Result.Loading())
             loadCartTokoFoodUseCase(source).collect {
                 cartDataState.emit(it.data)
-                miniCartLoadingQueue.value= miniCartLoadingQueue.value?.minus(1)
+                miniCartLoadingQueue.value= miniCartLoadingQueue.value?.minus(Int.ONE)
                 if (miniCartLoadingQueue.value?.isLessThanZero() == true) {
                     miniCartUiModelState.emit(Result.Success(mapCartDataToMiniCart(it.data)))
                 }
                 cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_CART))
             }
         }, onError = {
-            miniCartLoadingQueue.value?.minus(1)
+            miniCartLoadingQueue.value?.minus(Int.ONE)
             Timber.e(it)
         })
     }

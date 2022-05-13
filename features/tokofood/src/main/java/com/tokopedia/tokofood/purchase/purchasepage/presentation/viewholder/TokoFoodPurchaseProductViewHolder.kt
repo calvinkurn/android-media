@@ -9,6 +9,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -23,10 +25,6 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                                         private val listener: TokoFoodPurchaseActionListener)
     : AbstractViewHolder<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>(viewBinding.root) {
 
-    companion object {
-        val LAYOUT = R.layout.item_purchase_product
-    }
-
     override fun bind(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
@@ -39,26 +37,26 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
 
     private fun View.renderAlphaProductItem(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         if (element.isAvailable && element.isEnabled) {
-            alpha = 1.0f
+            alpha = ENABLED_ALPHA
             isEnabled = true
         } else {
-            alpha = 0.5f
+            alpha = DISABLED_ALPHA
             isEnabled = false
         }
     }
 
     private fun renderBottomDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            val nextItem = listener.getNextItems(adapterPosition, 1).firstOrNull()
+            val nextItem = listener.getNextItems(adapterPosition, Int.ONE).firstOrNull()
             nextItem?.let {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(productCell)
                 if (element.isAvailable) {
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.addNotesButton, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, Int.ZERO)
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.addNotesButton, ConstraintSet.BOTTOM, SIXTEEN_MARGIN_PX.dpToPx(itemView.resources.displayMetrics))
                 } else {
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.barrier_divider, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, Int.ZERO)
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.barrier_divider, ConstraintSet.BOTTOM, SIXTEEN_MARGIN_PX.dpToPx(itemView.resources.displayMetrics))
                 }
                 constraintSet.applyTo(productCell)
             }
@@ -160,11 +158,11 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             val constraintSet = ConstraintSet()
             constraintSet.clone(productCell)
             if (element.addOns.isNotEmpty()) {
-                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, Int.ZERO)
+                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, SIXTEEN_MARGIN_PX.dpToPx(itemView.resources.displayMetrics))
             } else {
-                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, Int.ZERO)
+                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, SIXTEEN_MARGIN_PX.dpToPx(itemView.resources.displayMetrics))
             }
             constraintSet.applyTo(productCell)
         }
@@ -231,4 +229,14 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             deleteProductButton.renderAlphaProductItem(element)
         }
     }
+
+    companion object {
+        val LAYOUT = R.layout.item_purchase_product
+
+        private const val ENABLED_ALPHA = 1.0f
+        private const val DISABLED_ALPHA = 0.5f
+
+        private const val SIXTEEN_MARGIN_PX = 16
+    }
+
 }

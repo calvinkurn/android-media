@@ -11,6 +11,13 @@
     <string name="text_purchase_change_notes">Ubah Catatan</string>
     <string name="text_purchase_change_notes_and_variant">Ubah Catatan/Varian</string>
     <string name="texT_purchase_consent_next">Lanjut</string>
+    <string name="text_purchase_to_homepage">Ke Homepage</string>
+    <string name="text_purchase_order_notes">Catatan pesanan</string>
+    <string name="text_purchase_address_phone">%s (%s)"</string>
+    <string name="text_purchase_choose_payment">Pilih Pembayaran</string>
+    <string name="text_purchase_payment_total">Total Tagihan</string>
+    <string name="text_purchase_dash">-</string>
+    <string name="text_purchase_use_promo">Pakai Promo (%s)</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
