@@ -45,6 +45,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.bottomsheet.TokoFoodUSPBottomSheet
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
@@ -66,7 +67,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         IBaseMultiFragment,
         TokoFoodHomeView,
         TokoFoodHomeUSPViewHolder.TokoFoodUSPListener,
-        TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener
+        TokoFoodHomeChooseAddressViewHolder.TokoFoodChooseAddressWidgetListener,
+        TokoFoodHomeEmptyStateLocationViewHolder.TokoFoodHomeEmptyStateLocationListener
 {
 
     @Inject
@@ -89,6 +91,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 categoryWidgetCallback = createCategoryWidgetCallback(),
                 uspListener = this,
                 chooseAddressWidgetListener = this,
+                emptyStateLocationListener = this,
             ),
             differ = TokoFoodHomeListDiffer(),
         )
@@ -158,6 +161,59 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         updateCurrentPageLocalCacheModelData()
 
         loadLayout()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isChooseAddressWidgetDataUpdated()) {
+            onRefreshLayout()
+        }
+    }
+
+    override fun getFragmentPage(): Fragment = this
+
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() = onRefreshLayout()
+
+    private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
+        return TokoFoodHomeLegoComponentCallback()
+    }
+
+    private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
+        return TokoFoodHomeBannerComponentCallback()
+    }
+
+    private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
+        return TokoFoodHomeCategoryWidgetV2ComponentCallback()
+    }
+
+    override fun onUSPClicked(uspResponse: USPResponse) {
+        showUSPBottomSheet(uspResponse)
+    }
+
+    override fun onClickChooseAddressWidgetTracker() {
+
+    }
+
+    override fun onChooseAddressWidgetRemoved() {
+
+    }
+
+    override fun onClickSetPinPoin() {
+
+    }
+
+    override fun onClickBackToHome() {
+
+    }
+
+    override fun onClickSetAddress() {
+
+    }
+
+    override fun onClickSetAddressInCoverage() {
+
     }
 
     private fun showLayout() {
@@ -376,48 +432,6 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         return userSession.isLoggedIn && !localCacheModel?.address_id.isNullOrEmpty()
                 && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty())
     }
-
-    // region TokoFoodHomeView
-
-    override fun getFragmentPage(): Fragment = this
-
-    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
-
-    override fun refreshLayoutPage() = onRefreshLayout()
-
-    // endregion
-
-    // region TokoFood Home Component Callback
-
-    private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
-        return TokoFoodHomeLegoComponentCallback()
-    }
-
-    private fun createBannerCallback(): TokoFoodHomeBannerComponentCallback {
-        return TokoFoodHomeBannerComponentCallback()
-    }
-
-    private fun createCategoryWidgetCallback(): TokoFoodHomeCategoryWidgetV2ComponentCallback {
-        return TokoFoodHomeCategoryWidgetV2ComponentCallback()
-    }
-
-    // endregion
-
-    // region listener TokoFood
-
-    override fun onUSPClicked(uspResponse: USPResponse) {
-        showUSPBottomSheet(uspResponse)
-    }
-
-    override fun onClickChooseAddressWidgetTracker() {
-
-    }
-
-    override fun onChooseAddressWidgetRemoved() {
-
-    }
-
-    // endregion
 
 
 }
