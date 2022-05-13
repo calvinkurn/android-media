@@ -1,20 +1,20 @@
-package com.tokopedia.loginregister.inactive_phone_number.view.viewmodel
+package com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginregister.R.string.*
-import com.tokopedia.loginregister.inactive_phone_number.domain.InactivePhoneNumberUseCase
-import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
+import com.tokopedia.updateinactivephone.R.string.*
+import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.updateinactivephone.domain.usecase.InputOldPhoneNumberUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class InactivePhoneNumberViewModel @Inject constructor(
-    private val inactivePhoneNumberUseCase: InactivePhoneNumberUseCase,
+class InputOldPhoneNumberViewModel @Inject constructor(
+    private val inactivePhoneNumberUseCase: InputOldPhoneNumberUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 

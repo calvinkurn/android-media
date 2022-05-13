@@ -75,7 +75,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.bottomsheet.InactivePhoneNumberBottomSheet
+import com.tokopedia.loginregister.common.view.bottomsheet.NeedHelpBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -190,7 +190,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
-    private var needHelpBottomSheetUnify: InactivePhoneNumberBottomSheet? = null
+    private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -796,7 +796,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun showNeedHelpBottomSheet(){
         if (needHelpBottomSheetUnify == null)
-            needHelpBottomSheetUnify = InactivePhoneNumberBottomSheet()
+            needHelpBottomSheetUnify = NeedHelpBottomSheet()
 
         needHelpBottomSheetUnify?.show(childFragmentManager, TAG_NEED_HELP_BOTTOM_SHEET)
     }

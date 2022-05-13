@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.inactive_phone_number.view.fragment
+package com.tokopedia.updateinactivephone.features.inputoldphone.fragment
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -7,41 +7,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.databinding.FragmentInactivePhoneNumberBinding
-import com.tokopedia.loginregister.inactive_phone_number.di.InactivePhoneNumberComponent
-import com.tokopedia.loginregister.inactive_phone_number.view.model.PhoneFormState
-import com.tokopedia.loginregister.inactive_phone_number.view.viewmodel.InactivePhoneNumberViewModel
+import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.updateinactivephone.databinding.FragmentInputOldPhoneNumberBinding
+import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
+import com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel.InputOldPhoneNumberViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class InactivePhoneNumberFragment : BaseDaggerFragment() {
+class InputOldPhoneNumberFragment : BaseDaggerFragment() {
 
-    private val binding : FragmentInactivePhoneNumberBinding? by viewBinding()
+    private val binding : FragmentInputOldPhoneNumberBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    val viewModel by lazy {
-        ViewModelProviders.of(
-            this,
-            viewModelFactory
-        ).get(InactivePhoneNumberViewModel::class.java)
-    }
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(InputOldPhoneNumberViewModel::class.java) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_inactive_phone_number, container, false)
+        return inflater.inflate(R.layout.fragment_input_old_phone_number, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,7 +54,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(InactivePhoneNumberComponent::class.java).inject(this)
+        getComponent(InactivePhoneComponent::class.java).inject(this)
     }
 
     private fun formStateObserver() {
@@ -150,7 +145,7 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
         withErrorCode: Boolean = true
     ): String {
         val mClassName =
-            if (flow.isEmpty()) InactivePhoneNumberFragment::class.java.name else "${InactivePhoneNumberFragment::class.java.name} - $flow"
+            if (flow.isEmpty()) InputOldPhoneNumberFragment::class.java.name else "${InputOldPhoneNumberFragment::class.java.name} - $flow"
         val message = ErrorHandler.getErrorMessage(context, throwable,
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
@@ -162,11 +157,11 @@ class InactivePhoneNumberFragment : BaseDaggerFragment() {
 
     companion object {
 
-        private val SCREEN_NAME = InactivePhoneNumberFragment::class.java.simpleName
+        private val SCREEN_NAME = InputOldPhoneNumberFragment::class.java.simpleName
 
         @JvmStatic
         fun newInstance(bundle: Bundle) =
-            InactivePhoneNumberFragment().apply {
+            InputOldPhoneNumberFragment().apply {
                 arguments = bundle
             }
     }

@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 
-class InactivePhoneNumberBottomSheet: BottomSheetUnify() {
+class NeedHelpBottomSheet: BottomSheetUnify() {
 
     private var _bindingChild: LayoutNeedHelpBottomsheetBinding? = null
     private val bindingChild get() = _bindingChild!!
