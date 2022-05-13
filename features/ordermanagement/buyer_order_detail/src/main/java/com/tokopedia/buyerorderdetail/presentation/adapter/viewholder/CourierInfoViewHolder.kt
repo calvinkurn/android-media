@@ -90,16 +90,17 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
 
     //proof of delivery view
     private fun setupPod(imagePod: String) {
-        val canBeShow = imagePod != ""
+        val canBeShow = imagePod != "" //TODO update logic showing
 
         containerPod?.showWithCondition(canBeShow)
         containerPod?.setOnClickListener {
-            listener.onPodClicked(imagePod)
+
+            //TODO - update dummy later
+            listener.onPodClicked("kero-21e88f99-771e-4b60-aa40-871877101a24",167075392, "Foto sepenuhnya diambil dan merupakan tanggung jawab kurir. Tokopedia tidak bertanggung jawab atas hasil foto yang terlampir")
 
         }
         ivPod?.apply {
             ImageUtils.loadImage2(ivPod, imagePod, com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
-
         }
     }
 
@@ -109,6 +110,6 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
 
     interface CourierInfoViewHolderListener {
         fun onEtaChangedClicked(delayedInfo: String)
-        fun onPodClicked(urlPod: String)
+        fun onPodClicked(imageId: String, orderId: Long, description: String)
     }
 }

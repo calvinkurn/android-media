@@ -90,8 +90,9 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         onBackButtonListener()
         initImage()
-        showLoading()
+        initTextDescription()
     }
+
 
     private fun onBackButtonListener() {
         binding?.buttonBack?.setOnClickListener {
@@ -102,15 +103,6 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
     private fun initDataArgs(imageId: String, orderId: Long, description: String) {
         podData = ProofOfDeliveryModel(imageId, orderId, description)
     }
-
-    private fun showLoading() {
-        binding?.mainProgressBar?.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-        binding?.mainProgressBar?.visibility = View.GONE
-    }
-
 
     private fun initBinding(inflater: LayoutInflater, container: ViewGroup?): ConstraintLayout? {
         binding = FragmentProofOfDeliveryBinding.inflate(inflater, container, false)
@@ -135,12 +127,13 @@ class ProofOfDeliveryFragment : BaseDaggerFragment() {
                     .into(imgProof)
             }
         }
+    }
 
+    private fun initTextDescription() {
         binding?.run {
-            proofDescription.text = pod.description
+            proofDescription.text = podData?.description
             imagePreviewLarge.visibility = View.VISIBLE
         }
-
     }
 
     private fun finishWithToastError() {

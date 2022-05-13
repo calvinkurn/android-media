@@ -376,7 +376,7 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    
+
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
@@ -712,5 +712,10 @@ public interface ApplinkConst {
 
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
+    }
+
+    interface ProofOfDelivery {
+        String QUERY_DESCRIPTION = "query_description";
+        String QUERY_IMAGE_ID = "query_image_id";
     }
 }

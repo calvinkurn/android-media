@@ -3,7 +3,9 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +14,13 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
@@ -73,6 +79,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
+import java.net.URLDecoder
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -698,9 +705,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         showEtaBottomSheet(delayedInfo)
     }
 
-    override fun onPodClicked(urlPod: String) {
+
+    override fun onPodClicked(imageId: String, orderId: Long, description: String) {
         //TODO Irpan
-        Toaster.build(requireView(),urlPod).show()
+//        Toaster.build(requireView(), urlPod).show()
+        navigateToPodActivity(imageId, orderId, description)
+
+
     }
 
     private fun showEtaBottomSheet(etaChangedDescription: String) {
@@ -737,5 +748,59 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    //POD: navigate to pod activity
+    private fun navigateToPodActivity(imageId: String, orderId: Long, description: String) {
+
+        val POD_EXTRA_IMAGE_ID = "extra_image_id"
+        val POD_EXTRA_DESCRIPTION = "extra_description"
+
+        val REQUEST_POD = 22222
+
+//        val uri = UriUtil.buildUri(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY, orderId.toString())
+//        val route = RouteManager.getIntent(context, uri)
+//        (startActivityForResult(route.apply {
+//            putExtra(POD_EXTRA_IMAGE_ID, imageId)
+//            putExtra(POD_EXTRA_DESCRIPTION, description)
+//        }, REQUEST_POD))
+
+        val uri = UriUtil.buildUri(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY, orderId.toString())
+
+
+
+        val appLink = Uri.parse(ApplinkConstInternalLogistic.PROOF_OF_DELIVERY).buildUpon()
+            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_IMAGE_ID, imageId)
+            .appendQueryParameter(ApplinkConst.ProofOfDelivery.QUERY_DESCRIPTION, description)
+            .build()
+            .toString()
+        val intent = RouteManager.getIntent(activity, appLink, orderId.toString())
+        startActivityForResult(intent, REQUEST_POD)
+
+//        var intent: Intent? = null
+//
+//        intent = RouteManager.getIntent(context, uri)
+//
+//        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.LOGIN)
+//
+//
+//
+//        startActivityForResult(intent, 2)
+    }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        when (requestCode) {
+//            ProofOfDeliveryActivity.REQUEST_POD -> {
+//                if (requestCode == ProofOfDeliveryActivity.RESULT_FAIL_LOAD_IMAGE) {
+//                    handleFailedLoadImagePod()
+//                }
+//            }
+//        }
+//    }
+
+    //POD view : handle when error
+    private fun handleFailedLoadImagePod() {
+        Toaster.build(requireView(), "Oops, terjadi kesalahan dalam memuat gambar").show()
     }
 }

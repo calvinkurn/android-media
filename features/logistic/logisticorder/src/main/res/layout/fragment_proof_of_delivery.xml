@@ -8,26 +8,12 @@
     android:background="@color/Unify_Background"
     tools:context=".view.pod.ui.ProofOfDeliveryActivity">
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/main_progress_bar"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_centerInParent="true"
-        android:max="100"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:loader_type="circular" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/image_preview_large"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_image_dark"
         android:visibility="visible">
-
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_proof"
@@ -70,6 +56,5 @@
             app:unifyButtonSize="medium"
             app:unifyButtonVariant="filled" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

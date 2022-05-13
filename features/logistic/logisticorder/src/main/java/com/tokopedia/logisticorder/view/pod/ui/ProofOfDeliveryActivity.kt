@@ -3,6 +3,8 @@ package com.tokopedia.logisticorder.view.pod.ui
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import timber.log.Timber
 
 /**
  * POD = Proof Of Delivery
@@ -16,8 +18,7 @@ class ProofOfDeliveryActivity : BaseSimpleActivity() {
 
     companion object {
 
-        const val POD_EXTRA_IMAGE_ID = "extra_image_id"
-        const val POD_EXTRA_DESCRIPTION = "extra_description"
+
 
         const val REQUEST_POD = 22222
 
@@ -30,8 +31,8 @@ class ProofOfDeliveryActivity : BaseSimpleActivity() {
         var fragment: ProofOfDeliveryFragment? = null
         if (intent.data?.lastPathSegment != null) {
             var orderId = intent.data?.lastPathSegment?.toLong()
-            var imageId = intent.getStringExtra(POD_EXTRA_IMAGE_ID)
-            var description = intent.getStringExtra(POD_EXTRA_DESCRIPTION)
+            var imageId = intent.getStringExtra(ApplinkConst.ProofOfDelivery.QUERY_IMAGE_ID)
+            var description = intent.getStringExtra(ApplinkConst.ProofOfDelivery.QUERY_DESCRIPTION)
             fragment = ProofOfDeliveryFragment.createFragment(orderId, imageId, description)
         }
         return fragment
