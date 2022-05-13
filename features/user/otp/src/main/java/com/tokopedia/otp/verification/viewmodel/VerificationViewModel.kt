@@ -17,6 +17,7 @@ import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
@@ -317,7 +318,7 @@ open class VerificationViewModel @Inject constructor(
     }
 
     suspend fun getPublicKey(): KeyData {
-        generatePublicKeyUseCase.setParams("pinv2")
+        generatePublicKeyUseCase.setParams(SessionConstants.GenerateKeyModule.PIN_V2.value)
         return generatePublicKeyUseCase.executeOnBackground().keyData
     }
 

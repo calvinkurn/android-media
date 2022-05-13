@@ -6,11 +6,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.changepin.data.model.ResetPinV2Param
 import com.tokopedia.profilecompletion.changepin.data.model.ResetPinV2Response
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class ResetPinV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository):
-    CoroutineUseCase<ResetPinV2Param, ResetPinV2Response>(Dispatchers.IO){
+class ResetPinV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository, dispatcher: CoroutineDispatcher):
+    CoroutineUseCase<ResetPinV2Param, ResetPinV2Response>(dispatcher){
 
     override suspend fun execute(params: ResetPinV2Param): ResetPinV2Response {
 	return repository.request(graphqlQuery(), params)

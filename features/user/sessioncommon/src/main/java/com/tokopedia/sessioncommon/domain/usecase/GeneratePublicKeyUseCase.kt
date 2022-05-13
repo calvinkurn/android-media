@@ -3,6 +3,7 @@ package com.tokopedia.sessioncommon.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.query.GenerateKeyQuery
 import com.tokopedia.usecase.RequestParams
@@ -23,7 +24,7 @@ open class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<G
         setParams()
     }
 
-    fun setParams(module: String = "pwd") {
+    fun setParams(module: String = SessionConstants.GenerateKeyModule.PASSWORD.value) {
         params.putString(PARAM_MODULE, module)
     }
 

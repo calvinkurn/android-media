@@ -4,11 +4,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Param
+import com.tokopedia.profilecompletion.common.model.CheckPinV2Response
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class CheckPinV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
-    : CoroutineUseCase<com.tokopedia.profilecompletion.common.model.CheckPinV2Param, com.tokopedia.profilecompletion.common.model.CheckPinV2Response>(Dispatchers.IO){
+class CheckPinV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository, dispatcher: CoroutineDispatcher)
+    : CoroutineUseCase<CheckPinV2Param, CheckPinV2Response>(dispatcher){
 
     override fun graphqlQuery(): String {
         return """

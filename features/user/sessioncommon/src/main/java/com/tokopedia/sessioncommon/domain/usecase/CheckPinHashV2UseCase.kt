@@ -6,11 +6,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class CheckPinHashV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
-: CoroutineUseCase<PinStatusParam, PinStatusResponse>(Dispatchers.IO){
+class CheckPinHashV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository, dispatcher: CoroutineDispatcher)
+: CoroutineUseCase<PinStatusParam, PinStatusResponse>(dispatcher){
 
     override suspend fun execute(params: PinStatusParam): PinStatusResponse {
         return repository.request(graphqlQuery(), params)

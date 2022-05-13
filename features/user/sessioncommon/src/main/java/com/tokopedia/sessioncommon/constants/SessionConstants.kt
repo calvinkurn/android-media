@@ -14,4 +14,9 @@ object SessionConstants {
         const val CONFIG_LOGIN_ENCRYPTION = "android_user_login_encryption"
         const val CONFIG_SILENT_VERIFICATION = "android_user_silent_verification"
     }
+
+    enum class GenerateKeyModule(val value: String) {
+        PIN_V2("pinv2"),
+        PASSWORD("pwd")
+    }
 }
