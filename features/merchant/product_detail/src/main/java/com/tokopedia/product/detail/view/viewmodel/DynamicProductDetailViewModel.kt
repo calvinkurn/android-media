@@ -25,8 +25,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
@@ -333,13 +332,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun deleteProductInCart(productId: String) {
         launchCatchError(dispatcher.io, block = {
-            val selectedMiniCart = p2Data.value?.miniCart?.getMiniCartItemProduct(getDynamicProductInfoP1?.basic?.productID
+            val selectedMiniCart = p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID
                     ?: "") ?: return@launchCatchError
 
             deleteCartUseCase.get().setParams(listOf(selectedMiniCart.cartId))
             val data = deleteCartUseCase.get().executeOnBackground()
 
-            _p2Data.value?.miniCart?.remove(MiniCartItemKey(productId))
+            _p2Data.value?.miniCart?.remove(productId)
             _deleteCartLiveData.postValue((data.data.message.firstOrNull() ?: "").asSuccess())
         }) {
             _deleteCartLiveData.postValue(it.asFail())
@@ -349,9 +348,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun updateMiniCartData(productId: String, cartId: String, quantity: Int, notes: String) {
         if (getDynamicProductInfoP1?.basic?.isTokoNow == false) return
 
-        val miniCartData = _p2Data.value?.miniCart?.getMiniCartItemProduct(productId)
+        val miniCartData = _p2Data.value?.miniCart?.get(productId)
         if (miniCartData == null) {
-            _p2Data.value?.miniCart?.set(MiniCartItemKey(productId), MiniCartItem.MiniCartItemProduct(
+            _p2Data.value?.miniCart?.set(productId, MiniCartItem.MiniCartItemProduct(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
@@ -410,7 +409,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getMiniCartItem(): MiniCartItem.MiniCartItemProduct? {
-        return p2Data.value?.miniCart?.getMiniCartItemProduct(getDynamicProductInfoP1?.basic?.productID ?: "")
+        return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
@@ -717,7 +716,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun loadRecommendation(pageName: String,
                            productId: String,
                            isTokoNow: Boolean,
-                           miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?) {
+                           miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         if (GlobalConfig.isSellerApp()) {
             return
         }
@@ -853,7 +852,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(dispatcher.io, block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId), MiniCartSource.PDPRecommendationWidget)
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            _p2Data.value?.miniCart = result.miniCartItems.toMutableMap()
+            val data = result.miniCartItems.mapProductsWithProductId().values.associateBy({ it.productId }) {
+                it
+            }
+            _p2Data.value?.miniCart = data.toMutableMap()
             _miniCartData.postValue(true)
         }) {
         }
@@ -933,7 +935,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
             if (recomItem.quantity == quantity) return
-            val miniCartItem = p2Data.value?.miniCart?.getMiniCartItemProduct(recomItem.productId.toString())
+            val miniCartItem = p2Data.value?.miniCart?.get(recomItem.productId.toString())
             if (quantity == 0) {
                 deleteRecomItemFromCart(recomItem, miniCartItem)
             } else if (recomItem.quantity == 0) {

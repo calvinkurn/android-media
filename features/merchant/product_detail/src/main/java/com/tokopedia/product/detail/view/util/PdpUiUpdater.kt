@@ -6,9 +6,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
@@ -761,7 +758,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecomTokonowQuantityData(miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?) {
+    fun updateRecomTokonowQuantityData(miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?) {
         mapOfData.filterValues { it is ProductRecommendationDataModel }.keys.forEach { key ->
             val productRecom = (mapOfData[key] as ProductRecommendationDataModel).copy()
             productRecom.recomWidgetData?.let { recomData ->
@@ -772,7 +769,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?, key: String) {
+    private fun updateRecomWidgetQtyDataFromMiniCart(recomWidget: RecommendationWidget, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?, key: String) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             //update data based on tokonow cart
@@ -781,10 +778,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(when {
                         recomItem.isProductHasParentID() -> {
-                            cartData.getMiniCartItemParentProduct(recomItem.parentID.toString())?.totalQuantity ?: 0
+                            getTotalQuantityVariantBasedOnParentID(recomItem, miniCart)
                         }
-                        cartData.containsKey(MiniCartItemKey(recomItem.productId.toString())) -> {
-                            cartData.getMiniCartItemProduct(recomItem.productId.toString())?.quantity ?: 0
+                        cartData.containsKey(recomItem.productId.toString()) -> {
+                            cartData[recomItem.productId.toString()]?.quantity ?: 0
                         }
                         else -> 0
                     })
@@ -794,6 +791,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(key) {
             updateRecomDataByKey(key, dataList)
         }
+    }
+
+    private fun getTotalQuantityVariantBasedOnParentID(recomItem: RecommendationItem, miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>): Int {
+        var variantTotalItems = 0
+        miniCart.values.forEach { miniCartItem ->
+            if (miniCartItem.productParentId == recomItem.parentID.toString()) {
+                variantTotalItems += miniCartItem.quantity
+            }
+        }
+        return variantTotalItems
     }
 
     fun updateCurrentQuantityRecomItem(recommendationItem: RecommendationItem) {

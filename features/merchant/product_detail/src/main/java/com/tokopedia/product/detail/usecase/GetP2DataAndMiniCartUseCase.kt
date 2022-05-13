@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -62,7 +63,7 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
 
         val miniCartData = (result.getOrNull(1) as? MiniCartSimplifiedData)?.miniCartItems
 
-        p2Data.miniCart = miniCartData?.toMutableMap()
+        p2Data.miniCart = miniCartData?.mapProductsWithProductId()?.toMutableMap()
         return p2Data
     }
 

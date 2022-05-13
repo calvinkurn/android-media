@@ -18,6 +18,16 @@ fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemParentProduct(parentId: St
     return get(MiniCartItemKey(parentId, MiniCartItemType.PARENT)) as? MiniCartItem.MiniCartItemParentProduct
 }
 
+fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, MiniCartItem.MiniCartItemProduct> {
+    val map: HashMap<String, MiniCartItem.MiniCartItemProduct> = HashMap()
+    values.forEach {
+        if (it is MiniCartItem.MiniCartItemProduct) {
+            map[it.productId] = it
+        }
+    }
+    return map
+}
+
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
         var totalProductPrice: Long = 0,
