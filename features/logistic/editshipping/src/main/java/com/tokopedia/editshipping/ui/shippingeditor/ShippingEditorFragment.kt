@@ -203,7 +203,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
                     } else {
                         activity?.finish()
                         val intent = context?.let { context -> EditShippingActivity.createIntent(context) }
-                        startActivityForResult(intent, 1998)
+                        startActivityForResult(intent, REQUEST_EDIT_SHIPPING)
                     }
                 }
 
@@ -767,6 +767,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorOnDemandItemAd
         private const val VALIDATE_BO_MULTIPLE_LOC_STATE = 6
 
         private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
+
+        private const val REQUEST_EDIT_SHIPPING = 1998
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"

@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.customview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -47,6 +48,7 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         serviceCheckbox = (CheckBox) view.findViewById(R.id.service_checkbox);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void renderData(@NonNull Service service, int serviceIndex) {
         serviceCheckbox.setText(service.name);
