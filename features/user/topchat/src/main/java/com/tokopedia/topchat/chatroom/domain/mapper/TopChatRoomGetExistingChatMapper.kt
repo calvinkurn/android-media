@@ -383,11 +383,13 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         )
         return if (pojo.listProductBundling.size == 1) {
             ProductBundlingUiModel.Builder()
+                .withResponseFromGQL(item)
                 .withIsSender(!item.isOpposite)
                 .withProductBundling(pojo.listProductBundling.first())
                 .build()
         } else {
             MultipleProductBundlingUiModel.Builder()
+                .withResponseFromGQL(item)
                 .withIsSender(!item.isOpposite)
                 .withProductBundlingResponse(pojo.listProductBundling)
                 .build()

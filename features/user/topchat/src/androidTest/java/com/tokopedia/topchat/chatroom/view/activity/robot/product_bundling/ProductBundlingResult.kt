@@ -1,60 +1,44 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.product_bundling
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import com.tokopedia.topchat.matchers.withTotalItem
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 
 object ProductBundlingResult {
 
     fun assertMultiBundlingShown() {
-        assertProductBundleCard(R.id.single_bundling_layout, matches(not(isDisplayed())))
-        assertProductBundleCard(R.id.rv_product_bundle, matches(isDisplayed()))
+        assertViewInRecyclerViewAt(0, R.id.single_bundling_layout, not(isDisplayed()))
+        assertViewInRecyclerViewAt(0, R.id.rv_product_bundle, isDisplayed())
     }
 
     fun assertSingleBundlingShown() {
-        assertProductBundleCard(R.id.single_bundling_layout, matches(isDisplayed()))
-        assertProductBundleCard(R.id.rv_product_bundle, matches(not(isDisplayed())))
+        assertViewInRecyclerViewAt(0, R.id.rv_product_bundle, not(isDisplayed()))
+        assertViewInRecyclerViewAt(0, R.id.single_bundling_layout, isDisplayed())
     }
 
     fun assertCtaBundlingShown() {
-        assertProductBundleCard(R.id.button_open_package, matches(isDisplayed()))
-        assertProductBundleCard(R.id.button_open_package, matches(withText("Lihat Paket")))
-        assertProductBundleCard(R.id.button_open_package, matches(isEnabled()))
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, isDisplayed())
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, withText("Lihat Paket"))
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, isEnabled())
     }
 
     fun assertCtaBundlingNotShown() {
-        assertProductBundleCard(R.id.button_open_package, matches(not(isDisplayed())))
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, not(isDisplayed()))
     }
 
     fun labelSingleBundlingShown(text: String) {
-        assertProductBundleCard(R.id.label_package, matches(withText(text)))
+        assertViewInRecyclerViewAt(0, R.id.label_package, withText(text))
     }
 
     fun assertCarouselBundlingShown(expectedCount: Int) {
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(0, R.id.rv_product_bundle_card))
-            .check(matches(withTotalItem(expectedCount)))
+        assertViewInRecyclerViewAt(0, R.id.rv_product_bundle_card, withTotalItem(expectedCount))
     }
 
     fun assertCtaOutOfStock() {
-        assertProductBundleCard(R.id.button_open_package, matches(isDisplayed()))
-        assertProductBundleCard(R.id.button_open_package, matches(withText("Paket Habis")))
-        assertProductBundleCard(R.id.button_open_package, matches(not(isEnabled())))
-    }
-
-    private fun assertProductBundleCard(viewId: Int, matcher: ViewAssertion) {
-        onView(
-            allOf(
-                isDescendantOfA(withRecyclerView(R.id.recycler_view_chatroom).atPosition(0)),
-                isDescendantOfA(withRecyclerView(R.id.rv_product_bundle_card).atPosition(0)),
-                withId(viewId)
-            )
-        ).check(matcher)
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, isDisplayed())
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, withText("Paket Habis"))
+        assertViewInRecyclerViewAt(0, R.id.button_open_package, not(isEnabled()))
     }
 }

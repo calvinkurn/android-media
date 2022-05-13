@@ -202,7 +202,7 @@ data class Reply(
 data class Attachment(
         @Expose
         @SerializedName("id")
-        val id: String = "",
+        var id: String = "",
         @Expose
         @SerializedName("type")
         val type: Int = 0,

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
+import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class ProductBundlingUiModel constructor(
@@ -22,9 +23,15 @@ class ProductBundlingUiModel constructor(
     }
 
     override fun updateData(attribute: Any?) {
-        if (attribute is ProductBundlingData) {
-            productBundling = attribute
+        if (attribute is ProductBundlingPojo) {
+            attribute.listProductBundling.forEach {
+                if (it.bundleId == productBundling.bundleId) {
+                    productBundling = it
+                    return@forEach
+                }
+            }
         }
+        this.isLoading = false
     }
 
     override fun syncError() {

@@ -20,9 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.BundleItem
-import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.adapter.MultipleBundlingItemAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
@@ -156,7 +154,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     ) {
         this.adapterPosition = adapterPosition
         bindListener(listener, adapterListener, searchListener, commonListener, deferredAttachment)
-        bindSyncBundle(element) //Single product bundling sync
         bindLayoutGravity(element)
         bindLoading(element)
         bindBackground(element)
@@ -230,18 +227,6 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         this.searchListener = searchListener
         this.commonListener = commonListener
         this.deferredAttachment = deferredAttachment
-    }
-
-    private fun bindSyncBundle(element: ProductBundlingUiModel) {
-        if (!element.isLoading) return
-        val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
-        val attachment = chatAttachments[element.attachmentId] ?: return
-        if (attachment is ErrorAttachment) {
-            element.syncError()
-        } else if (attachment.parsedAttributes is ProductBundlingPojo) {
-            val productBundlingData = attachment.parsedAttributes as? ProductBundlingPojo
-            element.updateData(productBundlingData?.listProductBundling?.firstOrNull())
-        }
     }
 
     private fun bindLayoutGravity(element: ProductBundlingUiModel) {

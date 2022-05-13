@@ -24,8 +24,14 @@ class MultipleBundlingItemAdapter: RecyclerView.Adapter<MultipleBundlingItemView
     }
 
     override fun onBindViewHolder(holder: MultipleBundlingItemViewHolder, position: Int) {
-        holder.bind(bundlingList[position])
+        if (position < MAX_ITEM_THRESHOLD) {
+            holder.bind(bundlingList[position])
+        }
     }
 
     override fun getItemCount(): Int = bundlingList.size
+
+    companion object {
+        const val MAX_ITEM_THRESHOLD = 3
+    }
 }
