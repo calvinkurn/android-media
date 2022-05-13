@@ -1,16 +1,18 @@
 package com.tokopedia.profilecompletion.changepin.data.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.changepin.data.model.ResetPinV2Param
 import com.tokopedia.profilecompletion.changepin.data.model.ResetPinV2Response
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class ResetPinV2UseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository, dispatcher: CoroutineDispatcher):
-    CoroutineUseCase<ResetPinV2Param, ResetPinV2Response>(dispatcher){
+class ResetPinV2UseCase @Inject constructor(
+    @ApplicationContext val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<ResetPinV2Param, ResetPinV2Response>(dispatcher.io) {
 
     override suspend fun execute(params: ResetPinV2Param): ResetPinV2Response {
 	return repository.request(graphqlQuery(), params)
