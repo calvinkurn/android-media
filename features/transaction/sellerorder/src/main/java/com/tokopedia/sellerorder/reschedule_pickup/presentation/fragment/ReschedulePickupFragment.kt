@@ -295,23 +295,20 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                val text = binding?.etReasonDetail?.editText?.text
-                text?.let {
-                    if (s.isNotEmpty() && it.length < OTHER_REASON_MIN_CHAR) {
-                        setWrapperError(
-                            wrapper,
-                            getString(R.string.error_message_reason_below_min_char)
-                        )
-                    } else if (s.isNotEmpty() && it.length > OTHER_REASON_MAX_CHAR) {
-                        setWrapperError(
-                            wrapper,
-                            getString(R.string.error_message_reason_over_max_char)
-                        )
-                    } else {
-                        setWrapperError(wrapper, null)
-                    }
-                    validateInput()
+                if (s.length < OTHER_REASON_MIN_CHAR) {
+                    setWrapperError(
+                        wrapper,
+                        getString(R.string.error_message_reason_below_min_char)
+                    )
+                } else if (s.length > OTHER_REASON_MAX_CHAR) {
+                    setWrapperError(
+                        wrapper,
+                        getString(R.string.error_message_reason_over_max_char)
+                    )
+                } else {
+                    setWrapperError(wrapper, null)
                 }
+                validateInput()
             }
 
             override fun afterTextChanged(text: Editable) {
