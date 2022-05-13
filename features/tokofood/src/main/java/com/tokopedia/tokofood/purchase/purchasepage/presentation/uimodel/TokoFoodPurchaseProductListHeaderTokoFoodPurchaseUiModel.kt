@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoo
 data class TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel(
         var title: String = "",
         var action: String = "",
-        var isUnavailableHeader: Boolean = false
+        var isAvailableHeader: Boolean = false
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

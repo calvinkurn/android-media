@@ -1,118 +1,282 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper
 
-import com.tokopedia.explorepromo.ExplorePromo
-import com.tokopedia.kotlin.extensions.view.isOdd
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProduct
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodProductVariant
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodPromo
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodResponse
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShipping
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShoppingTotal
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodSummaryItemDetail
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodUserAddress
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
+import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductVariantParam
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
 
-    fun mapGeneralTickerUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
-            isErrorTicker = isShippingUnavailable
-            message = "Thi will be note relevant to any info and error on checkout"
-        }
+    private const val MIN_QUANTITY_STOCK = 1
+    private const val MAX_QUANTITY_STOCK = 99999
+
+    fun mapShopInfoToUiModel(shop: CheckoutTokoFoodShop): TokoFoodPurchaseFragmentUiModel {
+        return TokoFoodPurchaseFragmentUiModel(true, shop.name, shop.distance)
     }
 
-    fun mapAddressUiModel(): TokoFoodPurchaseAddressTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseAddressTokoFoodPurchaseUiModel().apply {
-            addressName = "Rumah"
-            isMainAddress = true
-            receiverName = "Adrian"
-            receiverPhone = "081234567890"
-            cityName = "Jakarta Selatan"
-            districtName = "Setiabudi"
-            addressDetail = "Tokopedia Tower Ciputra World 2, Jl. Prof. DR. Satrio No.Kav. 11, Karet Semanggi, Setiabudi, Jakarta Selatan"
-        }
-    }
+    fun mapCheckoutResponseToUiModels(
+        response: CheckoutTokoFoodResponse,
+        isEnabled: Boolean,
+        needPinpoint: Boolean
+    ): List<Visitable<*>> {
+        val shouldPromoShown = !response.data.promo.hidePromo
+        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
 
-    fun mapShippingUiModel(needPinpoint: Boolean = true): TokoFoodPurchaseShippingTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseShippingTokoFoodPurchaseUiModel().apply {
-            shippingCourierName = "Gojek Instan (Rp0)"
-            shippingEta = "Tiba dalam 30-60 menit"
-            shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png"
-            shippingPrice = 0
-            isNeedPinpoint = needPinpoint
-            isShippingUnavailable = false
-            isDisabled = isShippingUnavailable
-        }
-    }
-
-    fun mapProductListHeaderUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel {
-        return if (mIsUnavailable) {
-            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
-                title = "Tidak bisa diproses (3)"
-                action = "Hapus"
-                isUnavailableHeader = mIsUnavailable
-                isDisabled = isShippingUnavailable
+        return mutableListOf<Visitable<*>>().apply {
+            val tickerErrorMessage = response.data.tickerErrorMessage.takeIf { it.isNotEmpty() }
+            if (tickerErrorMessage == null) {
+                response.data.tickers.top.let { topTicker ->
+                    add(mapGeneralTickerUiModel(topTicker.message, false))
+                }
+            } else {
+                add(mapGeneralTickerUiModel(tickerErrorMessage, true))
             }
-        } else {
+            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
+            add(mapAddressUiModel(response.data.userAddress))
+            val shouldShippingShown = response.data.shipping.name.isNotEmpty()
+            if (shouldShippingShown) {
+                add(
+                    mapShippingUiModel(
+                        shipping = response.data.shipping,
+                        needPinpoint = needPinpoint,
+                        isEnabled = isEnabled
+                    )
+                )
+            }
+            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
+            if (response.data.availableSection.products.isNotEmpty()) {
+                add(mapProductListHeaderUiModel(isEnabled))
+                response.data.errorsUnblocking.takeIf { it.isNotEmpty() }?.let { message ->
+                    add(mapTickerErrorShopLevelUiModel(isEnabled, message))
+                }
+                addAll(response.data.availableSection.products.map {
+                    mapProductUiModel(it, isEnabled, true)
+                })
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
+            }
+            response.data.unavailableSection.products.takeIf { it.isNotEmpty() }?.let { unavailableProducts ->
+                add(mapProductListHeaderUiModel(isEnabled, response.data.unavailableSectionHeader))
+                add(mapProductUnavailableReasonUiModel(isEnabled, response.data.unavailableSection.title))
+                addAll(unavailableProducts.map { mapProductUiModel(it, isEnabled, false) })
+                add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "4"))
+                add(mapAccordionUiModel(isEnabled))
+            }
+            if (isEnabled) {
+                if (shouldPromoShown) {
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "5"))
+                    add(mapPromoUiModel(response.data.promo))
+                }
+                if (shouldSummaryShown) {
+                    add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
+                    add(
+                        mapSummaryTransactionUiModel(
+                            response.data.shoppingSummary.summaryDetail.details,
+                            response.data.tickers.bottom.message
+                        )
+                    )
+                }
+            }
+            add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "7"))
+            add(mapTotalAmountUiModel(isEnabled && shouldSummaryShown, response.data.shoppingSummary.total))
+        }
+    }
+
+    fun mapResponseToPartialUiModel(
+        response: CheckoutTokoFoodResponse,
+        isEnabled: Boolean,
+        needPinpoint: Boolean
+    ): PartialTokoFoodUiModel {
+        val shouldShippingShown = response.data.shipping.name.isNotEmpty()
+        val shouldPromoShown = !response.data.promo.hidePromo
+        val shouldSummaryShown = !response.data.shoppingSummary.summaryDetail.hideSummary
+        return PartialTokoFoodUiModel(
+            shippingUiModel = mapShippingUiModel(
+                shipping = response.data.shipping,
+                needPinpoint = needPinpoint,
+                isEnabled = isEnabled
+            ).takeIf { shouldShippingShown },
+            promoUiModel = mapPromoUiModel(response.data.promo).takeIf { shouldPromoShown },
+            summaryUiModel = mapSummaryTransactionUiModel(
+                response.data.shoppingSummary.summaryDetail.details,
+                response.data.tickers.bottom.message
+            ).takeIf { shouldSummaryShown },
+            totalAmountUiModel = mapTotalAmountUiModel(
+                isEnabled && shouldSummaryShown,
+                response.data.shoppingSummary.total
+            )
+        )
+    }
+
+    fun mapUiModelToUpdateParam(uiModels: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): UpdateParam {
+        return UpdateParam(
+            productList = uiModels.map { uiModel ->
+                UpdateProductParam(
+                    productId = uiModel.id,
+                    cartId = uiModel.cartId,
+                    notes = uiModel.notes,
+                    quantity = uiModel.quantity,
+                    variants = uiModel.variants
+                )
+            }
+        )
+    }
+
+    private fun mapGeneralTickerUiModel(message: String,
+                                        isError: Boolean): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
+            isErrorTicker = isError
+            this.message = message
+        }
+    }
+
+    private fun mapAddressUiModel(address: CheckoutTokoFoodUserAddress): TokoFoodPurchaseAddressTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseAddressTokoFoodPurchaseUiModel().apply {
+            addressName = address.addressName
+            isMainAddress = address.isMainAddress()
+            receiverName = address.receiverName
+            receiverPhone = address.phone
+            addressDetail = address.address
+        }
+    }
+
+    private fun mapShippingUiModel(shipping: CheckoutTokoFoodShipping,
+                                   needPinpoint: Boolean = true,
+                                   isEnabled: Boolean): TokoFoodPurchaseShippingTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseShippingTokoFoodPurchaseUiModel().apply {
+            shippingCourierName = shipping.name
+            shippingEta = shipping.eta
+            shippingLogoUrl = shipping.logoUrl
+            // TODO: Use fmt instead
+            shippingPrice = shipping.price.toLong()
+            isNeedPinpoint = needPinpoint
+            isShippingAvailable = isEnabled
+            this.isEnabled = isEnabled
+        }
+    }
+
+    private fun mapProductListHeaderUiModel(isEnabled: Boolean,
+                                            unavailableSectionHeader: String? = null): TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel {
+        return if (unavailableSectionHeader == null) {
+            // TODO: Static for available products
             TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
                 title = "Daftar Pesanan"
                 action = "Tambah Pesanan"
-                isUnavailableHeader = mIsUnavailable
-                isDisabled = isShippingUnavailable
+                isAvailableHeader = true
+                this.isEnabled = isEnabled
+            }
+        } else {
+            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
+                title = unavailableSectionHeader
+                action = "Hapus"
+                isAvailableHeader = false
+                this.isEnabled = isEnabled
             }
         }
     }
 
-    fun mapProductUnavailableReasonUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel {
+    private fun mapProductUnavailableReasonUiModel(isEnabled: Boolean,
+                                                   reason: String): TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel().apply {
-            reason = "Stok Habis"
+            this.reason = reason
+            // TODO: Remove detail
             detail = ""
-            isDisabled = isShippingUnavailable
+            this.isEnabled = isEnabled
         }
     }
 
-    fun mapTickerErrorShopLevelUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel {
+    private fun mapTickerErrorShopLevelUiModel(isEnabled: Boolean,
+                                               tickerMessage: String): TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel().apply {
-            message = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\"\">Lihat</a>"
-            isDisabled = isShippingUnavailable
+            // TODO: Hardcoded 'lihat' action
+            message = tickerMessage
+            this.isEnabled = isEnabled
         }
     }
 
-    fun mapProductUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean, id: String): TokoFoodPurchaseProductTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseProductTokoFoodPurchaseUiModel().apply {
-            isUnavailable = mIsUnavailable
-            this.id = id
-            name = "Milo Macchiato $id"
-            imageUrl = "https://img-global.cpcdn.com/recipes/1db6e302172f3f01/680x482cq70/es-milo-macchiato-janji-jiwa-foto-resep-utama.jpg"
-            price = 25000
-            quantity = 1
-            minQuantity = 1
-            maxQuantity = 10
-            notes = if (id.toIntOrNull().isOdd()) "Pesanannya jangan sampai salah ya! udah haus bang. Pesanannya jangan sampai salah ya! udah haus bang..." else ""
-            addOns = listOf("addOn1", "addon2", "addon3")
-            originalPrice = 50000
-            discountPercentage = "50%"
-            isDisabled = isShippingUnavailable
+    private fun mapProductUiModel(product: CheckoutTokoFoodProduct,
+                                  isEnabled: Boolean,
+                                  mIsAvailable: Boolean): TokoFoodPurchaseProductTokoFoodPurchaseUiModel {
+        val addOnsAndParamPair = getAddOnsAndParamPairList(product.variants)
+        return TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
+            isAvailable = mIsAvailable,
+            id = product.productId,
+            name = product.productName,
+            imageUrl = product.imageUrl,
+            price = product.price,
+            priceFmt = product.priceFmt,
+            quantity = product.quantity,
+            minQuantity = MIN_QUANTITY_STOCK,
+            maxQuantity = MAX_QUANTITY_STOCK,
+            notes = product.notes,
+            addOns = addOnsAndParamPair.map { it.first },
+            originalPrice = product.originalPrice,
+            originalPriceFmt = product.originalPriceFmt,
+            discountPercentage = product.discountPercentage,
+            cartId = product.cartId,
+            variants = addOnsAndParamPair.map { it.second }
+        ).apply {
+            this.isEnabled = isEnabled
         }
     }
 
-    fun mapPromoUiModel(): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
-        return TokoFoodPurchasePromoTokoFoodPurchaseUiModel().apply {
-            state = ExplorePromo.STATE_DEFAULT
-            title = "Makin hemat pakai promo"
-            description = ""
+    private fun getAddOnsAndParamPairList(variants: List<CheckoutTokoFoodProductVariant>): List<Pair<String, UpdateProductVariantParam>> {
+        return variants.flatMap { variant ->
+            variant.options.map { option ->
+                "${variant.name}: ${option.name}" to UpdateProductVariantParam(variant.name, option.optionId)
+            }
         }
     }
 
-    fun mapSummaryTransactionUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel()
+    private fun mapPromoUiModel(promo: CheckoutTokoFoodPromo): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
+        return TokoFoodPurchasePromoTokoFoodPurchaseUiModel(
+            title = promo.title,
+            description = promo.subtitle
+        )
     }
 
-    fun mapTotalAmountUiModel(): TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel {
-        return TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel().apply {
-            totalAmount = 0
-            isDisabled = false
+    private fun mapSummaryTransactionUiModel(summaryDetails: List<CheckoutTokoFoodSummaryItemDetail>,
+                                             bottomTickerMessage: String): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+        val summaryDetailList = summaryDetails.map {
+            it.mapToUiModel()
+        }
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
+            summaryDetailList.toList(),
+            bottomTickerMessage
+        )
+    }
+
+    private fun CheckoutTokoFoodSummaryItemDetail.mapToUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction {
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
+            title = title,
+            value = priceFmt,
+            detailInfo = info
+        )
+    }
+
+    private fun mapTotalAmountUiModel(isEnabled: Boolean,
+                                      total: CheckoutTokoFoodShoppingTotal): TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel(total.cost.toLong(), false).apply {
+            this.isEnabled = isEnabled
         }
     }
 
-    fun mapAccordionUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel {
+    private fun mapAccordionUiModel(isEnabled: Boolean): TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel().apply {
             isCollapsed = false
+            // TODO: Put to res
             showMoreWording = "Tampilkan Lebih Banyak"
             showLessWording = "Tampilkan Lebih Sedikit"
-            isDisabled = isShippingUnavailable
+            this.isEnabled = isEnabled
         }
     }
 

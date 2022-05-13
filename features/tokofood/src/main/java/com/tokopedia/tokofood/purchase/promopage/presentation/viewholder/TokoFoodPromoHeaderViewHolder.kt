@@ -16,6 +16,7 @@ class TokoFoodPromoHeaderViewHolder(private val viewBinding: ItemTokofoodPromoLi
 
     override fun bind(element: TokoFoodPromoHeaderUiModel) {
         with(viewBinding) {
+            iconPromoListHeaderTokofood.setImageUrl(element.iconUrl)
             labelPromoListHeaderTitleTokofood.text = element.title
         }
     }

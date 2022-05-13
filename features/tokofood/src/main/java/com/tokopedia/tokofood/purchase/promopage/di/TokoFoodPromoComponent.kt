@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragm
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [TokoFoodPromoViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [TokoFoodPromoViewModelModule::class, TokoFoodPromoModule::class], dependencies = [BaseAppComponent::class])
 interface TokoFoodPromoComponent {
     fun inject(fragment: TokoFoodPromoFragment)
 }

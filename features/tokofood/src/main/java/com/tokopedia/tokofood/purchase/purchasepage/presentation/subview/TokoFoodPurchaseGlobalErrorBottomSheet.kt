@@ -5,22 +5,53 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.cartcommon.data.response.common.Button
 import com.tokopedia.cartcommon.data.response.common.OutOfService
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseGlobalErrorBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
 
-class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfService?, val listener: Listener) : BottomSheetUnify() {
+class TokoFoodPurchaseGlobalErrorBottomSheet : BottomSheetUnify() {
 
     var viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding? = null
+
+    companion object {
+        @JvmStatic
+        fun createInstance(globalErrorType: Int,
+                           listener: Listener?): TokoFoodPurchaseGlobalErrorBottomSheet {
+            return TokoFoodPurchaseGlobalErrorBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putInt(GLOBAL_ERROR_TYPE, globalErrorType)
+                }
+                this.listener = listener
+            }
+        }
+
+        private const val GLOBAL_ERROR_TYPE = "error_type"
+
+        private const val TAG = "TokoFoodPurchaseGlobalErrorBottomSheet"
+    }
 
     interface Listener {
         fun onGoToHome()
         fun onRetry()
         fun onCheckOtherMerchant()
         fun onStayOnCurrentPage()
+    }
+
+    private val globalErrorType by lazy {
+        arguments?.getInt(GLOBAL_ERROR_TYPE) ?: GlobalError.SERVER_ERROR
+    }
+
+    private var listener: Listener? = null
+
+    fun show(fm: FragmentManager) {
+        if (!isVisible) {
+            show(fm, TAG)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -31,7 +62,7 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding?.let {
-            renderGlobalError(it, outOfService, listener, GlobalError.SERVER_ERROR)
+            renderGlobalError(it, globalErrorType)
         }
     }
 
@@ -43,7 +74,6 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
     }
 
     private fun initializeBottomSheet(viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding) {
-        setTitle("Catatan pesanan")
         showCloseIcon = true
         showHeader = true
         isDragable = false
@@ -54,8 +84,29 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
     }
 
     private fun renderGlobalError(viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding,
+                                  globalErrorType: Int) {
+        with(viewBinding) {
+            layoutGlobalError.setType(globalErrorType)
+            layoutGlobalError.setButtonFull(true)
+            if (globalErrorType == GlobalError.NO_CONNECTION) {
+                layoutGlobalError.setActionClickListener {
+                    dismiss()
+                    listener?.onRetry()
+                }
+            } else {
+                layoutGlobalError.errorAction.text = context?.getString(R.string.text_purchase_to_homepage).orEmpty()
+                layoutGlobalError.setActionClickListener {
+                    dismiss()
+                    listener?.onGoToHome()
+                }
+            }
+        }
+    }
+
+    // TODO: Remove if it does not need out of service
+    private fun renderGlobalError(viewBinding: LayoutBottomSheetPurchaseGlobalErrorBinding,
                                   outOfService: OutOfService?,
-                                  listener: Listener,
+                                  listener: Listener?,
                                   defaultType: Int) {
         with(viewBinding) {
             if (outOfService != null) {
@@ -67,11 +118,11 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
                             layoutGlobalError.setActionClickListener {
                                 when (buttonData.id) {
                                     Button.ID_HOMEPAGE -> {
-                                        listener.onGoToHome()
+                                        listener?.onGoToHome()
                                         dismiss()
                                     }
                                     Button.ID_RETRY -> {
-                                        listener.onRetry()
+                                        listener?.onRetry()
                                         dismiss()
                                     }
                                 }
@@ -92,7 +143,7 @@ class TokoFoodPurchaseGlobalErrorBottomSheet(private val outOfService: OutOfServ
             } else {
                 layoutGlobalError.setType(defaultType)
                 layoutGlobalError.setActionClickListener {
-                    listener.onRetry()
+                    listener?.onRetry()
                     dismiss()
                 }
             }
