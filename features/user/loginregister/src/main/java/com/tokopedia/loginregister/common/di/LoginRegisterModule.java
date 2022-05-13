@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.loginregister.common.analytics.NeedHelpAnalytics;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;

@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.features.inputoldphone.fragment
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -13,7 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.model.PhoneFormState
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_CLICK
@@ -21,7 +21,7 @@ import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAna
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_SUCCESS
 import com.tokopedia.updateinactivephone.databinding.FragmentInputOldPhoneNumberBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
-import com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel.InputOldPhoneNumberViewModel
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel.InputOldPhoneNumberViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding

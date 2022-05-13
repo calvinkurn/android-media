@@ -1,11 +1,11 @@
-package com.tokopedia.updateinactivephone.features.inputoldphone.viewmodel
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.updateinactivephone.R.string.*
-import com.tokopedia.updateinactivephone.features.inputoldphone.model.PhoneFormState
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.model.PhoneFormState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.updateinactivephone.domain.usecase.InputOldPhoneNumberUseCase
 import com.tokopedia.usecase.coroutines.Fail

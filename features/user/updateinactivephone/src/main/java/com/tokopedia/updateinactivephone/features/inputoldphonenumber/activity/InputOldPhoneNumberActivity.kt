@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.features.inputoldphone.activity
+package com.tokopedia.updateinactivephone.features.inputoldphonenumber.activity
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
-import com.tokopedia.updateinactivephone.features.inputoldphone.fragment.InputOldPhoneNumberFragment
+import com.tokopedia.updateinactivephone.features.inputoldphonenumber.fragment.InputOldPhoneNumberFragment
 import javax.inject.Inject
 
 class InputOldPhoneNumberActivity : BaseSimpleActivity(),

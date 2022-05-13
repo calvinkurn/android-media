@@ -49,7 +49,7 @@
           android:theme="@style/Theme.White"/>
 
         <activity
-            android:name="com.tokopedia.updateinactivephone.features.inputoldphone.activity.InputOldPhoneNumberActivity"
+            android:name="com.tokopedia.updateinactivephone.features.inputoldphonenumber.activity.InputOldPhoneNumberActivity"
             android:label="@string/ipn_toolbar_title"
             android:exported="false"
             android:screenOrientation="portrait"
