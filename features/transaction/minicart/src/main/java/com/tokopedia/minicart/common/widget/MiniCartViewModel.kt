@@ -477,6 +477,21 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                     notes = it.notes
                             )
                     )
+                } else if (it is MiniCartItem.MiniCartItemBundle && !it.isError) {
+                    it.products.values.forEach { product ->
+                        updateCartRequests.add(
+                                UpdateCartRequest(
+                                        cartId = product.cartId,
+                                        quantity = product.quantity,
+                                        notes = product.notes,
+                                        bundleInfo = BundleInfo(
+                                                bundleId = it.bundleId,
+                                                bundleGroupId = it.bundleGroupId,
+                                                bundleQty = it.bundleQuantity
+                                        )
+                                )
+                        )
+                    }
                 }
             }
             updateCartUseCase.setParams(updateCartRequests)
@@ -485,13 +500,28 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             val visitables = getVisitables()
             visitables.forEach {
                 if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                    updateCartRequests.add(
-                            UpdateCartRequest(
-                                    cartId = it.cartId,
-                                    quantity = it.productQty,
-                                    notes = it.productNotes
-                            )
-                    )
+                    if(it.isBundlingItem) {
+                        updateCartRequests.add(
+                                UpdateCartRequest(
+                                        cartId = it.cartId,
+                                        quantity = it.productQty,
+                                        notes = it.productNotes,
+                                        bundleInfo = BundleInfo(
+                                                bundleId = it.bundleId,
+                                                bundleGroupId = it.bundleGroupId,
+                                                bundleQty = it.bundleQty
+                                        )
+                                )
+                        )
+                    } else {
+                        updateCartRequests.add(
+                                UpdateCartRequest(
+                                        cartId = it.cartId,
+                                        quantity = it.productQty,
+                                        notes = it.productNotes
+                                )
+                        )
+                    }
                 }
             }
             updateCartUseCase.setParams(updateCartRequests)
