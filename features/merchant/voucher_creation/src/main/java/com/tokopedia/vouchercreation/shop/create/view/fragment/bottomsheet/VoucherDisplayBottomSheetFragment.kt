@@ -2,18 +2,20 @@ package com.tokopedia.vouchercreation.shop.create.view.fragment.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.decorator.VoucherDisplayItemDecoration
+import com.tokopedia.vouchercreation.databinding.MvcVoucherDisplayBottomSheetViewBinding
 import com.tokopedia.vouchercreation.shop.create.view.adapter.vouchertarget.VoucherDisplayAdapter
 import com.tokopedia.vouchercreation.shop.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.shop.create.view.listener.VoucherDisplayScrollListener
-import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
-import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
 class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView {
 
@@ -23,11 +25,6 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
                            userId: String) : VoucherDisplayBottomSheetFragment {
             return VoucherDisplayBottomSheetFragment().apply {
                 context?.run {
-                    val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
-                    // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
-                    view?.setupItemDecoration()
-                    setChild(view)
-                    setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                     this@apply.getVoucherType = getVoucherType
                     this@apply.userId = userId
                 }
@@ -37,6 +34,8 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
         const val TAG = "VoucherDisplayBottomSheetFragment"
     }
 
+    private var binding by autoClearedNullable<MvcVoucherDisplayBottomSheetViewBinding>()
+
     private val pagerSnapHelper by lazy {
         PagerSnapHelper()
     }
@@ -45,15 +44,20 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
         VoucherDisplayScrollListener(pagerSnapHelper, ::onSnapPositionChangeListener)
     }
 
-    private val linearLayoutManager by lazy {
-        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    }
-
     private var getVoucherType: () -> VoucherTargetCardType = {
         VoucherTargetCardType.PRIVATE
     }
 
     private var userId: String = ""
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -64,18 +68,27 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
 
     override var bottomSheetViewTitle: String? = null
 
+    private fun initBottomSheet() {
+        binding = MvcVoucherDisplayBottomSheetViewBinding.inflate(LayoutInflater.from(context))
+        // Setup decoration at start of instantiating to avoid increase of padding per refresh layout
+        binding?.root?.setupItemDecoration()
+        setChild(binding?.root)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    }
+
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
         val displayList = getVoucherType().displayPairList
         val targetType = getVoucherType().targetType
         val voucherDisplayAdapter = VoucherDisplayAdapter(displayList, targetType, userId)
-        voucherDisplayRecyclerView?.run {
+        binding?.voucherDisplayRecyclerView?.run {
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayoutManager
             linearLayoutManager.smoothScrollToPosition(this, null, 0)
             adapter = voucherDisplayAdapter
             addOnScrollListener(voucherDisplayScrollListener)
         }
-        voucherDisplayPageControl?.setIndicator(displayList.size)
+        binding?.voucherDisplayPageControl?.setIndicator(displayList.size)
     }
 
     private fun View.setupBottomSheetChildNoMargin() {
@@ -88,13 +101,13 @@ class VoucherDisplayBottomSheetFragment : BottomSheetUnify(), VoucherBottomView 
     }
 
     private fun View.setupItemDecoration() {
-        voucherDisplayRecyclerView?.run {
+        binding?.voucherDisplayRecyclerView?.run {
             addItemDecoration(VoucherDisplayItemDecoration(context))
             pagerSnapHelper.attachToRecyclerView(this)
         }
     }
 
     private fun onSnapPositionChangeListener(position: Int) {
-        view?.voucherDisplayPageControl?.setCurrentIndicator(position)
+        binding?.voucherDisplayPageControl?.setCurrentIndicator(position)
     }
 }

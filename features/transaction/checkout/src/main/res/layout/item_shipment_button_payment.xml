@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/label_payment_total"
             android:textColor="@color/Unify_N700_96"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -32,8 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="-"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 

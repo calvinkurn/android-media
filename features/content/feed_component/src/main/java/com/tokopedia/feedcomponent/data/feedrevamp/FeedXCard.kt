@@ -78,6 +78,7 @@ data class FeedXCard(
     val impressHolder: ImpressHolder = ImpressHolder(),
     //Active carousel index
     var lastCarouselIndex : Int = 0,
+    var isAsgcColorChangedToGreen: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",

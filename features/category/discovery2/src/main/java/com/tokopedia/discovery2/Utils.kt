@@ -44,6 +44,11 @@ const val LABEL_PRICE = "price"
 const val PDP_APPLINK = "tokopedia://product/"
 const val TIME_DISPLAY_FORMAT = "%1$02d"
 const val DEFAULT_TIME_DATA: Long = 0
+const val CONSTANT_10_e = 1e1
+const val CONSTANT_0 = 0
+const val CONSTANT_10 = 10
+const val CONSTANT_11 = 11
+const val CONSTANT_19 = 19
 
 class Utils {
 
@@ -119,7 +124,7 @@ class Utils {
             else -> ""
         }
 
-        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * 1e1) / 1e1
+        private fun getDecimalFormatted(currentViewCount: Double) = floor(currentViewCount * CONSTANT_10_e) / CONSTANT_10_e
 
         private fun getDisplayValue(convertedValue: Double, text: String, notifyMeText: String): String {
             return if (convertedValue > VIEW_LIMIT) {
@@ -255,9 +260,9 @@ class Utils {
         }
 
         fun parseFlashSaleDate(saleTime: String?): String {
-            if (!saleTime.isNullOrEmpty() && saleTime.length >= 19) {
-                val date = saleTime.substring(0, 10)
-                val time = saleTime.substring(11, 19)
+            if (!saleTime.isNullOrEmpty() && saleTime.length >= CONSTANT_19) {
+                val date = saleTime.substring(CONSTANT_0, CONSTANT_10)
+                val time = saleTime.substring(CONSTANT_11, CONSTANT_19)
                 return "${date}T${time}"
             }
             return ""

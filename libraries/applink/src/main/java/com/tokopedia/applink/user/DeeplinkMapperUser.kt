@@ -21,7 +21,7 @@ object DeeplinkMapperUser {
 	    deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
 	    deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING) -> ApplinkConstInternalUserPlatform.NEW_HOME_ACCOUNT
 	    deeplink == ApplinkConst.SETTING_PROFILE -> getSettingProfileApplink(context)
-		deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(context)
+	    deeplink == ApplinkConstInternalUserPlatform.SETTING_PROFILE -> getSettingProfileApplink(context)
 	    else -> deeplink
 	}
     }

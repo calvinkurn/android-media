@@ -19,7 +19,13 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
@@ -108,7 +114,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {
         val shopName = cartShopHolderData.shopName
-        binding.tvShopName.text = shopName
+        binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
                     cartShopHolderData.shopId,
@@ -144,7 +150,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
-        val maxIndex = min(10, cartShopHolderData.productUiModelList.size)
+        val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartShopHolderData.productUiModelList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
         cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.productUiModelList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
@@ -198,7 +204,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 binding.imageChevron.rotation = 0f
                 binding.textAccordion.text = showMoreWording
             } else {
-                binding.imageChevron.rotation = 180f
+                binding.imageChevron.rotation = ROTATION_180_DEGREE
                 binding.textAccordion.text = showLessWording
             }
 
@@ -513,6 +519,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         private const val ITEM_DECORATION_PADDING_LEFT = 48
         private const val SHOP_HEADER_PADDING_10 = 10
         private const val SCROLL_PADDING_OFFSET = 12
+
+        private const val ROTATION_180_DEGREE = 180f
     }
 
 }
