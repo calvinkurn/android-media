@@ -1,11 +1,9 @@
 package com.tokopedia.createpost.producttag.view.fragment
 
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +21,6 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProduc
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 
@@ -106,10 +103,6 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
                 if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
             }
-
-//            val finalProducts = products.map {
-//                ProductTagCardAdapter.Model.Product(product = it)
-//            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvGlobalSearchProduct.isComputingLayout.not())
                 adapter.setItemsAndAnimateChanges(finalProducts)
