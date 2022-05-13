@@ -197,8 +197,7 @@ class HomeVisitableFactoryImpl(
     private fun AtfData.atfStatusCondition(
             onLoading: ()-> Unit = {},
             onError: ()-> Unit = {},
-            onSuccess: ()-> Unit = {},
-            onEmpty: ()-> Unit = {}
+            onSuccess: ()-> Unit = {}
     ) {
         when(status) {
             AtfKey.STATUS_LOADING -> if (!isOptional) {
@@ -208,7 +207,6 @@ class HomeVisitableFactoryImpl(
                 onError.invoke()
             }
             AtfKey.STATUS_SUCCESS -> onSuccess.invoke()
-            AtfKey.STATUS_EMPTY -> onEmpty.invoke()
         }
     }
 
