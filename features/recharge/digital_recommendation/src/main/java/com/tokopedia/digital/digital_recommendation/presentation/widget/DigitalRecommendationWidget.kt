@@ -114,12 +114,11 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
-        state?.let {
-            val bundle = it as Bundle
-            additionalTrackingData = bundle.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
-            page = bundle.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
+        if (state is Bundle) {
+            additionalTrackingData = state.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
+            page = state.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
         }
+        super.onRestoreInstanceState(state)
     }
 
     private fun onItemBinding(element: DigitalRecommendationItemUnifyModel, position: Int) {
