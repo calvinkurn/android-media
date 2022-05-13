@@ -11,10 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -32,7 +30,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class PlayInteractiveLeaderboardViewComponent(
     container: ViewGroup,
-    listener: Listener
+    private val listener: Listener
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
 
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
@@ -53,8 +51,6 @@ class PlayInteractiveLeaderboardViewComponent(
         }
     }
 
-    private val impressHolder = ImpressHolder()
-
     init {
         findViewById<TextView>(R.id.tv_sheet_title)
             .setText(R.string.play_interactive_leaderboard_title)
@@ -68,10 +64,6 @@ class PlayInteractiveLeaderboardViewComponent(
 
         btnRefreshError.setOnClickListener {
             listener.onRefreshButtonClicked(this)
-        }
-
-        btnRefreshError.addOnImpressionListener(impressHolder){
-            listener.onRefreshButtonImpressed(this)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
@@ -94,6 +86,8 @@ class PlayInteractiveLeaderboardViewComponent(
         errorView.show()
         rvLeaderboard.hide()
         llPlaceholder.hide()
+
+        listener.onRefreshButtonImpressed(this)
     }
 
     fun setLoading() {
