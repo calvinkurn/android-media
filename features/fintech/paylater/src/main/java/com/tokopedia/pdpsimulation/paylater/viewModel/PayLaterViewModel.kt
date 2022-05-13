@@ -3,8 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
@@ -45,7 +43,6 @@ class PayLaterViewModel @Inject constructor(
     val addToCartLiveData: LiveData<Result<AddToCartOccMultiDataModel>> = _addToCartLiveData
 
 
-
     // tenure to be auto-selected by default coming from applink
     var defaultTenure = 0
 
@@ -54,8 +51,8 @@ class PayLaterViewModel @Inject constructor(
     // if tenure found -> then intended simulation
     // if tenure not found -> then max simulation
     var defaultSelectedSimulation: Int = 0
-    var finalProductPrice:Double = 0.0
-     var shopId:String? = null
+    var finalProductPrice: Double = 0.0
+    var shopId: String? = null
 
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
         finalProductPrice = price
@@ -114,7 +111,6 @@ class PayLaterViewModel @Inject constructor(
     }
 
 
-
     fun addProductToCart(productId: String) {
         shopId?.let {
             addToCartUseCase.setParams(
@@ -166,7 +162,7 @@ class PayLaterViewModel @Inject constructor(
         super.onCleared()
     }
 
-    companion object{
+    companion object {
         const val PRODUCT_QUANTITY = "1"
     }
 

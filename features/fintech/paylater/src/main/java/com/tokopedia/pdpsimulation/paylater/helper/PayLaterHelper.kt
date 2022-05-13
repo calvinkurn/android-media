@@ -4,7 +4,9 @@ import android.content.Context
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
@@ -17,10 +19,15 @@ import java.util.*
 /* Handling of cta redirection on paylater card */
 object PayLaterHelper {
 
-    private const val TYPE_APP_LINK = 1
+    private const val TYPE_APP_LINK = 5
     private const val TYPE_WEB_VIEW = 2
     private const val TYPE_HOW_TO_USE = 3
     private const val TYPE_HOW_TO_USE_II = 4
+
+    private const val parameterAppLink = "?gateway_code={gateway_code}&" +
+            "tenure_type={tenure_type}&" +
+            "source={source}"
+
     fun handleClickNavigation(
         context: Context?,
         detail: Detail,
@@ -56,31 +63,55 @@ object PayLaterHelper {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
     }
 
-    private fun setAdditionalParam(productId:String,tenure: Int, gatewayCode: String?, gatewayId: String?): String {
+    private fun setAdditionalParam(
+        productId: String,
+        tenure: Int,
+        gatewayCode: String?,
+        gatewayId: String?
+    ): String {
         return (ApplinkConst.PAYLATER + "?productID=${productId}" +
                 "&tenure=$tenure" +
-                "&gatewayCode=${gatewayCode?:""}" +
-                "&gatewayID=${gatewayId?:""}").encodeToUtf8()
+                "&gatewayCode=${gatewayCode ?: ""}" +
+                "&gatewayID=${gatewayId ?: ""}").encodeToUtf8()
     }
 
-     fun setCustomProductUrl(detail: Detail,payLaterArgsDescriptor:PayLaterArgsDescriptor):String
-    {
-      return detail.cta.android_url +
-                "?productID=${payLaterArgsDescriptor.productId}" +
-                "&tenure=${detail.tenure}" +
-                "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
-                "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
-                "&productURL=${
-                    detail.tenure?.let { selectedTenure ->
-                        setAdditionalParam(
-                            payLaterArgsDescriptor.productId,
-                            selectedTenure,
-                            detail.gatewayDetail?.gatewayCode,
-                            detail.gatewayDetail?.gateway_id
-                        )
-                    }
-                }"
+    fun setCustomProductUrl(
+        detail: Detail,
+        payLaterArgsDescriptor: PayLaterArgsDescriptor
+    ): String {
+        return if (detail.cta.cta_type != TYPE_APP_LINK) {
+            detail.cta.android_url +
+                    "?productID=${payLaterArgsDescriptor.productId}" +
+                    "&tenure=${detail.tenure}" +
+                    "&gatewayCode=${detail.gatewayDetail?.gatewayCode}" +
+                    "&gatewayID=${detail.gatewayDetail?.gateway_id}" +
+                    "&productURL=${
+                        detail.tenure?.let { selectedTenure ->
+                            setAdditionalParam(
+                                payLaterArgsDescriptor.productId,
+                                selectedTenure,
+                                detail.gatewayDetail?.gatewayCode,
+                                detail.gatewayDetail?.gateway_id
+                            )
+                        }
+                    }"
+        } else {
+            setUrlToOcc(detail)
+        }
     }
+
+    private fun setUrlToOcc(detail: Detail) =
+        detail.cta.android_url?.let {
+            UriUtil.buildUri(
+                ( it + parameterAppLink),
+                detail.gatewayDetail?.paymentGatewayCode ?: "",
+                detail.tenure.toString(),
+                "fintech"
+            )
+        }?:run {
+            ""
+        }
+
 
     // currently will be closed from backend
     private fun shouldShowGoPayBottomSheet(detail: Detail) = !detail.cta.android_url.isNullOrEmpty()
@@ -116,7 +147,7 @@ object PayLaterHelper {
         return nameList.joinToString(",")
     }
 
-    fun extractDetailFromList(payLaterList: ArrayList<BasePayLaterWidgetUiModel>):Triple<String?,String?,String?>?{
+    fun extractDetailFromList(payLaterList: ArrayList<BasePayLaterWidgetUiModel>): Triple<String?, String?, String?>? {
         return try {
             val allLinkingStatus: ArrayList<String> = ArrayList()
             val allUserStatus: ArrayList<String> = ArrayList()
@@ -128,23 +159,30 @@ object PayLaterHelper {
                     allPartnerName.add((payLaterList[i] as Detail).gatewayDetail?.name ?: "")
                 } else if (payLaterList[i] is SeeMoreOptionsUiModel) {
                     for (j in 0 until (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems.size) {
-                        allLinkingStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).
-                        remainingItems[j].linkingStatus.orEmpty())
-                        allUserStatus.add((payLaterList[i] as SeeMoreOptionsUiModel).
-                        remainingItems[j].userState.orEmpty())
+                        allLinkingStatus.add(
+                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].linkingStatus.orEmpty()
+                        )
+                        allUserStatus.add(
+                            (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].userState.orEmpty()
+                        )
                         allPartnerName.add(
                             (payLaterList[i] as SeeMoreOptionsUiModel).remainingItems[j].gatewayDetail?.name
                                 ?: ""
                         )
                     }
-                    break;
+                    break
                 }
             }
-             Triple(computeLabel(allLinkingStatus),computeLabel(allUserStatus), computeLabel(allPartnerName))
-        }catch (e:Exception) {
+            Triple(
+                computeLabel(allLinkingStatus),
+                computeLabel(allUserStatus),
+                computeLabel(allPartnerName)
+            )
+        } catch (e: Exception) {
             null
         }
     }
 
-    private fun computeLabel( listOfString: List<String>) =
-        listOfString.filter { it.isNotEmpty() }.joinToString(",")}
+    private fun computeLabel(listOfString: List<String>) =
+        listOfString.filter { it.isNotEmpty() }.joinToString(",")
+}
