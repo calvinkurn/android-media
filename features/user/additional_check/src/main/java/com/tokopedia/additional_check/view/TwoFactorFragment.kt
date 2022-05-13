@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.additional_check.R
@@ -16,6 +17,8 @@ import com.tokopedia.additional_check.common.ActivePageListener
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.databinding.FragmentTwoFactorBinding
+import com.tokopedia.additional_check.di.AdditionalCheckModules
+import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_BOTH
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PHONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_PIN
@@ -24,6 +27,7 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.activity.TwoFactorActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import javax.inject.Inject
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -41,15 +45,23 @@ class TwoFactorFragment: BaseDaggerFragment() {
 
     var model: TwoFactorResult? = TwoFactorResult()
 
+    @Inject
     lateinit var additionalCheckPreference: AdditionalCheckPreference
 
     override fun getScreenName(): String = "twoFactorFragment"
-    override fun initInjector() {}
+
+    override fun initInjector() {
+        DaggerAdditionalCheckComponents
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .additionalCheckModules(AdditionalCheckModules())
+            .build()
+            .inject(this)
+    }
 
     private var _binding: FragmentTwoFactorBinding? = null
 
     private val binding get() = _binding!!
-
 
     fun setActiveListener(mActivePageListener: ActivePageListener){
         this.activePageListener = mActivePageListener
@@ -58,7 +70,6 @@ class TwoFactorFragment: BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = arguments?.getParcelable(RESULT_POJO_KEY)
-        additionalCheckPreference = AdditionalCheckPreference(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

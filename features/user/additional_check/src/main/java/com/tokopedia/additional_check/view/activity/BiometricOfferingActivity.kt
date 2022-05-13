@@ -15,6 +15,7 @@ import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -33,7 +34,6 @@ class BiometricOfferingActivity: BaseActivity() {
 	binding = BottomSheetBiometricOfferingBinding.inflate(layoutInflater)
 	setContentView(binding?.root)
 
-//	createBiometricOfferingDialog(this)
 	twoFactorTracker.viewBiometricPopup()
 
 	initOfferingViews()
@@ -41,10 +41,7 @@ class BiometricOfferingActivity: BaseActivity() {
 
     fun initOfferingViews() {
 	binding?.run {
-	    Glide.with(this@BiometricOfferingActivity)
-		.load(FingerprintDialogHelper.BIOMETRIC_OFFERING_MAIN_IMG)
-		.into(bottomSheetBiometricOfferingImg)
-
+	    bottomSheetBiometricOfferingImg.loadImage(FingerprintDialogHelper.BIOMETRIC_OFFERING_MAIN_IMG)
 	    bottomSheetBiometricOfferingPrimaryBtn.setOnClickListener {
 		twoFactorTracker.clickRegisterBiometric()
 		val intent = RouteManager.getIntent(

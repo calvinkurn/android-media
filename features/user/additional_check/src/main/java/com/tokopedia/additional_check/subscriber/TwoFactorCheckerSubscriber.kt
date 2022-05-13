@@ -20,7 +20,6 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_C
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
@@ -251,6 +250,13 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 
     companion object {
 
+	enum class OfferingType(val value: String) {
+	    PIN("pin"),
+	    PHONE("phone"),
+	    ACC_LINK("accounts-link"),
+	    BIOMETRIC("biometric")
+	}
+
 	private const val NEW_BIOMETRIC_OFFERING = "biometric_offer_an"
 
 	fun mapToApplink(
@@ -264,7 +270,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 	    )
 
 	    val intent: Intent? = when (offer.name) {
-		"pin" -> {
+		OfferingType.PIN.value -> {
 		    val intent = RouteManager.getIntent(
 			activity,
 			ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER
@@ -272,7 +278,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 		    result.popupType = POPUP_TYPE_PIN
 		    intent
 		}
-		"phone" -> {
+		OfferingType.PHONE.value -> {
 		    val intent = RouteManager.getIntent(
 			activity,
 			ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER
@@ -280,7 +286,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 		    result.popupType = POPUP_TYPE_PHONE
 		    intent
 		}
-		"accounts-link" -> {
+		OfferingType.ACC_LINK.value -> {
 		    if (isFirst) {
 			if (whiteListedPageAccountLinkReminder.contains(activity.javaClass.simpleName)) {
 			    return RouteManager.getIntent(
@@ -294,7 +300,7 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
 			ApplinkConstInternalUserPlatform.LINK_ACC_REMINDER
 		    )
 		}
-		"biometric" -> {
+		OfferingType.BIOMETRIC.value -> {
 		    if (isFirst) {
 			if (whiteListedPageBiometricOffering.contains(activity.javaClass.simpleName)) {
 			    return RouteManager.getIntent(
