@@ -53,6 +53,7 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -70,6 +71,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
     private val viewModel by lazy {

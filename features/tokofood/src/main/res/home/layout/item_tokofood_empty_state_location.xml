@@ -1,50 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageView
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:id="@+id/img_no_pin_poin"
+        android:id="@+id/img_empty_state_location"
         android:layout_width="280dp"
         android:layout_height="210dp"
         android:layout_gravity="center"
         />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_empty_state_location_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_2"
         android:textColor="@color/Unify_NN950"
-        android:text="@string/home_no_pin_poin_title"
+        tools:text="@string/home_no_pin_poin_title"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="@dimen/spacing_lvl5"
         />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_empty_state_location_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
         android:textColor="@color/Unify_NN600"
-        android:text="@string/home_no_pin_poin_desc"
+        tools:text="@string/home_no_pin_poin_desc"
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="@dimen/spacing_lvl3"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_no_pin_poin_location"
+        android:id="@+id/btn_empty_state_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_no_pin_poin_button"
+        tools:text="@string/home_no_pin_poin_button"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_empty_state_location_to_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:textColor="@color/Neutral_N600"
+        android:text="@string/home_back_to_home"
+        android:layout_gravity="center"
+        android:gravity="center"
         />
 
 </LinearLayout>

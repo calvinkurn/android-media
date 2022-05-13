@@ -34,7 +34,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeNoPinPoinUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 
 object TokoFoodHomeMapper {
@@ -57,7 +57,7 @@ object TokoFoodHomeMapper {
         val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
 
-        add(TokoFoodHomeItemUiModel(TokoFoodHomeNoPinPoinUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
     }
 
 

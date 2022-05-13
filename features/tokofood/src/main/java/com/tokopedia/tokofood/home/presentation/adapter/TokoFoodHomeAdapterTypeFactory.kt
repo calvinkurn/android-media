@@ -39,15 +39,13 @@ import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeC
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeMerchantListViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeNoPinPoinViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeOutOfCoverageViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeChooseAddressWidgetUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeNoPinPoinUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeOutOfCoverageUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeEmptyStateLocationUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
@@ -67,8 +65,7 @@ class TokoFoodHomeAdapterTypeFactory (
 
     // region TokoFood Home Component
     override fun type(uiModel: TokoFoodHomeUSPUiModel): Int = TokoFoodHomeUSPViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodHomeNoPinPoinUiModel): Int = TokoFoodHomeNoPinPoinViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodHomeOutOfCoverageUiModel): Int = TokoFoodHomeOutOfCoverageViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeEmptyStateLocationUiModel): Int = TokoFoodHomeEmptyStateLocationViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeLoadingStateUiModel): Int = TokoFoodHomeLoadingViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeMerchantListUiModel): Int = TokoFoodHomeMerchantListViewHolder.LAYOUT
     override fun type(uiModel: TokoFoodHomeIconsUiModel): Int = TokoFoodHomeIconsViewHolder.LAYOUT
@@ -99,8 +96,7 @@ class TokoFoodHomeAdapterTypeFactory (
 
             // region TokoFood Home Component
             TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view, uspListener)
-            TokoFoodHomeNoPinPoinViewHolder.LAYOUT -> TokoFoodHomeNoPinPoinViewHolder(view)
-            TokoFoodHomeOutOfCoverageViewHolder.LAYOUT -> TokoFoodHomeOutOfCoverageViewHolder(view)
+            TokoFoodHomeEmptyStateLocationViewHolder.LAYOUT -> TokoFoodHomeEmptyStateLocationViewHolder(view)
             TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
             TokoFoodHomeMerchantListViewHolder.LAYOUT -> TokoFoodHomeMerchantListViewHolder(view)
             TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view)

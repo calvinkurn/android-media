@@ -15,9 +15,8 @@ annotation class TokoFoodHomeStaticLayoutId {
         const val TICKER_WIDGET_ID = "1"
         const val EMPTY_STATE_OUT_OF_COVERAGE = "2"
         const val EMPTY_STATE_NO_PIN_POINT = "3"
-        const val LOADING_STATE = "4"
-        const val PRODUCT_RECOM_OOC = "5"
-        const val PROGRESS_BAR = "6"
-        const val SWITCH_SERVICE_WIDGET = "7"
+        const val EMPTY_STATE_NO_ADDRESS = "4"
+        const val LOADING_STATE = "5"
+
     }
 }

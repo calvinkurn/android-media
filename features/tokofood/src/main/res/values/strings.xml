@@ -8,6 +8,14 @@
     <string name="home_no_pin_poin_title">Kamu belum set pinpoint lokasi</string>
     <string name="home_no_pin_poin_desc">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
     <string name="home_no_pin_poin_button">Set pin point</string>
+    <string name="home_no_address_title">Biar bisa pesan di Gofood di Tokopedia, masukkan alamat dulu, ya!</string>
+    <string name="home_no_address_desc">Pesannya sekarang, sampainya sekejap ke alamatmu.</string>
+    <string name="home_no_address_button">Masukkan Alamat</string>
+    <string name="home_out_of_coverage_title">Yaah, saat ini TokoFood belum bisa antar ke alamatmu</string>
+    <string name="home_out_of_coverage_desc">TokoFood akan segera hadir di daerah alamatmu. Tunggu tanggal mainnya, ya!</string>
+    <string name="home_out_of_coverafe_button">Ubah Alamat</string>
+    <string name="home_back_to_home">Kembali ke Home</string>
+
 
     <!-- Purchase -->
     <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
