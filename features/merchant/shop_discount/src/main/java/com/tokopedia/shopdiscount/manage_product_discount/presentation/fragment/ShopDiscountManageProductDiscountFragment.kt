@@ -354,7 +354,10 @@ class ShopDiscountManageProductDiscountFragment : BaseDaggerFragment() {
         configTickerMultiLoc(isMultiLoc)
         imageProduct?.loadImage(productData.productImageUrl)
         textProductName?.text = productData.productName
-        textProductOriginalPrice?.text = getOriginalPriceFormatted(productData.mappedResultData)
+        textProductOriginalPrice?.apply {
+            show()
+            text = getOriginalPriceFormatted(productData.mappedResultData)
+        }
         setTotalStockAndLocationData(productData)
         configDiscountPeriodSection(productData, slashPriceBenefitData)
         setProductPriceData(productData)
