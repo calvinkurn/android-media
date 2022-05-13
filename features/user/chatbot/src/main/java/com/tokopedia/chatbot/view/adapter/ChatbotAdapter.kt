@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.adapter
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.BaseChatUiModel
@@ -49,5 +50,12 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         return if (item is SendableUiModel && item.isSender || item is ChatSepratorViewModel) {
             true
         } else false
+    }
+
+    fun showBottomLoading(){
+        if (visitables[0] !is LoadingMoreModel){
+            visitables.add(0,loadingMoreModel)
+            notifyItemInserted(0)
+        }
     }
 }

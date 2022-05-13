@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -69,6 +70,8 @@ interface ChatbotContract {
         fun replyBubbleStateHandler(state: Boolean)
 
         fun visibilityReplyBubble(state: Boolean)
+//
+//        fun onSuccessGetChatDataForReplyTime(chatData: GetExistingChatPojo)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -159,5 +162,11 @@ interface ChatbotContract {
             parentReply: ParentReply?,
             onSendingMessage: () -> Unit
         )
+
+        fun clearGetChatUseCase()
+
+        fun setBeforeReplyTime(createTime : String)
+
+   //     fun getDataForGivenReplyTime(messageId: String)
     }
 }

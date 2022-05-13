@@ -44,8 +44,8 @@ class GetExistingChatSubscriber(val onErrorGetChat: (Throwable) -> Unit,
 
     private fun getChatRatingList(inputList: ChipGetChatRatingListInput, mappedPojo: ChatroomViewModel) {
         val input = inputList
-        chipGetChatRatingListUseCase.execute(chipGetChatRatingListUseCase.generateParam(input),
-                ChipGetChatRatingListSubscriber(onGetChatRatingListError, onChatRatingListSuccess(mappedPojo)))
+//        chipGetChatRatingListUseCase.execute(chipGetChatRatingListUseCase.generateParam(input),
+//                ChipGetChatRatingListSubscriber(onGetChatRatingListError, onChatRatingListSuccess(mappedPojo)))
     }
 
     private fun onChatRatingListSuccess(mappedPojo: ChatroomViewModel): (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit = { ratings ->

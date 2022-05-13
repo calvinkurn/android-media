@@ -1,6 +1,9 @@
-query get_chat_replies($msgId: Int!, $page: Int!, $isTextOnly: Boolean) {
-  chatReplies(msgId: $msgId, page: $page, isTextOnly:$isTextOnly) {
+query get_chat_replies($msgId: Int!) {
+  chatReplies(msgId: $msgId, page: $page, isTextOnly:true) {
     hasNext
+    hasNextAfter
+    minReplyTime
+    maxReplyTime
     textareaReply
     contacts {
       role

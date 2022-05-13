@@ -105,6 +105,7 @@ import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
+import com.tokopedia.chatbot.view.adapter.util.RecyclerViewScrollListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
@@ -203,6 +204,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var replyBubbleEnabled : Boolean = false
     private var senderNameForReply = ""
     private var smoothScroll : SmoothScroller? = null
+    private var rvScrollListener : RecyclerViewScrollListener? = null
+    private var rvLayoutManager : LinearLayoutManager? = null
+    private var messageCreateTime : String = ""
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -1145,13 +1149,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return true
     }
 
-    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                isFirstPage = false
-                showLoading()
-                loadData(page + FIRST_PAGE)
-            }
+//    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+//        return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
+//            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+//                isFirstPage = false
+//                showLoading()
+//                loadData(page + FIRST_PAGE)
+//            }
+//        }
+//    }
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(
+            activity, LinearLayoutManager.VERTICAL, true
+        ).also {
+            rvLayoutManager = it
         }
     }
 
@@ -1429,6 +1441,30 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }else{
             replyBubbleContainer.show()
         }
+    }
+
+    private fun initRecyclerViewListener() {
+        rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
+            override fun loadMoreTop() {
+                showTopLoading()
+                //TODO call presenter.loadTopChat()
+            }
+
+            override fun loadMoreDown() {
+               showBottomLoading()
+                //TODO call presenter. loadBottomChat()
+            }
+        }.also {
+            recyclerView?.addOnScrollListener(it)
+        }
+    }
+
+    private fun showTopLoading() {
+        showLoading()
+    }
+
+    private fun showBottomLoading() {
+        (adapter as ChatbotAdapter).showBottomLoading()
     }
 }
 
