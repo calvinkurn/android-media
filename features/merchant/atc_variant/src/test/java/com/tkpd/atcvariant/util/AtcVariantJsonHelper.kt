@@ -3,6 +3,7 @@ package com.tkpd.atcvariant.util
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.mapProductsWithProductId
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
@@ -34,7 +35,7 @@ object AtcVariantJsonHelper {
                 pageSource = "product detail page",
                 isTokoNow = isTokoNow,
                 variantAggregator = mockResponse.first,
-                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems
+                miniCartData = if (!isTokoNow || emptyMiniCart) null else mockResponse.second.miniCartItems.mapProductsWithProductId()
         )
     }
 

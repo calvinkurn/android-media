@@ -3,9 +3,6 @@ package com.tokopedia.product.detail.usecase
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -42,7 +39,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         fun createParams(productId: String,
                          pageName: String,
                          isTokoNow: Boolean,
-                         miniCartData: MutableMap<MiniCartItemKey, MiniCartItem>?): RequestParams =
+                         miniCartData: MutableMap<String, MiniCartItem.MiniCartItemProduct>?): RequestParams =
                 RequestParams.create().apply {
                     putString(PARAM_PRODUCT_ID, productId)
                     putString(PARAM_PAGE_NAME, pageName)
@@ -62,7 +59,7 @@ class GetProductRecommendationUseCase @Inject constructor(
         val productIdParam = requestParams.getString(PARAM_PRODUCT_ID, "")
         val pageNameParam = requestParams.getString(PARAM_PAGE_NAME, "")
         val isTokoNowParam = requestParams.getBoolean(PARAM_TOKONOW, false)
-        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<MiniCartItemKey, MiniCartItem>?
+        val miniCartParam = requestParams.getObject(PARAM_MINI_CART) as MutableMap<String, MiniCartItem.MiniCartItemProduct>?
 
         val recommendationFilterResponse = try {
             getRecommendationFilter(
@@ -144,16 +141,20 @@ class GetProductRecommendationUseCase @Inject constructor(
     }
 
     private fun updateRecomWhenTokoNow(response: RecommendationWidget,
-                                       miniCart: MutableMap<MiniCartItemKey, MiniCartItem>?): RecommendationWidget {
+                                       miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?): RecommendationWidget {
         return if (response.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
             response.recommendationItemList.forEach { item ->
                 miniCart?.let {
                     if (item.isProductHasParentID()) {
                         var variantTotalItems = 0
-                        variantTotalItems += it.getMiniCartItemParentProduct(item.parentID.toString())?.totalQuantity ?: 0
+                        it.values.forEach { miniCartItem ->
+                            if (miniCartItem.productParentId == item.parentID.toString()) {
+                                variantTotalItems += miniCartItem.quantity
+                            }
+                        }
                         item.updateItemCurrentStock(variantTotalItems)
                     } else {
-                        item.updateItemCurrentStock(it.getMiniCartItemProduct(item.productId.toString())?.quantity
+                        item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
                                 ?: 0)
                     }
                 }

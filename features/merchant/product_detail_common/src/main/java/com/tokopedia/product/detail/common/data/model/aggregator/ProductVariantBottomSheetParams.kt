@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.aggregator
 
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 
 /**
@@ -25,7 +24,7 @@ data class ProductVariantBottomSheetParams(
         var pdpSession: String = "",
         // only be used in AtcVariantViewModel, dont use this except from AtcVariantViewModel
         var variantAggregator: ProductVariantAggregatorUiData = ProductVariantAggregatorUiData(),
-        var miniCartData: Map<MiniCartItemKey, MiniCartItem>? = null,
+        var miniCartData: Map<String, MiniCartItem.MiniCartItemProduct>? = null,
         var alreadyFollowShop: Boolean = false,
 
         //Basic info pdp
