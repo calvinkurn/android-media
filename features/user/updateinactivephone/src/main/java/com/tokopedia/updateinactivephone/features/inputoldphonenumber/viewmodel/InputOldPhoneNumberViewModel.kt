@@ -82,7 +82,10 @@ class InputOldPhoneNumberViewModel @Inject constructor(
                 response.data.errors.isNotEmpty() ->
                     _statusPhoneNumber.value = Fail(MessageErrorException(response.data.errors[0]))
                 else ->
-                    _formState.value = PhoneFormState(numberError = ipn_number_not_registered)
+                    _formState.value = phoneFormState.apply {
+                        numberError = ipn_number_not_registered
+                        isDataValid = false
+                    }
             }
 
             _isLoading.value = false
@@ -95,7 +98,7 @@ class InputOldPhoneNumberViewModel @Inject constructor(
     companion object {
         private const val MINIMUM_LENGTH_NUMBER = 9
         private const val MAXIMUM_LENGTH_NUMBER = 15
-        private const val STATUS_USER_ACTIVE = 1
+        const val STATUS_USER_ACTIVE = 1
     }
 
 }
