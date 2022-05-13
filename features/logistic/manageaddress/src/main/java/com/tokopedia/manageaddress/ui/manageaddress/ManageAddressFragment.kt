@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -55,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -353,6 +355,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
             }
         })
+
+        observeRemovedAddress()
+
+    }
+
+    private fun observeRemovedAddress(){
+        viewModel.resultRemovedAddress.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is ManageAddressState.Success ->
+                    Toaster.build(requireView(),getString(R.string.toaster_remove_address_success) , Toaster.TYPE_NORMAL).show()
+                else -> {
+                    //no-op
+                }
+            }
+        })
     }
 
     private fun initScrollListener() {
@@ -409,7 +426,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initSearchView() {
-        binding?.searchInputView?.run { 
+        binding?.searchInputView?.run {
             searchBarTextField.setOnClickListener {
                 searchBarTextField.isCursorVisible = true
                 openSoftKeyboard()
@@ -428,7 +445,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch("", null)
             }
 
-            searchBarPlaceholder = "Cari Alamat"   
+            searchBarPlaceholder = "Cari Alamat"
         }
     }
 
@@ -593,7 +610,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             addressList.gone()
             emptyStateManageAddress.root.gone()
             globalError.visible()
-            emptySearch.gone()   
+            emptySearch.gone()
         }
     }
 
