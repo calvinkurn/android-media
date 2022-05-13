@@ -113,7 +113,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                 hasNextPage = response.wrapper.data.products.isNotEmpty(),
                 nextCursor = nextCursor.toString(),
             ),
-            suggestion = response.wrapper.suggestion.text,
+            suggestion = response.wrapper.data.suggestion.text,
         )
     }
 

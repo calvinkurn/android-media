@@ -1,9 +1,11 @@
 package com.tokopedia.createpost.producttag.view.fragment
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +14,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.createpost.databinding.FragmentGlobalSearchProductTabBinding
 import com.tokopedia.createpost.producttag.util.extension.withCache
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
+import com.tokopedia.createpost.producttag.view.decoration.ProductTagItemDecoration
 import com.tokopedia.createpost.producttag.view.fragment.base.BaseProductTagChildFragment
 import com.tokopedia.createpost.producttag.view.uimodel.PagedState
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
@@ -20,6 +23,7 @@ import com.tokopedia.createpost.producttag.view.uimodel.state.GlobalSearchProduc
 import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 
@@ -78,6 +82,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     }
 
     private fun setupView() {
+        binding.rvGlobalSearchProduct.addItemDecoration(ProductTagItemDecoration(requireContext()))
         binding.rvGlobalSearchProduct.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL,)
         binding.rvGlobalSearchProduct.adapter = adapter
     }
@@ -90,12 +95,21 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
 
-        fun updateAdapterData(products: List<ProductUiModel>, hasNextPage: Boolean) {
-            val finalProducts = products.map {
-                ProductTagCardAdapter.Model.Product(product = it)
-            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
+        fun updateAdapterData(products: List<ProductUiModel>, suggestion: String, hasNextPage: Boolean) {
+            val finalProducts = buildList {
+                if(suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = suggestion))
+
+                addAll(products.map { ProductTagCardAdapter.Model.Product(product = it) })
+
+                if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
+            }
+
+//            val finalProducts = products.map {
+//                ProductTagCardAdapter.Model.Product(product = it)
+//            } + if(hasNextPage) listOf(ProductTagCardAdapter.Model.Loading) else emptyList()
 
             if(binding.rvGlobalSearchProduct.isComputingLayout.not())
                 adapter.setItemsAndAnimateChanges(finalProducts)
@@ -108,19 +122,18 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
         when(curr.state) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, true)
+                updateAdapterData(curr.products, "", true)
             }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     binding.rvGlobalSearchProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, curr.state.hasNextPage)
+                else updateAdapterData(curr.products, curr.suggestion, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.products, false)
+                updateAdapterData(curr.products, "",false)
 
-                /** TODO: gonna handle this */
                 Toaster.build(
                     binding.root,
                     text = getString(R.string.cc_failed_load_product),

@@ -12,14 +12,14 @@ data class FeedAceSearchProductResponse(
     data class Wrapper(
         @SerializedName("data")
         val data: Data = Data(),
-
-        @SerializedName("suggestion")
-        val suggestion: Suggestion = Suggestion(),
     )
 
     data class Data(
         @SerializedName("products")
         val products: List<Product> = emptyList(),
+
+        @SerializedName("suggestion")
+        val suggestion: Suggestion = Suggestion(),
     )
 
     data class Product(

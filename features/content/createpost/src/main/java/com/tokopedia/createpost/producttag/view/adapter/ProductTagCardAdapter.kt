@@ -15,6 +15,7 @@ class ProductTagCardAdapter(
 
     init {
         delegatesManager
+            .addDelegate(ProductTagCardAdapterDelegate.Suggestion())
             .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
     }
@@ -40,6 +41,10 @@ class ProductTagCardAdapter(
     }
 
     sealed interface Model {
+        data class Suggestion(
+            val text: String,
+        ) : Model
+
         data class Product(
             val product: ProductUiModel,
         ) : Model

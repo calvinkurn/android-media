@@ -50,6 +50,7 @@ data class GlobalSearchProductUiState(
     val nextCursor: Int,
     val state: PagedState,
     val query: String,
+    val suggestion: String,
 )
 
 data class GlobalSearchShopUiState(

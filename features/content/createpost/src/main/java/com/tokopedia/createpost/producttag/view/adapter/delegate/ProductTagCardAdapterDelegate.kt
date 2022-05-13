@@ -13,6 +13,29 @@ import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
  */
 internal class ProductTagCardAdapterDelegate private constructor() {
 
+    internal class Suggestion: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.Suggestion,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Suggestion>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.Suggestion,
+            holder: ProductTagCardViewHolder.Suggestion
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.Suggestion {
+            return ProductTagCardViewHolder.Suggestion.create(
+                parent
+            )
+        }
+    }
+
     internal class Product(
         private val onSelected: (ProductUiModel) -> Unit,
     ) : TypedAdapterDelegate<

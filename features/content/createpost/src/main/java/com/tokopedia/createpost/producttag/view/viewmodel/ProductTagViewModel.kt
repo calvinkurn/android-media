@@ -123,6 +123,7 @@ class ProductTagViewModel @AssistedInject constructor(
             nextCursor = it.nextCursor,
             state = it.state,
             query = it.query,
+            suggestion = it.suggestion,
         )
     }
 
