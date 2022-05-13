@@ -505,6 +505,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                                 wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
                                 wrapper.isErrorEnabled = true
                             }
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(this.textFieldWrapper))
                         }
                     }
                     etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(etLabel.textFieldWrapper, null))
@@ -545,6 +546,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                                 wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
                                 wrapper.isErrorEnabled = true
                             }
+                            textFieldInput.addTextChangedListener(setNotesWrapperWatcher(this.textFieldWrapper))
                         }
                     }
                     etLabel.textFieldInput.setText(data.addrName)
@@ -797,6 +799,24 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (text.isNotEmpty()) {
                     setWrapperError(wrapper, null)
                 }
+            }
+        }
+    }
+
+    private fun setNotesWrapperWatcher(wrapper: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                wrapper.error = null
+                wrapper.setErrorEnabled(false)
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                wrapper.error = null
+                wrapper.setErrorEnabled(false)
             }
         }
     }
