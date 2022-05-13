@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.additional_check.view.TwoFactorFragment
+import com.tokopedia.additional_check.view.activity.BiometricOfferingActivity
 import com.tokopedia.additional_check.view.activity.LinkAccountReminderActivity
 import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -21,5 +22,6 @@ import dagger.Component
 interface AdditionalCheckComponents {
     fun inject(view: TwoFactorCheckerSubscriber?)
     fun inject(view: LinkAccountReminderActivity)
+    fun inject(view: BiometricOfferingActivity)
     fun inject(view: TwoFactorFragment)
 }

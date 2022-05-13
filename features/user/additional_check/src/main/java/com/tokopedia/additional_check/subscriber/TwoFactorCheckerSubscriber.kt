@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.additional_check.common.OfferingType
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.TwoFactorResult
@@ -249,13 +250,6 @@ class TwoFactorCheckerSubscriber : Application.ActivityLifecycleCallbacks {
     override fun onActivityStopped(activity: Activity) {}
 
     companion object {
-
-	enum class OfferingType(val value: String) {
-	    PIN("pin"),
-	    PHONE("phone"),
-	    ACC_LINK("accounts-link"),
-	    BIOMETRIC("biometric")
-	}
 
 	private const val NEW_BIOMETRIC_OFFERING = "biometric_offer_an"
 

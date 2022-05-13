@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.databinding.BottomSheetBiometricOfferingBinding
+import com.tokopedia.additional_check.di.AdditionalCheckModules
+import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.applink.RouteManager
@@ -19,18 +22,29 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 class BiometricOfferingActivity: BaseActivity() {
 
+    @Inject
     lateinit var additionalCheckPreference: AdditionalCheckPreference
 
     private val twoFactorTracker = TwoFactorTracker()
 
     private var binding: BottomSheetBiometricOfferingBinding? = null
 
+    private fun initInjector() {
+	DaggerAdditionalCheckComponents
+	    .builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .additionalCheckModules(AdditionalCheckModules())
+	    .build()
+	    .inject(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 	super.onCreate(savedInstanceState)
-	additionalCheckPreference = AdditionalCheckPreference(this)
+	initInjector()
 	binding = BottomSheetBiometricOfferingBinding.inflate(layoutInflater)
 	setContentView(binding?.root)
 

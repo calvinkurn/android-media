@@ -1,5 +1,6 @@
 package com.tokopedia.additional_check.view
 
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.additional_check.data.OfferingData
@@ -28,7 +29,7 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
 
     fun getOffering(isSupportBiometric: Boolean, onSuccess: (MutableList<OfferingData>) -> Unit, onError: (Throwable) -> Unit) {
         if(userSession.isLoggedIn && additionalCheckPreference.isNeedCheck()) {
-            launch {
+            viewModelScope.launch {
                 try {
                     val offering = offerInterruptUseCase(mapOf(
                         OfferInterruptUseCase.PARAM_SUPPORT_BIOMETRIC to isSupportBiometric,
