@@ -111,7 +111,7 @@ class GradeBenefitWidget(
         val colorMatrix = ColorMatrix()
         colorMatrix.setSaturation(saturation)
         val colorMatrixColorFilter = ColorMatrixColorFilter(colorMatrix)
-        view?.findViewById<IconUnify>(R.id.tab_item_icon_unify_id)?.colorFilter =
+        view?.findViewById<IconUnify>(com.tokopedia.unifycomponents.R.id.tab_item_icon_unify_id)?.colorFilter =
             colorMatrixColorFilter
     }
 
