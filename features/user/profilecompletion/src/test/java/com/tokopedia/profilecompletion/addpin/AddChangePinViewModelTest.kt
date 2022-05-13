@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
@@ -35,6 +36,7 @@ import kotlin.test.assertTrue
  * Created by Yoris Prayogo on 28/06/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
+@ExperimentalCoroutinesApi
 class AddChangePinViewModelTest {
 
     @get:Rule
@@ -642,4 +644,32 @@ class AddChangePinViewModelTest {
 	}
     }
 
+    @Test
+    fun `add pin v2 - throw exception`() {
+	coEvery { createPinV2UseCase(any()).mutatePinV2data } throws mockThrowable
+	viewModel.addPinV2("12345", "123", "321")
+	assert((viewModel.mutatePin.value as Fail).throwable == mockThrowable)
+	verify { mutatePinV2Observer.onChanged(any<Fail>()) }
+    }
+
+    @Test
+    fun `check pin v2 - throw exception`() {
+	val hashedPin = "abc1234b"
+
+	val checkPinData = CheckPinData(valid = true)
+	val checkPinV2Response = CheckPinV2Response(checkPinData)
+
+	mockkObject(RsaUtils)
+	every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
+
+	/* When */
+	coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+	coEvery { checkPinV2UseCase(any()) } returns checkPinV2Response
+
+	viewModel.checkPinV2("123456")
+
+	/* Then */
+	assert((viewModel.checkPinResponse.value as Fail).throwable == mockThrowable)
+	verify { checkPinObserver.onChanged(any<Fail>()) }
+    }
 }
