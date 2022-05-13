@@ -13,7 +13,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.ON_REGISTERED
+import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -25,6 +28,7 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
+import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
@@ -51,6 +55,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireParentFragment(), viewModelProvider) }
+    private lateinit var affiliatePromoSharedViewModel: AffiliatePromoViewModel
+
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -72,27 +79,21 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setObservers()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.affiliate_recommended_product_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        afterViewCreated()
+        affiliatePromoSharedViewModel = viewModelFragmentProvider[AffiliatePromoViewModel::class.java]
+        setObservers()
     }
 
     private fun afterViewCreated() {
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
-        setupTickerView(getString(R.string.affiliate_black_list_title),
-                getString(R.string.affiliate_black_list_description))
-        affiliateRecommendedProductViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
+        affiliateRecommendedProductViewModel.isUserBlackListed = affiliatePromoSharedViewModel.getSoftBan()
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 
@@ -184,6 +185,12 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun setObservers() {
+        affiliatePromoSharedViewModel.getValidateUserType().observe(this,{
+            onGetValidateUserType(it)
+        })
+        affiliateRecommendedProductViewModel.getAffiliateAnnouncement().observe(this,{
+            (parentFragment as? AffiliatePromoFragment)?.onGetAnnouncementData(it,view?.findViewById(R.id.affiliate_announcement_ticker))
+        })
         affiliateRecommendedProductViewModel.getShimmerVisibility().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
@@ -219,11 +226,24 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             recommendationHasNextPage = pageInfo.hasNext ?: false
         })
 
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(this, {
             swipe_refresh_layout.hide()
             showErrorGroup()
             showEmptyState()
         })
+    }
+
+    private fun onGetValidateUserType(type: String?) {
+        when(type){
+            ON_REGISTERED -> afterViewCreated()
+            ON_REVIEWED -> {
+                afterViewCreated()
+                affiliateRecommendedProductViewModel.getAnnouncementInformation()
+            }
+            SYSTEM_DOWN ->{
+                affiliateRecommendedProductViewModel.getAnnouncementInformation()
+            }
+        }
     }
 
     var lastItem : AffiliateStaggeredPromotionCardModel? = null
@@ -245,28 +265,6 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         recommended_global_error.hide()
         affiliate_no_product_bought_iv.hide()
         affiliate_no_product_seen_iv.hide()
-    }
-
-    private fun setupTickerView(title: String?,desc :String?)
-    {
-        if((activity as AffiliateActivity).getBlackListedStatus()){
-            affiliate_announcement_ticker_cv.show()
-            affiliate_announcement_ticker.tickerTitle = title
-            desc?.let {
-                affiliate_announcement_ticker.setHtmlDescription(
-                        it
-                )
-            }
-            affiliate_announcement_ticker.tickerType = Ticker.TYPE_ERROR
-            affiliate_announcement_ticker.setDescriptionClickEvent(object: TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
-                }
-                override fun onDismiss() {}
-            })
-        }else {
-            affiliate_announcement_ticker_cv.hide()
-        }
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {

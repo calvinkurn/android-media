@@ -56,6 +56,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUrlLoader
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -416,28 +417,6 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
         }
     }
 
-//    override fun getVMFactory(): ViewModelProvider.Factory {
-//        return viewModelProvider
-//    }
-//
-//    override fun initInject() {
-//        getComponent().injectIncomeFragment(this)
-//    }
-
-//    private fun getComponent(): AffiliateComponent =
-//            DaggerAffiliateComponent
-//                    .builder()
-//                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-//                    .build()
-//
-//    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
-//        return AffiliateIncomeViewModel::class.java
-//    }
-//
-//    override fun setViewModel(viewModel: BaseViewModel) {
-//        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
-//    }
-
     override fun rangeChanged(range: AffiliateDatePickerData) {
         sendPendapatanEvent(AffiliateAnalytics.ActionKeys.CLICK_SIMPAN,AffiliateAnalytics.CategoryKeys.AFFILIATE_PENDAPATAN_PAGE_FILTER,range.value)
         affiliateIncomeViewModel.onRangeChanged(range)
@@ -449,6 +428,13 @@ class AffiliateIncomeFragment : AffiliateBaseFragment<AffiliateIncomeViewModel>(
 
     override fun onSystemDown() {
         affiliateIncomeViewModel.getAnnouncementInformation()
+        hideAllView()
+    }
+
+    private fun hideAllView() {
+        view?.findViewById<CardUnify>(R.id.withdrawal_home_widget)?.hide()
+        view?.findViewById<Typography>(R.id.transaction_history_affiliate)?.hide()
+        view?.findViewById<CardUnify>(R.id.filterCard)?.hide()
     }
 
     override fun onReviewed() {

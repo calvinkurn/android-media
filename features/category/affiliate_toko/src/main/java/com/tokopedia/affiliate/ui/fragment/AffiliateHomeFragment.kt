@@ -406,6 +406,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(), P
     }
 
     override fun onReviewed() {
+        isUserBlackListed = true
         affiliateHomeViewModel.getAnnouncementInformation()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
     }

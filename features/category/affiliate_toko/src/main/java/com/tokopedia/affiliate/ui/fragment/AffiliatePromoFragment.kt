@@ -26,6 +26,8 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
+import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextFieldInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePromotionErrorCardItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
@@ -33,7 +35,6 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCa
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -41,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -49,7 +49,7 @@ import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
+class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
         AffiliateLinkTextFieldInterface, AffiliatePromoInterface {
 
     @Inject
@@ -118,6 +118,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         }
         setupViewPager()
         showDefaultState()
+        affiliatePromoViewModel.getAffiliateValidateUser()
     }
 
     fun handleBack() {
@@ -226,7 +227,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                     showData(false)
                     items.forEach {
                         it?.let {
-                            val isBlackListedUser = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
+                            val isBlackListedUser = affiliatePromoViewModel.getSoftBan()
                             if(isBlackListedUser){
                                 it.status?.isLinkGenerationAllowed = !isBlackListedUser
                             }
@@ -241,6 +242,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
                 }
             }
+        })
+
+        affiliatePromoViewModel.getValidateUserdata().observe(this, { validateUserdata ->
+            onGetValidateUserData(validateUserdata)
         })
     }
 
@@ -331,6 +336,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         }
     }
 
+    private fun disableSearchButton() {
+        view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.isEnabled = false
+    }
+
     override fun onEditState(state: Boolean) {
         AffiliateAnalytics.sendEvent(
                 AffiliateAnalytics.EventKeys.CLICK_PG,
@@ -363,6 +372,24 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     override fun enterLinkButtonClicked() {
         product_link_et.editingState(true)
+    }
+
+    override fun onSystemDown() {
+        disableSearchButton()
+        affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
+    }
+
+    override fun onReviewed() {
+        affiliatePromoViewModel.setSoftBan(true)
+        affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
+    }
+
+    override fun onUserNotEligible() {
+
+    }
+
+    override fun onUserRegistered() {
+        affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
     }
 }
 

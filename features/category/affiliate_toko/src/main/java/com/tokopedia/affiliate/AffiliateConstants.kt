@@ -138,6 +138,12 @@ const val CLICK_TYPE = "totalClick"
 
 const val COMMISSION_TYPE = "totalCommission"
 
+const val SYSTEM_DOWN = "systemDown"
+
+const val ON_REVIEWED = "onReviewed"
+
+const val ON_REGISTERED = "onRegistered"
+
 const val TIME_SIX = 6
 
 const val TIME_TEN = 10
