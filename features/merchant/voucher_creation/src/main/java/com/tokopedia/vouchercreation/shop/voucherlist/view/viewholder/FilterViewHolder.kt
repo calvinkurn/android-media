@@ -3,9 +3,10 @@ package com.tokopedia.vouchercreation.shop.voucherlist.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.databinding.ItemMvcFilterBinding
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.BaseFilterUiModel.FilterItem
-import kotlinx.android.synthetic.main.item_mvc_filter.view.*
 
 /**
  * Created By @ilhamsuaib on 22/04/20
@@ -21,8 +22,10 @@ class FilterViewHolder(
         val RES_LAYOUT = R.layout.item_mvc_filter
     }
 
+    private var binding: ItemMvcFilterBinding? by viewBinding()
+
     override fun bind(element: FilterItem) {
-        with(itemView) {
+        binding?.apply {
             tvMvcFilter.text = element.label
             cbxMvcFilter.isChecked = element.isSelected
 
@@ -30,7 +33,7 @@ class FilterViewHolder(
                 element.isSelected = isChecked
                 onItemClick(element.key)
             }
-            setOnClickListener {
+            root.setOnClickListener {
                 val isChecked = !cbxMvcFilter.isChecked
                 cbxMvcFilter.isChecked = isChecked
             }

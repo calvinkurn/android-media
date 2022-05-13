@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.analytics
 
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -100,7 +101,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
     open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
-    open fun trackEventProductATC(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackEventProductATC(componentsItems: ComponentsItem, cartID:String) {}
     open fun trackEventViewMyCouponList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackEventClickMyCouponList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackMerchantVoucherMultipleImpression(
@@ -148,4 +150,9 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
     open fun sendMixLeftBannerImpression(componentsItems: ComponentsItem){}
     open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}
+    open fun track3DotsOptionsClickedWishlist(productCardOptionsModel: ProductCardOptionsModel) {}
+    open fun track3DotsOptionsClickedLihatToko() {}
+    open fun track3DotsOptionsClickedShareProduct() {}
+    open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
+    open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
 }

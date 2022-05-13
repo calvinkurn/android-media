@@ -1460,9 +1460,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {
         adapter?.let {
-            if (it.getItems()[position] is RecommendationItem) {
-                (it.getItems()[position] as RecommendationItem).isWishlist = wishlistStatusFromPdp
-                it.notifyItemChanged(position)
+            if(it.getItems().isNotEmpty() && (position < it.getItems().size)) {
+                if (it.getItems()[position] is RecommendationItem) {
+                    (it.getItems()[position] as RecommendationItem).isWishlist =
+                        wishlistStatusFromPdp
+                    it.notifyItemChanged(position)
+                }
             }
         }
     }
