@@ -38,8 +38,10 @@ class TwoFactorViewModelTest {
     val dispatcher = TestCoroutineDispatcher()
     lateinit var viewModel: TwoFactorViewModel
 
-    val onSuccess: (ShowInterruptData) -> Unit = mockk(relaxed = true)
+    val onSuccess1: (ShowInterruptData) -> Unit = mockk(relaxed = true)
     val onError: (Throwable) -> Unit = mockk(relaxed = true)
+
+    val onSuccess: (MutableList<OfferingData>) -> Unit = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -65,11 +67,11 @@ class TwoFactorViewModelTest {
 	every { userSession.isLoggedIn } returns true
 	every { pref.isNeedCheck() } returns true
 
-	viewModel.check(onSuccess, onError)
+	viewModel.check(onSuccess1, onError)
 
 	verify {
 	    pref.setInterval(interval)
-	    onSuccess.invoke(result.data)
+	    onSuccess1.invoke(result.data)
 	}
     }
 
@@ -91,11 +93,11 @@ class TwoFactorViewModelTest {
 	every { userSession.isLoggedIn } returns true
 	every { pref.isNeedCheck() } returns true
 
-	viewModel.check(onSuccess, onError)
+	viewModel.check(onSuccess1, onError)
 
 	verify {
 	    pref.setInterval(linkAccReminder)
-	    onSuccess.invoke(result.data)
+	    onSuccess1.invoke(result.data)
 	}
     }
 
@@ -106,7 +108,7 @@ class TwoFactorViewModelTest {
 	every { userSession.isLoggedIn } returns true
 	every { pref.isNeedCheck() } returns true
 
-	viewModel.check(onSuccess, onError)
+	viewModel.check(onSuccess1, onError)
 
 	verify {
 	    onError.invoke(mockThrowable)
@@ -114,20 +116,22 @@ class TwoFactorViewModelTest {
     }
 
     @Test
-    fun `get offering success - has offers` () {
+    fun `get offering success - has offers`() {
 
 	val onSuccess: (MutableList<OfferingData>) -> Unit = mockk(relaxed = true)
 	val onError: (Throwable) -> Unit = mockk(relaxed = true)
 
-	val data = OfferInterruptData(interval = 10000, errorMessages = listOf(""), offers = mutableListOf(
-	    OfferingData("1"),
-	    OfferingData("2")
-	))
-        val mockResponse = OfferInterruptResponse(data)
+	val data = OfferInterruptData(
+	    interval = 10000, errorMessages = listOf(""), offers = mutableListOf(
+		OfferingData("1"),
+		OfferingData("2")
+	    )
+	)
+	val mockResponse = OfferInterruptResponse(data)
 
-        every { userSession.isLoggedIn } returns true
-        every { pref.isNeedCheck() } returns true
-        coEvery { offerInterruptUseCase(any()) } returns mockResponse
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns true
+	coEvery { offerInterruptUseCase(any()) } returns mockResponse
 
 	viewModel.getOffering(true, onSuccess, onError)
 
@@ -139,12 +143,38 @@ class TwoFactorViewModelTest {
     }
 
     @Test
-    fun `get offering success - has error` () {
+    fun `get offering success - has 1 offer`() {
 	val onSuccess: (MutableList<OfferingData>) -> Unit = mockk(relaxed = true)
 	val onError: (Throwable) -> Unit = mockk(relaxed = true)
 
+	val data = OfferInterruptData(
+	    interval = 10000, errorMessages = listOf(""), offers = mutableListOf(
+		OfferingData("1")
+	    )
+	)
+	val mockResponse = OfferInterruptResponse(data)
+
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns true
+	coEvery { offerInterruptUseCase(any()) } returns mockResponse
+
+	viewModel.getOffering(true, onSuccess, onError)
+
+	verify {
+	    pref.setInterval(10000)
+	    onSuccess.invoke(mockResponse.data.offers)
+	}
+	verify(exactly = 0) { pref.setNextOffering(any()) }
+    }
+
+    @Test
+    fun `get offering success - has error`() {
 	val errMsg = "error"
-	val data = OfferInterruptData(interval = 10000, errorMessages = listOf(errMsg), offers = mutableListOf())
+	val data = OfferInterruptData(
+	    interval = 10000,
+	    errorMessages = listOf(errMsg),
+	    offers = mutableListOf()
+	)
 	val mockResponse = OfferInterruptResponse(data)
 
 	every { userSession.isLoggedIn } returns true
@@ -160,7 +190,7 @@ class TwoFactorViewModelTest {
     }
 
     @Test
-    fun `get offering success - throws error` () {
+    fun `get offering success - throws error`() {
 	val onSuccess: (MutableList<OfferingData>) -> Unit = mockk(relaxed = true)
 	val onError: (Throwable) -> Unit = mockk(relaxed = true)
 
@@ -172,6 +202,89 @@ class TwoFactorViewModelTest {
 
 	verify {
 	    onError.invoke(mockThrowable)
+	}
+    }
+
+    @Test
+    fun `get offering success - error msg is empty`() {
+	val data =
+	    OfferInterruptData(interval = 10000, errorMessages = listOf(), offers = mutableListOf())
+	val mockResponse = OfferInterruptResponse(data)
+
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns true
+	coEvery { offerInterruptUseCase(any()) } returns mockResponse
+
+	viewModel.getOffering(true, onSuccess, onError)
+
+	verify {
+	    pref.setInterval(10000)
+	    onError.invoke(any())
+	}
+    }
+
+    @Test
+    fun `get offering success - error msg is not empty & first msg is empty`() {
+	val data = OfferInterruptData(
+	    interval = 10000,
+	    errorMessages = listOf("error"),
+	    offers = mutableListOf()
+	)
+	val mockResponse = OfferInterruptResponse(data)
+
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns true
+	coEvery { offerInterruptUseCase(any()) } returns mockResponse
+
+	viewModel.getOffering(true, onSuccess, onError)
+
+	verify {
+	    pref.setInterval(10000)
+	    onError.invoke(any())
+	}
+    }
+
+    @Test
+    fun `get offering - is not logged in`() {
+	every { userSession.isLoggedIn } returns false
+	every { pref.isNeedCheck() } returns true
+	viewModel.getOffering(true, onSuccess, onError)
+	verify(exactly = 0) {
+	    onSuccess(any())
+	    onError(any())
+	}
+    }
+
+    @Test
+    fun `get offering - is need check == false`() {
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns false
+	viewModel.getOffering(true, onSuccess, onError)
+	verify(exactly = 0) {
+	    onSuccess(any())
+	    onError(any())
+	}
+    }
+
+    @Test
+    fun `check - is not logged in`() {
+	every { userSession.isLoggedIn } returns false
+	every { pref.isNeedCheck() } returns true
+	viewModel.check(onSuccess1, onError)
+	verify(exactly = 0) {
+	    onSuccess1(any())
+	    onError(any())
+	}
+    }
+
+    @Test
+    fun `check - is need check == false`() {
+	every { userSession.isLoggedIn } returns true
+	every { pref.isNeedCheck() } returns false
+	viewModel.check(onSuccess1, onError)
+	verify(exactly = 0) {
+	    onSuccess1(any())
+	    onError(any())
 	}
     }
 
