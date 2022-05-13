@@ -491,19 +491,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     rvLabelAlamatChips.visibility = View.GONE
                     etAlamat.run {
                         textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > 200) {
+                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Alamat melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_alamat_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > 45) {
+                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Catatan melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
                     }
@@ -531,19 +531,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.run {
                     etAlamatNew.run {
                         textFieldInput.setText(addressDetail)
-                        if (addressDetail.length > 200) {
+                        if (addressDetail.length > MAX_CHAR_ALAMAT) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Alamat melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_alamat_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
                     }
                     etCourierNote.run {
                         textFieldInput.setText(data.addressDetailNotes)
-                        if (data.addressDetailNotes.length > 45) {
+                        if (data.addressDetailNotes.length > MAX_CHAR_NOTES) {
                             this.textFieldWrapper.let { wrapper ->
-                                wrapper.error = "Catatan melebihi batas karakter. Cek lagi, ya."
-                                wrapper.setErrorEnabled(false)
+                                wrapper.error = context.getString(R.string.error_notes_exceed_max_char)
+                                wrapper.isErrorEnabled = true
                             }
                         }
                     }
@@ -643,6 +643,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
+                if (formAddress.etCourierNote.textFieldWrapper.error != null) {
+                    validated = false
+                }
+
                 if (formAddress.etAlamatNew.textFieldWrapper.error != null) {
                     validated = false
                 }
@@ -677,14 +681,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             } else {
-
                 if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
                     field.add(getString(R.string.field_label_alamat))
                     setWrapperError(formAddressNegative.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etAlamatNew.textFieldWrapper.error != null) {
+                if (formAddressNegative.etCourierNote.textFieldWrapper.error != null) {
+                    validated = false
+                }
+
+                if (formAddressNegative.etAlamat.textFieldWrapper.error != null) {
                     validated = false
                 }
 
@@ -1256,6 +1263,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
         private const val MIN_CHAR_PHONE_NUMBER = 9
+        private const val MAX_CHAR_ALAMAT = 200
+        private const val MAX_CHAR_NOTES = 45
 
         const val REQUEST_PINPONT_PAGE = 1998
         const val PARAM_ANA_POSITIVE = "1"
@@ -1265,8 +1274,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val NOT_SUCCESS = "not success"
 
         const val MINIMUM_CHAR = 3
-        const val LABEL_NAMA_PENERIMA_RULE = "[^A-Za-z0-9() ,.']"
-        const val ALAMAT_NOTES_VALID_RULE = """[^A-Za-z0-9() ,.\/\-\:&\n+=']"""
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
