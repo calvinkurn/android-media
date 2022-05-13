@@ -6,3 +6,9 @@ fun <T> Collection<T>.allCheckEmptyList(predicate: (T) -> Boolean): Boolean {
     for (element in this) if (!predicate(element)) return false
     return true
 }
+
+fun <E> MutableList<E>.setElement(index: Int, element: E){
+    if(index in 0 until size){
+        set(index, element)
+    }
+}
