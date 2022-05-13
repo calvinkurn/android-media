@@ -23,7 +23,8 @@ import android.view.animation.Animation
 class VideoControlView(context: Context, attributeSet: AttributeSet) :
     PlayerControlView(context, attributeSet) {
 
-    private val scrubber: DefaultTimeBar = findViewById(com.google.android.exoplayer2.R.id.exo_progress)
+    private val scrubber: DefaultTimeBar =
+        findViewById(com.google.android.exoplayer2.R.id.exo_progress)
 
     private val centerPlayButton: ImageView = findViewById(R.id.video_center_play_button)
     private val centerPauseButton: ImageView = findViewById(R.id.video_center_pause_button)
@@ -37,17 +38,17 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
     private val fadeInAlphaAnimation = AlphaAnimation(0f, 1f)
 
     var listener: Listener? = null
-    set(value) {
-        field = value
-        setupListener()
-    }
+        set(value) {
+            field = value
+            setupListener()
+        }
 
     init {
         setupGradientBackground()
         setupAnimation()
 
         this.setOnClickListener {
-            if (videoControlContainer.isVisible){
+            if (videoControlContainer.isVisible) {
                 hideController()
             } else {
                 showController(!centerPlayButton.isVisible)
@@ -55,7 +56,7 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun updateCenterButtonState(isPlaying: Boolean){
+    fun updateCenterButtonState(isPlaying: Boolean) {
         centerPlayButtonConditionalShow(!isPlaying)
         centerPauseButtonConditionalShow(isPlaying)
     }
@@ -89,19 +90,19 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         })
     }
 
-    fun cleanHideJob(){
+    fun cleanHideJob() {
         videoControlHandler.removeCallbacksAndMessages(null)
     }
 
-    fun showController(isAutoHide: Boolean = true){
+    fun showController(isAutoHide: Boolean = true) {
         cleanHideJob()
-        if(!videoControlContainer.isVisible){
+        if (!videoControlContainer.isVisible) {
             videoControlContainer.startAnimation(fadeInAlphaAnimation)
         }
-        if(isAutoHide) hideControllerJob()
+        if (isAutoHide) hideControllerJob()
     }
 
-    private fun hideController(){
+    private fun hideController() {
         videoControlContainer.startAnimation(fadeOutAlphaAnimation)
         cleanHideJob()
     }
@@ -112,29 +113,29 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         hideControllerJob()
     }
 
-    private fun centerPauseButtonConditionalShow(isShowing: Boolean){
+    private fun centerPauseButtonConditionalShow(isShowing: Boolean) {
         centerPauseButton.showWithCondition(isShowing)
-        if(isShowing) hideCenterPauseJob()
+        if (isShowing) hideCenterPauseJob()
     }
 
-    private fun hideCenterPauseJob(){
+    private fun hideCenterPauseJob() {
         videoPauseButtonHandler.postDelayed({
             centerPauseButtonConditionalShow(false)
-        },PLAY_DELAY_SCRUBBER)
+        }, PLAY_DELAY_SCRUBBER)
     }
 
-    private fun hideControllerJob(){
+    private fun hideControllerJob() {
         videoControlHandler.postDelayed({
             hideController()
         }, HIDE_DELAY_SCRUBBER)
     }
 
-    private fun setupAnimation(){
+    private fun setupAnimation() {
         fadeInAlphaAnimation.duration = ANIMATION_DURATION
 
         fadeOutAlphaAnimation.duration = ANIMATION_DURATION
 
-        fadeOutAlphaAnimation.setAnimationListener(object: Animation.AnimationListener{
+        fadeOutAlphaAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationEnd(animation: Animation?) {
                 videoControlContainer.hide()
             }
@@ -143,7 +144,7 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
             override fun onAnimationStart(animation: Animation?) {}
         })
 
-        fadeInAlphaAnimation.setAnimationListener(object: Animation.AnimationListener{
+        fadeInAlphaAnimation.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationEnd(animation: Animation?) {
                 videoControlContainer.show()
             }
@@ -153,7 +154,7 @@ class VideoControlView(context: Context, attributeSet: AttributeSet) :
         })
     }
 
-    private fun setupGradientBackground(){
+    private fun setupGradientBackground() {
         val controllerContainer = findViewById<ContainerUnify>(R.id.nav_container)
 
         val controllerEndColor =

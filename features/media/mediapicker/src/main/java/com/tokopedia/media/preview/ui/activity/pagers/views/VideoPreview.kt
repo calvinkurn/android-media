@@ -9,7 +9,7 @@ import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
 class VideoPreview(
     private val context: Context,
-    val videoPlayer: PickerVideoPlayer
+    private val videoPlayer: PickerVideoPlayer
 ) : BasePagerPreview, VideoControlView.Listener, PickerVideoPlayer.Listener {
 
     override val layout: Int
@@ -34,7 +34,7 @@ class VideoPreview(
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if(isSkipUpdateState){
+        if (isSkipUpdateState) {
             return
         }
         videoControl.updateCenterButtonState(isPlaying)
