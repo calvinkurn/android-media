@@ -26,6 +26,9 @@ const val ACTIVE_OLDER = 4
 const val ENDED = 5
 const val CANCELED = 6
 
+const val LOADED: Int = 1
+const val REFRESH: Int = 0
+
 const val EXTEND = "extend"
 //TODO get all triple dots type from product team
 const val CANCEL = "cancel"

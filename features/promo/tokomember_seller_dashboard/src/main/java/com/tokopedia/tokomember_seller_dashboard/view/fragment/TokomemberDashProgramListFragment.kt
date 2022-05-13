@@ -1,9 +1,8 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,10 +24,12 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.EXTEND
+import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmRefreshListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -56,13 +57,13 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
     }
 
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tokomemberDashCreateViewModel: TokomemberDashCreateViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TokomemberDashCreateViewModel::class.java)
+    private val tmRefreshListViewModel: TmRefreshListViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = activity?.let { ViewModelProvider(it, viewModelFactory.get()) }
+        viewModelProvider?.get(TmRefreshListViewModel::class.java)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,23 +80,32 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = tokomemberDashProgramAdapter
         }
-
         observeViewModel()
-        tokomemberDashCreateViewModel.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
+        tmRefreshListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
     }
 
     private fun observeViewModel() {
-
-        tokomemberDashCreateViewModel.tokomemberProgramListResultLiveData.observe(viewLifecycleOwner, {
+        tmRefreshListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     tokomemberDashProgramAdapter.programSellerList = it.data.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
                     tokomemberDashProgramAdapter.notifyDataSetChanged()
+                    tmRefreshListViewModel?.refreshList(LOADED)
                 }
                 is Fail -> {
+                    tmRefreshListViewModel?.refreshList(LOADED)
                 }
             }
         })
+
+        tmRefreshListViewModel?.tokomemberProgramListLiveData?.observe(viewLifecycleOwner, {
+            when (it) {
+                REFRESH ->{
+                    tmRefreshListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
+                }
+            }
+        })
+        Log.d("REFRESH_TAG", "observeViewModel: " + tmRefreshListViewModel?.tokomemberProgramListLiveData?.hasActiveObservers())
     }
 
     override fun getScreenName() = ""
@@ -129,7 +139,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 dialog?.setPrimaryCTAText("Lanjutkan")
                 dialog?.setSecondaryCTAText("Batalkan Program")
                 dialog?.setPrimaryCTAClickListener {
-              /*      val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
+                /*      val intent = Intent(requireContext(), TokomemberDashCreateProgramActivity::class.java)
                     intent.putExtra(BUNDLE_EDIT_PROGRAM, true)
                     intent.putExtra(BUNDLE_SHOP_ID, shopId)
                     intent.putExtra(BUNDLE_PROGRAM_ID, programId)
@@ -158,12 +168,4 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_CODE_REFRESH){
-            if(resultCode == Activity.RESULT_OK){
-                tokomemberDashCreateViewModel.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
-            }
-        }
-    }
 }

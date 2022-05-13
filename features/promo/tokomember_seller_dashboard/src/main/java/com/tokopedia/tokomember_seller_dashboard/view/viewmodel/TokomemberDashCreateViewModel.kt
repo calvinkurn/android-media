@@ -23,6 +23,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmProgramListRefresh
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
@@ -48,6 +49,11 @@ class TokomemberDashCreateViewModel @Inject constructor(
         MutableLiveData<Result<TokomemberCardColorItem>>()
     val tokomemberCardColorResultLiveData: LiveData<Result<TokomemberCardColorItem>> =
         _tokomemberCardColorResultLiveData
+
+    private val _tokomemberProgramListLiveData =
+        MutableLiveData<TmProgramListRefresh>()
+    val tokomemberProgramListLiveData: LiveData<TmProgramListRefresh> =
+        _tokomemberProgramListLiveData
 
     private val _tokomemberCardBgResultLiveData = MutableLiveData<Result<TokomemberCardBgItem>>()
     val tokomemberCardBgResultLiveData: LiveData<Result<TokomemberCardBgItem>> =

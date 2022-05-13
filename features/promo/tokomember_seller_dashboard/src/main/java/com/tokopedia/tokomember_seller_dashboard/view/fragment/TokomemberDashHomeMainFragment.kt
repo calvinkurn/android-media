@@ -30,7 +30,6 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     private lateinit var homeViewPager: ViewPager
     private lateinit var homeFragmentCallback: TmProgramDetailCallback
 
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {

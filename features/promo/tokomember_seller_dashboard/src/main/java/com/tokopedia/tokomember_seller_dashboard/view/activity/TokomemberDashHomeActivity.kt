@@ -6,17 +6,22 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
+import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmRefreshListViewModel
 import com.tokopedia.unifycomponents.TabsUnify
+import javax.inject.Inject
 
 class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback {
 
@@ -24,10 +29,23 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
     private lateinit var homeTabs: TabsUnify
     private lateinit var homeViewPager: ViewPager
 
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private val tmRefreshListViewModel: TmRefreshListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TmRefreshListViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokomember_dash_home)
         addFragment(TokomemberDashHomeMainFragment.newInstance(intent.extras), TAG_HOME)
+
+        initDagger()
+    }
+
+    private fun initDagger() {
+        DaggerTokomemberDashComponent.create().inject(this)
     }
 
     override fun onBackPressed() {
@@ -45,7 +63,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     fun addFragment(fragment: Fragment, tag: String) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container_home, fragment, tag)
+            .add(R.id.container_home, fragment, tag)
             .addToBackStack(tag).commit()
     }
 
@@ -70,6 +88,10 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == REQUEST_CODE_REFRESH){
             if(resultCode == Activity.RESULT_OK){
+                val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
+                if (state != null) {
+                    tmRefreshListViewModel.refreshList(state)
+                }
             }
         }
     }

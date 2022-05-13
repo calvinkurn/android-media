@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmRefreshListViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
@@ -43,4 +44,10 @@ abstract class TokomemberViewmodelModule {
     @IntoMap
     @ViewModelKey(TokomemberDashHomeViewmodel::class)
     abstract fun tokomemberDashHomeViewmodel(viewModel: TokomemberDashHomeViewmodel): ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TmRefreshListViewModel::class)
+    abstract fun tokomemberProgramListViewModel(viewModel: TmRefreshListViewModel): ViewModel
 }

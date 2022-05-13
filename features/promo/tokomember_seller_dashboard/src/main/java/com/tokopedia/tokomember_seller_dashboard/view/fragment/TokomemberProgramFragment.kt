@@ -44,6 +44,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.mapper.ProgramUpdateMapper
 import com.tokopedia.tokomember_seller_dashboard.view.customview.BottomSheetClickListener
@@ -205,9 +206,9 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
             }
             ProgramActionType.EDIT ->{
                 val intent = Intent()
-//                activity?.setResult(RESULT_OK, intent)
-//                activity?.finish()
-                targetFragment?.onActivityResult(targetRequestCode, RESULT_OK, intent)
+                intent.putExtra("REFRESH_STATE", REFRESH)
+                activity?.setResult(RESULT_OK, intent)
+                activity?.finish()
             }
         }
     }
@@ -269,6 +270,8 @@ class TokomemberProgramFragment : BaseDaggerFragment(), ChipGroupCallback ,
         else{
             textFieldTranskVip.isEnabled = true
             textFieldTranskPremium.isEnabled = true
+            textFieldTranskPremium.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel1.toString() ?: "")
+            textFieldTranskVip.editText.setText(membershipGetProgramForm?.programThreshold?.minThresholdLevel2.toString() ?: "")
             cardEditInfo.hide()
         }
         membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.months?.let {

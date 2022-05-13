@@ -74,7 +74,7 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             {
                 TokomemberDashHomeActivity.openActivity(shopId, context)
 //               TokomemberDashIntroActivity.openActivity(shopId, context = context)
-//                activity?.finish()
+                activity?.finish()
                 // redirect to dashboard
             }
             else{
@@ -89,7 +89,6 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             // redirect to intro page + bottomsheet
         }
     }
-
 
     override fun getScreenName() = ""
 
