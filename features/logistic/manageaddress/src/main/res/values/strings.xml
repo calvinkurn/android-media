@@ -122,5 +122,4 @@
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
-    <string name="toaster_remove_address_fail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu</string>
 </resources>
