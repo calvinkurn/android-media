@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class TmRefreshListViewModel @Inject constructor(
+class TmProgramListViewModel @Inject constructor(
     private val tokomemberDashGetProgramListUsecase: TokomemberDashGetProgramListUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
     ): BaseViewModel(dispatcher) {

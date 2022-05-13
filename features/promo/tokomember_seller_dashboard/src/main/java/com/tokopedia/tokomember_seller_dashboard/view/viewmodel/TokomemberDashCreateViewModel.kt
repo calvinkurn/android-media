@@ -8,7 +8,6 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMappe
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramListUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
@@ -20,10 +19,8 @@ import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
 import com.tokopedia.tokomember_seller_dashboard.model.PreviewData
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TmProgramListRefresh
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
@@ -39,7 +36,6 @@ class TokomemberDashCreateViewModel @Inject constructor(
     private val tokomemeberCardBgUsecase: TokomemeberCardBgUsecase,
     private val tokomemberDashEditCardUsecase: TokomemberDashEditCardUsecase,
     private val tokomemberDashPreviewUsecase: TokomemberDashPreviewUsecase,
-    private val tokomemberDashGetProgramListUsecase: TokomemberDashGetProgramListUsecase,
     private val tokomemberDashGetProgramFormUsecase: TokomemberDashGetProgramFormUsecase,
     private val tokomemberDashUpdateProgramUsecase: TokomemberDashUpdateProgramUsecase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
@@ -49,11 +45,6 @@ class TokomemberDashCreateViewModel @Inject constructor(
         MutableLiveData<Result<TokomemberCardColorItem>>()
     val tokomemberCardColorResultLiveData: LiveData<Result<TokomemberCardColorItem>> =
         _tokomemberCardColorResultLiveData
-
-    private val _tokomemberProgramListLiveData =
-        MutableLiveData<TmProgramListRefresh>()
-    val tokomemberProgramListLiveData: LiveData<TmProgramListRefresh> =
-        _tokomemberProgramListLiveData
 
     private val _tokomemberCardBgResultLiveData = MutableLiveData<Result<TokomemberCardBgItem>>()
     val tokomemberCardBgResultLiveData: LiveData<Result<TokomemberCardBgItem>> =
@@ -75,20 +66,8 @@ class TokomemberDashCreateViewModel @Inject constructor(
     private val _tokomemberProgramResultLiveData = MutableLiveData<Result<ProgramDetailData>>()
     val tokomemberProgramResultLiveData: LiveData<Result<ProgramDetailData>> = _tokomemberProgramResultLiveData
 
-    private val _tokomemberProgramListResultLiveData = MutableLiveData<Result<ProgramList>>()
-    val tokomemberProgramListResultLiveData: LiveData<Result<ProgramList>> = _tokomemberProgramListResultLiveData
-
     private val _tokomemberProgramUpdateResultLiveData = MutableLiveData<Result<ProgramUpdateResponse>>()
     val tokomemberProgramUpdateResultLiveData: LiveData<Result<ProgramUpdateResponse>> = _tokomemberProgramUpdateResultLiveData
-
-    fun getProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){
-        tokomemberDashGetProgramListUsecase.cancelJobs()
-        tokomemberDashGetProgramListUsecase.getProgramList({
-            _tokomemberProgramListResultLiveData.postValue(Success(it))
-        }, {
-            _tokomemberProgramListResultLiveData.postValue(Fail(it))
-        }, shopId, cardID, status, page, pageSize)
-    }
 
     fun getProgramInfo(programID: Int ,shopId: Int ,actionType: String, query: String = "") {
         tokomemberDashGetProgramFormUsecase.cancelJobs()

@@ -29,7 +29,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashProgramAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmRefreshListViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -59,9 +59,9 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tmRefreshListViewModel: TmRefreshListViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmProgramListViewModel: TmProgramListViewModel? by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = activity?.let { ViewModelProvider(it, viewModelFactory.get()) }
-        viewModelProvider?.get(TmRefreshListViewModel::class.java)
+        viewModelProvider?.get(TmProgramListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -81,31 +81,31 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             adapter = tokomemberDashProgramAdapter
         }
         observeViewModel()
-        tmRefreshListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
+        tmProgramListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
     }
 
     private fun observeViewModel() {
-        tmRefreshListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
+        tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     tokomemberDashProgramAdapter.programSellerList = it.data.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
                     tokomemberDashProgramAdapter.notifyDataSetChanged()
-                    tmRefreshListViewModel?.refreshList(LOADED)
+                    tmProgramListViewModel?.refreshList(LOADED)
                 }
                 is Fail -> {
-                    tmRefreshListViewModel?.refreshList(LOADED)
+                    tmProgramListViewModel?.refreshList(LOADED)
                 }
             }
         })
 
-        tmRefreshListViewModel?.tokomemberProgramListLiveData?.observe(viewLifecycleOwner, {
+        tmProgramListViewModel?.tokomemberProgramListLiveData?.observe(viewLifecycleOwner, {
             when (it) {
                 REFRESH ->{
-                    tmRefreshListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
+                    tmProgramListViewModel?.getProgramList(arguments?.getInt(BUNDLE_SHOP_ID)?:0, cardId)
                 }
             }
         })
-        Log.d("REFRESH_TAG", "observeViewModel: " + tmRefreshListViewModel?.tokomemberProgramListLiveData?.hasActiveObservers())
+        Log.d("REFRESH_TAG", "observeViewModel: " + tmProgramListViewModel?.tokomemberProgramListLiveData?.hasActiveObservers())
     }
 
     override fun getScreenName() = ""

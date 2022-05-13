@@ -2,15 +2,29 @@ package com.tokopedia.tokomember_seller_dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.tokomember_seller_dashboard.domain.*
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashPreviewUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
-import com.tokopedia.tokomember_seller_dashboard.model.*
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
+import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -29,8 +43,6 @@ class TokomemberCreateViewModelTest {
     private lateinit var viewModel: TokomemberDashCreateViewModel
     private val tokomemberDashEditCardUsecase = mockk<TokomemberDashEditCardUsecase>(relaxed = true)
     private val tokomemberDashCardUsecase = mockk<TokomemberDashCardUsecase>(relaxed = true)
-    private val tokomemberDashGetProgramListUsecase =
-        mockk<TokomemberDashGetProgramListUsecase>(relaxed = true)
     private val tokomemberDashGetProgramFormUsecase =
         mockk<TokomemberDashGetProgramFormUsecase>(relaxed = true)
     private val tokomemberDashUpdateProgramUsecase =
@@ -50,7 +62,6 @@ class TokomemberCreateViewModelTest {
             tokomemeberCardBgUsecase,
             tokomemberDashEditCardUsecase,
             tokomemberDashPreviewUsecase,
-            tokomemberDashGetProgramListUsecase,
             tokomemberDashGetProgramFormUsecase,
             tokomemberDashUpdateProgramUsecase, dispatcher
         )
@@ -123,36 +134,6 @@ class TokomemberCreateViewModelTest {
         viewModel.getProgramInfo(0,0,"","")
         Assert.assertEquals(
             (viewModel.tokomemberProgramResultLiveData.value as Fail).throwable,
-            mockThrowable
-        )
-    }
-
-    @Test
-    fun successProgramList(){
-        val data = mockk<ProgramList>(relaxed = true)
-        coEvery {
-            tokomemberDashGetProgramListUsecase.getProgramList(any(), any(), 0,0,0,0,0)
-        } coAnswers {
-            firstArg<(ProgramList) -> Unit>().invoke(data)
-        }
-        viewModel.getProgramList(0,0,0,0,0)
-
-        Assert.assertEquals(
-            (viewModel.tokomemberProgramListResultLiveData.value as Success).data,
-            data
-        )
-    }
-
-    @Test
-    fun failProgramList() {
-        coEvery {
-            tokomemberDashGetProgramListUsecase.getProgramList(any(), any(), 0,0,0,0,0)
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-        viewModel.getProgramList(0,0,0,0,0)
-        Assert.assertEquals(
-            (viewModel.tokomemberProgramListResultLiveData.value as Fail).throwable,
             mockThrowable
         )
     }

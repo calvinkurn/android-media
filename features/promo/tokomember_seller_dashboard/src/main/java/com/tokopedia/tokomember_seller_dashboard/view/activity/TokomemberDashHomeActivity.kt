@@ -19,7 +19,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramDetailFragment
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmRefreshListViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
@@ -31,9 +31,9 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val tmRefreshListViewModel: TmRefreshListViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val tmProgramListViewModel: TmProgramListViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
-        viewModelProvider.get(TmRefreshListViewModel::class.java)
+        viewModelProvider.get(TmProgramListViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +90,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback 
             if(resultCode == Activity.RESULT_OK){
                 val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
                 if (state != null) {
-                    tmRefreshListViewModel.refreshList(state)
+                    tmProgramListViewModel.refreshList(state)
                 }
             }
         }
