@@ -316,7 +316,8 @@ class TokoNowCategoryFragment:
             userId = userSession.userId,
             categoryIdLvl1 = tokoNowCategoryViewModel.categoryL1,
             categoryIdLvl2 = categoryIdLvl2,
-            categoryIdLvl3 = categoryIdLvl3
+            categoryIdLvl3 = categoryIdLvl3,
+            currentCategoryId = tokoNowCategoryViewModel.getCurrentCategoryId(tokoNowCategoryViewModel.categoryL1, categoryIdLvl2, categoryIdLvl3)
         )
         shareClicked(shareCategoryTokonow)
     }
