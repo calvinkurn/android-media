@@ -810,6 +810,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     setOnClickListener {
                         goToSellerSettings()
                     }
+                    contentDescription = getString(R.string.menu_talk_inbox_setting_content_description)
                 }
                 show()
                 binding?.talkInboxSettingsIcon?.hide()
