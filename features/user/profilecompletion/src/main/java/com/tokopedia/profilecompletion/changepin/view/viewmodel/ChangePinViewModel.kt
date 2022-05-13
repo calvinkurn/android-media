@@ -220,13 +220,9 @@ class ChangePinViewModel @Inject constructor(
 	}
     }
 
-    private suspend fun isNeedHash(id: String, type: String): Boolean {
-	return try {
-	    val param = PinStatusParam(id = id, type = type)
-	    checkPinHashV2UseCase(param).data.isNeedHash
-	} catch (e: Exception) {
-	    false
-	}
+    suspend fun isNeedHash(id: String, type: String): Boolean {
+	val param = PinStatusParam(id = id, type = type)
+	return checkPinHashV2UseCase(param).data.isNeedHash
     }
 
     fun changePin(pin: String, pinConfirm: String, pinOld: String) {
