@@ -9,6 +9,9 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
  * Created by dhaba
  */
 object ComparisonWidgetTracking : BaseTrackerConst() {
+    private const val DEFAULT_VALUE = ""
+    private const val DEFAULT_QUANTITY = 0
+
     fun getImpressionProductTrackingComparisonWidget(
         eventAction: String? = null,
         androidPageName: String = "",
@@ -28,7 +31,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
                     eventAction = eventAction
                         ?: String.format(
                             ProductRecommendationTracking.EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION,
-                            if (isLogin) "" else ProductRecommendationTracking.VALUE_NON_LOGIN
+                            if (isLogin) DEFAULT_VALUE else ProductRecommendationTracking.VALUE_NON_LOGIN
                         ),
                     eventLabel = eventLabel
                         ?: String.format(
@@ -36,7 +39,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
                             headerTitle,
                             chipsTitle
                         ),
-                    list = "",
+                    list = DEFAULT_VALUE,
                     products = listOf(
                         mapRecommendationItemToProductTracking(
                             recommendationItem,
@@ -54,6 +57,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
         it: RecommendationItem,
         position: Int
     ): Product {
+        val productPosition = position + 1
         return Product(
             name = it.name,
             id = it.productId.toString(),
@@ -61,7 +65,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
             brand = Value.NONE_OTHER,
             category = it.categoryBreadcrumbs.toLowerCase(),
             variant = Value.NONE_OTHER,
-            productPosition = (position + 1).toString(),
+            productPosition = productPosition.toString(),
             isFreeOngkir = it.isFreeOngkirActive && !it.labelGroupList.hasLabelGroupFulfillment(),
             isFreeOngkirExtra = it.isFreeOngkirActive && it.labelGroupList.hasLabelGroupFulfillment(),
             headerName = it.header,
@@ -70,7 +74,7 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
             pageName = it.pageName,
             shopName = it.shopName,
             shopType = it.shopType,
-            quantity = if (it.quantity > 0) it.quantity.toString() else "",
+            quantity = if (it.quantity > DEFAULT_QUANTITY) it.quantity.toString() else DEFAULT_VALUE,
             cartId = it.cartId
         )
     }
