@@ -76,7 +76,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private var loader: LoaderUnify? = null
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var adapter: NegKeywordAdapter
     private var deleteCancel = false
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
