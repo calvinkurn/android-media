@@ -124,6 +124,7 @@ class ProductTagViewModel @AssistedInject constructor(
             state = it.state,
             query = it.query,
             suggestion = it.suggestion,
+            ticker = it.ticker,
         )
     }
 
@@ -413,6 +414,7 @@ class ProductTagViewModel @AssistedInject constructor(
                         hasNextPage = result.pagedData.hasNextPage,
                     ),
                     suggestion = result.suggestion,
+                    ticker = result.ticker,
                 )
             }
         }) {

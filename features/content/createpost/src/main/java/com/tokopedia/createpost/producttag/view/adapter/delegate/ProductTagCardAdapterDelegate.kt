@@ -36,6 +36,29 @@ internal class ProductTagCardAdapterDelegate private constructor() {
         }
     }
 
+    internal class Ticker: TypedAdapterDelegate<
+            ProductTagCardAdapter.Model.Ticker,
+            ProductTagCardAdapter.Model,
+            ProductTagCardViewHolder.Ticker>(
+        R.layout.view_cc_empty) {
+
+        override fun onBindViewHolder(
+            item: ProductTagCardAdapter.Model.Ticker,
+            holder: ProductTagCardViewHolder.Ticker
+        ) {
+            holder.bind(item)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): ProductTagCardViewHolder.Ticker {
+            return ProductTagCardViewHolder.Ticker.create(
+                parent
+            )
+        }
+    }
+
     internal class Product(
         private val onSelected: (ProductUiModel) -> Unit,
     ) : TypedAdapterDelegate<

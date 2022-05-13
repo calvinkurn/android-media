@@ -51,6 +51,7 @@ data class GlobalSearchProductUiState(
     val state: PagedState,
     val query: String,
     val suggestion: String,
+    val ticker: TickerUiModel,
 )
 
 data class GlobalSearchShopUiState(

@@ -14,10 +14,10 @@ class ProductTagItemDecoration(context: Context) : RecyclerView.ItemDecoration()
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val position = parent.getChildLayoutPosition(view)
-
         val viewHolder = parent.getChildViewHolder(view)
-        if(viewHolder is ProductTagCardViewHolder.Suggestion) {
+
+        if(viewHolder is ProductTagCardViewHolder.Suggestion ||
+            viewHolder is ProductTagCardViewHolder.Ticker) {
             outRect.bottom = offset16
         } else super.getItemOffsets(outRect, view, parent, state)
     }

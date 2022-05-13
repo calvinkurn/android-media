@@ -114,6 +114,10 @@ class ProductTagUiModelMapper @Inject constructor() {
                 nextCursor = nextCursor.toString(),
             ),
             suggestion = response.wrapper.data.suggestion.text,
+            ticker = TickerUiModel(
+                text = response.wrapper.data.ticker.text,
+                query = response.wrapper.data.ticker.query,
+            )
         )
     }
 

@@ -16,6 +16,7 @@ class ProductTagCardAdapter(
     init {
         delegatesManager
             .addDelegate(ProductTagCardAdapterDelegate.Suggestion())
+            .addDelegate(ProductTagCardAdapterDelegate.Ticker())
             .addDelegate(ProductTagCardAdapterDelegate.Product(onSelected))
             .addDelegate(ProductTagCardAdapterDelegate.Loading())
     }
@@ -43,6 +44,12 @@ class ProductTagCardAdapter(
     sealed interface Model {
         data class Suggestion(
             val text: String,
+        ) : Model
+
+        data class Ticker(
+            val text: String,
+            val onTickerClicked: () -> Unit,
+            val onTickerClosed: () -> Unit,
         ) : Model
 
         data class Product(

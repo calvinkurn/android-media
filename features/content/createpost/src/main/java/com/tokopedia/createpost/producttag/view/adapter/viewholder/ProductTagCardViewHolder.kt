@@ -6,10 +6,12 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.createpost.createpost.databinding.ItemGlobalSearchSuggestionListBinding
+import com.tokopedia.createpost.createpost.databinding.ItemGlobalSearchTickerListBinding
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagCardListBinding
 import com.tokopedia.createpost.createpost.databinding.ItemProductTagLoadingListBinding
 import com.tokopedia.createpost.producttag.view.adapter.ProductTagCardAdapter
 import com.tokopedia.createpost.producttag.view.uimodel.ProductUiModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
@@ -35,6 +37,43 @@ internal class ProductTagCardViewHolder private constructor() {
 
             fun create(parent: ViewGroup) = Suggestion(
                 ItemGlobalSearchSuggestionListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                ),
+            )
+        }
+    }
+
+    internal class Ticker(
+        private val binding: ItemGlobalSearchTickerListBinding,
+//        private val onTickerClicked: () -> Unit,
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            val layoutParams = itemView.layoutParams
+            if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+                layoutParams.isFullSpan = true
+            }
+        }
+
+        fun bind(item: ProductTagCardAdapter.Model.Ticker) {
+            binding.ticker.setHtmlDescription(item.text)
+            binding.ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    item.onTickerClicked()
+                }
+
+                override fun onDismiss() {
+                    item.onTickerClosed()
+                }
+            })
+        }
+
+        companion object {
+
+            fun create(parent: ViewGroup) = Ticker(
+                ItemGlobalSearchTickerListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false,

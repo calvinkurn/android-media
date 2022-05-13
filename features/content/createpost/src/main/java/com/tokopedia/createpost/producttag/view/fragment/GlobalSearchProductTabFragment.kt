@@ -22,6 +22,7 @@ import com.tokopedia.createpost.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.item_global_search_ticker_list.*
 import kotlinx.coroutines.flow.collectLatest
 
 /**
@@ -39,7 +40,7 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     private val adapter: ProductTagCardAdapter by lazy(mode = LazyThreadSafetyMode.NONE) {
         ProductTagCardAdapter(
             onSelected = { viewModel.submitAction(ProductTagAction.ProductSelected(it)) },
-            onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) }
+            onLoading = { viewModel.submitAction(ProductTagAction.LoadGlobalSearchProduct) },
         )
     }
 
@@ -95,11 +96,19 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
     @OptIn(ExperimentalStdlibApi::class)
     private fun renderGlobalSearchProduct(prev: GlobalSearchProductUiState?, curr: GlobalSearchProductUiState) {
 
-        fun updateAdapterData(products: List<ProductUiModel>, suggestion: String, hasNextPage: Boolean) {
+        fun updateAdapterData(state: GlobalSearchProductUiState, hasNextPage: Boolean) {
             val finalProducts = buildList {
-                if(suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = suggestion))
+                if(state.suggestion.isNotEmpty()) add(ProductTagCardAdapter.Model.Suggestion(text = state.suggestion))
+                if(state.ticker.text.isNotEmpty())
+                    add(
+                        ProductTagCardAdapter.Model.Ticker(
+                            text = state.ticker.text,
+                            onTickerClicked = { },
+                            onTickerClosed = { },
+                        )
+                    )
 
-                addAll(products.map { ProductTagCardAdapter.Model.Product(product = it) })
+                addAll(state.products.map { ProductTagCardAdapter.Model.Product(product = it) })
 
                 if(hasNextPage) add(ProductTagCardAdapter.Model.Loading)
             }
@@ -115,17 +124,17 @@ class GlobalSearchProductTabFragment : BaseProductTagChildFragment() {
 
         when(curr.state) {
             is PagedState.Loading -> {
-                updateAdapterData(curr.products, "", true)
+                updateAdapterData(curr, true)
             }
             is PagedState.Success -> {
                 if(curr.products.isEmpty()) {
                     binding.rvGlobalSearchProduct.hide()
                     binding.globalError.show()
                 }
-                else updateAdapterData(curr.products, curr.suggestion, curr.state.hasNextPage)
+                else updateAdapterData(curr, curr.state.hasNextPage)
             }
             is PagedState.Error -> {
-                updateAdapterData(curr.products, "",false)
+                updateAdapterData(curr,false)
 
                 Toaster.build(
                     binding.root,
