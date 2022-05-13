@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -1394,7 +1395,7 @@ class CreateReviewViewModel @Inject constructor(
         } catch (t: Throwable) {
             sendingReview.value = false
             submitReviewResult.value = RequestState.Error(t)
-            enqueueErrorSubmitReviewToaster()
+            enqueueErrorSubmitReviewToaster(getErrorCode(t))
         }
     }
 
@@ -1420,10 +1421,10 @@ class CreateReviewViewModel @Inject constructor(
         )
     }
 
-    private fun enqueueErrorSubmitReviewToaster() {
+    private fun enqueueErrorSubmitReviewToaster(errorCode: String) {
         _toasterQueue.tryEmit(
             CreateReviewToasterUiModel(
-                message = StringRes(R.string.review_create_fail_toaster),
+                message = StringRes(R.string.review_create_fail_toaster, listOf(errorCode)),
                 actionText = StringRes(R.string.review_oke),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR
@@ -1433,6 +1434,10 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun getUploadSourceId(uri: String): String {
         return if (isVideoFormat(uri)) CREATE_REVIEW_VIDEO_SOURCE_ID else CREATE_REVIEW_IMAGE_SOURCE_ID
+    }
+
+    private fun getErrorCode(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessagePair(null, throwable, ErrorHandler.Builder()).second
     }
 
     fun submitReview() {

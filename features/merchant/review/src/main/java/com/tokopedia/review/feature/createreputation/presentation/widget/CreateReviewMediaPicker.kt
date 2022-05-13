@@ -97,7 +97,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private fun setupWaitingState(poem: StringRes, successCount: Int = Int.ZERO) {
         val waitingText = when (poem.id) {
             R.string.review_form_on_progress_upload_poem -> {
-                poem.getStringValue(context, successCount)
+                poem.getStringValueWithCustomParam(context, successCount)
             }
             else -> {
                 poem.getStringValue(context)
