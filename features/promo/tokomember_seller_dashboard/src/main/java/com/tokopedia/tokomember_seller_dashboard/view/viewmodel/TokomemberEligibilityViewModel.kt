@@ -16,8 +16,8 @@ import javax.inject.Inject
 
 class TokomemberEligibilityViewModel @Inject constructor(
     private val tokomemberEligibilityUsecase: TokomemberEligibilityUsecase,
-    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-    private val tokomemberAuthenticatedUsecase: TokomemberAuthenticatedUsecase
+    private val tokomemberAuthenticatedUsecase: TokomemberAuthenticatedUsecase,
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
     ) : BaseViewModel(dispatcher) {
 
     private val _eligibilityCheckResultLiveData = MutableLiveData<Result<CheckEligibility>>()

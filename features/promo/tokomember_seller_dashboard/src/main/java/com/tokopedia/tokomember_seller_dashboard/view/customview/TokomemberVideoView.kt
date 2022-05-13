@@ -84,25 +84,13 @@ class TokomemberVideoView @JvmOverloads constructor(
                     videoPlayer?.setVideoStateListener(object : VideoStateListener {
                         override fun onInitialStateLoading() {
                             loader?.show()
+                            layout_video?.hideController()
                         }
                         override fun onVideoReadyToPlay() {
                             loader?.hide()
-                            timer_view?.visible()
-                            var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
-                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
-                                override fun onTick(millisUntilFinished: Long) {
-                                    time -= 1
-                                    timer_view?.text =
-                                        String.format(
-                                            "%02d:%02d",
-                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                            time % MINUTE_IN_HOUR
-                                        )
-                                }
-                                override fun onFinish() {
-                                    timer_view?.gone()
-                                }
-                            }.start()
+                            videoPreviewImage.hide()
+                            viewBgSelector.hide()
+                            layout_video?.showController()
                         }
                         override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
 
