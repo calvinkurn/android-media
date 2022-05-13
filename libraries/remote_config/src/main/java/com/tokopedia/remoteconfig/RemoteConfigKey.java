@@ -239,6 +239,8 @@ public class RemoteConfigKey {
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
+    public static final String HOME_REMOVE_PAGINATION = "android_customer_home_remove_pagination";
+
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
@@ -284,4 +286,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
 
     public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
+
+    public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
+
+    public static final String DISCOVERY_DISABLE_SINGLE_PROD_CARD = "android_discovery_single_product_disable";
 }

@@ -5,10 +5,7 @@ import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.domain.entity.ShopInfoById
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.exception.SellerMenuException

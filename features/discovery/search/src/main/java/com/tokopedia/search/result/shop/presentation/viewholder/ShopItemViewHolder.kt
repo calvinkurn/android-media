@@ -3,11 +3,12 @@ package com.tokopedia.search.result.shop.presentation.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultShopCardBinding
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
 import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.shopwidget.shopcard.ShopCardListener
 import com.tokopedia.shopwidget.shopcard.ShopCardModel
-import kotlinx.android.synthetic.main.search_result_shop_card.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ShopItemViewHolder(
     itemView: View,
@@ -19,10 +20,13 @@ internal class ShopItemViewHolder(
         val LAYOUT = R.layout.search_result_shop_card
     }
 
+    private var binding: SearchResultShopCardBinding? by viewBinding()
+
     override fun bind(shopDataViewItem: ShopDataView.ShopItem?) {
+        val binding = binding ?: return
         if(shopDataViewItem == null) return
 
-        itemView.shopCardView?.setShopCardModel(
+        binding.shopCardView.setShopCardModel(
                 ShopCardModel(
                         id = shopDataViewItem.id,
                         name = shopDataViewItem.name,

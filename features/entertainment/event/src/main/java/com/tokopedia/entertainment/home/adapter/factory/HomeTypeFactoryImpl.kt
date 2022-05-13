@@ -40,19 +40,34 @@ class HomeTypeFactoryImpl(private val trackingListener: TrackingListener,
         return LoadingHomeEventViewHolder.LAYOUT
     }
 
+    override fun type(model: TickerModel): Int {
+        return TickerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return if (type == BannerEventViewHolder.LAYOUT) {
-            BannerEventViewHolder(view, trackingListener)
-        } else if (type == CategoryEventViewHolder.LAYOUT) {
-            CategoryEventViewHolder(view, trackingListener)
-        } else if (type == EventGridEventViewHolder.LAYOUT) {
-            EventGridEventViewHolder(view, trackingListener, clickGridListener)
-        } else if (type == EventCarouselEventViewHolder.LAYOUT) {
-            EventCarouselEventViewHolder(view, trackingListener, clickCarouselListener)
-        } else if (type == EventLocationEventViewHolder.LAYOUT) {
-            EventLocationEventViewHolder(view, trackingListener)
-        } else if (type == LoadingHomeEventViewHolder.LAYOUT){
-            LoadingHomeEventViewHolder(view)
-        } else super.createViewHolder(view, type)
+        return when (type) {
+            BannerEventViewHolder.LAYOUT -> {
+                BannerEventViewHolder(view, trackingListener)
+            }
+            CategoryEventViewHolder.LAYOUT -> {
+                CategoryEventViewHolder(view, trackingListener)
+            }
+            EventGridEventViewHolder.LAYOUT -> {
+                EventGridEventViewHolder(view, trackingListener, clickGridListener)
+            }
+            EventCarouselEventViewHolder.LAYOUT -> {
+                EventCarouselEventViewHolder(view, trackingListener, clickCarouselListener)
+            }
+            EventLocationEventViewHolder.LAYOUT -> {
+                EventLocationEventViewHolder(view, trackingListener)
+            }
+            LoadingHomeEventViewHolder.LAYOUT -> {
+                LoadingHomeEventViewHolder(view)
+            }
+            TickerViewHolder.LAYOUT -> {
+                TickerViewHolder(view)
+            }
+            else -> super.createViewHolder(view, type)
+        }
     }
 }

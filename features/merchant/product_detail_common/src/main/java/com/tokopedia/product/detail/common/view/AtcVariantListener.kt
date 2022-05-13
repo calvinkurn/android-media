@@ -20,4 +20,5 @@ interface AtcVariantListener {
     fun onDeleteQuantityClicked(productId: String) {}
     fun onClickRefresh() {}
     fun hideVariantName(): Boolean = false
+    fun shouldHideTextHabis(): Boolean = false
 }

@@ -9,13 +9,13 @@ import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-import kotlinx.android.synthetic.main.topads_dash_item_moveto_group_recom.view.*
 
 private const val VIEW_SHIMMER = 0
 private const val VIEW_GROUP = 1
 private const val DEFAULT_SHIMMER_COUNT = 5
 
-class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: MutableList<GroupListDataItem> = mutableListOf()
     private var list: List<CountDataItem> = listOf()
     private var showShimmer = true
@@ -24,11 +24,13 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : Recyc
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_GROUP -> {
-                val v = LayoutInflater.from(parent.context).inflate(GroupViewHolder.Layout, parent, false)
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(GroupViewHolder.Layout, parent, false)
                 GroupViewHolder(v)
             }
             else -> {
-                val v = LayoutInflater.from(parent.context).inflate(ShimmerViewHolder.Layout, parent, false)
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(ShimmerViewHolder.Layout, parent, false)
                 return ShimmerViewHolder(v)
             }
         }
@@ -71,10 +73,10 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : Recyc
     }
 
     fun getCheckedPosition(): Pair<String, String> {
-       return Pair(items[selectedPosition].groupId, items[selectedPosition].type)
+        return Pair(items[selectedPosition].groupId, items[selectedPosition].type)
     }
 
-    fun isChecked():Int{
+    fun isChecked(): Int {
         return selectedPosition
     }
 
@@ -82,13 +84,16 @@ class TopadsRecomGroupBsAdapter(private val onGroupSelect: (() -> Unit)) : Recyc
         (holder as? GroupViewHolder)?.let {
             it.name.text = items[holder.adapterPosition].groupName
             it.radio.isChecked = items[holder.adapterPosition].isSelected
-            it.groupDesc.text = String.format(it.itemView.desc_group.context.getString(R.string.topads_dash_grp_bs_item_desc), list[holder.adapterPosition].totalAds, list[holder.adapterPosition].totalKeywords)
-            it.itemView.setOnClickListener { v ->
+            it.groupDesc.text =
+                String.format(it.groupDesc.context.getString(R.string.topads_dash_grp_bs_item_desc),
+                    list[holder.adapterPosition].totalAds,
+                    list[holder.adapterPosition].totalKeywords)
+            it.itemView.setOnClickListener { _ ->
                 onGroupSelect.invoke()
                 items[holder.adapterPosition].isSelected = true
                 setOtherFalse(holder.adapterPosition)
-                v.radio_button.isChecked = true
-                selectedPosition = position
+                it.radio.isChecked = true
+                selectedPosition = holder.adapterPosition
             }
         }
     }

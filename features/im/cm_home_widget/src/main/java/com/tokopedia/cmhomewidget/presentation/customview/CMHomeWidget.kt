@@ -157,7 +157,8 @@ class CMHomeWidget @JvmOverloads constructor(
                     it.parentId,
                     it.campaignId,
                     it.notificationId,
-                    it.messageId
+                    it.messageId,
+                    it.sessionId
                 )
             }
         }
@@ -202,7 +203,8 @@ class CMHomeWidget @JvmOverloads constructor(
                         it.parentId,
                         it.campaignId,
                         it.notificationId,
-                        it.messageId
+                        it.messageId,
+                        it.sessionId
                     )
             }
         }

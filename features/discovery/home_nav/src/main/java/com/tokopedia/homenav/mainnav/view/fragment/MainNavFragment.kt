@@ -300,6 +300,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return remoteConfig.getString(EXP_NAME, CONTROL) == VARIANT
     }
 
+    override fun onErrorAffiliateInfoRefreshClicked(position: Int) {
+        viewModel.refreshUserAffiliateData()
+    }
+
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
         context?.let {
             return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
