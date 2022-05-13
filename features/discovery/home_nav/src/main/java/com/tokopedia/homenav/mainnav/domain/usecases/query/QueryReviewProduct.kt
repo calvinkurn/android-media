@@ -9,7 +9,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryReviewProduct.PR
  */
 @GqlQuery(PRODUCT_WAIT_WAIT_FEEDBACK_QUERY_NAME, PRODUCT_WAIT_WAIT_FEEDBACK_QUERY)
 object QueryReviewProduct {
-    const val PRODUCT_WAIT_WAIT_FEEDBACK_QUERY_NAME = "ProductWaitForFeedback"
+    const val PRODUCT_WAIT_WAIT_FEEDBACK_QUERY_NAME = "ProductRevWaitForFeedbackQuery"
     const val PRODUCT_WAIT_WAIT_FEEDBACK_QUERY = "" +
             "query productrevWaitForFeedback(\$limit: Int!, \$page: Int!) {\n" +
             "  productrevWaitForFeedback(limit: \$limit, page: \$page) {\n" +
