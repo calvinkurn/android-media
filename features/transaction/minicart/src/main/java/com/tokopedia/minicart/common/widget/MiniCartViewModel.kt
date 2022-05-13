@@ -427,26 +427,26 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         visitables.forEach {
             if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                if(it.isBundlingItem) {
+                if (it.isBundlingItem) {
                     miniCartProductUiModels.add(
-                        UpdateCartRequest(
-                            cartId = it.cartId,
-                            quantity = it.productQty,
-                            notes = it.productNotes,
-                            bundleInfo = BundleInfo(
-                                bundleId = it.bundleId,
-                                bundleGroupId = it.bundleGroupId,
-                                bundleQty = it.bundleQty
+                            UpdateCartRequest(
+                                    cartId = it.cartId,
+                                    quantity = it.productQty,
+                                    notes = it.productNotes,
+                                    bundleInfo = BundleInfo(
+                                            bundleId = it.bundleId,
+                                            bundleGroupId = it.bundleGroupId,
+                                            bundleQty = it.bundleQty
+                                    )
                             )
-                        )
                     )
                 } else {
                     miniCartProductUiModels.add(
-                        UpdateCartRequest(
-                            cartId = it.cartId,
-                            quantity = it.productQty,
-                            notes = it.productNotes
-                        )
+                            UpdateCartRequest(
+                                    cartId = it.cartId,
+                                    quantity = it.productQty,
+                                    notes = it.productNotes
+                            )
                     )
                 }
             }
@@ -500,7 +500,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             val visitables = getVisitables()
             visitables.forEach {
                 if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                    if(it.isBundlingItem) {
+                    if (it.isBundlingItem) {
                         updateCartRequests.add(
                                 UpdateCartRequest(
                                         cartId = it.cartId,
@@ -846,7 +846,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         val allProductList = visitables.filterIsInstance<MiniCartProductUiModel>()
         val nonBundleProductList = allProductList.filter { !it.isBundlingItem }
         val bundleProductList = allProductList.filter { it.isBundlingItem }
-            .distinctBy { it.bundleId }
+                .distinctBy { it.bundleId }
         val productList = nonBundleProductList + bundleProductList
 
         productList.forEach { visitable ->
@@ -881,7 +881,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
 
         allProductList.forEach { visitable ->
-            if(!visitable.isProductDisabled) {
+            if (!visitable.isProductDisabled) {
                 totalWeight += visitable.productWeight * visitable.productQty
                 totalQty += visitable.productQty
             }
