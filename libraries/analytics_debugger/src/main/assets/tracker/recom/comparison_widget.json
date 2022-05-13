@@ -68,7 +68,8 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": "",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "clientId": ".*"
     },
     {
       "event": "clickPDP",
@@ -78,7 +79,8 @@
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "clientId": ".*"
     },
     {
       "event": "select_content",

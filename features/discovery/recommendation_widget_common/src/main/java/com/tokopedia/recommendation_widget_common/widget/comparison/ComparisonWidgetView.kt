@@ -96,8 +96,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                         rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rv_comparison_widget?.adapter = adapter
                         btn_collapse?.setOnClickListener {
-                            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                                ProductRecommendationTracking.getClickSpecDetailTracking(
+                            val tracking = ProductRecommendationTracking.getClickSpecDetailTracking(
                                     eventClick = recommendationTrackingModel.eventClick,
                                     eventCategory = recommendationTrackingModel.eventCategory,
                                     isLoggedIn = userSessionInterface.isLoggedIn,
@@ -105,7 +104,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                                     pageName = comparisonListModel.recommendationWidget.pageName,
                                     userId = userSessionInterface.userId
                                 )
-                            )
+                            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.second, tracking.first)
                             onSpecDetailsClick(comparisonListModel)
                         }
                         comparison_widget_container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING);

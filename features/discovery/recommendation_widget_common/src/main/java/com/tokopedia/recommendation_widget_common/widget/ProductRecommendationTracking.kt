@@ -1,5 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget
 
+import android.os.Bundle
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
@@ -129,26 +130,26 @@ object ProductRecommendationTracking : BaseTrackerConst() {
         recomTitle: String,
         pageName: String,
         userId: String
-    ): HashMap<String, Any> {
-        val trackerBuilder = BaseTrackerBuilder()
-            .constructBasicGeneralClick(
-                event = eventClick,
-                eventCategory = eventCategory,
-                eventAction = String.format(
-                    EVENT_ACTION_CLICK_SEE_MORE_COMPARISON,
-                    if (isLoggedIn) "" else VALUE_NON_LOGIN
-                ),
-                eventLabel = String.format(
-                    EVENT_LABEL_CLICK_SEE_ALL,
-                    recomTitle,
-                    pageName,
-                    COMPARISON_WIDGET
-                )
-            )
-            .appendBusinessUnit(BusinessUnit.DEFAULT)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .appendUserId(userId)
-        return trackerBuilder.build() as HashMap<String, Any>
+    ): Pair<Bundle, String> {
+        val bundle = Bundle()
+        val eventAction = String.format(
+            EVENT_ACTION_CLICK_SEE_MORE_COMPARISON,
+            if (isLoggedIn) "" else VALUE_NON_LOGIN
+        )
+        val eventLabel = String.format(
+            EVENT_LABEL_CLICK_SEE_ALL,
+            recomTitle,
+            pageName,
+            COMPARISON_WIDGET
+        )
+        bundle.putString(Event.KEY, eventClick)
+        bundle.putString(Category.KEY, eventCategory)
+        bundle.putString(Action.KEY, eventAction)
+        bundle.putString(Label.KEY, eventLabel)
+        bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
+        bundle.putString(CurrentSite.KEY, CurrentSite.DEFAULT)
+        bundle.putString(UserId.KEY, userId)
+        return Pair(bundle, eventClick)
     }
 
     fun getAddToCartClickProductTracking(
