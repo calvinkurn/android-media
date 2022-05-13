@@ -27,7 +27,7 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
 
         const val IMG_STATIC_URI_NO_PIN_POIN = "https://images.tokopedia.net/img/ic-tokofood_home_no_pin_poin.png"
         const val IMG_STATIC_URI_NO_ADDRESS = "https://images.tokopedia.net/img/ic_tokofood_home_no_address.png"
-        const val IMG_STATIC_URI_OUT_OF_COVERAGE = ""
+        const val IMG_STATIC_URI_OUT_OF_COVERAGE = "https://images.tokopedia.net/img/ic_tokofood_home_out_of_coverage.png"
     }
 
     private var binding: ItemTokofoodEmptyStateLocationBinding? by viewBinding()

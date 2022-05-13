@@ -11,7 +11,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutItemState
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addLoadingIntoList
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoAddressState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addNoPinPointState
+import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.addOutOfCoverageState
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.getVisitableId
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapDynamicIcons
 import com.tokopedia.tokofood.home.domain.mapper.TokoFoodHomeMapper.mapHomeLayoutList
@@ -58,6 +60,26 @@ class TokoFoodHomeViewModel @Inject constructor(
     fun getNoPinPoinState() {
         homeLayoutItemList.clear()
         homeLayoutItemList.addNoPinPointState()
+        val data = TokoFoodHomeListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodHomeLayoutState.HIDE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
+    fun getNoAddressState() {
+        homeLayoutItemList.clear()
+        homeLayoutItemList.addNoAddressState()
+        val data = TokoFoodHomeListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoFoodHomeLayoutState.HIDE
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
+    fun getOutOfCoverageState() {
+        homeLayoutItemList.clear()
+        homeLayoutItemList.addOutOfCoverageState()
         val data = TokoFoodHomeListUiModel(
             items = getHomeVisitableList(),
             state = TokoFoodHomeLayoutState.HIDE

@@ -26,6 +26,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
 import com.tokopedia.tokofood.home.domain.data.TokoFoodHomeDynamicIconsResponse
@@ -55,21 +56,26 @@ object TokoFoodHomeMapper {
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.addNoPinPointState() {
-        val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
+        addChooseAddressWidget()
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
+    }
 
+    fun MutableList<TokoFoodHomeItemUiModel>.addNoAddressState() {
+        addChooseAddressWidget()
         add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_ADDRESS), TokoFoodHomeLayoutItemState.LOADED))
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.addOutOfCoverageState() {
+        addChooseAddressWidget()
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_OUT_OF_COVERAGE), TokoFoodHomeLayoutItemState.LOADED))
     }
 
 
     fun MutableList<TokoFoodHomeItemUiModel>.mapHomeLayoutList(
         responses: List<HomeLayoutResponse>
     ){
-
-        val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
-
-         responses.filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }.forEach { homeLayoutResponse ->
+        addChooseAddressWidget()
+        responses.filter { SUPPORTED_LAYOUT_TYPE.contains(it.layout) }.forEach { homeLayoutResponse ->
              mapToHomeUiModel(homeLayoutResponse)?.let { item ->
                  add(item)
              }
@@ -103,6 +109,13 @@ object TokoFoodHomeMapper {
             )
             TokoFoodHomeItemUiModel(usp, TokoFoodHomeLayoutItemState.LOADED)
         }
+    }
+
+    fun MutableList<TokoFoodHomeItemUiModel>.addChooseAddressWidget() {
+        val chooseAddressUiModel =
+            TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
+        add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
+
     }
 
     fun MutableList<TokoFoodHomeItemUiModel>.setStateToLoading(item: TokoFoodHomeItemUiModel) {

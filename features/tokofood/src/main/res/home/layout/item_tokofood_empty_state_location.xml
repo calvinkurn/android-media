@@ -24,6 +24,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -36,6 +38,8 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton

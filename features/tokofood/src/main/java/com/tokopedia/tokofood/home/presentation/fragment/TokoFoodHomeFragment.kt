@@ -182,6 +182,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         viewModel.getNoPinPoinState()
     }
 
+    private fun showNoAddress(){
+        viewModel.getNoAddressState()
+    }
+
+    private fun showOutOfCoverage(){
+        viewModel.getOutOfCoverageState()
+    }
+
     private fun setupUi() {
         view?.apply {
             navToolbar = binding?.navToolbar
@@ -327,10 +335,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun checkAddressDataAndServiceArea(){
         checkIfChooseAddressWidgetDataUpdated()
 
-        if (!localCacheModel?.lat.isNullOrEmpty() && !localCacheModel?.long.isNullOrEmpty()){
-            showLayout()
-        } else {
+        if (hasNoAddress()) {
+            showNoAddress()
+        } else if (hasNoPinPoin()){
             showNoPinPoin()
+        } else {
+            showLayout()
         }
     }
 
@@ -356,6 +366,15 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         context?.let {
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
+    }
+
+    private fun hasNoAddress(): Boolean {
+        return userSession.isLoggedIn && localCacheModel?.address_id.isNullOrEmpty()
+    }
+
+    private fun hasNoPinPoin(): Boolean {
+        return userSession.isLoggedIn && !localCacheModel?.address_id.isNullOrEmpty()
+                && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty())
     }
 
     // region TokoFoodHomeView
