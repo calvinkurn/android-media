@@ -19,7 +19,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,6 +30,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -54,6 +58,7 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCatego
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -99,6 +104,9 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
+
+        const val REQUEST_CODE_CHANGE_ADDRESS = 111
+        const val REQUEST_CODE_SET_PINPOINT = 112
 
         const val SOURCE = "tokofood"
 
@@ -431,6 +439,16 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun hasNoPinPoin(): Boolean {
         return userSession.isLoggedIn && !localCacheModel?.address_id.isNullOrEmpty()
                 && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty())
+    }
+
+    private fun navigateToSetPinpoint(locationPass: LocationPass) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle().apply {
+            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        }
+        intent.putExtras(bundle)
+        startActivityForResult(intent, TokoFoodPurchaseFragment.REQUEST_CODE_SET_PINPOINT)
     }
 
 
