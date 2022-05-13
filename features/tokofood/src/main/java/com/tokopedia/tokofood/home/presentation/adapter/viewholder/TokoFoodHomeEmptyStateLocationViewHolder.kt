@@ -44,7 +44,6 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
             EMPTY_STATE_NO_ADDRESS -> bindNoAddress()
             EMPTY_STATE_OUT_OF_COVERAGE -> bindOutOfCoverage()
         }
-        bindNoPinPoin()
     }
 
     private fun setupEmptyState() {
@@ -64,7 +63,6 @@ class TokoFoodHomeEmptyStateLocationViewHolder (
         tgTitleEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_title)
         tgDescEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_desc)
         btnEmptyStateLocation?.text = itemView.resources.getString(R.string.home_no_pin_poin_button)
-
     }
 
     private fun bindNoAddress() {

@@ -24,6 +24,7 @@ import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Compa
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.TABS_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutType.Companion.USP_TOKOFOOD
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.EMPTY_STATE_NO_PIN_POINT
 import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.home.domain.data.HomeLayoutResponse
@@ -57,7 +58,7 @@ object TokoFoodHomeMapper {
         val chooseAddressUiModel = TokoFoodHomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(TokoFoodHomeItemUiModel(chooseAddressUiModel, TokoFoodHomeLayoutItemState.LOADED))
 
-        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_PIN_POINT), TokoFoodHomeLayoutItemState.LOADED))
+        add(TokoFoodHomeItemUiModel(TokoFoodHomeEmptyStateLocationUiModel(EMPTY_STATE_NO_ADDRESS), TokoFoodHomeLayoutItemState.LOADED))
     }
 
 
