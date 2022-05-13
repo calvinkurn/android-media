@@ -11,6 +11,7 @@ import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +39,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     private val _addressDetail = MutableLiveData<Result<KeroGetAddressResponse.Data>>()
     val addressDetail: LiveData<Result<KeroGetAddressResponse.Data>>
         get() = _addressDetail
+
+    private val _pinpointValidation = MutableLiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>()
+    val pinpointValidation: LiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>
+        get() = _pinpointValidation
 
     fun getDistrictDetail(districtId: String) {
         viewModelScope.launch {
@@ -90,6 +95,17 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)
+            }
+        }
+    }
+
+    fun validatePinpoint(model: SaveAddressDataModel) {
+        viewModelScope.launch {
+            try {
+                val pinpointValidationResult = repo.pinpointValidation(model.districtId.toInt(), model.latitude, model.longitude, model.postalCode)
+                _pinpointValidation.value = Success(pinpointValidationResult.pinpointValidations.data)
+            } catch (e: Throwable) {
+                _pinpointValidation.value = Fail(e)
             }
         }
     }

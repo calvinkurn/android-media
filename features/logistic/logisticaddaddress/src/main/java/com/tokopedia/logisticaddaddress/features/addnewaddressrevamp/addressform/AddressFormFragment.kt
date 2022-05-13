@@ -57,7 +57,6 @@ import javax.inject.Inject
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
         DiscomBottomSheetRevamp.DiscomRevampListener {
 
-
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
     private var formattedAddress: String = ""
@@ -345,6 +344,27 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
         })
+
+        viewModel.pinpointValidation.observe(viewLifecycleOwner, Observer {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    if (it.data.result) {
+                        saveDataModel?.let { addressData -> viewModel.saveEditAddress(addressData) }
+                    } else {
+                        view?.let { v ->
+                            Toaster.build(v, getString(R.string.error_district_pinpoint_mismatch), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                        }
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    }
+                }
+                is Fail -> {
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -672,12 +692,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-//                if (isPhoneNumberValid(formAddress.etLabel.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
-//                    validated = false
-//                    field.add(getString(R.string.field_label_alamat))
-//                    view?.let { Toaster.build(it, getString(R.string.invalid_character_label_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-//                }
-
                 if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field.add(getString(R.string.field_label_alamat))
@@ -739,30 +753,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-//                if (containsInvalidCharacter(formAccount.etNamaPenerima.textFieldInput.text.toString(), LABEL_NAMA_PENERIMA_RULE)) {
-//                    validated = false
-//                    field.add(getString(R.string.field_nama_penerima))
-//                    view?.let { Toaster.build(it, getString(R.string.invalid_character_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-//                }
-
                 if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
                     validated = false
                     field.add(getString(R.string.field_nama_penerima))
                     view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
-                }
-            }
-        }
-
-        if (isEdit && !isPositiveFlow) {
-            if (pinpointKotaKecamatan.isNotEmpty() && currentKotaKecamatan != pinpointKotaKecamatan) {
-                validated = false
-                view?.let {
-                    Toaster.build(
-                        it,
-                        getString(R.string.error_district_pinpoint_mismatch),
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    ).show()
                 }
             }
         }
@@ -1198,7 +1192,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun doSaveEditAddress() {
         setSaveAddressDataModel()
-        saveDataModel?.let { viewModel.saveEditAddress(it) }
+        saveDataModel?.let {
+            if (currentLat != 0.0 && currentLong != 0.0) {
+                binding?.loaderAddressForm?.visibility = View.VISIBLE
+                viewModel.validatePinpoint(it)
+            } else {
+                viewModel.saveEditAddress(it)
+            }
+        }
     }
 
     private fun setSaveAddressDataModel() {
