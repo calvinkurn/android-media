@@ -33,7 +33,7 @@ class PickerVideoPlayer constructor(
         exoPlayer.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)
-                if(playbackState == Player.STATE_ENDED) {
+                if (playbackState == Player.STATE_ENDED) {
                     start()
                 }
             }
@@ -50,7 +50,7 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        if(!::mediaSource.isInitialized) {
+        if (!::mediaSource.isInitialized) {
             mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
         }
 
@@ -65,12 +65,10 @@ class PickerVideoPlayer constructor(
 
     fun pause() {
         exoPlayer.playWhenReady = false
-        exoPlayer.playbackState
     }
 
     fun resume() {
         exoPlayer.playWhenReady = true
-        exoPlayer.playbackState
     }
 
     fun release() {
