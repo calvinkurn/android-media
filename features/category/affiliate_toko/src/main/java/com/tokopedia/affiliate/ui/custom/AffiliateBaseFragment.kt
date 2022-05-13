@@ -10,18 +10,33 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 
 abstract class AffiliateBaseFragment< T : BaseViewModel> : BaseViewModelFragment<T>(){
+    companion object{
+        const val WARNING = "warning"
+        const val ERROR = "error"
+        const val ANNOUNCEMENT = "announcement"
+    }
     fun onGetValidateUserData(validateUserdata: AffiliateValidateUserData?) {
         if(validateUserdata?.validateAffiliateUserStatus?.data?.isEligible == false) onUserNotEligible()
         else if(validateUserdata?.validateAffiliateUserStatus?.data?.isRegistered == true &&
-            validateUserdata.validateAffiliateUserStatus.data?.isReviewed == false) onUserRegistered()
+            validateUserdata.validateAffiliateUserStatus.data?.isReviewed == false &&
+            validateUserdata.validateAffiliateUserStatus.data?.isSystemDown == false) onUserRegistered()
         else if(validateUserdata?.validateAffiliateUserStatus?.data?.isSystemDown == true) onSystemDown()
         else if(validateUserdata?.validateAffiliateUserStatus?.data?.isReviewed == true) onReviewed()
     }
 
     fun onGetAnnouncementData(announcementData: AffiliateAnnouncementDataV2,view: Ticker?) {
         when(announcementData.getAffiliateAnnouncementV2?.data?.type){
-            "warning" ->{
+            WARNING ->{
                 setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData,view,Ticker.TYPE_WARNING)
+            }
+            ERROR ->{
+                setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData,view,Ticker.TYPE_ERROR)
+            }
+            ANNOUNCEMENT ->{
+                setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData,view,Ticker.TYPE_ANNOUNCEMENT)
+            }
+            else -> {
+                setupTickerView(announcementData.getAffiliateAnnouncementV2?.data?.tickerData,view,Ticker.TYPE_INFORMATION)
             }
         }
     }
@@ -36,8 +51,7 @@ abstract class AffiliateBaseFragment< T : BaseViewModel> : BaseViewModelFragment
 
     }
 
-    private fun setTickerView(tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?, view: Ticker?, type: Int, ) {
-        view?.showContextMenu()
+    private fun setTickerView(tickerData: List<AffiliateAnnouncementDataV2.GetAffiliateAnnouncementV2.Data.TickerData?>?, view: Ticker?, type: Int ) {
         val data = arrayListOf<TickerData>()
         tickerData?.forEach {ticker ->
             val title = ticker?.announcementTitle ?: ""

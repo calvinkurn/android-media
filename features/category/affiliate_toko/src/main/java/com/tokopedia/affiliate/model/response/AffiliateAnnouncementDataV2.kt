@@ -16,7 +16,7 @@ data class AffiliateAnnouncementDataV2(
             var error: Error?,
             @SerializedName("Status")
             var status: Int?,
-            @SerializedName("Type")
+            @SerializedName("TickerType")
             var type: String?,
             @SerializedName("TickerData")
             var tickerData: List<TickerData?>?

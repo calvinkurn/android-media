@@ -18,7 +18,7 @@ class AffiliateAnnouncementUseCase @Inject constructor(
                 "    \"getAffiliateAnnouncementV2\": {\n" +
                 "      \"Data\": {\n" +
                 "        \"Status\": 1,\n" +
-                "        \"Type\": \"warning\",\n" +
+                "        \"TickerType\": \"warning\",\n" +
                 "        \"TickerData\": [\n" +
                 "          {\n" +
                 "            \"AnnouncementTitle\": \"Saldo Affiliate kamu ditahan sementara\",\n" +
