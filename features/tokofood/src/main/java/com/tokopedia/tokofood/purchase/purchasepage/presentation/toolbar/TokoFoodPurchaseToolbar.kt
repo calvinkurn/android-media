@@ -36,13 +36,13 @@ class TokoFoodPurchaseToolbar : Toolbar {
     }
 
     fun setToolbarData(shopName: String, shopDistance: String) {
-        viewBinding?.textShopName?.text = shopName
-        viewBinding?.textShopDistance?.text = shopDistance
+        viewBinding?.merchantName?.text = shopName
+        viewBinding?.merchantDistance?.text = shopDistance
     }
 
     private fun init() {
         viewBinding = ToolbarPurchaseBinding.inflate(LayoutInflater.from(context), this, true)
-        viewBinding?.iconBackArrow?.setOnClickListener {
+        viewBinding?.backButton?.setOnClickListener {
             listener?.onBackPressed()
         }
     }

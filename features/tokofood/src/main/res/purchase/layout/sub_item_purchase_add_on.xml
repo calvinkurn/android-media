@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_add_on_detail"
+        android:id="@+id/addOns"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"

@@ -4,42 +4,42 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class KeroEditAddressParam(
+data class KeroAddressParamData(
     @SuppressLint("Invalid Data Type")
     @SerializedName("addr_id")
     @Expose
-    val addressId: Long,
+    val addressId: Long = 0,
     @SerializedName("addr_name")
     @Expose
-    val addressName: String,
+    val addressName: String = "",
     @SerializedName("address_1")
     @Expose
-    val firstAddress: String,
+    val firstAddress: String = "",
     @SerializedName("address_2")
     @Expose
-    val secondAddress: String,
+    val secondAddress: String = "",
     @SerializedName("city")
     @Expose
-    val city: String,
+    val city: String = "",
     @SerializedName("district")
     @Expose
-    val district: String,
+    val district: String = "",
     @SerializedName("latitude")
     @Expose
-    val latitude: String,
+    val latitude: String = "",
     @SerializedName("longitude")
     @Expose
-    val longitude: String,
+    val longitude: String = "",
     @SerializedName("phone")
     @Expose
-    val phone: String,
+    val phone: String = "",
     @SerializedName("postal_code")
     @Expose
-    val postalCode: String,
+    val postalCode: String = "",
     @SerializedName("province")
     @Expose
-    val province: String,
+    val province: String = "",
     @SerializedName("receiver_name")
     @Expose
-    val receiverName: String,
+    val receiverName: String = "",
 )

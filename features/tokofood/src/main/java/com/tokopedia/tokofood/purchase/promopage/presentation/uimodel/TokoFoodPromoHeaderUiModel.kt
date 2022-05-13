@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPr
 
 data class TokoFoodPromoHeaderUiModel(
         var title: String = "",
+        var iconUrl: String = "",
         var tabId: String = ""
 ) : Visitable<TokoFoodPromoAdapterTypeFactory> {
 

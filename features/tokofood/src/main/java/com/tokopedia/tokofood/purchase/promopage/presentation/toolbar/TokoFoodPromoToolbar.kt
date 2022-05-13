@@ -23,6 +23,10 @@ class TokoFoodPromoToolbar : Toolbar {
         init()
     }
 
+    fun setTitle(title: String) {
+        viewBinding?.textTitlePurchasePromo?.text = title
+    }
+
     private fun init() {
         viewBinding = ToolbarPromoBinding.inflate(LayoutInflater.from(context), this, true)
         viewBinding?.iconBackArrow?.setOnClickListener {

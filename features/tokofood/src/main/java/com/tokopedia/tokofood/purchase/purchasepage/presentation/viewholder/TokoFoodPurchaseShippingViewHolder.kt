@@ -19,18 +19,33 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
     }
 
     override fun bind(element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
-        if (element.isNeedPinpoint) {
-            renderPinpoint(viewBinding, element)
-        } else {
-            renderShipping(viewBinding, element)
+        when {
+            element.isLoading -> {
+                renderLoading(viewBinding)
+            }
+            element.isNeedPinpoint -> {
+                renderPinpoint(viewBinding, element)
+            }
+            else -> {
+                renderShipping(viewBinding, element)
+            }
         }
         itemView.renderAlpha(element)
+    }
+
+    private fun renderLoading(viewBinding: ItemPurchaseShippingBinding) {
+        with(viewBinding) {
+            containerPinpoint.gone()
+            containerShipping.gone()
+            containerLoading.show()
+        }
     }
 
     private fun renderPinpoint(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             containerPinpoint.show()
             containerShipping.gone()
+            containerLoading.gone()
             val noPinpointFullInformation = itemView.context.getString(R.string.text_purchase_message_need_pinpoint)
             textNoPinpoint.text = MethodChecker.fromHtml(noPinpointFullInformation)
             textNoPinpoint.setOnClickListener {
@@ -43,6 +58,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         with(viewBinding) {
             containerShipping.show()
             containerPinpoint.gone()
+            containerLoading.gone()
             imageShippingLogo.setImageUrl(element.shippingLogoUrl)
             textShippingCourierName.text = element.shippingCourierName
             textShippingEta.text = element.shippingEta

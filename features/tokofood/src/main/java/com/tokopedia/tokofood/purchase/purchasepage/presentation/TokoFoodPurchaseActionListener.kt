@@ -30,4 +30,6 @@ interface TokoFoodPurchaseActionListener {
     fun onPromoWidgetClicked()
 
     fun onButtonCheckoutClicked()
+
+    fun onSurgePriceIconClicked(title: String, desc: String)
 }

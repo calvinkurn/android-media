@@ -11,11 +11,19 @@ data class TokoFoodPurchaseShippingTokoFoodPurchaseUiModel(
         var wrappingFee: Long = 0L,
         var serviceFee: Long = 0L,
         var isNeedPinpoint: Boolean = false,
-        var isShippingUnavailable: Boolean = false
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
+        var isShippingAvailable: Boolean = true
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, CanLoadPartially, BaseTokoFoodPurchaseUiModel() {
+
+    var isLoading = false
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    override fun copyWithLoading(isLoading: Boolean): CanLoadPartially {
+        return this.copy().apply {
+            this.isLoading = isLoading
+        }
     }
 
 }

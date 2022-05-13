@@ -10,6 +10,7 @@
     android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/courierButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="-5dp"
@@ -25,7 +26,8 @@
             android:paddingStart="16dp"
             android:paddingTop="8dp"
             android:paddingEnd="16dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            tools:visibility="gone">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/icon_no_pinpoint"
@@ -56,7 +58,7 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_shipping_logo"
@@ -89,6 +91,51 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_shipping_courier_name"
                 app:typographyType="body_3"
                 tools:text="Tiba dalam 30-60 menit" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            tools:visibility="gone">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_tokofood_shipping_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_tokofood_shipping_top"
+                android:layout_width="141dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="7dp"
+                app:layout_constraintStart_toEndOf="@id/loader_tokofood_shipping_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect"/>
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_tokofood_shipping_bottom"
+                android:layout_width="141dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginBottom="1dp"
+                app:layout_constraintStart_toEndOf="@id/loader_tokofood_shipping_icon"
+                app:layout_constraintTop_toBottomOf="@id/loader_tokofood_shipping_top"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:loader_corner_radius="4dp"
+                app:loader_type="rect"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
