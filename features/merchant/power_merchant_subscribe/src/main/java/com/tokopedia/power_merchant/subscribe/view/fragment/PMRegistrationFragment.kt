@@ -22,12 +22,14 @@ import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationBenefitHelper
 import com.tokopedia.power_merchant.subscribe.view.helper.PMRegistrationTermHelper
+import com.tokopedia.power_merchant.subscribe.view.model.BaseWidgetUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetBannerPMRegistration
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetDividerUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetPotentialUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
+import com.tokopedia.power_merchant.subscribe.view.model.WidgetTickerUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -165,13 +167,19 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun renderPmRegistrationWidget(headerWidget: WidgetRegistrationHeaderUiModel) {
-        val widgets = listOf(
+        val tickerList = pmBasicInfo?.tickers
+        val widgets = mutableListOf<BaseWidgetUiModel>()
+        if (!tickerList.isNullOrEmpty() && !isModeratedShop) {
+            widgets.add(WidgetTickerUiModel(tickerList))
+        }
+        val mainWidgets = listOf(
             WidgetBannerPMRegistration,
             headerWidget,
             WidgetDividerUiModel,
             WidgetPotentialUiModel(headerWidget.shopInfo.isNewSeller),
             getPmGradeBenefitWidget()
         )
+        widgets.addAll(mainWidgets)
         recyclerView?.visible()
         adapter.clearAllElements()
         renderList(widgets, false)
