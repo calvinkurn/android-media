@@ -79,8 +79,9 @@ public class PackageViewCheckBox extends EditShippingCourierView<Service,
         };
     }
 
-    private OnTouchListener onDescriptionTouchedListener(final CheckBox checkBox, final String description, final String serviceName){
-        return new OnTouchListener() {
+    private View.OnTouchListener onDescriptionTouchedListener(final CheckBox checkBox, final String description, final String serviceName){
+        return new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
