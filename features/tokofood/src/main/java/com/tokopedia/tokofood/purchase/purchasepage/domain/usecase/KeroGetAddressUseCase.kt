@@ -18,7 +18,7 @@ class KeroGetAddressUseCase @Inject constructor(
 
     suspend fun execute(addressId: String): KeroAddressParamData {
         setRequestParams(KeroGetAddressQuery.createRequestParams(addressId))
-        return executeOnBackground().keroGetAddress.data
+        return executeOnBackground().keroGetAddress.data.first()
     }
 
 }

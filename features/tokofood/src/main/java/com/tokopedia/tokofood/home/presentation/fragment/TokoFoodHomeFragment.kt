@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.home.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -59,6 +61,8 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoCo
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeView
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -104,9 +108,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     companion object {
         private const val ITEM_VIEW_CACHE_SIZE = 20
+        private const val REQUEST_CODE_CHANGE_ADDRESS = 111
+        private const val REQUEST_CODE_SET_PINPOINT = 112
 
-        const val REQUEST_CODE_CHANGE_ADDRESS = 111
-        const val REQUEST_CODE_SET_PINPOINT = 112
+        private const val TOTO_LATITUDE = "-6.2216771"
+        private const val TOTO_LONGITUDE = "106.8184023"
 
         const val SOURCE = "tokofood"
 
@@ -209,7 +215,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickSetPinPoin() {
-
+        navigateToSetPinpoint()
     }
 
     override fun onClickBackToHome() {
@@ -222,6 +228,14 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun onClickSetAddressInCoverage() {
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE_CHANGE_ADDRESS -> {}
+            REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
+        }
     }
 
     private fun showLayout() {
@@ -321,6 +335,19 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
+            }
+        }
+
+        observe(viewModel.pinPointState) { isSuccess ->
+            if (isSuccess) loadLayout()
+            else {
+                //todo show error
+            }
+        }
+
+        observe(viewModel.errorMessage) { message ->
+            view?.let {
+                Toaster.build(it, message, Toaster.LENGTH_LONG).show()
             }
         }
     }
@@ -441,15 +468,30 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 && (localCacheModel?.lat.isNullOrEmpty() || localCacheModel?.long.isNullOrEmpty())
     }
 
-    private fun navigateToSetPinpoint(locationPass: LocationPass) {
+    private fun navigateToSetPinpoint() {
+        val locationPass =  LocationPass().apply {
+            latitude = TOTO_LATITUDE
+            longitude = TOTO_LONGITUDE
+        }
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
         val bundle = Bundle().apply {
             putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
             putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
         }
         intent.putExtras(bundle)
-        startActivityForResult(intent, TokoFoodPurchaseFragment.REQUEST_CODE_SET_PINPOINT)
+        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
-
+    private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
+                locationPass?.let { locationPass ->
+                    localCacheModel?.address_id?.let { addressId ->
+                        viewModel.updatePinPoin(addressId, locationPass.latitude, locationPass.longitude)
+                    }
+                }
+            }
+        }
+    }
 }

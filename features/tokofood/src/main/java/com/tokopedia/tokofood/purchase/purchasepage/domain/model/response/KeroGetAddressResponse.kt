@@ -13,5 +13,5 @@ data class KeroGetAddressResponse(
 data class KeroGetAddress(
     @SerializedName("data")
     @Expose
-    val data: KeroAddressParamData = KeroAddressParamData()
+    val data: List<KeroAddressParamData> = emptyList()
 )

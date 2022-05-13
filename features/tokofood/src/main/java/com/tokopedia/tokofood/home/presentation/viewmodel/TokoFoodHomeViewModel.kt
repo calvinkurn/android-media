@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.home.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -28,24 +29,46 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLayoutUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.PurchaseUiEvent
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoFoodHomeViewModel @Inject constructor(
     private val tokoFoodDynamicChanelUseCase: TokoFoodHomeDynamicChannelUseCase,
     private val tokoFoodHomeUSPUseCase: TokoFoodHomeUSPUseCase,
     private val tokoFoodHomeDynamicIconsUseCase: TokoFoodHomeDynamicIconsUseCase,
-    dispatchers: CoroutineDispatchers
+    private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
     val homeLayoutList: LiveData<Result<TokoFoodHomeListUiModel>>
         get() = _homeLayoutList
+    val pinPointState: LiveData<Boolean>
+        get() = _pinPointState
+    val errorMessage:LiveData<String>
+        get() = _errorMessage
 
     private val _homeLayoutList = MutableLiveData<Result<TokoFoodHomeListUiModel>>()
+    private val _pinPointState = MutableLiveData<Boolean>()
+    private val _errorMessage = MutableLiveData<String>()
 
     private val homeLayoutItemList = mutableListOf<TokoFoodHomeItemUiModel>()
+
+    fun updatePinPoin(addressId: String, latitude: String, longitude: String) {
+        launchCatchError(block = {
+            val isSuccess = withContext(dispatchers.io) {
+                keroEditAddressUseCase.execute(addressId, latitude, longitude)
+            }
+            _pinPointState.value = isSuccess
+        }){
+            _errorMessage.value = it.message
+        }
+    }
 
     fun getLoadingState() {
         homeLayoutItemList.clear()
@@ -54,7 +77,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodHomeLayoutState.LOADING
         )
-        _homeLayoutList.postValue(Success(data))
+        _homeLayoutList.value = Success(data)
     }
 
     fun getNoPinPoinState() {
@@ -64,7 +87,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodHomeLayoutState.HIDE
         )
-        _homeLayoutList.postValue(Success(data))
+        _homeLayoutList.value = Success(data)
     }
 
     fun getNoAddressState() {
@@ -74,7 +97,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodHomeLayoutState.HIDE
         )
-        _homeLayoutList.postValue(Success(data))
+        _homeLayoutList.value = Success(data)
     }
 
     fun getOutOfCoverageState() {
@@ -84,7 +107,7 @@ class TokoFoodHomeViewModel @Inject constructor(
             items = getHomeVisitableList(),
             state = TokoFoodHomeLayoutState.HIDE
         )
-        _homeLayoutList.postValue(Success(data))
+        _homeLayoutList.value = Success(data)
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel) {
@@ -92,7 +115,9 @@ class TokoFoodHomeViewModel @Inject constructor(
 
             homeLayoutItemList.clear()
 
-            val homeLayoutResponse = tokoFoodDynamicChanelUseCase.execute(localCacheModel)
+            val homeLayoutResponse = withContext(dispatchers.io) {
+                tokoFoodDynamicChanelUseCase.execute(localCacheModel)
+            }
 
             homeLayoutItemList.mapHomeLayoutList(homeLayoutResponse.response.data)
 
@@ -101,7 +126,7 @@ class TokoFoodHomeViewModel @Inject constructor(
                 state = TokoFoodHomeLayoutState.SHOW
             )
 
-            _homeLayoutList.postValue(Success(data))
+            _homeLayoutList.value = Success(data)
 
             }){
 
@@ -123,7 +148,7 @@ class TokoFoodHomeViewModel @Inject constructor(
                     state = TokoFoodHomeLayoutState.UPDATE
                 )
 
-                _homeLayoutList.postValue(Success(data))
+                _homeLayoutList.value = Success(data)
             }
         }){
 
