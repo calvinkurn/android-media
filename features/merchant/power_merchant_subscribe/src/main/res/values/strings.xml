@@ -245,5 +245,6 @@
     <string name="pm_grade_benefit_ticker_pm_passed">Selamat! Kamu sudah melewati level ini dan berhak mendapatkan paket keuntungan lebih di PM PRO %1$s.</string>
     <string name="pm_grade_benefit_ticker_pm_pro_not_eligible">Raih Level %1$d untuk mendapatkan paket keuntungan PM PRO %2$s, ya.</string>
     <string name="pm_eligible_pm_grade"><![CDATA[Memenuhi syarat <b>%1$s.</b>]]></string>
+    <string name="pm_registration_term_header">Penuhi syarat di atas untuk bisa bergabung, ya.</string>
 
 </resources>
