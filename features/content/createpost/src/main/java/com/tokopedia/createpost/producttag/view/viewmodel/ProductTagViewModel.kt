@@ -512,7 +512,7 @@ class ProductTagViewModel @AssistedInject constructor(
 
     /** Util */
     private suspend fun getShopInfo(shopId: String): ShopUiModel {
-        /** TODO: gonna hit GQL from shop_page i guess.
+        /** TODO: gonna hit GQL from shop_page || ask BE to modify the applink and provide shopName and shopBadge.
          * iOS team get it from SuggestionData which we can't use bcs the autocomplete module
          * forces us to use applink,
          * the other ways is consume the shopInfo from ace_search_product, but if the product is not found,
