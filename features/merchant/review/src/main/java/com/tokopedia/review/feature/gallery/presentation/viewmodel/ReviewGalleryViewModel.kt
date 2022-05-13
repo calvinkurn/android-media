@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.review.feature.gallery.domain.usecase.GetProductRatingUseCase
+import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -82,11 +82,7 @@ class ReviewGalleryViewModel @Inject constructor(
                 getDetailedReviewMediaUseCase.setParams(it, page)
                 val data = getDetailedReviewMediaUseCase.executeOnBackground()
                 _reviewImages.postValue(Success(data.productrevGetReviewMedia))
-                if (page == 1) {
-                    _concatenatedReviewImages.postValue(data.productrevGetReviewMedia)
-                } else {
-                    _concatenatedReviewImages.postValue(mergeDetailedReviewMediaUseCaseResult(_concatenatedReviewImages.value, data.productrevGetReviewMedia, page))
-                }
+                _concatenatedReviewImages.postValue(mergeDetailedReviewMediaUseCaseResult(_concatenatedReviewImages.value, data.productrevGetReviewMedia, page))
                 allReviewDetail.add(data.productrevGetReviewMedia.detail)
                 shopId = data.productrevGetReviewMedia.detail.reviewDetail.firstOrNull()?.shopId ?: ""
             }
@@ -118,11 +114,17 @@ class ReviewGalleryViewModel @Inject constructor(
             } else {
                 oldResponse.detail.reviewGalleryImages.plus(newResponse.detail.reviewGalleryImages)
             }
+            val mergedReviewGalleryVideos = if (pageToLoad == getPrevPage()) {
+                newResponse.detail.reviewGalleryVideos.plus(oldResponse.detail.reviewGalleryVideos)
+            } else {
+                oldResponse.detail.reviewGalleryVideos.plus(newResponse.detail.reviewGalleryVideos)
+            }
             oldResponse.copy(
                 reviewMedia = mergedReviewImages,
                 detail = oldResponse.detail.copy(
                     reviewDetail = mergedReviewDetail,
                     reviewGalleryImages = mergedReviewGalleryImages,
+                    reviewGalleryVideos = mergedReviewGalleryVideos,
                     mediaCountFmt = newResponse.detail.mediaCountFmt,
                     mediaCount = newResponse.detail.mediaCount
                 ),

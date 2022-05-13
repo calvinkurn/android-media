@@ -7,6 +7,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Pr
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.Called
@@ -69,30 +70,27 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
     @Test
     fun `when setPage should call getProductReviews and return expected results`() {
-        val page = ArgumentMatchers.anyInt()
         val productId = ArgumentMatchers.anyString()
-        val expectedResponse = ProductRevGetDetailedReviewMediaResponse()
 
-        onGetReviewImagesSuccess_thenReturn(expectedResponse)
+        onGetReviewImagesSuccess_thenReturn(getDetailedReviewMediaResult1stPage)
 
         viewModel.setProductId(productId)
-        viewModel.setPage(page)
+        viewModel.setPage(DEFAULT_FIRST_PAGE)
 
-        Assert.assertEquals("", viewModel.getShopId())
+        Assert.assertEquals("11530573", viewModel.getShopId())
         verifyGetReviewImagesUseCaseExecuted()
-        verifyReviewImagesSuccessEquals(Success(expectedResponse.productrevGetReviewMedia))
+        verifyReviewImagesSuccessEquals(Success(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia))
     }
 
     @Test
     fun `when setPage should call getReviewImages and return expected error`() {
-        val page = ArgumentMatchers.anyInt()
         val productId = ArgumentMatchers.anyString()
         val expectedResponse = Throwable()
 
         onGetReviewsImagesFail_thenReturn(expectedResponse)
 
         viewModel.setProductId(productId)
-        viewModel.setPage(page)
+        viewModel.setPage(DEFAULT_FIRST_PAGE)
 
         Assert.assertEquals("", viewModel.getShopId())
         verifyGetReviewImagesUseCaseExecuted()
@@ -101,11 +99,105 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
     @Test
     fun `when productId is null & call setPage should not call getReviewImages`() {
-        val page = ArgumentMatchers.anyInt()
-
-        viewModel.setPage(page)
+        viewModel.setPage(DEFAULT_FIRST_PAGE)
 
         verifyGetReviewImagesUseCaseWasNotExecuted()
+    }
+
+    @Test
+    fun `when load more should merge previous result with new result`() {
+        val productId = ArgumentMatchers.anyString()
+        val mergedReviewImages = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .reviewMedia
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.reviewMedia)
+        val mergedReviewDetail = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewDetail
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewDetail)
+        val mergedReviewGalleryImages = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewGalleryImages
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewGalleryImages)
+        val mergedReviewGalleryVideos = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewGalleryVideos
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewGalleryVideos)
+        val expected = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.copy(
+            reviewMedia = mergedReviewImages,
+            detail = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.copy(
+                reviewDetail = mergedReviewDetail,
+                reviewGalleryImages = mergedReviewGalleryImages,
+                reviewGalleryVideos = mergedReviewGalleryVideos,
+                mediaCountFmt = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.mediaCountFmt,
+                mediaCount = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.mediaCount
+            ),
+            hasNext = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.hasNext,
+            hasPrev = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.hasPrev
+        )
+
+        onGetReviewImagesSuccess_thenReturn(getDetailedReviewMediaResult1stPage)
+
+        viewModel.setProductId(productId)
+        viewModel.setPage(DEFAULT_FIRST_PAGE)
+
+        onGetReviewImagesSuccess_thenReturn(getDetailedReviewMediaResult2ndPage)
+
+        viewModel.setPage(DEFAULT_FIRST_PAGE.plus(1))
+
+        verifyConcatenatedReviewImages(expected)
+        Assert.assertEquals(773, viewModel.getMediaCount())
+    }
+
+    @Test
+    fun `when load previous should merge previous result with new result`() {
+        val productId = ArgumentMatchers.anyString()
+        val mergedReviewImages = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .reviewMedia
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.reviewMedia)
+        val mergedReviewDetail = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewDetail
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewDetail)
+        val mergedReviewGalleryImages = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewGalleryImages
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewGalleryImages)
+        val mergedReviewGalleryVideos = getDetailedReviewMediaResult1stPage
+            .productrevGetReviewMedia
+            .detail
+            .reviewGalleryVideos
+            .plus(getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.reviewGalleryVideos)
+        val expected = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.copy(
+            reviewMedia = mergedReviewImages,
+            detail = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.copy(
+                reviewDetail = mergedReviewDetail,
+                reviewGalleryImages = mergedReviewGalleryImages,
+                reviewGalleryVideos = mergedReviewGalleryVideos,
+                mediaCountFmt = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.mediaCountFmt,
+                mediaCount = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.detail.mediaCount
+            ),
+            hasNext = getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.hasNext,
+            hasPrev = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.hasPrev
+        )
+
+        onGetReviewImagesSuccess_thenReturn(getDetailedReviewMediaResult2ndPage)
+
+        viewModel.setProductId(productId)
+        viewModel.setPage(DEFAULT_FIRST_PAGE.plus(1))
+
+        onGetReviewImagesSuccess_thenReturn(getDetailedReviewMediaResult1stPage)
+
+        viewModel.setPage(DEFAULT_FIRST_PAGE)
+
+        verifyConcatenatedReviewImages(expected)
+        Assert.assertEquals(773, viewModel.getMediaCount())
     }
 
     private fun onGetProductRatingSuccess_thenReturn(expectedResponse: ProductReviewRatingResponse) {
@@ -150,5 +242,9 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
     private fun verifyReviewImagesErrorEquals(expectedErrorValue: Fail) {
         viewModel.reviewMedia.verifyErrorEquals(expectedErrorValue)
+    }
+
+    private fun verifyConcatenatedReviewImages(expectedValue: Any) {
+        viewModel.concatenatedReviewImages.verifyValueEquals(expectedValue)
     }
 }
