@@ -275,7 +275,7 @@ class AddChangePinViewModel @Inject constructor(
 	}
     }
 
-    private suspend fun getPublicKey(): KeyData {
+    suspend fun getPublicKey(): KeyData {
 	generatePublicKeyUseCase.setParams("pinv2")
 	return generatePublicKeyUseCase.executeOnBackground().keyData
     }
