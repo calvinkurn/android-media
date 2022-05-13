@@ -24,10 +24,12 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.domain.MutationSlashPriceProductSubmissionUseCase
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountConstant.GET_SETUP_PRODUCT_LIST_DELAY
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMapper
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.utils.constant.SlashPriceStatusId
 import com.tokopedia.shopdiscount.utils.extension.allCheckEmptyList
+import com.tokopedia.shopdiscount.utils.extension.setElement
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,10 +44,6 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private val mutationSlashPriceProductSubmissionUseCase: MutationSlashPriceProductSubmissionUseCase,
     private val mutationDoSlashPriceProductReservationUseCase: MutationDoSlashPriceProductReservationUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
-
-    companion object {
-        private const val GET_PRODUCT_LIST_DELAY: Long = 1000
-    }
 
     val setupProductListLiveData: LiveData<Result<ShopDiscountSetupProductUiModel>>
         get() = _setupProductListLiveData
@@ -78,7 +76,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         slashPriceStatus: Int
     ) {
         launchCatchError(dispatcherProvider.io, block = {
-            delay(GET_PRODUCT_LIST_DELAY)
+            delay(GET_SETUP_PRODUCT_LIST_DELAY)
             val response = getSetupProductListResponse(requestId)
             val mappedUiModel =
                 ShopDiscountManageDiscountMapper.mapToShopDiscountSetupProductUiModel(
@@ -121,11 +119,7 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     }
 
     private fun getIsVariantEnabled(isVariantEnabled: Boolean?, mode: String): Boolean {
-        return isVariantEnabled
-            ?: when (mode) {
-                ShopDiscountManageDiscountMode.CREATE -> {
-                    false
-                }
+        return isVariantEnabled ?: when (mode) {
                 ShopDiscountManageDiscountMode.UPDATE -> {
                     true
                 }
@@ -438,36 +432,31 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         slashPriceStatus: Int
     ) {
         launchCatchError(dispatcherProvider.io, {
-            listProductData.forEach { productData ->
-                val minOriginalPrice = productData.mappedResultData.minOriginalPrice
-                val isVariant = productData.productStatus.isVariant
+            listProductData.forEach { productParentData ->
+                val minOriginalPrice = productParentData.mappedResultData.minOriginalPrice
+                val isVariant = productParentData.productStatus.isVariant
+                val listProductToBeUpdated: MutableList<ShopDiscountSetupProductUiModel.SetupProductData> =
+                    mutableListOf()
                 if (isVariant) {
-                    productData.listProductVariant.forEach { variantProductData ->
-                        updateProductData(
-                            variantProductData,
-                            bulkApplyDiscountResult,
-                            minOriginalPrice,
-                            slashPriceStatus,
-                            isVariant
-                        )
-                    }
+                    listProductToBeUpdated.addAll(productParentData.listProductVariant)
                 } else {
-                    updateProductData(
-                        productData,
-                        bulkApplyDiscountResult,
-                        minOriginalPrice,
-                        slashPriceStatus,
-                        false
-                    )
+                    listProductToBeUpdated.add(productParentData)
                 }
-                updateProductStatusAndMappedData(productData, mode, slashPriceStatus)
+                updateProductData(
+                    listProductToBeUpdated,
+                    bulkApplyDiscountResult,
+                    minOriginalPrice,
+                    slashPriceStatus,
+                    isVariant
+                )
+                updateProductStatusAndMappedData(productParentData, mode, slashPriceStatus)
             }
             _updatedProductListData.postValue(listProductData)
         }) {}
     }
 
     private fun updateProductData(
-        productData: ShopDiscountSetupProductUiModel.SetupProductData,
+        listProductToBeUpdated: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         bulkApplyDiscountResult: DiscountSettings,
         minOriginalPrice: Int,
         slashPriceStatus: Int,
@@ -487,21 +476,23 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                 discountedPrice = (100 - discountedPercentage) * minOriginalPrice / 100
             }
         }
-        when (slashPriceStatus) {
-            SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
-                productData.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
+        listProductToBeUpdated.forEach { productToBeUpdated ->
+            when (slashPriceStatus) {
+                SlashPriceStatusId.CREATE, SlashPriceStatusId.SCHEDULED -> {
+                    productToBeUpdated.slashPriceInfo.startDate = bulkApplyDiscountResult.startDate ?: Date()
+                }
             }
-        }
-        productData.slashPriceInfo.endDate = bulkApplyDiscountResult.endDate ?: Date()
-        productData.slashPriceInfo.discountedPrice = discountedPrice
-        productData.slashPriceInfo.discountPercentage = discountedPercentage
-        productData.getListEnabledProductWarehouse().forEach {
-            it.discountedPrice = discountedPrice
-            it.discountedPercentage = discountedPercentage
-            it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
-        }
-        if(isVariant){
-            productData.variantStatus.isVariantEnabled = true
+            productToBeUpdated.slashPriceInfo.endDate = bulkApplyDiscountResult.endDate ?: Date()
+            productToBeUpdated.slashPriceInfo.discountedPrice = discountedPrice
+            productToBeUpdated.slashPriceInfo.discountPercentage = discountedPercentage
+            productToBeUpdated.getListEnabledProductWarehouse().forEach {
+                it.discountedPrice = discountedPrice
+                it.discountedPercentage = discountedPercentage
+                it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
+            }
+            if(isVariant){
+                productToBeUpdated.variantStatus.isVariantEnabled = true
+            }
         }
     }
 
@@ -588,17 +579,19 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         mode: String,
         slashPriceStatus: Int
     ) {
-        val matched = currentProductListData.firstOrNull {
+        val matchedIndex = currentProductListData.indexOfFirst {
             it.productId == newProdData.productId
         }
         val newList = currentProductListData.toMutableList()
-        newList[currentProductListData.indexOf(matched)] = newProdData
-        updateProductStatusAndMappedData(
-            newList[currentProductListData.indexOf(matched)],
-            mode,
-            slashPriceStatus
-        )
-        _updatedProductListData.postValue(newList.toList())
+        newList.setElement(matchedIndex, newProdData)
+        newList.getOrNull(matchedIndex)?.let {
+            updateProductStatusAndMappedData(
+                it,
+                mode,
+                slashPriceStatus
+            )
+            _updatedProductListData.postValue(newList.toList())
+        }
     }
 
 }

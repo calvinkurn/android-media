@@ -14,6 +14,8 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlash
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceStopUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.utils.date.toDate
+import java.lang.Exception
+import java.util.*
 
 object ShopDiscountManageDiscountMapper {
 
@@ -80,12 +82,20 @@ object ShopDiscountManageDiscountMapper {
         slashPriceResponse: GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList.SlashPriceInfo
     ): ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo {
         return slashPriceResponse.let {
+            var startDate = Date()
+            var endDate = Date()
+            try {
+                startDate =
+                    it.startDate.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+                endDate = it.endDate.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+            } catch (e: Exception) {
+            }
             ShopDiscountSetupProductUiModel.SetupProductData.ProductSlashPriceInfo(
                 slashPriceProductId = it.slashPriceProductId,
                 discountedPrice = it.discountedPrice,
                 discountPercentage = it.discountPercentage,
-                startDate = it.startDate.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE),
-                endDate = it.endDate.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE),
+                startDate = startDate,
+                endDate = endDate,
                 slashPriceStatusId = it.slashPriceStatusId
             )
         }

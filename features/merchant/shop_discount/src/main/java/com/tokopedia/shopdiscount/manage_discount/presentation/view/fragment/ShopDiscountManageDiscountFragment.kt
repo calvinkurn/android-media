@@ -187,9 +187,16 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         buttonSubmit?.apply {
             isEnabled = false
             setOnClickListener {
-                submitProductDiscount()
+                if(buttonSubmit?.isLoading == false) {
+                    showButtonSubmitLoading()
+                    submitProductDiscount()
+                }
             }
         }
+    }
+
+    private fun showButtonSubmitLoading() {
+        buttonSubmit?.isLoading = true
     }
 
     private fun submitProductDiscount() {
@@ -297,6 +304,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun observeResultSubmitProductSlashPriceLiveData() {
         viewModel.resultSubmitProductSlashPriceLiveData.observe(viewLifecycleOwner, {
+            hideButtonSubmitLoading()
             when (it) {
                 is Success -> {
                     val responseHeaderData = it.data.responseHeader
@@ -329,6 +337,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun hideButtonSubmitLoading() {
+        buttonSubmit?.isLoading = false
     }
 
     private fun redirectToManageProductPage(
