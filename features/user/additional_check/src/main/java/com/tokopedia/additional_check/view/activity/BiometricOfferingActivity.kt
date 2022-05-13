@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.additional_check.R
@@ -83,11 +82,7 @@ class BiometricOfferingActivity: BaseActivity() {
 	    val primaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_biometric_offering_success_primary_btn)
 	    val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_biometric_offering_success_img)
 
-	    mainImgView?.run {
-		Glide.with(activity)
-		    .load(FingerprintDialogHelper.BIOMETRIC_OFFERING_SUCCESS_IMG)
-		    .into(this)
-	    }
+	    mainImgView?.loadImage(FingerprintDialogHelper.BIOMETRIC_OFFERING_SUCCESS_IMG)
 
 	    primaryBtn?.setOnClickListener {
 		twoFactorTracker.clickContinueShoppingWhenSuccess()
