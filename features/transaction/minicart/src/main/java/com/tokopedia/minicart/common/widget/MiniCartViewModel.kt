@@ -254,7 +254,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    fun deleteMultipleCartItems(products: List<MiniCartProductUiModel>, isFromEditBundle: Boolean = true) {
+    fun deleteMultipleCartItems(products: List<MiniCartProductUiModel>, isFromEditBundle: Boolean = false) {
         deleteCartUseCase.setParams(products.map { it.cartId })
         deleteCartUseCase.execute(
                 onSuccess = {

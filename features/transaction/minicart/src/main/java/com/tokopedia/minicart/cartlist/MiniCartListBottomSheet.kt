@@ -123,7 +123,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 val list = viewModel?.miniCartListBottomSheetUiModel?.value?.visitables ?: emptyList()
                 val deletedItems = list.filter { it is MiniCartProductUiModel && it.isBundlingItem && it.bundleId == oldBundleId }
                 if (deletedItems.isNotEmpty()) {
-                    viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>)
+                    viewModel?.deleteMultipleCartItems(deletedItems as List<MiniCartProductUiModel>, isFromEditBundle = true)
                 }
             } else {
                 viewModel?.getCartList()
