@@ -8,8 +8,8 @@
 
     <application>
         <activity
-            android:name=".external_register.base.activity.ExternalRegisterWebViewActivity"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"
+            android:name=".external_register.base.activity.ExternalRegisterWebViewActivity" />
         <activity
             android:name=".login.view.activity.LoginActivity"
             android:label="@string/login"
