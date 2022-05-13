@@ -2,13 +2,14 @@ package com.tokopedia.topads.dashboard.view.fragment.insight
 
 import android.os.Bundle
 import android.text.Html
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -35,12 +36,13 @@ import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendation
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.PRODUCT_RECOM
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsRecomGroupBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
-import kotlinx.android.synthetic.main.topads_dash_recom_product_list.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -52,10 +54,18 @@ import kotlin.collections.set
 
 const val CLICK_GRUP_AKTIF_IKLANKAN = "click - iklankan - grup iklan aktif"
 const val BUAT_GRUP_IKLANKAN = "click - iklankan - buat grup iklan"
+
 class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var product_recom_title: Typography? = null
+    private var product_recom_desc: Typography? = null
+    private var selectedItems: Typography? = null
+    private var divider: DividerUnify? = null
+    private var checkBox: CheckboxUnify? = null
+    private var rvRecomProduct: RecyclerView? = null
+
     private lateinit var adapter: TopadsProductRecomAdapter
-    private lateinit var checkBox: CheckboxUnify
     private var productRecommendData: ProductRecommendationData? = null
     var height: Int? = null
 
@@ -64,8 +74,6 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
-
-    var rvRecomProduct: RecyclerView? = null
 
     private val sheet: TopAdsRecomGroupBottomSheet by lazy {
         TopAdsRecomGroupBottomSheet.getInstance()
@@ -81,7 +89,6 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             return fragment
         }
     }
-
 
     override fun getScreenName(): String {
         return TopAdsInsightBaseProductFragment::class.java.name
@@ -105,10 +112,17 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         adapter.setMaxValue(list.firstOrNull()?.maxBid ?: "0")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.topads_dash_recom_product_list, container, false)
         rvRecomProduct = view.findViewById(R.id.rvProductRecom)
         checkBox = view.findViewById(R.id.cb_product_recom)
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        product_recom_title = view.findViewById(R.id.product_recom_title)
+        product_recom_desc = view.findViewById(R.id.product_recom_desc)
+        selectedItems = view.findViewById(R.id.selectedItems)
+        divider = view.findViewById(R.id.divider)
         setAdapter()
         return view
     }
@@ -116,7 +130,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataFromArgument()
-        rvProductRecom.setMargin(0, 0, 0, height ?: 0)
+        rvRecomProduct?.setMargin(0, 0, 0, height ?: 0)
         swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
@@ -134,10 +148,12 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun checkUnchekAll() {
-        checkBox.run {
+        checkBox?.run {
             setOnClickListener {
                 adapter.setAllChecked(isChecked)
-                selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.getSelectedIds().size)
+                selectedItems?.text =
+                    String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product),
+                        adapter.getSelectedIds().size)
             }
         }
     }
@@ -156,10 +172,15 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             adapter.items.add(it)
         }
         adapter.notifyDataSetChanged()
-        checkBox.isChecked = true
+        checkBox?.isChecked = true
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
-        product_recom_desc.text = Html.fromHtml(String.format(getString(R.string.topads_dash_recom_product_desc), products?.size, calculateSetTitle(products)))
-        selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), adapter.itemCount)
+        product_recom_desc?.text =
+            Html.fromHtml(String.format(getString(R.string.topads_dash_recom_product_desc),
+                products?.size,
+                calculateSetTitle(products)))
+        selectedItems?.text =
+            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product),
+                adapter.itemCount)
     }
 
     private fun enableButton(enable: Boolean) {
@@ -171,15 +192,18 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun setEmptyState() {
         (parentFragment as TopAdsRecommendationFragment).setCount(adapter.items.size, 0)
-        emptyViewProductRecommendation?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
-        emptyViewProductRecommendation?.text_title?.text = getString(R.string.topads_dash_empty_product_recom_title)
-        emptyViewProductRecommendation?.text_desc?.text = getString(R.string.topads_dash_empty_product_recom_desc)
-        emptyViewProductRecommendation?.visible()
+        view?.findViewById<ImageUnify>(R.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        view?.findViewById<Typography>(R.id.text_title)?.text =
+            getString(R.string.topads_dash_empty_product_recom_title)
+        view?.findViewById<Typography>(R.id.text_desc)?.text =
+            getString(R.string.topads_dash_empty_product_recom_desc)
+        view?.findViewById<ConstraintLayout>(R.id.emptyViewProductRecommendation)?.visible()
         divider?.gone()
-        rvProductRecom?.gone()
+        rvRecomProduct?.gone()
         product_recom_title?.gone()
         product_recom_desc?.gone()
-        checkBox.gone()
+        checkBox?.gone()
         selectedItems?.gone()
         (parentFragment as TopAdsRecommendationFragment).setEmptyProduct()
         (activity as TopAdsDashboardActivity).hideButton(true)
@@ -200,7 +224,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             setEmptyState()
         else
             setAdapterData(productRecommendationModel.topadsGetProductRecommendation.data.products)
-        swipeRefreshLayout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     fun openBottomSheet() {
@@ -214,9 +238,13 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             currentGroupId = ""
             getBidInfo()
             adapter.items?.forEach {
-                if(it.isChecked) {
-                    val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(BUAT_GRUP_IKLANKAN, eventLabel, userSession.userId)
+                if (it.isChecked) {
+                    val eventLabel =
+                        "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(
+                        BUAT_GRUP_IKLANKAN,
+                        eventLabel,
+                        userSession.userId)
                 }
             }
         }
@@ -225,9 +253,13 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             currentGroupId = groupIdAndType.first
             currentGroupType = groupIdAndType.second
             adapter.items?.forEach {
-                if(it.isChecked) {
-                    val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_GRUP_AKTIF_IKLANKAN, eventLabel, userSession.userId)
+                if (it.isChecked) {
+                    val eventLabel =
+                        "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(
+                        CLICK_GRUP_AKTIF_IKLANKAN,
+                        eventLabel,
+                        userSession.userId)
                 }
             }
         }
@@ -238,7 +270,8 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         val selectedProductIds: List<String>? = adapter.getSelectedIds().map {
             it
         }
-        val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+        val suggestions =
+            DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         topAdsDashboardPresenter.getBidInfo(listOf(suggestions), this::onSuccessSuggestion)
     }
 
@@ -266,7 +299,10 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             map[PARAM_GROUP_Id] = currentGroupId
             map[PARAM_GROUP_TYPE] = currentGroupType
             map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
-            topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit, ::onError)
+            topAdsDashboardPresenter.editBudgetThroughInsight(productList,
+                map,
+                ::onResultEdit,
+                ::onError)
             currentGroupId = ""
         }
         sheet.dismiss()
@@ -313,7 +349,12 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok),
+                View.OnClickListener {}).show()
         }
     }
 
@@ -328,14 +369,22 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun showSuccessToast() {
         view?.let {
-            Toaster.build(it, String.format(getString(R.string.topads_dash_success_product_toast), adapter.getSelectedIds().size), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.topads.common.R.string.topads_common_text_ok), View.OnClickListener {}).show()
+            Toaster.build(it,
+                String.format(getString(R.string.topads_dash_success_product_toast),
+                    adapter.getSelectedIds().size),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok),
+                View.OnClickListener {}).show()
         }
     }
 
     private fun itemCheckedUnchecked() {
         val selected = adapter.getSelectedIds().size
-        selectedItems?.text = String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product), selected)
-        checkBox.isChecked = selected == adapter.itemCount
+        selectedItems?.text =
+            String.format(getString(com.tokopedia.topads.common.R.string.topads_common_selected_product),
+                selected)
+        checkBox?.isChecked = selected == adapter.itemCount
         if (selected == 0) {
             enableButton(false)
         } else {
