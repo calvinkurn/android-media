@@ -4,6 +4,8 @@ import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfill
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by dhaba
@@ -57,15 +59,15 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
         it: RecommendationItem,
         position: Int
     ): Product {
-        val productPosition = position + 1
+        val productPosition = (position + 1).toString()
         return Product(
             name = it.name,
             id = it.productId.toString(),
             productPrice = it.priceInt.toString(),
             brand = Value.NONE_OTHER,
-            category = it.categoryBreadcrumbs.toLowerCase(),
+            category = it.categoryBreadcrumbs.lowercase(Locale.getDefault()),
             variant = Value.NONE_OTHER,
-            productPosition = productPosition.toString(),
+            productPosition = productPosition,
             isFreeOngkir = it.isFreeOngkirActive && !it.labelGroupList.hasLabelGroupFulfillment(),
             isFreeOngkirExtra = it.isFreeOngkirActive && it.labelGroupList.hasLabelGroupFulfillment(),
             headerName = it.header,
