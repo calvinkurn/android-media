@@ -52,6 +52,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "discount_status_id"
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
+        private const val ONE_YEAR = 1
 
         /**
          * @param bulkUpdateDefaultStartDate
@@ -476,13 +477,21 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private fun displayEndDateTimePicker() {
+        val isUsingCustomPeriod = viewModel.getCurrentSelection().isUsingCustomPeriod
+        val endDate = if (isUsingCustomPeriod) {
+            val selectedStartDate = viewModel.getSelectedStartDate()
+            selectedStartDate?.advanceByOneYear()
+        } else {
+            viewModel.getSelectedEndDate()
+        }
+
         ShopDiscountDatePicker.show(
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
             viewModel.getSelectedEndDate() ?: return,
             viewModel.getSelectedStartDate() ?: return,
-            viewModel.getSelectedEndDate() ?: return,
+            endDate ?: return,
             viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -523,5 +532,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.chipSixMonthPeriod?.gone()
         binding?.chipOneMonthPeriod?.gone()
         binding?.chipCustomSelection?.gone()
+    }
+
+    private fun Date.advanceByOneYear() : Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+        calendar.add(Calendar.YEAR, ONE_YEAR)
+        return calendar.time
     }
 }
