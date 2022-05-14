@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter
 
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,6 +11,7 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.util.ChatDiffUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
 /**
@@ -57,5 +59,22 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
             visitables.add(0,loadingMoreModel)
             notifyItemInserted(0)
         }
+    }
+
+    fun hideBottomLoading() {
+        if (visitables[0] is LoadingMoreModel) {
+            visitables.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
+    fun addBottomData(listChat: List<Visitable<*>>) {
+        val oldList = ArrayList(this.visitables)
+        val newList = this.visitables.apply {
+            addAll(0, listChat)
+        }
+        val diffUtil = ChatDiffUtil(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        diffResult.dispatchUpdatesTo(this)
     }
 }

@@ -17,7 +17,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +27,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
@@ -40,10 +38,10 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
-import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ENTRY
@@ -119,7 +117,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -572,6 +569,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.checkForSession(messageId)
         showTicker()
 
+        initRecyclerViewListener()
+        setupBeforeReplyTime()
+
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
@@ -684,10 +684,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view?.findViewById(R.id.swipe_refresh_layout)
     }
 
+    //TODO fix this
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
-            loadData(FIRST_PAGE)
+            //TODO change this
+     //       loadData(FIRST_PAGE)
+            presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
             swipeToRefresh.isRefreshing = true
             isChatRefreshed = true
         } else{
@@ -710,17 +713,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
     }
 
-    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-        return {
-            val list = it.listChat.filter {
+    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
+        return { chatroomViewModel, chatReplies ->
+            val list = chatroomViewModel.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageUiModel && it.message.isEmpty()))
             }
 
-            updateViewData(it)
-            renderList(list, it.canLoadMore)
-            getViewState()?.onSuccessLoadFirstTime(it)
-            checkShowLoading(it.canLoadMore)
+            updateViewData(chatroomViewModel)
+            renderList(list, chatroomViewModel.canLoadMore)
+            getViewState()?.onSuccessLoadFirstTime(chatroomViewModel)
+        //    checkShowLoading(it.canLoadMore)
+            updateHasNextState(chatReplies)
+            updateHasNextAfterState(chatReplies)
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
@@ -734,6 +739,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         (it is MessageUiModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false
+            //TODO fix this
             if (list.isNotEmpty()){
                 val filteredList= getViewState()?.clearDuplicate(list)
                 if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
@@ -765,7 +771,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPrevious(messageId, page+1, onError(), onSuccessGetPreviousChat(page), onGetChatRatingListMessageError)
+     //   presenter.loadPrevious(messageId, page+1, onError(), onSuccessGetPreviousChat(page), onGetChatRatingListMessageError)
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
@@ -1042,6 +1048,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
 
         replyBubbleOnBoarding.dismiss()
+        resetScrollListenerReset()
         visibilityReplyBubble(false)
         clearChatText()
     }
@@ -1395,7 +1402,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             Log.d("FATAL", "goToBubble: $bubblePosition")
          //   (recyclerView?.layoutManager as LinearLayoutManager).scrollToPosition(bubblePosition)
           //  resetItemList()
-          //  setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
+            resetScrollListenerReset()
+            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
          //   loadInitialData()
         }
 
@@ -1447,15 +1455,79 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         rvScrollListener = object : RecyclerViewScrollListener((recyclerView?.layoutManager as LinearLayoutManager)) {
             override fun loadMoreTop() {
                 showTopLoading()
-                //TODO call presenter.loadTopChat()
+                presenter.getTopChat(messageId, onSuccessGetTopChatData(), onErrorGetTopChat())
             }
 
             override fun loadMoreDown() {
                showBottomLoading()
-                //TODO call presenter. loadBottomChat()
+               presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat())
             }
         }.also {
             recyclerView?.addOnScrollListener(it)
+        }
+    }
+
+    private fun onErrorGetBottomChat() {
+        (adapter as ChatbotAdapter).hideBottomLoading()
+        onError()
+        rvScrollListener?.finishBottomLoadingState()
+    }
+
+    private fun onErrorGetTopChat() {
+        hideTopLoading()
+        onError()
+        rvScrollListener?.finishTopLoadingState()
+    }
+
+    private fun hideTopLoading() {
+        hideLoading()
+    }
+
+    private fun onSuccessGetTopChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
+        return { chatroom , chatReplies ->
+            val list = chatroom.listChat.filter {
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
+            }
+         //   if (page == FIRST_PAGE) isFirstPage = false
+            //TODO fix this
+            if (list.isNotEmpty()){
+                val filteredList= getViewState()?.clearDuplicate(list)
+    //            if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
+                rvScrollListener?.finishTopLoadingState()
+                filteredList?.let { renderList ->
+                    renderList(renderList)
+                }
+
+             //   checkShowLoading(chatroom.canLoadMore)
+                //TODO where to place
+                updateHasNextState(chatReplies)
+                //Don't need this i think
+            //    enableLoadMore()
+            }
+        }
+    }
+
+    //TODO handle the logic
+    private fun onSuccessGetBottomChatData(): (ChatroomViewModel,ChatReplies) -> Unit {
+        return { chatroom , chatReplies ->
+            val list = chatroom.listChat.filter {
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
+            }
+            //TODO fix this
+            if (list.isNotEmpty()){
+                val filteredList= getViewState()?.clearDuplicate(list)
+                //     if (filteredList?.isEmpty() == true) loadData(page + FIRST_PAGE)
+                rvScrollListener?.finishBottomLoadingState()
+                filteredList?.let { renderList ->
+                    renderBottomList(renderList)
+                }
+                checkShowLoading(chatroom.canLoadMore)
+                //TODO where to place
+                updateHasNextAfterState(chatReplies)
+                enableLoadMore()
+            }
         }
     }
 
@@ -1466,5 +1538,45 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun showBottomLoading() {
         (adapter as ChatbotAdapter).showBottomLoading()
     }
+
+    private fun setupBeforeReplyTime(replyTimeMillis: String) {
+        messageCreateTime = replyTimeMillis
+        setupBeforeReplyTime()
+    }
+
+    private fun setupBeforeReplyTime() {
+        if (messageCreateTime.isNotEmpty()) {
+            presenter.setBeforeReplyTime(messageCreateTime)
+        }
+    }
+
+    private fun updateHasNextState(chat: ChatReplies) {
+        val hasNext = chat.hasNext
+        rvScrollListener?.updateHasNextState(chat)
+        if (hasNext) {
+            showTopLoading()
+        }
+    }
+
+    private fun updateHasNextAfterState(chat: ChatReplies) {
+        val hasNextAfter = chat.hasNextAfter
+        rvScrollListener?.updateHasNextAfterState(chat)
+        if (hasNextAfter) {
+            showBottomLoading()
+        }
+    }
+
+    private fun renderBottomList(listChat: List<Visitable<*>>) {
+        val adapter = adapter as ChatbotAdapter
+        adapter?.hideBottomLoading()
+        if (listChat.isNotEmpty()) {
+            adapter?.addBottomData(listChat)
+        }
+    }
+
+    private fun resetScrollListenerReset(){
+        rvScrollListener?.reset()
+    }
+
 }
 

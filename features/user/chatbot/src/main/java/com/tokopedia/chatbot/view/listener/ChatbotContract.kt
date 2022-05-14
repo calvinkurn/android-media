@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
@@ -87,7 +88,7 @@ interface ChatbotContract {
 
         fun getExistingChat(messageId: String,
                             onError: (Throwable) -> Unit,
-                            onSuccess: (ChatroomViewModel) -> Unit,
+                            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
                             onGetChatRatingListMessageError: (String) -> Unit)
 
         fun loadPrevious(messageId: String,
@@ -167,6 +168,16 @@ interface ChatbotContract {
 
         fun setBeforeReplyTime(createTime : String)
 
-   //     fun getDataForGivenReplyTime(messageId: String)
+        fun getTopChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onError: Unit
+        )
+
+        fun getBottomChat(
+            messageId: String,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onError: Unit
+        )
     }
 }

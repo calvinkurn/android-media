@@ -25,21 +25,14 @@ abstract class RecyclerViewScrollListener(
         val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
         val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
 
-//        if (hasNextPage && !isLoadingTop && shouldLoadMoreTop(lastVisiblePosition, totalItem)){
-//            isLoadingTop = true
-//            loadMoreTop()
-//        }
-//        if (hasNextAfterPage && !isLoadingBottom && shouldLoadMoreDown(firstVisiblePosition)){
-//            isLoadingBottom = true
-//            loadMoreDown()
-//        }
-//        if(shouldLoadMoreTop(lastVisiblePosition, totalItem)){
-//            loadMoreTop()
-//        }
-        if (shouldLoadMoreDown(lastVisiblePosition)){
+        if (hasNextPage && !isLoadingTop && shouldLoadMoreTop(lastVisiblePosition, totalItem)){
+            isLoadingTop = true
+            loadMoreTop()
+        }
+        if (hasNextAfterPage && !isLoadingBottom && shouldLoadMoreDown(firstVisiblePosition)){
+            isLoadingBottom = true
             loadMoreDown()
         }
-
     }
 
     private fun shouldLoadMoreTop(lastVisiblePosition: Int,totalItem: Int): Boolean{

@@ -22,8 +22,8 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.SendWebsocketParam
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
@@ -838,7 +838,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun getExistingChat(messageId: String,
                                  onError: (Throwable) -> Unit,
-                                 onSuccess: (ChatroomViewModel) -> Unit,
+                                 onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
                                  onGetChatRatingListMessageError: (String) -> Unit) {
 //        if (messageId.isNotEmpty()) {
 //            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
@@ -849,7 +849,7 @@ class ChatbotPresenter @Inject constructor(
                 block = {
                     val response = getExistingChatUseCase.getFirstPageChat(messageId)
                     val mappedResponse =  getExistingChatMapper.map(response)
-
+                    val chatReplies = response.chatReplies
                     //TODO have to fix this
 //                    val inputList = getChatRatingData(mappedResponse)
 //                    if (!inputList.list.isNullOrEmpty()) {
@@ -860,11 +860,11 @@ class ChatbotPresenter @Inject constructor(
 //
 //                    }
 
-                    onSuccess(mappedResponse)
+                    onSuccess(mappedResponse,chatReplies)
 
                 },
                 onError = {
-
+                    onError()
                 }
             )
         }
@@ -921,5 +921,41 @@ class ChatbotPresenter @Inject constructor(
                 }
             )
         }
+    }
+
+    override fun getTopChat(
+        messageId: String,
+        onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: Unit
+    ) {
+        launchCatchError(
+            block = {
+                val gqlResponse = getExistingChatUseCase.getTopChat(messageId)
+                val chatReplies = gqlResponse.chatReplies
+                val chatViewModel = getExistingChatMapper.map(gqlResponse)
+                onSuccess(chatViewModel, chatReplies)
+            },
+            onError = {
+
+            }
+        )
+    }
+
+    override fun getBottomChat(
+        messageId: String,
+        onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: Unit
+    ) {
+        launchCatchError(
+            block = {
+                val gqlResponse = getExistingChatUseCase.getBottomChat(messageId)
+                val chatReplies = gqlResponse.chatReplies
+                val chatViewModel = getExistingChatMapper.map(gqlResponse)
+                onSuccess(chatViewModel, chatReplies)
+            },
+            onError = {
+
+            }
+        )
     }
 }
