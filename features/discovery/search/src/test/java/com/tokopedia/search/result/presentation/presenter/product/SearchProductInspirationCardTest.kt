@@ -6,8 +6,8 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
@@ -93,7 +93,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.validInspirationWidget()
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -116,8 +116,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 9 -> {
@@ -291,7 +291,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -308,8 +308,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
 
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
-                visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                 )
             }
             else if (index == 5 || index == 10) {
@@ -382,7 +382,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
         val inspirationWidgetIndex = listOf(1, 0, 2, 3)
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -408,8 +408,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val inspirationCardViewModelIndex = arrayOf(5, 6, 11, 14)
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
-                visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                 )
             }
             else if (inspirationCardViewModelIndex.contains(index)) {
@@ -501,7 +501,7 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val visitableList = visitableListSlot.captured
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
-        // 0 -> search product count data
+        // 0 -> choose address data
         // 1 -> separator
         // 2 -> inspiration size (position 0)
         // 3 -> separator
@@ -528,8 +528,8 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
                 0 -> {
-                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewModel"
+                    visitable.shouldBeInstanceOf<ChooseAddressDataView>(
+                        "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
                 1, 3, 18, 20 -> {

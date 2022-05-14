@@ -127,8 +127,8 @@ class FlightHomepageActivityTest {
 
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.flightHomepageBanner)).perform(swipeRight())
-            onView(withId(R.id.flightHomepageBanner)).perform(click())
         }
+        onView(withId(R.id.flightHomepageBanner)).perform(click())
     }
 
     private fun getBannerItemCount(): Int {
