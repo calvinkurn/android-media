@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
@@ -12,9 +13,8 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.*
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
@@ -31,45 +31,45 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         private const val FIRST_IMAGE_URL_INDEX = 0
         private const val SECOND_IMAGE_URL_INDEX = 1
         private const val THIRD_IMAGE_URL_INDEX = 2
-        private const val THOUSAND  = 1_000f
+        private const val THOUSAND = 1_000f
         private const val MILLION = 1_000_000f
     }
 
     suspend fun execute(
         isCreateMode: Boolean,
-        scope: CoroutineScope,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        parentProductId : List<Long>,
+        parentProductId: List<Long>,
         imageRatio: ImageRatio
     ): ByteArray {
-        val initiateCoupon = scope.async { initiateCoupon() }
-        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
-        val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
+        return coroutineScope {
+            val initiateCoupon = async { initiateCoupon() }
+            val topProductsDeferred = async { getMostSoldProducts(parentProductId) }
+            val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
 
-        val shop = shopDeferred.await()
-        val coupon = initiateCoupon.await()
-        val topProducts = topProductsDeferred.await()
+            val shop = shopDeferred.await()
+            val coupon = initiateCoupon.await()
+            val topProducts = topProductsDeferred.await()
 
-        val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+            val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
 
-        val generateImageDeferred = scope.async {
-            generateImage(
-                isCreateMode,
-                coupon.voucherCodePrefix,
-                couponInformation,
-                couponSettings,
-                topProductImageUrls,
-                imageRatio,
-                shop
-            )
+            val generateImageDeferred = async {
+                generateImage(
+                    isCreateMode,
+                    coupon.voucherCodePrefix,
+                    couponInformation,
+                    couponSettings,
+                    topProductImageUrls,
+                    imageRatio,
+                    shop
+                )
+            }
+
+            val image = generateImageDeferred.await()
+
+            return@coroutineScope image.bytes()
         }
 
-        val image = generateImageDeferred.await()
-
-        val imageByteArray = withContext(scope.coroutineContext) { image.bytes() }
-
-        return imageByteArray
     }
 
     private suspend fun generateImage(
@@ -77,7 +77,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         couponCodePrefix: String,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        topProductImageUrls : List<String>,
+        topProductImageUrls: List<String>,
         imageRatio: ImageRatio,
         shop: ShopBasicDataResult
     ): ResponseBody {
@@ -120,7 +120,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             else -> couponSettings.discountAmount
         }
 
-        val formattedDiscountAmount : Float = when {
+        val formattedDiscountAmount: Float = when {
             amount < THOUSAND -> amount.toFloat()
             amount >= MILLION -> (amount / MILLION)
             amount >= THOUSAND -> (amount / THOUSAND)
@@ -148,6 +148,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
         val thirdProduct = if (thirdProductImageUrl.isNotEmpty()) thirdProductImageUrl else null
 
         val productCount = topProductImageUrls.filter { it.isNotBlank() }.size
+        val formattedShopName = MethodChecker.fromHtml(shop.shopName).toString()
 
         return remoteDataSource.previewImage(
             ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
@@ -159,7 +160,7 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
             nominalAmount,
             symbol,
             shop.logo,
-            shop.shopName,
+            formattedShopName,
             couponCode,
             startTime,
             endTime,
@@ -172,17 +173,19 @@ class GetCouponImagePreviewFacadeUseCase @Inject constructor(
     }
 
     private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        getMostSoldProductsUseCase.params =
+            GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
         return getMostSoldProductsUseCase.executeOnBackground()
     }
 
     private suspend fun initiateCoupon(): InitiateVoucherUiModel {
         initiateCouponUseCase.query = GqlQueryConstant.INITIATE_COUPON_PRODUCT_QUERY
-        initiateCouponUseCase.params = InitiateCouponUseCase.createRequestParam(isUpdate = true, isToCreateNewCoupon = false)
+        initiateCouponUseCase.params =
+            InitiateCouponUseCase.createRequestParam(isUpdate = true, isToCreateNewCoupon = false)
         return initiateCouponUseCase.executeOnBackground()
     }
 
-    private fun getImageUrlOrEmpty(pictures : List<GetProductsByProductIdResponse.Picture>): String {
+    private fun getImageUrlOrEmpty(pictures: List<GetProductsByProductIdResponse.Picture>): String {
         if (pictures.isEmpty()) {
             return EMPTY_STRING
         }
