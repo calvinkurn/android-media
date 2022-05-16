@@ -56,10 +56,11 @@ class ShopGradeWidget(
 
 
     private fun setupCurrentGradeStepper(element: WidgetShopGradeUiModel) {
-        val isPm = element.shopLevel == PMConstant.ShopLevel.ONE
-        val isPmProAdvance = element.shopLevel == PMConstant.ShopLevel.TWO
-        val isPmProExpert = element.shopLevel == PMConstant.ShopLevel.THREE
-        val isPmProUltimate = element.shopLevel == PMConstant.ShopLevel.FOUR
+        val isPm = element.shopGrade == PMConstant.ShopGrade.PM
+        val isPmProAdvance = element.shopGrade == PMConstant.ShopGrade.PRO_ADVANCE
+        val isPmProExpert = element.shopGrade == PMConstant.ShopGrade.PRO_EXPERT
+        val isPmProUltimate = element.shopGrade == PMConstant.ShopGrade.PRO_ULTIMATE
+
 
         when {
             isPm ->{

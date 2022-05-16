@@ -20,7 +20,7 @@ class WidgetShopGradeUiModel(
         val gradeBadgeImgUrl: String = "",
         val gradeBackgroundUrl: String = "",
         val pmStatus: String = "",
-        val shopLevel: Int = 0
+        val shopGrade: String = ""
 ) : BaseWidgetUiModel {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

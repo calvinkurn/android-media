@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PATTERN_DATE_TEXT
 import com.tokopedia.gm.common.constant.PMConstant
+import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -23,6 +24,10 @@ import com.tokopedia.power_merchant.subscribe.view.model.PMProBenefitUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.PmActiveTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetUpgradePmProUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import java.text.ParseException
 
@@ -54,6 +59,7 @@ class UpgradePmProWidget(
 
     private fun setupNewSeller(element: WidgetUpgradePmProUiModel) {
         val shopInfo = element.shopInfo
+        val shopGrade = element.shopGrade
         binding?.run {
             if (shopInfo.isNewSeller) {
                 if (shopInfo.is30DaysFirstMonday) {
@@ -71,6 +77,12 @@ class UpgradePmProWidget(
                 }
             } else {
                 tvPmUpgradePmProDesc.hide()
+            }
+
+            if (shopGrade ==  PMConstant.ShopGrade.PM && shopInfo.shopScore > 70){
+                tickerPmWidget.show()
+            }else{
+                tickerPmWidget.hide()
             }
         }
     }
@@ -116,6 +128,7 @@ class UpgradePmProWidget(
     private fun setupView() = binding?.run {
         imgPmUpgradeBackdrop.loadImage(Constant.Image.PM_BG_UPSALE_PM_PRO)
         icPmProBadge.loadImage(PMConstant.Images.PM_SHOP_ICON)
+        icTargetHeader.loadImage(PMConstant.Images.PM_BADGE)
     }
 
 

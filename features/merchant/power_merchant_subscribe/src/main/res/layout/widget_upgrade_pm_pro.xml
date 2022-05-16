@@ -17,44 +17,66 @@
         app:unify_image_placeholder="@android:color/transparent"
         tools:src="@tools:sample/avatars" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/icPmProBadge"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl5"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="@+id/tvPmUpgradePmProTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvPmUpgradePmProTitle"
-        tools:src="@tools:sample/avatars" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmUpgradePmProTitle"
-        android:layout_width="@dimen/layout_lvl0"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
-        android:layout_marginTop="@dimen/gmc_dimen_22dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icPmProBadge"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        android:text="@string/pm_get_exclusive_benefit_of_being_pm_pro"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icPmProBadge"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPmUpgradePmProTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvPmUpgradePmProTitle"
+            tools:src="@tools:sample/avatars" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmUpgradePmProDesc"
-        android:layout_width="@dimen/layout_lvl0"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmUpgradePmProTitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/gmc_dimen_22dp"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icPmProBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:text="@string/pm_get_exclusive_benefit_of_being_pm_pro"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmUpgradePmProDesc"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gmc_dimen_22dp"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/icPmProBadge"
+            app:layout_constraintTop_toBottomOf="@id/tvPmUpgradePmProTitle"
+            app:typographyType="body_2"
+            tools:text="@string/pm_desc_new_seller_before_30_days" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerPmWidget"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/gmc_dimen_22dp"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/icPmProBadge"
-        app:layout_constraintTop_toBottomOf="@id/tvPmUpgradePmProTitle"
-        app:typographyType="body_2"
-        tools:text="@string/pm_desc_new_seller_before_30_days" />
-
+        app:descriptionText="Kamu berpotensi langsung menjadi PM PRO Advanced pada tanggal 8 Agustus 2022. Pertahankan performa tokomu, ya!"
+        app:tickerType="announcement"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        app:layout_constraintTop_toBottomOf="@+id/clHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cardPmUpgradeTerms"
         android:layout_width="@dimen/layout_lvl0"
@@ -64,7 +86,7 @@
         android:layout_marginEnd="@dimen/layout_lvl1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPmUpgradePmProDesc">
+        app:layout_constraintTop_toBottomOf="@+id/tickerPmWidget">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

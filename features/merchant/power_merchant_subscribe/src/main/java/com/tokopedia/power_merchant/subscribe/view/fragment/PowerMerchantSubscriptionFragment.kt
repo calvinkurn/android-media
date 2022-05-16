@@ -736,7 +736,7 @@ open class PowerMerchantSubscriptionFragment :
             gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
             gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
             pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE,
-            shopLevel = shopGrade?.shopLevel.orEmpty().toInt()
+            shopGrade = shopGrade?.gradeName ?: PMConstant.ShopGrade.PM
         )
     }
 
@@ -776,7 +776,8 @@ open class PowerMerchantSubscriptionFragment :
                         true
                     ),
                     generalBenefits = PMActiveTermHelper.getBenefitList(context),
-                    isPmActive = shopGradeWidgetData.pmStatus
+                    isPmActive = shopGradeWidgetData.pmStatus,
+                    shopGrade = shopGradeWidgetData.shopGrade
                 )
             }
         }

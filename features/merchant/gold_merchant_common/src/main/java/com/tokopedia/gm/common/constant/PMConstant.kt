@@ -66,4 +66,11 @@ object PMConstant {
         const val THREE = 3
         const val FOUR = 4
     }
+
+    object ShopGrade {
+        const val PM = "power merchant"
+        const val PRO_ADVANCE = "advanced"
+        const val PRO_EXPERT = "expert"
+        const val PRO_ULTIMATE = "ultimate"
+    }
 }
