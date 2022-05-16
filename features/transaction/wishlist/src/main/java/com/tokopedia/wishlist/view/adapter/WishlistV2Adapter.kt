@@ -10,8 +10,10 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
+import com.tokopedia.wishlist.data.model.response.CountDeletionWishlistV2Response
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL
@@ -34,6 +36,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isShowCheckbox = false
     private var isTickerCloseClicked = false
     var isRefreshing = false
+    var hasDeletionProgressWidgetShow = false
+    private var isAutoSelected = false
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -50,6 +54,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_COUNT_MANAGE_ROW = 11
         const val LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN = 12
         const val LAYOUT_TICKER = 13
+        const val LAYOUT_DELETION_PROGRESS_WIDGET = 14
     }
 
     interface ActionListener {
@@ -133,6 +138,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             LAYOUT_TICKER -> {
                 val binding = WishlistV2TickerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistV2TickerViewHolder(binding, actionListener)
+            }
+            LAYOUT_DELETION_PROGRESS_WIDGET -> {
+                val binding = WishlistV2CountDeletionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                WishlistV2DeletionProgressWidgetItemViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -227,6 +236,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     holder.itemView.layoutParams = params
                     (holder as WishlistV2TickerViewHolder).bind(element, isTickerCloseClicked)
                 }
+                TYPE_DELETION_PROGRESS_WIDGET -> {
+                    val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
+                    params.isFullSpan = true
+                    holder.itemView.layoutParams = params
+                    (holder as WishlistV2DeletionProgressWidgetItemViewHolder).bind(element)
+                }
             }
         }
     }
@@ -251,6 +266,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_RECOMMENDATION_CAROUSEL -> LAYOUT_RECOMMENDATION_CAROUSEL
             TYPE_RECOMMENDATION_TITLE_WITH_MARGIN -> LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN
             TYPE_TICKER -> LAYOUT_TICKER
+            TYPE_DELETION_PROGRESS_WIDGET -> LAYOUT_DELETION_PROGRESS_WIDGET
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -325,6 +341,25 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun resetTicker() {
         isTickerCloseClicked = false
+    }
+
+    fun addDeletionProgressWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2) {
+        listTypeData.add(0, WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET))
+        hasDeletionProgressWidgetShow = true
+        notifyDataSetChanged()
+    }
+
+    fun updateDeletionWidget(countDeletionWishlistV2: CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2) {
+        listTypeData[0] = WishlistV2TypeLayoutData(countDeletionWishlistV2, TYPE_DELETION_PROGRESS_WIDGET)
+    }
+
+    fun hideDeletionProgressWidget() {
+        listTypeData.removeAt(0)
+        notifyItemRemoved(0)
+    }
+
+    fun getCountData(): Int {
+        return listTypeData.size
     }
 
     fun changeTypeLayout(prefLayout: String?) {

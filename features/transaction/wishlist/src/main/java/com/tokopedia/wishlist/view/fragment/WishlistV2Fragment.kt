@@ -238,7 +238,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         observingWishlistData()
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
-        observingCountDeletion()
         observingAtc()
     }
 
@@ -380,7 +379,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             rvScrollListener.updateStateAfterGetData()
                         }
                     }
-
                 }
                 is Fail -> {
                     finishRefresh()
@@ -681,6 +679,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
                 is Fail -> {
+                    finishDeletionWidget()
                     val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                     showToaster(errorMessage, "", Toaster.TYPE_ERROR)
 
@@ -699,30 +698,43 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun observingCountDeletion() {
-        wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    timer = Timer()
-                    if (it.data.successfullyRemovedItems == it.data.totalItems) timer?.cancel()
-                    else {
-                        timer?.schedule(1, 5000) {
-                            if (it.data.successfullyRemovedItems < it.data.totalItems) {
-                                binding?.run {
-                                    wishlistV2StickyCountDeletionSection.wishlistV2CountDeletionProgressbar.setValue(it.data.successfullyRemovedItems)
+        if (wishlistV2Adapter.getCountData() > 0) {
+            var totalRemoved = 0
+
+            wishlistViewModel.countDeletionWishlistV2.observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is Success -> {
+                        handler.post(object: Runnable{
+                            override fun run() {
+                                totalRemoved += result.data.totalItems
+
+                                if (totalRemoved == result.data.successfullyRemovedItems) {
+                                    finishDeletionWidget()
+                                } else {
+                                    handler.postDelayed(this, 1000)
+                                    wishlistViewModel.getCountDeletionWishlistV2()
+                                    if (wishlistV2Adapter.hasDeletionProgressWidgetShow) {
+                                        wishlistV2Adapter.notifyItemChanged(0, WishlistV2TypeLayoutData(result.data, WishlistV2Consts.TYPE_DELETION_PROGRESS_WIDGET))
+                                        wishlistV2Adapter.updateDeletionWidget(result.data)
+                                        wishlistV2Adapter.notifyItemChanged(0)
+                                    } else {
+                                        wishlistV2Adapter.addDeletionProgressWidget(result.data)
+                                    }
                                 }
-                                wishlistViewModel.getCountDeletionWishlistV2()
-                            } else if (it.data.successfullyRemovedItems == it.data.totalItems) {
-                                timer?.cancel()
-                                // need to confirm related toaster after succeed remove all
                             }
-                        }
+                        })
                     }
-                }
-                is Fail -> {
-                    // confirm how to handle if count deletion return fail
+                    is Fail -> {
+                        // confirm how to handle if count deletion return fail
+                    }
                 }
             }
         }
+    }
+
+    private fun finishDeletionWidget() {
+        handler.removeMessages(0)
+        wishlistV2Adapter.hideDeletionProgressWidget()
     }
 
     private fun observingAtc() {

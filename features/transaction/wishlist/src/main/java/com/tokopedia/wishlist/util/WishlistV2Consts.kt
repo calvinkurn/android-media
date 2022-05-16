@@ -20,6 +20,7 @@ object WishlistV2Consts {
     const val TYPE_RECOMMENDATION_TITLE_WITH_MARGIN = "recommendation_title_with_margin"
     const val TYPE_TOPADS = "topads"
     const val TYPE_TICKER = "ticker"
+    const val TYPE_DELETION_PROGRESS_WIDGET = "deletion_progress_widget"
     const val WISHLIST_PAGE_NAME = "wishlist"
     const val PARAMS = "params"
     const val PRODUCT_ID = "productID"
