@@ -80,7 +80,7 @@ private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produ
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
 private const val DEFAULT_FRAGMENT_LOAD_COUNT = 2
-private const val fragmentLoadCountThree = 3
+
 
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
 
