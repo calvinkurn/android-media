@@ -23,7 +23,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     }
 
     open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {}
-    open fun trackPromoBannerImpression(banners: List<DataItem>, componentPosition: Int?) {}
+    open fun trackPromoBannerImpression(banners: List<DataItem>) {}
     open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID : String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}

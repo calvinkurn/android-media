@@ -27,10 +27,6 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.item_empty_error_state.view.*
 
-private const val BANNER_ACTION = "CODE"
-private const val SINGLE_PROMO_CODE = "single_promo_code"
-private const val DOUBLE_PROMO_CODE = "double_promo_code"
-
 class MultiBannerViewHolder(private val customItemView: View, val fragment: Fragment) : AbstractViewHolder(customItemView) {
     private var constraintLayout: ConstraintLayout = customItemView.findViewById(R.id.banner_container_layout)
     private var context: Context
@@ -147,7 +143,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         /*coupons can be there in form of banners so we need to set hardcoded values for component_name
          (i have added componentPromoName key in dataItem for it)*/
         // purpose - we need to send different GTM in case of coupons
-        setComponentPromoNameForCoupons(data)
+        multiBannerViewModel.setComponentPromoNameForCoupons(bannerName,data)
 
         for ((index, bannerItem) in data.withIndex()) {
             var bannerView: BannerItem
@@ -171,32 +167,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         sendImpressionEventForBanners(data)
     }
 
-    private fun setComponentPromoNameForCoupons(data: List<DataItem>) {
-        data.forEach {
-            if (it.action == BANNER_ACTION) {
-                when (bannerName) {
-                    ComponentNames.SingleBanner.componentName -> it.componentPromoName = SINGLE_PROMO_CODE
-
-                    ComponentNames.DoubleBanner.componentName -> it.componentPromoName = DOUBLE_PROMO_CODE
-                }
-            }
-        }
-    }
-
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        data.forEach {
-            if (it.action == BANNER_ACTION) {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
-                        data,
-                        null
-                )
-            } else {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                        data,
-                        null,
-                        Utils.getUserId(fragment.context)
-                )
-            }
+        if(data.firstOrNull()?.action == BANNER_ACTION_CODE){
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackPromoBannerImpression(
+                    data
+            )
+        }else {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+                    data,
+                    null,
+                    Utils.getUserId(fragment.context)
+            )
         }
     }
 
@@ -207,7 +188,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
-            if(itemData.action == BANNER_ACTION){
+            if(itemData.action == BANNER_ACTION_CODE){
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                         ?.trackPromoBannerClick(itemData, index)
             }else {

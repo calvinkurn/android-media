@@ -78,7 +78,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
     }
 
-    override fun trackPromoBannerImpression(banners: List<DataItem>, componentPosition: Int?) {
+    override fun trackPromoBannerImpression(banners: List<DataItem>) {
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
                 val componentName = banner.componentPromoName ?: EMPTY_STRING
@@ -87,14 +87,14 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
                 map[PAGE_TYPE] = pageType
                 map[PAGE_PATH] = removedDashPageIdentifier
-                map[PAGE_SOURCE] = "${sourceIdentifier}.${banner.parentComponentName}.${banner.name}.${banner.id}"
+                map[PAGE_SOURCE] = sourceIdentifier
                 val list = ArrayList<Map<String, Any>>()
                 val hashMap = HashMap<String, Any>()
                 banner.let {
                     hashMap[KEY_ID] = "${it.id ?: 0} - ${it.code}"
                     hashMap[KEY_NAME] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName"
                     hashMap[KEY_CREATIVE] = "${it.creativeName ?: EMPTY_STRING} - ${it.name}"
-                    hashMap[KEY_POSITION] = componentPosition?.plus(1)?:index+1
+                    hashMap[KEY_POSITION] = index+1
                 }
                 list.add(hashMap)
                 val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -145,7 +145,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val list = ArrayList<Map<String, Any>>()
         banner.let {
             list.add(mapOf(
-                    KEY_ID to "${it.id.toString()} - ${it.code}",
+                    KEY_ID to "${it.id.toString()} - ${it.code ?: EMPTY_STRING}",
                     KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${banner.positionForParentItem + 1} - - - $componentName",
                     KEY_CREATIVE to it.creativeName.toString(),
                     KEY_POSITION to bannerPosition + 1
@@ -156,7 +156,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                         KEY_PROMOTIONS to list))
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
-        map[PAGE_SOURCE] = "${sourceIdentifier}.${banner.parentComponentName}.${banner.name}.${banner.id}"
+        map[PAGE_SOURCE] = sourceIdentifier
         map[KEY_EVENT_CATEGORY] = VALUE_DISCOVERY_PAGE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
