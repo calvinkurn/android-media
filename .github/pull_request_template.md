@@ -43,6 +43,7 @@ https://phab.tokopedia.com/XXXXX
 - **/check lint** - run linter checker
 - **/check macrobenchmark** - run macrobenchmark test
 - **/check datatest** - run data tracking test (Cassava)
+- **/check uitest** - run UI instrument test
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 - **/check vector** - run vector drawable optimizer

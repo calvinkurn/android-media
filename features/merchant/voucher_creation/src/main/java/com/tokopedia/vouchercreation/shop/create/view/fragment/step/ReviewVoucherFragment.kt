@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -535,7 +536,7 @@ class ReviewVoucherFragment : BaseDetailFragment() {
             )
 
             with(voucherReviewUiModel) {
-                postVoucherUiModel = getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, shopName, displayedPromoCode, postDisplayedDate).also {
+                postVoucherUiModel = getVoucherPreviewSection(voucherType, voucherName, shopAvatarUrl, MethodChecker.fromHtml(shopName).toString() , displayedPromoCode, postDisplayedDate).also {
                     reviewInfoList.add(0, it)
                 }
             }

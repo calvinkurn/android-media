@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +37,9 @@ import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DIHAPUS
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GRUP
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TANPA_GRUP
@@ -78,6 +82,8 @@ private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produ
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
 private const val DEFAULT_FRAGMENT_LOAD_COUNT = 2
+private const val fragmentLoadCountThree = 3
+
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
@@ -85,7 +91,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var isWhiteListedUser: Boolean = false
     private var isAutoBidToggleEnabled: Boolean = false
     private var isDeletedTabEnabled: Boolean = false
-    private val fragmentLoadCountThree = 3
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
@@ -392,7 +397,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoads_layout.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg)
+                imgBg.background = VectorDrawableCompat.create(resources, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
@@ -482,6 +487,11 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoAdsAdapter.notifyDataSetChanged()
     }
 
+    override fun onDateRangeChanged() {
+        super.onDateRangeChanged()
+        loadData()
+    }
+
     private fun loadData() {
         try {
             topAdsDashboardPresenter.getAutoAdsStatus(resources, ::onSuccessAdsInfo)
@@ -537,10 +547,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
         swipe_refresh_layout.isRefreshing = false
         when (data.category) {
-            1 -> noProduct()
-            2 -> noAds()
-            3 -> manualAds()
-            4 -> autoAds()
+            CONST_1 -> noProduct()
+            CONST_2 -> noAds()
+            CONST_3 -> manualAds()
+            CONST_4 -> autoAds()
             else -> manualAds()
         }
         loadStatisticsData()
