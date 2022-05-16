@@ -82,31 +82,6 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
         }
     }
 
-    private fun getEmailFooterSpan(): SpannableString {
-        val msgMeta = context?.getString(R.string.inactive_phone_text_footer_email_challenge_meta).orEmpty()
-        val msgAction = context?.getString(R.string.inactive_phone_text_footer_email_challenge_action).orEmpty()
-
-        return SpannableString("$msgMeta \n $msgAction").apply {
-            setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        analytics.trackClickRequestChangePhoneNumberOnPin()
-                        gotoRegularFlow()
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                this.indexOf(msgAction),
-                this.length,
-                0
-            )
-        }
-    }
-
     private fun gotoRegularFlow() {
         activity?.let {
             val intent = Intent().apply {

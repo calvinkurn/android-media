@@ -29,7 +29,6 @@ object RsaUtils {
                 }
             }
         } catch (e: Exception){
-            e.printStackTrace()
             return ""
         }
         return ""
@@ -51,7 +50,6 @@ object RsaUtils {
                 return encryptWithRSA(finalMsg, finalPublicKey)
             }
         } catch (e: Exception){
-            e.printStackTrace()
             return ""
         }
         return ""
@@ -67,7 +65,6 @@ object RsaUtils {
             val keyFactory = KeyFactory.getInstance(RSA_ALGORITHM)
             keyFactory.generatePublic(keySpec) as RSAPublicKey
         }catch (e: Exception){
-            e.printStackTrace()
             null
         }
     }
@@ -81,7 +78,6 @@ object RsaUtils {
             val encryptedBytes = cipher.doFinal(message.toByteArray(Charsets.UTF_8))
             return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
         }catch (e: Exception){
-            e.printStackTrace()
             ""
         }
     }
@@ -96,7 +92,6 @@ object RsaUtils {
             newKey = newKey.replace("-----END RSA PUBLIC KEY-----", "")
             newKey
         }catch (e: Exception){
-            e.printStackTrace()
             ""
         }
     }
