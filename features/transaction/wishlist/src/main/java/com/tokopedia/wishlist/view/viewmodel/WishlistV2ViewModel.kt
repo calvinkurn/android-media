@@ -73,12 +73,12 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val countDeletionWishlistV2: LiveData<Result<CountDeletionWishlistV2Response.Data.CountDeletionWishlistV2>>
         get() = _countDeletionWishlistV2
 
-    fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?) {
+    fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?, isAutomaticDelete: Boolean) {
         launch {
             try {
                 val wishlistV2Response = wishlistV2UseCase.executeSuspend(params).wishlistV2
                 _wishlistV2.value = Success(wishlistV2Response)
-                _wishlistV2Data.value = Success(organizeWishlistV2Data(wishlistV2Response, typeLayout))
+                _wishlistV2Data.value = Success(organizeWishlistV2Data(wishlistV2Response, typeLayout, isAutomaticDelete))
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)
@@ -109,9 +109,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String) {
+    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String, mode: Int, additionalParams: WishlistV2BulkRemoveAdditionalParams) {
         launch {
-            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId)
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId, mode, additionalParams)
         }
     }
 
@@ -145,7 +145,11 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
+    suspend fun organizeWishlistV2Data(
+        wishlistV2Response: WishlistV2Response.Data.WishlistV2,
+        typeLayout: String?,
+        isAutomaticDelete: Boolean
+    ) : List<WishlistV2TypeLayoutData> {
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
         var isFilterActive = false
@@ -159,8 +163,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         } else {
             if (wishlistV2Response.ticker.message.isNotEmpty() && wishlistV2Response.page == 1) {
-                val bundleTickerData = WishlistV2TickerCleanerData(tickerCleanerData = wishlistV2Response.ticker,
-                bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet)
+                val bundleTickerData = WishlistV2TickerCleanerData(
+                    tickerCleanerData = wishlistV2Response.ticker,
+                    bottomSheetCleanerData = wishlistV2Response.storageCleanerBottomSheet,
+                    countRemovableItems = wishlistV2Response.countRemovableItems)
                 listData.add(WishlistV2TypeLayoutData(bundleTickerData, TYPE_TICKER))
                 isTickerShow = true
                 recommPosition += 1
@@ -168,7 +174,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
             // only for wishlist which has 1 page response
             if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
-                mapToProductCardList(listData, wishlistV2Response.items, typeLayout)
+                mapToProductCardList(listData, wishlistV2Response.items, typeLayout, isAutomaticDelete)
 
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
@@ -189,7 +195,12 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     }
                 }
             } else {
-                mapToProductCardList(listData, wishlistV2Response.items, typeLayout)
+                mapToProductCardList(
+                    listData,
+                    wishlistV2Response.items,
+                    typeLayout,
+                    isAutomaticDelete
+                )
 
                 if (wishlistV2Response.page == 1) {
                     mapToTopads(recommPosition, listData)
@@ -259,7 +270,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private fun mapToProductCardList(
         listData: ArrayList<WishlistV2TypeLayoutData>,
         items: List<WishlistV2Response.Data.WishlistV2.Item>,
-        typeLayout: String?
+        typeLayout: String?,
+        isAutomaticDelete: Boolean
     ) : ArrayList<WishlistV2TypeLayoutData> {
         items.forEach { item ->
             val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
@@ -280,6 +292,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 listBadge.add(ProductCardModel.ShopBadge(imageUrl = badgesItem.imageUrl))
             }
 
+            val isChecked = isAutomaticDelete
+
             val productModel = ProductCardModel(
                     productImageUrl = item.imageUrl,
                     productName = item.name,
@@ -297,7 +311,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     slashedPrice = item.originalPriceFmt,
                     freeOngkir = ProductCardModel.FreeOngkir(item.bebasOngkir.imageUrl.isNotEmpty(), item.bebasOngkir.imageUrl),
                     isOutOfStock = !item.available)
-            listData.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
+            listData.add(WishlistV2TypeLayoutData(productModel, typeLayout, item, isChecked))
         }
         return listData
     }

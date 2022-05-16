@@ -63,6 +63,8 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                             text
                         }
                     }
+                    count_removable_items
+                    show_delete_progress
                     sort_filters {
                       id
                       name

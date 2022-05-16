@@ -11,7 +11,6 @@ import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
-import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
@@ -58,6 +57,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onNotFoundButtonClicked(keyword: String)
         fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int)
+        fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
         fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
@@ -168,13 +168,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2ListItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox)
+                    (holder as WishlistV2ListItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected)
                 }
                 TYPE_GRID -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = false
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2GridItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox)
+                    (holder as WishlistV2GridItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected)
                 }
                 TYPE_EMPTY_STATE -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
@@ -277,6 +277,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
+    private fun checkAllCheckbox() {
+        listTypeData.forEach {
+            it.isChecked = true
+        }
+    }
+
     fun setActionListener(v2Fragment: WishlistV2Fragment) {
         this.actionListener = v2Fragment
     }
@@ -297,13 +303,16 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun showCheckbox() {
+    fun showCheckbox(isAutoDeletion: Boolean) {
         isShowCheckbox = true
+        isAutoSelected = isAutoDeletion
+        if (isAutoDeletion) checkAllCheckbox()
         notifyDataSetChanged()
     }
 
     fun hideCheckbox() {
         isShowCheckbox = false
+        isAutoSelected = false
         clearCheckbox()
         notifyDataSetChanged()
     }

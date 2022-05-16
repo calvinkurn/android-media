@@ -177,7 +177,11 @@ class WishlistV2ViewModelTest {
         } returns topAdsImageViewModel
 
         coEvery {
-            wishlistV2ViewModel.organizeWishlistV2Data(wishlistV2Response.data.wishlistV2, "")
+            wishlistV2ViewModel.organizeWishlistV2Data(
+                wishlistV2Response.data.wishlistV2,
+                "",
+                isAutomaticDelete
+            )
         } returns listOf()
 
         coEvery {

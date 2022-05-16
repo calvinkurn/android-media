@@ -33,9 +33,6 @@ data class WishlistV2Response(
 				@SerializedName("total_data")
 				val totalData: Int = -1,
 
-				@SerializedName("count_removable_items")
-				val countRemovableItems: Int = 0,
-
 				@SerializedName("next_page_url")
 				val nextPageUrl: String = "",
 
@@ -52,7 +49,13 @@ data class WishlistV2Response(
 				val ticker: TickerState = TickerState(),
 
 				@SerializedName("storage_cleaner_bottomsheet")
-				val storageCleanerBottomSheet: StorageCleanerBottomSheet = StorageCleanerBottomSheet()
+				val storageCleanerBottomSheet: StorageCleanerBottomSheet = StorageCleanerBottomSheet(),
+
+				@SerializedName("count_removable_items")
+				val countRemovableItems: Int = 0,
+
+				@SerializedName("show_delete_progress")
+				val showDeleteProgress: Boolean = false
 		) {
 			data class Item(
 
