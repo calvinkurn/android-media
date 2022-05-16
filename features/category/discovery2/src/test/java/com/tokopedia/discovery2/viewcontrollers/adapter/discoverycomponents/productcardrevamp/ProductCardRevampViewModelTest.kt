@@ -2,8 +2,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -73,8 +73,16 @@ class ProductCardRevampViewModelTest{
             val error = Throwable("something")
             coEvery { viewModel.productCardsUseCase.loadFirstPageComponents(any(), any()) } throws error
 
-            viewModel.onAttachToViewHolder()
+//      mocking URL Parser because ComponentItem constructs an object of SearchParameter which uses URLParser
+//      and this was causing exception.
+            mockkConstructor(URLParser::class)
+            every { anyConstructed<URLParser>().paramKeyValueMapDecoded } returns HashMap()
+            val comp = spyk<ComponentsItem>()
+            mockkStatic(::getComponent)
+            coEvery { getComponent(any(), any()) } returns comp
 
+            viewModel.onAttachToViewHolder()
+            assertEquals(comp.verticalProductFailState, true)
             assertEquals(viewModel.syncData.value, true)
         }
     }
@@ -84,5 +92,6 @@ class ProductCardRevampViewModelTest{
     @After
     fun shutDown() {
         Dispatchers.resetMain()
+        unmockkStatic(::getComponent)
     }
 }
