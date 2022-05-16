@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
 import com.tokopedia.homenav.mainnav.data.pojo.payment.PaymentQuery
+import com.tokopedia.homenav.mainnav.data.pojo.review.ReviewProduct
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavReviewOrder
 import com.tokopedia.homenav.mainnav.domain.usecases.query.ProductRevWaitForFeedbackQuery
@@ -15,7 +16,7 @@ import com.tokopedia.usecase.coroutines.UseCase
  * Created by dhaba
  */
 class GetReviewProductUseCase (
-        private val graphqlUseCase: GraphqlUseCase<Payment>
+        private val graphqlUseCase: GraphqlUseCase<ReviewProduct>
 ): UseCase<List<NavReviewOrder>>(){
 
     private var params : Map<String, Any> = mapOf()
@@ -23,30 +24,27 @@ class GetReviewProductUseCase (
     init {
         graphqlUseCase.setGraphqlQuery(ProductRevWaitForFeedbackQuery())
         graphqlUseCase.setRequestParams(generateParam())
-        graphqlUseCase.setTypeClass(Payment::class.java)
+        graphqlUseCase.setTypeClass(ReviewProduct::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
-    override suspend fun executeOnBackground(): List<NavPaymentOrder> {
-        val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery?: PaymentQuery())
-        val navPaymentList = mutableListOf<NavPaymentOrder>()
+    override suspend fun executeOnBackground(): List<NavReviewOrder> {
+        val responseData = Success(graphqlUseCase.executeOnBackground().productRevWaitForFeedback)
+        val navReviewList = mutableListOf<NavReviewOrder>()
 
-        if (responseData.data.paymentList?.isNotEmpty() == true) {
-            responseData.data.paymentList?.map {
-                navPaymentList.add(
-                    NavPaymentOrder(
-                        statusText = "",
-                        statusTextColor = "",
-                        paymentAmountText = it.paymentAmount.toString(),
-                        descriptionText = it.tickerMessage?:"",
-                        imageUrl = if(it.bankImg?.isNotBlank() == true) it.bankImg else it.gatewayImg ?: "",
-                        id = it.transactionID?:"",
-                        applink = it.applink?:""
-                )
+        if (responseData.data.list.isNotEmpty()) {
+            responseData.data.list.map {
+                navReviewList.add(
+                    NavReviewOrder(
+                        productId = it.product.productID.toString(),
+                        appLink = "",
+                        productName = it.product.productName,
+                        imageUrl = it.product.productImageURL
+                    )
                 )
             }
         }
-        return navPaymentList
+        return navReviewList
     }
 
     companion object{
