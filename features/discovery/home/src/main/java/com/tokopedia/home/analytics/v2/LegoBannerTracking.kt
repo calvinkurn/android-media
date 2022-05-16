@@ -176,6 +176,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -199,6 +200,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                         if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
                         else channelModel.trackingAttributionModel.campaignCode)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -340,6 +342,7 @@ object LegoBannerTracking : BaseTrackerConst() {
                     )
                 })
                 .appendChannelId(channel.id)
+                .appendCurrentSite(CurrentSite.DEFAULT)
                 .build()
     }
 
