@@ -446,8 +446,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoadsLayout?.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = VectorDrawableCompat.create(resources,
-                    com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
+                imgBg.background = VectorDrawableCompat.create(resources, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
