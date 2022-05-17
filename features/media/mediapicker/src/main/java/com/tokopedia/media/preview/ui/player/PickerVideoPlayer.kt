@@ -5,6 +5,7 @@ import android.net.Uri
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.LoopingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.MediaSourceFactory
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -27,17 +28,10 @@ class PickerVideoPlayer constructor(
         .Builder(context)
         .build()
 
-    private lateinit var mediaSource: MediaSource
+    private lateinit var loopingMediaSource: LoopingMediaSource
 
     init {
         exoPlayer.addListener(object : Player.EventListener {
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                super.onPlayerStateChanged(playWhenReady, playbackState)
-                if (playbackState == Player.STATE_ENDED) {
-                    start()
-                }
-            }
-
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 listener?.onIsPlayingChanged(isPlaying)
@@ -50,12 +44,12 @@ class PickerVideoPlayer constructor(
     fun start() {
         if (videoUrl.isEmpty()) return
 
-        if (!::mediaSource.isInitialized) {
-            mediaSource = getOrCreateMediaSource(Uri.parse(videoUrl))
+        if (!::loopingMediaSource.isInitialized) {
+            loopingMediaSource = LoopingMediaSource(getOrCreateMediaSource(Uri.parse(videoUrl)))
         }
 
         exoPlayer.playWhenReady = true
-        exoPlayer.prepare(mediaSource, true, false)
+        exoPlayer.prepare(loopingMediaSource, true, false)
     }
 
     fun stop() {
