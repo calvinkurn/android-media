@@ -2,6 +2,9 @@ package com.tokopedia.homenav.mainnav.view.interactor
 
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
+import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 interface MainNavListener : HomeNavListener{

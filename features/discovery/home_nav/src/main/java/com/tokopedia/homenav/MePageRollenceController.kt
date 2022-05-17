@@ -24,7 +24,6 @@ object MePageRollenceController {
     }
 
     fun isMePageUsingRollenceVariant(): Boolean {
-        return true
         return getRollenceValueMePage() == RollenceKey.ME_PAGE_REVAMP_VARIANT
     }
 }

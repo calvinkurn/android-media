@@ -49,9 +49,7 @@ class WishlistViewHolder(itemView: View,
         }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.wishlist.map { WishlistModel(it) })
-        if (element.othersWishlistCount.isMoreThanZero()) {
-            visitableList.add(OtherWishlistModel(element.othersWishlistCount))
-        }
+        visitableList.add(OtherWishlistModel())
         adapter.setVisitables(visitableList)
     }
 }

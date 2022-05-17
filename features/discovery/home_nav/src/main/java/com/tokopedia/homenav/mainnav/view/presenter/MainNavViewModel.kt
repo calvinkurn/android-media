@@ -442,9 +442,7 @@ class MainNavViewModel @Inject constructor(
             val favoriteShopList = getFavoriteShopsNavUseCase.get().executeOnBackground()
 
             if (favoriteShopList.isNotEmpty()) {
-                val othersFavoriteShopsCount = favoriteShopList.size - MAX_FAVORITE_SHOPS_TO_SHOW
-                val favoriteShopsToShow = favoriteShopList.take(ON_GOING_FAVORITE_SHOPS_TO_SHOW)
-                val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopsToShow, othersFavoriteShopsCount)
+                val favoriteShopsItemModel = FavoriteShopListDataModel(favoriteShopList)
 
                 //find shimmering and change with result value
                 findShimmerPosition<ShimmerFavoriteShopDataModel>()?.let {
@@ -478,10 +476,7 @@ class MainNavViewModel @Inject constructor(
             val wishlist = getWishlistNavUseCase.get().executeOnBackground()
 
             if (wishlist.isNotEmpty()) {
-//                val othersWishlistCount = wishlist.size - MAX_FAVORITE_SHOPS_TO_SHOW
-                val othersWishlistCount = 10 //temporary
-                val wishlistToShow = wishlist.take(ON_GOING_FAVORITE_SHOPS_TO_SHOW)
-                val wishlistModel = WishlistDataModel(wishlistToShow, othersWishlistCount)
+                val wishlistModel = WishlistDataModel(wishlist)
 
 //                find shimmering and change with result value
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {

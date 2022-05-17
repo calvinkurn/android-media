@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  */
 
 data class OtherWishlistModel(
-        val otherWishlistItemsCount: Int
+        val otherWishlistItemsCount: Int = 0
 ): WishlistNavVisitable, ImpressHolder() {
     override fun type(factory: WishlistTypeFactory): Int {
         return factory.type(this)
