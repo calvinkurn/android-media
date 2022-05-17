@@ -97,7 +97,7 @@ class RecommendationViewHolder(
             val progressLevel = element.data?.progressLevel
             slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
 
-            setupTicker(element.data?.ticker)
+            setupTicker(element)
             setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
@@ -162,8 +162,9 @@ class RecommendationViewHolder(
         }
     }
 
-    private fun setupTicker(ticker: RecommendationTickerUiModel?) {
+    private fun setupTicker(element: RecommendationWidgetUiModel) {
         with(successStateBinding) {
+            val ticker = element.data?.ticker
             if (ticker?.text.isNullOrBlank()) {
                 tickerShcRecommendation.gone()
 
@@ -188,7 +189,9 @@ class RecommendationViewHolder(
                 }
                 tickerShcRecommendation.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(root.context, linkUrl.toString())
+                        if (RouteManager.route(root.context, linkUrl.toString())) {
+                            listener.sendRecommendationTickerCtaClickEvent(element)
+                        }
                     }
 
                     override fun onDismiss() {
@@ -372,5 +375,7 @@ class RecommendationViewHolder(
             item: RecommendationItemUiModel
         ) {
         }
+
+        fun sendRecommendationTickerCtaClickEvent(element: RecommendationWidgetUiModel) {}
     }
 }
