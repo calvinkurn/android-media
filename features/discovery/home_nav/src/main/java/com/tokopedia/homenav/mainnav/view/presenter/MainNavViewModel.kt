@@ -77,6 +77,9 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val INDEX_HOME_BACK_SEPARATOR = 1
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
+        private const val ON_GOING_TRANSACTION_TO_SHOW_REVAMP = 5
+        private const val IGNORE_TAKE_LIST = 0
+
         private const val ON_GOING_FAVORITE_SHOPS_TO_SHOW = 5
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
         private const val INDEX_DEFAULT_ALL_CATEGORY = 8
@@ -460,6 +463,27 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private fun getOrderHistory(
+        paymentList: List<NavPaymentOrder>,
+        productOrderList: List<NavProductOrder>,
+        reviewList: List<NavReviewOrder>
+    ): Triple<List<NavPaymentOrder>, List<NavProductOrder>, List<NavReviewOrder>> {
+        return if (isMePageUsingRollenceVariant) {
+            var counter = ON_GOING_TRANSACTION_TO_SHOW_REVAMP
+            val paymentListToShow = paymentList.take(counter)
+            counter -= paymentListToShow.size
+            val productOrderListToShow =
+                if (counter > IGNORE_TAKE_LIST) productOrderList.take(counter) else listOf()
+            counter -= productOrderListToShow.size
+            val reviewListToShow = if (counter > IGNORE_TAKE_LIST) reviewList.take(counter) else listOf()
+            Triple(paymentListToShow, productOrderListToShow, reviewListToShow)
+        } else Triple(
+            paymentList,
+            productOrderList.take(ON_GOING_TRANSACTION_TO_SHOW),
+            reviewList
+        )
+    }
+
     private suspend fun getOngoingTransactionRevamp() {
         //find error state if availabxle and change to shimmering
         val transactionErrorState = _mainNavListVisitable.withIndex().find {
@@ -471,13 +495,16 @@ class MainNavViewModel @Inject constructor(
         try {
             val paymentList = getPaymentOrdersNavUseCase.get().executeOnBackground()
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
-            val reviewList = getReviewProductUseCase.get().executeOnBackground()
+            val reviewList = if (isMePageUsingRollenceVariant) getReviewProductUseCase.get()
+                .executeOnBackground() else listOf()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty() || reviewList.isNotEmpty()) {
                 val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
-                val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
+
+                val (paymentListToShow, orderListToShow, reviewListToShow) = getOrderHistory(paymentList, orderList, reviewList)
+
                 val transactionListItemViewModel = TransactionListItemDataModel(
-                    NavOrderListModel(orderListToShow, paymentList, reviewList),
+                    NavOrderListModel(orderListToShow, paymentListToShow, reviewListToShow),
                     othersTransactionCount,
                     isMePageUsingRollenceVariant
                 )
