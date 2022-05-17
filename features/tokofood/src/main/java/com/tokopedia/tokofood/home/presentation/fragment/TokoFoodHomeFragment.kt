@@ -21,8 +21,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.iconunify.IconUnify
@@ -220,7 +222,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onClickBackToHome() {
-
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     override fun onClickSetAddress() {
@@ -310,7 +312,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                 .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
-                .addIcon(IconList.ID_NAV_GLOBAL, onClick = ::onClickNavGlobalButton)
+                .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
     }
 
@@ -318,17 +320,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         //TODO SHARE FUNC
     }
 
-    private fun onClickNavGlobalButton() {
-        //TODO CLICK NAVGLOBAL
-    }
-
     private fun onClickListTransactionButton() {
-        //TODO CLICK LIST TRANSACTION
+        RouteManager.route(context, ApplinkConst.ORDER_LIST)
     }
 
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
-            removeAllScrollListener()
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
             }
