@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class WishlistItem (
     @SerializedName("id")
     @Expose
-    val id: String? = "",
+    val productId: String? = "",
     @SerializedName("name")
     @Expose
     val name: String? = "",
@@ -68,7 +68,16 @@ data class WishlistItem (
     val freeOngkir: FreeOngkir? = FreeOngkir(),
     @SerializedName("cashback")
     @Expose
-    val cashback: String? = ""
+    val cashback: String? = "",
+    @SerializedName("wishlist_id")
+    @Expose
+    val wishlistId: String? = "",
+    @SerializedName("variant_name")
+    @Expose
+    val variant: String? = "",
+    @SerializedName("category")
+    @Expose
+    val category: List<Category>? = listOf()
 )
 
 data class FreeOngkir (
@@ -78,4 +87,14 @@ data class FreeOngkir (
     @SerializedName("image_url")
     @Expose
     val imageUrl: String? = ""
+)
+
+data class Category(
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("category_id")
+    @Expose
+    val id: Int? = 0,
+    @SerializedName("category_name")
+    @Expose
+    val name: String? = ""
 )

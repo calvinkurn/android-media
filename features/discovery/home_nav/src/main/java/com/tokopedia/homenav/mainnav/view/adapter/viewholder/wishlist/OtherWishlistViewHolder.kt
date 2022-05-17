@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderOtherWishlistBinding
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.OtherWishlistModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,7 +21,11 @@ class OtherWishlistViewHolder(itemView: View, val mainNavListener: MainNavListen
 
     override fun bind(otherWishlistModel: OtherWishlistModel) {
         binding?.cardViewAllWishlist?.setCta("Lihat Semua")
-        binding?.cardViewAllWishlist?.description = "+5 lainnya"
+        binding?.cardViewAllWishlist?.descriptionView?.gone()
         binding?.cardViewAllWishlist?.titleView?.gone()
+
+        itemView.setOnClickListener {
+            TrackingTransactionSection.clickOnWishlistViewAll()
+        }
     }
 }

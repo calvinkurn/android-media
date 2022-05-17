@@ -464,8 +464,21 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    suspend fun getWishlist() {
-        //find error state if available and change to shimmering
+    fun refreshWishlistData() {
+        val wishlistPlaceHolder = _mainNavListVisitable.withIndex().find {
+            it.value is ErrorStateWishlistDataModel
+        }
+        wishlistPlaceHolder?.let {
+            updateWidget(ShimmerWishlistDataModel(), wishlistPlaceHolder.index)
+        }
+        launchCatchError(coroutineContext, block = {
+            getWishlist()
+        }) {
+
+        }
+    }
+
+    private suspend fun getWishlist() {
         val wishlistErrorState = _mainNavListVisitable.withIndex().find {
             it.value is ErrorStateWishlistDataModel
         }
@@ -478,7 +491,6 @@ class MainNavViewModel @Inject constructor(
             if (wishlist.isNotEmpty()) {
                 val wishlistModel = WishlistDataModel(wishlist)
 
-//                find shimmering and change with result value
                 findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                     updateWidget(wishlistModel, it)
                 }
@@ -489,7 +501,6 @@ class MainNavViewModel @Inject constructor(
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
         } catch (e: Exception) {
-            //find shimmering and change with result value
             findShimmerPosition<ShimmerWishlistDataModel>()?.let {
                 updateWidget(ErrorStateWishlistDataModel(), it)
             }

@@ -30,4 +30,8 @@ interface MainNavListener : HomeNavListener{
     fun onErrorAffiliateInfoRefreshClicked(position: Int)
 
     fun onTitleClicked(homeNavTitleDataModel: HomeNavTitleDataModel)
+
+    fun onErrorWishlistClicked()
+
+    fun onWishlistItemClicked(wishlistModel: NavWishlistModel, position: Int)
 }
