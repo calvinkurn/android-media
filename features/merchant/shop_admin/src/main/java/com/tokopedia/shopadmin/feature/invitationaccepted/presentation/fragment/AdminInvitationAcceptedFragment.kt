@@ -17,8 +17,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.presentation.navigator.goToPlayStoreOrSellerApp
+import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
-import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
 import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvitationAcceptedComponent
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
@@ -193,7 +193,7 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
 
     private fun showGlobalError(throwable: Throwable) {
         binding?.globalErrorInvitationAccepted?.run {
-            setTypeGlobalError(throwable)
+            setType(throwable.getGlobalErrorType())
             show()
         }
     }

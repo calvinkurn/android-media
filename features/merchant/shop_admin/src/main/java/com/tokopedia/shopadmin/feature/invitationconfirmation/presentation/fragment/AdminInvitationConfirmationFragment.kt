@@ -24,7 +24,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
 import com.tokopedia.shopadmin.common.constants.AdminStatus
-import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
+import com.tokopedia.shopadmin.common.utils.getGlobalErrorType
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationConfirmationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminConfirmationInvitationBinding
 import com.tokopedia.shopadmin.databinding.ItemAdminInvitationExpiredBinding
@@ -479,7 +479,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun showGlobalError(throwable: Throwable) {
         binding?.globalErrorConfirmationInvitation?.run {
-            setTypeGlobalError(throwable)
+            setType(throwable.getGlobalErrorType())
             show()
         }
     }
