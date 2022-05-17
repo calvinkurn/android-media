@@ -283,10 +283,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     (it.data as? CheckoutTokoFoodResponse)?.let { response ->
                         activityViewModel?.loadCartList(response)
                         if (response.data.popupMessage.isNotEmpty()) {
-                            showToaster(response.data.popupMessage, "Oke") {}
+                            showToaster(response.data.popupMessage, getOkayMessage()) {}
                         }
                         if (response.data.popupErrorMessage.isNotEmpty()) {
-                            showToasterError(response.data.popupErrorMessage, "Oke") {}
+                            showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
                         }
                     }
                 }
@@ -336,6 +336,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     navigateToNewFragment(TestMerchantFragment.createInstance())
                 }
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL -> {
+                    // TODO: Check for error message attributes
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading()
                     val globalErrorType = it.data as? Int
@@ -390,10 +391,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                         view?.let {
                                             Toaster.build(
                                                 view = it,
-                                                text = "Sip! Catatan berhasil disimpan.",
+                                                text = context?.getString(R.string.text_purchase_success_notes).orEmpty(),
                                                 duration = Toaster.LENGTH_SHORT,
                                                 type = Toaster.TYPE_NORMAL,
-                                                actionText = "Oke"
+                                                actionText = getOkayMessage()
                                             ).show()
                                         }
                                     }
@@ -407,10 +408,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         view?.let {
                             Toaster.build(
                                 view = it,
-                                text = "Quantity berhasil diubah",
+                                text = context?.getString(R.string.text_purchase_success_quantity).orEmpty(),
                                 duration = Toaster.LENGTH_SHORT,
                                 type = Toaster.TYPE_NORMAL,
-                                actionText = "Oke"
+                                actionText = getOkayMessage()
                             ).show()
                         }
                     }
@@ -474,9 +475,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewBinding?.noPinpointPurchase?.run {
             setType(GlobalError.PAGE_NOT_FOUND)
             // TODO: Set image url
-            errorTitle.text = "Kamu belum set pinpoint lokasi"
-            errorDescription.text = "Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!"
-            errorAction.text = "Set pin point"
+            errorTitle.text = context?.getString(R.string.text_purchase_no_pinpoint).orEmpty()
+            errorDescription.text = context?.getString(R.string.text_purchase_pinpoint_benefit).orEmpty()
+            errorAction.text = context?.getString(R.string.text_purchase_set_pinpoint).orEmpty()
             setActionClickListener {
                 viewModel.validateSetPinpoint()
             }
@@ -505,10 +506,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Hapus $productCount item yang tidak bisa diproses?")
-                setDescription("Semua item ini akan dihapus dari keranjangmu.")
-                setPrimaryCTAText("Hapus")
-                setSecondaryCTAText("Kembali")
+                setTitle(getString(R.string.text_purchase_delete_item, productCount))
+                setDescription(getString(R.string.text_purchase_delete_all))
+                setPrimaryCTAText(getString(R.string.text_purchase_delete))
+                setSecondaryCTAText(getString(R.string.text_purchase_back))
                 setPrimaryCTAClickListener {
                     activityViewModel?.deleteUnavailableProducts(SOURCE)
                     dismiss()
@@ -527,7 +528,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     text = "$productCount item berhasil dihapus.",
                     duration = Toaster.LENGTH_SHORT,
                     type = Toaster.TYPE_NORMAL,
-                    actionText = "Oke"
+                    actionText = getOkayMessage()
             ).show()
         }
     }
@@ -685,7 +686,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 text = getErrorMessage(throwable),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_ERROR,
-                actionText = "Oke"
+                actionText = getOkayMessage()
             ).show()
         }
     }
@@ -695,6 +696,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: throwable.message.orEmpty()
     }
+
+    private fun getOkayMessage(): String = context?.getString(R.string.text_purchase_okay).orEmpty()
 
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
